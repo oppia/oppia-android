@@ -181,15 +181,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testStopTrainingSession_withoutStartingSession_isPending() {
+  fun testStopTrainingSession_withoutStartingSession_isFailure() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
-    val monitor = monitorFactory.createMonitor(stopDataProvider)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(stopDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -223,16 +223,16 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_isPending() {
+  fun testSubmitAnswer_beforePlaying_isFailure() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val submitAnswerProvider =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    val monitor = monitorFactory.createMonitor(submitAnswerProvider)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(submitAnswerProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -345,15 +345,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_isPending() {
+  fun testMoveToNext_beforePlaying_isFailure() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
-    val monitor = monitorFactory.createMonitor(moveToQuestionResult)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test

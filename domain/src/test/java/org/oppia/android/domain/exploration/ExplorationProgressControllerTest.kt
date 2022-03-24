@@ -247,13 +247,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFinishExploration_beforePlaying_isPending() {
+  fun testFinishExploration_beforePlaying_isFailure() {
     val resultDataProvider = explorationDataController.stopPlayingExploration()
-    val monitor = monitorFactory.createMonitor(resultDataProvider)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -316,13 +316,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_isPending() {
+  fun testSubmitAnswer_beforePlaying_isFailure() {
     val resultProvider = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    val monitor = monitorFactory.createMonitor(resultProvider)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -481,13 +481,14 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_isPending() {
+  fun testMoveToNext_beforePlaying_isFailure() {
     val moveToStateResult = explorationProgressController.moveToNextState()
     val monitor = monitorFactory.createMonitor(moveToStateResult)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -573,13 +574,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testMoveToPrevious_beforePlaying_isPending() {
+  fun testMoveToPrevious_beforePlaying_isFailure() {
     val moveToStateResult = explorationProgressController.moveToPreviousState()
-    val monitor = monitorFactory.createMonitor(moveToStateResult)
 
-    // The operation should be pending since the session hasn't started.
-    val result = monitor.waitForNextResult()
-    assertThat(result).isPending()
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
