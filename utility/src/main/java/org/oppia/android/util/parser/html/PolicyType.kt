@@ -1,6 +1,6 @@
 package org.oppia.android.util.parser.html
 
-/** the type of policy. */
+/** Represents different types of app policies that can be shown to the user. */
 enum class PolicyType {
   /** Corresponds to the Privacy Policy. */
   PRIVACY_POLICY,
