@@ -167,16 +167,14 @@ class QuestionTrainingControllerTest {
   }
 
   @Test
-  fun testStopTrainingSession_withoutStartingSession_fails_logsException() {
+  fun testStopTrainingSession_withoutStartingSession_returnsFailure() {
     setUpTestApplicationComponent(questionSeed = 0)
-    questionTrainingController.stopQuestionTrainingSession()
-    testCoroutineDispatchers.runCurrent()
 
-    val exception = fakeExceptionLogger.getMostRecentException()
+    val resultProvider = questionTrainingController.stopQuestionTrainingSession()
 
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot stop a new training session which wasn't started")
+    val result = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   private fun setUpTestApplicationComponent(questionSeed: Long) {

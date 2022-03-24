@@ -116,7 +116,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       AsyncResult.Failure(IllegalStateException("Training session is not yet initialized."))
     )
 
-  private val controllerCommandQueue by lazy { createControllerCommandActor() }
+  private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
   @Inject
   internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
@@ -140,17 +140,18 @@ class QuestionAssessmentProgressController @Inject constructor(
     val sessionId = UUID.randomUUID().toString().also {
       mostRecentSessionId = it
       mostRecentEphemeralQuestionFlow = ephemeralQuestionFlow
+      mostRecentCommandQueue = createControllerCommandActor()
     }
-    monitoredQuestionListDataProvider.setBaseDataProvider(
-      questionsListDataProvider, this::sendReceiveQuestionListEvent
-    )
+    monitoredQuestionListDataProvider.setBaseDataProvider(questionsListDataProvider) {
+      maybeSendReceiveQuestionListEvent(mostRecentCommandQueue, it)
+    }
     this.profileId = profileId
     val beginSessionResultFlow = createAsyncResultStateFlow<Any?>()
-    val initializeMessage =
+    val initializeMessage: ControllerMessage<*> =
       ControllerMessage.StartInitializingController(
         profileId, ephemeralQuestionFlow, sessionId, beginSessionResultFlow
       )
-    check(controllerCommandQueue.offer(initializeMessage)) {
+    sendCommandForOperation(initializeMessage) {
       "Failed to schedule command for initializing the question assessment progress controller."
     }
     return beginSessionResultFlow.convertToSessionProvider(BEGIN_SESSION_RESULT_PROVIDER_ID)
@@ -169,9 +170,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   internal fun finishQuestionTrainingSession(): DataProvider<Any?> {
     // Reset the base questions list provider so that the ephemeral question has no question list to
     // reference (since the session finished).
-    monitoredQuestionListDataProvider.setBaseDataProvider(
-      createEmptyQuestionsListDataProvider(), this::sendReceiveQuestionListEvent
-    )
+    monitoredQuestionListDataProvider.setBaseDataProvider(createEmptyQuestionsListDataProvider()) {
+      maybeSendReceiveQuestionListEvent(commandQueue = null, it)
+    }
     val finishSessionResultFlow = createAsyncResultStateFlow<Any?>()
     val message = ControllerMessage.FinishSession(activeSessionId, finishSessionResultFlow)
     sendCommandForOperation(message) {
@@ -194,14 +195,15 @@ class QuestionAssessmentProgressController @Inject constructor(
    * from the current completed question to the next pending question using [moveToNextQuestion].
    *
    * ### Lifecycle behavior
-   * The returned [DataProvider] will initially be pending until the operation completes. Note that
-   * a different provider is returned for each call, though it's tied to the same session so it can
-   * be monitored medium-term (i.e. for the duration of the play session, but not past it).
-   * Furthermore, the returned provider does not actually need to be monitored in order for the
-   * operation to complete, though it's recommended since [getCurrentQuestion] can only be used to
-   * monitor the effects of the operation, not whether the operation itself succeeded.
+   * The returned [DataProvider] will initially be pending until the operation completes (unless
+   * called before a session is started). Note that a different provider is returned for each call,
+   * though it's tied to the same session so it can be monitored medium-term (i.e. for the duration
+   * of the play session, but not past it). Furthermore, the returned provider does not actually
+   * need to be monitored in order for the operation to complete, though it's recommended since
+   * [getCurrentQuestion] can only be used to monitor the effects of the operation, not whether the
+   * operation itself succeeded.
    *
-   * If this is called before a session begins it will return a provider that stays pending with no
+   * If this is called before a session begins it will return a provider that stays failing with no
    * updates. The operation will also silently fail rather than queue up in these circumstances, so
    * starting a session will not trigger an answer submission from an older call.
    *
@@ -358,18 +360,16 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
-    var controllerState: ControllerState? = null
+    lateinit var controllerState: ControllerState
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
-    return CoroutineScope(backgroundCoroutineDispatcher).actor(capacity = Channel.UNLIMITED) {
+    @Suppress("JoinDeclarationAndAssignment") // Warning is incorrect in this case.
+    lateinit var commandQueue: SendChannel<ControllerMessage<*>>
+    commandQueue = CoroutineScope(
+      backgroundCoroutineDispatcher
+    ).actor(capacity = Channel.UNLIMITED) {
       for (message in channel) {
         try {
-          // Since the loop essentially never ends, this is needed to ensure that the controller
-          // state can be reset across sessions.
-          val initedControllerState by lazy {
-            checkNotNull(controllerState) { "Expected controller state to be initialized." }
-          }
-
           @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
           val unused = when (message) {
             is ControllerMessage.StartInitializingController -> {
@@ -377,41 +377,41 @@ class QuestionAssessmentProgressController @Inject constructor(
               // across sessions.
               controllerState =
                 ControllerState(
-                  QuestionAssessmentProgress(), message.sessionId, message.ephemeralQuestionFlow
+                  QuestionAssessmentProgress(),
+                  message.sessionId,
+                  message.ephemeralQuestionFlow,
+                  commandQueue
                 ).also {
                   it.beginQuestionTrainingSessionImpl(message.callbackFlow, message.profileId)
                 }
             }
             is ControllerMessage.ReceiveQuestionList ->
-              initedControllerState.handleUpdatedQuestionsList(message.questionsList)
+              controllerState.handleUpdatedQuestionsList(message.questionsList)
             is ControllerMessage.FinishSession -> {
               try {
                 // Ensure finish is always executed even if the controller state isn't yet
                 // initialized.
                 controllerState.finishQuestionTrainingSessionImpl(message.callbackFlow)
               } finally {
-                // Ensure the controller state is always reset.
-                controllerState = null
+                // Ensure the actor ends since the session requires no further message processing.
+                break
               }
             }
             is ControllerMessage.SubmitAnswer ->
-              initedControllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
-            is ControllerMessage.HintIsRevealed -> {
-              initedControllerState.submitHintIsRevealedImpl(
-                message.callbackFlow, message.hintIndex
-              )
-            }
+              controllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
+            is ControllerMessage.HintIsRevealed ->
+              controllerState.submitHintIsRevealedImpl(message.callbackFlow, message.hintIndex)
             is ControllerMessage.MoveToNextQuestion ->
-              initedControllerState.moveToNextQuestion(message.callbackFlow)
+              controllerState.moveToNextQuestion(message.callbackFlow)
             is ControllerMessage.SolutionIsRevealed ->
-              initedControllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+              controllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.CalculateScores -> {
-              initedControllerState.recomputeUserAssessmentPerformanceAndNotify(
+              controllerState.recomputeUserAssessmentPerformanceAndNotify(
                 message.callbackFlow, message.skillIdList
               )
             }
             is ControllerMessage.RecomputeQuestionAndNotify ->
-              initedControllerState.recomputeCurrentQuestionAndNotifyImpl()
+              controllerState.recomputeCurrentQuestionAndNotifyImpl()
           }
         } catch (e: Exception) {
           exceptionsController.logNonFatalException(e)
@@ -423,27 +423,40 @@ class QuestionAssessmentProgressController @Inject constructor(
         }
       }
     }
+    return commandQueue
   }
 
   private fun <T> sendCommandForOperation(
     message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
-    // Ensure that the result is first reset since there will be a delay before the message is
-    // processed (if there's a flow).
-    message.callbackFlow?.value = AsyncResult.Pending()
+    // TODO(#4119): Switch this to use trySend(), instead, which is much cleaner and doesn't require
+    //  catching an exception.
+    val flowResult: AsyncResult<T> = try {
+      val commandQueue = mostRecentCommandQueue
+      when {
+        commandQueue == null ->
+          AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
+        !commandQueue.offer(message) ->
+          AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
+        // Ensure that the result is first reset since there will be a delay before the message is
+        // processed (if there's a flow).
+        else -> AsyncResult.Pending()
+      }
+    } catch (e: Exception) { AsyncResult.Failure(e) }
 
-    // This must succeed or the app will be entered into a bad state. Crash instead of trying to
-    // recover (though recovery may be possible in the future with some changes and user messaging).
-    check(controllerCommandQueue.offer(message), lazyFailureMessage)
+    // This must be assigned separately since flowResult should always be calculated, even if
+    // there's no callbackFlow to report it.
+    message.callbackFlow?.value = flowResult
   }
 
-  private suspend fun sendReceiveQuestionListEvent(
+  private suspend fun maybeSendReceiveQuestionListEvent(
+    commandQueue: SendChannel<ControllerMessage<*>>?,
     questionsList: List<Question>
   ): AsyncResult<Any?> {
-    controllerCommandQueue.send(
-      ControllerMessage.ReceiveQuestionList(questionsList, activeSessionId)
-    )
+    // Only send the message if there's a queue to send it to (which there might not be for cases
+    // where a play session isn't active).
+    commandQueue?.send(ControllerMessage.ReceiveQuestionList(questionsList, activeSessionId))
     return AsyncResult.Success(null)
   }
 
@@ -607,9 +620,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
   ): NestedTransformedDataProvider<Any?> {
-    return questionsListDataProvider.transformNested(
-      MONITORED_QUESTION_LIST_PROVIDER_ID, this::sendReceiveQuestionListEvent
-    )
+    return questionsListDataProvider.transformNested(MONITORED_QUESTION_LIST_PROVIDER_ID) {
+      maybeSendReceiveQuestionListEvent(commandQueue = null, it)
+    }
   }
 
   private suspend fun <T> ControllerState.tryOperation(
@@ -644,7 +657,7 @@ class QuestionAssessmentProgressController @Inject constructor(
    * ensure state isn't leaked across training sessions.
    */
   private suspend fun ControllerState.recomputeCurrentQuestionAndNotifyAsync() {
-    controllerCommandQueue.send(ControllerMessage.RecomputeQuestionAndNotify(sessionId))
+    commandQueue.send(ControllerMessage.RecomputeQuestionAndNotify(sessionId))
   }
 
   private suspend fun ControllerState.recomputeCurrentQuestionAndNotifyImpl() {
@@ -756,11 +769,15 @@ class QuestionAssessmentProgressController @Inject constructor(
    *
    * @property progress the [QuestionAssessmentProgress] corresponding to the session
    * @property sessionId the GUID corresponding to the session
+   * @property ephemeralQuestionFlow the [MutableStateFlow] that the updated [EphemeralQuestion] is
+   *     delivered to
+   * @property commandQueue the actor command queue executing all messages that change this state
    */
   private class ControllerState(
     val progress: QuestionAssessmentProgress = QuestionAssessmentProgress(),
     val sessionId: String,
-    val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralQuestion>>
+    val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralQuestion>>,
+    val commandQueue: SendChannel<ControllerMessage<*>>
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the training session corresponding to
@@ -783,7 +800,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   /**
-   * Represents a message that can be sent to [controllerCommandQueue] to process changes to
+   * Represents a message that can be sent to [mostRecentCommandQueue] to process changes to
    * [ControllerState] (since all changes must be synchronized).
    *
    * Messages are expected to be resolved serially (though their scheduling can occur across
