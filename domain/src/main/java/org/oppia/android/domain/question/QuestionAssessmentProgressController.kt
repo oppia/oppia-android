@@ -24,7 +24,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionAssessmentProgress.TrainStage
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -77,13 +76,21 @@ private const val DEFAULT_SESSION_ID = "default_session_id"
  *
  * The current training session is started via the question training controller.
  *
- * This class is thread-safe, but the order of applied operations is arbitrary. Calling code should
- * take care to ensure that uses of this class do not specifically depend on ordering.
+ * This class is not safe to use across multiple threads, and should only ever be interacted with
+ * via the main thread. The controller makes use of multiple threads to offload all state
+ * operations, so calls into this controller should return quickly and will never block. Each method
+ * returns a [DataProvider] that can be observed for the future result of the method's corresponding
+ * operation.
+ *
+ * Note that operations are guaranteed to execute in the order of controller method calls, internal
+ * state is always kept internally consistent (so long-running [DataProvider] subscriptions for a
+ * particular play session will receive updates), and state can never leak across session
+ * boundaries (though re-subscription will be necessary to observe state in a new play session--see
+ * [submitAnswer] and [getCurrentQuestion] method KDocs for more details).
  */
 @Singleton
 class QuestionAssessmentProgressController @Inject constructor(
   private val dataProviders: DataProviders,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
   private val hintHandlerFactory: HintHandler.Factory,
@@ -104,49 +111,12 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val activeSessionId: String
     get() = mostRecentSessionId ?: DEFAULT_SESSION_ID
 
-  private val controllerCommandQueue by lazy { createControllerCommandActor() }
-  private val ephemeralQuestionFlow by lazy { createAsyncResultStateFlow<EphemeralQuestion>() }
-  private val calculateScoresFlow by lazy {
-    createAsyncResultStateFlow<UserAssessmentPerformance>()
-  }
-  private val beginSessionResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val finishSessionResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val submitAnswerResultFlow by lazy {
-    createAsyncResultStateFlow<AnsweredQuestionOutcome>()
-  }
-  private val submitHintRevealedResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val submitSolutionRevealedResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val moveToNextQuestionResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val ephemeralQuestionDataProvider by lazy {
-    dataProviders.run {
-      ephemeralQuestionFlow.convertAsyncToAutomaticDataProvider(CURRENT_QUESTION_PROVIDER_ID)
-    }
-  }
-  private val calculateScoresDataProvider by lazy {
-    dataProviders.run {
-      calculateScoresFlow.convertAsyncToAutomaticDataProvider(CALCULATE_SCORES_PROVIDER_ID)
-    }
-  }
-  private val beginSessionResultDataProvider by lazy {
-    beginSessionResultFlow.convertToDataProvider(BEGIN_SESSION_RESULT_PROVIDER_ID)
-  }
-  private val finishSessionResultDataProvider by lazy {
-    finishSessionResultFlow.convertToDataProvider(FINISH_SESSION_RESULT_PROVIDER_ID)
-  }
-  private val submitAnswerResultDataProvider by lazy {
-    submitAnswerResultFlow.convertToDataProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID)
-  }
-  private val submitHintRevealedResultDataProvider by lazy {
-    submitHintRevealedResultFlow.convertToDataProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID)
-  }
-  private val submitSolutionRevealedResultDataProvider by lazy {
-    submitSolutionRevealedResultFlow.convertToDataProvider(
-      SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+  private var mostRecentEphemeralQuestionFlow =
+    createAsyncResultStateFlow<EphemeralQuestion>(
+      AsyncResult.Failure(IllegalStateException("Training session is not yet initialized."))
     )
-  }
-  private val moveToNextQuestionResultDataProvider by lazy {
-    moveToNextQuestionResultFlow.convertToDataProvider(MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID)
-  }
+
+  private val controllerCommandQueue by lazy { createControllerCommandActor() }
 
   @Inject
   internal lateinit var scoreCalculatorFactory: QuestionAssessmentCalculation.Factory
@@ -166,16 +136,24 @@ class QuestionAssessmentProgressController @Inject constructor(
   ): DataProvider<Any?> {
     // Prepare to compute the session state by setting up the provided question list provider to be
     // used later in the ephemeral question data provider.
-    val sessionId = UUID.randomUUID().toString().also { mostRecentSessionId = it }
+    val ephemeralQuestionFlow = createAsyncResultStateFlow<EphemeralQuestion>()
+    val sessionId = UUID.randomUUID().toString().also {
+      mostRecentSessionId = it
+      mostRecentEphemeralQuestionFlow = ephemeralQuestionFlow
+    }
     monitoredQuestionListDataProvider.setBaseDataProvider(
       questionsListDataProvider, this::sendReceiveQuestionListEvent
     )
     this.profileId = profileId
-    val initializeMessage = ControllerMessage.StartInitializingController(profileId, sessionId)
+    val beginSessionResultFlow = createAsyncResultStateFlow<Any?>()
+    val initializeMessage =
+      ControllerMessage.StartInitializingController(
+        profileId, ephemeralQuestionFlow, sessionId, beginSessionResultFlow
+      )
     check(controllerCommandQueue.offer(initializeMessage)) {
       "Failed to schedule command for initializing the question assessment progress controller."
     }
-    return beginSessionResultDataProvider
+    return beginSessionResultFlow.convertToSessionProvider(BEGIN_SESSION_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -194,10 +172,12 @@ class QuestionAssessmentProgressController @Inject constructor(
     monitoredQuestionListDataProvider.setBaseDataProvider(
       createEmptyQuestionsListDataProvider(), this::sendReceiveQuestionListEvent
     )
-    sendCommandForOperation(
-      finishSessionResultFlow, ControllerMessage.FinishSession(activeSessionId)
-    ) { "Failed to schedule command for finishing the question session." }
-    return finishSessionResultDataProvider
+    val finishSessionResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.FinishSession(activeSessionId, finishSessionResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for finishing the question session."
+    }
+    return finishSessionResultFlow.convertToSessionProvider(FINISH_SESSION_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -215,11 +195,11 @@ class QuestionAssessmentProgressController @Inject constructor(
    *
    * ### Lifecycle behavior
    * The returned [DataProvider] will initially be pending until the operation completes. Note that
-   * the same provider is returned for each call, so it can be monitored long-term for subsequent
-   * answer submissions (where new submissions and session restarts will change the provider to
-   * pending). Furthermore, the returned provider does not actually need to be monitored in order
-   * for the operation to complete, though it's recommended since [getCurrentQuestion] can only be
-   * used to monitor the effects of the operation, not whether the operation itself succeeded.
+   * a different provider is returned for each call, though it's tied to the same session so it can
+   * be monitored medium-term (i.e. for the duration of the play session, but not past it).
+   * Furthermore, the returned provider does not actually need to be monitored in order for the
+   * operation to complete, though it's recommended since [getCurrentQuestion] can only be used to
+   * monitor the effects of the operation, not whether the operation itself succeeded.
    *
    * If this is called before a session begins it will return a provider that stays pending with no
    * updates. The operation will also silently fail rather than queue up in these circumstances, so
@@ -234,10 +214,10 @@ class QuestionAssessmentProgressController @Inject constructor(
    * [DataProvider] from [getCurrentQuestion].
    */
   fun submitAnswer(answer: UserAnswer): DataProvider<AnsweredQuestionOutcome> {
-    check(controllerCommandQueue.offer(ControllerMessage.SubmitAnswer(answer, activeSessionId))) {
-      "Failed to schedule command for submitting an answer."
-    }
-    return submitAnswerResultDataProvider
+    val submitResultFlow = createAsyncResultStateFlow<AnsweredQuestionOutcome>()
+    val message = ControllerMessage.SubmitAnswer(answer, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for submitting an answer." }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -252,12 +232,10 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
-    check(
-      controllerCommandQueue.offer(
-        ControllerMessage.HintIsRevealed(hintIndex, activeSessionId)
-      )
-    ) { "Failed to schedule command for submitting a hint reveal" }
-    return submitHintRevealedResultDataProvider
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.HintIsRevealed(hintIndex, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for submitting a hint reveal" }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -270,10 +248,12 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.SolutionIsRevealed(activeSessionId))) {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.SolutionIsRevealed(activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) {
       "Failed to schedule command for submitting a solution reveal"
     }
-    return submitSolutionRevealedResultDataProvider
+    return submitResultFlow.convertToSessionProvider(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -294,10 +274,12 @@ class QuestionAssessmentProgressController @Inject constructor(
    *     successful transition to another question.
    */
   fun moveToNextQuestion(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.MoveToNextQuestion(activeSessionId))) {
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveToNextQuestion(activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) {
       "Failed to schedule command for moving to the next question."
     }
-    return moveToNextQuestionResultDataProvider
+    return moveResultFlow.convertToSessionProvider(MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -320,9 +302,15 @@ class QuestionAssessmentProgressController @Inject constructor(
    * UI code cannot assume that only calls from the UI layer will trigger state changes here since
    * internal domain processes may also affect state (such as hint timers).
    *
-   * This method is safe to be called before a training session has started. If there is no ongoing
-   * session, it will return a pending state, which means the returned value can switch from a
-   * success or failure state back to pending.
+   * This method is safe to be called before a training session has started, but the returned
+   * provider is tied to the current play session (similar to the provider returned by
+   * [submitAnswer]), so the returned [DataProvider] prior to [beginQuestionTrainingSession] being
+   * called will be a permanently failing provider. Furthermore, the returned provider will not be
+   * updated after the play session has ended (either due to [finishQuestionTrainingSession] being
+   * called, or a new session starting). There will be a [DataProvider] available immediately after
+   * [beginQuestionTrainingSession] returns, though it may not ever provide useful data if the start
+   * of the session failed (which can only be observed via the provider returned by
+   * [beginQuestionTrainingSession]).
    *
    * This method does not actually need to be called for the [EphemeralQuestion] to be computed;
    * it's always computed eagerly by other state-changing methods regardless of whether there's an
@@ -331,6 +319,9 @@ class QuestionAssessmentProgressController @Inject constructor(
   fun getCurrentQuestion(): DataProvider<EphemeralQuestion> {
     val writtenTranslationContentLocale =
       translationController.getWrittenTranslationContentLocale(profileId)
+    val ephemeralQuestionDataProvider =
+      mostRecentEphemeralQuestionFlow.convertToSessionProvider(CURRENT_QUESTION_PROVIDER_ID)
+
     // Combine ephemeral question with the monitored question list to ensure that changes to the
     // questions list trigger a recompute of the ephemeral question.
     val questionDataProvider =
@@ -354,17 +345,19 @@ class QuestionAssessmentProgressController @Inject constructor(
    * The returned [DataProvider] has the same lifecycle considerations as the provider returned by
    * [submitAnswer], which in practice means that subsequent calls to this function may result in
    * multiple [UserAssessmentPerformance]s being computed and sent to the returned [DataProvider],
-   * though per eventual consistency it's expected the final result received will always be
-   * corresponding to the most recent call to this method.
+   * though per the eventual consistency property of [DataProvider]s it's expected that the final
+   * result received will always be corresponding to the most recent call to this method.
    */
   fun calculateScores(skillIdList: List<String>): DataProvider<UserAssessmentPerformance> {
-    check(
-      controllerCommandQueue.offer(ControllerMessage.CalculateScores(skillIdList, activeSessionId))
-    ) { "Failed to schedule command for moving to the next question." }
-    return calculateScoresDataProvider
+    val scoresResultFlow = createAsyncResultStateFlow<UserAssessmentPerformance>()
+    val message = ControllerMessage.CalculateScores(skillIdList, activeSessionId, scoresResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for moving to the next question."
+    }
+    return scoresResultFlow.convertToSessionProvider(CALCULATE_SCORES_PROVIDER_ID)
   }
 
-  private fun createControllerCommandActor(): SendChannel<ControllerMessage> {
+  private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     var controllerState: ControllerState? = null
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
@@ -377,19 +370,16 @@ class QuestionAssessmentProgressController @Inject constructor(
             checkNotNull(controllerState) { "Expected controller state to be initialized." }
           }
 
-          // If there's an active controller, ignore messages not tied to this session since
-          // leftovers from previous sessions may conflate the state of the active session.
-          val currentSessionId = controllerState?.sessionId
-          if (currentSessionId != null && message.sessionId != currentSessionId) continue
-
           @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
           val unused = when (message) {
             is ControllerMessage.StartInitializingController -> {
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
               controllerState =
-                ControllerState(QuestionAssessmentProgress(), message.sessionId).also {
-                  it.beginQuestionTrainingSessionImpl(message.profileId)
+                ControllerState(
+                  QuestionAssessmentProgress(), message.sessionId, message.ephemeralQuestionFlow
+                ).also {
+                  it.beginQuestionTrainingSessionImpl(message.callbackFlow, message.profileId)
                 }
             }
             is ControllerMessage.ReceiveQuestionList ->
@@ -398,21 +388,28 @@ class QuestionAssessmentProgressController @Inject constructor(
               try {
                 // Ensure finish is always executed even if the controller state isn't yet
                 // initialized.
-                controllerState.finishQuestionTrainingSessionImpl()
+                controllerState.finishQuestionTrainingSessionImpl(message.callbackFlow)
               } finally {
                 // Ensure the controller state is always reset.
                 controllerState = null
               }
             }
             is ControllerMessage.SubmitAnswer ->
-              initedControllerState.submitAnswerImpl(message.userAnswer)
-            is ControllerMessage.HintIsRevealed ->
-              initedControllerState.submitHintIsRevealedImpl(message.hintIndex)
-            is ControllerMessage.MoveToNextQuestion -> initedControllerState.moveToNextQuestion()
+              initedControllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
+            is ControllerMessage.HintIsRevealed -> {
+              initedControllerState.submitHintIsRevealedImpl(
+                message.callbackFlow, message.hintIndex
+              )
+            }
+            is ControllerMessage.MoveToNextQuestion ->
+              initedControllerState.moveToNextQuestion(message.callbackFlow)
             is ControllerMessage.SolutionIsRevealed ->
-              initedControllerState.submitSolutionIsRevealedImpl()
-            is ControllerMessage.CalculateScores ->
-              initedControllerState.recomputeUserAssessmentPerformanceAndNotify(message.skillIdList)
+              initedControllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
+            is ControllerMessage.CalculateScores -> {
+              initedControllerState.recomputeUserAssessmentPerformanceAndNotify(
+                message.callbackFlow, message.skillIdList
+              )
+            }
             is ControllerMessage.RecomputeQuestionAndNotify ->
               initedControllerState.recomputeCurrentQuestionAndNotifyImpl()
           }
@@ -429,13 +426,12 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun <T> sendCommandForOperation(
-    resultFlow: MutableStateFlow<AsyncResult<T>>,
-    message: ControllerMessage,
+    message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
     // Ensure that the result is first reset since there will be a delay before the message is
-    // processed.
-    resultFlow.value = AsyncResult.Pending()
+    // processed (if there's a flow).
+    message.callbackFlow?.value = AsyncResult.Pending()
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
@@ -451,8 +447,11 @@ class QuestionAssessmentProgressController @Inject constructor(
     return AsyncResult.Success(null)
   }
 
-  private suspend fun ControllerState.beginQuestionTrainingSessionImpl(profileId: ProfileId) {
-    tryOperation(BEGIN_SESSION_RESULT_PROVIDER_ID, beginSessionResultFlow) {
+  private suspend fun ControllerState.beginQuestionTrainingSessionImpl(
+    beginSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    profileId: ProfileId
+  ) {
+    tryOperation(beginSessionResultFlow) {
       progress.currentProfileId = profileId
 
       hintHandler = hintHandlerFactory.create()
@@ -460,9 +459,6 @@ class QuestionAssessmentProgressController @Inject constructor(
         recomputeCurrentQuestionAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       progress.advancePlayStageTo(TrainStage.LOADING_TRAINING_SESSION)
-
-      // Reset the finish flow since the session is beginning.
-      finishSessionResultFlow.value = AsyncResult.Pending()
     }
   }
 
@@ -476,24 +472,20 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState?.finishQuestionTrainingSessionImpl() {
+  private suspend fun ControllerState?.finishQuestionTrainingSessionImpl(
+    finishSessionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
     checkNotNull(this) { "Cannot stop a new training session which wasn't started." }
-    tryOperation(FINISH_SESSION_RESULT_PROVIDER_ID, finishSessionResultFlow) {
+    tryOperation(finishSessionResultFlow) {
       progress.advancePlayStageTo(TrainStage.NOT_IN_TRAINING_SESSION)
     }
-
-    // Ensure all state is reset since a session is no longer being played.
-    ephemeralQuestionFlow.value = AsyncResult.Pending()
-    calculateScoresFlow.value = AsyncResult.Pending()
-    beginSessionResultFlow.value = AsyncResult.Pending()
-    submitAnswerResultFlow.value = AsyncResult.Pending()
-    submitHintRevealedResultFlow.value = AsyncResult.Pending()
-    submitSolutionRevealedResultFlow.value = AsyncResult.Pending()
-    moveToNextQuestionResultFlow.value = AsyncResult.Pending()
   }
 
-  private suspend fun ControllerState.submitAnswerImpl(answer: UserAnswer) {
-    tryOperation(SUBMIT_ANSWER_RESULT_PROVIDER_ID, submitAnswerResultFlow) {
+  private suspend fun ControllerState.submitAnswerImpl(
+    submitAnswerResultFlow: MutableStateFlow<AsyncResult<AnsweredQuestionOutcome>>,
+    answer: UserAnswer
+  ) {
+    tryOperation(submitAnswerResultFlow) {
       check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
         "Cannot submit an answer while another answer is pending."
       }
@@ -552,8 +544,11 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.submitHintIsRevealedImpl(hintIndex: Int) {
-    tryOperation(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID, submitHintRevealedResultFlow) {
+  private suspend fun ControllerState.submitHintIsRevealedImpl(
+    submitHintRevealedResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    hintIndex: Int
+  ) {
+    tryOperation(submitHintRevealedResultFlow) {
       check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
         "Cannot submit an answer while another answer is pending."
       }
@@ -569,8 +564,10 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.submitSolutionIsRevealedImpl() {
-    tryOperation(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID, submitSolutionRevealedResultFlow) {
+  private suspend fun ControllerState.submitSolutionIsRevealedImpl(
+    submitSolutionRevealedResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(submitSolutionRevealedResultFlow) {
       check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
         "Cannot submit an answer while another answer is pending."
       }
@@ -586,8 +583,10 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToNextQuestion() {
-    tryOperation(MOVE_TO_NEXT_QUESTION_RESULT_PROVIDER_ID, moveToNextQuestionResultFlow) {
+  private suspend fun ControllerState.moveToNextQuestion(
+    moveToNextQuestionResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToNextQuestionResultFlow) {
       check(progress.trainStage != TrainStage.SUBMITTING_ANSWER) {
         "Cannot navigate to a next question if an answer submission is pending."
       }
@@ -614,18 +613,16 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private suspend fun <T> ControllerState.tryOperation(
-    providerId: String,
     resultFlow: MutableStateFlow<AsyncResult<T>>,
     operation: suspend ControllerState.() -> T
   ) {
     try {
-      resultFlow.value = AsyncResult.Success(operation())
+      resultFlow.emit(AsyncResult.Success(operation()))
       recomputeCurrentQuestionAndNotifySync()
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      resultFlow.value = AsyncResult.Failure(e)
+      resultFlow.emit(AsyncResult.Failure(e))
     }
-    asyncDataSubscriptionManager.notifyChange(providerId)
   }
 
   /**
@@ -661,6 +658,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.recomputeUserAssessmentPerformanceAndNotify(
+    calculateScoresFlow: MutableStateFlow<AsyncResult<UserAssessmentPerformance>>,
     skillIdList: List<String>
   ) {
     val calculator = scoreCalculatorFactory.create(skillIdList, progress.questionSessionMetrics)
@@ -741,11 +739,14 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private fun <T> createAsyncResultStateFlow(): MutableStateFlow<AsyncResult<T>> =
-    MutableStateFlow(AsyncResult.Pending())
+  private fun <T> createAsyncResultStateFlow(initialValue: AsyncResult<T> = AsyncResult.Pending()) =
+    MutableStateFlow(initialValue)
 
-  private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
-    dataProviders.run { convertAsyncToSimpleDataProvider(id) }
+  private fun <T> StateFlow<AsyncResult<T>>.convertToSessionProvider(
+    baseId: String
+  ): DataProvider<T> = dataProviders.run {
+    convertAsyncToAutomaticDataProvider("${baseId}_$activeSessionId")
+  }
 
   /**
    * Represents the current synchronized state of the controller.
@@ -758,7 +759,8 @@ class QuestionAssessmentProgressController @Inject constructor(
    */
   private class ControllerState(
     val progress: QuestionAssessmentProgress = QuestionAssessmentProgress(),
-    val sessionId: String
+    val sessionId: String,
+    val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralQuestion>>
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the training session corresponding to
@@ -787,18 +789,27 @@ class QuestionAssessmentProgressController @Inject constructor(
    * Messages are expected to be resolved serially (though their scheduling can occur across
    * multiple threads, so order cannot be guaranteed until they're enqueued).
    */
-  private sealed class ControllerMessage {
+  private sealed class ControllerMessage<T> {
     /**
      * The session ID corresponding to this message (the message is expected to be ignored if it
      * doesn't correspond to an active session).
      */
     abstract val sessionId: String
 
+    /**
+     * The [DataProvider]-tied [MutableStateFlow] that represents the result of the operation
+     * corresponding to this message, or ``null`` if the caller doesn't care about observing the
+     * result.
+     */
+    abstract val callbackFlow: MutableStateFlow<AsyncResult<T>>?
+
     /** [ControllerMessage] for initializing a new training session. */
     data class StartInitializingController(
       val profileId: ProfileId,
-      override val sessionId: String
-    ) : ControllerMessage()
+      val ephemeralQuestionFlow: MutableStateFlow<AsyncResult<EphemeralQuestion>>,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] for finishing the initialization of the training session by providing a
@@ -806,17 +817,22 @@ class QuestionAssessmentProgressController @Inject constructor(
      */
     data class ReceiveQuestionList(
       val questionsList: List<Question>,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] for ending the current training session. */
-    data class FinishSession(override val sessionId: String) : ControllerMessage()
+    data class FinishSession(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] for submitting a new [UserAnswer]. */
     data class SubmitAnswer(
       val userAnswer: UserAnswer,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<AnsweredQuestionOutcome>>
+    ) : ControllerMessage<AnsweredQuestionOutcome>()
 
     /**
      * [ControllerMessage] for indicating that the user revealed the hint corresponding to
@@ -824,17 +840,24 @@ class QuestionAssessmentProgressController @Inject constructor(
      */
     data class HintIsRevealed(
       val hintIndex: Int,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] for indicating that the user revealed the solution for the current
      * question.
      */
-    data class SolutionIsRevealed(override val sessionId: String) : ControllerMessage()
+    data class SolutionIsRevealed(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] to move to the next question in the training session. */
-    data class MoveToNextQuestion(override val sessionId: String) : ControllerMessage()
+    data class MoveToNextQuestion(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] to calculate the current scores of the training session by computing a
@@ -842,8 +865,9 @@ class QuestionAssessmentProgressController @Inject constructor(
      */
     data class CalculateScores(
       val skillIdList: List<String>,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<UserAssessmentPerformance>>
+    ) : ControllerMessage<UserAssessmentPerformance>()
 
     /**
      * [ControllerMessage] which recomputes the current [EphemeralQuestion] and notifies subscribers
@@ -852,6 +876,9 @@ class QuestionAssessmentProgressController @Inject constructor(
      * This is only used in cases where an external operation trigger changes that are only
      * reflected when recomputing the question (e.g. a new hint needing to be shown).
      */
-    data class RecomputeQuestionAndNotify(override val sessionId: String) : ControllerMessage()
+    data class RecomputeQuestionAndNotify(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
   }
 }
