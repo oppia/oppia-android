@@ -28,7 +28,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -70,12 +69,20 @@ private const val DEFAULT_SESSION_ID = "default_session_id"
  *
  * The current exploration session is started via the exploration data controller.
  *
- * This class is thread-safe, but the order of applied operations is arbitrary. Calling code should
- * take care to ensure that uses of this class do not specifically depend on ordering.
+ * This class is not safe to use across multiple threads, and should only ever be interacted with
+ * via the main thread. The controller makes use of multiple threads to offload all state
+ * operations, so calls into this controller should return quickly and will never block. Each method
+ * returns a [DataProvider] that can be observed for the future result of the method's corresponding
+ * operation.
+ *
+ * Note that operations are guaranteed to execute in the order of controller method calls, internal
+ * state is always kept internally consistent (so long-running [DataProvider] subscriptions for a
+ * particular play session will receive updates), and state can never leak across session
+ * boundaries (though re-subscription will be necessary to observe state in a new play session--see
+ * [submitAnswer] and [getCurrentState] method KDocs for more details).
  */
 @Singleton
 class ExplorationProgressController @Inject constructor(
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val explorationRetriever: ExplorationRetriever,
   private val answerClassificationController: AnswerClassificationController,
   private val exceptionsController: ExceptionsController,
@@ -102,43 +109,12 @@ class ExplorationProgressController @Inject constructor(
   private val activeSessionId: String
     get() = mostRecentSessionId ?: DEFAULT_SESSION_ID
 
-  private val controllerCommandQueue by lazy { createControllerCommandActor() }
-  private val ephemeralStateFlow by lazy { createAsyncResultStateFlow<EphemeralState>() }
-  private val beginExplorationResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val finishExplorationResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val submitAnswerResultFlow by lazy { createAsyncResultStateFlow<AnswerOutcome>() }
-  private val submitHintRevealedResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val submitSolutionRevealedResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val moveToPreviousStateResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val moveToNextStateResultFlow by lazy { createAsyncResultStateFlow<Any?>() }
-  private val ephemeralStateDataProvider by lazy {
-    dataProviders.run {
-      ephemeralStateFlow.convertAsyncToAutomaticDataProvider(CURRENT_STATE_PROVIDER_ID)
-    }
-  }
-  private val beginExplorationResultDataProvider by lazy {
-    beginExplorationResultFlow.convertToDataProvider(BEGIN_EXPLORATION_RESULT_PROVIDER_ID)
-  }
-  private val finishExplorationResultDataProvider by lazy {
-    finishExplorationResultFlow.convertToDataProvider(FINISH_EXPLORATION_RESULT_PROVIDER_ID)
-  }
-  private val submitAnswerResultDataProvider by lazy {
-    submitAnswerResultFlow.convertToDataProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID)
-  }
-  private val submitHintRevealedResultDataProvider by lazy {
-    submitHintRevealedResultFlow.convertToDataProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID)
-  }
-  private val submitSolutionRevealedResultDataProvider by lazy {
-    submitSolutionRevealedResultFlow.convertToDataProvider(
-      SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+  private var mostRecentEphemeralStateFlow =
+    createAsyncResultStateFlow<EphemeralState>(
+      AsyncResult.Failure(IllegalStateException("Exploration is not yet initialized."))
     )
-  }
-  private val moveToPreviousStateResultDataProvider by lazy {
-    moveToPreviousStateResultFlow.convertToDataProvider(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID)
-  }
-  private val moveToNextStateResultDataProvider by lazy {
-    moveToNextStateResultFlow.convertToDataProvider(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID)
-  }
+
+  private val controllerCommandQueue by lazy { createControllerCommandActor() }
 
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
@@ -155,8 +131,13 @@ class ExplorationProgressController @Inject constructor(
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
-    val sessionId = UUID.randomUUID().toString().also { mostRecentSessionId = it }
-    val initializeMessage =
+    val ephemeralStateFlow = createAsyncResultStateFlow<EphemeralState>()
+    val sessionId = UUID.randomUUID().toString().also {
+      mostRecentSessionId = it
+      mostRecentEphemeralStateFlow = ephemeralStateFlow
+    }
+    val beginExplorationResultFlow = createAsyncResultStateFlow<Any?>()
+    val message =
       ControllerMessage.InitializeController(
         profileId,
         topicId,
@@ -164,13 +145,15 @@ class ExplorationProgressController @Inject constructor(
         explorationId,
         shouldSavePartialProgress,
         explorationCheckpoint,
-        sessionId
+        ephemeralStateFlow,
+        sessionId,
+        beginExplorationResultFlow
       )
     this.profileId = profileId
-    check(controllerCommandQueue.offer(initializeMessage)) {
+    sendCommandForOperation(message) {
       "Failed to schedule command for initializing the exploration progress controller."
     }
-    return beginExplorationResultDataProvider
+    return beginExplorationResultFlow.convertToSessionProvider(BEGIN_EXPLORATION_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -183,10 +166,14 @@ class ExplorationProgressController @Inject constructor(
    * out-of-session state, but subsequent calls to [beginExplorationAsync] will reset the session.
    */
   internal fun finishExplorationAsync(): DataProvider<Any?> {
-    check(controllerCommandQueue.offer(ControllerMessage.FinishExploration(activeSessionId))) {
+    val finishExplorationResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.FinishExploration(activeSessionId, finishExplorationResultFlow)
+    sendCommandForOperation(message) {
       "Failed to schedule command for cleaning up after finishing the exploration."
     }
-    return finishExplorationResultDataProvider
+    return finishExplorationResultFlow.convertToSessionProvider(
+      FINISH_EXPLORATION_RESULT_PROVIDER_ID
+    )
   }
 
   /**
@@ -205,11 +192,11 @@ class ExplorationProgressController @Inject constructor(
    *
    * ### Lifecycle behavior
    * The returned [DataProvider] will initially be pending until the operation completes. Note that
-   * the same provider is returned for each call, so it can be monitored long-term for subsequent
-   * answer submissions (where new submissions and session restarts will change the provider to
-   * pending). Furthermore, the returned provider does not actually need to be monitored in order
-   * for the operation to complete, though it's recommended since [getCurrentState] can only be used
-   * to monitor the effects of the operation, not whether the operation itself succeeded.
+   * a different provider is returned for each call, though it's tied to the same session so it can
+   * be monitored medium-term (i.e. for the duration of the play session, but not past it).
+   * Furthermore, the returned provider does not actually need to be monitored in order for the
+   * operation to complete, though it's recommended since [getCurrentState] can only be used to
+   * monitor the effects of the operation, not whether the operation itself succeeded.
    *
    * If this is called before a session begins it will return a provider that stays pending with no
    * updates. The operation will also silently fail rather than queue up in these circumstances, so
@@ -224,10 +211,10 @@ class ExplorationProgressController @Inject constructor(
    * [DataProvider] from [getCurrentState].
    */
   fun submitAnswer(userAnswer: UserAnswer): DataProvider<AnswerOutcome> {
-    sendCommandForOperation(
-      submitAnswerResultFlow, ControllerMessage.SubmitAnswer(userAnswer, activeSessionId)
-    ) { "Failed to schedule command for answer submission." }
-    return submitAnswerResultDataProvider
+    val submitResultFlow = createAsyncResultStateFlow<AnswerOutcome>()
+    val message = ControllerMessage.SubmitAnswer(userAnswer, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for answer submission." }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -242,12 +229,12 @@ class ExplorationProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
-    sendCommandForOperation(
-      submitHintRevealedResultFlow, ControllerMessage.HintIsRevealed(hintIndex, activeSessionId)
-    ) {
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.HintIsRevealed(hintIndex, activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) {
       "Failed to schedule command for revealing hint: $hintIndex."
     }
-    return submitHintRevealedResultDataProvider
+    return submitResultFlow.convertToSessionProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -260,12 +247,10 @@ class ExplorationProgressController @Inject constructor(
    *     the result isn't relevant)
    */
   fun submitSolutionIsRevealed(): DataProvider<Any?> {
-    sendCommandForOperation(
-      submitSolutionRevealedResultFlow, ControllerMessage.SolutionIsRevealed(activeSessionId)
-    ) {
-      "Failed to schedule command for revealing the solution."
-    }
-    return submitSolutionRevealedResultDataProvider
+    val submitResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.SolutionIsRevealed(activeSessionId, submitResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for revealing the solution." }
+    return submitResultFlow.convertToSessionProvider(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -283,10 +268,12 @@ class ExplorationProgressController @Inject constructor(
    *     observing a successful transition to another state.
    */
   fun moveToPreviousState(): DataProvider<Any?> {
-    sendCommandForOperation(
-      moveToPreviousStateResultFlow, ControllerMessage.MoveToPreviousState(activeSessionId)
-    ) { "Failed to schedule command for moving to the previous state." }
-    return moveToPreviousStateResultDataProvider
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveToPreviousState(activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) {
+      "Failed to schedule command for moving to the previous state."
+    }
+    return moveResultFlow.convertToSessionProvider(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -305,10 +292,10 @@ class ExplorationProgressController @Inject constructor(
    *     [moveToPreviousState] for details on potential failure cases)
    */
   fun moveToNextState(): DataProvider<Any?> {
-    sendCommandForOperation(
-      moveToNextStateResultFlow, ControllerMessage.MoveToNextState(activeSessionId)
-    ) { "Failed to schedule command for moving to the next state." }
-    return moveToNextStateResultDataProvider
+    val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    val message = ControllerMessage.MoveToNextState(activeSessionId, moveResultFlow)
+    sendCommandForOperation(message) { "Failed to schedule command for moving to the next state." }
+    return moveResultFlow.convertToSessionProvider(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID)
   }
 
   /**
@@ -331,8 +318,14 @@ class ExplorationProgressController @Inject constructor(
    * exploration is loaded. UI code cannot assume that only calls from the UI layer will trigger
    * state changes here since internal domain processes may also affect state (such as hint timers).
    *
-   * This method is safe to be called before an exploration has started. If there is no ongoing
-   * exploration, it should return a pending state.
+   * This method is safe to be called before the exploration has started, but the returned provider
+   * is tied to the current play session (similar to the provider returned by [submitAnswer]), so
+   * the returned [DataProvider] prior to [beginExplorationAsync] being called will be a permanently
+   * failing provider. Furthermore, the returned provider will not be updated after the play session
+   * has ended (either due to [finishExplorationAsync] being called, or a new session starting).
+   * There will be a [DataProvider] available immediately after [beginExplorationAsync] returns,
+   * though it may not ever provide useful data if the start of the session failed (which can only
+   * be observed via the provider returned by [beginExplorationAsync]).
    *
    * This method does not actually need to be called for the [EphemeralState] to be computed; it's
    * always computed eagerly by other state-changing methods regardless of whether there's an active
@@ -341,6 +334,8 @@ class ExplorationProgressController @Inject constructor(
   fun getCurrentState(): DataProvider<EphemeralState> {
     val writtenTranslationContentLocale =
       translationController.getWrittenTranslationContentLocale(profileId)
+    val ephemeralStateDataProvider =
+      mostRecentEphemeralStateFlow.convertToSessionProvider(CURRENT_STATE_PROVIDER_ID)
     return writtenTranslationContentLocale.combineWith(
       ephemeralStateDataProvider, LOCALIZED_STATE_PROVIDER_ID
     ) { locale, ephemeralState ->
@@ -355,7 +350,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private fun createControllerCommandActor(): SendChannel<ControllerMessage> {
+  private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     var controllerState: ControllerState? = null
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
@@ -368,46 +363,49 @@ class ExplorationProgressController @Inject constructor(
             checkNotNull(controllerState) { "Expected controller state to be initialized." }
           }
 
-          // If there's an active controller, ignore messages not tied to this session since
-          // leftovers from previous sessions may conflate the state of the active session.
-          val currentSessionId = controllerState?.sessionId
-          if (currentSessionId != null && message.sessionId != currentSessionId) continue
-
           @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
-              controllerState = ControllerState(ExplorationProgress(), message.sessionId).also {
-                it.beginExplorationImpl(
-                  message.profileId,
-                  message.topicId,
-                  message.storyId,
-                  message.explorationId,
-                  message.shouldSavePartialProgress,
-                  message.explorationCheckpoint
-                )
-              }
+              controllerState =
+                ControllerState(
+                  ExplorationProgress(), message.sessionId, message.ephemeralStateFlow
+                ).also {
+                  it.beginExplorationImpl(
+                    message.callbackFlow,
+                    message.profileId,
+                    message.topicId,
+                    message.storyId,
+                    message.explorationId,
+                    message.shouldSavePartialProgress,
+                    message.explorationCheckpoint
+                  )
+                }
             }
             is ControllerMessage.FinishExploration -> {
               try {
                 // Ensure finish is always executed even if the controller state isn't yet
                 // initialized.
-                controllerState.finishExplorationImpl()
+                controllerState.finishExplorationImpl(message.callbackFlow)
               } finally {
                 // Ensure the controller state is always reset.
                 controllerState = null
               }
             }
             is ControllerMessage.SubmitAnswer ->
-              initedControllerState.submitAnswerImpl(message.userAnswer)
-            is ControllerMessage.HintIsRevealed ->
-              initedControllerState.submitHintIsRevealedImpl(message.hintIndex)
+              initedControllerState.submitAnswerImpl(message.callbackFlow, message.userAnswer)
+            is ControllerMessage.HintIsRevealed -> {
+              initedControllerState.submitHintIsRevealedImpl(
+                message.callbackFlow, message.hintIndex
+              )
+            }
             is ControllerMessage.SolutionIsRevealed ->
-              initedControllerState.submitSolutionIsRevealedImpl()
+              initedControllerState.submitSolutionIsRevealedImpl(message.callbackFlow)
             is ControllerMessage.MoveToPreviousState ->
-              initedControllerState.moveToPreviousStateImpl()
-            is ControllerMessage.MoveToNextState -> initedControllerState.moveToNextStateImpl()
+              initedControllerState.moveToPreviousStateImpl(message.callbackFlow)
+            is ControllerMessage.MoveToNextState ->
+              initedControllerState.moveToNextStateImpl(message.callbackFlow)
             is ControllerMessage.ProcessSavedCheckpointResult ->
               initedControllerState.processSaveCheckpointResult(
                 message.profileId,
@@ -434,13 +432,12 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun <T> sendCommandForOperation(
-    resultFlow: MutableStateFlow<AsyncResult<T>>,
-    message: ControllerMessage,
+    message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
     // Ensure that the result is first reset since there will be a delay before the message is
-    // processed.
-    resultFlow.value = AsyncResult.Pending()
+    // processed (if there's a flow).
+    message.callbackFlow?.value = AsyncResult.Pending()
 
     // This must succeed or the app will be entered into a bad state. Crash instead of trying to
     // recover (though recovery may be possible in the future with some changes and user messaging).
@@ -448,6 +445,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.beginExplorationImpl(
+    beginExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     profileId: ProfileId,
     topicId: String,
     storyId: String,
@@ -455,7 +453,7 @@ class ExplorationProgressController @Inject constructor(
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
-    tryOperation(BEGIN_EXPLORATION_RESULT_PROVIDER_ID, beginExplorationResultFlow) {
+    tryOperation(beginExplorationResultFlow) {
       check(explorationProgress.playStage == NOT_PLAYING) {
         "Expected to finish previous exploration before starting a new one."
       }
@@ -477,32 +475,23 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
-
-      // Reset the finish flow since the exploration is beginning.
-      finishExplorationResultFlow.value = AsyncResult.Pending()
     }
   }
 
-  private suspend fun ControllerState?.finishExplorationImpl() {
+  private suspend fun ControllerState?.finishExplorationImpl(
+    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
-    tryOperation(
-      FINISH_EXPLORATION_RESULT_PROVIDER_ID, finishExplorationResultFlow, recomputeState = false
-    ) {
+    tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
     }
-
-    // Ensure all state is reset since an exploration is no longer being played.
-    ephemeralStateFlow.value = AsyncResult.Pending()
-    beginExplorationResultFlow.value = AsyncResult.Pending()
-    submitAnswerResultFlow.value = AsyncResult.Pending()
-    submitHintRevealedResultFlow.value = AsyncResult.Pending()
-    submitSolutionRevealedResultFlow.value = AsyncResult.Pending()
-    moveToPreviousStateResultFlow.value = AsyncResult.Pending()
-    moveToNextStateResultFlow.value = AsyncResult.Pending()
   }
 
-  private suspend fun ControllerState.submitAnswerImpl(userAnswer: UserAnswer) {
-    tryOperation(SUBMIT_ANSWER_RESULT_PROVIDER_ID, submitAnswerResultFlow) {
+  private suspend fun ControllerState.submitAnswerImpl(
+    submitAnswerResultFlow: MutableStateFlow<AsyncResult<AnswerOutcome>>,
+    userAnswer: UserAnswer
+  ) {
+    tryOperation(submitAnswerResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot submit an answer if an exploration is not being played."
       }
@@ -566,8 +555,11 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.submitHintIsRevealedImpl(hintIndex: Int) {
-    tryOperation(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID, submitHintRevealedResultFlow) {
+  private suspend fun ControllerState.submitHintIsRevealedImpl(
+    submitHintRevealedResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    hintIndex: Int
+  ) {
+    tryOperation(submitHintRevealedResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot submit an answer if an exploration is not being played."
       }
@@ -588,8 +580,10 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.submitSolutionIsRevealedImpl() {
-    tryOperation(SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID, submitSolutionRevealedResultFlow) {
+  private suspend fun ControllerState.submitSolutionIsRevealedImpl(
+    submitSolutionRevealedResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(submitSolutionRevealedResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot submit an answer if an exploration is not being played."
       }
@@ -610,8 +604,10 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToPreviousStateImpl() {
-    tryOperation(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID, moveToPreviousStateResultFlow) {
+  private suspend fun ControllerState.moveToPreviousStateImpl(
+    moveToPreviousStateResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToPreviousStateResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot navigate to a previous state if an exploration is not being played."
       }
@@ -626,8 +622,10 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
-  private suspend fun ControllerState.moveToNextStateImpl() {
-    tryOperation(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID, moveToNextStateResultFlow) {
+  private suspend fun ControllerState.moveToNextStateImpl(
+    moveToNextStateResultFlow: MutableStateFlow<AsyncResult<Any?>>
+  ) {
+    tryOperation(moveToNextStateResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot navigate to a next state if an exploration is not being played."
       }
@@ -650,21 +648,19 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun <T> ControllerState.tryOperation(
-    providerId: String,
     resultFlow: MutableStateFlow<AsyncResult<T>>,
     recomputeState: Boolean = true,
     operation: suspend ControllerState.() -> T
   ) {
     try {
-      resultFlow.value = AsyncResult.Success(operation())
+      resultFlow.emit(AsyncResult.Success(operation()))
       if (recomputeState) {
         recomputeCurrentStateAndNotifySync()
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      resultFlow.value = AsyncResult.Failure(e)
+      resultFlow.emit(AsyncResult.Failure(e))
     }
-    asyncDataSubscriptionManager.notifyChange(providerId)
   }
 
   /**
@@ -820,7 +816,7 @@ class ExplorationProgressController @Inject constructor(
           checkpointState,
           sessionId
         )
-      check(controllerCommandQueue.offer(processEvent)) {
+      sendCommandForOperation(processEvent) {
         "Failed to schedule command for processing a saved checkpoint."
       }
     }
@@ -923,11 +919,14 @@ class ExplorationProgressController @Inject constructor(
     )
   }
 
-  private fun <T> createAsyncResultStateFlow(): MutableStateFlow<AsyncResult<T>> =
-    MutableStateFlow(AsyncResult.Pending())
+  private fun <T> createAsyncResultStateFlow(initialValue: AsyncResult<T> = AsyncResult.Pending()) =
+    MutableStateFlow(initialValue)
 
-  private fun <T> StateFlow<AsyncResult<T>>.convertToDataProvider(id: Any): DataProvider<T> =
-    dataProviders.run { convertAsyncToSimpleDataProvider(id) }
+  private fun <T> StateFlow<AsyncResult<T>>.convertToSessionProvider(
+    baseId: String
+  ): DataProvider<T> = dataProviders.run {
+    convertAsyncToAutomaticDataProvider("${baseId}_$activeSessionId")
+  }
 
   /**
    * Represents the current synchronized state of the controller.
@@ -940,7 +939,8 @@ class ExplorationProgressController @Inject constructor(
    */
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
-    val sessionId: String
+    val sessionId: String,
+    val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -956,12 +956,19 @@ class ExplorationProgressController @Inject constructor(
    * Messages are expected to be resolved serially (though their scheduling can occur across
    * multiple threads, so order cannot be guaranteed until they're enqueued).
    */
-  private sealed class ControllerMessage {
+  private sealed class ControllerMessage<T> {
     /**
      * The session ID corresponding to this message (the message is expected to be ignored if it
      * doesn't correspond to an active session).
      */
     abstract val sessionId: String
+
+    /**
+     * The [DataProvider]-tied [MutableStateFlow] that represents the result of the operation
+     * corresponding to this message, or ``null`` if the caller doesn't care about observing the
+     * result.
+     */
+    abstract val callbackFlow: MutableStateFlow<AsyncResult<T>>?
 
     /** [ControllerMessage] for initializing a new play session. */
     data class InitializeController(
@@ -971,17 +978,23 @@ class ExplorationProgressController @Inject constructor(
       val explorationId: String,
       val shouldSavePartialProgress: Boolean,
       val explorationCheckpoint: ExplorationCheckpoint,
-      override val sessionId: String
-    ) : ControllerMessage()
+      val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] for ending the current play session. */
-    data class FinishExploration(override val sessionId: String) : ControllerMessage()
+    data class FinishExploration(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] for submitting a new [UserAnswer]. */
     data class SubmitAnswer(
       val userAnswer: UserAnswer,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<AnswerOutcome>>
+    ) : ControllerMessage<AnswerOutcome>()
 
     /**
      * [ControllerMessage] for indicating that the user revealed the hint corresponding to
@@ -989,19 +1002,29 @@ class ExplorationProgressController @Inject constructor(
      */
     data class HintIsRevealed(
       val hintIndex: Int,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] for indicating that the user revealed the solution for the current state.
      */
-    data class SolutionIsRevealed(override val sessionId: String) : ControllerMessage()
+    data class SolutionIsRevealed(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] to move to the previous state in the exploration. */
-    data class MoveToPreviousState(override val sessionId: String) : ControllerMessage()
+    data class MoveToPreviousState(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /** [ControllerMessage] to move to the next state in the exploration. */
-    data class MoveToNextState(override val sessionId: String) : ControllerMessage()
+    data class MoveToNextState(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] to indicate that the session's current partial completion progress should
@@ -1010,7 +1033,10 @@ class ExplorationProgressController @Inject constructor(
      * Note that this does not actually guarantee an update to the tracked progress of the
      * exploration (see [ProcessSavedCheckpointResult]).
      */
-    data class SaveCheckpoint(override val sessionId: String) : ControllerMessage()
+    data class SaveCheckpoint(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] to ensure a successfully saved checkpoint is reflected in other parts of
@@ -1023,8 +1049,9 @@ class ExplorationProgressController @Inject constructor(
       val explorationId: String,
       val lastPlayedTimestamp: Long,
       val newCheckpointState: CheckpointState,
-      override val sessionId: String
-    ) : ControllerMessage()
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] which recomputes the current [EphemeralState] and notifies subscribers of
@@ -1033,6 +1060,9 @@ class ExplorationProgressController @Inject constructor(
      * This is only used in cases where an external operation trigger changes that are only
      * reflected when recomputing the state (e.g. a new hint needing to be shown).
      */
-    data class RecomputeStateAndNotify(override val sessionId: String) : ControllerMessage()
+    data class RecomputeStateAndNotify(
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
   }
 }
