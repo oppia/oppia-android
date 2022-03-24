@@ -6,7 +6,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 import org.oppia.android.util.system.OppiaClock
 
-/** Logger that handles event logging. */
+/** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,

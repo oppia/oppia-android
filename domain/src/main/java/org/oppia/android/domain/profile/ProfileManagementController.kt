@@ -33,6 +33,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -73,7 +75,8 @@ class ProfileManagementController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val loggingIdentifierController: LoggingIdentifierController,
-  private val learnerAnalyticsLogger: LearnerAnalyticsLogger
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -218,35 +221,40 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      val newProfileBuilder = Profile.newBuilder()
-        .setName(name)
-        .setPin(pin)
-        .setAllowDownloadAccess(allowDownloadAccess)
-        .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(oppiaClock.getCurrentTimeMs())
-        .setIsAdmin(isAdmin)
-        .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
-        .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
-        .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-        .setLearnerId(loggingIdentifierController.createLearnerId())
+      val newProfile = Profile.newBuilder().apply {
+        this.name = name
+        this.pin = pin
+        this.allowDownloadAccess = allowDownloadAccess
+        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
+        this.isAdmin = isAdmin
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 
-      if (avatarImagePath != null) {
-        val imageUri =
-          saveImageToInternalStorage(avatarImagePath, profileDir)
-            ?: return@storeDataWithCustomChannelAsync Pair(
-              it,
-              ProfileActionStatus.FAILED_TO_STORE_IMAGE
-            )
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
-      } else {
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
-      }
+        if (learnerStudyAnalytics.value) {
+          // Only set a learner ID if there's an ongoing user study.
+          learnerId = loggingIdentifierController.createLearnerId()
+        }
+
+        avatar = ProfileAvatar.newBuilder().apply {
+          if (avatarImagePath != null) {
+            val imageUri =
+              saveImageToInternalStorage(avatarImagePath, profileDir)
+                ?: return@storeDataWithCustomChannelAsync Pair(
+                  it,
+                  ProfileActionStatus.FAILED_TO_STORE_IMAGE
+                )
+            avatarImageUri = imageUri
+          } else avatarColorRgb = colorRgb
+        }.build()
+      }.build()
 
       val wasProfileEverAdded = it.profilesCount > 0
 
       val profileDatabaseBuilder =
         it.toBuilder()
-          .putProfiles(nextProfileId, newProfileBuilder.build())
+          .putProfiles(nextProfileId, newProfile)
           .setWasProfileEverAdded(wasProfileEverAdded)
           .setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -534,11 +542,12 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the learner ID of the profile.
+   * Initializes the learner ID of the specified profile (if not set), otherwise clears it if
+   * there's no ongoing study.
    *
-   * @param profileId the ID corresponding to the profile being updated.
+   * @param profileId the ID corresponding to the profile being updated
    */
-  fun updateLearnerId(profileId: ProfileId): DataProvider<Any?> {
+  fun initializeLearnerId(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -548,7 +557,11 @@ class ProfileManagementController @Inject constructor(
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().apply {
-        learnerId = loggingIdentifierController.createLearnerId()
+        learnerId = when {
+          !learnerStudyAnalytics.value -> "" // There should be no learner ID if no ongoing study.
+          learnerId.isEmpty() -> loggingIdentifierController.createLearnerId() // Generate new ID.
+          else -> learnerId // Keep it unchanged.
+        }
       }.build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,

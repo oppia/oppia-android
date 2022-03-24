@@ -17,16 +17,10 @@ class DebugEventLogger @Inject constructor(
 ) : EventLogger {
   private val realEventLogger by lazy { factory.create() }
   private val eventList = CopyOnWriteArrayList<EventLog>()
-  private val cachedEventList = CopyOnWriteArrayList<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {
     eventList.add(eventLog)
     realEventLogger.logEvent(eventLog)
-  }
-
-  override fun logCachedEvent(eventLog: EventLog) {
-    cachedEventList.add(eventLog)
-    realEventLogger.logCachedEvent(eventLog)
   }
 
   /** Returns list of event logs. */

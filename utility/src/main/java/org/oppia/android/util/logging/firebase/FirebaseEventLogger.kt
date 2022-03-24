@@ -32,8 +32,6 @@ class FirebaseEventLogger private constructor(
     firebaseAnalytics.setUserProperty(NETWORK_USER_PROPERTY, getNetworkStatus())
   }
 
-  override fun logCachedEvent(eventLog: EventLog) = logEvent(eventLog)
-
   private fun getNetworkStatus(): String {
     return when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ProdConnectionStatus.LOCAL ->

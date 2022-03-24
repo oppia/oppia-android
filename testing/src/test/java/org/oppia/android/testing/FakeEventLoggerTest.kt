@@ -34,6 +34,7 @@ import org.oppia.android.util.logging.SyncStatusModule
 @Config(manifest = Config.NONE)
 class FakeEventLoggerTest {
 
+  // TODO: Update & finalize tests in this suite.
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 

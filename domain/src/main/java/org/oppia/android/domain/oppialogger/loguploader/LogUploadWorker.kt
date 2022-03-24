@@ -85,7 +85,7 @@ class LogUploadWorker private constructor(
     return try {
       syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
       analyticsController.getEventLogStoreList().forEach { eventLog ->
-        eventLogger.logCachedEvent(eventLog)
+        eventLogger.logEvent(eventLog)
         analyticsController.removeFirstEventLogFromStore()
       }
       syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
