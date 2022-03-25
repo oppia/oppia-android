@@ -22,7 +22,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [ShowAllHintsAndSolutionController]. */
 @RunWith(AndroidJUnit4::class)
@@ -67,7 +66,7 @@ class ShowAllHintsAndSolutionControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

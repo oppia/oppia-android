@@ -62,7 +62,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [QuestionTrainingController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -278,7 +277,7 @@ class QuestionTrainingControllerTest {
       NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class, UserIdProdModule::class,
+      ApplicationLifecycleModule::class, SyncStatusModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
