@@ -55,6 +55,8 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Se
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -63,14 +65,15 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
  * Utility for creating bundles from [EventLog] objects.
  * Note that this utility may later upload them to remote services.
  */
-class EventBundleCreator @Inject constructor() {
+class EventBundleCreator @Inject constructor(
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+) {
   fun fillEventBundle(eventLog: EventLog, bundle: Bundle): String {
     bundle.putLong("timestamp", eventLog.timestamp)
     bundle.putString("priority", eventLog.priority.toAnalyticsName())
     return eventLog.context.convertToActivityContext()?.also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
-      // TODO(#4064): Enable allowing user IDs if the study parameter is enabled.
-      eventContext.storeValue(PropertyStore(bundle, allowUserIds = false))
+      eventContext.storeValue(PropertyStore(bundle, allowUserIds = learnerStudyAnalytics.value))
     }?.activityName ?: "unknown_activity_context"
   }
 
