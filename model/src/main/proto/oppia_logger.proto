@@ -122,6 +122,10 @@ message EventLog {
       // The event being logged is related to the opening of profile chooser activity. The boolean
       // value here has no importance and is always 'true'.
       bool open_profile_chooser = 32;
+
+      // Indicates that something went wrong when trying to log a learner analytics even for the
+      // device corresponding to the specified device ID.
+      string device_id_for_failed_analytics_log = 33;
     }
   }
 
@@ -291,4 +295,11 @@ message OppiaEventLogs {
 // Structure for a container that contains exception log reports.
 message OppiaExceptionLogs {
   repeated ExceptionLog exception_log = 1;
+}
+
+// Data structure of device & app context that's stored on disk to be unique to each app
+// installation (or cross-installation if restoring from an app backup).
+message DeviceContextDatabase {
+  // TODO: probably should rename all 'device_id's to be installation_id. Also, add comment for this field.
+  string installation_id = 1;
 }

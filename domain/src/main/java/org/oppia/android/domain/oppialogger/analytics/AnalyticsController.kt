@@ -30,6 +30,20 @@ class AnalyticsController @Inject constructor(
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance())
 
+  fun logImportantEvent(
+    timestamp: Long,
+    eventContext: EventLog.Context
+  ) {
+    uploadOrCacheEventLog(
+      createEventLog(
+        timestamp,
+        eventContext,
+        Priority.ESSENTIAL
+      )
+    )
+  }
+
+  // TODO(#4064): Remove the below method and migrate it to the above.
   /**
    * Logs transition events.
    * These events are given HIGH priority.
@@ -51,7 +65,7 @@ class AnalyticsController @Inject constructor(
    * Logs click events.
    * These events are given LOW priority.
    */
-  fun logClickEvent(
+  fun logLowPriorityEvent(
     timestamp: Long,
     eventContext: EventLog.Context
   ) {

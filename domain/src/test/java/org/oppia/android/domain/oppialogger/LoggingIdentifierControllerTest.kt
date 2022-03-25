@@ -19,7 +19,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.FakeUserIdGenerator
-import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -48,6 +47,8 @@ import java.security.MessageDigest
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.util.logging.SyncStatusModule
 
 private const val TEST_ID = "test_id"
 private const val TEST_MAC_ADDRESS = "test_mac_address"
@@ -120,7 +121,7 @@ class LoggingIdentifierControllerTest {
     shadowOf(wifiInfo).setMacAddress(TEST_MAC_ADDRESS)
 
     val deviceId =
-      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getDeviceId())
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
     val expectedHash = machineLocale.run {
       MessageDigest.getInstance("SHA-1")
         .digest(TEST_MAC_ADDRESS.toByteArray())
@@ -224,7 +225,8 @@ class LoggingIdentifierControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, UserIdTestModule::class
+      TestLoggingIdentifierModule::class,
+      ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

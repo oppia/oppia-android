@@ -13,18 +13,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -51,6 +39,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -326,26 +315,25 @@ class OppiaLoggerTest {
   @Test
   fun testController_featureDisabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = false
-    oppiaLogger.logLearnerAnalyticsEvent(
-      TEST_TIMESTAMP,
-      oppiaLogger.createOpenHomeContext()
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      TEST_TIMESTAMP
     )
 
     assertThat(fakeEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
-  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
+  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventLogged() {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
     setUpTestApplicationComponent()
 
-    oppiaLogger.logLearnerAnalyticsEvent(
-      TEST_TIMESTAMP,
-      oppiaLogger.createOpenHomeContext()
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      TEST_TIMESTAMP
     )
 
-    // TODO: Update to verify that it is logged once the feature is enabled.
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeEventLogger.noEventsPresent()).isFalse()
   }
 
   /*@Test
@@ -637,7 +625,7 @@ class OppiaLoggerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusModule::class
+      LoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent {

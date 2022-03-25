@@ -68,6 +68,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [ExplorationDataController]. */
 // Function name: test names are conventionally named with underscores.
@@ -174,7 +179,8 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStopPlayingExploration_withoutStartingSession_returnsFailure() {
-    val resultProvider = explorationDataController.stopPlayingExploration()
+    // TODO: add other tests?
+    val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = false)
 
     val result = monitorFactory.waitForNextFailureResult(resultProvider)
     assertThat(result).isInstanceOf(java.lang.IllegalStateException::class.java)
@@ -183,22 +189,12 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testStartPlayingExploration_withoutStoppingSession_succeeds() {
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    explorationDataController.replayExploration(
+      internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
 
-    val dataProvider = explorationDataController.startPlayingExploration(
-      internalProfileId,
-      TEST_TOPIC_ID_1,
-      TEST_STORY_ID_2,
-      TEST_EXPLORATION_ID_4,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    val dataProvider = explorationDataController.replayExploration(
+      internalProfileId, TEST_TOPIC_ID_1, TEST_STORY_ID_2, TEST_EXPLORATION_ID_4
     )
 
     // The new session overwrites the previous.
@@ -272,7 +268,10 @@ class ExplorationDataControllerTest {
       TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
