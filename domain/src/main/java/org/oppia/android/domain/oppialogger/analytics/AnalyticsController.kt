@@ -45,24 +45,6 @@ class AnalyticsController @Inject constructor(
     )
   }
 
-  // TODO(#4064): Remove the below method and migrate it to the above.
-  /**
-   * Logs transition events.
-   * These events are given HIGH priority.
-   */
-  fun logTransitionEvent(
-    timestamp: Long,
-    eventContext: EventLog.Context
-  ) {
-    uploadOrCacheEventLog(
-      createEventLog(
-        timestamp,
-        eventContext,
-        Priority.ESSENTIAL
-      )
-    )
-  }
-
   /**
    * Logs click events.
    * These events are given LOW priority.

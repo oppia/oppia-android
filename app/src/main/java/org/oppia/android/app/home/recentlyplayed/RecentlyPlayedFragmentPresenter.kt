@@ -234,11 +234,13 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
-    val shouldSavePartialProgress =
+    val canHavePartialProgressSaved =
       when (promotedStory.chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
-        else -> false
+        ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED,
+        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES, ChapterPlayState.UNRECOGNIZED,
+        ChapterPlayState.COMPLETED, null -> false
       }
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
@@ -269,7 +271,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
                 promotedStory.topicId,
                 promotedStory.storyId,
                 promotedStory.explorationId,
-                shouldSavePartialProgress
+                canHavePartialProgressSaved
               )
             }
           }
@@ -280,46 +282,48 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         promotedStory.topicId,
         promotedStory.storyId,
         promotedStory.explorationId,
-        shouldSavePartialProgress
+        canHavePartialProgressSaved
       )
     }
   }
 
   private fun playExploration(
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
+    topicId: String, storyId: String, explorationId: String, canHavePartialProgressSaved: Boolean
   ) {
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      // Pass an empty checkpoint if the exploration does not have to be resumed.
-      ExplorationCheckpoint.getDefaultInstance()
-    ).toLiveData().observe(
-      fragment,
-      Observer<AsyncResult<Any?>> { result ->
-        when (result) {
-          is AsyncResult.Pending -> oppiaLogger.d("RecentlyPlayedFragment", "Loading exploration")
-          is AsyncResult.Failure ->
-            oppiaLogger.e("RecentlyPlayedFragment", "Failed to load exploration", result.error)
-          is AsyncResult.Success -> {
-            oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
-            routeToExplorationListener.routeToExploration(
-              internalProfileId,
-              topicId,
-              storyId,
-              explorationId,
-              backflowScreen = null,
-              shouldSavePartialProgress
-            )
-            activity.finish()
-          }
+    val startPlayingProvider = if (canHavePartialProgressSaved) {
+      // Regardless of whether there's saved progress, this is always a restart. Either the
+      // exploration had progress but it was failed to be retrieved, or its partial progress was
+      // never originally saved (either due to being pre-checkpoint, or failing to save). In all
+      // cases, lessons played from this fragment are known to be in progress, and that progress
+      // can't be resumed here (hence the restart).
+      explorationDataController.restartExploration(
+        internalProfileId, topicId, storyId, explorationId
+      )
+    } else {
+      // The only lessons that can't have their progress saved are those that were already
+      // completed.
+      explorationDataController.replayExploration(
+        internalProfileId, topicId, storyId, explorationId
+      )
+    }
+    startPlayingProvider.toLiveData().observe(fragment) { result ->
+      when (result) {
+        is AsyncResult.Pending -> oppiaLogger.d("RecentlyPlayedFragment", "Loading exploration")
+        is AsyncResult.Failure ->
+          oppiaLogger.e("RecentlyPlayedFragment", "Failed to load exploration", result.error)
+        is AsyncResult.Success -> {
+          oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(
+            internalProfileId,
+            topicId,
+            storyId,
+            explorationId,
+            backflowScreen = null,
+            isCheckpointingEnabled = canHavePartialProgressSaved
+          )
+          activity.finish()
         }
       }
-    )
+    }
   }
 }
