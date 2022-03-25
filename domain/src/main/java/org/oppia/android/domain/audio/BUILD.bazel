@@ -12,6 +12,7 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:learner_analytics_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//third_party:androidx_annotation_annotation",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
