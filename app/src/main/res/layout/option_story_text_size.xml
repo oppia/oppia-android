@@ -16,9 +16,9 @@
     android:background="@drawable/general_item_background_border"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.onReadingTextSizeClicked()}"
-    android:paddingStart="16dp"
+    android:paddingStart="@dimen/option_story_text_size_padding_start"
     android:paddingTop="20dp"
-    android:paddingEnd="16dp"
+    android:paddingEnd="@dimen/option_story_text_size_padding_end"
     android:paddingBottom="20dp">
 
     <TextView
