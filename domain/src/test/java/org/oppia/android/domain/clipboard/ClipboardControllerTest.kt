@@ -21,7 +21,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -269,7 +268,7 @@ class ClipboardControllerTest {
       TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
       FakeOppiaClockModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, UserIdTestModule::class
+      SyncStatusTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
