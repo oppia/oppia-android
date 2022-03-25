@@ -88,6 +88,7 @@ class AudioPlayerController @Inject constructor(
   private var isReleased = false
   private var duration = 0
   private var completed = false
+  private var currentContentId: String? = null
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -110,13 +111,15 @@ class AudioPlayerController @Inject constructor(
     return progressLiveData
   }
 
+  // TODO(#4064): Pass in a content ID here.
   /**
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  fun changeDataSource(url: String) {
+  fun changeDataSource(url: String, contentId: String? = null) {
     audioLock.withLock {
       prepared = false
+      currentContentId = contentId
       stopUpdatingSeekBar()
       mediaPlayer.reset()
       prepareDataSource(url)
@@ -193,12 +196,19 @@ class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play() {
+  fun play(isPlayingFromAutoPlay: Boolean = false, reloadingMainContent: Boolean = false) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()
+
+        // Log an auto play only if it's the one that initiates playing audio (since it more or less
+        // corresponds to manually clicking the 'play' button). Note this will not log any play
+        // events after the state completes (since there'll no longer be a state logger).
+        if (!isPlayingFromAutoPlay || !reloadingMainContent) {
+          // TODO(#4064): Remove the defaults above, and log the 'play voice over' event here.
+        }
       }
     }
   }
