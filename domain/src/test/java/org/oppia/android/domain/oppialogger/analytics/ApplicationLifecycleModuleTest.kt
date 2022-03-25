@@ -150,7 +150,7 @@ class ApplicationLifecycleModuleTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      UserIdTestModule::class, LoggerModule::class
+      LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

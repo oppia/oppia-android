@@ -97,27 +97,6 @@ class ExplorationDataController @Inject constructor(
     )
   }
 
-  private fun startPlayingExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
-  ): DataProvider<Any?> {
-    return explorationProgressController.beginExplorationAsync(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      explorationCheckpoint,
-      isRestart
-    )
-  }
-
-  // TODO: Fix this documentation (w.r.t. the new methods), and remove this method.
   /**
    * Begins playing an exploration of the specified ID.
    *
@@ -145,6 +124,27 @@ class ExplorationDataController @Inject constructor(
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
+  private fun startPlayingExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint,
+    isRestart: Boolean
+  ): DataProvider<Any?> {
+    return explorationProgressController.beginExplorationAsync(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      explorationCheckpoint,
+      isRestart
+    )
+  }
+
+  // TODO: Fix this documentation (w.r.t. the new methods), and remove this method.
   private fun startPlayingExploration(
     internalProfileId: Int,
     topicId: String,
