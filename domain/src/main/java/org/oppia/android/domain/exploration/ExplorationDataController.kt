@@ -97,6 +97,26 @@ class ExplorationDataController @Inject constructor(
     )
   }
 
+  private fun startPlayingExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    shouldSavePartialProgress: Boolean,
+    explorationCheckpoint: ExplorationCheckpoint,
+    isRestart: Boolean
+  ): DataProvider<Any?> {
+    return explorationProgressController.beginExplorationAsync(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      explorationCheckpoint,
+      isRestart
+    )
+  }
+
   // TODO: Fix this documentation (w.r.t. the new methods), and remove this method.
   /**
    * Begins playing an exploration of the specified ID.
@@ -131,8 +151,7 @@ class ExplorationDataController @Inject constructor(
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean
+    explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -141,7 +160,7 @@ class ExplorationDataController @Inject constructor(
       explorationId,
       shouldSavePartialProgress,
       explorationCheckpoint,
-      isRestart
+      isRestart = false
     )
   }
 
@@ -161,7 +180,7 @@ class ExplorationDataController @Inject constructor(
    * @param isCompletion indicates whether this stop action is fully ending the exploration (i.e. no
    *     checkpoint will be saved since this indicates the exploration is completed)
    */
-  fun stopPlayingExploration(isCompletion: Boolean): DataProvider<Any?> =
+   fun stopPlayingExploration(isCompletion: Boolean): DataProvider<Any?> =
     explorationProgressController.finishExplorationAsync(isCompletion)
 
   /**

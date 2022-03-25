@@ -234,7 +234,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "MultipleChoice": {
         "linked_skill_id": "test_skill_id_0",
@@ -378,7 +379,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "Fractions": {
         "linked_skill_id": "test_skill_id_0",
@@ -549,7 +551,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "Continue": {
         "linked_skill_id": "test_skill_id_0",
@@ -616,7 +619,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "NumberInput": {
         "linked_skill_id": "test_skill_id_0",
@@ -813,7 +817,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "RatioInput": {
         "linked_skill_id": "test_skill_id_0",
@@ -994,7 +999,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "Text": {
         "linked_skill_id": "test_skill_id_0",
@@ -1126,7 +1132,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "ItemSelectionMinOne": {
         "linked_skill_id": "test_skill_id_0",
@@ -1276,7 +1283,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "DragDropNoGroup": {
         "linked_skill_id": "test_skill_id_0",
@@ -1504,7 +1512,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "DragDropGroup": {
         "linked_skill_id": "test_skill_id_0",
@@ -1701,7 +1710,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "End": {
         "linked_skill_id": "test_skill_id_0",
@@ -1745,7 +1755,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       }
     },
     "objective": "Demonstrate core interactions used in the Oppia prototype.",

@@ -124,7 +124,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "NumericExpressionInput.MatchesUpToTrivialManipulations": {
         "linked_skill_id": "test_skill_id_2",
@@ -219,7 +220,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "NumericExpressionInput.IsEquivalentTo": {
         "linked_skill_id": "test_skill_id_2",
@@ -314,7 +316,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "AlgebraicExpressionInput.MatchesExactlyWith": {
         "linked_skill_id": "test_skill_id_2",
@@ -416,7 +419,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "AlgebraicExpressionInput.MatchesUpToTrivialManipulations": {
         "linked_skill_id": "test_skill_id_2",
@@ -515,7 +519,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "AlgebraicExpressionInput.IsEquivalentTo": {
         "linked_skill_id": "test_skill_id_2",
@@ -614,7 +619,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "MathEquationInput.MatchesExactlyWith": {
         "linked_skill_id": "test_skill_id_2",
@@ -716,7 +722,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "MathEquationInput.MatchesUpToTrivialManipulations": {
         "linked_skill_id": "test_skill_id_2",
@@ -815,7 +822,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "MathEquationInput.IsEquivalentTo": {
         "linked_skill_id": "test_skill_id_2",
@@ -914,7 +922,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       },
       "End": {
         "linked_skill_id": "test_skill_id_2",
@@ -958,7 +967,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_2"
       }
     },
     "objective": "Demonstrate math interactions.",

@@ -45,6 +45,10 @@ class AnalyticsController @Inject constructor(
     )
   }
 
+  /**
+   * Logs click events.
+   * These events are given LOW priority.
+   */
   fun logLowPriorityEvent(
     timestamp: Long,
     eventContext: EventLog.Context
