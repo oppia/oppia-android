@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+#
+# deploy_to_gcs - Deploy files to the artifact folder for this build on GCS
+
+# Get the build info from the .buildenv file.
+if [[ -f .buildenv ]];then
+  . .buildenv
+fi
+
+BUCKET="$ARTIFACT_BUCKET"
+PATHS=()
+if [[ -n "$BUILD_NUM" ]];then
+  ARTIFACT_FOLDER="build-${BUILD_NUM}"
+else
+  TIMESTAMP=${BUILD_TIME:-$(date -u +%Y-%m-%dT%H:%M:%S)}
+  BRANCH=$(echo ${BRANCH_NAME:-unknown} | sed -e 's/[^A-Za-z0-9._-]/_/g')
+  ARTIFACT_FOLDER="build-${BRANCH}-${TIMESTAMP}"
+fi
+
+function usage {
+  echo "Usage: $0 --bucket=gs://my-cache-bucket --path=app/build/outputs/apk"
+  echo
+  echo "Uploads the artifacts to the specified Google Cloud Storage bucket."
+  echo
+  echo "  -b, --bucket   The cloud storage bucket to download the cache from."
+  echo "  -f, --folder   The folder name in GCS to store the artifacts. [optional]"
+  echo "  -p, --path     The path to folders and files to upload to the bucket."
+  echo
+  echo "The folder is optional with a few default options.  If there is a \`BUILD_NUM\`"
+  echo "environment variable present (from the system env or \`.buildenv\` file) then"
+  echo "the folder will be of the format 'build-$BUILD_NUM'. Otherwise the timestamp will"
+  echo "be used, either from a \`BUILD_TIME\` env variable, or the current time, along"
+  echo "with the current branch name via the \`BRANCH_NAME\` env variable, or 'unknown'."
+  echo
+  echo "Folder name format in order:"
+  echo
+  echo "  Value supplied by [-f, --folder] parameter."
+  echo "  \"build-\$BUILD_NUM\""
+  echo "  \"build-\$BRANCH_NAME-\$TIMESTAMP"
+  echo
+  echo "All paths will be uploaded with their containing directory intact."
+  echo 
+}
+
+for i in "$@"; do
+  case $i in
+    -b=*|--bucket=*)
+      BUCKET="${i#*=}"
+      shift
+      ;;
+    -f=*|--folder=* )
+      ARTIFACT_FOLDER="${i#*=}"
+      shift
+      ;;
+    -p=*|--path=* )
+      PATHS+=("${i#*=}")
+      shift
+      ;;
+    -h|--help )
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: ${i}"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+failure_file=/tmp/failure.log
+touch ${failure_file}
+
+# Upload the files to GCS
+for dir in "${PATHS[@]}";do
+  safe_filename=$(basename ${dir} | sed -e 's/[^A-Za-z0-9._-]/_/g')
+  logfile="/tmp/${safe_filename}.log"
+
+  echo "Uploading files: ${dir%/}"
+  (
+    gsutil -m cp -r "${dir%/}" "${BUCKET}/${ARTIFACT_FOLDER}/" > ${logfile}
+    if [[ $? -ne 0 ]];then
+      echo "${safe_filename} failed." | tee -a ${failure_file}
+      cat ${logfile}
+    fi
+  ) &
+done
+
+wait
+
+# Check if there are failures
+if [[ -s ${failure_file} ]];then
+  echo
+  echo "Some files failed to upload:"
+  cat ${failure_file}
+  exit 1
+fi
+
+echo "All uploads succeeded."

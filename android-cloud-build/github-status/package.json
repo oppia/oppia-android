@@ -1,0 +1,12 @@
+{
+  "name": "cloud-build-status",
+  "version": "1.0.0",
+  "description": "Cloud function to report cloud build status to github.",
+  "main": "index.js",
+  "author": "Ryan Harter (ryan@pixiteapps.com)",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@octokit/rest": "^15.15.1"
+  }
+}

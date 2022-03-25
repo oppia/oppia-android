@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+branch=$1
+
+shift
+
+if [ "$BRANCH_NAME" == "$branch" ];then
+  $@
+else
+  echo "Skipping task due to branch name mismatch: wanted $branch, got $BRANCH_NAME."
+fi

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -f .buildenv ];then
+  . .buildenv
+else
+  echo "No .buildenv file found at `pwd`"
+fi
+
+env
+
+$@

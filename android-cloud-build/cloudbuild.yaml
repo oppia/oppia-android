@@ -1,0 +1,39 @@
+steps:
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    # File that contains failures.
+    failure_file=failure.log
+    touch ${failure_file}
+
+    # Loop through the cloud build files
+    for config in $(find . -mindepth 2 -name 'cloudbuild*.yaml');do
+      dir=$(dirname ${config})
+      name=$(basename ${dir})
+
+      echo "Building $name ..."
+      (
+        logfile=${name}.log
+        gcloud builds submit --config=${config} ${dir} > ${logfile}
+        if [[ $? -ne 0 ]];then
+          echo "$name failed" | tee -a ${failure_file}
+          cat ${logfile}
+        fi
+      ) &
+    done
+
+    wait
+
+    # Check if there is any failure
+    if [[ -s ${failure_file} ]];then
+      echo
+      echo "Some builds failed."
+      cat ${failure_file}
+      echo "Exiting."
+      exit 1
+    fi
+
+    echo "All builds succeeded."
