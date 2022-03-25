@@ -9,13 +9,22 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.threading.BackgroundDispatcher
 
 /** Observer that observes application lifecycle. */
 @Singleton
 class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val loggingIdentifierController: LoggingIdentifierController,
-  @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger,
+  @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ApplicationStartupListener, LifecycleObserver {
 
   override fun onCreate() {
@@ -33,11 +42,30 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
+    // TODO(#4064): Log the 'app in foreground' event here.
   }
 
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
     firstTimestamp = oppiaClock.getCurrentTimeMs()
+    // TODO(#4064): Log the 'app in background' event here.
+  }
+
+  @Suppress("unused") // TODO(#4064): Add usage for this method.
+  private fun logAppLifecycleEventInBackground(logMethod: (String?, String?) -> Unit) {
+    CoroutineScope(backgroundDispatcher).launch {
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      val learnerId = profileManagementController.fetchCurrentLearnerId()
+      logMethod(installationId, learnerId)
+    }.invokeOnCompletion { failure ->
+      if (failure != null) {
+        oppiaLogger.e(
+          "ApplicationLifecycleObserver",
+          "Encountered error while trying to log app lifecycle event.",
+          failure
+        )
+      }
+    }
   }
 }

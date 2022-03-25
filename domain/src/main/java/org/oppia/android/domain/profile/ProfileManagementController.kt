@@ -122,7 +122,7 @@ class ProfileManagementController @Inject constructor(
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
   init {
-    profileDataStore.primeCacheAsync().invokeOnCompletion {
+    profileDataStore.primeInMemoryCacheAsync().invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
           "DOMAIN",
@@ -214,36 +214,37 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      // TODO: fill in the learner ID below.
-      val newProfileBuilder = Profile.newBuilder()
-        .setName(name)
-        .setPin(pin)
-        .setAllowDownloadAccess(allowDownloadAccess)
-        .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(oppiaClock.getCurrentTimeMs())
-        .setIsAdmin(isAdmin)
-        .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
-        .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
-        .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-        .setLearnerId("uninitialized")
+      val newProfile = Profile.newBuilder().apply {
+        this.name = name
+        this.pin = pin
+        this.allowDownloadAccess = allowDownloadAccess
+        this.id = ProfileId.newBuilder().setInternalId(nextProfileId).build()
+        dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
+        this.isAdmin = isAdmin
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 
-      if (avatarImagePath != null) {
-        val imageUri =
-          saveImageToInternalStorage(avatarImagePath, profileDir)
-            ?: return@storeDataWithCustomChannelAsync Pair(
-              it,
-              ProfileActionStatus.FAILED_TO_STORE_IMAGE
-            )
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
-      } else {
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
-      }
+        // TODO(#4064): Initialize the learner ID here (only if the study parameter is enabled).
+
+        avatar = ProfileAvatar.newBuilder().apply {
+          if (avatarImagePath != null) {
+            val imageUri =
+              saveImageToInternalStorage(avatarImagePath, profileDir)
+                ?: return@storeDataWithCustomChannelAsync Pair(
+                  it,
+                  ProfileActionStatus.FAILED_TO_STORE_IMAGE
+                )
+            avatarImageUri = imageUri
+          } else avatarColorRgb = colorRgb
+        }.build()
+      }.build()
 
       val wasProfileEverAdded = it.profilesCount > 0
 
       val profileDatabaseBuilder =
         it.toBuilder()
-          .putProfiles(nextProfileId, newProfileBuilder.build())
+          .putProfiles(nextProfileId, newProfile)
           .setWasProfileEverAdded(wasProfileEverAdded)
           .setNextProfileId(nextProfileId + 1)
       Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
@@ -531,11 +532,12 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Updates the learner ID of the profile.
+   * Initializes the learner ID of the specified profile (if not set), otherwise clears it if
+   * there's no ongoing study.
    *
-   * @param profileId the ID corresponding to the profile being updated.
+   * @param profileId the ID corresponding to the profile being updated
    */
-  fun updateLearnerId(profileId: ProfileId): DataProvider<Any?> {
+  fun initializeLearnerId(profileId: ProfileId): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -544,8 +546,12 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      // TODO: update the learner ID below.
-      val updatedProfile = profile.toBuilder().setLearnerId("uninitialized").build()
+      val updatedProfile = profile.toBuilder().apply {
+        learnerId = when {
+          // TODO(#4064): Update the learner ID here (only if the study parameter is enabled).
+          else -> learnerId // Keep it unchanged.
+        }
+      }.build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile
@@ -651,10 +657,8 @@ class ProfileManagementController @Inject constructor(
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_DELETE_DIR)
       }
-      val profileDatabaseBuilder = it.toBuilder().removeProfiles(
-        profileId.internalId
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      // TODO(#4064): Log the 'delete profile' event here.
+      Pair(it.toBuilder().removeProfiles(profileId.internalId).build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
@@ -667,6 +671,14 @@ class ProfileManagementController @Inject constructor(
    */
   fun getCurrentProfileId(): ProfileId {
     return ProfileId.newBuilder().setInternalId(currentProfileId).build()
+  }
+
+  suspend fun fetchCurrentLearnerId(): String? = fetchLearnerId(getCurrentProfileId())
+
+  // TODO: document that this is a one-time learner ID and that it can change.
+  suspend fun fetchLearnerId(profileId: ProfileId): String? {
+    val profileDatabase = profileDataStore.readDataAsync().await()
+    return profileDatabase.profilesMap[profileId.internalId]?.learnerId
   }
 
   private suspend fun getDeferredResult(

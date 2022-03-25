@@ -229,7 +229,7 @@ class PersistentCacheStoreTest {
     // Create a new cache with the same name and update it, then observe it. However, first prime
     // it.
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    val primeOp = cacheStore2.primeCacheAsync()
+    val primeOp = cacheStore2.primeInMemoryCacheAsync()
     testCoroutineDispatchers.advanceUntilIdle()
     val storeOp2 = cacheStore2.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_V2 }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -252,7 +252,7 @@ class PersistentCacheStoreTest {
     // Create a new cache with the same name and update it, then observe it. However, first prime
     // it.
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
-    val primeOp = cacheStore2.primeCacheAsync()
+    val primeOp = cacheStore2.primeInMemoryCacheAsync()
     testCoroutineDispatchers.advanceUntilIdle()
     val storeOp2 = cacheStore2.storeDataAsync { TEST_MESSAGE_V2 }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -273,7 +273,7 @@ class PersistentCacheStoreTest {
 
     val storeOp = cacheStore.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_V1 }
     testCoroutineDispatchers.advanceUntilIdle()
-    val primeOp = cacheStore.primeCacheAsync(forceUpdate = false)
+    val primeOp = cacheStore.primeInMemoryCacheAsync(forceUpdate = false)
     testCoroutineDispatchers.advanceUntilIdle()
 
     // Both ops will succeed, and the observer will receive the old value due to the update not
@@ -291,7 +291,7 @@ class PersistentCacheStoreTest {
 
     val storeOp = cacheStore.storeDataAsync(updateInMemoryCache = false) { TEST_MESSAGE_V1 }
     testCoroutineDispatchers.advanceUntilIdle()
-    val primeOp = cacheStore.primeCacheAsync(forceUpdate = true)
+    val primeOp = cacheStore.primeInMemoryCacheAsync(forceUpdate = true)
     testCoroutineDispatchers.advanceUntilIdle()
 
     // The observer will receive the new value because the prime was forced. This ensures the

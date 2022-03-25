@@ -52,6 +52,7 @@ import java.io.FileInputStream
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -99,8 +100,8 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
-    val defaultLearnerId = machineLocale.run {
-      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    val expectedLearnerId = machineLocale.run {
+      "%08x".formatForMachines(createRandomReadyForProfileLearnerIds().nextInt())
     }
     val dataProvider = addAdminProfile(name = "James", pin = "123")
 
@@ -115,8 +116,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-    // TODO: verify that the learner ID is correctly set.
-    assertThat(profile.learnerId).isNotEqualTo(defaultLearnerId)
+    assertThat(profile.learnerId).isEqualTo(expectedLearnerId)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -186,20 +186,22 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_checkUpdateIsSuccessful() {
-    val defaultLearnerId = machineLocale.run {
-      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    val expectedLearnerId = machineLocale.run {
+      val random = createRandomReadyForProfileLearnerIds().also {
+        it.advanceBy(learnerCount = PROFILES_LIST.size)
+      }
+      "%08x".formatForMachines(random.nextInt())
     }
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    val updateProvider = profileManagementController.updateLearnerId(profileId)
+    val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
 
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    // TODO: verify that the learner ID was updated.
-    assertThat(profile.learnerId).isNotEqualTo(defaultLearnerId)
+    assertThat(profile.learnerId).isEqualTo(expectedLearnerId)
   }
 
   @Test
@@ -658,6 +660,16 @@ class ProfileManagementControllerTest {
     )
   }
 
+  private fun createRandomReadyForProfileLearnerIds(): Random {
+    return Random(TestLoggingIdentifierModule.applicationIdSeed).also {
+      it.nextBytes(ByteArray(16))
+    }
+  }
+
+  private fun Random.advanceBy(learnerCount: Int) {
+    repeat(learnerCount) { nextInt() }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -684,7 +696,6 @@ class ProfileManagementControllerTest {
 
   @Module
   class TestLoggingIdentifierModule {
-
     companion object {
       const val applicationIdSeed = 1L
     }
@@ -706,7 +717,7 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, SyncStatusModule::class
+      TestLoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

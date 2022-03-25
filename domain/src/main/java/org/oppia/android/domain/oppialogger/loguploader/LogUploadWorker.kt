@@ -83,7 +83,7 @@ class LogUploadWorker private constructor(
     // TODO: Update sync status for these events.
     return try {
       analyticsController.getEventLogStoreList().forEach { eventLog ->
-        eventLogger.logCachedEvent(eventLog)
+        eventLogger.logEvent(eventLog)
         analyticsController.removeFirstEventLogFromStore()
       }
       Result.success()

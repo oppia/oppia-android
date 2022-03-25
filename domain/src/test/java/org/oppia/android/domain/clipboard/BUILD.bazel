@@ -19,7 +19,6 @@ oppia_android_test(
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:fake_sync_status_manager",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
-        "//testing/src/main/java/org/oppia/android/testing/logging:user_id_test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

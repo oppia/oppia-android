@@ -76,6 +76,8 @@ class StateDeck constructor(
   /** Returns the index of the current selected card of the deck. */
   fun getTopStateIndex(): Int = stateIndex
 
+  fun getViewedStateCount(): Int = previousStates.size
+
   /** Returns the current [State] being viewed by the learner. */
   fun getCurrentState(): State {
     return when {

@@ -68,7 +68,7 @@ class UserIdGeneratorImplTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, UserIdProdModule::class])
+  @Component(modules = [TestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
