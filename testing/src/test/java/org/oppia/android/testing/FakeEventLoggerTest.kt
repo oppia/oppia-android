@@ -28,13 +28,13 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeEventLoggerTest {
 
+  // TODO: Update & finalize tests in this suite.
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
 
@@ -263,8 +263,7 @@ class FakeEventLoggerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, LogStorageModule::class, LoggingIdentifierModule::class,
-      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      UserIdProdModule::class, PlatformParameterModule::class,
+      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

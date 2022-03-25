@@ -55,7 +55,6 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.android.material:material": "1.3.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
-    "com.google.firebase:firebase-installations": "17.0.0",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:guava": "28.1-android",
     "com.google.protobuf:protobuf-javalite": "3.17.3",

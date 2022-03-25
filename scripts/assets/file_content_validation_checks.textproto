@@ -133,7 +133,6 @@ file_content_checks {
   failure_message: "String formatting and resource retrieval should go through AppLanguageResourceHandler, OppiaLocale.DisplayLocale, or OppiaLocale.MachineLocale depending on the context (see each class's documentation for details on when each should be used)."
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/DisplayLocaleImpl.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/OppiaLocale.kt"
-  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/ContextExtensions.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/WorkDataExtensions.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
