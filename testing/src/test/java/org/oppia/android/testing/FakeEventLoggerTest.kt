@@ -263,8 +263,7 @@ class FakeEventLoggerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, LogStorageModule::class, LoggingIdentifierModule::class,
-      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      UserIdProdModule::class, PlatformParameterModule::class,
+      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

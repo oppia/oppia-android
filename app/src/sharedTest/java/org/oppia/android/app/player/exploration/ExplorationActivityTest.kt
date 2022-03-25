@@ -77,7 +77,6 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -2044,8 +2043,7 @@ class ExplorationActivityTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      UserIdProdModule::class
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )
 

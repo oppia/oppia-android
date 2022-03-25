@@ -37,7 +37,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [TextInputStartsWithRuleClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
@@ -425,7 +424,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
       TestModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

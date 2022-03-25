@@ -93,7 +93,6 @@ import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 private const val TOLERANCE = 1e-5f
 
@@ -312,8 +311,7 @@ class MarginBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      UserIdProdModule::class
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )
   /** Create a TestApplicationComponent. */

@@ -60,7 +60,6 @@ import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 /** Tests for [PlatformParameterSyncUpWorkManagerInitializer]. */
 @RunWith(AndroidJUnit4::class)
@@ -243,7 +242,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )
