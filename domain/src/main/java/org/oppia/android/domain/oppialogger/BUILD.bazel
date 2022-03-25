@@ -23,7 +23,6 @@ kt_android_library(
     ],
     visibility = ["//domain:__subpackages__"],
     deps = [
-        ":logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
@@ -46,12 +45,13 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":application_id_seed",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
-        "//third_party:com_google_firebase_firebase-installations",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-        "//utility/src/main/java/org/oppia/android/util/system:user_id_generator",
     ],
 )
 

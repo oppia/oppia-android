@@ -48,7 +48,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.FakeSyncStatusManager
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -62,7 +61,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -70,7 +68,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 
 private const val TEST_TIMESTAMP = 1556094120000
@@ -125,7 +122,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withQuestionContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -144,7 +141,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withExplorationContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
@@ -162,7 +159,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withOpenInfoTabContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
@@ -175,7 +172,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withOpenPracticeTabContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
     )
 
@@ -188,7 +185,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withOpenLessonsTabContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
@@ -201,7 +198,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withOpenRevisionTabContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
     )
 
@@ -214,7 +211,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withStoryContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
@@ -227,7 +224,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withRevisionContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
@@ -240,7 +237,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withStartCardContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createStartCardContext(TEST_SKILL_ID, EXPLORATION_CONTEXT)
     )
 
@@ -253,7 +250,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withEndCardContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createEndCardContext(TEST_SKILL_ID, EXPLORATION_CONTEXT)
     )
 
@@ -266,7 +263,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withHintOfferedContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createHintOfferedContext(TEST_HINT_INDEX, EXPLORATION_CONTEXT)
     )
 
@@ -279,7 +276,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withAccessHintContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createAccessHintContext(TEST_HINT_INDEX, EXPLORATION_CONTEXT)
     )
 
@@ -292,7 +289,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withSolutionOfferedContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createSolutionOfferedContext(EXPLORATION_CONTEXT)
     )
 
@@ -305,7 +302,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withAccessSolutionContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createAccessSolutionContext(EXPLORATION_CONTEXT)
     )
 
@@ -318,7 +315,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withSubmitAnswerContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createSubmitAnswerContext(TEST_IS_ANSWER_CORRECT, EXPLORATION_CONTEXT)
     )
@@ -332,7 +329,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withPlayVoiceOverContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createPlayVoiceOverContext(TEST_CONTENT_ID, EXPLORATION_CONTEXT)
     )
 
@@ -345,7 +342,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withAppInBackgroundContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createAppInBackgroundContext(LEARNER_DETAILS_CONTEXT)
     )
 
@@ -358,7 +355,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withAppInForegroundContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createAppInForegroundContext(LEARNER_DETAILS_CONTEXT)
     )
 
@@ -371,7 +368,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withExitExplorationContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createExitExplorationContext(EXPLORATION_CONTEXT)
     )
 
@@ -384,7 +381,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withFinishExplorationContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createFinishExplorationContext(EXPLORATION_CONTEXT)
     )
 
@@ -397,7 +394,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withResumeExplorationContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createResumeExplorationContext(LEARNER_DETAILS_CONTEXT)
     )
 
@@ -410,7 +407,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withStartOverExplorationContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createStartOverExplorationContext(LEARNER_DETAILS_CONTEXT)
     )
 
@@ -423,7 +420,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withDeleteProfileContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createDeleteProfileContext(LEARNER_DETAILS_CONTEXT)
     )
 
@@ -436,7 +433,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_withConceptCardContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
@@ -449,7 +446,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withQuestionContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -468,7 +465,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withExplorationContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
@@ -486,7 +483,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withOpenInfoTabContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
@@ -499,7 +496,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withOpenPracticeTabContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
     )
 
@@ -512,7 +509,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withOpenLessonsTabContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
@@ -525,7 +522,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withOpenRevisionTabContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
     )
 
@@ -538,7 +535,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withStoryContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
@@ -551,7 +548,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withRevisionContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
@@ -564,7 +561,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logClickEvent_withConceptCardContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
@@ -581,7 +578,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -603,7 +600,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logClickEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -636,7 +633,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logTransitionEvent_logClickEvent_withNoNetwork_checkOrderinCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -645,7 +642,7 @@ class AnalyticsControllerTest {
         )
       )
     )
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -669,7 +666,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logTransitionEvent_switchToNoNetwork_logClickEvent_checkManagement() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -679,7 +676,7 @@ class AnalyticsControllerTest {
       )
     )
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -734,7 +731,7 @@ class AnalyticsControllerTest {
   @Test
   fun testController_logEvent_withoutNetwork_verifySyncStatusEqualsNoConnectivity() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -749,7 +746,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logEvent_afterCompletion_verifySyncStatusEqualsDataUploaded() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -764,7 +761,7 @@ class AnalyticsControllerTest {
 
   @Test
   fun testController_logEvent_beforeCompletion_verifySyncStatusEqualsDataUploading() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -782,7 +779,7 @@ class AnalyticsControllerTest {
   }
 
   private fun logMultipleEvents() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -792,7 +789,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       1556094110000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -802,7 +799,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556093100000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -812,7 +809,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094100000,
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
@@ -863,7 +860,7 @@ class AnalyticsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, UserIdTestModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

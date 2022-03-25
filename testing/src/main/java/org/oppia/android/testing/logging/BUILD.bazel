@@ -20,19 +20,6 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "fake_user_id_generator",
-    testonly = True,
-    srcs = [
-        "FakeUserIdGenerator.kt",
-    ],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        ":dagger",
-        "//utility/src/main/java/org/oppia/android/util/system:user_id_generator",
-    ],
-)
-
-kt_android_library(
     name = "sync_status_test_module",
     testonly = True,
     srcs = [
@@ -43,20 +30,6 @@ kt_android_library(
         ":dagger",
         ":fake_sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
-    ],
-)
-
-kt_android_library(
-    name = "user_id_test_module",
-    testonly = True,
-    srcs = [
-        "UserIdTestModule.kt",
-    ],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        ":dagger",
-        ":fake_user_id_generator",
-        "//utility/src/main/java/org/oppia/android/util/system:user_id_generator",
     ],
 )
 

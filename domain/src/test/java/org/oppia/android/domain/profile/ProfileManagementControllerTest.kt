@@ -196,7 +196,7 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileId = ProfileId.newBuilder().setInternalId(2).build()
-    val updateProvider = profileManagementController.updateLearnerId(profileId)
+    val updateProvider = profileManagementController.initializeLearnerId(profileId)
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
 
@@ -696,7 +696,6 @@ class ProfileManagementControllerTest {
 
   @Module
   class TestLoggingIdentifierModule {
-
     companion object {
       const val applicationIdSeed = 1L
     }

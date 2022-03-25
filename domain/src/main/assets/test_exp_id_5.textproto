@@ -136,6 +136,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -241,6 +242,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -346,6 +348,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -467,6 +470,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -582,6 +586,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -697,6 +702,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -821,6 +827,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -939,6 +946,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -1057,6 +1065,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 states {
@@ -1099,6 +1108,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_2"
   }
 }
 init_state_name: "NumericExpressionInput.MatchesExactlyWith"
