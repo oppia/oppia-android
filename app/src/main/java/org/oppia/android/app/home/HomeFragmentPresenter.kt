@@ -28,7 +28,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
@@ -38,7 +37,6 @@ class HomeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
-  private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
@@ -152,8 +150,6 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun logHomeActivityEvent() {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), eventContext = oppiaLogger.createOpenHomeContext()
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenHomeContext())
   }
 }

@@ -32,7 +32,6 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val IntentFactoryShim: IntentFactoryShim,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
@@ -79,6 +78,7 @@ class AdministratorControlsViewModel @Inject constructor(
         loadProfileListListener
       )
     )
+    // TODO: Add tests to verify on/off state.
     if (learnerStudyAnalytics.value) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }

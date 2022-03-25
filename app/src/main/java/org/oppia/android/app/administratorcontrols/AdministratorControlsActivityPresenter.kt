@@ -43,12 +43,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       AdministratorControlsFragment.newInstance(isMultipane)
     ).commitNow()
     if (isMultipane) {
+      val adminControlsActivity = activity as AdministratorControlsActivity
       when (lastLoadedFragment) {
-        PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
-        APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
-        PROFILE_AND_DEVICE_ID_FRAGMENT -> (
-          activity as AdministratorControlsActivity
-          ).loadLearnerAnalyticsData()
+        PROFILE_LIST_FRAGMENT -> adminControlsActivity.loadProfileList()
+        APP_VERSION_FRAGMENT -> adminControlsActivity.loadAppVersion()
+        PROFILE_AND_DEVICE_ID_FRAGMENT -> adminControlsActivity.loadLearnerAnalyticsData()
       }
     }
   }

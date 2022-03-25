@@ -37,7 +37,6 @@ class ExplorationDataController @Inject constructor(
     }
   }
 
-  // TODO(#4064): Add usage for this & the following new methods, and remove the old one.
   fun startPlayingNewExploration(
     internalProfileId: Int, topicId: String, storyId: String, explorationId: String
   ): DataProvider<Any?> {
@@ -143,7 +142,7 @@ class ExplorationDataController @Inject constructor(
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
-  fun startPlayingExploration(
+  private fun startPlayingExploration(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
@@ -162,7 +161,6 @@ class ExplorationDataController @Inject constructor(
     )
   }
 
-  // TODO(#4064): Remove the default value for 'isCompletion' below.
   /**
    * Finishes the most recent exploration started by [startPlayingExploration], and returns a
    * [DataProvider] indicating whether the operation succeeded.
@@ -179,7 +177,7 @@ class ExplorationDataController @Inject constructor(
    * @param isCompletion indicates whether this stop action is fully ending the exploration (i.e. no
    *     checkpoint will be saved since this indicates the exploration is completed)
    */
-   fun stopPlayingExploration(isCompletion: Boolean = false): DataProvider<Any?> =
+   fun stopPlayingExploration(isCompletion: Boolean): DataProvider<Any?> =
     explorationProgressController.finishExplorationAsync(isCompletion)
 
   /**

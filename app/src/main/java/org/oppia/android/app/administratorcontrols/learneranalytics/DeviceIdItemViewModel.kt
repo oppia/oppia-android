@@ -28,7 +28,7 @@ class DeviceIdItemViewModel private constructor(
   /** The device installation ID associated with analytics. */
   val deviceId: LiveData<String?> by lazy {
     Transformations.map(
-      loggingIdentifierController.getDeviceId().toLiveData(), this::processDeviceId
+      loggingIdentifierController.getInstallationId().toLiveData(), this::processDeviceId
     )
   }
 

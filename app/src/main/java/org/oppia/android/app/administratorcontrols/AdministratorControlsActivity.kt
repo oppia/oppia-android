@@ -98,7 +98,6 @@ class AdministratorControlsActivity :
     lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
     administratorControlsActivityPresenter.setExtraControlsTitle(
       resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title)
-      // TODO(LearnerAnalytics): Replace with new string
     )
     administratorControlsActivityPresenter.loadLearnerAnalyticsData()
   }

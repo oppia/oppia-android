@@ -17,15 +17,6 @@ class OppiaLogger @Inject constructor(
     analyticsController.logImportantEvent(oppiaClock.getCurrentTimeMs(), eventContext)
   }
 
-  // TODO(#4064): Remove this method & migrate callsites to use logImportantEvent.
-  /** Logs transition events. See [AnalyticsController.logTransitionEvent] for more context. */
-  fun logTransitionEvent(
-    timestamp: Long,
-    eventContext: EventLog.Context
-  ) {
-    analyticsController.logTransitionEvent(timestamp, eventContext)
-  }
-
   /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */
   fun v(tag: String, msg: String) {
     consoleLogger.v(tag, msg)
