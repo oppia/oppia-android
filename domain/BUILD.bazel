@@ -114,11 +114,11 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",
-        "//model:exploration_checkpoint_java_proto_lite",
-        "//model:onboarding_java_proto_lite",
-        "//model:platform_parameter_java_proto_lite",
-        "//model:question_java_proto_lite",
-        "//model:topic_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:onboarding_java_proto_lite",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
+        "//model/src/main/proto:topic_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
@@ -153,7 +153,7 @@ kt_android_library(
         "src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt",
     ],
     deps = [
-        "//model:question_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
     ],
 )
 
