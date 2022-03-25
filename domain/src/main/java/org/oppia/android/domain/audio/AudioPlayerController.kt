@@ -23,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 
 /**
  * Controller which provides audio playing capabilities.
@@ -35,6 +36,7 @@ class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val exceptionsController: ExceptionsController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
@@ -207,7 +209,9 @@ class AudioPlayerController @Inject constructor(
         // corresponds to manually clicking the 'play' button). Note this will not log any play
         // events after the state completes (since there'll no longer be a state logger).
         if (!isPlayingFromAutoPlay || !reloadingMainContent) {
-          // TODO(#4064): Remove the defaults above, and log the 'play voice over' event here.
+          val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
+          val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
+          stateLogger?.logPlayVoiceOver(currentContentId)
         }
       }
     }
