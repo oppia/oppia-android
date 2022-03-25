@@ -173,6 +173,9 @@ class ExplorationDataController @Inject constructor(
    * Note that the returned provider monitors the long-term stopping state of exploration sessions
    * and will be reset to 'pending' when a session is currently active, or before any session has
    * started.
+   *
+   * @param isCompletion indicates whether this stop action is fully ending the exploration (i.e. no
+   *     checkpoint will be saved since this indicates the exploration is completed)
    */
    fun stopPlayingExploration(isCompletion: Boolean): DataProvider<Any?> =
     explorationProgressController.finishExplorationAsync(isCompletion)
