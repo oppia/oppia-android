@@ -88,14 +88,16 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FractionInputInteractionView]. */
+/**
+ * This is a dummy activity to test input interaction views.
+ * It contains [FractionInputInteractionView].
+ */
 @RunWith(AndroidJUnit4::class)
 @Config(
   application = FractionInputInteractionViewTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
 @LooperMode(LooperMode.Mode.PAUSED)
-
 class FractionInputInteractionViewTest {
 
   @get:Rule
