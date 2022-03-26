@@ -41,10 +41,12 @@
   <!-- Pin Password Activity -->
   <color name="pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
-  <!-- QuestionPlayerActivity -->
+  <!-- Question Player Activity -->
   <color name="question_player_activity_layout_background_color">@color/color_palette_primary_background_color</color>
   <color name="question_player_activity_textview_highlighted_color">@color/color_palette_highlighted_text_color</color>
   <color name="question_player_activity_textview_secondary_color">@color/color_palette_secondary_text_color</color>
-  <!-- ExplorationActivity -->
+  <color name="question_player_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <!-- Exploration Activity -->
   <color name="exploration_activity_layout_background_color">@color/color_palette_primary_background_color</color>
+  <color name="exploration_activity_toolbar_color">@color/color_palette_toolbar_color</color>
 </resources>
