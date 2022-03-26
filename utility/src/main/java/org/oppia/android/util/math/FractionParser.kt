@@ -1,13 +1,10 @@
-package org.oppia.android.app.parser
+package org.oppia.android.util.math
 
-import androidx.annotation.StringRes
-import org.oppia.android.R
 import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.util.normalizeWhitespace
+import org.oppia.android.util.extensions.normalizeWhitespace
 
-/** This class contains method that helps to parse string to fraction. */
-class StringToFractionParser {
+/** String parser for [Fraction]s. */
+class FractionParser {
   private val wholeNumberOnlyRegex =
     """^-? ?(\d+)$""".toRegex()
   private val fractionOnlyRegex =
@@ -112,18 +109,27 @@ class StringToFractionParser {
 
   private fun isInputNegative(inputText: String): Boolean = inputText.startsWith("-")
 
-  /** Enum to store the errors of [FractionInputInteractionView]. */
-  enum class FractionParsingError(@StringRes private var error: Int?) {
-    VALID(error = null),
-    INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
-    INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
-    DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
-    NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
+  /** Represents errors that can occur when parsing a fraction from a string. */
+  enum class FractionParsingError {
+    /** Indicates that the considered string is a valid fraction. */
+    VALID,
+
+    /** Indicates that the string contains characters not found in fractions. */
+    INVALID_CHARS,
+
+    /** Indicates that the string does not resemble a fraction. */
+    INVALID_FORMAT,
 
     /**
-     * Returns the string corresponding to this error's string resources, or null if there is none.
+     * Indicates that the string includes a zero denominator which would result in a division by
+     * zero.
      */
-    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
-      error?.let(resourceHandler::getStringInLocale)
+    DIVISION_BY_ZERO,
+
+    /**
+     * Indicates that at least one of the numbers present in the string is too long to be
+     * precisely represented in a fraction.
+     */
+    NUMBER_TOO_LONG
   }
 }

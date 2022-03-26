@@ -1,4 +1,4 @@
-package org.oppia.android.domain.util
+package org.oppia.android.util.math
 
 import org.oppia.android.app.model.RatioExpression
 
@@ -13,10 +13,16 @@ fun RatioExpression.toSimplestForm(): List<Int> {
     this.ratioComponentList.map { x -> x / gcdComponentResult }
   }
 }
+
 /**
  * Returns this Ratio in string format.
  * E.g. [1, 2, 3] will yield to 1:2:3
  */
 fun RatioExpression.toAnswerString(): String {
   return ratioComponentList.joinToString(separator = ":")
+}
+
+/** Returns the greatest common divisor between two integers. */
+private fun gcd(x: Int, y: Int): Int {
+  return if (y == 0) x else gcd(y, x % y)
 }

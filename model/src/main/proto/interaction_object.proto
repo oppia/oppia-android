@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "math.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -35,13 +37,6 @@ message StringList {
   repeated string html = 1;
 }
 
-// Structure containing a ratio object for eg - [1,2,3] for 1:2:3.
-message RatioExpression {
-  // List of components in a ratio. It's expected that list should have more than
-  // 1 element.
-  repeated uint32 ratio_component = 1;
-}
-
 // Structure for a number with units object.
 message NumberWithUnits {
   oneof number_type {
@@ -55,14 +50,6 @@ message NumberWithUnits {
 message NumberUnit {
   string unit = 1;
   int32 exponent = 2;
-}
-
-// Structure for a fraction object.
-message Fraction {
-  bool is_negative = 1;
-  int32 whole_number = 2;
-  int32 numerator = 3;
-  int32 denominator = 4;
 }
 
 // Structure for a ListOfString object.

@@ -6,7 +6,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.domain.util.toFloat
+import org.oppia.android.util.math.toDouble
 import javax.inject.Inject
 
 /**
@@ -33,6 +33,6 @@ class FractionInputIsGreaterThanRuleClassifierProvider @Inject constructor(
     input: Fraction,
     writtenTranslationContext: WrittenTranslationContext
   ): Boolean {
-    return answer.toFloat() > input.toFloat()
+    return answer.toDouble() > input.toDouble()
   }
 }

@@ -6,8 +6,8 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.domain.util.approximatelyEquals
-import org.oppia.android.domain.util.toFloat
+import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.toDouble
 import javax.inject.Inject
 
 /**
@@ -47,7 +47,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProvider @Inject constructor(
   private fun extractRealValue(number: NumberWithUnits): Double {
     return when (number.numberTypeCase) {
       NumberWithUnits.NumberTypeCase.REAL -> number.real
-      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toFloat().toDouble()
+      NumberWithUnits.NumberTypeCase.FRACTION -> number.fraction.toDouble()
       else -> throw IllegalArgumentException("Invalid number type: ${number.numberTypeCase.name}")
     }
   }
