@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -99,7 +99,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -113,7 +113,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -127,7 +127,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -141,7 +141,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_321,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     // 123 and 321 match because they have the same fractional parts: 0/1.
@@ -156,7 +156,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -170,7 +170,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -184,7 +184,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -198,7 +198,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -212,7 +212,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -231,7 +231,7 @@ class FractionInputHasFractionalPartExactlyEqualToRuleClassifierProviderTest {
       fractionalPartIsExactlyEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

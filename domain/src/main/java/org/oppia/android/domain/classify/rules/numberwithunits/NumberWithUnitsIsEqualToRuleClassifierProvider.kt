@@ -3,7 +3,7 @@ package org.oppia.android.domain.classify.rules.numberwithunits
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.NumberWithUnits
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -33,7 +33,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
   override fun matches(
     answer: NumberWithUnits,
     input: NumberWithUnits,
-    writtenTranslationContext: WrittenTranslationContext
+    classificationContext: ClassificationContext
   ): Boolean {
     // The number types must match.
     if (answer.numberTypeCase != input.numberTypeCase) {

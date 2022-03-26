@@ -12,7 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -33,11 +33,11 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.DaggerNume
 import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider as RuleClassifierProvider
 
 /**
- * Tests for [RuleClassifierProvider].
+ * Tests for [NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider].
  *
  * Note that the tests implemented in this suite are specifically set up to verify the cases
  * outlined in this sheet:
- * https://docs.google.com/spreadsheets/dNumericExpressionInputIsEquivalentToRuleClassifierProvider/1u1fQdah2WsmdYKWKGmuXy5TPT7Ot-b8A7O9iZF-j5XE/edit#gid=0.
+ * https://docs.google.com/spreadsheets/d/1u1fQdah2WsmdYKWKGmuXy5TPT7Ot-b8A7O9iZF-j5XE/edit#gid=0.
  */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -364,7 +364,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
     return classifier.matches(
       answerExpression,
       inputs = mapOf("x" to inputExpression),
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+      classificationContext = ClassificationContext()
     )
   }
 

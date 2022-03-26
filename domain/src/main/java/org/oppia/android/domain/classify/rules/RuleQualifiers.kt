@@ -78,3 +78,10 @@ annotation class RatioExpressionInputRules
  */
 @Qualifier
 annotation class NumericExpressionInputRules
+
+/**
+ * Corresponds to [org.oppia.android.domain.classify.RuleClassifier]s that can be used by the
+ * algebraic expression input interaction.
+ */
+@Qualifier
+annotation class AlgebraicExpressionInputRules
