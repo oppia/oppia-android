@@ -125,6 +125,12 @@ class RegexPatternValidationCheckTest {
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
   private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
+  private val parameterizedTestRunnerRequiresException =
+    "To use OppiaParameterizedTestRunner, please add an exemption to" +
+      " file_content_validation_checks.textproto and add an explanation for your use case in your" +
+      " PR description. Note that parameterized tests should only be used in special" +
+      " circumstances where a single behavior can be tested across multiple inputs, or for" +
+      " especially large test suites that can be trivially reduced."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1564,6 +1570,32 @@ class RegexPatternValidationCheckTest {
         $fileContainsSupportLibraryImport:5: $nonCompatDrawableUsedErrorMessage
         $fileContainsSupportLibraryImport:7: $nonCompatDrawableUsedErrorMessage
         $fileContainsSupportLibraryImport:9: $nonCompatDrawableUsedErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kotlinTestUsesParameterizedTestRunner_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+      @RunWith(OppiaParameterizedTestRunner::class)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "domain", "src", "test")
+    val stringFilePath = "domain/src/test/SomeTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $parameterizedTestRunnerRequiresException
+        $stringFilePath:2: $parameterizedTestRunnerRequiresException
         $wikiReferenceNote
         """.trimIndent()
       )
