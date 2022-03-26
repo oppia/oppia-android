@@ -4,20 +4,18 @@ General-purpose mathematics utilities, especially for supporting math-based inte
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
-kt_android_library(
+android_library(
     name = "extensions",
-    srcs = [
-        "FloatExtensions.kt",
-        "FractionExtensions.kt",
-        "PolynomialExtensions.kt",
-        "RatioExtensions.kt",
-        "RealExtensions.kt",
-    ],
     visibility = [
         "//:oppia_api_visibility",
     ],
-    deps = [
-        "//model/src/main/proto:math_java_proto_lite",
+    exports = [
+        ":float_extensions",
+        ":fraction_extensions",
+        ":math_expression_extensions",
+        ":polynomial_extensions",
+        ":ratio_extensions",
+        ":real_extensions",
     ],
 )
 
@@ -39,12 +37,12 @@ kt_android_library(
         "MathExpressionParser.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
+        "//:oppia_api_visibility",
     ],
     deps = [
-        ":extensions",
         ":math_parsing_error",
         ":peekable_iterator",
+        ":real_extensions",
         ":tokenizer",
         "//model/src/main/proto:math_java_proto_lite",
     ],
@@ -84,5 +82,96 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
+    ],
+)
+
+kt_android_library(
+    name = "float_extensions",
+    srcs = [
+        "FloatExtensions.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "fraction_extensions",
+    srcs = [
+        "FractionExtensions.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "math_expression_extensions",
+    srcs = [
+        "MathExpressionExtensions.kt",
+    ],
+    deps = [
+        ":expression_to_latex_converter",
+        ":numeric_expression_evaluator",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "polynomial_extensions",
+    srcs = [
+        "PolynomialExtensions.kt",
+    ],
+    deps = [
+        ":real_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "ratio_extensions",
+    srcs = [
+        "RatioExtensions.kt",
+    ],
+    deps = [
+        ":fraction_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "real_extensions",
+    srcs = [
+        "RealExtensions.kt",
+    ],
+    deps = [
+        ":float_extensions",
+        ":fraction_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "expression_to_latex_converter",
+    srcs = [
+        "ExpressionToLatexConverter.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":real_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "numeric_expression_evaluator",
+    srcs = [
+        "NumericExpressionEvaluator.kt",
+    ],
+    deps = [
+        ":real_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
     ],
 )

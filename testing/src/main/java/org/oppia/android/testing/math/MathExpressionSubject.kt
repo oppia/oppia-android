@@ -1,6 +1,8 @@
 package org.oppia.android.testing.math
 
+import com.google.common.truth.DoubleSubject
 import com.google.common.truth.FailureMetadata
+import com.google.common.truth.IntegerSubject
 import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
@@ -18,6 +20,8 @@ import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
+import org.oppia.android.util.math.evaluateAsNumericExpression
+import org.oppia.android.util.math.toRawLatex
 
 // TODO(#4097): Add tests for this class.
 
@@ -90,6 +94,65 @@ class MathExpressionSubject private constructor(
   fun hasStructureThatMatches(init: ExpressionComparator.() -> Unit) {
     ExpressionComparator.createFromExpression(actual).also(init)
   }
+
+  /**
+   * Assumes that this expression evaluates to a fraction (i.e. [Real.getRational]) and returns a
+   * [FractionSubject] to verify the computed value.
+   *
+   * Note that this should only be used for numeric expressions as variable expressions cannot be
+   * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
+   */
+  fun evaluatesToRationalThat(): FractionSubject =
+    FractionSubject.assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.RATIONAL).rational)
+
+  /**
+   * Assumes that this expression evaluates to an irrational (i.e. [Real.getIrrational]) and returns
+   * a [DoubleSubject] to verify the computed value.
+   *
+   * Note that this should only be used for numeric expressions as variable expressions cannot be
+   * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
+   */
+  fun evaluatesToIrrationalThat(): DoubleSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
+
+  /**
+   * Assumes that this expression evaluates to an integer (i.e. [Real.getInteger]) and returns an
+   * [IntegerSubject] to verify the computed value.
+   *
+   * Note that this should only be used for numeric expressions as variable expressions cannot be
+   * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
+   */
+  fun evaluatesToIntegerThat(): IntegerSubject =
+    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
+
+  /**
+   * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathExpression].
+   *
+   * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
+   * [convertsWithFractionsToLatexStringThat], retains division operations as-is.
+   */
+  fun convertsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = false))
+
+  /**
+   * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathExpression].
+   *
+   * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
+   * [convertsToLatexStringThat], treats divisions as fractions.
+   */
+  fun convertsWithFractionsToLatexStringThat(): StringSubject =
+    assertThat(convertToLatex(divAsFraction = true))
+
+  private fun evaluateAsReal(expectedType: Real.RealTypeCase): Real {
+    val real = actual.evaluateAsNumericExpression()
+    assertWithMessage("Failed to evaluate numeric expression").that(real).isNotNull()
+    assertWithMessage("Expected constant to evaluate to $expectedType")
+      .that(real?.realTypeCase)
+      .isEqualTo(expectedType)
+    return checkNotNull(real) // Just to remove the nullable operator; the actual check is above.
+  }
+
+  private fun convertToLatex(divAsFraction: Boolean): String = actual.toRawLatex(divAsFraction)
 
   /**
    * DSL syntax provider for verifying the structure of a [MathExpression].

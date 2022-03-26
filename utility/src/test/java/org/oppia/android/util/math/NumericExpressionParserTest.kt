@@ -19,12 +19,18 @@ import org.robolectric.annotation.LooperMode
  * both operator associativity and precedence). This suite does not cover errors (see
  * [MathExpressionParserTest] for those tests), nor algebraic expressions (see
  * [AlgebraicExpressionParserTest]).
+ *
+ * Further, many of the tests also verify that the expression evaluates to the correct value. This
+ * suite's goal is not to test that the evaluator works functionally but, rather, that it works
+ * practically. There are targeted tests designed to fail for the evaluator if issues are
+ * introduced (see [NumericExpressionEvaluatorTest]).
  */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class NumericExpressionParserTest {
+
   @Test
   fun testParse_singleInteger_returnsExpressionWithConstant() {
     val expression = parseNumericExpressionWithAllErrors("1")
@@ -34,6 +40,7 @@ class NumericExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(1)
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(1)
   }
 
   @Test
@@ -45,6 +52,7 @@ class NumericExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(2)
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(2)
   }
 
   @Test
@@ -56,6 +64,7 @@ class NumericExpressionParserTest {
         withValueThat().isIntegerThat().isEqualTo(732)
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(732)
   }
 
   @Test
@@ -67,6 +76,7 @@ class NumericExpressionParserTest {
         withValueThat().isIrrationalThat().isWithin(1e-5).of(2.5)
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(2.5)
   }
 
   @Test
@@ -87,6 +97,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(3)
   }
 
   @Test
@@ -107,6 +118,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-1)
   }
 
   @Test
@@ -127,6 +139,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-1)
   }
 
   @Test
@@ -147,6 +160,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-1)
   }
 
   @Test
@@ -167,6 +181,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(2)
   }
 
   @Test
@@ -187,6 +202,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(2)
   }
 
   @Test
@@ -206,6 +222,12 @@ class NumericExpressionParserTest {
           }
         }
       }
+    }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(0)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(2)
     }
   }
 
@@ -227,6 +249,12 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(0)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(2)
+    }
   }
 
   @Test
@@ -247,6 +275,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(1)
   }
 
   @Test
@@ -262,6 +291,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-2)
   }
 
   @Test
@@ -277,6 +307,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-2)
   }
 
   @Test
@@ -292,6 +323,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(2)
   }
 
   @Test
@@ -305,6 +337,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(2)
   }
 
   @Test
@@ -320,6 +353,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(1.414213562)
   }
 
   @Test
@@ -335,6 +369,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(1.414213562)
   }
 
   @Test
@@ -365,6 +400,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(7)
   }
 
   @Test
@@ -395,6 +431,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(162)
   }
 
   @Test
@@ -427,6 +464,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(1296)
   }
 
   @Test
@@ -452,6 +490,9 @@ class NumericExpressionParserTest {
         }
       }
     }
+    // Note that this may differ from other calculators since the negation is applied last (others
+    // may interpret it as (-3)^4).
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-81)
   }
 
   @Test
@@ -485,6 +526,12 @@ class NumericExpressionParserTest {
           }
         }
       }
+    }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(0)
+      hasNumeratorThat().isEqualTo(3)
+      hasDenominatorThat().isEqualTo(100000)
     }
   }
 
@@ -520,6 +567,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(300000)
   }
 
   @Test
@@ -545,6 +593,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(9.0)
   }
 
   @Test
@@ -595,6 +644,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-1)
   }
 
   @Test
@@ -645,14 +695,20 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(1)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(4)
+    }
   }
 
   @Test
   fun testParse_nestedExponents_returnsExpWithExponentsAsRightAssociative() {
-    val expression = parseNumericExpressionWithoutOptionalErrors("2^3^4")
+    val expression = parseNumericExpressionWithoutOptionalErrors("2^3^1.5")
 
     // Exponentiation is resolved with right associativity, that is, from right to left. This is
-    // made clearer by grouping: 2^(3^4). Note that this is a specific choice made by the
+    // made clearer by grouping: 2^(3^1.5). Note that this is a specific choice made by the
     // implementation as there's no broad consensus around exponentiation associativity for infix
     // exponentiation. Right associativity is ideal since it more closely matches written-out
     // exponentiation (where the nested exponent is resolved first).
@@ -672,18 +728,19 @@ class NumericExpressionParserTest {
             }
             rightOperand {
               constant {
-                withValueThat().isIntegerThat().isEqualTo(4)
+                withValueThat().isIrrationalThat().isWithin(1e-5).of(1.5)
               }
             }
           }
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(36.660445757)
   }
 
   @Test
   fun testParse_nestedExponents_withGroups_returnsExpWithForcedLeftAssociativeExponent() {
-    val expression = parseNumericExpressionWithAllErrors("(2^3)^4")
+    val expression = parseNumericExpressionWithAllErrors("(2^3)^1.5")
 
     // Nested exponentiation can be "forced" to be left-associative by using a group to explicitly
     // change the order (since groups have higher precedence than exponents).
@@ -707,11 +764,12 @@ class NumericExpressionParserTest {
         }
         rightOperand {
           constant {
-            withValueThat().isIntegerThat().isEqualTo(4)
+            withValueThat().isIrrationalThat().isWithin(1e-5).of(1.5)
           }
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(22.627416998)
   }
 
   @Test
@@ -752,6 +810,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    // Cannot evaluate this expression in real numbers.
   }
 
   @Test
@@ -789,6 +848,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(-3)
   }
 
   @Test
@@ -809,6 +869,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(6)
   }
 
   @Test
@@ -833,6 +894,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(6)
   }
 
   @Test
@@ -865,6 +927,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(6)
   }
 
   @Test
@@ -908,6 +971,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(21)
   }
 
   @Test
@@ -933,6 +997,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(3.464101615)
   }
 
   @Test
@@ -962,6 +1027,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(2.449489743)
   }
 
   @Test
@@ -987,6 +1053,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(2.828427125)
   }
 
   @Test
@@ -1016,6 +1083,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(2.0)
   }
 
   @Test
@@ -1044,6 +1112,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(4.242640687)
   }
 
   @Test
@@ -1086,6 +1155,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(4.898979486)
   }
 
   @Test
@@ -1120,6 +1190,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(5.242640687)
   }
 
   @Test
@@ -1179,6 +1250,12 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(73)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(2)
+    }
   }
 
   @Test
@@ -1215,6 +1292,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(32)
   }
 
   @Test
@@ -1256,6 +1334,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(8192)
   }
 
   @Test
@@ -1357,6 +1436,12 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToRationalThat().apply {
+      hasNegativePropertyThat().isFalse()
+      hasWholeNumberThat().isEqualTo(351)
+      hasNumeratorThat().isEqualTo(1)
+      hasDenominatorThat().isEqualTo(3)
+    }
   }
 
   @Test
@@ -1446,6 +1531,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(956.092045778)
   }
 
   @Test
@@ -1476,6 +1562,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(6)
   }
 
   @Test
@@ -1537,6 +1624,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIntegerThat().isEqualTo(13)
   }
 
   @Test
@@ -1656,6 +1744,7 @@ class NumericExpressionParserTest {
         }
       }
     }
+    assertThat(expression).evaluatesToIrrationalThat().isWithin(1e-5).of(322194.700361352)
   }
 
   @Test

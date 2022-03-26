@@ -22,15 +22,17 @@ import org.oppia.android.testing.math.FractionSubject.Companion.assertThat
  */
 class RealSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: Real
+  private val actual: Real?
 ) : LiteProtoSubject(metadata, actual) {
+  private val nonNullActual by lazy { checkNotNull(actual) { "Expected real to be non-null" } }
+
   /**
    * Returns a [FractionSubject] to test [Real.getRational]. This will fail if the [Real] pertaining
    * to this subject is not of type rational.
    */
   fun isRationalThat(): FractionSubject {
     verifyTypeToBe(Real.RealTypeCase.RATIONAL)
-    return assertThat(actual.rational)
+    return assertThat(nonNullActual.rational)
   }
 
   /**
@@ -39,7 +41,7 @@ class RealSubject private constructor(
    */
   fun isIrrationalThat(): DoubleSubject {
     verifyTypeToBe(Real.RealTypeCase.IRRATIONAL)
-    return assertThat(actual.irrational)
+    return assertThat(nonNullActual.irrational)
   }
 
   /**
@@ -48,17 +50,17 @@ class RealSubject private constructor(
    */
   fun isIntegerThat(): IntegerSubject {
     verifyTypeToBe(Real.RealTypeCase.INTEGER)
-    return assertThat(actual.integer)
+    return assertThat(nonNullActual.integer)
   }
 
   private fun verifyTypeToBe(expected: Real.RealTypeCase) {
-    assertWithMessage("Expected real type to be $expected, not: ${actual.realTypeCase}")
-      .that(actual.realTypeCase)
+    assertWithMessage("Expected real type to be $expected, not: ${nonNullActual.realTypeCase}")
+      .that(nonNullActual.realTypeCase)
       .isEqualTo(expected)
   }
 
   companion object {
     /** Returns a new [RealSubject] to verify aspects of the specified [Real] value. */
-    fun assertThat(actual: Real): RealSubject = assertAbout(::RealSubject).that(actual)
+    fun assertThat(actual: Real?): RealSubject = assertAbout(::RealSubject).that(actual)
   }
 }
