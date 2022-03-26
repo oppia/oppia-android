@@ -11,8 +11,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder
-import org.oppia.android.domain.util.FLOAT_EQUALITY_INTERVAL
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.util.math.FLOAT_EQUALITY_INTERVAL
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

@@ -29,6 +29,7 @@ import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.util.math.toAnswerString
 
 /**
  * Returns a parsable string representation of a user-submitted answer version of this

@@ -189,7 +189,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt",
     "src/main/java/org/oppia/android/app/options/TextSizeItemViewModel.kt",
-    "src/main/java/org/oppia/android/app/parser/StringToFractionParser.kt",
+    "src/main/java/org/oppia/android/app/parser/FractionParsingUiError.kt",
     "src/main/java/org/oppia/android/app/parser/StringToNumberParser.kt",
     "src/main/java/org/oppia/android/app/parser/StringToRatioParser.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
@@ -658,6 +658,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
         # TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
         # we can then directly exclude debug files from the build and thus won't be requiring this module.
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",

@@ -62,6 +62,7 @@ oppia_proto_library(
     name = "interaction_object_proto",
     srcs = ["interaction_object.proto"],
     visibility = ["//:oppia_api_visibility"],
+    deps = [":math_proto"],
 )
 
 java_lite_proto_library(
@@ -80,6 +81,17 @@ java_lite_proto_library(
     name = "languages_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":languages_proto"],
+)
+
+oppia_proto_library(
+    name = "math_proto",
+    srcs = ["math.proto"],
+)
+
+java_lite_proto_library(
+    name = "math_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":math_proto"],
 )
 
 oppia_proto_library(

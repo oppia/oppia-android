@@ -5,7 +5,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.domain.util.approximatelyEquals
+import org.oppia.android.util.math.approximatelyEquals
 import javax.inject.Inject
 
 /**

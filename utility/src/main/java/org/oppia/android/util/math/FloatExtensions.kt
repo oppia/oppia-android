@@ -1,9 +1,9 @@
-package org.oppia.android.domain.util
+package org.oppia.android.util.math
 
 import kotlin.math.abs
 
 /** The error margin used for float equality by [Float.approximatelyEquals]. */
-public const val FLOAT_EQUALITY_INTERVAL = 1e-5
+const val FLOAT_EQUALITY_INTERVAL = 1e-5
 
 /** Returns whether this float approximately equals another based on a consistent epsilon value. */
 fun Float.approximatelyEquals(other: Float): Boolean {

@@ -1,16 +1,16 @@
-package org.oppia.android.domain.util
+package org.oppia.android.util.math
 
 import org.oppia.android.app.model.Fraction
 
 /**
- * Returns a float version of this fraction.
+ * Returns a [Double] version of this fraction.
  *
  * See: https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L73.
  */
-fun Fraction.toFloat(): Float {
-  val totalParts = ((wholeNumber * denominator) + numerator).toFloat()
-  val floatVal = totalParts / denominator.toFloat()
-  return if (isNegative) -floatVal else floatVal
+fun Fraction.toDouble(): Double {
+  val totalParts = ((wholeNumber.toDouble() * denominator.toDouble()) + numerator.toDouble())
+  val doubleVal = totalParts / denominator.toDouble()
+  return if (isNegative) -doubleVal else doubleVal
 }
 
 /**
@@ -20,8 +20,10 @@ fun Fraction.toFloat(): Float {
  */
 fun Fraction.toSimplestForm(): Fraction {
   val commonDenominator = gcd(numerator, denominator)
-  return toBuilder().setNumerator(numerator / commonDenominator)
-    .setDenominator(denominator / commonDenominator).build()
+  return toBuilder().apply {
+    numerator = this@toSimplestForm.numerator / commonDenominator
+    denominator = this@toSimplestForm.denominator / commonDenominator
+  }.build()
 }
 
 /** Returns the greatest common divisor between two integers. */
