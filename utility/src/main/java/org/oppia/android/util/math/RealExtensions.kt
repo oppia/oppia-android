@@ -10,6 +10,13 @@ import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 /**
+ * [Comparator] for [Real]s that ensures two reals can be compared even if they are different types.
+ *
+ * Note that no reliance should be placed on how negative zeros for doubles and fractions behave.
+ */
+val REAL_COMPARATOR: Comparator<Real> by lazy { Comparator.comparing(Real::toDouble) }
+
+/**
  * Returns whether this [Real] is explicitly a rational type (i.e. a fraction).
  *
  * This returns false if the real is an integer despite that being mathematically rational.

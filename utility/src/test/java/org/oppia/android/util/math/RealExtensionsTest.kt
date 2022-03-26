@@ -15,7 +15,15 @@ import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.robolectric.annotation.LooperMode
 
-/** Tests for [Real] extensions. */
+/**
+ * Tests for [Real] extensions.
+ *
+ * Note that this suite makes special use of parameterized tests to significantly reduce the length
+ * of the suite, even partially at the expensive of good testing practices (since many of the
+ * parameterized tests are actually verifying multiple behaviors). Given the generally trivial
+ * nature of these behaviors, this trade-off is considered acceptable. That being said, this pattern
+ * should only be replicated elsewhere in the codebase after thorough consideration.
+ */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -1775,6 +1783,203 @@ class RealExtensionsTest {
     val result = sqrt(real)
 
     assertThat(result).isIrrationalThat().isWithin(1e-5).of(1.772004515)
+  }
+
+  /*
+   * Tests for REAL_COMPARATOR.
+   *
+   * Note that these specifically don't try to compare against negative doubles since the comparison
+   * logic is a bit unexpected (see https://stackoverflow.com/a/45544483).
+   */
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsInt=0", "expInt=0"),
+    Iteration("-2<0", "lhsInt=-2", "rhsInt=0", "expInt=-1"),
+    Iteration("-5<-2", "lhsInt=-5", "rhsInt=-2", "expInt=-1"),
+    Iteration("-2>-5", "lhsInt=-2", "rhsInt=-5", "expInt=1"),
+    Iteration("2>0", "lhsInt=2", "rhsInt=0", "expInt=1"),
+    Iteration("5>2", "lhsInt=5", "rhsInt=2", "expInt=1"),
+    Iteration("2<5", "lhsInt=2", "rhsInt=5", "expInt=-1"),
+    Iteration("-2<5", "lhsInt=-2", "rhsInt=5", "expInt=-1"),
+    Iteration("5>-2", "lhsInt=5", "rhsInt=-2", "expInt=1")
+  )
+  fun testComparator_intAndInt_returnsCorrectComparisonInt() {
+    val lhsValue = createIntegerReal(lhsInt)
+    val rhsValue = createIntegerReal(rhsInt)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsFrac=0", "expInt=0"),
+    Iteration("-2<0", "lhsInt=-2", "rhsFrac=0", "expInt=-1"),
+    Iteration("-5<-2", "lhsInt=-5", "rhsFrac=-2", "expInt=-1"),
+    Iteration("-5<-1/2", "lhsInt=-5", "rhsFrac=-1/2", "expInt=-1"),
+    Iteration("-2>-5", "lhsInt=-2", "rhsFrac=-5", "expInt=1"),
+    Iteration("-1>-3/2", "lhsInt=-1", "rhsFrac=-3/2", "expInt=1"),
+    Iteration("2>0", "lhsInt=2", "rhsFrac=0", "expInt=1"),
+    Iteration("5>2", "lhsInt=5", "rhsFrac=2", "expInt=1"),
+    Iteration("2<5", "lhsInt=2", "rhsFrac=5", "expInt=-1"),
+    Iteration("2<7/2", "lhsInt=2", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("5>3/2", "lhsInt=5", "rhsFrac=3/2", "expInt=1"),
+    Iteration("-2<5", "lhsInt=-2", "rhsFrac=5", "expInt=-1"),
+    Iteration("-2<3/2", "lhsInt=-2", "rhsFrac=3/2", "expInt=-1"),
+    Iteration("5>-2", "lhsInt=5", "rhsFrac=-2", "expInt=1"),
+    Iteration("5>-3/2", "lhsInt=5", "rhsFrac=-3/2", "expInt=1")
+  )
+  fun testComparator_intAndFraction_returnsCorrectComparisonInt() {
+    val lhsValue = createIntegerReal(lhsInt)
+    val rhsValue = createRationalReal(rhsFrac)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsDouble=0.0", "expInt=0"),
+    Iteration("-2<0", "lhsInt=-2", "rhsDouble=0.0", "expInt=-1"),
+    Iteration("-5<-3.14", "lhsInt=-5", "rhsDouble=-3.14", "expInt=-1"),
+    Iteration("-2>-6.28", "lhsInt=-2", "rhsDouble=-6.28", "expInt=1"),
+    Iteration("2>0", "lhsInt=2", "rhsDouble=0.0", "expInt=1"),
+    Iteration("5>3.14", "lhsInt=5", "rhsDouble=3.14", "expInt=1"),
+    Iteration("2<6.28", "lhsInt=2", "rhsDouble=6.28", "expInt=-1"),
+    Iteration("-2<3.14", "lhsInt=-2", "rhsDouble=3.14", "expInt=-1"),
+    Iteration("2>-3.14", "lhsInt=2", "rhsDouble=-3.14", "expInt=1")
+  )
+  fun testComparator_intAndDouble_returnsCorrectComparisonInt() {
+    val lhsValue = createIntegerReal(lhsInt)
+    val rhsValue = createIrrationalReal(rhsDouble)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsInt=0", "expInt=0"),
+    Iteration("-3/2<0", "lhsFrac=-3/2", "rhsInt=0", "expInt=-1"),
+    Iteration("-7/2<-3", "lhsFrac=-7/2", "rhsInt=-3", "expInt=-1"),
+    Iteration("-3/2>-5", "lhsFrac=-3/2", "rhsInt=-5", "expInt=1"),
+    Iteration("3/2>0", "lhsFrac=3/2", "rhsInt=0", "expInt=1"),
+    Iteration("7/2>3", "lhsFrac=7/2", "rhsInt=3", "expInt=1"),
+    Iteration("3/2<5", "lhsFrac=3/2", "rhsInt=5", "expInt=-1"),
+    Iteration("-3/2<3", "lhsFrac=-3/2", "rhsInt=3", "expInt=-1"),
+    Iteration("3/2>-3", "lhsFrac=3/2", "rhsInt=-3", "expInt=1")
+  )
+  fun testComparator_fractionAndInt_returnsCorrectComparisonInt() {
+    val lhsValue = createRationalReal(lhsFrac)
+    val rhsValue = createIntegerReal(rhsInt)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsFrac=0", "expInt=0"),
+    Iteration("-3/2<0", "lhsFrac=-3/2", "rhsFrac=0", "expInt=-1"),
+    Iteration("-7/2<-3/2", "lhsFrac=-7/2", "rhsFrac=-3/2", "expInt=-1"),
+    Iteration("3/2>0", "lhsFrac=3/2", "rhsFrac=0", "expInt=1"),
+    Iteration("7/2>3/2", "lhsFrac=7/2", "rhsFrac=3/2", "expInt=1"),
+    Iteration("3/2<7/2", "lhsFrac=3/2", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("-3/2<3/2", "lhsFrac=-3/2", "rhsFrac=3/2", "expInt=-1"),
+    Iteration("3/2>-3/2", "lhsFrac=3/2", "rhsFrac=-3/2", "expInt=1")
+  )
+  fun testComparator_fractionAndFraction_returnsCorrectComparisonInt() {
+    val lhsValue = createRationalReal(lhsFrac)
+    val rhsValue = createRationalReal(rhsFrac)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsDouble=0.0", "expInt=0"),
+    Iteration("-3/2<0", "lhsFrac=-3/2", "rhsDouble=0.0", "expInt=-1"),
+    Iteration("-7/2<-3.14", "lhsFrac=-7/2", "rhsDouble=-3.14", "expInt=-1"),
+    Iteration("3/2>0", "lhsFrac=3/2", "rhsDouble=0.0", "expInt=1"),
+    Iteration("7/2>3.14", "lhsFrac=7/2", "rhsDouble=3.14", "expInt=1"),
+    Iteration("3/2<3.14", "lhsFrac=3/2", "rhsDouble=3.14", "expInt=-1"),
+    Iteration("-3/2<3.14", "lhsFrac=-3/2", "rhsDouble=3.14", "expInt=-1"),
+    Iteration("3/2>-3.14", "lhsFrac=3/2", "rhsDouble=-3.14", "expInt=1")
+  )
+  fun testComparator_fractionAndDouble_returnsCorrectComparisonInt() {
+    val lhsValue = createRationalReal(lhsFrac)
+    val rhsValue = createIrrationalReal(rhsDouble)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsDouble=0.0", "rhsInt=0", "expInt=0"),
+    Iteration("-3.14<0", "lhsDouble=-3.14", "rhsInt=0", "expInt=-1"),
+    Iteration("-6.28<-4", "lhsDouble=-6.28", "rhsInt=-4", "expInt=-1"),
+    Iteration("3.14>0", "lhsDouble=3.14", "rhsInt=0", "expInt=1"),
+    Iteration("6.28>4", "lhsDouble=6.28", "rhsInt=4", "expInt=1"),
+    Iteration("3.14<4", "lhsDouble=3.14", "rhsInt=4", "expInt=-1"),
+    Iteration("-3.14<4", "lhsDouble=-3.14", "rhsInt=4", "expInt=-1"),
+    Iteration("3.14>-4", "lhsDouble=3.14", "rhsInt=-4", "expInt=1")
+  )
+  fun testComparator_doubleAndInt_returnsCorrectComparisonInt() {
+    val lhsValue = createIrrationalReal(lhsDouble)
+    val rhsValue = createIntegerReal(rhsInt)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsDouble=0.0", "rhsFrac=0", "expInt=0"),
+    Iteration("-3.14<0", "lhsDouble=-3.14", "rhsFrac=0", "expInt=-1"),
+    Iteration("-6.28<-7/2", "lhsDouble=-6.28", "rhsFrac=-7/2", "expInt=-1"),
+    Iteration("3.14>0", "lhsDouble=3.14", "rhsFrac=0", "expInt=1"),
+    Iteration("6.28>7/2", "lhsDouble=6.28", "rhsFrac=7/2", "expInt=1"),
+    Iteration("3.14<7/2", "lhsDouble=3.14", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("-3.14<7/2", "lhsDouble=-3.14", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("3.14>-7/2", "lhsDouble=3.14", "rhsFrac=-7/2", "expInt=1")
+  )
+  fun testComparator_doubleAndFraction_returnsCorrectComparisonInt() {
+    val lhsValue = createIrrationalReal(lhsDouble)
+    val rhsValue = createRationalReal(rhsFrac)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsDouble=0.0", "rhsDouble=0.0", "expInt=0"),
+    Iteration("-3.14<0", "lhsDouble=-3.14", "rhsDouble=0.0", "expInt=-1"),
+    Iteration("-6.28<-3.14", "lhsDouble=-6.28", "rhsDouble=-3.14", "expInt=-1"),
+    Iteration("3.14>0", "lhsDouble=3.14", "rhsDouble=0.0", "expInt=1"),
+    Iteration("6.28>3.14", "lhsDouble=6.28", "rhsDouble=3.14", "expInt=1"),
+    Iteration("3.14<6.28", "lhsDouble=3.14", "rhsDouble=6.28", "expInt=-1"),
+    Iteration("-3.14<6.28", "lhsDouble=-3.14", "rhsDouble=6.28", "expInt=-1"),
+    Iteration("3.14>-6.28", "lhsDouble=3.14", "rhsDouble=-6.28", "expInt=1")
+  )
+  fun testComparator_doubleAndDouble_returnsCorrectComparisonInt() {
+    val lhsValue = createIrrationalReal(lhsDouble)
+    val rhsValue = createIrrationalReal(rhsDouble)
+
+    val comparison = REAL_COMPARATOR.compare(lhsValue, rhsValue)
+
+    assertThat(comparison).isEqualTo(expInt)
   }
 
   private fun createRationalReal(rawFractionExpression: String) =

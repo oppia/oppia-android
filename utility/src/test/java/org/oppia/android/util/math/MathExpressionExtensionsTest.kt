@@ -19,7 +19,8 @@ import org.robolectric.annotation.LooperMode
  * Note that this suite only verifies that the extensions work at a high-level. More specific
  * verifications for operations like LaTeX conversion and expression evaluation are part of more
  * targeted test suites such as [ExpressionToLatexConverterTest] and
- * [NumericExpressionEvaluatorTest].
+ * [NumericExpressionEvaluatorTest]. For comparable operations, see
+ * [ExpressionToComparableOperationConverterTest].
  */
 // FunctionName: test names are conventionally named with underscores.
 // SameParameterValue: tests should have specific context included/excluded for readability.
@@ -70,6 +71,28 @@ class MathExpressionExtensionsTest {
     val result = expression.evaluateAsNumericExpression()
 
     assertThat(result).isIrrationalThat().isWithin(1e-5).of(322194.700361352)
+  }
+
+  @Test
+  fun testToComparableOperation_twoAlgebraicExpressions_differentOrders_returnsEqualOperations() {
+    val expression1 = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2")
+    val expression2 = parseAlgebraicExpression("sqrt(x+(1+2))+2/x+x-(-9+8*-7-3y^2x)")
+
+    val operation1 = expression1.toComparableOperation()
+    val operation2 = expression2.toComparableOperation()
+
+    assertThat(operation1).isEqualTo(operation2)
+  }
+
+  @Test
+  fun testToComparableOperation_twoAlgebraicExpressions_differentValue_returnsUnequalOperations() {
+    val expression1 = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2")
+    val expression2 = parseAlgebraicExpression("sqrt(x+(1+3))+2/x+x-(-9+8*-7-3y^2x)")
+
+    val operation1 = expression1.toComparableOperation()
+    val operation2 = expression2.toComparableOperation()
+
+    assertThat(operation1).isNotEqualTo(operation2)
   }
 
   private companion object {
