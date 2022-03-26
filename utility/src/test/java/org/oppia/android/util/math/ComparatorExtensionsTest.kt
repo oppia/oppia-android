@@ -205,6 +205,180 @@ class ComparatorExtensionsTest {
   }
 
   @Test
+  fun testCompareIterablesReversed_emptyList_emptyList_returnsZero() {
+    val leftList = listOf<String>()
+    val rightList = listOf<String>()
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(0)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_singletonList_emptyList_returnsNegativeOne() {
+    val leftList = listOf("1")
+    val rightList = listOf<String>()
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_emptyList_singletonList_returnsOne() {
+    val leftList = listOf<String>()
+    val rightList = listOf("1")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_singletonList_singletonList_sameElems_returnsZero() {
+    val leftList = listOf("1")
+    val rightList = listOf("1")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(0)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_twoItemList_singletonList_commonElem_returnsNegativeOne() {
+    val leftList = listOf("1", "2")
+    val rightList = listOf("1")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_singletonList_twoItemList_commonElem_returnsOne() {
+    val leftList = listOf("1")
+    val rightList = listOf("1", "2")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_equalSizeLists_sameItems_sameOrder_returnsZero() {
+    val leftList = listOf("1", "2")
+    val rightList = listOf("1", "2")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(0)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_equalSizeLists_sameItems_differentOrder_returnsZero() {
+    val leftList = listOf("1", "2")
+    val rightList = listOf("2", "1")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    // Order shouldn't matter.
+    assertThat(compareResult).isEqualTo(0)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list223_list123_returnsNegativeOne() {
+    val leftList = listOf("2", "2", "3")
+    val rightList = listOf("1", "2", "3")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list123_list223_returnsOne() {
+    val leftList = listOf("1", "2", "3")
+    val rightList = listOf("2", "2", "3")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list123_list11_returnsNegativeOne() {
+    val leftList = listOf("1", "2", "3")
+    val rightList = listOf("1", "1")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list123_list13_returnsNegativeOne() {
+    val leftList = listOf("1", "2", "3")
+    val rightList = listOf("1", "3")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list223_list1_returnsNegativeOne() {
+    val leftList = listOf("1", "2", "3")
+    val rightList = listOf("1")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list123_list2_returnsNegativeNegativeOne() {
+    val leftList = listOf("1", "2", "3")
+    val rightList = listOf("2")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list22_list2_returnsNegativeOne() {
+    val leftList = listOf("2", "2")
+    val rightList = listOf("2")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    // The first list has an extra element. This also verifies that duplicates are correctly
+    // considered during comparison.
+    assertThat(compareResult).isEqualTo(-1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list2_list22_returnsOne() {
+    val leftList = listOf("2")
+    val rightList = listOf("2", "2")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    // The second list has an extra element.
+    assertThat(compareResult).isEqualTo(1)
+  }
+
+  @Test
+  fun testCompareIterablesReversed_list22_list22_returnsZero() {
+    val leftList = listOf("2", "2")
+    val rightList = listOf("2", "2")
+
+    val compareResult = stringComparator.compareIterablesReversed(leftList, rightList)
+
+    assertThat(compareResult).isEqualTo(0)
+  }
+
+  @Test
   fun testCompareProtos_defaultAndDefault_returnsZero() {
     val leftProto = TestMessage.newBuilder().build()
     val rightProto = TestMessage.newBuilder().build()

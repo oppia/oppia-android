@@ -99,6 +99,24 @@ oppia_android_test(
 )
 
 oppia_android_test(
+    name = "ExpressionToPolynomialConverterTest",
+    srcs = ["ExpressionToPolynomialConverterTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.ExpressionToPolynomialConverterTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+    ],
+)
+
+oppia_android_test(
     name = "FloatExtensionsTest",
     srcs = ["FloatExtensionsTest.kt"],
     custom_package = "org.oppia.android.util.math",
@@ -160,6 +178,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
         "//testing/src/main/java/org/oppia/android/testing/math:real_subject",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -275,8 +294,9 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_junit_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
-        "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",

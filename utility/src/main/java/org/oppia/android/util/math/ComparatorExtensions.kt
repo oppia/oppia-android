@@ -14,11 +14,34 @@ import com.google.protobuf.MessageLite
  * all of their items are equal per this [Comparator], including duplicates.
  */
 fun <U> Comparator<U>.compareIterables(first: Iterable<U>, second: Iterable<U>): Int {
+  return compareIterablesInternal(first, second, reverseItemSort = false)
+}
+
+/**
+ * Compares two [Iterable]s based on an item [Comparator] and returns the result, in much the same
+ * way as [compareIterables] except this reverses the result (that is, [first] will be considered
+ * less than [second] if it's larger).
+ *
+ * This should be used in place of a standard 'reversed()' since it will properly reverse (both the
+ * internal sorting and the comparison needs to be reversed in order for the reversal to be
+ * correct).
+ */
+fun <U> Comparator<U>.compareIterablesReversed(first: Iterable<U>, second: Iterable<U>): Int {
+  // Note that first & second are reversed here.
+  return compareIterablesInternal(second, first, reverseItemSort = true)
+}
+
+private fun <U> Comparator<U>.compareIterablesInternal(
+  first: Iterable<U>,
+  second: Iterable<U>,
+  reverseItemSort: Boolean
+): Int {
   // Reference: https://stackoverflow.com/a/30107086.
-  val firstIter = first.sortedWith(this).iterator()
-  val secondIter = second.sortedWith(this).iterator()
+  val itemComparator = if (reverseItemSort) reversed() else this
+  val firstIter = first.sortedWith(itemComparator).iterator()
+  val secondIter = second.sortedWith(itemComparator).iterator()
   while (firstIter.hasNext() && secondIter.hasNext()) {
-    val comparison = this.compare(firstIter.next(), secondIter.next())
+    val comparison = this.compare(firstIter.next(), secondIter.next()).coerceIn(-1..1)
     if (comparison != 0) return comparison // Found a different item.
   }
 

@@ -124,6 +124,7 @@ kt_android_library(
     deps = [
         ":expression_to_comparable_operation_converter",
         ":expression_to_latex_converter",
+        ":expression_to_polynomial_converter",
         ":numeric_expression_evaluator",
         "//model/src/main/proto:math_java_proto_lite",
     ],
@@ -135,6 +136,7 @@ kt_android_library(
         "PolynomialExtensions.kt",
     ],
     deps = [
+        ":comparator_extensions",
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
@@ -184,6 +186,18 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
+        ":real_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "expression_to_polynomial_converter",
+    srcs = [
+        "ExpressionToPolynomialConverter.kt",
+    ],
+    deps = [
+        ":polynomial_extensions",
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
     ],
