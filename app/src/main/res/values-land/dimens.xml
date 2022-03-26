@@ -482,4 +482,8 @@
   <!-- OptionAudioLanguage -->
   <dimen name="option_audio_language_padding_start">36dp</dimen>
   <dimen name="option_audio_language_padding_end">36dp</dimen>
+
+  <!-- OptionsStoryTextSize -->
+  <dimen name="option_story_text_size_padding_start">36dp</dimen>
+  <dimen name="option_story_text_size_padding_end">36dp</dimen>
 </resources>
