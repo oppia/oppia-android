@@ -283,3 +283,29 @@ message ComparableOperation {
     }
   }
 }
+
+// Represents a polynomial, e.g.: 2x^3+3x-y+7.
+message Polynomial {
+  // The list of terms in this polynomial, e.g. the '2x^3', '3x', '-y', and '-7' in 2x^3+3x-y+7.
+  repeated Term term = 1;
+
+  // Represents a polynomial term, i.e. a real coefficient multiplied by one or more variables, each
+  // of which may have a power >= 1.
+  message Term {
+    // The coefficient of this term (which may be zero or negative), e.g. '2' in '2x^3'.
+    Real coefficient = 1;
+
+    // The variables of this term. This list can be zero or more variables long (where zero
+    // variables indicate a constant polynomial term).
+    repeated Variable variable = 2;
+
+    // A variable within the term, that is, a variable with a positive power.
+    message Variable {
+      // The name of the variable, e.g. 'x' in 'x^3'.
+      string name = 1;
+
+      // The power of the variable, e.g. '3' in 'x^3'.
+      uint32 power = 2;
+    }
+  }
+}
