@@ -75,6 +75,23 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "math_parsing_error_subject",
+    testonly = True,
+    srcs = [
+        "MathParsingErrorSubject.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        ":math_expression_subject",
+        ":real_subject",
+        "//third_party:com_google_truth_truth",
+        "//utility/src/main/java/org/oppia/android/util/math:math_parsing_error",
+    ],
+)
+
+kt_android_library(
     name = "polynomial_subject",
     testonly = True,
     srcs = [

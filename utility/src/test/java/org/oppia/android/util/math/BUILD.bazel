@@ -5,6 +5,44 @@ Tests for general-purpose mathematics utilities.
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
+    name = "AlgebraicEquationParserTest",
+    srcs = ["AlgebraicEquationParserTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.AlgebraicEquationParserTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:math_equation_subject",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+    ],
+)
+
+oppia_android_test(
+    name = "AlgebraicExpressionParserTest",
+    srcs = ["AlgebraicExpressionParserTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.AlgebraicExpressionParserTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:math_expression_subject",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+    ],
+)
+
+oppia_android_test(
     name = "FloatExtensionsTest",
     srcs = ["FloatExtensionsTest.kt"],
     custom_package = "org.oppia.android.util.math",
@@ -59,6 +97,26 @@ oppia_android_test(
 )
 
 oppia_android_test(
+    name = "MathExpressionParserTest",
+    srcs = ["MathExpressionParserTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.MathExpressionParserTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_junit_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/math:math_parsing_error_subject",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+    ],
+)
+
+oppia_android_test(
     name = "MathTokenizerTest",
     srcs = ["MathTokenizerTest.kt"],
     custom_package = "org.oppia.android.util.math",
@@ -75,6 +133,25 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/math:tokenizer",
+    ],
+)
+
+oppia_android_test(
+    name = "NumericExpressionParserTest",
+    srcs = ["NumericExpressionParserTest.kt"],
+    custom_package = "org.oppia.android.util.math",
+    test_class = "org.oppia.android.util.math.NumericExpressionParserTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:math_expression_subject",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     ],
 )
 

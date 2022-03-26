@@ -167,12 +167,19 @@ class MathExpressionSubject private constructor(
      *
      * This method will fail if the expression corresponding to the subject is not a multiplication
      * operation. See [BinaryOperationComparator] for example syntax.
+     *
+     * This verifies that the multiplication operation is explicit by default, and this behavior can
+     * be overwritten using [isImplicit].
      */
-    fun multiplication(init: BinaryOperationComparator.() -> Unit) {
+    fun multiplication(isImplicit: Boolean = false, init: BinaryOperationComparator.() -> Unit) {
       BinaryOperationComparator.createFromExpression(
         expression,
         expectedOperator = MathBinaryOperation.Operator.MULTIPLY
-      ).also(init)
+      ).also {
+        assertWithMessage(
+          "Expected multiplication to be ${if (isImplicit) "implicit" else "explicit" }"
+        ).that(expression.binaryOperation.isImplicit).isEqualTo(isImplicit)
+      }.also(init)
     }
 
     /**
