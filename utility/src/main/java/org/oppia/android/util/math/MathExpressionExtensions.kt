@@ -3,6 +3,13 @@ package org.oppia.android.util.math
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.BINARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.CONSTANT
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.EXPRESSIONTYPE_NOT_SET
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.FUNCTION_CALL
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.GROUP
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.UNARY_OPERATION
+import org.oppia.android.app.model.MathExpression.ExpressionTypeCase.VARIABLE
 import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Real
 import org.oppia.android.util.math.ExpressionToComparableOperationConverter.Companion.convertToComparableOperation
@@ -46,3 +53,32 @@ fun MathExpression.toComparableOperation(): ComparableOperation = convertToCompa
  * See [reduceToPolynomial] for details.
  */
 fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()
+
+/**
+ * Returns whether this [MathExpression] approximately equals another, that is, that it fully
+ * matches in its AST representation but all constants are compared using
+ * [Real.isApproximatelyEqualTo]. Further, this does not check parser markers when considering
+ * equality.
+ */
+fun MathExpression.isApproximatelyEqualTo(other: MathExpression): Boolean {
+  if (expressionTypeCase != other.expressionTypeCase) return false
+  return when (expressionTypeCase) {
+    CONSTANT -> constant.isApproximatelyEqualTo(other.constant)
+    VARIABLE -> variable == other.variable
+    BINARY_OPERATION -> {
+      binaryOperation.operator == other.binaryOperation.operator &&
+        binaryOperation.leftOperand.isApproximatelyEqualTo(other.binaryOperation.leftOperand) &&
+        binaryOperation.rightOperand.isApproximatelyEqualTo(other.binaryOperation.rightOperand)
+    }
+    UNARY_OPERATION -> {
+      unaryOperation.operator == other.unaryOperation.operator &&
+        unaryOperation.operand.isApproximatelyEqualTo(other.unaryOperation.operand)
+    }
+    FUNCTION_CALL -> {
+      functionCall.functionType == other.functionCall.functionType &&
+        functionCall.argument.isApproximatelyEqualTo(other.functionCall.argument)
+    }
+    GROUP -> group.isApproximatelyEqualTo(other.group)
+    EXPRESSIONTYPE_NOT_SET, null -> true
+  }
+}

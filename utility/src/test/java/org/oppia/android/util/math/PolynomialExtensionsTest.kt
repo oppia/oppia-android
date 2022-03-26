@@ -83,6 +83,14 @@ class PolynomialExtensionsTest {
       rational = THREE_FRACTION
     }.build()
 
+    private val ONE_POINT_FIVE_REAL = Real.newBuilder().apply {
+      irrational = 1.5
+    }.build()
+
+    private val TWO_DOUBLE_REAL = Real.newBuilder().apply {
+      irrational = 2.0
+    }.build()
+
     private val PI_REAL = Real.newBuilder().apply {
       irrational = 3.14
     }.build()
@@ -1251,6 +1259,810 @@ class PolynomialExtensionsTest {
         }
       }
     }
+  }
+
+  /* Equality checks. Note that these are symmetrical to reduce the number of needed test cases. */
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsDefault_secondIsDefault_returnsTrue() {
+    val first = Polynomial.getDefaultInstance()
+    val second = Polynomial.getDefaultInstance()
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsDefault_secondIsConstPolyOfInt2_returnsFalse() {
+    val first = Polynomial.getDefaultInstance()
+    val second = createPolynomial(createTerm(coefficient = TWO_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsConstPolyOfInt2_secondIsDefault_returnsFalse() {
+    val first = createPolynomial(createTerm(coefficient = TWO_REAL))
+    val second = Polynomial.getDefaultInstance()
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt2_secondIsPolyOfInt2_returnsTrue() {
+    val first = createPolynomial(createTerm(coefficient = TWO_REAL))
+    val second = createPolynomial(createTerm(coefficient = TWO_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt2_secondIsPolyOfInt3_returnsFalse() {
+    val first = createPolynomial(createTerm(coefficient = TWO_REAL))
+    val second = createPolynomial(createTerm(coefficient = THREE_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt3_secondIsPolyOfFrac3_returnsTrue() {
+    val first = createPolynomial(createTerm(coefficient = THREE_REAL))
+    val second = createPolynomial(createTerm(coefficient = THREE_FRACTION_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // These are equal since reals are fully evaluated for polynomials.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt3_secondIsPolyOfFrac3Ones_returnsTrue() {
+    val first = createPolynomial(createTerm(coefficient = THREE_REAL))
+    val second = createPolynomial(createTerm(coefficient = THREE_ONES_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // These are equal since reals are fully evaluated for polynomials.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt3_secondIsPolyOfFracOneAndOneHalf_returnsFalse() {
+    val first = createPolynomial(createTerm(coefficient = THREE_REAL))
+    val second = createPolynomial(createTerm(coefficient = ONE_AND_ONE_HALF_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt2_secondIsPolyOfDouble2_returnsTrue() {
+    val first = createPolynomial(createTerm(coefficient = TWO_REAL))
+    val second = createPolynomial(createTerm(coefficient = TWO_DOUBLE_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // These are equal since reals are fully evaluated for polynomials.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt2_secondIsPolyOfDouble2PlusMargin_returnsTrue() {
+    val first = createPolynomial(createTerm(coefficient = TWO_REAL))
+    val second = createPolynomial(
+      createTerm(
+        coefficient = Real.newBuilder().apply {
+          irrational = 2.00000000000000001
+        }.build()
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // These are equal since reals are fully evaluated with a margin check.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfInt3_secondIsPolyOfDoublePi_returnsFalse() {
+    val first = createPolynomial(createTerm(coefficient = THREE_REAL))
+    val second = createPolynomial(createTerm(coefficient = PI_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsDoubleOnePointFive_secondIsFracOneAndOneHalf_returnsTrue() {
+    val first = createPolynomial(createTerm(coefficient = ONE_POINT_FIVE_REAL))
+    val second = createPolynomial(createTerm(coefficient = ONE_AND_ONE_HALF_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // These are equal since reals are fully evaluated for polynomials.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsDoublePointThrees_secondIsFracOneThird_returnsTrue() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = Real.newBuilder().apply {
+          irrational = 0.33333333333333333
+        }.build()
+      )
+    )
+    val second = createPolynomial(createTerm(coefficient = ONE_THIRD_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // These are equal since reals are fully evaluated with a margin check.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarX_secondIsPolyOfVarX_returnsTrue() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarX_secondIsPolyOfVarY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarX_secondIsPolyOfInt2_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+    )
+    val second = createPolynomial(createTerm(coefficient = TWO_REAL))
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarX_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // A variable is missing.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // A variable is missing.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarsXy_returnsTrue() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarsYx_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "y", power = 1),
+        createVariable(name = "x", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Order matters (which is why the function recommends only comparing sorted polynomials).
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsXSquared_returnsTrue() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsNegativeXSquared_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = -ONE, createVariable(name = "x", power = 2))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Coefficient sign differs.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsTwoXSquared_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 2))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Coefficient value is different.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsX_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The powers don't match.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsXCubed_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 3))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The powers don't match.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsXSquaredY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // There's an extra variable in one of the polynomials.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXSquaredY_returnsTrue() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXy_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // x's power isn't correct.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXYSquared_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 1),
+        createVariable(name = "y", power = 2)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The wrong variable is squared.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXSquaredYSquared_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 2)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // y is incorrectly also squared.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsYXSquared_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "y", power = 1),
+        createVariable(name = "x", power = 2)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The terms are out of order.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsNegativeXSquaredY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = -ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The sign is incorrect on the second polynomial.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsTwoXSquaredY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(
+        coefficient = ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+    val second = createPolynomial(
+      createTerm(
+        coefficient = TWO_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      )
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The coefficient is incorrect on the second polynomial.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsXPlusY_returnsTrue() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsXPlusYSquared_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 2))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The second polynomial's y power doesn't match.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsXPlusFiveY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = FIVE_REAL, createVariable(name = "y", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The second polynomial's y coefficient doesn't match.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsNegativeXPlusY_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
+      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // The second polynomial's x coefficient negativity doesn't match.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_allTermsSame_returnsTrue() {
+    val polynomial = createPolynomial(
+      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+      createTerm(
+        coefficient = FIVE_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 3),
+        createVariable(name = "z", power = 1)
+      ),
+      createTerm(
+        coefficient = -PI_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      ),
+      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+      createTerm(coefficient = SEVEN_REAL)
+    )
+
+    val result = polynomial.isApproximatelyEqualTo(polynomial)
+
+    assertThat(result).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_oneItemOutOfOrder_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+      createTerm(
+        coefficient = FIVE_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 3),
+        createVariable(name = "z", power = 1)
+      ),
+      createTerm(
+        coefficient = -PI_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      ),
+      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+      createTerm(coefficient = SEVEN_REAL)
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+      createTerm(
+        coefficient = FIVE_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 3),
+        createVariable(name = "z", power = 1)
+      ),
+      createTerm(
+        coefficient = -PI_REAL,
+        createVariable(name = "y", power = 1),
+        createVariable(name = "x", power = 2)
+      ),
+      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+      createTerm(coefficient = SEVEN_REAL)
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // One element is out of order in the second polynomial.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_oneItemDifferent_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+      createTerm(
+        coefficient = FIVE_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 3),
+        createVariable(name = "z", power = 1)
+      ),
+      createTerm(
+        coefficient = -PI_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      ),
+      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+      createTerm(coefficient = SEVEN_REAL)
+    )
+    val second = createPolynomial(
+      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+      createTerm(
+        coefficient = FIVE_REAL - ONE,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 3),
+        createVariable(name = "z", power = 1)
+      ),
+      createTerm(
+        coefficient = -PI_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      ),
+      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+      createTerm(coefficient = SEVEN_REAL)
+    )
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // One coefficient is different in the second polynomial.
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_compareToDefault_returnsFalse() {
+    val first = createPolynomial(
+      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+      createTerm(
+        coefficient = FIVE_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 3),
+        createVariable(name = "z", power = 1)
+      ),
+      createTerm(
+        coefficient = -PI_REAL,
+        createVariable(name = "x", power = 2),
+        createVariable(name = "y", power = 1)
+      ),
+      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+      createTerm(coefficient = SEVEN_REAL)
+    )
+    val second = Polynomial.getDefaultInstance()
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
   }
 
   /* Operator tests. */

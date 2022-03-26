@@ -10,6 +10,7 @@ android_library(
         "//:oppia_api_visibility",
     ],
     exports = [
+        ":comparable_operation_extensions",
         ":comparator_extensions",
         ":float_extensions",
         ":fraction_extensions",
@@ -83,6 +84,17 @@ kt_android_library(
     ],
     visibility = [
         "//:oppia_testing_visibility",
+    ],
+)
+
+kt_android_library(
+    name = "comparable_operation_extensions",
+    srcs = [
+        "ComparableOperationExtensions.kt",
+    ],
+    deps = [
+        ":real_extensions",
+        "//model/src/main/proto:math_java_proto_lite",
     ],
 )
 

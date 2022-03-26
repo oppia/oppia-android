@@ -74,14 +74,22 @@ fun Real.isNegative(): Boolean = when (realTypeCase) {
 }
 
 /**
- * Returns whether this [Real] is approximately equal to the specified [Double] per
- * [Double.approximatelyEquals].
+ * Returns whether this [Real] approximately equals another, that is, if they evaluate to
+ * approximately the same value (see [Double.isApproximatelyEqualTo]).
  */
-fun Real.isApproximatelyEqualTo(value: Double): Boolean {
-  return toDouble().approximatelyEquals(value)
+fun Real.isApproximatelyEqualTo(other: Real): Boolean {
+  return this@isApproximatelyEqualTo.isApproximatelyEqualTo(other.toDouble())
 }
 
-/** Returns whether this [Real] is approximately zero per [Double.approximatelyEquals]. */
+/**
+ * Returns whether this [Real] is approximately equal to the specified [Double] per
+ * [Double.isApproximatelyEqualTo].
+ */
+fun Real.isApproximatelyEqualTo(value: Double): Boolean {
+  return toDouble().isApproximatelyEqualTo(value)
+}
+
+/** Returns whether this [Real] is approximately zero per [Double.isApproximatelyEqualTo]. */
 fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
 
 /**

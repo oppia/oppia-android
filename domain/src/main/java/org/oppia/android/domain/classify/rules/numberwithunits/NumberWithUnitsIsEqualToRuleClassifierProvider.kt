@@ -7,7 +7,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
-import org.oppia.android.util.math.approximatelyEquals
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import javax.inject.Inject
 
 /**
@@ -52,7 +52,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
   }
 
   private fun realMatches(answer: Double, input: Double): Boolean {
-    return input.approximatelyEquals(answer)
+    return input.isApproximatelyEqualTo(answer)
   }
 
   private fun fractionMatches(answer: Fraction, input: Fraction): Boolean {

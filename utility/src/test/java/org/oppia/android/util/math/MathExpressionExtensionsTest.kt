@@ -1,14 +1,21 @@
 package org.oppia.android.util.math
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseNumericExpression
@@ -27,9 +34,13 @@ import org.robolectric.annotation.LooperMode
 // FunctionName: test names are conventionally named with underscores.
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
-@RunWith(AndroidJUnit4::class)
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionExtensionsTest {
+  @Parameter lateinit var exp1: String
+  @Parameter lateinit var exp2: String
+
   @Test
   fun testToRawLatex_algebraicExpression_divNotAsFraction_returnsLatexStringWithDivision() {
     val expression = parseAlgebraicExpression("(x^2+7x-y)/2")
@@ -134,14 +145,148 @@ class MathExpressionExtensionsTest {
     }
   }
 
+  /* Equality checks. Note that these are symmetrical to reduce the number of needed test cases. */
+
+  @Test
+  fun testIsApproximatelyEqualTo_oneIsDefault_otherIsConstInt2_returnsFalse() {
+    val first = MathExpression.getDefaultInstance()
+    val second = parseNumericExpression("2")
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_oneIsConstInt2_otherIsDefault_returnsFalse() {
+    val first = parseNumericExpression("2")
+    val second = MathExpression.getDefaultInstance()
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("2==2", "exp1=2", "exp2=2"),
+    Iteration("2==2.000000000000001", "exp1=2", "exp2=2.000000000000001"),
+    Iteration("x+1==x+1", "exp1=x+1", "exp2=x+1"),
+    Iteration("x-1==x-1", "exp1=x-1", "exp2=x-1"),
+    Iteration("x*2==x*2", "exp1=x*2", "exp2=x*2"),
+    Iteration("x/2==x/2", "exp1=x/2", "exp2=x/2"),
+    Iteration("x^2==x^2", "exp1=x^2", "exp2=x^2"),
+    Iteration("-x==-x", "exp1=-x", "exp2=-x"),
+    Iteration("sqrt(x)==sqrt(x)", "exp1=sqrt(x)", "exp2=sqrt(x)")
+  )
+  fun testIsApproximatelyEqualTo_bothAreSingleTermsOrOperations_andSame_returnsTrue() {
+    val first = parseAlgebraicExpression(exp1)
+    val second = parseAlgebraicExpression(exp2)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("2!=3", "exp1=2", "exp2=3"),
+    Iteration("2!=3/2", "exp1=2", "exp2=3/2"),
+    Iteration("2!=3.14", "exp1=2", "exp2=3.14"),
+    Iteration("x!=y", "exp1=x", "exp2=y"),
+    Iteration("x!=2", "exp1=x", "exp2=2"),
+    // The number of terms must match.
+    Iteration("1+x!=1", "exp1=1+x", "exp2=1"),
+    Iteration("1+x!=x", "exp1=1+x", "exp2=x"),
+    Iteration("1+1+x!=2+x", "exp1=1+1+x", "exp2=2+x"),
+    // Term order must match.
+    Iteration("1+x!=2+x", "exp1=1+x", "exp2=2+x"),
+    Iteration("1+x!=x+1", "exp1=1+x", "exp2=x+1"),
+    Iteration("1-x!=2-x", "exp1=1-x", "exp2=2-x"),
+    Iteration("1-x!=x-1", "exp1=1-x", "exp2=x-1"),
+    Iteration("2*x!=3*x", "exp1=2*x", "exp2=3*x"),
+    Iteration("2*x!=x*2", "exp1=2*x", "exp2=x*2"),
+    Iteration("x/2!=x/3", "exp1=x/2", "exp2=x/3"),
+    Iteration("x/2!=2/x", "exp1=x/2", "exp2=2/x"),
+    Iteration("x^2!=x^3", "exp1=x^2", "exp2=x^3"),
+    Iteration("x^2!=2^x", "exp1=x^2", "exp2=2^x"),
+    Iteration("x!=-2", "exp1=x", "exp2=-2"),
+    Iteration("x!=-x", "exp1=x", "exp2=-x"),
+    Iteration("sqrt(x)!=sqrt(2)", "exp1=sqrt(x)", "exp2=sqrt(2)"),
+    // These checks are numerically equivalent but fail due to the expression structure not
+    // matching.
+    Iteration("2==2/1", "exp1=2", "exp2=2/1"),
+    Iteration("1/3==0.33333333", "exp1=1/3", "exp2=0.33333333"),
+    Iteration("1.5==3/2", "exp1=1.5", "exp2=3/2")
+  )
+  fun testIsApproximatelyEqualTo_bothAreSingleTermsOrOperations_butDifferent_returnsFalse() {
+    // Some expressions may attempt normally disallowed expressions (such as '2^x').
+    val first = parseAlgebraicExpression(exp1, errorCheckingMode = REQUIRED_ONLY)
+    val second = parseAlgebraicExpression(exp2, errorCheckingMode = REQUIRED_ONLY)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexExpressionsWithNesting_allTermsMatch_returnsTrue() {
+    val expression = "x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2"
+    val first = parseAlgebraicExpression(expression)
+    val second = parseAlgebraicExpression(expression)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexExpressionsWithNesting_oneDifferent_returnsFalse() {
+    // One difference in operations, but otherwise the same values. This equality check demonstrates
+    // that the check is inherently recursive & properly checks for nested expression equality.
+    val first = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2")
+    val second = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+1+1)+1)+3xy^2")
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_complexExpressionsWithNesting_comparedWithDefault_returnsFalse() {
+    val first = parseAlgebraicExpression("x+2/x-(-7*8-9)+sqrt((x+2)+1)+3xy^2")
+    val second = MathExpression.getDefaultInstance()
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
   private companion object {
     private fun parseNumericExpression(expression: String): MathExpression {
       return parseNumericExpression(expression, ALL_ERRORS).retrieveExpectedSuccessfulResult()
     }
 
-    private fun parseAlgebraicExpression(expression: String): MathExpression {
+    private fun parseAlgebraicExpression(
+      expression: String,
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+    ): MathExpression {
       return parseAlgebraicExpression(
-        expression, allowedVariables = listOf("x", "y", "z"), ALL_ERRORS
+        expression, allowedVariables = listOf("x", "y", "z"), errorCheckingMode
       ).retrieveExpectedSuccessfulResult()
     }
 

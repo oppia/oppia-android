@@ -107,6 +107,22 @@ fun Polynomial.sort(): Polynomial = Polynomial.newBuilder().apply {
 }.build()
 
 /**
+ * Returns whether this [Polynomial] approximately equals an other, that is, that the polynomial has
+ * the exact same terms and approximately equal coefficients (see [Real.isApproximatelyEqualTo]).
+ *
+ * This function assumes that both this and the other [Polynomial] are sorted before checking for
+ * equality (i.e. via [sort]).
+ */
+fun Polynomial.isApproximatelyEqualTo(other: Polynomial): Boolean {
+  if (termCount != other.termCount) return false
+
+  // Terms can be zipped since they should be sorted prior to checking equivalence.
+  return termList.zip(other.termList).all { (first, second) ->
+    first.isApproximatelyEqualTo(second)
+  }
+}
+
+/**
  * Returns the negated version of this [Polynomial] such that the original polynomial plus the
  * negative version would yield zero.
  */
@@ -278,6 +294,11 @@ private fun Polynomial.combineLikeTerms(): Polynomial {
   return Polynomial.newBuilder().apply {
     addAllTerm(newTerms)
   }.build().ensureAtLeastConstant()
+}
+
+private fun Term.isApproximatelyEqualTo(other: Term): Boolean {
+  // The variable lists can be exactly matched since they're sorted.
+  return coefficient.isApproximatelyEqualTo(other.coefficient) && variableList == other.variableList
 }
 
 private fun Polynomial.pow(exp: Real): Polynomial? {

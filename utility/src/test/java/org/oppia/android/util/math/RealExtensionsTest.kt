@@ -299,6 +299,302 @@ class RealExtensionsTest {
     assertThat(result).isTrue()
   }
 
+  /*
+   * Approximate equality checks between reals. Note that all of these tests are symmetrical to
+   * reduce the number of test cases.
+   */
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsDefault_secondIsInt2_throwsException() {
+    val first = Real.getDefaultInstance()
+    val second = TWO_REAL
+
+    val exception = assertThrows(IllegalStateException::class) {
+      first.isApproximatelyEqualTo(second)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Invalid real")
+  }
+
+  @Test
+  fun testIsApproximatelyEqualTo_firstIsInt2_secondIsDefault_throwsException() {
+    val first = TWO_REAL
+    val second = Real.getDefaultInstance()
+
+    val exception = assertThrows(IllegalStateException::class) {
+      first.isApproximatelyEqualTo(second)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Invalid real")
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsInt=0"),
+    Iteration("1==1", "lhsInt=1", "rhsInt=1"),
+    Iteration("2==2", "lhsInt=2", "rhsInt=2"),
+    Iteration("-2==-2", "lhsInt=-2", "rhsInt=-2")
+  )
+  fun testIsApproximatelyEqualTo_oneIsInt_otherIsSameInt_returnsTrue() {
+    val first = createIntegerReal(lhsInt)
+    val second = createIntegerReal(rhsInt)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Verify both correctness and the symmetric of equality.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0!=1", "lhsInt=0", "rhsInt=1"),
+    Iteration("0!=2", "lhsInt=0", "rhsInt=2"),
+    Iteration("-2!=2", "lhsInt=-2", "rhsInt=2"),
+    Iteration("-2!=-1", "lhsInt=-2", "rhsInt=-1")
+  )
+  fun testIsApproximatelyEqualTo_oneIsInt_otherIsDifferentInt_returnsFalse() {
+    val first = createIntegerReal(lhsInt)
+    val second = createIntegerReal(rhsInt)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = first.isApproximatelyEqualTo(second)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsFrac=0"),
+    Iteration("2==2", "lhsInt=2", "rhsFrac=2"),
+    Iteration("2==2/1", "lhsInt=2", "rhsFrac=2/1"),
+    Iteration("2==4/2", "lhsInt=2", "rhsFrac=4/2"),
+    Iteration("-2==-2", "lhsInt=-2", "rhsFrac=-2"),
+    Iteration("-2==-2/1", "lhsInt=-2", "rhsFrac=-2/1"),
+    Iteration("-2==-4/2", "lhsInt=-2", "rhsFrac=-4/2")
+  )
+  fun testIsApproximatelyEqualTo_oneIsInt_otherIsSameFraction_returnsTrue() {
+    val first = createIntegerReal(lhsInt)
+    val second = createRationalReal(rhsFrac)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Verify both correctness and the symmetric of equality.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0!=2", "lhsInt=0", "rhsFrac=2"),
+    Iteration("2!=4", "lhsInt=2", "rhsFrac=4"),
+    Iteration("2!=3/2", "lhsInt=2", "rhsFrac=3/2"),
+    Iteration("2!=-2", "lhsInt=2", "rhsFrac=-2"),
+  )
+  fun testIsApproximatelyEqualTo_oneIsInt_otherIsDifferentFraction_returnsFalse() {
+    val first = createIntegerReal(lhsInt)
+    val second = createRationalReal(rhsFrac)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = first.isApproximatelyEqualTo(second)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0.0", "lhsInt=0", "rhsDouble=0.0"),
+    Iteration("1==1.0", "lhsInt=1", "rhsDouble=1.0"),
+    Iteration("2==2.0", "lhsInt=2", "rhsDouble=2.0"),
+    Iteration("2==2.000000000000001", "lhsInt=2", "rhsDouble=2.000000000000001"),
+    Iteration("2==1.999999999999999", "lhsInt=2", "rhsDouble=1.999999999999999"),
+    Iteration("-2==-2.0", "lhsInt=-2", "rhsDouble=-2.0"),
+    Iteration("-2==-2.00000000000001", "lhsInt=-2", "rhsDouble=-2.00000000000001"),
+    Iteration("-2==-1.999999999999999", "lhsInt=-2", "rhsDouble=-1.999999999999999")
+  )
+  fun testIsApproximatelyEqualTo_oneIsInt_otherIsSimilarDouble_returnsTrue() {
+    val first = createIntegerReal(lhsInt)
+    val second = createIrrationalReal(rhsDouble)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Verify both correctness and the symmetric of equality.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0!=2.0", "lhsInt=0", "rhsDouble=2.0"),
+    Iteration("2!=0.0", "lhsInt=2", "rhsDouble=0.0"),
+    Iteration("2!=4.0", "lhsInt=2", "rhsDouble=4.0"),
+    Iteration("3!=3.14", "lhsInt=3", "rhsDouble=3.14"),
+    Iteration("2!=2.001", "lhsInt=2", "rhsDouble=2.001"),
+    Iteration("2!=1.999", "lhsInt=2", "rhsDouble=1.999"),
+    Iteration("2!=-2.0", "lhsInt=2", "rhsDouble=-2.0"),
+    Iteration("-2!=2.0", "lhsInt=-2", "rhsDouble=2.0"),
+    Iteration("-2!=-2.001", "lhsInt=-2", "rhsDouble=-2.001"),
+    Iteration("-2!=-1.999", "lhsInt=-2", "rhsDouble=-1.999")
+  )
+  fun testIsApproximatelyEqualTo_oneIsInt_otherIsDifferentDouble_returnsFalse() {
+    val first = createIntegerReal(lhsInt)
+    val second = createIrrationalReal(rhsDouble)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = first.isApproximatelyEqualTo(second)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsFrac=0"),
+    Iteration("2==2", "lhsFrac=2", "rhsFrac=2"),
+    Iteration("2==4/2", "lhsFrac=2", "rhsFrac=4/2"),
+    Iteration("3/2==1 1/2", "lhsFrac=3/2", "rhsFrac=1 1/2"),
+    Iteration("-2==-2", "lhsFrac=-2", "rhsFrac=-2"),
+    Iteration("-2==-4/2", "lhsFrac=-2", "rhsFrac=-4/2"),
+    Iteration("-3/2==-1 1/2", "lhsFrac=-3/2", "rhsFrac=-1 1/2"),
+    Iteration("1/3==3/9", "lhsFrac=1/3", "rhsFrac=3/9")
+  )
+  fun testIsApproximatelyEqualTo_oneIsFraction_otherIsSameFraction_returnsTrue() {
+    val first = createRationalReal(lhsFrac)
+    val second = createRationalReal(rhsFrac)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Verify both correctness and the symmetric of equality.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0!=2", "lhsFrac=0", "rhsFrac=2"),
+    Iteration("3/2!=1/2", "lhsFrac=3/2", "rhsFrac=1/2"),
+    Iteration("3/2!=1", "lhsFrac=3/2", "rhsFrac=1"),
+    Iteration("3/2!=-1 1/2", "lhsFrac=3/2", "rhsFrac=-1 1/2"),
+    Iteration("-3/2!=1 1/2", "lhsFrac=-3/2", "rhsFrac=1 1/2"),
+    Iteration("-3/2!=-1/2", "lhsFrac=-3/2", "rhsFrac=-1/2"),
+    Iteration("1/3!=2/3", "lhsFrac=1/3", "rhsFrac=2/3")
+  )
+  fun testIsApproximatelyEqualTo_oneIsFraction_otherIsDifferentFraction_returnsFalse() {
+    val first = createRationalReal(lhsFrac)
+    val second = createRationalReal(rhsFrac)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = first.isApproximatelyEqualTo(second)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0==0.0", "lhsFrac=0", "rhsDouble=0.0"),
+    Iteration("2==2.0", "lhsFrac=2", "rhsDouble=2.0"),
+    Iteration("2/1==2.0", "lhsFrac=2/1", "rhsDouble=2.0"),
+    Iteration("3/2==1.5", "lhsFrac=3/2", "rhsDouble=1.5"),
+    Iteration("1/3==0.33333333333333333", "lhsFrac=1/3", "rhsDouble=0.33333333333333333"),
+    Iteration("1 2/3==1.66666666666666666", "lhsFrac=1 2/3", "rhsDouble=1.66666666666666666"),
+    Iteration("-2==-2.0", "lhsFrac=-2", "rhsDouble=-2.0"),
+    Iteration("-3/2==-1.5", "lhsFrac=-3/2", "rhsDouble=-1.5")
+  )
+  fun testIsApproximatelyEqualTo_oneIsFraction_otherIsSimilarDouble_returnsTrue() {
+    val first = createRationalReal(lhsFrac)
+    val second = createIrrationalReal(rhsDouble)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Verify both correctness and the symmetric of equality.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0!=2.0", "lhsFrac=0", "rhsDouble=2.0"),
+    Iteration("2!=0.0", "lhsFrac=2", "rhsDouble=0.0"),
+    Iteration("2/2!=2.0", "lhsFrac=2/2", "rhsDouble=2.0"),
+    Iteration("1/3!=0.333", "lhsFrac=1/3", "rhsDouble=0.333"),
+    Iteration("1 2/3!=1.667", "lhsFrac=1 2/3", "rhsDouble=1.667"),
+    Iteration("22/7!=3.14", "lhsFrac=22/7", "rhsDouble=3.14"),
+    Iteration("-2!=2.0", "lhsFrac=-2", "rhsDouble=2.0"),
+    Iteration("2!=-2.0", "lhsFrac=2", "rhsDouble=-2.0"),
+    Iteration("-2/2!=-2.0", "lhsFrac=-2/2", "rhsDouble=-2.0"),
+    Iteration("-1/3!=-0.333", "lhsFrac=-1/3", "rhsDouble=-0.333"),
+    Iteration("-1 2/3!=-1.667", "lhsFrac=-1 2/3", "rhsDouble=-1.667")
+  )
+  fun testIsApproximatelyEqualTo_oneIsFraction_firstIsDifferentDouble_returnsFalse() {
+    val first = createRationalReal(lhsFrac)
+    val second = createIrrationalReal(rhsDouble)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = first.isApproximatelyEqualTo(second)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0.0==0.0", "lhsDouble=0.0", "rhsDouble=0.0"),
+    Iteration("2.0==2.0", "lhsDouble=2.0", "rhsDouble=2.0"),
+    Iteration(
+      "2.000000000000001==1.999999999999999",
+      "lhsDouble=2.000000000000001",
+      "rhsDouble=1.999999999999999"
+    ),
+    Iteration("3.14==3.14", "lhsDouble=3.14", "rhsDouble=3.14"),
+    Iteration("-2.0==-2.0", "lhsDouble=-2.0", "rhsDouble=-2.0"),
+    Iteration(
+      "-2.000000000000001==-1.999999999999999",
+      "lhsDouble=-2.000000000000001",
+      "rhsDouble=-1.999999999999999"
+    ),
+    Iteration("-3.14==-3.14", "lhsDouble=-3.14", "rhsDouble=-3.14")
+  )
+  fun testIsApproximatelyEqualTo_oneIsDouble_otherIsSimilarDouble_returnsTrue() {
+    val first = createIrrationalReal(lhsDouble)
+    val second = createIrrationalReal(rhsDouble)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = second.isApproximatelyEqualTo(first)
+
+    // Verify both correctness and the symmetric of equality.
+    assertThat(result1).isTrue()
+    assertThat(result2).isTrue()
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("0.0!=2.0", "lhsDouble=0.0", "rhsDouble=2.0"),
+    Iteration("2.001!=1.999", "lhsDouble=2.001", "rhsDouble=1.999"),
+    Iteration("2.7!=3.14", "lhsDouble=2.7", "rhsDouble=3.14"),
+    Iteration("2.7!=-3.14", "lhsDouble=2.7", "rhsDouble=-3.14"),
+    Iteration("-2.7!=3.14", "lhsDouble=-2.7", "rhsDouble=3.14"),
+    Iteration("-2.0!=2.0", "lhsDouble=-2.0", "rhsDouble=2.0"),
+    Iteration("-3.14!=3.14", "lhsDouble=-3.14", "rhsDouble=3.14")
+  )
+  fun testIsApproximatelyEqualTo_oneIsDouble_otherIsDifferentDouble_returnsFalse() {
+    val first = createIrrationalReal(lhsDouble)
+    val second = createIrrationalReal(rhsDouble)
+
+    val result1 = first.isApproximatelyEqualTo(second)
+    val result2 = first.isApproximatelyEqualTo(second)
+
+    assertThat(result1).isFalse()
+    assertThat(result2).isFalse()
+  }
+
   @Test
   fun testIsApproximatelyEqualTo_zeroAndOne_returnsFalse() {
     val result = ZERO_REAL.isApproximatelyEqualTo(1.0)
