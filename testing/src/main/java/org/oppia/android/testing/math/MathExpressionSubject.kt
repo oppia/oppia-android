@@ -84,7 +84,7 @@ import org.oppia.android.util.math.toRawLatex
  */
 class MathExpressionSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: MathExpression
+  val actual: MathExpression
 ) : LiteProtoSubject(metadata, actual) {
   /**
    * Begins the structure syntax matcher.

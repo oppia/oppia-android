@@ -22,7 +22,7 @@ import org.oppia.android.util.math.toRawLatex
  */
 class MathEquationSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: MathEquation
+  val actual: MathEquation
 ) : LiteProtoSubject(metadata, actual) {
   /**
    * Returns a [MathExpressionSubject] to test [MathEquation.getLeftSide]. This method never fails
