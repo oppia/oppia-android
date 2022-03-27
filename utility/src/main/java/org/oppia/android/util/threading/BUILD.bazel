@@ -18,6 +18,33 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "dispatcher_injector",
+    srcs = [
+        "DispatcherInjector.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":annotations",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_android_library(
+    name = "dispatcher_injector_provider",
+    srcs = [
+        "DispatcherInjectorProvider.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":dispatcher_injector",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "DispatcherModule.kt",
