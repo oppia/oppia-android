@@ -220,7 +220,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         conversationPendingItemList,
         extraInteractionPendingItemList,
         ephemeralState.pendingState.wrongAnswerList,
-        /* isCorrectAnswer= */ false,
+        isLastAnswerCorrect = false,
         gcsEntityId,
         ephemeralState.writtenTranslationContext
       )
@@ -251,7 +251,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         conversationPendingItemList,
         extraInteractionPendingItemList,
         ephemeralState.completedState.answerList,
-        /* isCorrectAnswer= */ true,
+        isLastAnswerCorrect = true,
         gcsEntityId,
         ephemeralState.writtenTranslationContext
       )
@@ -346,7 +346,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     pendingItemList: MutableList<StateItemViewModel>,
     rightPendingItemList: MutableList<StateItemViewModel>,
     answersAndResponses: List<AnswerAndResponse>,
-    isCorrectAnswer: Boolean,
+    isLastAnswerCorrect: Boolean,
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext
   ) {
@@ -369,6 +369,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasPreviousResponsesExpanded
       for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
         if (playerFeatureSet.pastAnswerSupport) {
+          // Earlier answers can't be correct (since otherwise new answers wouldn't be able to be
+          // submitted), hence the assumption that these aren't.
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
@@ -396,17 +398,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
-        if (isCorrectAnswer && isSplitView.get()!!) {
+        if (isLastAnswerCorrect && isSplitView.get()!!) {
           rightPendingItemList += createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            /* isAnswerCorrect= */ true
+            isAnswerCorrect = true
           )
         } else {
           pendingItemList += createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            this.isCorrectAnswer.get()!!
+            isLastAnswerCorrect || answerAndResponse.isCorrectAnswer
           )
         }
       }
@@ -1055,6 +1057,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
               showSingleAnswer(binding)
+              val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
+                userAnswer.contentDescription
+              } else null
               val htmlParser = htmlParserFactory.create(
                 resourceBucketName,
                 entityType,
@@ -1067,7 +1072,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                   userAnswer.htmlAnswer,
                   binding.submittedAnswerTextView,
                   supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
-                )
+                ),
+                accessibleAnswer
               )
             }
             UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {

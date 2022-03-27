@@ -358,7 +358,6 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/L
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/profile/ProfileManagementController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentProgress.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentProgressController.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionConstantsProvider.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionTrainingConstantsProvider.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/StoryProgressController.kt"

@@ -48,7 +48,7 @@ class SplashTestActivityPresenter @Inject constructor(
   }
 
   private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean {
-    return loadingStatus.isSuccess()
+    return loadingStatus is AsyncResult.Success
   }
 
   private fun showToastIfAllowed() {

@@ -115,16 +115,15 @@ class SplashActivityPresenter @Inject constructor(
   private fun processInitState(
     initStateResult: AsyncResult<SplashInitState>
   ): SplashInitState {
-    if (initStateResult.isFailure()) {
-      oppiaLogger.e(
-        "SplashActivity",
-        "Failed to compute initial state",
-        initStateResult.getErrorOrNull()
-      )
-    }
-
     // If there's an error loading the data, assume the default.
-    return initStateResult.getOrDefault(SplashInitState.computeDefault(localeController))
+    return when (initStateResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("SplashActivity", "Failed to compute initial state", initStateResult.error)
+        SplashInitState.computeDefault(localeController)
+      }
+      is AsyncResult.Pending -> SplashInitState.computeDefault(localeController)
+      is AsyncResult.Success -> initStateResult.value
+    }
   }
 
   private fun getDeprecationNoticeDialogFragment(): AutomaticAppDeprecationNoticeDialogFragment? {

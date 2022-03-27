@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -20,6 +18,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
@@ -28,7 +27,21 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-private const val CURRENT_STATE_DATA_PROVIDER_ID = "current_state_data_provider_id"
+private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.begin_exploration_result"
+private const val FINISH_EXPLORATION_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.finish_exploration_result"
+private const val SUBMIT_ANSWER_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_answer_result"
+private const val SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_hint_revealed_result"
+private const val SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.submit_solution_revealed_result"
+private const val MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.move_to_previous_state_result"
+private const val MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID =
+  "ExplorationProgressController.move_to_next_state_result"
+private const val CURRENT_STATE_PROVIDER_ID = "ExplorationProgressController.current_state"
 
 /**
  * Controller that tracks and reports the learner's ephemeral/non-persisted progress through an
@@ -50,7 +63,8 @@ class ExplorationProgressController @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   private val hintHandlerFactory: HintHandler.Factory,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val dataProviders: DataProviders
 ) : HintHandler.HintMonitor {
   // TODO(#179): Add support for parameters.
   // TODO(#3622): Update the internal locking of this controller to use something like an in-memory
@@ -69,7 +83,10 @@ class ExplorationProgressController @Inject constructor(
   private val explorationProgressLock = ReentrantLock()
   private lateinit var hintHandler: HintHandler
 
-  /** Resets this controller to begin playing the specified [Exploration]. */
+  /**
+   * Resets this controller to begin playing the specified [Exploration], and returns a
+   * [DataProvider] indicating whether the start was successful.
+   */
   internal fun beginExplorationAsync(
     internalProfileId: Int,
     topicId: String,
@@ -77,34 +94,57 @@ class ExplorationProgressController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
-  ) {
-    explorationProgressLock.withLock {
-      check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
-        "Expected to finish previous exploration before starting a new one."
-      }
+  ): DataProvider<Any?> {
+    return explorationProgressLock.withLock {
+      try {
+        check(explorationProgress.playStage == ExplorationProgress.PlayStage.NOT_PLAYING) {
+          "Expected to finish previous exploration before starting a new one."
+        }
 
-      explorationProgress.apply {
-        currentProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-        currentTopicId = topicId
-        currentStoryId = storyId
-        currentExplorationId = explorationId
-        this.shouldSavePartialProgress = shouldSavePartialProgress
-        checkpointState = CheckpointState.CHECKPOINT_UNSAVED
-        this.explorationCheckpoint = explorationCheckpoint
+        explorationProgress.apply {
+          currentProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+          currentTopicId = topicId
+          currentStoryId = storyId
+          currentExplorationId = explorationId
+          this.shouldSavePartialProgress = shouldSavePartialProgress
+          checkpointState = CheckpointState.CHECKPOINT_UNSAVED
+          this.explorationCheckpoint = explorationCheckpoint
+        }
+        hintHandler = hintHandlerFactory.create(this)
+        explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
+        return@withLock dataProviders.createInMemoryDataProvider(
+          BEGIN_EXPLORATION_RESULT_PROVIDER_ID
+        ) { null }
+      } catch (e: Exception) {
+        exceptionsController.logNonFatalException(e)
+        return@withLock dataProviders.createInMemoryDataProviderAsync(
+          BEGIN_EXPLORATION_RESULT_PROVIDER_ID
+        ) { AsyncResult.Failure(e) }
       }
-      hintHandler = hintHandlerFactory.create(this)
-      explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.LOADING_EXPLORATION)
-      asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
     }
   }
 
-  /** Indicates that the current exploration being played is now completed. */
-  internal fun finishExplorationAsync() {
-    explorationProgressLock.withLock {
-      check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
-        "Cannot finish playing an exploration that hasn't yet been started"
+  /**
+   * Indicates that the current exploration being played is now completed, and returns a
+   * [DataProvider] indicating whether the cleanup was successful.
+   */
+  internal fun finishExplorationAsync(): DataProvider<Any?> {
+    return explorationProgressLock.withLock {
+      try {
+        check(explorationProgress.playStage != ExplorationProgress.PlayStage.NOT_PLAYING) {
+          "Cannot finish playing an exploration that hasn't yet been started"
+        }
+        explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
+        return@withLock dataProviders.createInMemoryDataProvider(
+          FINISH_EXPLORATION_RESULT_PROVIDER_ID
+        ) { null }
+      } catch (e: Exception) {
+        exceptionsController.logNonFatalException(e)
+        return@withLock dataProviders.createInMemoryDataProviderAsync(
+          FINISH_EXPLORATION_RESULT_PROVIDER_ID
+        ) { AsyncResult.Failure(e) }
       }
-      explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.NOT_PLAYING)
     }
   }
 
@@ -112,22 +152,23 @@ class ExplorationProgressController @Inject constructor(
     explorationProgressLock.withLock {
       saveExplorationCheckpoint()
     }
-    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
   }
 
   /**
    * Submits an answer to the current state and returns how the UI should respond to this answer.
-   * The returned [LiveData] will only have at most two results posted: a pending result, and then a
-   * completed success/failure result. Failures in this case represent a failure of the app
+   *
+   * The returned [DataProvider] will only have at most two results posted: a pending result, and
+   * then a completed success/failure result. Failures in this case represent a failure of the app
    * (possibly due to networking conditions). The app should report this error in a consumable way
    * to the user so that they may take action on it. No additional values will be reported to the
-   * [LiveData]. Each call to this method returns a new, distinct, [LiveData] object that must be
-   * observed. Note also that the returned [LiveData] is not guaranteed to begin with a pending
-   * state.
+   * [DataProvider]. Each call to this method returns a new, distinct, [DataProvider] object that
+   * must be observed. Note also that the returned [DataProvider] is not guaranteed to begin with a
+   * pending state.
    *
-   * If the app undergoes a configuration change, calling code should rely on the [LiveData] from
-   * [getCurrentState] to know whether a current answer is pending. That [LiveData] will have its
-   * state changed to pending during answer submission and until answer resolution.
+   * If the app undergoes a configuration change, calling code should rely on the [DataProvider]
+   * from [getCurrentState] to know whether a current answer is pending. That [DataProvider] will
+   * have its state changed to pending during answer submission and until answer resolution.
    *
    * Submitting an answer should result in the learner staying in the current state, moving to a new
    * state in the exploration, being shown a concept card, or being navigated to another exploration
@@ -141,11 +182,11 @@ class ExplorationProgressController @Inject constructor(
    * to submit an answer while a previous answer is pending. That scenario will also result in a
    * failed answer submission.
    *
-   * No assumptions should be made about the completion order of the returned [LiveData] vs. the
-   * [LiveData] from  [getCurrentState]. Also note that the returned [LiveData] will only have a
-   * single value and not be reused after that point.
+   * No assumptions should be made about the completion order of the returned [DataProvider] vs. the
+   * [DataProvider] from [getCurrentState]. Also note that the returned [DataProvider] will only
+   * have a single value and not be reused after that point.
    */
-  fun submitAnswer(userAnswer: UserAnswer): LiveData<AsyncResult<AnswerOutcome>> {
+  fun submitAnswer(userAnswer: UserAnswer): DataProvider<AnswerOutcome> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -169,7 +210,7 @@ class ExplorationProgressController @Inject constructor(
 
         // Notify observers that the submitted answer is currently pending.
         explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.SUBMITTING_ANSWER)
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
 
         lateinit var answerOutcome: AnswerOutcome
         try {
@@ -212,13 +253,17 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
 
-        return MutableLiveData(AsyncResult.success(answerOutcome))
+        return dataProviders.createInMemoryDataProvider(SUBMIT_ANSWER_RESULT_PROVIDER_ID) {
+          answerOutcome
+        }
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return dataProviders.createInMemoryDataProviderAsync(SUBMIT_ANSWER_RESULT_PROVIDER_ID) {
+        AsyncResult.Failure(e)
+      }
     }
   }
 
@@ -227,10 +272,10 @@ class ExplorationProgressController @Inject constructor(
    *
    * @param hintIndex index of the hint that was revealed in the hint list of the current pending
    *     state
-   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
-  fun submitHintIsRevealed(hintIndex: Int): LiveData<AsyncResult<Any?>> {
+  fun submitHintIsRevealed(hintIndex: Int): DataProvider<Any?> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -259,22 +304,26 @@ class ExplorationProgressController @Inject constructor(
           // exception.
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
+        return dataProviders.createInMemoryDataProvider(SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID) {
+          null
+        }
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return dataProviders.createInMemoryDataProviderAsync(
+        SUBMIT_HINT_REVEALED_RESULT_PROVIDER_ID
+      ) { AsyncResult.Failure(e) }
     }
   }
 
   /**
    * Notifies the controller that the user has revealed the solution to the current state.
    *
-   * @return a one-time [LiveData] that indicates success/failure of the operation (the actual
+   * @return a one-time [DataProvider] that indicates success/failure of the operation (the actual
    *     payload of the result isn't relevant)
    */
-  fun submitSolutionIsRevealed(): LiveData<AsyncResult<Any?>> {
+  fun submitSolutionIsRevealed(): DataProvider<Any?> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -304,12 +353,16 @@ class ExplorationProgressController @Inject constructor(
           explorationProgress.advancePlayStageTo(ExplorationProgress.PlayStage.VIEWING_STATE)
         }
 
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
-        return MutableLiveData(AsyncResult.success(null))
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
+        return dataProviders.createInMemoryDataProvider(
+          SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+        ) { null }
       }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return dataProviders.createInMemoryDataProviderAsync(
+        SUBMIT_SOLUTION_REVEALED_RESULT_PROVIDER_ID
+      ) { AsyncResult.Failure(e) }
     }
   }
 
@@ -318,13 +371,13 @@ class ExplorationProgressController @Inject constructor(
    * this method will throw an exception. Calling code is responsible for ensuring this method is
    * only called when it's possible to navigate backward.
    *
-   * @return a one-time [LiveData] indicating whether the movement to the previous state was
+   * @return a one-time [DataProvider] indicating whether the movement to the previous state was
    *     successful, or a failure if state navigation was attempted at an invalid time in the state
    *     graph (e.g. if currently viewing the initial state of the exploration). It's recommended
    *     that calling code only listen to this result for failures, and instead rely on
    *     [getCurrentState] for observing a successful transition to another state.
    */
-  fun moveToPreviousState(): LiveData<AsyncResult<Any?>> {
+  fun moveToPreviousState(): DataProvider<Any?> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -347,12 +400,16 @@ class ExplorationProgressController @Inject constructor(
         }
         hintHandler.navigateToPreviousState()
         explorationProgress.stateDeck.navigateToPreviousState()
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success(null))
+      return dataProviders.createInMemoryDataProvider(MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID) {
+        null
+      }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return dataProviders.createInMemoryDataProviderAsync(
+        MOVE_TO_PREVIOUS_STATE_RESULT_PROVIDER_ID
+      ) { AsyncResult.Failure(e) }
     }
   }
 
@@ -365,13 +422,13 @@ class ExplorationProgressController @Inject constructor(
    * that routes to a later state via [submitAnswer] in order for the current state to change to a
    * completed state before forward navigation can occur.
    *
-   * @return a one-time [LiveData] indicating whether the movement to the next state was successful,
-   *     or a failure if state navigation was attempted at an invalid time in the state graph (e.g.
-   *     if the current state is pending or terminal). It's recommended that calling code only
-   *     listen to this result for failures, and instead rely on [getCurrentState] for observing a
-   *     successful transition to another state.
+   * @return a one-time [DataProvider] indicating whether the movement to the next state was
+   *     successful, or a failure if state navigation was attempted at an invalid time in the state
+   *     graph (e.g. if the current state is pending or terminal). It's recommended that calling
+   *     code only listen to this result for failures, and instead rely on [getCurrentState] for
+   *     observing a successful transition to another state.
    */
-  fun moveToNextState(): LiveData<AsyncResult<Any?>> {
+  fun moveToNextState(): DataProvider<Any?> {
     try {
       explorationProgressLock.withLock {
         check(
@@ -401,12 +458,16 @@ class ExplorationProgressController @Inject constructor(
           // will not be marked on any of the completed states.
           saveExplorationCheckpoint()
         }
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
       }
-      return MutableLiveData(AsyncResult.success(null))
+      return dataProviders.createInMemoryDataProvider(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID) {
+        null
+      }
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      return MutableLiveData(AsyncResult.failed(e))
+      return dataProviders.createInMemoryDataProviderAsync(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID) {
+        AsyncResult.Failure(e)
+      }
     }
   }
 
@@ -434,7 +495,7 @@ class ExplorationProgressController @Inject constructor(
   fun getCurrentState(): DataProvider<EphemeralState> {
     return translationController.getWrittenTranslationContentLocale(
       explorationProgress.currentProfileId
-    ).transformAsync(CURRENT_STATE_DATA_PROVIDER_ID) { contentLocale ->
+    ).transformAsync(CURRENT_STATE_PROVIDER_ID) { contentLocale ->
       return@transformAsync retrieveCurrentStateAsync(contentLocale)
     }
   }
@@ -446,7 +507,7 @@ class ExplorationProgressController @Inject constructor(
       retrieveCurrentStateWithinCacheAsync(writtenTranslationContentLocale)
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      AsyncResult.failed(e)
+      AsyncResult.Failure(e)
     }
   }
 
@@ -476,20 +537,20 @@ class ExplorationProgressController @Inject constructor(
           " to ${explorationProgress.currentExplorationId}"
       }
       return when (explorationProgress.playStage) {
-        ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.pending()
+        ExplorationProgress.PlayStage.NOT_PLAYING -> AsyncResult.Pending()
         ExplorationProgress.PlayStage.LOADING_EXPLORATION -> {
           try {
             // The exploration must be available for this stage since it was loaded above.
             finishLoadExploration(exploration!!, explorationProgress)
-            AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
+            AsyncResult.Success(computeCurrentEphemeralState(writtenTranslationContentLocale))
           } catch (e: Exception) {
             exceptionsController.logNonFatalException(e)
-            AsyncResult.failed(e)
+            AsyncResult.Failure(e)
           }
         }
         ExplorationProgress.PlayStage.VIEWING_STATE ->
-          AsyncResult.success(computeCurrentEphemeralState(writtenTranslationContentLocale))
-        ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.pending()
+          AsyncResult.Success(computeCurrentEphemeralState(writtenTranslationContentLocale))
+        ExplorationProgress.PlayStage.SUBMITTING_ANSWER -> AsyncResult.Pending()
       }
     }
   }
@@ -645,7 +706,7 @@ class ExplorationProgressController @Inject constructor(
         }
         explorationProgress.updateCheckpointState(newCheckpointState)
         // Notify observers that the checkpoint state has changed.
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_DATA_PROVIDER_ID)
+        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_STATE_PROVIDER_ID)
       }
     }
   }

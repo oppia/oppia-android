@@ -514,6 +514,7 @@ class TopicLessonsFragmentTest {
           targetViewId = R.id.chapter_recycler_view
         )
       ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(
         allOf(
           hasExtra(

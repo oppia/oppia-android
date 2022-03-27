@@ -32,6 +32,7 @@ import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.oppia.android.util.system.OppiaClock
@@ -187,17 +188,18 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
-    if (result.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve ephemeral question",
-        result.getErrorOrNull()!!
-      )
-    } else if (result.isPending()) {
-      // Display nothing until a valid result is available.
-      return
+    when (result) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "QuestionPlayerFragment", "Failed to retrieve ephemeral question", result.error
+        )
+      }
+      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
+      is AsyncResult.Success -> processEphemeralQuestion(result.value)
     }
-    val ephemeralQuestion = result.getOrThrow()
+  }
+
+  private fun processEphemeralQuestion(ephemeralQuestion: EphemeralQuestion) {
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
 
@@ -253,7 +255,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer))
+    subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer).toLiveData())
   }
 
   /** This function listens to and processes the result of submitAnswer from QuestionAssessmentProgressController. */
@@ -277,14 +279,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */
-  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
-    resultLiveData.observe(
+  private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
+    resultDataProvider.toLiveData().observe(
       fragment,
       { result ->
-        if (result.isFailure()) {
-          oppiaLogger.e(
-            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
-          )
+        if (result is AsyncResult.Failure) {
+          oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
           questionViewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -297,14 +297,18 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun processAnsweredQuestionOutcome(
     answeredQuestionOutcomeResult: AsyncResult<AnsweredQuestionOutcome>
   ): AnsweredQuestionOutcome {
-    if (answeredQuestionOutcomeResult.isFailure()) {
-      oppiaLogger.e(
-        "QuestionPlayerFragment",
-        "Failed to retrieve answer outcome",
-        answeredQuestionOutcomeResult.getErrorOrNull()!!
-      )
+    return when (answeredQuestionOutcomeResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "QuestionPlayerFragment",
+          "Failed to retrieve answer outcome",
+          answeredQuestionOutcomeResult.error
+        )
+        AnsweredQuestionOutcome.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> AnsweredQuestionOutcome.getDefaultInstance()
+      is AsyncResult.Success -> answeredQuestionOutcomeResult.value
     }
-    return answeredQuestionOutcomeResult.getOrDefault(AnsweredQuestionOutcome.getDefaultInstance())
   }
 
   private fun moveToNextState() {

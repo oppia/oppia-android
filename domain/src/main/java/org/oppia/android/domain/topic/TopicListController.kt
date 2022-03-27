@@ -121,7 +121,7 @@ class TopicListController @Inject constructor(
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       .transformAsync(GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID) {
         val promotedActivityList = computePromotedActivityList(it)
-        AsyncResult.success(promotedActivityList)
+        AsyncResult.Success(promotedActivityList)
       }
   }
 

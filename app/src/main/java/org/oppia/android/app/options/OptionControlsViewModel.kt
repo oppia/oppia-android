@@ -73,10 +73,14 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   private fun processProfileResult(profile: AsyncResult<Profile>): Profile {
-    if (profile.isFailure()) {
-      oppiaLogger.e("OptionsFragment", "Failed to retrieve profile", profile.getErrorOrNull()!!)
+    return when (profile) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("OptionsFragment", "Failed to retrieve profile", profile.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profile.value
     }
-    return profile.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun processProfileList(profile: Profile): List<OptionsItemViewModel> {

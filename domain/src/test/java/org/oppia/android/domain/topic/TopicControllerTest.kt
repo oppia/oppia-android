@@ -2,7 +2,6 @@ package org.oppia.android.domain.topic
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -16,22 +15,11 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
-import org.oppia.android.app.model.CompletedStoryList
-import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Question
 import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -54,8 +42,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -80,73 +66,16 @@ private const val INVALID_TOPIC_ID_1 = "INVALID_TOPIC_ID_1"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TopicControllerTest.TestApplication::class)
 class TopicControllerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var topicController: TopicController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Mock
-  lateinit var mockCompletedStoryListObserver: Observer<AsyncResult<CompletedStoryList>>
-
-  @Captor
-  lateinit var completedStoryListResultCaptor: ArgumentCaptor<AsyncResult<CompletedStoryList>>
-
-  @Mock
-  lateinit var mockOngoingTopicListObserver: Observer<AsyncResult<OngoingTopicList>>
-
-  @Captor
-  lateinit var ongoingTopicListResultCaptor: ArgumentCaptor<AsyncResult<OngoingTopicList>>
-
-  @Mock
-  lateinit var mockQuestionListObserver: Observer<AsyncResult<List<Question>>>
-
-  @Captor
-  lateinit var questionListResultCaptor: ArgumentCaptor<AsyncResult<List<Question>>>
-
-  @Mock
-  lateinit var mockStorySummaryObserver: Observer<AsyncResult<StorySummary>>
-
-  @Captor
-  lateinit var storySummaryResultCaptor: ArgumentCaptor<AsyncResult<StorySummary>>
-
-  @Mock
-  lateinit var mockChapterSummaryObserver: Observer<AsyncResult<ChapterSummary>>
-
-  @Captor
-  lateinit var chapterSummaryResultCaptor: ArgumentCaptor<AsyncResult<ChapterSummary>>
-
-  @Mock
-  lateinit var mockTopicObserver: Observer<AsyncResult<Topic>>
-
-  @Captor
-  lateinit var topicResultCaptor: ArgumentCaptor<AsyncResult<Topic>>
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  // TODO(#3813): Migrate all tests in this suite to use this factory.
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var topicController: TopicController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
   private lateinit var profileId2: ProfileId
@@ -161,76 +90,52 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() {
-    topicController.getTopic(
-      profileId1, TEST_TOPIC_ID_1
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_1)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(TEST_TOPIC_ID_1)
   }
 
   @Test
   fun testRetrieveTopic_validSecondTopic_returnsTopicWithThumbnail() {
-    topicController.getTopic(
-      profileId1, TEST_TOPIC_ID_1
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_1)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value!!.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
   fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
-    topicController.getTopic(
-      profileId1, FRACTIONS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value!!.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyCount).isEqualTo(1)
   }
 
   @Test
   fun testRetrieveTopic_fractionsTopic_hasCorrectDescription() {
-    topicController.getTopic(
-      profileId1, FRACTIONS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value!!.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.description).contains("You'll often need to talk about")
   }
 
   @Test
   fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
-    topicController.getTopic(
-      profileId1, RATIOS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value!!.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(topic.storyCount).isEqualTo(2)
   }
 
   @Test
   fun testRetrieveTopic_ratiosTopic_hasCorrectDescription() {
-    topicController.getTopic(
-      profileId1, RATIOS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value!!.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(topic.description).contains(
       "Many everyday problems involve thinking about proportions"
@@ -239,227 +144,165 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveTopic_invalidTopic_returnsFailure() {
-    topicController.getTopic(
-      profileId1, INVALID_TOPIC_ID_1
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, INVALID_TOPIC_ID_1)
 
-    verifyGetTopicFailed()
+    monitorFactory.waitForNextFailureResult(topicProvider)
   }
 
   @Test
   fun testRetrieveTopic_testTopic_published_returnsAsAvailable() {
-    topicController.getTopic(
-      profileId1, TEST_TOPIC_ID_0
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_0)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_NOW)
   }
 
   @Test
   fun testRetrieveTopic_testTopic_unpublished_returnsAsAvailableInFuture() {
-    topicController.getTopic(
-      profileId1, TEST_TOPIC_ID_2
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_2)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_IN_FUTURE)
   }
 
   @Test
   fun testRetrieveStory_validStory_isSuccessful() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    verifyGetStorySucceeded()
-    val storyResult = storySummaryResultCaptor.value
-    assertThat(storyResult).isNotNull()
-    assertThat(storyResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(storyProvider)
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.storyId).isEqualTo(TEST_STORY_ID_2)
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithName() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.storyName).isEqualTo("Other Interesting Story")
   }
 
   @Test
   fun testRetrieveStory_fractionsStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
   }
 
   @Test
   fun testRetrieveStory_fractionsStory_returnsStoryWithName() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.storyName).isEqualTo("Matthew Goes to the Bakery")
   }
 
   @Test
   fun testRetrieveStory_ratiosFirstStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(story.storyName).isEqualTo("Ratios: Part 1")
   }
 
   @Test
   fun testRetrieveStory_ratiosFirstStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      RATIOS_EXPLORATION_ID_0,
-      RATIOS_EXPLORATION_ID_1
-    ).inOrder()
+    val expIds = getExplorationIds(monitorFactory.waitForNextSuccessfulResult(storyProvider))
+    assertThat(expIds).containsExactly(RATIOS_EXPLORATION_ID_0, RATIOS_EXPLORATION_ID_1).inOrder()
   }
 
   @Test
   fun testRetrieveStory_ratiosSecondStory_returnsCorrectStory() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_1)
     assertThat(story.storyName).isEqualTo("Ratios: Part 2")
   }
 
   @Test
   fun testRetrieveStory_ratiosSecondStory_returnsStoryWithMultipleChapters() {
-    topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
-    assertThat(getExplorationIds(story)).containsExactly(
-      RATIOS_EXPLORATION_ID_2,
-      RATIOS_EXPLORATION_ID_3
-    ).inOrder()
+    val expIds = getExplorationIds(monitorFactory.waitForNextSuccessfulResult(storyProvider))
+    assertThat(expIds).containsExactly(RATIOS_EXPLORATION_ID_2, RATIOS_EXPLORATION_ID_3).inOrder()
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapter() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(getExplorationIds(story)).containsExactly(TEST_EXPLORATION_ID_4)
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterName() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.getChapter(0).name).isEqualTo("Fifth Exploration")
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterSummary() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(story.getChapter(0).summary)
       .isEqualTo("Matthew learns about fractions.")
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() {
-    topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    verifyGetStorySucceeded()
-    val story = storySummaryResultCaptor.value!!.getOrThrow()
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     val chapter = story.getChapter(0)
     assertThat(chapter.chapterThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
   fun testRetrieveStory_invalidStory_returnsFailure() {
-    topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1)
 
-    verifyGetStoryFailed()
-    assertThat(storySummaryResultCaptor.value!!.isFailure()).isTrue()
+    monitorFactory.waitForNextFailureResult(storyProvider)
   }
 
   @Test
   fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
-    topicController.retrieveChapter(
-      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
-    ).toLiveData().observeForever(mockChapterSummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val chapterProvider =
+      topicController.retrieveChapter(
+        FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
+      )
 
-    verifyRetrieveChapterSucceeded()
-    val chapterSummary = chapterSummaryResultCaptor.value.getOrThrow()
+    val chapterSummary = monitorFactory.waitForNextSuccessfulResult(chapterProvider)
     assertThat(chapterSummary.name).isEqualTo("What is a Fraction?")
-    assertThat(chapterSummary.summary)
-      .isEqualTo("Matthew learns about fractions.")
+    assertThat(chapterSummary.summary).isEqualTo("Matthew learns about fractions.")
   }
 
   @Test
   fun testRetrieveChapter_invalidChapter_returnsFailure() {
-    topicController.retrieveChapter(
-      FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
-    ).toLiveData().observeForever(mockChapterSummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val chapterProvider =
+      topicController.retrieveChapter(
+        FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      )
 
-    verifyRetrieveChapterFailed()
-    assertThat(chapterSummaryResultCaptor.value.getErrorOrNull()).isInstanceOf(
-      TopicController.ChapterNotFoundException::class.java
-    )
+    val error = monitorFactory.waitForNextFailureResult(chapterProvider)
+    assertThat(error).isInstanceOf(TopicController.ChapterNotFoundException::class.java)
   }
 
   @Test
@@ -710,29 +553,21 @@ class TopicControllerTest {
 
   @Test
   fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() {
-    topicController.getTopic(
-      profileId1, FRACTIONS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value!!.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.subtopicList[0].subtopicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
   @Test
   @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
+    val questionsListProvider =
+      topicController.retrieveQuestionsForSkillIds(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
       )
-    questionsListProvider.toLiveData().observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
     assertThat(questionsList.size).isEqualTo(5)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -746,17 +581,10 @@ class TopicControllerTest {
   @Test
   @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId0_returnsAllQuestions() {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(FRACTIONS_SKILL_ID_0)
-      )
-    questionsListProvider.toLiveData()
-      .observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+    val questionsListProvider =
+      topicController.retrieveQuestionsForSkillIds(listOf(FRACTIONS_SKILL_ID_0))
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
     assertThat(questionsList.size).isEqualTo(4)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -770,17 +598,10 @@ class TopicControllerTest {
   @Test
   @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId1_returnsAllQuestions() {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(FRACTIONS_SKILL_ID_1)
-      )
-    questionsListProvider.toLiveData()
-      .observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+    val questionsListProvider =
+      topicController.retrieveQuestionsForSkillIds(listOf(FRACTIONS_SKILL_ID_1))
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
     assertThat(questionsList.size).isEqualTo(3)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -793,17 +614,10 @@ class TopicControllerTest {
   @Test
   @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForFractionsSkillId2_returnsAllQuestions() {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(FRACTIONS_SKILL_ID_2)
-      )
-    questionsListProvider.toLiveData()
-      .observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+    val questionsListProvider =
+      topicController.retrieveQuestionsForSkillIds(listOf(FRACTIONS_SKILL_ID_2))
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
     assertThat(questionsList.size).isEqualTo(4)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -817,17 +631,10 @@ class TopicControllerTest {
   @Test
   @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForRatiosSkillId0_returnsAllQuestions() {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
-        listOf(RATIOS_SKILL_ID_0)
-      )
-    questionsListProvider.toLiveData()
-      .observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
+    val questionsListProvider =
+      topicController.retrieveQuestionsForSkillIds(listOf(RATIOS_SKILL_ID_0))
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
     assertThat(questionsList.size).isEqualTo(1)
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
@@ -840,39 +647,27 @@ class TopicControllerTest {
   @Test
   @Ignore("Questions are not fully supported via protos") // TODO(#2976): Re-enable.
   fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() {
-    val questionsListProvider = topicController
-      .retrieveQuestionsForSkillIds(
+    val questionsListProvider =
+      topicController.retrieveQuestionsForSkillIds(
         listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
       )
-    questionsListProvider.toLiveData()
-      .observeForever(mockQuestionListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockQuestionListObserver).onChanged(questionListResultCaptor.capture())
 
-    assertThat(questionListResultCaptor.value.isSuccess()).isTrue()
-    val questionsList = questionListResultCaptor.value.getOrThrow()
+    val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
     assertThat(questionsList.size).isEqualTo(5)
   }
 
   @Test
   fun testGetTopic_invalidTopicId_getTopic_noResultFound() {
-    topicController.getTopic(
-      profileId1, INVALID_TOPIC_ID_1
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, INVALID_TOPIC_ID_1)
 
-    verifyGetTopicFailed()
+    monitorFactory.waitForNextFailureResult(topicProvider)
   }
 
   @Test
   fun testGetTopic_validTopicId_withoutAnyProgress_getTopicSucceedsWithCorrectProgress() {
-    topicController.getTopic(
-      profileId1, FRACTIONS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_STARTED)
@@ -886,13 +681,9 @@ class TopicControllerTest {
   fun testGetTopic_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
 
-    topicController.getTopic(
-      profileId1, FRACTIONS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
@@ -902,21 +693,17 @@ class TopicControllerTest {
 
   @Test
   fun testGetStory_invalidData_getStory_noResultFound() {
-    topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider = topicController.getStory(profileId1, INVALID_TOPIC_ID_1, INVALID_STORY_ID_1)
 
-    verifyGetStoryFailed()
+    monitorFactory.waitForNextFailureResult(storyProvider)
   }
 
   @Test
   fun testGetStory_validData_withoutAnyProgress_getStorySucceedsWithCorrectProgress() {
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val storySummary = storySummaryResultCaptor.value.getOrThrow()
+    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(storySummary.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(storySummary.chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_STARTED)
@@ -930,13 +717,9 @@ class TopicControllerTest {
   fun testGetStory_recordProgress_getTopic_correctProgressFound() {
     markFractionsStory0Chapter0AsCompleted()
 
-    topicController.getTopic(
-      profileId1, FRACTIONS_TOPIC_ID
-    ).toLiveData().observeForever(mockTopicObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    verifyGetTopicSucceeded()
-    val topic = topicResultCaptor.value.getOrThrow()
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
@@ -946,13 +729,9 @@ class TopicControllerTest {
 
   @Test
   fun testOngoingTopicList_validData_withoutAnyProgress_ongoingTopicListIsEmpty() {
-    topicController.getOngoingTopicList(
-      profileId1
-    ).toLiveData().observeForever(mockOngoingTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
-    verifyGetOngoingTopicListSucceeded()
-    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(0)
   }
 
@@ -960,13 +739,9 @@ class TopicControllerTest {
   fun testOngoingTopicList_recordOneChapterCompleted_correctOngoingList() {
     markFractionsStory0Chapter0AsCompleted()
 
-    topicController.getOngoingTopicList(
-      profileId1
-    ).toLiveData().observeForever(mockOngoingTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
-    verifyGetOngoingTopicListSucceeded()
-    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(1)
     assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(FRACTIONS_TOPIC_ID)
   }
@@ -976,13 +751,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     markFractionsStory0Chapter1AsCompleted()
 
-    topicController.getOngoingTopicList(
-      profileId1
-    ).toLiveData().observeForever(mockOngoingTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
-    verifyGetOngoingTopicListSucceeded()
-    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(0)
   }
 
@@ -993,13 +764,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter1AsCompleted()
     markRatiosStory0Chapter0AsCompleted()
 
-    topicController.getOngoingTopicList(
-      profileId1
-    ).toLiveData().observeForever(mockOngoingTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
-    verifyGetOngoingTopicListSucceeded()
-    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(1)
     assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
   }
@@ -1009,13 +776,9 @@ class TopicControllerTest {
     markRatiosStory0Chapter0AsCompleted()
     markRatiosStory0Chapter1AsCompleted()
 
-    topicController.getOngoingTopicList(
-      profileId1
-    ).toLiveData().observeForever(mockOngoingTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
-    verifyGetOngoingTopicListSucceeded()
-    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(0)
   }
 
@@ -1025,25 +788,18 @@ class TopicControllerTest {
     markRatiosStory0Chapter1AsCompleted()
     markRatiosStory1Chapter0AsCompleted()
 
-    topicController.getOngoingTopicList(
-      profileId1
-    ).toLiveData().observeForever(mockOngoingTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicListProvider = topicController.getOngoingTopicList(profileId1)
 
-    verifyGetOngoingTopicListSucceeded()
-    val ongoingTopicList = ongoingTopicListResultCaptor.value.getOrThrow()
+    val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(1)
     assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
   }
 
   @Test
   fun testCompletedStoryList_validData_withoutAnyProgress_completedStoryListIsEmpty() {
-    topicController.getCompletedStoryList(profileId1).toLiveData()
-      .observeForever(mockCompletedStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyList = topicController.getCompletedStoryList(profileId1)
 
-    verifyGetCompletedStoryListSucceeded()
-    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
     assertThat(completedStoryList.completedStoryCount).isEqualTo(0)
   }
 
@@ -1051,12 +807,9 @@ class TopicControllerTest {
   fun testCompletedStoryList_recordOneChapterProgress_completedStoryListIsEmpty() {
     markFractionsStory0Chapter0AsCompleted()
 
-    topicController.getCompletedStoryList(profileId1).toLiveData()
-      .observeForever(mockCompletedStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyList = topicController.getCompletedStoryList(profileId1)
 
-    verifyGetCompletedStoryListSucceeded()
-    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
     assertThat(completedStoryList.completedStoryCount).isEqualTo(0)
   }
 
@@ -1065,12 +818,9 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     markFractionsStory0Chapter1AsCompleted()
 
-    topicController.getCompletedStoryList(profileId1).toLiveData()
-      .observeForever(mockCompletedStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyList = topicController.getCompletedStoryList(profileId1)
 
-    verifyGetCompletedStoryListSucceeded()
-    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
     assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(completedStoryList.completedStoryList[0].topicId).isEqualTo(FRACTIONS_TOPIC_ID)
@@ -1081,12 +831,10 @@ class TopicControllerTest {
     markFractionsStory0Chapter0AsCompleted()
     markFractionsStory0Chapter1AsCompleted()
 
-    topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0).toLiveData()
-      .observeForever(mockStorySummaryObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyProvider =
+      topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    verifyGetStorySucceeded()
-    val storySummary = storySummaryResultCaptor.value.getOrThrow()
+    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider)
     assertThat(storySummary.chapterCount).isEqualTo(2)
     assertThat(storySummary.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(storySummary.chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -1098,12 +846,9 @@ class TopicControllerTest {
     markRatiosStory0Chapter0AsCompleted()
     markRatiosStory0Chapter1AsCompleted()
 
-    topicController.getCompletedStoryList(profileId1).toLiveData()
-      .observeForever(mockCompletedStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyList = topicController.getCompletedStoryList(profileId1)
 
-    verifyGetCompletedStoryListSucceeded()
-    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
     assertThat(completedStoryList.completedStoryCount).isEqualTo(1)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(completedStoryList.completedStoryList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
@@ -1116,12 +861,9 @@ class TopicControllerTest {
     markRatiosStory0Chapter0AsCompleted()
     markRatiosStory0Chapter1AsCompleted()
 
-    topicController.getCompletedStoryList(profileId1).toLiveData()
-      .observeForever(mockCompletedStoryListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val storyList = topicController.getCompletedStoryList(profileId1)
 
-    verifyGetCompletedStoryListSucceeded()
-    val completedStoryList = completedStoryListResultCaptor.value.getOrThrow()
+    val completedStoryList = monitorFactory.waitForNextSuccessfulResult(storyList)
     assertThat(completedStoryList.completedStoryCount).isEqualTo(2)
     assertThat(completedStoryList.completedStoryList[0].storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
@@ -1337,54 +1079,6 @@ class TopicControllerTest {
       }.build()
     )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
-  }
-
-  private fun verifyGetTopicSucceeded() {
-    verify(mockTopicObserver, atLeastOnce()).onChanged(topicResultCaptor.capture())
-    assertThat(topicResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyGetTopicFailed() {
-    verify(mockTopicObserver, atLeastOnce()).onChanged(topicResultCaptor.capture())
-    assertThat(topicResultCaptor.value.isFailure()).isTrue()
-  }
-
-  private fun verifyGetStorySucceeded() {
-    verify(mockStorySummaryObserver, atLeastOnce()).onChanged(storySummaryResultCaptor.capture())
-    assertThat(storySummaryResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyGetStoryFailed() {
-    verify(mockStorySummaryObserver, atLeastOnce()).onChanged(storySummaryResultCaptor.capture())
-    assertThat(storySummaryResultCaptor.value.isFailure()).isTrue()
-  }
-
-  private fun verifyRetrieveChapterSucceeded() {
-    verify(mockChapterSummaryObserver, atLeastOnce())
-      .onChanged(chapterSummaryResultCaptor.capture())
-    assertThat(chapterSummaryResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyRetrieveChapterFailed() {
-    verify(mockChapterSummaryObserver, atLeastOnce())
-      .onChanged(chapterSummaryResultCaptor.capture())
-    assertThat(chapterSummaryResultCaptor.value.isFailure()).isTrue()
-  }
-
-  private fun verifyGetOngoingTopicListSucceeded() {
-    verify(
-      mockOngoingTopicListObserver,
-      atLeastOnce()
-    ).onChanged(ongoingTopicListResultCaptor.capture())
-    assertThat(ongoingTopicListResultCaptor.value.isSuccess()).isTrue()
-  }
-
-  private fun verifyGetCompletedStoryListSucceeded() {
-    verify(
-      mockCompletedStoryListObserver,
-      atLeastOnce()
-    ).onChanged(completedStoryListResultCaptor.capture())
-    assertThat(completedStoryListResultCaptor.value.isSuccess()).isTrue()
   }
 
   private fun getExplorationIds(story: StorySummary): List<String> {

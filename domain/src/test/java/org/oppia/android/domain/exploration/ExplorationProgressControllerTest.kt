@@ -2,8 +2,6 @@ package org.oppia.android.domain.exploration
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -16,14 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
@@ -91,8 +81,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -132,64 +120,18 @@ class ExplorationProgressControllerTest {
   //  - testSubmitAnswer_whileSubmittingAnotherAnswer_failsWithError
   //  - testMoveToPrevious_whileSubmittingAnswer_failsWithError
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
-
-  @Inject
-  lateinit var explorationProgressController: ExplorationProgressController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var oppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var explorationCheckpointController: ExplorationCheckpointController
-
-  // TODO(#3813): Migrate all tests in this suite to use this factory.
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Mock
-  lateinit var mockAsyncResultLiveDataObserver: Observer<AsyncResult<*>>
-
-  @Mock
-  lateinit var mockAsyncAnswerOutcomeObserver: Observer<AsyncResult<AnswerOutcome>>
-
-  @Mock
-  lateinit var mockAsyncHintObserver: Observer<AsyncResult<*>>
-
-  @Mock
-  lateinit var mockAsyncSolutionObserver: Observer<AsyncResult<*>>
-
-  @Captor
-  lateinit var asyncResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var asyncAnswerOutcomeCaptor: ArgumentCaptor<AsyncResult<AnswerOutcome>>
-
-  @Mock
-  lateinit var mockExplorationCheckpointObserver: Observer<AsyncResult<ExplorationCheckpoint>>
-
-  @Captor
-  lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationProgressController: ExplorationProgressController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var oppiaClock: FakeOppiaClock
+  @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var translationController: TranslationController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -208,7 +150,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testPlayExploration_invalid_returnsSuccess() {
-    val resultLiveData =
+    val resultDataProvider =
       explorationDataController.startPlayingExploration(
         profileId.internalId,
         INVALID_TOPIC_ID,
@@ -217,13 +159,10 @@ class ExplorationProgressControllerTest {
         shouldSavePartialProgress = false,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
-    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // An invalid exploration is not known until it's fully loaded, and that's observed via
     // getCurrentState.
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(resultDataProvider)
   }
 
   @Test
@@ -244,7 +183,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testPlayExploration_valid_returnsSuccess() {
-    val resultLiveData =
+    val resultDataProvider =
       explorationDataController.startPlayingExploration(
         profileId.internalId,
         TEST_TOPIC_ID_0,
@@ -253,11 +192,8 @@ class ExplorationProgressControllerTest {
         shouldSavePartialProgress = false,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
-    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(resultDataProvider)
   }
 
   @Test
@@ -311,13 +247,10 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testFinishExploration_beforePlaying_failWithError() {
-    val resultLiveData = explorationDataController.stopPlayingExploration()
-    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val resultDataProvider = explorationDataController.stopPlayingExploration()
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot finish playing an exploration that hasn't yet been started")
   }
@@ -335,7 +268,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
 
     // Try playing another exploration without finishing the previous one.
-    val resultLiveData =
+    val resultDataProvider =
       explorationDataController.startPlayingExploration(
         profileId.internalId,
         TEST_TOPIC_ID_0,
@@ -344,12 +277,9 @@ class ExplorationProgressControllerTest {
         shouldSavePartialProgress = false,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
-    resultLiveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(resultDataProvider)
+    assertThat(error)
       .hasMessageThat()
       .contains("Expected to finish previous exploration before starting a new one.")
   }
@@ -388,48 +318,13 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError() {
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
 
     // Verify that the answer submission failed.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
-    assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(result)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot submit an answer if an exploration is not being played.")
-  }
-
-  @Test
-  fun testSubmitAnswer_whileLoading_failsWithError() {
-    // Start playing an exploration, but don't wait for it to complete.
-    explorationDataController.startPlayingExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify that the answer submission failed.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isFailure()).isTrue()
-    assertThat(asyncAnswerOutcomeCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot submit an answer while the exploration is being loaded.")
   }
 
   @Test
@@ -445,17 +340,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeMultipleChoiceState()
 
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(result)
   }
 
   @Test
@@ -471,17 +359,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeMultipleChoiceState()
 
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(2))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Correct!")
   }
@@ -499,17 +380,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeMultipleChoiceState()
 
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    assertThat(asyncAnswerOutcomeCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(result)
   }
 
   @Test
@@ -525,17 +399,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeMultipleChoiceState()
 
-    val result =
-      explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Try again.")
   }
@@ -618,35 +485,11 @@ class ExplorationProgressControllerTest {
   @Test
   fun testMoveToNext_beforePlaying_failsWithError() {
     val moveToStateResult = explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to a next state if an exploration is not being played.")
-  }
-
-  @Test
-  fun testMoveToNext_whileLoadingExploration_failsWithError() {
-    // Start playing an exploration, but don't wait for it to complete.
-    explorationDataController.startPlayingExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-
-    val moveToStateResult = explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a next state if an exploration is being loaded.")
   }
 
   @Test
@@ -662,13 +505,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify that we can't move ahead since the current state isn't yet completed.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
@@ -687,11 +527,8 @@ class ExplorationProgressControllerTest {
     submitPrototypeState1Answer()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(moveToStateResult)
   }
 
   @Test
@@ -728,55 +565,24 @@ class ExplorationProgressControllerTest {
     moveToNextState()
 
     // Try skipping past the current state.
-    val moveToStateResult =
-      explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToStateResult = explorationProgressController.moveToNextState()
 
     // Verify we can't move ahead since the new state isn't yet completed.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
 
   @Test
   fun testMoveToPrevious_beforePlaying_failsWithError() {
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    val moveToStateResult = explorationProgressController.moveToPreviousState()
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to a previous state if an exploration is not being played.")
-  }
-
-  @Test
-  fun testMoveToPrevious_whileLoadingExploration_failsWithError() {
-    // Start playing an exploration, but don't wait for it to complete.
-    explorationDataController.startPlayingExploration(
-      profileId.internalId,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    )
-
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
-      .hasMessageThat()
-      .contains("Cannot navigate to a previous state if an exploration is being loaded.")
   }
 
   @Test
@@ -791,15 +597,11 @@ class ExplorationProgressControllerTest {
     )
     waitForGetCurrentStateSuccessfulLoad()
 
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToStateResult = explorationProgressController.moveToPreviousState()
 
     // Verify we can't move behind since the current state is the initial exploration state.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
   }
@@ -817,15 +619,11 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     submitPrototypeState1Answer()
 
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToStateResult = explorationProgressController.moveToPreviousState()
 
     // Still can't navigate behind for a completed initial state since there's no previous state.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
   }
@@ -843,15 +641,11 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     playThroughPrototypeState1AndMoveToNextState()
 
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToStateResult = explorationProgressController.moveToPreviousState()
 
     // Verify that we can navigate to the previous state since the current state is complete and not
     // initial.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(moveToStateResult)
   }
 
   @Test
@@ -890,16 +684,12 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val moveToStateResult = explorationProgressController.moveToPreviousState()
 
     // The first previous navigation should succeed (see above), but the second will fail since
     // we're back at the initial state.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
   }
@@ -917,17 +707,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeTextInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Correct!")
   }
@@ -945,18 +728,11 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeTextInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
 
     // Verify that the answer was wrong, and that there's no handler for it so the default outcome
     // is returned.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("Not quite.")
   }
@@ -1003,7 +779,9 @@ class ExplorationProgressControllerTest {
     // Submit 2 wrong answers to trigger a hint becoming available.
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
@@ -1029,15 +807,17 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
     // Reveal the hint, then submit another wrong answer to trigger the solution.
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
     // Verify that the current state updates. It should stay pending, on submission of wrong answer.
     waitForGetCurrentStateSuccessfulLoad()
-    val result = explorationProgressController.submitSolutionIsRevealed()
-    result.observeForever(mockAsyncSolutionObserver)
-    testCoroutineDispatchers.runCurrent()
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitSolutionIsRevealed()
+    )
 
     // Verify that the current state updates. Solution revealed is true.
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
@@ -1129,11 +909,10 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
 
     val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
-    result.observeForever(mockAsyncHintObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify that the helpIndex.IndexTypeCase is equal LATEST_REVEALED_HINT_INDEX because a new
     // revealed hint is visible.
+    monitorFactory.waitForNextSuccessfulResult(result)
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.isHintRevealed(0)).isTrue()
     assertThat(ephemeralState.isSolutionRevealed()).isFalse()
@@ -1157,8 +936,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
-    result.observeForever(mockAsyncHintObserver)
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     testCoroutineDispatchers.runCurrent()
 
     // The solution should be visible after 30 seconds of the last hint being reveled.
@@ -1189,8 +967,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val result = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
-    result.observeForever(mockAsyncHintObserver)
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     testCoroutineDispatchers.runCurrent()
 
     submitWrongAnswerForPrototypeState2()
@@ -1222,16 +999,14 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val hintResult = explorationProgressController.submitHintIsRevealed(hintIndex = 0)
-    hintResult.observeForever(mockAsyncHintObserver)
+    explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     testCoroutineDispatchers.runCurrent()
 
     // The solution should be visible after 30 seconds of the last hint being reveled.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
     testCoroutineDispatchers.runCurrent()
 
-    val solutionResult = explorationProgressController.submitSolutionIsRevealed()
-    solutionResult.observeForever(mockAsyncSolutionObserver)
+    explorationProgressController.submitSolutionIsRevealed()
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the helpIndex.IndexTypeCase is equal EVERYTHING_IS_REVEALED because a new the
@@ -1284,9 +1059,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeTextInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    explorationProgressController.submitAnswer(createTextInputAnswer("Finnish"))
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. It should now be completed with the correct answer.
@@ -1311,9 +1084,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeTextInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    explorationProgressController.submitAnswer(createTextInputAnswer("Finnish  "))
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. The submitted answer should have a textual version
@@ -1340,9 +1111,7 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeTextInputState()
 
-    val result =
-      explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    explorationProgressController.submitAnswer(createTextInputAnswer("Klingon"))
     testCoroutineDispatchers.runCurrent()
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be
@@ -1527,15 +1296,9 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeNumericInputState()
 
     val result = explorationProgressController.submitAnswer(createNumericInputAnswer(121.0))
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify that the answer submission was successful.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Correct!")
   }
@@ -1553,18 +1316,10 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
     navigateToPrototypeNumericInputState()
 
-    val result = explorationProgressController.submitAnswer(
-      createNumericInputAnswer(122.0)
-    )
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = explorationProgressController.submitAnswer(createNumericInputAnswer(122.0))
 
     // Verify that the answer submission failed as expected.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
     assertThat(answerOutcome.feedback.html).contains("It's less than that.")
   }
@@ -1583,15 +1338,9 @@ class ExplorationProgressControllerTest {
     // The first state of the exploration is the Continue interaction.
 
     val result = explorationProgressController.submitAnswer(createContinueButtonAnswer())
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify that the continue button succeeds by default.
-    verify(
-      mockAsyncAnswerOutcomeObserver,
-      atLeastOnce()
-    ).onChanged(asyncAnswerOutcomeCaptor.capture())
-    val answerOutcome = asyncAnswerOutcomeCaptor.value.getOrThrow()
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
     assertThat(answerOutcome.feedback.html).contains("Continuing onward")
   }
@@ -1657,13 +1406,10 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeExploration()
 
     val moveToStateResult = explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
 
     // Verify we can't navigate past the last state of the exploration.
-    verify(mockAsyncResultLiveDataObserver, atLeastOnce()).onChanged(asyncResultCaptor.capture())
-    assertThat(asyncResultCaptor.value.isFailure()).isTrue()
-    assertThat(asyncResultCaptor.value.getErrorOrNull())
+    val error = monitorFactory.waitForNextFailureResult(moveToStateResult)
+    assertThat(error)
       .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
@@ -1743,11 +1489,10 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testMoveToNext_beforePlaying_failsWithError_logsException() {
-    val moveToStateResult =
-      explorationProgressController.moveToNextState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
-    val exception = fakeExceptionLogger.getMostRecentException()
+    explorationProgressController.moveToNextState()
+    testCoroutineDispatchers.runCurrent()
 
+    val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat()
       .contains("Cannot navigate to a next state if an exploration is not being played.")
@@ -1767,26 +1512,22 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     moveToPreviousState()
 
-    val moveToStateResult =
-      explorationProgressController.moveToPreviousState()
-    moveToStateResult.observeForever(mockAsyncResultLiveDataObserver)
+    explorationProgressController.moveToPreviousState()
     testCoroutineDispatchers.runCurrent()
-    val exception = fakeExceptionLogger.getMostRecentException()
 
+    val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Cannot navigate to previous state; at initial state.")
   }
 
   @Test
   fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
-    val result = explorationProgressController.submitAnswer(
-      createMultipleChoiceAnswer(0)
-    )
-    result.observeForever(mockAsyncAnswerOutcomeObserver)
+    explorationProgressController.submitAnswer(createMultipleChoiceAnswer(0))
     testCoroutineDispatchers.runCurrent()
-    val exception = fakeExceptionLogger.getMostRecentException()
 
+    val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat()
       .contains("Cannot submit an answer if an exploration is not being played.")
@@ -1802,10 +1543,10 @@ class ExplorationProgressControllerTest {
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
+
     waitForGetCurrentStateFailureLoad()
 
     val exception = fakeExceptionLogger.getMostRecentException()
-
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: $INVALID_EXPLORATION_ID")
   }
@@ -1822,13 +1563,12 @@ class ExplorationProgressControllerTest {
     )
     waitForGetCurrentStateSuccessfulLoad()
 
-    val retrieveCheckpointLiveData =
+    val result =
       explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        TEST_EXPLORATION_ID_2
-      ).toLiveData()
+        profileId, TEST_EXPLORATION_ID_2
+      )
 
-    verifyOperationSucceeds(retrieveCheckpointLiveData)
+    monitorFactory.waitForNextSuccessfulResult(result)
   }
 
   @Test
@@ -2107,7 +1847,9 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2134,7 +1876,9 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
     // Reveal the hint, then submit another wrong answer to trigger the solution.
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
@@ -2164,11 +1908,15 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
     // Reveal the hint, then submit another wrong answer to trigger the solution.
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    verifyOperationSucceeds(explorationProgressController.submitSolutionIsRevealed())
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitSolutionIsRevealed()
+    )
     verifyCheckpointHasCorrectHelpIndex(
       profileId,
       TEST_EXPLORATION_ID_2,
@@ -2692,7 +2440,9 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     endExploration()
 
     playExploration(
@@ -2727,7 +2477,9 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     endExploration()
 
     playExploration(
@@ -2765,7 +2517,9 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
     endExploration()
 
     playExploration(
@@ -2788,7 +2542,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testCheckpointing_SolutionIsVisible_resumeExp_unrevealedSolutionIsVisibleOnPendingState() {
+  fun testCheckpointing_solutionIsVisible_resumeExp_unrevealedSolutionIsVisibleOnPendingState() {
     playExploration(
       profileId.internalId,
       TEST_TOPIC_ID_0,
@@ -2804,7 +2558,9 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
 
     // Reveal the hint, then submit another wrong answer to trigger the solution.
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
 
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
     endExploration()
@@ -2842,14 +2598,15 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState1AndMoveToNextState()
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
-    verifyOperationSucceeds(explorationProgressController.submitHintIsRevealed(hintIndex = 0))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
 
     // The solution should be visible after 30 seconds of the last hint being reveled.
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
     testCoroutineDispatchers.runCurrent()
 
-    val solutionResult = explorationProgressController.submitSolutionIsRevealed()
-    solutionResult.observeForever(mockAsyncSolutionObserver)
+    explorationProgressController.submitSolutionIsRevealed()
     testCoroutineDispatchers.runCurrent()
     endExploration()
 
@@ -3043,21 +2800,9 @@ class ExplorationProgressControllerTest {
     profileId: ProfileId,
     explorationId: String
   ): ExplorationCheckpoint {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-
-    return explorationCheckpointCaptor.value.getOrThrow()
+    val explorationCheckpointDataProvider =
+      explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
+    return monitorFactory.waitForNextSuccessfulResult(explorationCheckpointDataProvider)
   }
 
   private fun playExploration(
@@ -3068,7 +2813,7 @@ class ExplorationProgressControllerTest {
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
-    verifyOperationSucceeds(
+    monitorFactory.waitForNextSuccessfulResult(
       explorationDataController.startPlayingExploration(
         internalProfileId,
         topicId,
@@ -3133,7 +2878,9 @@ class ExplorationProgressControllerTest {
   }
 
   private fun submitAnswer(userAnswer: UserAnswer): EphemeralState {
-    verifyOperationSucceeds(explorationProgressController.submitAnswer(userAnswer))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.submitAnswer(userAnswer)
+    )
     return waitForGetCurrentStateSuccessfulLoad()
   }
 
@@ -3312,17 +3059,17 @@ class ExplorationProgressControllerTest {
   }
 
   private fun moveToNextState(): EphemeralState {
-    verifyOperationSucceeds(explorationProgressController.moveToNextState())
+    monitorFactory.waitForNextSuccessfulResult(explorationProgressController.moveToNextState())
     return waitForGetCurrentStateSuccessfulLoad()
   }
 
   private fun moveToPreviousState(): EphemeralState {
-    verifyOperationSucceeds(explorationProgressController.moveToPreviousState())
+    monitorFactory.waitForNextSuccessfulResult(explorationProgressController.moveToPreviousState())
     return waitForGetCurrentStateSuccessfulLoad()
   }
 
   private fun endExploration() {
-    verifyOperationSucceeds(explorationDataController.stopPlayingExploration())
+    monitorFactory.waitForNextSuccessfulResult(explorationDataController.stopPlayingExploration())
   }
 
   private fun createContinueButtonAnswer() =
@@ -3452,22 +3199,8 @@ class ExplorationProgressControllerTest {
     explorationId: String,
     pendingStateName: String
   ) {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
-      .isEqualTo(pendingStateName)
+    val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
+    assertThat(checkpoint.pendingStateName).isEqualTo(pendingStateName)
   }
 
   private fun verifyCheckpointHasCorrectCountOfAnswers(
@@ -3475,22 +3208,8 @@ class ExplorationProgressControllerTest {
     explorationId: String,
     countOfAnswers: Int
   ) {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingUserAnswersCount)
-      .isEqualTo(countOfAnswers)
+    val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
+    assertThat(checkpoint.pendingUserAnswersCount).isEqualTo(countOfAnswers)
   }
 
   private fun verifyCheckpointHasCorrectStateIndex(
@@ -3498,22 +3217,8 @@ class ExplorationProgressControllerTest {
     explorationId: String,
     stateIndex: Int
   ) {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().stateIndex)
-      .isEqualTo(stateIndex)
+    val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
+    assertThat(checkpoint.stateIndex).isEqualTo(stateIndex)
   }
 
   private fun verifyCheckpointHasCorrectHelpIndex(
@@ -3521,40 +3226,8 @@ class ExplorationProgressControllerTest {
     explorationId: String,
     helpIndex: HelpIndex
   ) {
-    testCoroutineDispatchers.runCurrent()
-    reset(mockExplorationCheckpointObserver)
-    val explorationCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    explorationCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().helpIndex).isEqualTo(helpIndex)
-  }
-
-  /**
-   * Verifies that the specified live data provides at least one successful operation. This will
-   * change test-wide mock state, and synchronizes background execution.
-   */
-  private fun <T : Any?> verifyOperationSucceeds(liveData: LiveData<AsyncResult<T>>) {
-    reset(mockAsyncResultLiveDataObserver)
-    liveData.observeForever(mockAsyncResultLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAsyncResultLiveDataObserver).onChanged(asyncResultCaptor.capture())
-    asyncResultCaptor.value.apply {
-      // This bit of conditional logic is used to add better error reporting when failures occur.
-      if (isFailure()) {
-        throw AssertionError("Operation failed", getErrorOrNull())
-      }
-      assertThat(isSuccess()).isTrue()
-    }
-    reset(mockAsyncResultLiveDataObserver)
+    val checkpoint = retrieveExplorationCheckpoint(profileId, explorationId)
+    assertThat(checkpoint.helpIndex).isEqualTo(helpIndex)
   }
 
   // TODO(#89): Move this to a common test application component.
