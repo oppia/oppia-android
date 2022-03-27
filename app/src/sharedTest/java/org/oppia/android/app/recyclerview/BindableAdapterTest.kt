@@ -45,6 +45,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.FragmentModule
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder
 import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -765,7 +766,7 @@ class BindableAdapterTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class
+      MathEquationInputModule::class, SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

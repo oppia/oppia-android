@@ -3,6 +3,7 @@ package org.oppia.android.app.testing.player.split
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -21,12 +22,12 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -83,6 +84,7 @@ class PlayerSplitScreenTest {
 
   @Before
   fun setUp() {
+    setUpTestApplicationComponent()
     Intents.init()
   }
 
@@ -96,7 +98,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_540x960_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("Continue")).isFalse()
       }
     }
   }
@@ -106,7 +108,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_540x960_xhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -116,7 +118,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_800x1280_xhdpi_continueInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("Continue")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("Continue")).isFalse()
       }
     }
   }
@@ -126,7 +128,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_800x1280_xhdpi_dragInteraction_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isTrue()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isTrue()
       }
     }
   }
@@ -136,7 +138,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_411x731_xxxhdpi_dragInteraction_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("DragAndDropSortInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("DragAndDropSortInput")).isFalse()
       }
     }
   }
@@ -146,7 +148,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_540x960_xhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isFalse()
       }
     }
   }
@@ -156,7 +158,7 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_800x1280_xhdpi_imageClickInput_split() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isTrue()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isTrue()
       }
     }
   }
@@ -166,9 +168,13 @@ class PlayerSplitScreenTest {
   fun testSplitScreen_411x731_xxxhdpi_imageClickInput_noSplit() {
     launch(ExplorationTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        assertThat(SplitScreenManager(activity).shouldSplitScreen("ImageClickInput")).isFalse()
+        assertThat(activity.splitScreenManager.shouldSplitScreen("ImageClickInput")).isFalse()
       }
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -194,7 +200,8 @@ class PlayerSplitScreenTest {
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NetworkConfigProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

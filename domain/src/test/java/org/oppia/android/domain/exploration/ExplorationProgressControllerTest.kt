@@ -33,6 +33,7 @@ import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -55,9 +56,9 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -1417,7 +1418,7 @@ class ExplorationProgressControllerTest {
       profileId.internalId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
@@ -1438,7 +1439,7 @@ class ExplorationProgressControllerTest {
       profileId.internalId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
@@ -1470,7 +1471,7 @@ class ExplorationProgressControllerTest {
       profileId.internalId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_5,
+      TEST_EXPLORATION_ID_13,
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
@@ -2647,6 +2648,7 @@ class ExplorationProgressControllerTest {
   /* Localization-based tests. */
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     playExploration(
@@ -2662,7 +2664,10 @@ class ExplorationProgressControllerTest {
 
     // The context should be the default instance for English since the default strings of the
     // lesson are expected to be in English.
-    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = OppiaLanguage.ENGLISH
+    }.build()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -2681,6 +2686,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
     // Arabic translations should be included per the locale.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -2703,6 +2709,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetCurrentState_englishLangProfile_includesTranslationContextForEnglish() {
     val englishProfileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
     updateContentLanguage(englishProfileId, OppiaLanguage.ENGLISH)
@@ -2717,8 +2724,11 @@ class ExplorationProgressControllerTest {
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
-    // English translations mean no context.
-    assertThat(ephemeralState.writtenTranslationContext).isEqualToDefaultInstance()
+    // English translations means only a language specification.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = OppiaLanguage.ENGLISH
+    }.build()
+    assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -2742,6 +2752,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = monitor.ensureNextResultIsSuccess()
 
     // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -2764,6 +2775,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
     // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralState.writtenTranslationContext.language).isEqualTo(OppiaLanguage.ARABIC)
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 

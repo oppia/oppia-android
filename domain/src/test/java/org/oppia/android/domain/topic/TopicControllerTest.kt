@@ -18,10 +18,13 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLanguage.ARABIC
+import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
+import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.translation.TranslationController
@@ -872,15 +875,19 @@ class TopicControllerTest {
   /* Localization-based tests. */
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
 
-    // The context should be the default instance for English since the default strings of the
-    // lesson are expected to be in English.
-    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualToDefaultInstance()
+    // The context should be just the language for English since the default strings of the lesson
+    // are expected to be in English.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -892,6 +899,7 @@ class TopicControllerTest {
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
 
     // Arabic translations should be included per the locale.
+    assertThat(ephemeralConceptCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralConceptCard.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -907,46 +915,53 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLangProfile_includesTranslationContextForEnglish() {
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
-    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    updateContentLanguage(profileId1, ENGLISH)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
 
-    // English translations mean no context.
-    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualToDefaultInstance()
+    // English translations means a context without translations.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
-    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    updateContentLanguage(profileId1, ENGLISH)
     val conceptCardDataProvider = topicController.getConceptCard(profileId1, TEST_SKILL_ID_1)
     val monitor = monitorFactory.createMonitor(conceptCardDataProvider)
     monitor.waitForNextSuccessResult()
 
     // Update the content language & wait for the ephemeral state to update.
-    updateContentLanguage(profileId1, OppiaLanguage.ARABIC)
+    updateContentLanguage(profileId1, ARABIC)
     val ephemeralConceptCard = monitor.ensureNextResultIsSuccess()
 
     // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralConceptCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralConceptCard.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetConceptCard_arabicLangProfile_includesTranslationContextForArabic() {
-    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
-    updateContentLanguage(profileId2, OppiaLanguage.ARABIC)
+    updateContentLanguage(profileId1, ENGLISH)
+    updateContentLanguage(profileId2, ARABIC)
     val conceptCardDataProvider = topicController.getConceptCard(profileId2, TEST_SKILL_ID_1)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
 
     // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralConceptCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralConceptCard.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLocale_defaultContentLang_includesTranslationContextForEnglish() {
     forceDefaultLocale(Locale.US)
     val revisionCardDataProvider =
@@ -954,9 +969,12 @@ class TopicControllerTest {
 
     val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
 
-    // The context should be the default instance for English since the default strings of the
-    // lesson are expected to be in English.
-    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualToDefaultInstance()
+    // The context should be just the language for English since the default strings of the lesson
+    // are expected to be in English.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -969,6 +987,7 @@ class TopicControllerTest {
     val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
 
     // Arabic translations should be included per the locale.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
@@ -985,45 +1004,51 @@ class TopicControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLangProfile_includesTranslationContextForEnglish() {
     val revisionCardDataProvider =
       topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
-    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    updateContentLanguage(profileId1, ENGLISH)
 
     val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
 
-    // English translations mean no context.
-    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualToDefaultInstance()
+    // English translations means a context without translations.
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_englishLangProfile_switchToArabic_includesTranslationContextForArabic() {
-    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
+    updateContentLanguage(profileId1, ENGLISH)
     val revisionCardDataProvider =
       topicController.getRevisionCard(profileId1, TEST_TOPIC_ID_0, subtopicId = 1)
     val monitor = monitorFactory.createMonitor(revisionCardDataProvider)
     monitor.waitForNextSuccessResult()
 
     // Update the content language & wait for the ephemeral state to update.
-    updateContentLanguage(profileId1, OppiaLanguage.ARABIC)
+    updateContentLanguage(profileId1, ARABIC)
     val ephemeralRevisionCard = monitor.ensureNextResultIsSuccess()
 
     // Switching to Arabic should result in a new ephemeral state with a translation context.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testGetRevisionCard_arabicLangProfile_includesTranslationContextForArabic() {
-    updateContentLanguage(profileId1, OppiaLanguage.ENGLISH)
-    updateContentLanguage(profileId2, OppiaLanguage.ARABIC)
+    updateContentLanguage(profileId1, ENGLISH)
+    updateContentLanguage(profileId2, ARABIC)
     val revisionCardDataProvider =
       topicController.getRevisionCard(profileId2, TEST_TOPIC_ID_0, subtopicId = 1)
 
     val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
 
     // Selecting the profile with Arabic translations should provide a translation context.
+    assertThat(ephemeralRevisionCard.writtenTranslationContext.language).isEqualTo(ARABIC)
     assertThat(ephemeralRevisionCard.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 

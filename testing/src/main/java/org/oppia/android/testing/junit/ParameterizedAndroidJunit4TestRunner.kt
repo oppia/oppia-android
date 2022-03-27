@@ -23,7 +23,10 @@ class ParameterizedAndroidJunit4TestRunner internal constructor(
     ParameterizedRunnerDelegate(
       parameterizedMethods,
       methodName,
-      iterationName
+      iterationName,
+      // Method names need to be restricted since Espresso saves individual test results to a file
+      // with the full method name used as the filename.
+      restrictMethodNamesForPaths = true
     ).also { delegate ->
       delegate.fetchChildrenFromParent = { super.getChildren() }
       delegate.fetchTestNameFromParent = { method -> super.testName(method) }

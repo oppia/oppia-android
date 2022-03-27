@@ -15,14 +15,16 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
-class DragAndDropSortInteractionViewModel(
+class DragAndDropSortInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
@@ -186,6 +188,34 @@ class DragAndDropSortInteractionViewModel(
     }
     // to update the list
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController
+  ) : InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel {
+      return DragAndDropSortInteractionViewModel(
+        entityId,
+        hasConversationView,
+        interaction,
+        answerErrorReceiver,
+        isSplitView,
+        writtenTranslationContext,
+        resourceHandler,
+        translationController
+      )
+    }
   }
 
   companion object {

@@ -6,10 +6,9 @@ import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.player.state.StateFragment
-import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModule.Companion.splitScreenInteractionIdsPool
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionIds
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -19,8 +18,10 @@ private const val MINIMUM_DIAGONAL_WIDTH = 7.0
  * A helper class that is used to detect whether to split the screen in [QuestionPlayerFragment]
  * and [StateFragment] or not based on multiple factors.
  */
-@Singleton
-class SplitScreenManager @Inject constructor(private val context: Context) {
+class SplitScreenManager @Inject constructor(
+  private val context: Context,
+  @SplitScreenInteractionIds private val splitInteractionIds: Set<@JvmSuppressWildcards String>
+) {
 
   /**
    * The actual function that decides whether to split or not.
@@ -64,7 +65,7 @@ class SplitScreenManager @Inject constructor(private val context: Context) {
    * @return `true` if the interaction is suitable for splitting, `false` otherwise.
    */
   private fun isInteractionSplittable(interactionId: String): Boolean {
-    return splitScreenInteractionIdsPool.find {
+    return splitInteractionIds.find {
       it == interactionId
     } != null
   }

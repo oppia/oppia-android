@@ -41,7 +41,7 @@ import org.oppia.android.app.player.state.itemviewmodel.DragAndDropSortInteracti
 import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
-import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelFactory
+import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousButtonViewModel
@@ -51,6 +51,7 @@ import org.oppia.android.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
@@ -74,6 +75,7 @@ import org.oppia.android.databinding.DragDropInteractionItemBinding
 import org.oppia.android.databinding.FeedbackItemBinding
 import org.oppia.android.databinding.FractionInteractionItemBinding
 import org.oppia.android.databinding.ImageRegionSelectionInteractionItemBinding
+import org.oppia.android.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.databinding.NextButtonItemBinding
 import org.oppia.android.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.databinding.PreviousButtonItemBinding
@@ -138,8 +140,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val currentStateName: ObservableField<String>?,
   private val isAudioPlaybackEnabled: ObservableField<Boolean>?,
   private val audioUiManagerRetriever: AudioUiManagerRetriever?,
-  private val interactionViewModelFactoryMap: Map<
-    String, @JvmSuppressWildcards InteractionViewModelFactory>,
+  private val interactionViewModelFactoryMap: Map<String, InteractionItemFactory>,
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -158,8 +159,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * not retained upon configuration changes since the user can just re-expand the list.
    */
   private var hasPreviousResponsesExpanded: Boolean = false
-
-  val isCorrectAnswer = ObservableField<Boolean>(false)
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
@@ -246,7 +245,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
       // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
       // so that the UI always has the correct answer indication, even after configuration changes.
-      isCorrectAnswer.set(true)
       addPreviousAnswers(
         conversationPendingItemList,
         extraInteractionPendingItemList,
@@ -310,7 +308,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     writtenTranslationContext: WrittenTranslationContext
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
-    pendingItemList += interactionViewModelFactory(
+    pendingItemList += interactionViewModelFactory.create(
       gcsEntityId,
       hasConversationView,
       interaction,
@@ -885,7 +883,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val fragment: Fragment,
     private val profileId: ProfileId,
     private val context: Context,
-    private val interactionViewModelFactoryMap: Map<String, InteractionViewModelFactory>,
+    private val interactionViewModelFactoryMap: Map<String, InteractionItemFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController
@@ -1029,6 +1027,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = RatioInputInteractionItemBinding::inflate,
         setViewModel = RatioInputInteractionItemBinding::setViewModel,
         transformViewModel = { it as RatioExpressionInputInteractionViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION,
+        inflateDataBinding = MathExpressionInteractionsItemBinding::inflate,
+        setViewModel = MathExpressionInteractionsItemBinding::setViewModel,
+        transformViewModel = { it as MathExpressionInteractionsViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION,
+        inflateDataBinding = MathExpressionInteractionsItemBinding::inflate,
+        setViewModel = MathExpressionInteractionsItemBinding::setViewModel,
+        transformViewModel = { it as MathExpressionInteractionsViewModel }
+      ).registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION,
+        inflateDataBinding = MathExpressionInteractionsItemBinding::inflate,
+        setViewModel = MathExpressionInteractionsItemBinding::setViewModel,
+        transformViewModel = { it as MathExpressionInteractionsViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON,
         inflateDataBinding = SubmitButtonItemBinding::inflate,
@@ -1372,7 +1385,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val fragment: Fragment,
       private val context: Context,
       private val interactionViewModelFactoryMap: Map<
-        String, @JvmSuppressWildcards InteractionViewModelFactory>,
+        String, @JvmSuppressWildcards InteractionItemFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
       private val resourceHandler: AppLanguageResourceHandler,
       private val translationController: TranslationController

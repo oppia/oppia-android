@@ -1,12 +1,16 @@
 package org.oppia.android.app.testing
 
+import android.content.Context
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -21,6 +25,7 @@ private const val TOPIC_ID = TEST_TOPIC_ID_0
 private const val STORY_ID = TEST_STORY_ID_0
 private const val EXPLORATION_ID = TEST_EXPLORATION_ID_2
 private const val TAG_EXPLORATION_TEST_ACTIVITY = "ExplorationTestActivity"
+private const val TEST_FRAGMENT_TAG = "ExplorationTestActivity.TestFragment"
 
 /** The presenter for [ExplorationTestActivityPresenter]. */
 @ActivityScope
@@ -34,6 +39,9 @@ class ExplorationTestActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.exploration_test_activity)
+    activity.supportFragmentManager.beginTransaction().apply {
+      add(R.id.exploration_test_fragment_placeholder, TestFragment(), TEST_FRAGMENT_TAG)
+    }.commitNow()
     activity.findViewById<Button>(R.id.play_exploration_button).setOnClickListener {
       playExplorationButton()
     }
@@ -70,5 +78,18 @@ class ExplorationTestActivityPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  fun getTestFragment(): TestFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(TEST_FRAGMENT_TAG) as? TestFragment
+  }
+
+  class TestFragment : InjectableFragment() {
+    @Inject lateinit var splitScreenManager: SplitScreenManager
+
+    override fun onAttach(context: Context) {
+      super.onAttach(context)
+      (fragmentComponent as FragmentComponentImpl).inject(this)
+    }
   }
 }
