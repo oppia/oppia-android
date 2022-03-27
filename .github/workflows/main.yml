@@ -97,12 +97,13 @@ jobs:
           name: testing reports
           path: testing/build/reports
 
-  app_tests:
-    name: App Module Robolectric Tests
-    runs-on: ${{ matrix.os }}
+  run_app_module_test:
+    name: Run app module Robolectric test shard
+    runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-18.04]
+        shard: [shard0, shard1, shard2, shard3]
     steps:
       - uses: actions/checkout@v2
 
@@ -129,10 +130,23 @@ jobs:
       - name: Robolectric tests - App Module
         # We require 'sudo' to avoid an error of the existing android sdk. See https://github.com/actions/starter-workflows/issues/58
         run: |
-          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest -Dorg.gradle.java.home=$JAVA_HOME
+          sudo ./gradlew --full-stacktrace :app:testDebugUnitTest --${{ matrix.shard }} -Dorg.gradle.java.home=$JAVA_HOME
       - name: Upload App Test Reports
         uses: actions/upload-artifact@v2
         if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
         with:
-          name: app reports
+          name: app reports ${{ matrix.shard }}
           path: app/build/reports
+
+  app_tests:
+    name: App Module Robolectric Tests
+    needs: run_app_module_test
+    if: ${{ always() }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    steps:
+      - name: Check tests passed (for tests that ran)
+        if: ${{ needs.run_app_module_test.result != 'success' }}
+        run: exit 1
