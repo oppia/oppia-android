@@ -32,16 +32,17 @@ class QuestionTrainingController @Inject constructor(
   private val seedRandom = Random(questionTrainingSeed)
 
   /**
-   * Begins a question training session given a list of skill Ids and a total number of questions.
+   * Begins a question training session given a list of skill IDs and a total number of questions.
    *
-   * This method is not expected to fail. [QuestionAssessmentProgressController] should be used to
-   * manage the play state, and monitor the load success/failure of the training session.
+   * [QuestionAssessmentProgressController] should be used to manage the play state, and monitor the
+   * load success/failure of the training session. The questions used in the training session will
+   * be a randomized selection among all questions corresponding to the provided skill IDs.
    *
-   * Questions will be shuffled and then the training session will begin.
+   * This can be called even if a session is currently active as it will force initiate a new play
+   * session, resetting any data from the previous session.
    *
-   * @return a one-time [DataProvider] to observe whether initiating the play request succeeded.
-   *     Note that the training session may still fail to load, but this provides early-failure
-   *     detection.
+   * @return a [DataProvider] to observe whether initiating the play request, or future play
+   *     requests, succeeded
    */
   fun startQuestionTrainingSession(
     profileId: ProfileId,
@@ -112,9 +113,16 @@ class QuestionTrainingController @Inject constructor(
   }
 
   /**
-   * Finishes the most recent training session started by [startQuestionTrainingSession]. This
-   * method should only be called if there is a training session is being played, otherwise an
-   * exception will be thrown.
+   * Finishes the most recent training session started by [startQuestionTrainingSession].
+   *
+   * This method should only be called if an active training session is being played, otherwise the
+   * resulting provider will fail. Note that this doesn't actually need to be called between
+   * sessions unless the caller wants to ensure other providers monitored from
+   * [QuestionAssessmentProgressController] are reset to a proper out-of-session state.
+   *
+   * Note that the returned provider monitors the long-term stopping state of training sessions and
+   * will be reset to 'pending' when a session is currently active, or before any session has
+   * started.
    */
   fun stopQuestionTrainingSession(): DataProvider<Any?> =
     questionAssessmentProgressController.finishQuestionTrainingSession()

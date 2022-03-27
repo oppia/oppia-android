@@ -55,6 +55,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -179,29 +180,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testStopTrainingSession_withoutStartingSession_fails() {
+  fun testStopTrainingSession_withoutStartingSession_isFailure() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val stopDataProvider = questionTrainingController.stopQuestionTrainingSession()
 
-    val error = monitorFactory.waitForNextFailureResult(stopDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot stop a new training session which wasn't started")
-  }
-
-  @Test
-  fun testStartTrainingSession_withoutFinishingPrevious_fails() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_012)
-
-    val initiationDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId1, TEST_SKILL_ID_LIST_02)
-
-    val error = monitorFactory.waitForNextFailureResult(initiationDataProvider)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot start a new training session until the previous one is completed")
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(stopDataProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -235,17 +222,16 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError() {
+  fun testSubmitAnswer_beforePlaying_isFailure() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val submitAnswerProvider =
       questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
 
-    // Verify that the answer submission failed.
-    val failure = monitorFactory.waitForNextFailureResult(submitAnswerProvider)
-    assertThat(failure)
-      .hasMessageThat()
-      .contains("Cannot submit an answer if a training session has not yet begun.")
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(submitAnswerProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -358,15 +344,15 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testMoveToNext_beforePlaying_failsWithError() {
+  fun testMoveToNext_beforePlaying_isFailure() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     val moveToQuestionResult = questionAssessmentProgressController.moveToNextQuestion()
 
-    val error = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
-    assertThat(error)
-      .hasMessageThat()
-      .contains("Cannot navigate to a next question if a training session has not begun.")
+    // The operation should be failing since the session hasn't started.
+    val result = monitorFactory.waitForNextFailureResult(moveToQuestionResult)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
@@ -612,20 +598,6 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testSubmitAnswer_beforePlaying_failsWithError_logsException() {
-    setUpTestApplicationWithSeed(questionSeed = 0)
-
-    questionAssessmentProgressController.submitAnswer(createMultipleChoiceAnswer(0))
-    testCoroutineDispatchers.runCurrent()
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception)
-      .hasMessageThat()
-      .contains("Cannot submit an answer if a training session has not yet begun.")
-  }
-
-  @Test
   fun testSubmitAnswer_forTextInput_wrongAnswer_returnsDefaultOutcome_showHint() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_2)
@@ -687,7 +659,8 @@ class QuestionAssessmentProgressControllerTest {
     waitForGetCurrentQuestionSuccessfulLoad()
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
-    monitorFactory.waitForNextSuccessfulResult(
+    // The actual reveal will fail due to it being invalid.
+    monitorFactory.ensureDataProviderExecutes(
       questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
     )
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
@@ -1398,7 +1371,9 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun submitAnswer(answer: UserAnswer): EphemeralQuestion {
-    questionAssessmentProgressController.submitAnswer(answer)
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.submitAnswer(answer)
+    )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
@@ -1420,8 +1395,10 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   private fun moveToNextQuestion(): EphemeralQuestion {
-    questionAssessmentProgressController.moveToNextQuestion()
-    testCoroutineDispatchers.runCurrent()
+    // This operation might fail for some tests.
+    monitorFactory.ensureDataProviderExecutes(
+      questionAssessmentProgressController.moveToNextQuestion()
+    )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 

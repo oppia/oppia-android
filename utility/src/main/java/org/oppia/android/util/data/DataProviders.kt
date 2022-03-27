@@ -6,6 +6,9 @@ import dagger.Reusable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import org.oppia.android.util.logging.ExceptionLogger
@@ -213,6 +216,59 @@ class DataProviders @Inject constructor(
       override suspend fun retrieveData(): AsyncResult<T> {
         return loadFromMemoryAsync()
       }
+    }
+  }
+
+  /**
+   * Returns a [DataProvider] that sources its data from this [StateFlow] with the specified [id].
+   *
+   * Note that changes to the [StateFlow] will **not** result in changes to the returned
+   * [DataProvider] (though callers can still notify that [id] has changes to re-pull data from the
+   * [StateFlow]). If callers want the provider to automatically update with the [StateFlow] they
+   * should use [convertToAutomaticDataProvider].
+   *
+   * The returned [DataProvider] will always be in a passing state.
+   */
+  fun <T> StateFlow<T>.convertToSimpleDataProvider(id: Any): DataProvider<T> =
+    createInMemoryDataProvider(id) { value }
+
+  /**
+   * Returns a [DataProvider] for this [StateFlow] in the same way as [convertToSimpleDataProvider]
+   * except the [StateFlow] has a payload of an [AsyncResult] to affect the pending/success/failure
+   * state of the provider.
+   */
+  fun <T> StateFlow<AsyncResult<T>>.convertAsyncToSimpleDataProvider(id: Any): DataProvider<T> =
+    createInMemoryDataProviderAsync(id) { value }
+
+  /**
+   * Returns a [DataProvider] for this [StateFlow] in the same way as [convertToSimpleDataProvider]
+   * except changes to the [StateFlow]'s [StateFlow.value] will result in notifications being
+   * triggered for the returned [DataProvider].
+   *
+   * Note that the subscription to the [StateFlow] never expires and will remain for the lifetime of
+   * the flow (at least until both the [StateFlow] and [DataProvider] go out of memory and are
+   * cleaned up).
+   */
+  fun <T> StateFlow<T>.convertToAutomaticDataProvider(id: Any): DataProvider<T> {
+    return convertToSimpleDataProvider(id).also {
+      onEach {
+        // Synchronously notify subscribers whenever the flow's state changes.
+        asyncDataSubscriptionManager.notifyChange(id)
+      }.launchIn(CoroutineScope(backgroundDispatcher))
+    }
+  }
+
+  /**
+   * Returns a [DataProvider] for this [StateFlow] in the same way as
+   * [convertToAutomaticDataProvider] with the same async behavior as
+   * [convertAsyncToSimpleDataProvider].
+   */
+  fun <T> StateFlow<AsyncResult<T>>.convertAsyncToAutomaticDataProvider(id: Any): DataProvider<T> {
+    return convertAsyncToSimpleDataProvider(id).also {
+      onEach {
+        // Synchronously notify subscribers whenever the flow's state changes.
+        asyncDataSubscriptionManager.notifyChange(id)
+      }.launchIn(CoroutineScope(backgroundDispatcher))
     }
   }
 

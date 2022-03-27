@@ -40,24 +40,26 @@ class ExplorationDataController @Inject constructor(
   /**
    * Begins playing an exploration of the specified ID.
    *
-   * This method is not expected to fail.
-   *
    * [ExplorationProgressController] should be used to manage the play state, and monitor the load
    * success/failure of the exploration.
    *
-   * This must be called only if no active exploration is being played. The previous exploration
-   * must have first been stopped using [stopPlayingExploration], otherwise the operation will fail.
+   * This can be called even if a session is currently active as it will force initiate a new play
+   * session, resetting any data from the previous session (though any pending unsaved checkpoint
+   * progress is guaranteed to be saved from the previous session, first).
+   *
+   * [stopPlayingExploration] may be optionally called to clean up the session--see the
+   * documentation for that method for details.
    *
    * @param internalProfileId the ID corresponding to the profile for which exploration has to be
    *     played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
    * @param storyId the ID corresponding to the story for which exploration has to be played
    * @param explorationId the ID of the exploration which has to be played
-   * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
-   *     for the current exploration
+   * @param shouldSavePartialProgress indicates if partial progress should be saved for the new play
+   *     session
    * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
-   * @return a one-time [DataProvider] to observe whether initiating the play request succeeded.
-   *     The exploration may still fail to load, but this provides early-failure detection.
+   * @return a [DataProvider] to observe whether initiating the play request, or future play
+   *     requests, succeeded
    */
   fun startPlayingExploration(
     internalProfileId: Int,
@@ -68,7 +70,7 @@ class ExplorationDataController @Inject constructor(
     explorationCheckpoint: ExplorationCheckpoint
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
-      internalProfileId,
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       topicId,
       storyId,
       explorationId,
@@ -79,10 +81,16 @@ class ExplorationDataController @Inject constructor(
 
   /**
    * Finishes the most recent exploration started by [startPlayingExploration], and returns a
-   * one-off [DataProvider] indicating whether the operation succeeded.
+   * [DataProvider] indicating whether the operation succeeded.
    *
    * This method should only be called if an active exploration is being played, otherwise the
-   * operation will fail.
+   * resulting provider will fail. Note that this doesn't actually need to be called between
+   * sessions unless the caller wants to ensure other providers monitored from
+   * [ExplorationProgressController] are reset to a proper out-of-session state.
+   *
+   * Note that the returned provider monitors the long-term stopping state of exploration sessions
+   * and will be reset to 'pending' when a session is currently active, or before any session has
+   * started.
    */
   fun stopPlayingExploration(): DataProvider<Any?> =
     explorationProgressController.finishExplorationAsync()

@@ -173,19 +173,16 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testStopPlayingExploration_withoutStartingSession_fails() {
-    explorationDataController.stopPlayingExploration()
-    testCoroutineDispatchers.runCurrent()
+  fun testStopPlayingExploration_withoutStartingSession_returnsFailure() {
+    val resultProvider = explorationDataController.stopPlayingExploration()
 
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(java.lang.IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot finish playing an exploration that hasn't yet been started")
+    val result = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(result).isInstanceOf(java.lang.IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   @Test
-  fun testStartPlayingExploration_withoutStoppingSession_fails() {
+  fun testStartPlayingExploration_withoutStoppingSession_succeeds() {
     explorationDataController.startPlayingExploration(
       internalProfileId,
       TEST_TOPIC_ID_0,
@@ -194,7 +191,8 @@ class ExplorationDataControllerTest {
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
-    explorationDataController.startPlayingExploration(
+
+    val dataProvider = explorationDataController.startPlayingExploration(
       internalProfileId,
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_2,
@@ -202,13 +200,9 @@ class ExplorationDataControllerTest {
       shouldSavePartialProgress = false,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
-    testCoroutineDispatchers.runCurrent()
 
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(java.lang.IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Expected to finish previous exploration before starting a new one.")
+    // The new session overwrites the previous.
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
   }
 
   // TODO(#89): Move this to a common test application component.
