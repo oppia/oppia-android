@@ -105,6 +105,13 @@ class ListItemLeadingMarginSpanTest {
   @Inject
   lateinit var testGlideImageLoader: TestGlideImageLoader
 
+  val bulletRadius =
+    context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.bullet_radius)
+
+  val spacingBeforeText = context.resources.getDimensionPixelSize(
+    org.oppia.android.util.R.dimen.spacing_before_text
+  )
+
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
@@ -166,16 +173,16 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
 
-    val spacingBeforeBulletText = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet_text
-    )
-    val expectedMargin = spacingBeforeBulletText
+    val expectedMargin = 2 * bulletRadius + spacingBeforeText
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
     assertThat(bulletSpan1).isNotNull()
+
+    val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
+    assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
   }
 
   @Test
@@ -219,13 +226,10 @@ class ListItemLeadingMarginSpanTest {
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(5)
 
+    val expectedMargin = 2 * bulletRadius + spacingBeforeText
+
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
-
-    val spacingBeforeBulletText = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_bullet_text
-    )
-    val expectedMargin = spacingBeforeBulletText
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
@@ -277,14 +281,10 @@ class ListItemLeadingMarginSpanTest {
         ListItemLeadingMarginSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(5)
+    val expectedMargin = 2 * bulletRadius + spacingBeforeText
 
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
-
-    val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_numbered_text
-    )
-    val expectedMargin = spacingBeforeNumberedText
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
@@ -327,10 +327,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
 
-    val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
-      org.oppia.android.util.R.dimen.spacing_before_numbered_text
-    )
-    val expectedMargin = spacingBeforeNumberedText
+    val expectedMargin = 2 * bulletRadius + spacingBeforeText
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)

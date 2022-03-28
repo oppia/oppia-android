@@ -33,12 +33,8 @@ class ListItemLeadingMarginSpan(
   private val spacingBeforeBullet = resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
 
   /** The space between the bullet and the text. */
-  private val spacingBeforeBulletText =
-    resources.getDimensionPixelSize(R.dimen.spacing_before_bullet_text)
-
-  /** The space between the numbered list and the text. */
-  private val spacingBeforeNumberedText =
-    resources.getDimensionPixelSize(R.dimen.spacing_before_numbered_text)
+  private val spacingBeforeText =
+    resources.getDimensionPixelSize(R.dimen.spacing_before_text)
 
   override fun drawLeadingMargin(
     canvas: Canvas,
@@ -81,10 +77,6 @@ class ListItemLeadingMarginSpan(
   }
   
   override fun getLeadingMargin(first: Boolean): Int {
-    return when (tag) {
-      CUSTOM_LIST_UL_TAG -> spacingBeforeBulletText
-      CUSTOM_LIST_OL_TAG -> spacingBeforeNumberedText
-      else -> 0
-    }
+    return  2 * bulletRadius + spacingBeforeText
   }
 }
