@@ -1,39 +1,21 @@
 package org.oppia.android.util.logging.firebase
 
-import android.app.Application
-import android.content.Context
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.logging.EventBundleCreator
+import javax.inject.Singleton
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
-import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.networking.NetworkConnectionUtil
-import javax.inject.Singleton
 
 /** Provides Firebase-specific logging implementations. */
 @Module
 class LogReportingModule {
-  @Singleton
   @Provides
-  fun provideCrashLogger(): ExceptionLogger {
-    return FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
-  }
+  @Singleton
+  fun provideCrashLogger(): ExceptionLogger =
+    FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
 
-  @Singleton
   @Provides
-  fun provideEventLogger(
-    context: Context,
-    syncStatusManager: SyncStatusManager,
-    networkConnectionUtil: NetworkConnectionUtil
-  ): EventLogger {
-    return FirebaseEventLogger(
-      FirebaseAnalytics.getInstance(context.applicationContext as Application),
-      EventBundleCreator(),
-      syncStatusManager,
-      networkConnectionUtil
-    )
-  }
+  @Singleton
+  fun provideEventLogger(factory: FirebaseEventLogger.Factory): EventLogger = factory.create()
 }

@@ -13,18 +13,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -328,9 +316,9 @@ class OppiaLoggerTest {
   @Test
   fun testController_featureDisabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = false
-    oppiaLogger.logLearnerAnalyticsEvent(
-      TEST_TIMESTAMP,
-      oppiaLogger.createOpenHomeContext()
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      TEST_TIMESTAMP
     )
 
     assertThat(fakeEventLogger.noEventsPresent()).isTrue()
@@ -341,9 +329,9 @@ class OppiaLoggerTest {
     TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
     setUpTestApplicationComponent()
 
-    oppiaLogger.logLearnerAnalyticsEvent(
-      TEST_TIMESTAMP,
-      oppiaLogger.createOpenHomeContext()
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenHomeContext(),
+      TEST_TIMESTAMP
     )
 
     assertThat(fakeEventLogger.noEventsPresent()).isFalse()
@@ -640,6 +628,7 @@ class OppiaLoggerTest {
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class,
       UserIdProdModule::class
+      LoggingIdentifierModule::class, SyncStatusModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent {

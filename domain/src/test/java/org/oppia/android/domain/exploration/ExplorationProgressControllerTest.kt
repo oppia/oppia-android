@@ -158,13 +158,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_invalid_returnsSuccess() {
     val resultDataProvider =
-      explorationDataController.startPlayingExploration(
-        profileId.internalId,
-        INVALID_TOPIC_ID,
-        INVALID_STORY_ID,
-        INVALID_EXPLORATION_ID,
-        shouldSavePartialProgress = false,
-        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      explorationDataController.replayExploration(
+        profileId.internalId, INVALID_TOPIC_ID, INVALID_STORY_ID, INVALID_EXPLORATION_ID
       )
 
     // An invalid exploration is not known until it's fully loaded, and that's observed via
@@ -191,13 +186,8 @@ class ExplorationProgressControllerTest {
   @Test
   fun testPlayExploration_valid_returnsSuccess() {
     val resultDataProvider =
-      explorationDataController.startPlayingExploration(
-        profileId.internalId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false,
-        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      explorationDataController.replayExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
       )
 
     monitorFactory.waitForNextSuccessfulResult(resultDataProvider)
@@ -254,7 +244,7 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testFinishExploration_beforePlaying_isFailure() {
-    val resultDataProvider = explorationDataController.stopPlayingExploration()
+    val resultDataProvider = explorationDataController.stopPlayingExploration(isCompletion = false)
 
     // The operation should be failing since the session hasn't started.
     val result = monitorFactory.waitForNextFailureResult(resultDataProvider)
@@ -276,13 +266,8 @@ class ExplorationProgressControllerTest {
 
     // Try playing another exploration without finishing the previous one.
     val resultDataProvider =
-      explorationDataController.startPlayingExploration(
-        profileId.internalId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false,
-        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      explorationDataController.replayExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
       )
 
     // The new session will overwrite the previous.
@@ -2806,16 +2791,24 @@ class ExplorationProgressControllerTest {
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
-    monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.startPlayingExploration(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress,
-        explorationCheckpoint
-      )
-    )
+    val startPlayingProvider = when {
+      !shouldSavePartialProgress -> {
+        explorationDataController.restartExploration(
+          internalProfileId, topicId, storyId, explorationId
+        )
+      }
+      explorationCheckpoint != ExplorationCheckpoint.getDefaultInstance() -> {
+        explorationDataController.resumeExploration(
+          internalProfileId, topicId, storyId, explorationId, explorationCheckpoint
+        )
+      }
+      else -> {
+        explorationDataController.startPlayingNewExploration(
+          internalProfileId, topicId, storyId, explorationId
+        )
+      }
+    }
+    monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
   private fun waitForGetCurrentStateSuccessfulLoad(): EphemeralState {
@@ -3062,7 +3055,7 @@ class ExplorationProgressControllerTest {
   }
 
   private fun endExploration() {
-    monitorFactory.waitForNextSuccessfulResult(explorationDataController.stopPlayingExploration())
+    monitorFactory.waitForNextSuccessfulResult(explorationDataController.stopPlayingExploration(isCompletion = false))
   }
 
   private fun createContinueButtonAnswer() =
@@ -3291,6 +3284,7 @@ class ExplorationProgressControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, UserIdProdModule::class, PlatformParameterModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.loguploader
 
 import android.app.Application
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -21,11 +20,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -66,6 +62,9 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.system.UserIdProdModule
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -74,13 +73,6 @@ private const val TEST_TOPIC_ID = "test_topicId"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @get:Rule
-  val executorRule = InstantTaskExecutorRule()
-
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
@@ -143,7 +135,7 @@ class LogUploadWorkerTest {
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       eventLogTopicContext.timestamp,
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
@@ -164,7 +156,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeEventLogger.getMostRecentCachedEvent()).isEqualTo(eventLogTopicContext)
+    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
   }
 
   @Test
@@ -200,7 +192,7 @@ class LogUploadWorkerTest {
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       eventLogTopicContext.timestamp,
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
@@ -285,6 +277,7 @@ class LogUploadWorkerTest {
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, ApplicationLifecycleModule::class, UserIdProdModule::class
+      SyncStatusTestModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
