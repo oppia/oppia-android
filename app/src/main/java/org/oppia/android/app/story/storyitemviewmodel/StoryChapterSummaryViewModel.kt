@@ -56,7 +56,7 @@ class StoryChapterSummaryViewModel(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 internalProfileId,
@@ -66,9 +66,9 @@ class StoryChapterSummaryViewModel(
                 canExplorationBeResumed = true,
                 shouldSavePartialProgress,
                 backflowId = 1,
-                explorationCheckpoint = it.getOrThrow()
+                explorationCheckpoint = it.value
               )
-            } else if (it.isFailure()) {
+            } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 internalProfileId,

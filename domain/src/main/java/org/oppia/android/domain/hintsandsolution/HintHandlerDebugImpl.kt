@@ -1,58 +1,50 @@
 package org.oppia.android.domain.hintsandsolution
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
-import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
-import kotlin.concurrent.withLock
 
 /**
  * Debug implementation of [HintHandler] that conditionally always shows hints & solutions if
  * 'Show all hints and solution' functionality is enabled in the developer options menu.
  * If this functionality is disabled then it will fall back to [HintHandlerProdImpl].
  */
-class HintHandlerDebugImpl private constructor(
-  private val hintMonitor: HintHandler.HintMonitor
-) : HintHandler {
+class HintHandlerDebugImpl private constructor() : HintHandler {
+  private val helpIndexFlow by lazy { MutableStateFlow(HelpIndex.getDefaultInstance()) }
 
-  private val handlerLock = ReentrantLock()
-
-  private lateinit var pendingState: State
-
-  override fun startWatchingForHintsInNewState(state: State) {
-    handlerLock.withLock {
-      pendingState = state
-      hintMonitor.onHelpIndexChanged()
-    }
+  override suspend fun startWatchingForHintsInNewState(state: State) {
+    recomputeHelpIndex(state)
   }
 
-  override fun resumeHintsForSavedState(
+  override suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
     state: State
   ) {}
 
-  override fun finishState(newState: State) {
-    handlerLock.withLock {
-      startWatchingForHintsInNewState(newState)
-    }
+  override suspend fun finishState(newState: State) {
+    startWatchingForHintsInNewState(newState)
   }
 
-  override fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {}
+  override suspend fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {}
 
   // This is never called as everything is already revealed when the state is loaded.
-  override fun viewHint(hintIndex: Int) {}
+  override suspend fun viewHint(hintIndex: Int) {}
 
   // This is never called as everything is already revealed when the state is loaded.
-  override fun viewSolution() {}
+  override suspend fun viewSolution() {}
 
-  override fun navigateToPreviousState() {}
+  override suspend fun navigateToPreviousState() {}
 
-  override fun navigateBackToLatestPendingState() {}
+  override suspend fun navigateBackToLatestPendingState() {}
 
-  override fun getCurrentHelpIndex(): HelpIndex {
-    return if (!pendingState.offersHelp()) {
+  override fun getCurrentHelpIndex(): StateFlow<HelpIndex> = helpIndexFlow
+
+  private fun recomputeHelpIndex(pendingState: State) {
+    helpIndexFlow.value = if (!pendingState.offersHelp()) {
       // If this state has no help to show, do nothing.
       HelpIndex.getDefaultInstance()
     } else {
@@ -67,11 +59,11 @@ class HintHandlerDebugImpl private constructor(
     private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl,
     private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
   ) : HintHandler.Factory {
-    override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
+    override fun create(): HintHandler {
       return if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-        hintHandlerProdImplFactory.create(hintMonitor)
+        hintHandlerProdImplFactory.create()
       } else {
-        HintHandlerDebugImpl(hintMonitor)
+        HintHandlerDebugImpl()
       }
     }
   }

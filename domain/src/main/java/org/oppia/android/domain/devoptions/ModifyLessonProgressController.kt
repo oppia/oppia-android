@@ -43,7 +43,7 @@ class ModifyLessonProgressController @Inject constructor(
         val listOfTopics = topicList.topicSummaryList.mapNotNull { topicSummary ->
           topicController.retrieveTopic(topicSummary.topicId)
         }
-        AsyncResult.success(listOfTopics)
+        AsyncResult.Success(listOfTopics)
       }
     val topicProgressListDataProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
@@ -70,7 +70,7 @@ class ModifyLessonProgressController @Inject constructor(
         listOfTopics.forEach { topic ->
           storyMap[topic.topicId] = topic.storyList
         }
-        AsyncResult.success(storyMap.toMap())
+        AsyncResult.Success(storyMap.toMap())
       }
   }
 

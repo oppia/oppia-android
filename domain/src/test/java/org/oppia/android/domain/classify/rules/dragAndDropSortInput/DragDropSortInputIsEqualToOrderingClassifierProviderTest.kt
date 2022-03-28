@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.testing.assertThrows
@@ -71,7 +71,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -85,7 +85,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -99,7 +99,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -113,7 +113,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -127,7 +127,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -141,7 +141,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

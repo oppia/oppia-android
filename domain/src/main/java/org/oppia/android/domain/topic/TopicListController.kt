@@ -76,7 +76,7 @@ val EXPLORATION_THUMBNAILS = mapOf(
   RATIOS_EXPLORATION_ID_3 to createChapterThumbnail5(),
   TEST_EXPLORATION_ID_2 to createChapterThumbnail8(),
   TEST_EXPLORATION_ID_4 to createChapterThumbnail0(),
-  TEST_EXPLORATION_ID_5 to createChapterThumbnail0(),
+  TEST_EXPLORATION_ID_13 to createChapterThumbnail0(),
 )
 
 private const val GET_TOPIC_LIST_PROVIDER_ID = "get_topic_list_provider_id"
@@ -121,7 +121,7 @@ class TopicListController @Inject constructor(
     return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
       .transformAsync(GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID) {
         val promotedActivityList = computePromotedActivityList(it)
-        AsyncResult.success(promotedActivityList)
+        AsyncResult.Success(promotedActivityList)
       }
   }
 

@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createTranslatableHtmlContentId
@@ -60,7 +60,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -77,7 +77,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -94,7 +94,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -111,7 +111,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -128,7 +128,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -145,7 +145,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -162,7 +162,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -176,7 +176,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -190,7 +190,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()

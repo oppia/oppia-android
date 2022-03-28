@@ -1,7 +1,5 @@
 package org.oppia.android.domain.exploration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
@@ -40,23 +38,28 @@ class ExplorationDataController @Inject constructor(
   }
 
   /**
-   * Begins playing an exploration of the specified ID. This method is not expected to fail.
-   * [ExplorationProgressController] should be used to manage the play state, and monitor the load success/failure of
-   * the exploration.
+   * Begins playing an exploration of the specified ID.
    *
-   * This must be called only if no active exploration is being played. The previous exploration must have first been
-   * stopped using [stopPlayingExploration] otherwise an exception will be thrown.
+   * [ExplorationProgressController] should be used to manage the play state, and monitor the load
+   * success/failure of the exploration.
+   *
+   * This can be called even if a session is currently active as it will force initiate a new play
+   * session, resetting any data from the previous session (though any pending unsaved checkpoint
+   * progress is guaranteed to be saved from the previous session, first).
+   *
+   * [stopPlayingExploration] may be optionally called to clean up the session--see the
+   * documentation for that method for details.
    *
    * @param internalProfileId the ID corresponding to the profile for which exploration has to be
    *     played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
    * @param storyId the ID corresponding to the story for which exploration has to be played
    * @param explorationId the ID of the exploration which has to be played
-   * @param shouldSavePartialProgress the boolean that indicates if partial progress has to be saved
-   *     for the current exploration
+   * @param shouldSavePartialProgress indicates if partial progress should be saved for the new play
+   *     session
    * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
-   * @return a one-time [LiveData] to observe whether initiating the play request succeeded.
-   *     The exploration may still fail to load, but this provides early-failure detection.
+   * @return a [DataProvider] to observe whether initiating the play request, or future play
+   *     requests, succeeded
    */
   fun startPlayingExploration(
     internalProfileId: Int,
@@ -65,36 +68,32 @@ class ExplorationDataController @Inject constructor(
     explorationId: String,
     shouldSavePartialProgress: Boolean,
     explorationCheckpoint: ExplorationCheckpoint
-  ): LiveData<AsyncResult<Any?>> {
-    return try {
-      explorationProgressController.beginExplorationAsync(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress,
-        explorationCheckpoint
-      )
-      MutableLiveData(AsyncResult.success<Any?>(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
-    }
+  ): DataProvider<Any?> {
+    return explorationProgressController.beginExplorationAsync(
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress,
+      explorationCheckpoint
+    )
   }
 
   /**
-   * Finishes the most recent exploration started by [startPlayingExploration]. This method should only be called if an
-   * active exploration is being played, otherwise an exception will be thrown.
+   * Finishes the most recent exploration started by [startPlayingExploration], and returns a
+   * [DataProvider] indicating whether the operation succeeded.
+   *
+   * This method should only be called if an active exploration is being played, otherwise the
+   * resulting provider will fail. Note that this doesn't actually need to be called between
+   * sessions unless the caller wants to ensure other providers monitored from
+   * [ExplorationProgressController] are reset to a proper out-of-session state.
+   *
+   * Note that the returned provider monitors the long-term stopping state of exploration sessions
+   * and will be reset to 'pending' when a session is currently active, or before any session has
+   * started.
    */
-  fun stopPlayingExploration(): LiveData<AsyncResult<Any?>> {
-    return try {
-      explorationProgressController.finishExplorationAsync()
-      MutableLiveData(AsyncResult.success(null))
-    } catch (e: Exception) {
-      exceptionsController.logNonFatalException(e)
-      MutableLiveData(AsyncResult.failed(e))
-    }
-  }
+  fun stopPlayingExploration(): DataProvider<Any?> =
+    explorationProgressController.finishExplorationAsync()
 
   /**
    * Fetches the details of the oldest saved exploration for a specified profileId.
@@ -125,10 +124,10 @@ class ExplorationDataController @Inject constructor(
   @Suppress("RedundantSuspendModifier")
   private suspend fun retrieveExplorationById(explorationId: String): AsyncResult<Exploration> {
     return try {
-      AsyncResult.success(explorationRetriever.loadExploration(explorationId))
+      AsyncResult.Success(explorationRetriever.loadExploration(explorationId))
     } catch (e: Exception) {
       exceptionsController.logNonFatalException(e)
-      AsyncResult.failed(e)
+      AsyncResult.Failure(e)
     }
   }
 }
