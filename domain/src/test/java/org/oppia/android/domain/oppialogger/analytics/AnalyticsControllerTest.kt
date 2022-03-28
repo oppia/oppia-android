@@ -103,13 +103,28 @@ private const val TEST_CONTENT_ID = "test_contentId"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
+  private companion object {
+    private val LEARNER_DETAILS_CONTEXT = EventLog.LearnerDetailsContext.newBuilder().apply {
+      deviceId = TEST_DEVICE_ID
+      learnerId = TEST_LEARNER_ID
+    }.build()
+
+    private val EXPLORATION_CONTEXT = EventLog.ExplorationContext.newBuilder().apply {
+      sessionId = TEST_SESSION_ID
+      explorationId = TEST_EXPLORATION_ID
+      explorationVersion = TEST_EXPLORATION_VERSION
+      stateName = TEST_STATE_NAME
+    }.build()
+  }
+
   @Inject lateinit var analyticsController: AnalyticsController
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var fakeEventLogger: FakeEventLogger
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
+  @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+  
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

@@ -124,8 +124,6 @@ class RegexPatternValidationCheckTest {
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
-  private val doNotUseClipboardManager =
-    "Don't use Android's ClipboardManager directly. Instead, use ClipboardController."
   private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
   private val parameterizedTestRunnerRequiresException =
     "To use OppiaParameterizedTestRunner, please add an exemption to" +
@@ -133,6 +131,8 @@ class RegexPatternValidationCheckTest {
       " PR description. Note that parameterized tests should only be used in special" +
       " circumstances where a single behavior can be tested across multiple inputs, or for" +
       " especially large test suites that can be trivially reduced."
+  private val doNotUseClipboardManager =
+    "Don't use Android's ClipboardManager directly. Instead, use ClipboardController."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1625,28 +1625,6 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_clipboardManagerImport_fileContentIsNotCorrect() {
-    val prohibitedContent = "import android.content.ClipboardManager"
-    tempFolder.newFolder("testfiles", "domain", "src", "main")
-    val stringFilePath = "domain/src/main/SomeController.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
-
-    val exception = assertThrows(Exception::class) {
-      runScript()
-    }
-
-    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString().trim())
-      .isEqualTo(
-        """
-        $stringFilePath:1: $doNotUseClipboardManager
-        $stringFilePath:1: $doNotUseProtoLibrary
-        $wikiReferenceNote
-        """.trimIndent()
-      )
-  }
-
-  @Test
   fun testFileContent_buildFileUsesProtoLibrary_fileContentIsNotCorrect() {
     val prohibitedContent = "proto_library("
     tempFolder.newFolder("testfiles", "domain", "src", "main")
@@ -1683,7 +1661,27 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $doNotUseProtoLibrary
->>>>>>> develop
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_clipboardManagerImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import android.content.ClipboardManager"
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseClipboardManager
         $wikiReferenceNote
         """.trimIndent()
       )

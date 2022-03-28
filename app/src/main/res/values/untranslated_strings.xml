@@ -44,6 +44,23 @@
   <string name="math_expression_human_readable_string" translatable="false">Human-readable string</string>
   <string name="math_expression_allowed_variables_input_hint" translatable="false">Allowed variables (comma-separated)</string>
   <string name="math_expression_treat_divisions_as_fractions_label" translatable="false">Treat divisions as fractions</string>
+  <!-- Accessibility string generation for math expressions. Note that these are in lowercase on purpose. -->
+  <string name="math_accessibility_part_zed" translatable="false">zed</string>
+  <string name="math_accessibility_part_one_half" translatable="false">one half</string>
+  <string name="math_accessibility_a_equals_b" translatable="false">%s equals %s</string>
+  <string name="math_accessibility_a_plus_b" translatable="false">%s plus %s</string>
+  <string name="math_accessibility_a_minus_b" translatable="false">%s minus %s</string>
+  <string name="math_accessibility_a_times_b" translatable="false">%s times %s</string>
+  <string name="math_accessibility_a_divides_b" translatable="false">%s divided by %s</string>
+  <string name="math_accessibility_a_exp_b" translatable="false">%s raised to the power of %s</string>
+  <string name="math_accessibility_negative_a" translatable="false">negative %s</string>
+  <string name="math_accessibility_positive_a" translatable="false">positive %s</string>
+  <string name="math_accessibility_simple_square_root" translatable="false">square root of %s</string>
+  <string name="math_accessibility_complex_square_root" translatable="false">start square root %s end square root</string>
+  <string name="math_accessibility_group" translatable="false">open parenthesis %s close parenthesis</string>
+  <string name="math_accessibility_implicit_multiplication" translatable="false">%s %s</string>
+  <string name="math_accessibility_simple_fraction" translatable="false">%s over %s</string>
+  <string name="math_accessibility_complex_fraction" translatable="false">the fraction with numerator %s and denominator %s</string>
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_learner_analytics_title" translatable="false">Learner Study Analytics</string>
   <string name="administrator_controls_learner_analytics_label" translatable="false">Profile &amp; Device IDs</string>
@@ -62,21 +79,4 @@
   <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
   <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installed device ID</string>
   <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
-  <!-- Accessibility string generation for math expressions. Note that these are in lowercase on purpose. -->
-  <string name="math_accessibility_part_zed" translatable="false">zed</string>
-  <string name="math_accessibility_part_one_half" translatable="false">one half</string>
-  <string name="math_accessibility_a_equals_b" translatable="false">%s equals %s</string>
-  <string name="math_accessibility_a_plus_b" translatable="false">%s plus %s</string>
-  <string name="math_accessibility_a_minus_b" translatable="false">%s minus %s</string>
-  <string name="math_accessibility_a_times_b" translatable="false">%s times %s</string>
-  <string name="math_accessibility_a_divides_b" translatable="false">%s divided by %s</string>
-  <string name="math_accessibility_a_exp_b" translatable="false">%s raised to the power of %s</string>
-  <string name="math_accessibility_negative_a" translatable="false">negative %s</string>
-  <string name="math_accessibility_positive_a" translatable="false">positive %s</string>
-  <string name="math_accessibility_simple_square_root" translatable="false">square root of %s</string>
-  <string name="math_accessibility_complex_square_root" translatable="false">start square root %s end square root</string>
-  <string name="math_accessibility_group" translatable="false">open parenthesis %s close parenthesis</string>
-  <string name="math_accessibility_implicit_multiplication" translatable="false">%s %s</string>
-  <string name="math_accessibility_simple_fraction" translatable="false">%s over %s</string>
-  <string name="math_accessibility_complex_fraction" translatable="false">the fraction with numerator %s and denominator %s</string>
 </resources>

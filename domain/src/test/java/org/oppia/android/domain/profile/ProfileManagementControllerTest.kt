@@ -66,6 +66,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -99,6 +100,9 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfile_checkProfileIsAdded() {
+    val defaultLearnerId = machineLocale.run {
+      "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
+    }
     val dataProvider = addAdminProfile(name = "James", pin = "123")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
