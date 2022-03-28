@@ -568,7 +568,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true,
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-math render-type=\"inline\" math_content-with-value=\"{" +
@@ -596,7 +596,7 @@ class HtmlParserTest {
       entityId = "",
       imageCenterAlign = true,
     )
-    activityRule.scenario.runWithActivity {
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-math render-type=\"block\" math_content-with-value=\"{" +
