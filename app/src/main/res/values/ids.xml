@@ -5,4 +5,5 @@
   <item name="onboarding_dot_1" type="id" />
   <item name="onboarding_dot_2" type="id" />
   <item name="onboarding_dot_3" type="id" />
+  <item name="reading_text_size_container" type="id" />
 </resources>
