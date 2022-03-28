@@ -31,7 +31,6 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -70,8 +69,7 @@ class ProfileManagementController @Inject constructor(
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  private val loggingIdentifierController: LoggingIdentifierController
+  private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -216,29 +214,6 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      val newProfileBuilder = Profile.newBuilder()
-        .setName(name)
-        .setPin(pin)
-        .setAllowDownloadAccess(allowDownloadAccess)
-        .setId(ProfileId.newBuilder().setInternalId(nextProfileId))
-        .setDateCreatedTimestampMs(oppiaClock.getCurrentTimeMs())
-        .setIsAdmin(isAdmin)
-        .setReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE)
-        .setAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE)
-        .setAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
-        .setLearnerId(loggingIdentifierController.createLearnerId())
-
-      if (avatarImagePath != null) {
-        val imageUri =
-          saveImageToInternalStorage(avatarImagePath, profileDir)
-            ?: return@storeDataWithCustomChannelAsync Pair(
-              it,
-              ProfileActionStatus.FAILED_TO_STORE_IMAGE
-            )
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
-      } else {
-        newProfileBuilder.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
-      }
       val newProfile = Profile.newBuilder().apply {
         this.name = name
         this.pin = pin
@@ -572,7 +547,6 @@ class ProfileManagementController @Inject constructor(
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
       val updatedProfile = profile.toBuilder().apply {
-        learnerId = loggingIdentifierController.createLearnerId()
         learnerId = when {
           // TODO(#4064): Update the learner ID here (only if the study parameter is enabled).
           else -> learnerId // Keep it unchanged.

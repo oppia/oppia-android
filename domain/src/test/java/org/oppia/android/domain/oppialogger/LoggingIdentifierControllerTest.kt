@@ -49,7 +49,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.system.UserIdProdModule
 
 private const val TEST_ID = "test_id"
 private const val TEST_MAC_ADDRESS = "test_mac_address"
@@ -226,7 +225,6 @@ class LoggingIdentifierControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, UserIdTestModule::class,
       TestLoggingIdentifierModule::class,
       ApplicationLifecycleModule::class, SyncStatusModule::class
     ]

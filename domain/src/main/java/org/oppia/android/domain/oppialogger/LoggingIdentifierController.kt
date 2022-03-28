@@ -28,12 +28,6 @@ class LoggingIdentifierController @Inject constructor(
 ) {
   private val learnerIdRandom by lazy { Random(applicationIdSeed) }
 
-  // TODO(#4249): Replace this with a StateFlow & the DataProvider with a StateFlow-converted one.
-  private var sessionId = AtomicReference(computeSessionId())
-
-  // TODO: finish this.
-  private val deviceId =
-    UUID.nameUUIDFromBytes(ByteArray(16).also { learnerIdRandom.nextBytes(it) }).toString()
   private val sessionId by lazy { MutableStateFlow(computeSessionId()) }
   private val sessionIdDataProvider by lazy {
     dataProviders.run { sessionId.convertToAutomaticDataProvider(SESSION_ID_DATA_PROVIDER_ID) }

@@ -56,12 +56,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.util.logging.SyncStatusManager
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
-import org.oppia.android.util.system.UserIdProdModule
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
@@ -276,7 +270,6 @@ class LogUploadWorkerTest {
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, ApplicationLifecycleModule::class, UserIdProdModule::class
       SyncStatusTestModule::class, ApplicationLifecycleModule::class
     ]
   )
