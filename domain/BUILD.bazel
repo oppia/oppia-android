@@ -192,6 +192,8 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/feedbackreporting:report_schema_version",
     "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
@@ -220,8 +222,10 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+    "//utility/src/main/java/org/oppia/android/util/system:prod_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
