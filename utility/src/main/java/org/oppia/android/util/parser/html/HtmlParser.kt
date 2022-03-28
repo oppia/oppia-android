@@ -12,19 +12,22 @@ import androidx.core.view.ViewCompat
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
+import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
+  private val context: Context,
   private val urlImageParserFactory: UrlImageParser.Factory?,
   private val gcsResourceName: String,
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
+  private val cacheLatexRendering: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
-  private val context: Context,
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
 
@@ -51,7 +54,6 @@ class HtmlParser private constructor(
   }
   private val bulletTagHandler by lazy { LiTagHandler(context, "", machineLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
-  private val mathTagHandler by lazy { MathTagHandler(consoleLogger) }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -118,9 +120,8 @@ class HtmlParser private constructor(
     }
 
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContentTextView.context,
-      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards),
-      machineLocale
+      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView),
+        machineLocale
     )
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
@@ -131,14 +132,21 @@ class HtmlParser private constructor(
   }
 
   private fun computeCustomTagHandlers(
-    supportsConceptCards: Boolean
+    supportsConceptCards: Boolean,
+    htmlContentTextView: TextView
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
     handlersMap[CUSTOM_LIST_LI_TAG] = bulletTagHandler
     handlersMap[CUSTOM_LIST_UL_TAG] = bulletTagHandler
     handlersMap[CUSTOM_LIST_OL_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
-    handlersMap[CUSTOM_MATH_TAG] = mathTagHandler
+    handlersMap[CUSTOM_MATH_TAG] =
+      MathTagHandler(
+        consoleLogger,
+        context.assets,
+        htmlContentTextView.lineHeight.toFloat(),
+        cacheLatexRendering
+      )
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
@@ -188,6 +196,7 @@ class HtmlParser private constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
     private val context: Context,
+    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>,
     private val machineLocale: OppiaLocale.MachineLocale
   ) {
     /**
@@ -202,40 +211,41 @@ class HtmlParser private constructor(
       customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
+        context,
         urlImageParserFactory,
         gcsResourceName,
         entityType,
         entityId,
         imageCenterAlign,
         consoleLogger,
+        cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener,
         null,
-        context,
         machineLocale
       )
-    }
 
-    /**
-     * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
-     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
-     * loading is specifically not supported (see the other [create] method if image support is
-     * needed).
-     */
-    fun create(
-      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
-    ): HtmlParser {
-      return HtmlParser(
-        urlImageParserFactory = null,
-        gcsResourceName = "",
-        entityType = "",
-        entityId = "",
-        imageCenterAlign = false,
-        consoleLogger = consoleLogger,
-        customOppiaTagActionListener = null,
-        policyOppiaTagActionListener = policyOppiaTagActionListener,
-        context = context,
-        machineLocale = machineLocale
-      )
+      /**
+       * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
+       * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
+       * loading is specifically not supported (see the other [create] method if image support is
+       * needed).
+       */
+      fun create(
+        policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+      ): HtmlParser {
+        return HtmlParser(
+          urlImageParserFactory = null,
+          gcsResourceName = "",
+          entityType = "",
+          entityId = "",
+          imageCenterAlign = false,
+          consoleLogger = consoleLogger,
+          customOppiaTagActionListener = null,
+          policyOppiaTagActionListener = policyOppiaTagActionListener,
+          context = context,
+          machineLocale = machineLocale
+        )
+      }
     }
   }
 }

@@ -3,6 +3,8 @@ package org.oppia.android.domain.hintsandsolution
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
@@ -12,10 +14,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.State
 import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
-import kotlin.concurrent.withLock
 
 /**
  * Production implementation of [HintHandler] that implements hints & solutions in parity with the
@@ -58,139 +57,119 @@ class HintHandlerProdImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
-  backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val hintMonitor: HintHandler.HintMonitor
+  private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : HintHandler {
-  private val handlerLock = ReentrantLock()
-  private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
+  private val helpIndexFlow by lazy { MutableStateFlow(HelpIndex.getDefaultInstance()) }
 
   private var trackedWrongAnswerCount = 0
   private lateinit var pendingState: State
-  private var hintSequenceNumber = AtomicInteger(0)
+  private var hintSequenceNumber = 0
   private var lastRevealedHintIndex = -1
 
   private var latestAvailableHintIndex = -1
   private var solutionIsAvailable = false
   private var solutionIsRevealed = false
 
-  override fun startWatchingForHintsInNewState(state: State) {
-    handlerLock.withLock {
-      pendingState = state
-      hintMonitor.onHelpIndexChanged()
-      maybeScheduleShowHint(wrongAnswerCount = 0)
-    }
+  override suspend fun startWatchingForHintsInNewState(state: State) {
+    pendingState = state
+    updateHelpIndex()
+    maybeScheduleShowHint(wrongAnswerCount = 0)
   }
 
-  override fun resumeHintsForSavedState(
+  override suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
     state: State
   ) {
-    handlerLock.withLock {
-      when (helpIndex.indexTypeCase) {
-        NEXT_AVAILABLE_HINT_INDEX -> {
-          lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
-          latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
-        LATEST_REVEALED_HINT_INDEX -> {
-          lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
-          latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
-        SHOW_SOLUTION, EVERYTHING_REVEALED -> {
-          // 1 is subtracted from the hint count because hints are indexed from 0.
-          lastRevealedHintIndex = state.interaction.hintCount - 1
-          latestAvailableHintIndex = state.interaction.hintCount - 1
-          solutionIsAvailable = true
-          solutionIsRevealed = helpIndex.indexTypeCase == EVERYTHING_REVEALED
-        }
-        else -> {
-          lastRevealedHintIndex = -1
-          latestAvailableHintIndex = -1
-          solutionIsAvailable = false
-          solutionIsRevealed = false
-        }
+    when (helpIndex.indexTypeCase) {
+      NEXT_AVAILABLE_HINT_INDEX -> {
+        lastRevealedHintIndex = helpIndex.nextAvailableHintIndex - 1
+        latestAvailableHintIndex = helpIndex.nextAvailableHintIndex
+        solutionIsAvailable = false
+        solutionIsRevealed = false
       }
-      pendingState = state
-      this.trackedWrongAnswerCount = trackedWrongAnswerCount
-      hintMonitor.onHelpIndexChanged()
-      maybeScheduleShowHint(wrongAnswerCount = trackedWrongAnswerCount)
-    }
-  }
-
-  override fun finishState(newState: State) {
-    handlerLock.withLock {
-      reset()
-      startWatchingForHintsInNewState(newState)
-    }
-  }
-
-  override fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {
-    handlerLock.withLock {
-      maybeScheduleShowHint(wrongAnswerCount)
-    }
-  }
-
-  override fun viewHint(hintIndex: Int) {
-    handlerLock.withLock {
-      val helpIndex = computeCurrentHelpIndex()
-      check(
-        helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
-          helpIndex.nextAvailableHintIndex == hintIndex
-      ) {
-        "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
-          " $hintIndex)"
+      LATEST_REVEALED_HINT_INDEX -> {
+        lastRevealedHintIndex = helpIndex.latestRevealedHintIndex
+        latestAvailableHintIndex = helpIndex.latestRevealedHintIndex
+        solutionIsAvailable = false
+        solutionIsRevealed = false
       }
-
-      cancelPendingTasks()
-      lastRevealedHintIndex = lastRevealedHintIndex.coerceAtLeast(hintIndex)
-      hintMonitor.onHelpIndexChanged()
-      maybeScheduleShowHint()
-    }
-  }
-
-  override fun viewSolution() {
-    handlerLock.withLock {
-      val helpIndex = computeCurrentHelpIndex()
-      check(helpIndex.indexTypeCase == SHOW_SOLUTION) {
-        "Cannot reveal solution for current index: ${helpIndex.indexTypeCase}"
+      SHOW_SOLUTION, EVERYTHING_REVEALED -> {
+        // 1 is subtracted from the hint count because hints are indexed from 0.
+        lastRevealedHintIndex = state.interaction.hintCount - 1
+        latestAvailableHintIndex = state.interaction.hintCount - 1
+        solutionIsAvailable = true
+        solutionIsRevealed = helpIndex.indexTypeCase == EVERYTHING_REVEALED
       }
-
-      cancelPendingTasks()
-      solutionIsRevealed = true
-      hintMonitor.onHelpIndexChanged()
+      else -> {
+        lastRevealedHintIndex = -1
+        latestAvailableHintIndex = -1
+        solutionIsAvailable = false
+        solutionIsRevealed = false
+      }
     }
+    pendingState = state
+    this.trackedWrongAnswerCount = trackedWrongAnswerCount
+    updateHelpIndex()
+    maybeScheduleShowHint(wrongAnswerCount = trackedWrongAnswerCount)
   }
 
-  override fun navigateToPreviousState() {
+  override suspend fun finishState(newState: State) {
+    reset()
+    startWatchingForHintsInNewState(newState)
+  }
+
+  override suspend fun handleWrongAnswerSubmission(wrongAnswerCount: Int) {
+    maybeScheduleShowHint(wrongAnswerCount)
+  }
+
+  override suspend fun viewHint(hintIndex: Int) {
+    val helpIndex = computeCurrentHelpIndex()
+    check(
+      helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
+        helpIndex.nextAvailableHintIndex == hintIndex
+    ) {
+      "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
+        " $hintIndex)"
+    }
+
+    cancelPendingTasks()
+    lastRevealedHintIndex = lastRevealedHintIndex.coerceAtLeast(hintIndex)
+    updateHelpIndex()
+    maybeScheduleShowHint()
+  }
+
+  override suspend fun viewSolution() {
+    val helpIndex = computeCurrentHelpIndex()
+    check(helpIndex.indexTypeCase == SHOW_SOLUTION) {
+      "Cannot reveal solution for current index: ${helpIndex.indexTypeCase}"
+    }
+
+    cancelPendingTasks()
+    solutionIsRevealed = true
+    updateHelpIndex()
+  }
+
+  override suspend fun navigateToPreviousState() {
     // Cancel tasks from the top pending state to avoid hint counters continuing after navigating
     // away.
-    handlerLock.withLock {
-      cancelPendingTasks()
-    }
+    cancelPendingTasks()
   }
 
-  override fun navigateBackToLatestPendingState() {
-    handlerLock.withLock {
-      maybeScheduleShowHint()
-    }
+  override suspend fun navigateBackToLatestPendingState() {
+    maybeScheduleShowHint()
   }
 
-  override fun getCurrentHelpIndex(): HelpIndex = handlerLock.withLock {
-    computeCurrentHelpIndex()
-  }
+  override fun getCurrentHelpIndex(): StateFlow<HelpIndex> = helpIndexFlow
 
   private fun cancelPendingTasks() {
     // Cancel any potential pending hints by advancing the sequence number. Note that this isn't
     // reset to 0 to ensure that all previous hint tasks are cancelled, and new tasks can be
     // scheduled without overlapping with past sequence numbers.
-    hintSequenceNumber.incrementAndGet()
+    hintSequenceNumber++
   }
 
-  private fun maybeScheduleShowHint(wrongAnswerCount: Int = trackedWrongAnswerCount) {
+  private suspend fun maybeScheduleShowHint(wrongAnswerCount: Int = trackedWrongAnswerCount) {
     if (!pendingState.offersHelp()) {
       // If this state has no help to show, do nothing.
       return
@@ -318,12 +297,10 @@ class HintHandlerProdImpl private constructor(
    * cancelling any previously pending hints initiated by calls to this method.
    */
   private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
-    val targetSequenceNumber = hintSequenceNumber.incrementAndGet()
-    backgroundCoroutineScope.launch {
+    val targetSequenceNumber = ++hintSequenceNumber
+    CoroutineScope(backgroundCoroutineDispatcher).launch {
       delay(delayMs)
-      handlerLock.withLock {
-        showHint(targetSequenceNumber, helpIndexToShow)
-      }
+      showHint(targetSequenceNumber, helpIndexToShow)
     }
   }
 
@@ -331,13 +308,13 @@ class HintHandlerProdImpl private constructor(
    * Immediately indicates the specified hint is ready to be shown, cancelling any previously
    * pending hints initiated by calls to [scheduleShowHint].
    */
-  private fun showHintImmediately(helpIndexToShow: HelpIndex) {
-    showHint(hintSequenceNumber.incrementAndGet(), helpIndexToShow)
+  private suspend fun showHintImmediately(helpIndexToShow: HelpIndex) {
+    showHint(++hintSequenceNumber, helpIndexToShow)
   }
 
-  private fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
+  private suspend fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
     // Only finish this timer if no other hints were scheduled and no cancellations occurred.
-    if (targetSequenceNumber == hintSequenceNumber.get()) {
+    if (targetSequenceNumber == hintSequenceNumber) {
       val previousHelpIndex = computeCurrentHelpIndex()
 
       when (nextHelpIndexToShow.indexTypeCase) {
@@ -351,10 +328,12 @@ class HintHandlerProdImpl private constructor(
       // Only indicate the hint is available if its index is actually new (including if it
       // becomes null such as in the case of the solution becoming available).
       if (nextHelpIndexToShow != previousHelpIndex) {
-        hintMonitor.onHelpIndexChanged()
+        updateHelpIndex()
       }
     }
   }
+
+  private suspend fun updateHelpIndex() = helpIndexFlow.emit(computeCurrentHelpIndex())
 
   /** Production implementation of [HintHandler.Factory]. */
   class FactoryProdImpl @Inject constructor(
@@ -364,13 +343,12 @@ class HintHandlerProdImpl private constructor(
     private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) : HintHandler.Factory {
-    override fun create(hintMonitor: HintHandler.HintMonitor): HintHandler {
+    override fun create(): HintHandler {
       return HintHandlerProdImpl(
         delayShowInitialHintMs,
         delayShowAdditionalHintsMs,
         delayShowAdditionalHintsFromWrongAnswerMs,
-        backgroundCoroutineDispatcher,
-        hintMonitor
+        backgroundCoroutineDispatcher
       )
     }
   }

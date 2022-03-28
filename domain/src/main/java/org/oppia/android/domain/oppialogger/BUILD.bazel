@@ -13,7 +13,7 @@ kt_android_library(
     visibility = ["//domain:__subpackages__"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
@@ -31,7 +31,10 @@ kt_android_library(
     srcs = [
         "LogStorageModule.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
+    ],
     deps = [
         ":dagger",
     ],

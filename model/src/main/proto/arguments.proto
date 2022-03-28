@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package model;
 
+import "exploration.proto";
+import "translation.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -28,6 +31,37 @@ enum HighlightItem {
 
   // Indicates that the Developer Options item needs to be highlighted.
   DEVELOPER_OPTIONS_ITEM = 4;
+}
+
+// TODO(#59): Isolate this to a test-only proto once possible.
+// Represents the parameters needed to open InputInteractionViewTestActivity.
+message InputInteractionViewTestActivityParams {
+  // Corresponds to the interaction used to initialize the interaction's view in the test
+  // environment.
+  Interaction interaction = 1;
+
+  // Corresponds to the translation context which may affect the interaction's classifiers during
+  // tests.
+  WrittenTranslationContext written_translation_context = 2;
+
+  // Indicates that a math interaction should be displayed for this activity, and indicates which
+  // one is being used in tests.
+  MathInteractionType math_interaction_type = 3;
+
+  // The type of math interaction to initialize for testing.
+  enum MathInteractionType {
+    // Indicates that no math interaction should  be loaded for testing.
+    MATH_INTERACTION_TYPE_UNSPECIFIED = 0;
+
+    // Indicates that the numeric expression input interaction will be used for testing.
+    NUMERIC_EXPRESSION = 1;
+
+    // Indicates that the algebraic expression input interaction will be used for testing.
+    ALGEBRAIC_EXPRESSION = 2;
+
+    // Indicates that the math equation input interaction will be used for testing.
+    MATH_EQUATION = 3;
+  }
 }
 
 // Activity Parameters needed to open the policy page.

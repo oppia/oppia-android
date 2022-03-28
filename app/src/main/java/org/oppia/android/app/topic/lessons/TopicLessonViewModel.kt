@@ -47,14 +47,14 @@ class TopicLessonViewModel @Inject constructor(
   }
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      oppiaLogger.e(
-        "TopicLessonFragment",
-        "Failed to retrieve topic",
-        topic.getErrorOrNull()!!
-      )
+    return when (topic) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("TopicLessonFragment", "Failed to retrieve topic", topic.error)
+        Topic.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Topic.getDefaultInstance()
+      is AsyncResult.Success -> topic.value
     }
-    return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
   private fun processTopic(topic: Topic): List<TopicLessonsItemViewModel> {

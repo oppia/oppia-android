@@ -142,26 +142,26 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun processDurationResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (!playProgressResult.isSuccess()) {
+    if (playProgressResult !is AsyncResult.Success) {
       return 0
     }
-    return playProgressResult.getOrThrow().duration
+    return playProgressResult.value.duration
   }
 
   private fun processPositionResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (!playProgressResult.isSuccess()) {
+    if (playProgressResult !is AsyncResult.Success) {
       return 0
     }
-    return playProgressResult.getOrThrow().position
+    return playProgressResult.value.position
   }
 
   private fun processPlayStatusResultLiveData(
     playProgressResult: AsyncResult<PlayProgress>
   ): UiAudioPlayStatus {
-    return when {
-      playProgressResult.isPending() -> UiAudioPlayStatus.LOADING
-      playProgressResult.isFailure() -> UiAudioPlayStatus.FAILED
-      else -> when (playProgressResult.getOrThrow().type) {
+    return when (playProgressResult) {
+      is AsyncResult.Pending -> UiAudioPlayStatus.LOADING
+      is AsyncResult.Failure -> UiAudioPlayStatus.FAILED
+      is AsyncResult.Success -> when (playProgressResult.value.type) {
         PlayStatus.PREPARED -> {
           if (autoPlay) audioPlayerController.play()
           autoPlay = false

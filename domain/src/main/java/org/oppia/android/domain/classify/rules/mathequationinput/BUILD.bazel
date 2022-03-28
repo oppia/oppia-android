@@ -1,0 +1,47 @@
+"""
+Classifiers for the 'MathEquationInput' interaction.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "math_equation_input_providers",
+    srcs = [
+        "MathEquationInputIsEquivalentToRuleClassifierProvider.kt",
+        "MathEquationInputMatchesExactlyWithRuleClassifierProvider.kt",
+        "MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider.kt",
+    ],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/classify:classification_context",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:generic_rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//model/src/main/proto:translation_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/math:extensions",
+        "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
+    ],
+)
+
+kt_android_library(
+    name = "math_equation_input_rule_module",
+    srcs = [
+        "MathEquationInputModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":math_equation_input_providers",
+        "//domain/src/main/java/org/oppia/android/domain/classify:rule_classifier",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules:rule_classifier_provider",
+    ],
+)
+
+dagger_rules()

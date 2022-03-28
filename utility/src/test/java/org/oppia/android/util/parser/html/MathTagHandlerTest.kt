@@ -12,6 +12,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,6 +22,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.mockito.capture
@@ -57,9 +59,21 @@ private const val MATH_WITHOUT_RAW_LATEX_MARKUP =
 
 private const val MATH_WITHOUT_FILENAME_MARKUP =
   "<oppia-noninteractive-math math_content-with-value=\"{&amp;quot;raw_latex&amp;quot;" +
-    ":&amp;quot;\\\\frac{2}{5}&amp;quot;,}\"></oppia-noninteractive-math>"
+    ":&amp;quot;\\\\frac{2}{5}&amp;quot;}\"></oppia-noninteractive-math>"
+
+private const val MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP =
+  "<oppia-noninteractive-math render-type=\"inline\"" +
+    " math_content-with-value=\"{&amp;quot;raw_latex&amp;quot;" +
+    ":&amp;quot;\\\\frac{2}{5}&amp;quot;}\"></oppia-noninteractive-math>"
+
+private const val MATH_WITHOUT_FILENAME_RENDER_TYPE_BLOCK_MARKUP =
+  "<oppia-noninteractive-math render-type=\"block\"" +
+    " math_content-with-value=\"{&amp;quot;raw_latex&amp;quot;" +
+    ":&amp;quot;\\\\frac{2}{5}&amp;quot;}\"></oppia-noninteractive-math>"
 
 /** Tests for [MathTagHandler]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathTagHandlerTest {
@@ -70,20 +84,25 @@ class MathTagHandlerTest {
   @Mock lateinit var mockImageRetriever: FakeImageRetriever
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
   @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
+  @Captor lateinit var floatCaptor: ArgumentCaptor<Float>
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
-  private lateinit var tagHandlersWithMathSupport: Map<String, CustomTagHandler>
+  private lateinit var tagHandlersWithCachedMathSupport: Map<String, CustomTagHandler>
+  private lateinit var tagHandlersWithUncachedMathSupport: Map<String, CustomTagHandler>
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     noTagHandlers = mapOf()
-    tagHandlersWithMathSupport = mapOf(
-      CUSTOM_MATH_TAG to MathTagHandler(consoleLogger)
+    tagHandlersWithCachedMathSupport = mapOf(
+      CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = true)
+    )
+    tagHandlersWithUncachedMathSupport = mapOf(
+      CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = false)
     )
   }
 
@@ -96,7 +115,7 @@ class MathTagHandlerTest {
         context,
         html = "",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
         machineLocale = machineLocale
       )
 
@@ -111,10 +130,26 @@ class MathTagHandlerTest {
         context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
         machineLocale = machineLocale
       )
 
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_missingRawLatex_includesImageSpan() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        context,
+        html = MATH_WITHOUT_RAW_LATEX_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        machineLocale = machineLocale
+      )
+
+    // There is an image span since the filename is still present.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
   }
@@ -126,7 +161,7 @@ class MathTagHandlerTest {
         context,
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
         machineLocale = machineLocale
       )
 
@@ -143,7 +178,7 @@ class MathTagHandlerTest {
         context,
         html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
         machineLocale = machineLocale
       )
 
@@ -152,33 +187,80 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_withMathMarkup_missingRawLatex_doesNotIncludeImageSpan() {
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        context,
-        html = MATH_WITHOUT_RAW_LATEX_MARKUP,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
-        machineLocale = machineLocale
-      )
-
-    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
-    assertThat(imageSpans).isEmpty()
-  }
-
-  @Test
-  fun testParseHtml_withMathMarkup_missingFilename_doesNotIncludeImageSpan() {
+  fun testParseHtml_withMathMarkup_missingFilename_includesCachedInlineLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
         context,
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
         machineLocale = machineLocale
       )
 
+    // The image span is a cached bitmap loaded from LaTeX.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
-    assertThat(imageSpans).isEmpty()
+    assertThat(imageSpans).hasLength(1)
+    verify(mockImageRetriever).loadMathDrawable(
+      capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
+    )
+    assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_missingFilename_inlineMode_includesCachedInlineLatexImageSpan() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        context,
+        html = MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        machineLocale = machineLocale
+      )
+
+    // The image span is a cached bitmap loaded from LaTeX.
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+    verify(mockImageRetriever).loadMathDrawable(
+      capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
+    )
+    assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_missingFilename_blockMode_includesCachedBlockLatexImageSpan() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        context,
+        html = MATH_WITHOUT_FILENAME_RENDER_TYPE_BLOCK_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithCachedMathSupport
+      )
+
+    // The image span is a cached bitmap loaded from LaTeX.
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+    verify(mockImageRetriever).loadMathDrawable(
+      capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
+    )
+    assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
+    assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.BLOCK_IMAGE)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOff_includesMathSpan() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = MATH_WITHOUT_FILENAME_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithUncachedMathSupport
+      )
+
+    // The image span is a direct math expression since caching is off.
+    val imageSpans = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
+    assertThat(imageSpans).hasLength(1)
+    verifyNoMoreInteractions(mockImageRetriever) // No cached image loading.
   }
 
   @Test
@@ -203,7 +285,7 @@ class MathTagHandlerTest {
         context,
         html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithMathSupport,
+        customTagHandlers = tagHandlersWithCachedMathSupport,
         machineLocale = machineLocale
       )
 
@@ -217,7 +299,7 @@ class MathTagHandlerTest {
       context,
       html = MATH_MARKUP_1,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithMathSupport,
+      customTagHandlers = tagHandlersWithCachedMathSupport,
       machineLocale = machineLocale
     )
 
@@ -232,7 +314,7 @@ class MathTagHandlerTest {
       context,
       html = "$MATH_MARKUP_2 and $MATH_MARKUP_1",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithMathSupport,
+      customTagHandlers = tagHandlersWithCachedMathSupport,
       machineLocale = machineLocale
     )
 
@@ -245,6 +327,11 @@ class MathTagHandlerTest {
     assertThat(retrieverTypeCaptor.allValues)
       .containsExactly(ImageRetriever.Type.INLINE_TEXT_IMAGE, ImageRetriever.Type.INLINE_TEXT_IMAGE)
       .inOrder()
+  }
+
+  private fun createMathTagHandler(cacheLatexRendering: Boolean): MathTagHandler {
+    // Pick an arbitrary line height since rendering doesn't actually happen in tests.
+    return MathTagHandler(consoleLogger, context.assets, lineHeight = 10.0f, cacheLatexRendering)
   }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =

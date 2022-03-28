@@ -211,6 +211,25 @@ sealed class OppiaLocale {
    */
   abstract class DisplayLocale(override val localeContext: OppiaLocaleContext) : OppiaLocale() {
     /**
+     * Returns a locally formatted representation of the long integer [value].
+     *
+     * No assumptions can be made regarding the formatting of the returned string except that:
+     * 1. The exact value will be represented (no rounding or truncation will occur).
+     * 2. The resulting value should be generally readable by screenreaders if they support the the
+     *   current locale.
+     */
+    abstract fun formatLong(value: Long): String
+
+    /**
+     * Returns a locally formatted representation of the double [value].
+     *
+     * No assumptions can be made regarding the formatting of the returned string except that it
+     * should generally be readable by screenreaders if they support the current locale. This
+     * function may round and/or truncate the double for formatting simplicity.
+     */
+    abstract fun formatDouble(value: Double): String
+
+    /**
      * Returns a locally formatted date string representing the specified Unix timestamp.
      *
      * No assumptions can be made regarding the formatting of the returned string. Further, the
