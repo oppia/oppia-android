@@ -20,7 +20,7 @@
         android:id="@+id/faq_single_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/color_def_oppia_green"
+        android:background="@color/component_color_faq_toolbar"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/navigate_up"
