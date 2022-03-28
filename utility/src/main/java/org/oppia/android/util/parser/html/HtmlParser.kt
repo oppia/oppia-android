@@ -26,7 +26,7 @@ class HtmlParser private constructor(
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
   private val context: Context,
   private val machineLocale: OppiaLocale.MachineLocale
-  ){
+) {
 
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(

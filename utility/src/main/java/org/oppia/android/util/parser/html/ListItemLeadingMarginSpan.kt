@@ -75,8 +75,8 @@ class ListItemLeadingMarginSpan(
       }
     }
   }
-  
+
   override fun getLeadingMargin(first: Boolean): Int {
-    return  2 * bulletRadius + spacingBeforeText
+    return 2 * bulletRadius + spacingBeforeText
   }
 }

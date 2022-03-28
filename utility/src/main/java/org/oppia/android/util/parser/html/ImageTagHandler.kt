@@ -34,9 +34,11 @@ class ImageTagHandler(
         return@run startIndex to length
       }
       val drawable =
-        checkNotNull(imageRetriever!!.loadDrawable(
-          source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
-        )) {
+        checkNotNull(
+          imageRetriever!!.loadDrawable(
+            source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+          )
+        ) {
           "Expected imageRetriever to be not null."
         }
 
