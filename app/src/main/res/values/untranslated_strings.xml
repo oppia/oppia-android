@@ -13,6 +13,8 @@
   <string name="developer_options_show_all_hints_solution" translatable="false">Show all hints/solution</string>
   <string name="developer_options_force_network_type" translatable="false">Force network type</string>
   <string name="developer_options_force_crash" translatable="false">Force crash</string>
+  <string name="developer_options_test_parsers_label" translatable="false">Test Parsers</string>
+  <string name="developer_options_math_expressions" translatable="false">Math Expressions/Equations</string>
   <string name="modify_lesson_progress_all" translatable="false">All</string>
   <string name="modify_lesson_progress_mark_completed_uppercase" translatable="false">MARK COMPLETED</string>
   <string name="force_network_type_network_selected" translatable="false">Network is selected</string>
@@ -25,6 +27,23 @@
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
+  <!-- MathExpressionParserActivity -->
+  <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
+  <string name="math_expression_parse_result_label" translatable="false">Parse result: %s</string>
+  <string name="math_expression_input_hint" translatable="false">Expression/equation</string>
+  <string name="math_expression_parse_button_label" translatable="false">Parse</string>
+  <string name="math_expression_parse_type_label" translatable="false">Parse type:</string>
+  <string name="math_expression_parse_type_numeric_expressions" translatable="false">Numeric expressions</string>
+  <string name="math_expression_parse_type_algebraic_expressions" translatable="false">Algebraic expressions</string>
+  <string name="math_expression_parse_type_algebraic_equations" translatable="false">Algebraic equations</string>
+  <string name="math_expression_result_type_label" translatable="false">Result type:</string>
+  <string name="math_expression_result_type_math_expression" translatable="false">Math expression</string>
+  <string name="math_expression_result_type_comparable_operation" translatable="false">Comparable operation</string>
+  <string name="math_expression_result_type_polynomial" translatable="false">Polynomial</string>
+  <string name="math_expression_result_latex" translatable="false">LaTeX</string>
+  <string name="math_expression_human_readable_string" translatable="false">Human-readable string</string>
+  <string name="math_expression_allowed_variables_input_hint" translatable="false">Allowed variables (comma-separated)</string>
+  <string name="math_expression_treat_divisions_as_fractions_label" translatable="false">Treat divisions as fractions</string>
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_learner_analytics_title" translatable="false">Learner Study Analytics</string>
   <string name="administrator_controls_learner_analytics_label" translatable="false">Profile &amp; Device IDs</string>
@@ -43,4 +62,21 @@
   <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
   <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installed device ID</string>
   <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
+  <!-- Accessibility string generation for math expressions. Note that these are in lowercase on purpose. -->
+  <string name="math_accessibility_part_zed" translatable="false">zed</string>
+  <string name="math_accessibility_part_one_half" translatable="false">one half</string>
+  <string name="math_accessibility_a_equals_b" translatable="false">%s equals %s</string>
+  <string name="math_accessibility_a_plus_b" translatable="false">%s plus %s</string>
+  <string name="math_accessibility_a_minus_b" translatable="false">%s minus %s</string>
+  <string name="math_accessibility_a_times_b" translatable="false">%s times %s</string>
+  <string name="math_accessibility_a_divides_b" translatable="false">%s divided by %s</string>
+  <string name="math_accessibility_a_exp_b" translatable="false">%s raised to the power of %s</string>
+  <string name="math_accessibility_negative_a" translatable="false">negative %s</string>
+  <string name="math_accessibility_positive_a" translatable="false">positive %s</string>
+  <string name="math_accessibility_simple_square_root" translatable="false">square root of %s</string>
+  <string name="math_accessibility_complex_square_root" translatable="false">start square root %s end square root</string>
+  <string name="math_accessibility_group" translatable="false">open parenthesis %s close parenthesis</string>
+  <string name="math_accessibility_implicit_multiplication" translatable="false">%s %s</string>
+  <string name="math_accessibility_simple_fraction" translatable="false">%s over %s</string>
+  <string name="math_accessibility_complex_fraction" translatable="false">the fraction with numerator %s and denominator %s</string>
 </resources>

@@ -11,7 +11,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
     ],
 )
 
@@ -22,7 +22,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
     ],
 )
 
@@ -33,7 +33,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:exploration_java_proto_lite",
-        "//model:question_java_proto_lite",
+        "//model/src/main/proto:exploration_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
     ],
 )

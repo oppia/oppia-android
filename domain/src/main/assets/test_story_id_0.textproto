@@ -18,3 +18,11 @@ chapters {
   }
   title: "Image Region Selection Exploration"
 }
+chapters {
+  exploration_id: "test_exp_id_5"
+  chapter_thumbnail {
+    background_color_rgb: 14061432
+  }
+  title: "Math Expressions"
+  description: "Test the different math expression/equation interactions."
+}

@@ -313,6 +313,9 @@ message AnswerAndResponse {
 
   // Oppia's response to the answer the learner submitted.
   SubtitledHtml feedback = 2;
+
+  // Whether the answer was labelled by the creator as correct.
+  bool is_correct_answer = 3;
 }
 
 message AnswerOutcome {

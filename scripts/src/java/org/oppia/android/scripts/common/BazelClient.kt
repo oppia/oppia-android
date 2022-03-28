@@ -2,6 +2,7 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 import java.lang.IllegalArgumentException
+import java.util.Locale
 
 /**
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
@@ -21,11 +22,11 @@ class BazelClient(
   /** Returns all Bazel file targets that correspond to each of the relative file paths provided. */
   fun retrieveBazelTargets(changedFileRelativePaths: Iterable<String>): List<String> {
     return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand(
-        "query",
+      runPotentiallyShardedQueryCommand(
+        "set(%s)",
+        changedFileRelativePaths,
         "--noshow_progress",
         "--keep_going",
-        "set(${changedFileRelativePaths.joinToString(" ")})",
         allowPartialFailures = true
       )
     )
@@ -34,12 +35,12 @@ class BazelClient(
   /** Returns all test targets in the workspace that are affected by the list of file targets. */
   fun retrieveRelatedTestTargets(fileTargets: Iterable<String>): List<String> {
     return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand(
-        "query",
+      runPotentiallyShardedQueryCommand(
+        "kind(test, allrdeps(set(%s)))",
+        fileTargets,
         "--noshow_progress",
         "--universe_scope=//...",
-        "--order_output=no",
-        "kind(test, allrdeps(set(${fileTargets.joinToString(" ")})))"
+        "--order_output=no"
       )
     )
   }
@@ -71,12 +72,12 @@ class BazelClient(
           retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
       }.toSet()
       return correctPotentiallyBrokenTargetNames(
-        executeBazelCommand(
-          "query",
+        runPotentiallyShardedQueryCommand(
+          "filter('^[^@]', kind(test, allrdeps(set(%s))))",
+          relevantSiblings,
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          "filter('^[^@]', kind(test, allrdeps(set(${relevantSiblings.joinToString(" ")}))))",
         )
       )
     } else listOf()
@@ -129,6 +130,43 @@ class BazelClient(
     return correctedTargets
   }
 
+  /**
+   * Returns the results of a query command with a potentially large list of [values] that will be
+   * split up into multiple commands to avoid overflow the system's maximum argument limit.
+   *
+   * Note that [queryFormatStr] is expected to have 1 string variable (which will be the
+   * space-separated join of [values] or a partition of [values]).
+   */
+  @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
+  private fun runPotentiallyShardedQueryCommand(
+    queryFormatStr: String,
+    values: Iterable<String>,
+    vararg prefixArgs: String,
+    allowPartialFailures: Boolean = false
+  ): List<String> {
+    // Split up values into partitions to ensure that the argument calls don't over-run the limit.
+    var partitionCount = 0
+    lateinit var partitions: List<List<String>>
+    do {
+      partitionCount++
+      partitions = values.chunked((values.count() + 1) / partitionCount)
+    } while (computeMaxArgumentLength(partitions) >= MAX_ALLOWED_ARG_STR_LENGTH)
+
+    // Fragment the query across the partitions to ensure all values can be considered.
+    return partitions.flatMap { partition ->
+      val lastArgument = queryFormatStr.format(Locale.US, partition.joinToString(" "))
+      val allArguments = prefixArgs.toList() + lastArgument
+      executeBazelCommand(
+        "query", *allArguments.toTypedArray(), allowPartialFailures = allowPartialFailures
+      )
+    }
+  }
+
+  private fun computeMaxArgumentLength(partitions: List<List<String>>) =
+    partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
+
+  private fun computeArgumentLength(args: List<String>) = args.joinToString(" ").length
+
   @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
   private fun executeBazelCommand(
     vararg arguments: String,
@@ -149,6 +187,10 @@ class BazelClient(
         "\nError output:\n${result.errorOutput.joinToString("\n")}"
     }
     return result.output
+  }
+
+  private companion object {
+    private const val MAX_ALLOWED_ARG_STR_LENGTH = 50_000
   }
 }
 

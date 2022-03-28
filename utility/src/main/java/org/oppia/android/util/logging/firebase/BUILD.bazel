@@ -23,7 +23,7 @@ kt_android_library(
         "FirebaseLogUploader.kt",
     ],
     deps = [
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:androidx_work_work-runtime",
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_google_firebase_firebase-analytics",
@@ -64,7 +64,7 @@ kt_android_library(
         "//app:__pkg__",
     ],
     deps = [
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
     ],

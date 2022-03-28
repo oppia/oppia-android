@@ -139,14 +139,18 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private fun processChapterSummaryResult(
     chapterSummaryResult: AsyncResult<ChapterSummary>
   ): ChapterSummary {
-    if (chapterSummaryResult.isFailure()) {
-      oppiaLogger.e(
-        "ResumeLessonFragment",
-        "Failed to retrieve chapter summary for the explorationId $explorationId: ",
-        chapterSummaryResult.getErrorOrNull()
-      )
+    return when (chapterSummaryResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ResumeLessonFragment",
+          "Failed to retrieve chapter summary for the explorationId $explorationId: ",
+          chapterSummaryResult.error
+        )
+        ChapterSummary.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> ChapterSummary.getDefaultInstance()
+      is AsyncResult.Success -> chapterSummaryResult.value
     }
-    return chapterSummaryResult.getOrDefault(ChapterSummary.getDefaultInstance())
   }
 
   private fun playExploration(
@@ -166,17 +170,14 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       // ResumeLessonFragment implies that learner has not completed the lesson.
       shouldSavePartialProgress = true,
       explorationCheckpoint
-    ).observe(
+    ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d("ResumeLessonFragment", "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            "ResumeLessonFragment",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d("ResumeLessonFragment", "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("ResumeLessonFragment", "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
             oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
             routeToExplorationListener.routeToExploration(
               internalProfileId,

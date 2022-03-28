@@ -135,12 +135,13 @@ class StateDeck constructor(
    * the most recent State in the deck, or if the most recent State is terminal (since no answer can be submitted to a
    * terminal interaction).
    */
-  fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml) {
+  fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml, isCorrectAnswer: Boolean) {
     check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
     currentDialogInteractions += AnswerAndResponse.newBuilder()
       .setUserAnswer(userAnswer)
       .setFeedback(feedback)
+      .setIsCorrectAnswer(isCorrectAnswer)
       .build()
   }
 

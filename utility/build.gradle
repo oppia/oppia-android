@@ -65,6 +65,7 @@ dependencies {
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.github.oppia:androidsvg:6bd15f69caee3e6857fcfcd123023716b4adec1d',
+      'com.github.oppia:kotlitex:6b7db8ff9e0f4a70bdaa25f482143e038fd0c301',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.dagger:dagger:2.34',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
@@ -72,6 +73,7 @@ dependencies {
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',
