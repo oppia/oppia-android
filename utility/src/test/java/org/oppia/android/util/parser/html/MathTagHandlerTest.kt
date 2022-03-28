@@ -190,7 +190,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_missingFilename_includesCachedInlineLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
+        context = context,
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithCachedMathSupport,
@@ -211,7 +211,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_missingFilename_inlineMode_includesCachedInlineLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
+        context = context,
         html = MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithCachedMathSupport,
@@ -232,10 +232,11 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_missingFilename_blockMode_includesCachedBlockLatexImageSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
+        context = context,
         html = MATH_WITHOUT_FILENAME_RENDER_TYPE_BLOCK_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        machineLocale = machineLocale
       )
 
     // The image span is a cached bitmap loaded from LaTeX.
@@ -252,9 +253,11 @@ class MathTagHandlerTest {
   fun testParseHtml_withMathMarkup_cachingOff_includesMathSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
+        context = context,
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithUncachedMathSupport
+        customTagHandlers = tagHandlersWithUncachedMathSupport,
+        machineLocale = machineLocale
       )
 
     // The image span is a direct math expression since caching is off.
@@ -282,7 +285,7 @@ class MathTagHandlerTest {
   fun testParseHtml_withMultipleMathTags_includesMultipleImageSpans() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
+        context = context,
         html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithCachedMathSupport,
@@ -296,7 +299,7 @@ class MathTagHandlerTest {
   @Test
   fun testParseHtml_withMathMarkup_loadsInlineImageForFilename() {
     CustomHtmlContentHandler.fromHtml(
-      context,
+      context = context,
       html = MATH_MARKUP_1,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithCachedMathSupport,
@@ -311,7 +314,7 @@ class MathTagHandlerTest {
   @Test
   fun testParseHtml_withMultipleMathTags_loadsInlineImagesForBoth() {
     CustomHtmlContentHandler.fromHtml(
-      context,
+      context = context,
       html = "$MATH_MARKUP_2 and $MATH_MARKUP_1",
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithCachedMathSupport,

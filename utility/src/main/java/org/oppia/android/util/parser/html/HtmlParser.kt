@@ -120,8 +120,11 @@ class HtmlParser private constructor(
     }
 
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView),
-        machineLocale
+      context,
+      htmlContent,
+      imageGetter,
+      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView),
+      machineLocale
     )
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
@@ -223,29 +226,33 @@ class HtmlParser private constructor(
         null,
         machineLocale
       )
+    }
 
-      /**
-       * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
-       * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
-       * loading is specifically not supported (see the other [create] method if image support is
-       * needed).
-       */
-      fun create(
-        policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
-      ): HtmlParser {
-        return HtmlParser(
-          urlImageParserFactory = null,
-          gcsResourceName = "",
-          entityType = "",
-          entityId = "",
-          imageCenterAlign = false,
-          consoleLogger = consoleLogger,
-          customOppiaTagActionListener = null,
-          policyOppiaTagActionListener = policyOppiaTagActionListener,
-          context = context,
-          machineLocale = machineLocale
-        )
-      }
+    /**
+     * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
+     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
+     * loading is specifically not supported (see the other [create] method if image support is
+     * needed).
+     */
+    fun create(
+      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+    ): HtmlParser {
+      return HtmlParser(
+        context = context,
+        urlImageParserFactory = null,
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        consoleLogger = consoleLogger,
+        cacheLatexRendering = false,
+        customOppiaTagActionListener = null,
+        policyOppiaTagActionListener = policyOppiaTagActionListener,
+        machineLocale = machineLocale
+      )
     }
   }
 }
+
+
+

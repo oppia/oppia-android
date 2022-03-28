@@ -213,7 +213,6 @@ class CustomHtmlContentHandler(
        * currently supported.
        */
       INLINE_TEXT_IMAGE,
-
       /**
        * Corresponds to a block image that should be positioned in a way that may break text, and
        * potentially centered depending on the configuration of the implementation.
@@ -266,7 +265,5 @@ fun Attributes.getJsonObjectValue(name: String): JSONObject? {
   // The raw content value is a JSON blob with escaped quotes.
   return try {
     getValue(name)?.replace("&quot;", "\"")?.let { JSONObject(it) }
-  } catch (e: JSONException) {
-    return null
-  }
+  } catch (e: JSONException) { return null }
 }

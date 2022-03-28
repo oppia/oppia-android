@@ -46,21 +46,29 @@ class MathTagHandler(
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
         ImageSpan(
-          imageRetriever.loadDrawable(
-            content.svgFilename,
-            INLINE_TEXT_IMAGE
-          ),
+          checkNotNull(
+            imageRetriever!!.loadDrawable(
+              content.svgFilename,
+              INLINE_TEXT_IMAGE
+            )
+          ) {
+            "Expected imageRetriever to be not null."
+          },
           content.svgFilename
         )
       }
       is MathContent.MathAsLatex -> {
         if (cacheLatexRendering) {
           ImageSpan(
-            imageRetriever.loadMathDrawable(
-              content.rawLatex,
-              lineHeight,
-              type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
-            )
+            checkNotNull(
+              imageRetriever!!.loadMathDrawable(
+                content.rawLatex,
+                lineHeight,
+                type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
+              )
+            ) {
+              "Expected imageRetriever to be not null."
+            },
           )
         } else {
           MathExpressionSpan(
