@@ -9,6 +9,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.QuestionPlayerActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.question.QuestionTrainingController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -101,20 +102,14 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     startDataProvider.toLiveData().observe(
       activity,
       {
-        when {
-          it.isPending() -> oppiaLogger.d(
-            "QuestionPlayerActivity",
-            "Starting training session"
-          )
-          it.isFailure() -> {
-            oppiaLogger.e(
-              "QuestionPlayerActivity",
-              "Failed to start training session",
-              it.getErrorOrNull()!!
-            )
+        when (it) {
+          is AsyncResult.Pending ->
+            oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
+          is AsyncResult.Failure -> {
+            oppiaLogger.e("QuestionPlayerActivity", "Failed to start training session", it.error)
             activity.finish() // Can't recover from the session failing to start.
           }
-          else -> {
+          is AsyncResult.Success -> {
             oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
             callback()
           }
@@ -127,20 +122,14 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
       activity,
       {
-        when {
-          it.isPending() -> oppiaLogger.d(
-            "QuestionPlayerActivity",
-            "Stopping training session"
-          )
-          it.isFailure() -> {
-            oppiaLogger.e(
-              "QuestionPlayerActivity",
-              "Failed to stop training session",
-              it.getErrorOrNull()!!
-            )
+        when (it) {
+          is AsyncResult.Pending ->
+            oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
+          is AsyncResult.Failure -> {
+            oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
             activity.finish() // Can't recover from the session failing to stop.
           }
-          else -> {
+          is AsyncResult.Success -> {
             oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
             callback()
           }

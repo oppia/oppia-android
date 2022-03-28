@@ -48,14 +48,14 @@ class PinPasswordViewModel @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "PinPasswordActivity",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
+    val profile = when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
     correctPin.set(profile.pin)
     isAdmin.set(profile.isAdmin)
     name.set(profile.name)

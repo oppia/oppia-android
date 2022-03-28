@@ -1,7 +1,6 @@
 package org.oppia.android.domain.util
 
 import org.oppia.android.app.model.ClickOnImage
-import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.BOOL_VALUE
@@ -10,6 +9,7 @@ import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.FRACTION
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.MATH_EXPRESSION
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NORMALIZED_STRING
 import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS
@@ -29,6 +29,7 @@ import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.app.model.TranslatableSetOfNormalizedString
+import org.oppia.android.util.math.toAnswerString
 
 /**
  * Returns a parsable string representation of a user-submitted answer version of this
@@ -53,6 +54,7 @@ fun InteractionObject.toAnswerString(): String {
     LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS ->
       listOfSetsOfTranslatableHtmlContentIds.toAnswerString()
     TRANSLATABLE_SET_OF_NORMALIZED_STRING -> translatableSetOfNormalizedString.toAnswerString()
+    MATH_EXPRESSION -> mathExpression
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
 }
@@ -105,15 +107,6 @@ private fun ImageWithRegions.toAnswerString(): String =
 
 private fun ClickOnImage.toAnswerString(): String =
   "[(${clickedRegionsList.joinToString()}), (${clickPosition.x}, ${clickPosition.y})]"
-
-// https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/FractionObjectFactory.ts#L47
-private fun Fraction.toAnswerString(): String {
-  val fractionString = if (numerator != 0) "$numerator/$denominator" else ""
-  val mixedString = if (wholeNumber != 0) "$wholeNumber $fractionString" else ""
-  val positiveFractionString = if (mixedString.isNotEmpty()) mixedString else fractionString
-  val negativeString = if (isNegative) "-" else ""
-  return if (positiveFractionString.isNotEmpty()) "$negativeString$positiveFractionString" else "0"
-}
 
 private fun TranslatableHtmlContentId.toAnswerString(): String {
   return "content_id=$contentId"

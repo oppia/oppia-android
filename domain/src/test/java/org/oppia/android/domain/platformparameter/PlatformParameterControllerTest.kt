@@ -2,8 +2,6 @@ package org.oppia.android.domain.platformparameter
 
 import android.app.Application
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,24 +9,15 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -52,39 +41,16 @@ private const val BOOLEAN_PLATFORM_PARAMETER_NAME = "boolean_platform_parameter_
 private const val BOOLEAN_PLATFORM_PARAMETER_VALUE = true
 
 /** Tests for [PlatformParameterController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterControllerTest.TestApplication::class)
 class PlatformParameterControllerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Rule
-  @JvmField
-  val executorRule = InstantTaskExecutorRule()
-
-  @Inject
-  lateinit var platformParameterController: PlatformParameterController
-
-  @Inject
-  lateinit var platformParameterSingleton: PlatformParameterSingleton
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockUnitObserver: Observer<AsyncResult<Unit>>
-
-  @Captor
-  lateinit var unitCaptor: ArgumentCaptor<AsyncResult<Unit>>
-
-  @Mock
-  lateinit var mockObserverForAny: Observer <AsyncResult<Any?>>
-
-  @Captor
-  lateinit var captorForAny: ArgumentCaptor<AsyncResult<Any?>>
+  @Inject lateinit var platformParameterController: PlatformParameterController
+  @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val mockPlatformParameterList by lazy {
     listOf<PlatformParameter>(
@@ -100,12 +66,10 @@ class PlatformParameterControllerTest {
   @Test
   fun testController_noPreviousDatabase_readPlatformParameters_platformParameterMapIsEmpty() {
     setUpTestApplicationComponent()
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    val databaseProvider = platformParameterController.getParameterDatabase()
 
     // The platformParameterMap must be empty as there was no previously cached data.
-    verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
-    assertThat(unitCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(databaseProvider)
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
   }
 
@@ -121,12 +85,10 @@ class PlatformParameterControllerTest {
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpTestApplicationComponent()
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    val databaseProvider = platformParameterController.getParameterDatabase()
 
     // The platformParameterMap must have values as application had cached platform parameter data.
-    verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
-    assertThat(unitCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(databaseProvider)
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
     verifyEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
   }
@@ -136,12 +98,10 @@ class PlatformParameterControllerTest {
     setUpTestApplicationComponent()
     platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
     testCoroutineDispatchers.runCurrent()
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    val databaseProvider = platformParameterController.getParameterDatabase()
 
     // The platformParameterMap must have values as we updated the database with dummy list.
-    verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
-    assertThat(unitCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(databaseProvider)
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isNotEmpty()
     verifyEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
   }
@@ -160,25 +120,21 @@ class PlatformParameterControllerTest {
     setUpTestApplicationComponent()
     platformParameterController.updatePlatformParameterDatabase(listOf())
     testCoroutineDispatchers.runCurrent()
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    val databaseProvider = platformParameterController.getParameterDatabase()
 
     // The new set of values must be empty as we updated the database with an empty list.
-    verify(mockUnitObserver, atLeastOnce()).onChanged(unitCaptor.capture())
-    assertThat(unitCaptor.value.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(databaseProvider)
     assertThat(platformParameterSingleton.getPlatformParameterMap()).isEmpty()
   }
 
   @Test
   fun testController_noPreviousDatabase_performUpdateOperation_returnsSuccess() {
     setUpTestApplicationComponent()
-    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
-      .toLiveData().observeForever(mockObserverForAny)
-    testCoroutineDispatchers.runCurrent()
+    val updateProvider =
+      platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
 
-    // After a successful update operation we should receive a async result for success
-    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
-    assertThat(captorForAny.value.isSuccess()).isTrue()
+    // After a successful update operation we should receive a success result.
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   @Test
@@ -193,13 +149,11 @@ class PlatformParameterControllerTest {
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpTestApplicationComponent()
-    platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
-      .toLiveData().observeForever(mockObserverForAny)
-    testCoroutineDispatchers.runCurrent()
+    val updateProvider =
+      platformParameterController.updatePlatformParameterDatabase(mockPlatformParameterList)
 
-    // After a successful update operation we should receive a async result for success
-    verify(mockObserverForAny, atLeastOnce()).onChanged(captorForAny.capture())
-    assertThat(captorForAny.value.isSuccess()).isTrue()
+    // After a successful update operation we should receive a success result.
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   /**
@@ -274,7 +228,7 @@ class PlatformParameterControllerTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
-      fun build(): PlatformParameterControllerTest.TestApplicationComponent
+      fun build(): TestApplicationComponent
     }
 
     fun inject(platformParameterControllerTest: PlatformParameterControllerTest)
@@ -285,7 +239,7 @@ class PlatformParameterControllerTest {
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: PlatformParameterControllerTest.TestApplicationComponent by lazy {
+    private val component: TestApplicationComponent by lazy {
       DaggerPlatformParameterControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()

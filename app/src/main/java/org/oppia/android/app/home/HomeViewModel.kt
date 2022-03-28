@@ -25,6 +25,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -94,14 +95,18 @@ class HomeViewModel(
    */
   val homeItemViewModelListLiveData: LiveData<List<HomeItemViewModel>> by lazy {
     Transformations.map(homeItemViewModelListDataProvider.toLiveData()) { itemListResult ->
-      if (itemListResult.isFailure()) {
-        oppiaLogger.e(
-          "HomeFragment",
-          "No home fragment available -- failed to retrieve fragment data.",
-          itemListResult.getErrorOrNull()
-        )
+      return@map when (itemListResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "HomeFragment",
+            "No home fragment available -- failed to retrieve fragment data.",
+            itemListResult.error
+          )
+          listOf()
+        }
+        is AsyncResult.Pending -> listOf()
+        is AsyncResult.Success -> itemListResult.value
       }
-      return@map itemListResult.getOrDefault(listOf())
     }
   }
 

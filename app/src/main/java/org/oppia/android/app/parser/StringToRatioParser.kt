@@ -4,8 +4,8 @@ import androidx.annotation.StringRes
 import org.oppia.android.R
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.util.normalizeWhitespace
-import org.oppia.android.domain.util.removeWhitespace
+import org.oppia.android.util.extensions.normalizeWhitespace
+import org.oppia.android.util.extensions.removeWhitespace
 
 /**
  * Utility for parsing [RatioExpression]s from strings and validating strings can be parsed

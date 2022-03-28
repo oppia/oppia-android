@@ -50,14 +50,18 @@ class OngoingTopicListViewModel @Inject constructor(
   private fun processOngoingTopicResult(
     ongoingTopicListResult: AsyncResult<OngoingTopicList>
   ): OngoingTopicList {
-    if (ongoingTopicListResult.isFailure()) {
-      oppiaLogger.e(
-        "OngoingTopicListFragment",
-        "Failed to retrieve OngoingTopicList: ",
-        ongoingTopicListResult.getErrorOrNull()!!
-      )
+    return when (ongoingTopicListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "OngoingTopicListFragment",
+          "Failed to retrieve OngoingTopicList: ",
+          ongoingTopicListResult.error
+        )
+        OngoingTopicList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> OngoingTopicList.getDefaultInstance()
+      is AsyncResult.Success -> ongoingTopicListResult.value
     }
-    return ongoingTopicListResult.getOrDefault(OngoingTopicList.getDefaultInstance())
   }
 
   private fun processOngoingTopicList(

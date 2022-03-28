@@ -1,15 +1,15 @@
 """
 This library contains all protos used in the scripts module.
-In Bazel, proto files are built using the proto_library() and java_lite_proto_library() rules.
-The proto_library() rule creates a proto file library to be used in multiple languages.
+In Bazel, proto files are built using the oppia_proto_library() and java_lite_proto_library() rules.
+The oppia_proto_library() rule creates a proto file library to be used in multiple languages.
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
-For more context on adding a new proto library, please refer to model/BUILD.bazel
+For more context on adding a new proto library, please refer to model/BUILD
 """
 
 load("@rules_java//java:defs.bzl", "java_lite_proto_library", "java_proto_library")
-load("@rules_proto//proto:defs.bzl", "proto_library")
+load("//model:oppia_proto_library.bzl", "oppia_proto_library")
 
-proto_library(
+oppia_proto_library(
     name = "affected_tests_proto",
     srcs = ["affected_tests.proto"],
 )
@@ -20,7 +20,7 @@ java_lite_proto_library(
     deps = [":affected_tests_proto"],
 )
 
-proto_library(
+oppia_proto_library(
     name = "filename_pattern_validation_checks_proto",
     srcs = ["filename_pattern_validation_checks.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
@@ -32,7 +32,7 @@ java_lite_proto_library(
     deps = [":filename_pattern_validation_checks_proto"],
 )
 
-proto_library(
+oppia_proto_library(
     name = "file_content_validation_checks_proto",
     srcs = ["file_content_validation_checks.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
@@ -44,7 +44,7 @@ java_lite_proto_library(
     deps = [":file_content_validation_checks_proto"],
 )
 
-proto_library(
+oppia_proto_library(
     name = "script_exemptions_proto",
     srcs = ["script_exemptions.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
@@ -56,7 +56,7 @@ java_lite_proto_library(
     deps = [":script_exemptions_proto"],
 )
 
-proto_library(
+oppia_proto_library(
     name = "maven_dependencies_proto",
     srcs = ["maven_dependencies.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],

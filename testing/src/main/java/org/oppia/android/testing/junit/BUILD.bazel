@@ -25,8 +25,93 @@ kt_android_library(
         ":define_app_language_locale_context",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
-        "//model:languages_java_proto_lite",
+        "//model/src/main/proto:languages_java_proto_lite",
         "//third_party:androidx_test_core",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_parameterized_test_runner",
+    testonly = True,
+    srcs = [
+        "OppiaParameterizedTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:androidx_test_runner",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+kt_android_library(
+    name = "parameterized_android_junit4_class_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedAndroidJunit4TestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:androidx_test_runner",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
+    name = "parameterized_auto_android_test_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedAutoAndroidTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
+    name = "parameterized_junit_test_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedJunitTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_android_library(
+    name = "parameterized_robolectric_test_runner",
+    testonly = True,
+    srcs = [
+        "ParameterizedRobolectricTestRunner.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":parameterized_runner_delegate_impl",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
+kt_android_library(
+    name = "parameterized_runner_delegate_impl",
+    testonly = True,
+    srcs = [
+        "OppiaParameterizedBaseRunner.kt",
+        "ParameterValue.kt",
+        "ParameterizedMethod.kt",
+        "ParameterizedRunnerDelegate.kt",
+        "ParameterizedRunnerOverrideMethods.kt",
+    ],
+    deps = [
         "//third_party:junit_junit",
     ],
 )

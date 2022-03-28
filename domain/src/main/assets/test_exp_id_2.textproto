@@ -206,6 +206,7 @@ states {
             html: "<b>Correct!</b>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -460,6 +461,7 @@ states {
             html: "<p>Correct! Eagles can sustain flight.</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -656,6 +658,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -786,6 +789,7 @@ states {
           html: "Continuing onward."
           content_id: "default_outcome"
         }
+        labelled_as_correct: true
       }
       customization_args {
         key: "buttonText"
@@ -967,6 +971,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -1199,6 +1204,7 @@ states {
             html: "<p>Correct</p>"
             content_id: "feedback_2"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -1220,6 +1226,7 @@ states {
             html: "<p>Correct</p>"
             content_id: "feedback_3"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -1382,6 +1389,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -1557,6 +1565,7 @@ states {
             html: "<p>Correct!</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -1820,6 +1829,7 @@ states {
             html: "<p>That\'s correct</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {
@@ -2144,6 +2154,7 @@ states {
             html: "<p>That\'s correct</p>"
             content_id: "feedback_1"
           }
+          labelled_as_correct: true
         }
         rule_specs {
           input {

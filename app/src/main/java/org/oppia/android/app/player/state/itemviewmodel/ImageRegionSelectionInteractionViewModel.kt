@@ -11,14 +11,16 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
+import javax.inject.Inject
 
 /** [StateItemViewModel] for image region selection. */
-class ImageRegionSelectionInteractionViewModel(
+class ImageRegionSelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
@@ -87,5 +89,31 @@ class ImageRegionSelectionInteractionViewModel(
       // The object supports multiple regions in an answer, but neither web nor Android supports this.
       .addClickedRegions(region?.label ?: "")
       .build()
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val resourceHandler: AppLanguageResourceHandler
+  ) : InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel {
+      return ImageRegionSelectionInteractionViewModel(
+        entityId,
+        hasConversationView,
+        interaction,
+        answerErrorReceiver,
+        isSplitView,
+        writtenTranslationContext,
+        resourceHandler
+      )
+    }
   }
 }

@@ -2,7 +2,7 @@ package org.oppia.android.domain.classify.rules.fractioninput
 
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
@@ -30,7 +30,7 @@ class FractionInputIsExactlyEqualToRuleClassifierProvider @Inject constructor(
   override fun matches(
     answer: Fraction,
     input: Fraction,
-    writtenTranslationContext: WrittenTranslationContext
+    classificationContext: ClassificationContext
   ): Boolean {
     return answer == input
   }
