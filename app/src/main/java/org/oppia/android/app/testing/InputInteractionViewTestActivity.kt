@@ -25,7 +25,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
-import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -36,6 +35,7 @@ import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
 
 /**
  * This is a dummy activity to test input interaction views.
@@ -47,7 +47,6 @@ class InputInteractionViewTestActivity :
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
   InteractionAnswerReceiver {
   private lateinit var binding: ActivityInputInteractionViewTestBinding
-  lateinit var ratioExpressionInputInteractionViewModel: RatioExpressionInputInteractionViewModel
 
   @Inject
   lateinit var numericInputViewModelFactory: NumericInputViewModel.FactoryImpl
@@ -89,18 +88,6 @@ class InputInteractionViewTestActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
     binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
       this, R.layout.activity_input_interaction_view_test
-    )
-    ratioExpressionInputInteractionViewModel = RatioExpressionInputInteractionViewModel(
-      interaction = Interaction.newBuilder().putCustomizationArgs(
-        "numberOfTerms",
-        SchemaObject.newBuilder().setSignedInt(3).build()
-      ).build(),
-      hasConversationView = false,
-      isSplitView = false,
-      errorOrAvailabilityCheckReceiver = this,
-      writtenTranslationContext = WrittenTranslationContext.getDefaultInstance(),
-      resourceHandler = resourceHandler,
-      translationController = translationController
     )
 
     val params =
