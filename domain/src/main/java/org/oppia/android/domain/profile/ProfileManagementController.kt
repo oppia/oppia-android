@@ -542,8 +542,8 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Initializes the learner ID of the specified profile (if not set), otherwise clears it if
-   * there's no ongoing study.
+   * Initializes the learner ID of the specified profile (if not set), otherwise clears it if there
+   * is no ongoing study.
    *
    * @param profileId the ID corresponding to the profile being updated
    */
@@ -686,9 +686,27 @@ class ProfileManagementController @Inject constructor(
     return ProfileId.newBuilder().setInternalId(currentProfileId).build()
   }
 
+  /**
+   * Returns the learner ID corresponding to the current logged-in profile (as given by
+   * [getCurrentProfileId]), or null if there's no currently logged-in user.
+   *
+   * See [fetchLearnerId] for specifics.
+   */
   suspend fun fetchCurrentLearnerId(): String? = fetchLearnerId(getCurrentProfileId())
 
-  // TODO: document that this is a one-time learner ID and that it can change.
+  /**
+   * Returns the learner ID corresponding to the specified [profileId], or null if the specified
+   * profile doesn't exist.
+   *
+   * There are three important considerations when using this method:
+   * 1. The returned ID may be empty or undefined if analytics IDs are not currently enabled for
+   *    logging.
+   * 2. The learner ID can change for a profile, so this method only guarantees returning the
+   *    *current* learner ID corresponding to the profile. A [DataProvider] on the profile itself
+   *    should be used if the caller requires the learner ID be kept up-to-date.
+   * 3. This method is meant to only be called by background coroutines and should never be used
+   *    from UI code.
+   */
   suspend fun fetchLearnerId(profileId: ProfileId): String? {
     val profileDatabase = profileDataStore.readDataAsync().await()
     return profileDatabase.profilesMap[profileId.internalId]?.learnerId

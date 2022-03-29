@@ -4,7 +4,6 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.EventLogger
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.SyncStatusManager
 
 /**  A test specific fake for the event logger. */
 @Singleton

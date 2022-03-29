@@ -13,12 +13,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
-import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -31,6 +30,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -46,8 +46,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_ID = "test_id"
-
 /** Tests for [ApplicationLifecycleObserver]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -59,7 +57,6 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var fakeUserIdGenerator: FakeUserIdGenerator
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
@@ -71,37 +68,24 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val monitor = monitorFactory.createMonitor(sessionIdProvider)
+    val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    fakeUserIdGenerator.randomUserId = TEST_ID
     waitInBackgroundFor(TimeUnit.MINUTES.toMillis(45))
 
-    val latestSessionId = monitor.ensureNextResultIsSuccess()
-    assertThat(latestSessionId).isEqualTo(TEST_ID)
+    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(firstSessionId).isNotEqualTo(latestSessionId)
   }
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val defaultId = fakeUserIdGenerator.randomUserId
     val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val monitor = monitorFactory.createMonitor(sessionIdProvider)
+    val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    fakeUserIdGenerator.randomUserId = TEST_ID
     waitInBackgroundFor(TimeUnit.MINUTES.toMillis(15))
 
-    val latestSessionId = monitor.ensureNextResultIsSuccess()
-    assertThat(latestSessionId).isEqualTo(defaultId)
-  }
-
-  @Test
-  fun testObserver_appInForeground_getSessionId_returnsDefaultSessionId() {
-    applicationLifecycleObserver.onAppInBackground()
-    val defaultId = fakeUserIdGenerator.randomUserId
-    val sessionIdProvider = loggingIdentifierController.getSessionId()
-
     val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(latestSessionId).isEqualTo(defaultId)
+    assertThat(firstSessionId).isEqualTo(latestSessionId)
   }
 
   private fun waitInBackgroundFor(millis: Long) {
@@ -140,14 +124,6 @@ class ApplicationLifecycleObserverTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-  }
-
-  @Module
-  class TestLogStorageModule {
-
-    @Provides
-    @EventLogStorageCacheSize
-    fun provideEventLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -202,11 +178,12 @@ class ApplicationLifecycleObserverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

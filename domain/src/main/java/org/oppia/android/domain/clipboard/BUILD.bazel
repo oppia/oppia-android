@@ -14,7 +14,6 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
-        "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],

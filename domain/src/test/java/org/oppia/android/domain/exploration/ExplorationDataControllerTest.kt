@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -27,10 +28,15 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
@@ -63,20 +69,17 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [ExplorationDataController]. */
-// Function name: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationDataControllerTest.TestApplication::class)
@@ -85,16 +88,13 @@ class ExplorationDataControllerTest {
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
 
-  private val internalProfileId: Int = -1
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   @Test
@@ -178,8 +178,103 @@ class ExplorationDataControllerTest {
   }
 
   @Test
+  fun testStartPlayingNewExploration_returnsSuccess() {
+    val startProvider =
+      explorationDataController.startPlayingNewExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(startProvider)
+  }
+
+  @Test
+  fun testStartPlayingNewExploration_afterCompletingIt_returnsSuccess() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    stopExploration()
+
+    val secondStartProvider =
+      explorationDataController.startPlayingNewExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
+  }
+
+  @Test
+  fun testResumeExploration_afterStartingIt_returnsSuccess() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    stopExploration(isCompletion = false)
+
+    val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    val secondStartProvider =
+      explorationDataController.resumeExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
+  }
+
+  @Test
+  fun testRestartExploration_returnsSuccess() {
+    val startProvider =
+      explorationDataController.restartExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(startProvider)
+  }
+
+  @Test
+  fun testRestartExploration_afterStartingIt_returnsSuccess() {
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    stopExploration(isCompletion = false)
+
+    val secondStartProvider =
+      explorationDataController.restartExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
+  }
+
+  @Test
+  fun testReplayExploration_returnsSuccess() {
+    val startProvider =
+      explorationDataController.replayExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(startProvider)
+  }
+
+  @Test
+  fun testReplayExploration_afterCompletingIt_returnsSuccess() {
+    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    stopExploration()
+
+    val secondStartProvider =
+      explorationDataController.replayExploration(
+        profileId.internalId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+      )
+
+    monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
+  }
+
+  @Test
+  fun testReplayExploration_withoutStoppingPreviousSession_returnsSuccess() {
+    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+
+    val dataProvider =
+      explorationDataController.replayExploration(
+        profileId.internalId, TEST_TOPIC_ID_1, TEST_STORY_ID_2, TEST_EXPLORATION_ID_4
+      )
+
+    // The new session overwrites the previous.
+    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+  }
+
+  @Test
   fun testStopPlayingExploration_withoutStartingSession_returnsFailure() {
-    // TODO: add other tests?
     val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = false)
 
     val result = monitorFactory.waitForNextFailureResult(resultProvider)
@@ -188,17 +283,62 @@ class ExplorationDataControllerTest {
   }
 
   @Test
-  fun testStartPlayingExploration_withoutStoppingSession_succeeds() {
-    explorationDataController.replayExploration(
-      internalProfileId, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
-    )
+  fun testStopPlayingExploration_afterStarting_notCompletion_returnsSuccess() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
 
-    val dataProvider = explorationDataController.replayExploration(
-      internalProfileId, TEST_TOPIC_ID_1, TEST_STORY_ID_2, TEST_EXPLORATION_ID_4
-    )
+    val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = false)
 
-    // The new session overwrites the previous.
-    monitorFactory.waitForNextSuccessfulResult(dataProvider)
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
+  }
+
+  @Test
+  fun testStopPlayingExploration_afterStarting_completion_returnsSuccess() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+
+    val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = true)
+
+    monitorFactory.waitForNextSuccessfulResult(resultProvider)
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun startPlayingNewExploration(topicId: String, storyId: String, explorationId: String) {
+    val startPlayingProvider =
+      explorationDataController.startPlayingNewExploration(
+        profileId.internalId, topicId, storyId, explorationId
+      )
+    monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
+  }
+
+  private fun restartExploration(topicId: String, storyId: String, explorationId: String) {
+    val startPlayingProvider =
+      explorationDataController.restartExploration(
+        profileId.internalId, topicId, storyId, explorationId
+      )
+    monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
+  }
+
+  private fun replayExploration(topicId: String, storyId: String, explorationId: String) {
+    val startPlayingProvider =
+      explorationDataController.replayExploration(
+        profileId.internalId, topicId, storyId, explorationId
+      )
+    monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
+  }
+
+  private fun retrieveExplorationCheckpoint(
+    explorationId: String
+  ): ExplorationCheckpoint {
+    return monitorFactory.waitForNextSuccessfulResult(
+      explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
+    )
+  }
+
+  private fun stopExploration(isCompletion: Boolean = true) {
+    val stopProvider = explorationDataController.stopPlayingExploration(isCompletion)
+    monitorFactory.waitForNextSuccessfulResult(stopProvider)
   }
 
   // TODO(#89): Move this to a common test application component.

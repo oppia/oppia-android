@@ -31,22 +31,6 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "FakeUserIdGeneratorTest",
-    srcs = ["FakeUserIdGeneratorTest.kt"],
-    custom_package = "org.oppia.android.testing.logging",
-    test_class = "org.oppia.android.testing.logging.FakeUserIdGeneratorTest",
-    test_manifest = "//testing:test_manifest",
-    deps = [
-        ":dagger",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-    ],
-)
-
-oppia_android_test(
     name = "SyncStatusTestModuleTest",
     srcs = ["SyncStatusTestModuleTest.kt"],
     custom_package = "org.oppia.android.testing.logging",
@@ -70,22 +54,6 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
-    ],
-)
-
-oppia_android_test(
-    name = "UserIdTestModuleTest",
-    srcs = ["UserIdTestModuleTest.kt"],
-    custom_package = "org.oppia.android.testing.logging",
-    test_class = "org.oppia.android.testing.logging.UserIdTestModuleTest",
-    test_manifest = "//testing:test_manifest",
-    deps = [
-        ":dagger",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
     ],
 )
 
