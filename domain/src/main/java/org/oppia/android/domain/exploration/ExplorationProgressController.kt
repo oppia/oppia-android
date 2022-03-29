@@ -31,7 +31,9 @@ import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.SUBMIT
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.VIEWING_STATE
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
@@ -45,17 +47,6 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onStart
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
-import org.oppia.android.domain.oppialogger.LoggingIdentifierController
-import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
-import org.oppia.android.domain.profile.ProfileManagementController
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -1067,7 +1058,6 @@ class ExplorationProgressController @Inject constructor(
         installationId,
         learnerId,
         exploration,
-        explorationProgress.explorationCheckpoint,
         explorationProgress.currentTopicId,
         explorationProgress.currentStoryId
       )
