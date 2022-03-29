@@ -12,8 +12,10 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -22,7 +24,7 @@ enum class SelectionItemInputType {
 }
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
-class SelectionInteractionViewModel(
+class SelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
@@ -154,6 +156,32 @@ class SelectionInteractionViewModel(
     val wasSelectedItemListEmpty = isAnswerAvailable.get()
     if (selectedItems.isNotEmpty() != wasSelectedItemListEmpty) {
       isAnswerAvailable.set(selectedItems.isNotEmpty())
+    }
+  }
+
+  /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
+  class FactoryImpl @Inject constructor(
+    private val translationController: TranslationController
+  ) : InteractionItemFactory {
+    override fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel {
+      return SelectionInteractionViewModel(
+        entityId,
+        hasConversationView,
+        interaction,
+        answerErrorReceiver,
+        isSplitView,
+        writtenTranslationContext,
+        translationController
+      )
     }
   }
 

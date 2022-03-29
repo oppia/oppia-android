@@ -2,6 +2,8 @@ package org.oppia.android.app.testing.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -43,6 +45,11 @@ open class TestActivity : InjectableAppCompatActivity() {
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(newBase)
     (activityComponent as Injector).inject(this)
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.test_activity)
   }
 
   /** Activity injector for [TestActivity]. */

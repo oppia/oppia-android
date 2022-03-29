@@ -273,38 +273,47 @@ class StateRetriever @Inject constructor() {
     ruleType: String
   ): InteractionObject {
     return when (interactionId) {
-      "MultipleChoiceInput" ->
-        InteractionObject.newBuilder()
-          .setNonNegativeInt(inputJson.getInt(keyName))
-          .build()
-      "ItemSelectionInput" ->
-        InteractionObject.newBuilder()
-          .setSetOfTranslatableHtmlContentIds(
+      "MultipleChoiceInput" -> {
+        InteractionObject.newBuilder().apply {
+          nonNegativeInt = inputJson.getInt(keyName)
+        }.build()
+      }
+      "ItemSelectionInput" -> {
+        InteractionObject.newBuilder().apply {
+          setOfTranslatableHtmlContentIds =
             parseSetOfTranslatableHtmlContentIds(inputJson.getJSONArray(keyName))
-          )
-          .build()
-      "TextInput" ->
-        InteractionObject.newBuilder()
-          .setTranslatableSetOfNormalizedString(
+        }.build()
+      }
+      "TextInput" -> {
+        InteractionObject.newBuilder().apply {
+          translatableSetOfNormalizedString =
             parseTranslatableSetOfNormalizedString(inputJson.getJSONObject(keyName))
-          )
-          .build()
-      "NumberWithUnits" ->
-        InteractionObject.newBuilder()
-          .setNumberWithUnits(parseNumberWithUnitsObject(inputJson.getJSONObject(keyName)))
-          .build()
-      "NumericInput" ->
-        InteractionObject.newBuilder()
-          .setReal(inputJson.getDouble(keyName))
-          .build()
+        }.build()
+      }
+      "NumberWithUnits" -> {
+        InteractionObject.newBuilder().apply {
+          numberWithUnits = parseNumberWithUnitsObject(inputJson.getJSONObject(keyName))
+        }.build()
+      }
+      "NumericInput" -> {
+        InteractionObject.newBuilder().apply {
+          real = inputJson.getDouble(keyName)
+        }.build()
+      }
       "FractionInput" -> createExactInputForFractionInput(inputJson, keyName, ruleType)
       "DragAndDropSortInput" -> createExactInputForDragDropAndSort(inputJson, keyName, ruleType)
-      "ImageClickInput" ->
-        InteractionObject.newBuilder()
-          .setNormalizedString(inputJson.getStringFromObject(keyName))
-          .build()
+      "ImageClickInput" -> {
+        InteractionObject.newBuilder().apply {
+          normalizedString = inputJson.getStringFromObject(keyName)
+        }.build()
+      }
       "RatioExpressionInput" ->
         createExactInputForRatioExpressionInput(inputJson, keyName, ruleType)
+      "NumericExpressionInput", "AlgebraicExpressionInput", "MathEquationInput" -> {
+        InteractionObject.newBuilder().apply {
+          mathExpression = inputJson.getStringFromObject(keyName)
+        }.build()
+      }
       else -> throw IllegalStateException("Encountered unexpected interaction ID: $interactionId")
     }
   }
@@ -495,6 +504,12 @@ class StateRetriever @Inject constructor() {
       "RatioExpressionInput" -> {
         createRatioExpressionInputCustomizationArgsMap(customizationArgsJson)
       }
+      "NumericExpressionInput" -> {
+        createNumericExpressionInputCustomizationArgsMap(customizationArgsJson)
+      }
+      "AlgebraicExpressionInput", "MathEquationInput" -> {
+        createAlgebraicExpressionMathEquationInputsCustomizationArgsMap(customizationArgsJson)
+      }
       else -> mutableMapOf()
     }
   }
@@ -612,6 +627,44 @@ class StateRetriever @Inject constructor() {
     return customizationArgsMap
   }
 
+  private fun createNumericExpressionInputCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    if (customizationArgsJson.has("placeholder")) {
+      customizationArgsMap["placeholder"] =
+        parseSubtitledUnicode(
+          customizationArgsJson.getJSONObject("placeholder").getJSONObject("value")
+        )
+    }
+    if (customizationArgsJson.has("useFractionForDivision")) {
+      customizationArgsMap["useFractionForDivision"] =
+        parseBooleanSchemaObject(
+          customizationArgsJson.getJSONObject("useFractionForDivision").getBoolean("value")
+        )
+    }
+    return customizationArgsMap
+  }
+
+  private fun createAlgebraicExpressionMathEquationInputsCustomizationArgsMap(
+    customizationArgsJson: JSONObject
+  ): Map<String, SchemaObject> {
+    val customizationArgsMap = mutableMapOf<String, SchemaObject>()
+    if (customizationArgsJson.has("customOskLetters")) {
+      customizationArgsMap["customOskLetters"] =
+        parseCustomOskLetters(
+          customizationArgsJson.getJSONObject("customOskLetters").getJSONArray("value")
+        )
+    }
+    if (customizationArgsJson.has("useFractionForDivision")) {
+      customizationArgsMap["useFractionForDivision"] =
+        parseBooleanSchemaObject(
+          customizationArgsJson.getJSONObject("useFractionForDivision").getBoolean("value")
+        )
+    }
+    return customizationArgsMap
+  }
+
   private fun parseSubtitledHtml(subtitledHtmlJson: JSONObject): SubtitledHtml =
     SubtitledHtml.newBuilder().apply {
       contentId = subtitledHtmlJson.getStringFromObject("content_id")
@@ -703,5 +756,23 @@ class StateRetriever @Inject constructor() {
       .setX(points.getDouble(0).toFloat())
       .setY(points.getDouble(1).toFloat())
       .build()
+  }
+
+  private fun parseCustomOskLetters(jsonArray: JSONArray): SchemaObject {
+    val letters = mutableListOf<String>()
+    for (i in 0 until jsonArray.length()) {
+      letters += jsonArray.getStringFromArray(i)
+    }
+    return SchemaObject.newBuilder().apply {
+      schemaObjectList = SchemaObjectList.newBuilder().apply {
+        addAllSchemaObject(
+          letters.map { letter ->
+            SchemaObject.newBuilder().apply {
+              normalizedString = letter
+            }.build()
+          }
+        )
+      }.build()
+    }.build()
   }
 }

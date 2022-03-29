@@ -36,6 +36,7 @@ package_group(
 package_group(
     name = "app_testing_visibility",
     packages = [
+        "//app/src/sharedTest/...",
         "//app/src/test/...",
     ],
 )
@@ -44,6 +45,12 @@ filegroup(
     name = "test_manifest",
     srcs = ["src/test/AndroidManifest.xml"],
     visibility = ["//:oppia_testing_visibility"],
+)
+
+filegroup(
+    name = "data_binder_mapper_impl",
+    srcs = ["src/test/java/DataBinderMapperImpl.java"],
+    visibility = [":app_testing_visibility"],
 )
 
 # Source files for the migrated source files library. The files inside the migrated source files
@@ -93,6 +100,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkChaptersCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkStoriesCompletedListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToMarkTopicsCompletedListener.kt",
+    "src/main/java/org/oppia/android/app/devoptions/RouteToMathExpressionParserTestListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt",
     "src/main/java/org/oppia/android/app/drawer/RouteToProfileProgressListener.kt",
     "src/main/java/org/oppia/android/app/help/LoadFaqListFragmentListener.kt",
@@ -169,6 +177,7 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/HelpListViewModel.kt",
@@ -195,6 +204,7 @@ VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragDropInteractionContentViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt",
+    "src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/PreviousResponsesHeaderViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt",
     "src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt",
@@ -234,6 +244,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsModifyLessonProgressViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsOverrideAppBehaviorsViewModel.kt",
+    "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsTestParsersViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsViewLogsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/NetworkTypeItemViewModel.kt",
@@ -381,6 +392,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 # keep sorted
 VIEWS = [
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
+    "src/main/java/org/oppia/android/app/customview/interaction/MathExpressionInteractionsView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt",
@@ -537,6 +549,7 @@ android_library(
     resource_files = glob(DATABINDING_LAYOUTS),
     visibility = [
         "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:__pkg__",
     ],
     deps = [
         ":annotations",
@@ -647,6 +660,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/viewmodel:observable_view_model",
         "//app/src/main/java/org/oppia/android/app/viewmodel:view_model_provider",
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
+        "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
@@ -662,6 +676,7 @@ kt_android_library(
         # TODO(#59): Remove 'debug_util_module' once we completely migrate to Bazel from Gradle as
         # we can then directly exclude debug files from the build and thus won't be requiring this module.
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",
     ],
 )
 
@@ -812,7 +827,10 @@ kt_android_library(
         "src/sharedTest/java/org/oppia/android/app/utility/ProgressMatcher.kt",
         "src/sharedTest/java/org/oppia/android/app/utility/TabMatcher.kt",
     ],
-    visibility = ["//app:__subpackages__"],
+    visibility = [
+        ":app_testing_visibility",
+        "//app:__subpackages__",
+    ],
     deps = [
         ":app",
         "//testing",

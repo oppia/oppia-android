@@ -18,106 +18,126 @@
     <variable
       name="ratioInteractionInputViewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel" />
+
+    <variable
+      name="mathExpressionInteractionsViewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel" />
   </data>
 
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".testing.InputInteractionViewTestActivity">
-
-    <org.oppia.android.app.customview.interaction.RatioInputInteractionView
-      android:id="@+id/test_ratio_input_interaction_view"
+  <ScrollView
+    <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:background="@drawable/edit_text_background"
-      android:fontFamily="sans-serif"
-      android:hint="@{ratioInteractionInputViewModel.hintText}"
-      android:imeOptions="actionDone"
-      android:longClickable="false"
-      android:maxLength="200"
-      android:minHeight="48dp"
-      android:paddingStart="16dp"
-      android:paddingEnd="16dp"
-      android:paddingBottom="8dp"
-      android:singleLine="true"
-      android:text="@={ratioInteractionInputViewModel.answerText}"
-      android:textColor="@color/oppia_primary_text"
-      android:textColorHint="@color/edit_text_hint"
-      android:textSize="14sp"
-      android:textStyle="italic"
-      app:textChangedListener="@{ratioInteractionInputViewModel.answerTextWatcher}" />
+      android:descendantFocusability="beforeDescendants"
+      android:focusableInTouchMode="true"
+      android:gravity="center"
+      android:orientation="vertical"
+      tools:context=".testing.InputInteractionViewTestActivity">
 
-    <TextView
-      android:id="@+id/ratio_input_error"
-      style="@style/TextViewStart"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="16dp"
-      android:layout_marginEnd="8dp"
-      android:fontFamily="sans-serif"
-      android:minHeight="32dp"
-      android:text="@{ratioInteractionInputViewModel.errorMessage}"
-      android:textColor="@color/edit_text_error"
-      android:textSize="12sp"
-      android:visibility="@{ratioInteractionInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+      <org.oppia.android.app.customview.interaction.RatioInputInteractionView
+        android:id="@+id/test_ratio_input_interaction_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/edit_text_background"
+        android:fontFamily="sans-serif"
+        android:hint="@{ratioInteractionInputViewModel.hintText}"
+        android:imeOptions="actionDone"
+        android:longClickable="false"
+        android:maxLength="200"
+        android:minHeight="48dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:singleLine="true"
+        android:text="@={ratioInteractionInputViewModel.answerText}"
+        android:textColor="@color/oppia_primary_text"
+        android:textColorHint="@color/edit_text_hint"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:textChangedListener="@{ratioInteractionInputViewModel.answerTextWatcher}" />
 
-    <org.oppia.android.app.customview.interaction.NumericInputInteractionView
-      android:id="@+id/test_number_input_interaction_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:background="@drawable/edit_text_background"
-      android:focusable="true"
-      android:hint="Write the digit here."
-      android:longClickable="false"
-      android:maxLength="200"
-      android:padding="8dp"
-      android:singleLine="true"
-      android:text="@={numericInputViewModel.answerText}"
-      app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
+      <TextView
+        android:id="@+id/ratio_input_error"
+        style="@style/TextViewStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif"
+        android:minHeight="32dp"
+        android:text="@{ratioInteractionInputViewModel.errorMessage}"
+        android:textColor="@color/edit_text_error"
+        android:textSize="12sp"
+        android:visibility="@{ratioInteractionInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-    <TextView
-      android:id="@+id/number_input_error"
-      style="@style/TextViewStart"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="16dp"
-      android:layout_marginEnd="8dp"
-      android:fontFamily="sans-serif"
-      android:minHeight="32dp"
-      android:text="@{numericInputViewModel.errorMessage}"
-      android:textColor="@color/edit_text_error"
-      android:textSize="12sp"
-      android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
+      <org.oppia.android.app.customview.interaction.NumericInputInteractionView
+        android:id="@+id/test_number_input_interaction_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/edit_text_background"
+        android:focusable="true"
+        android:hint="Write the digit here."
+        android:longClickable="false"
+        android:maxLength="200"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:text="@={numericInputViewModel.answerText}"
+        app:textChangedListener="@{numericInputViewModel.answerTextWatcher}" />
 
-    <org.oppia.android.app.customview.interaction.TextInputInteractionView
-      android:id="@+id/test_text_input_interaction_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:background="@drawable/edit_text_background"
-      android:focusable="true"
-      android:hint="Write here."
-      android:inputType="text"
-      android:longClickable="false"
-      android:maxLength="200"
-      android:padding="8dp"
-      android:singleLine="true"
-      android:text="@={textInputViewModel.answerText}" />
+      <TextView
+        android:id="@+id/number_input_error"
+        style="@style/TextViewStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif"
+        android:minHeight="32dp"
+        android:text="@{numericInputViewModel.errorMessage}"
+        android:textColor="@color/edit_text_error"
+        android:textSize="12sp"
+        android:visibility="@{numericInputViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
-    <Button
-      android:id="@+id/submit_button"
-      style="@style/StateButtonActive"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:onClick="getPendingAnswerErrorOnSubmitClick"
-      android:text="Submit"
-      android:textColor="@color/color_def_white" />
-  </LinearLayout>
+      <org.oppia.android.app.customview.interaction.TextInputInteractionView
+        android:id="@+id/test_text_input_interaction_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/edit_text_background"
+        android:focusable="true"
+        android:hint="Write here."
+        android:inputType="text"
+        android:longClickable="false"
+        android:maxLength="200"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:text="@={textInputViewModel.answerText}" />
+
+      <org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+        android:id="@+id/test_math_expression_input_interaction_view"
+        style="@style/InputInteractionEditText"
+        android:minHeight="48dp"
+        app:placeholder="@{mathExpressionInteractionsViewModel.hintText}"
+        android:inputType="text"
+        android:text="@={mathExpressionInteractionsViewModel.answerText}"
+        app:textChangedListener="@{mathExpressionInteractionsViewModel.answerTextWatcher}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+      <Button
+        android:id="@+id/submit_button"
+        style="@style/StateButtonActive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="getPendingAnswerErrorOnSubmitClick"
+        android:text="Submit"
+        android:textColor="@color/color_def_white" />
+    </LinearLayout>
+  </ScrollView>
 </layout>

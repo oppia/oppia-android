@@ -26,6 +26,10 @@ load("//model:oppia_proto_library.bzl", "oppia_proto_library")
 oppia_proto_library(
     name = "arguments_proto",
     srcs = ["arguments.proto"],
+    deps = [
+        ":exploration_proto",
+        ":translation_proto",
+    ],
 )
 
 java_lite_proto_library(
@@ -165,6 +169,9 @@ oppia_proto_library(
     name = "translation_proto",
     srcs = ["translation.proto"],
     visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":languages_proto",
+    ],
 )
 
 java_lite_proto_library(

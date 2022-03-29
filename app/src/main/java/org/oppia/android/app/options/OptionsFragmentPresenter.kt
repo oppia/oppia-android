@@ -21,6 +21,7 @@ import org.oppia.android.databinding.OptionStoryTextSizeBinding
 import org.oppia.android.databinding.OptionsFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
@@ -193,14 +194,14 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
-            } else {
-              oppiaLogger.e(
-                READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: small text size",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: small text size", it.error
+                )
+              }
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -212,14 +213,14 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-            } else {
-              oppiaLogger.e(
-                READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: medium text size",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: medium text size", it.error
+                )
+              }
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -231,14 +232,14 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
-            } else {
-              oppiaLogger.e(
-                READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: large text size",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: large text size", it.error
+                )
+              }
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -251,14 +252,14 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
-            } else {
-              oppiaLogger.e(
-                READING_TEXT_SIZE_TAG,
-                "$READING_TEXT_SIZE_ERROR: extra large text size",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: extra large text size", it.error
+                )
+              }
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -276,14 +277,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: English",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: English", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -295,14 +293,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              appLanguage = AppLanguage.HINDI_APP_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: Hindi",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> appLanguage = AppLanguage.HINDI_APP_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: Hindi", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -314,14 +309,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: Chinese",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: Chinese", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -333,14 +325,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                APP_LANGUAGE_TAG,
-                "$APP_LANGUAGE_ERROR: French",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: French", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -359,14 +348,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              audioLanguage = AudioLanguage.NO_AUDIO
-            } else {
-              oppiaLogger.e(
-                AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: No Audio",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> audioLanguage = AudioLanguage.NO_AUDIO
+              is AsyncResult.Failure ->
+                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: No Audio", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -378,14 +364,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: English",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: English", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -397,14 +380,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: Hindi",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: Hindi", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -416,14 +396,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: Chinese",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: Chinese", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )
@@ -435,14 +412,11 @@ class OptionsFragmentPresenter @Inject constructor(
         ).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
-              audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
-            } else {
-              oppiaLogger.e(
-                AUDIO_LANGUAGE_TAG,
-                "$AUDIO_LANGUAGE_ERROR: French",
-                it.getErrorOrNull()
-              )
+            when (it) {
+              is AsyncResult.Success -> audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
+              is AsyncResult.Failure ->
+                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: French", it.error)
+              is AsyncResult.Pending -> {} // Wait for a result.
             }
           }
         )

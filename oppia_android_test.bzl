@@ -10,6 +10,7 @@ def oppia_android_module_level_test(
         filtered_tests,
         deps,
         processed_src = None,
+        test_class = None,
         test_path_prefix = "src/test/java/",
         additional_srcs = [],
         **kwargs):
@@ -20,18 +21,22 @@ def oppia_android_module_level_test(
         name: str. The relative path to the Kotlin test file.
         filtered_tests: list of str. The test files that should not have tests defined for them.
         deps: list of str. The list of dependencies needed to build and run this test.
-        processed_src: str. The source to a processed version of the test that should be used
+        processed_src: str|None. The source to a processed version of the test that should be used
             instead of the original.
-        test_path_prefix: str. The prefix of the test path (which is used to extract the qualified
-            class name of the test suite).
+        test_class: str|None. The fully qualified test class that will be run (relative to
+            src/test/java).
+        test_path_prefix: str|None. The prefix of the test path (which is used to extract the
+            qualified class name of the test suite).
         additional_srcs: list of str. Additional source files to build into the test binary.
         **kwargs: additional parameters to pass to oppia_android_test.
     """
     if name not in filtered_tests:
         oppia_android_test(
-            name = name[:name.find(".kt")],
+            name = name[:name.find(".kt")] if "/" in name else name,
             srcs = [processed_src or name] + additional_srcs,
-            test_class = _remove_prefix_suffix(name, test_path_prefix, ".kt").replace("/", "."),
+            test_class = (
+                test_class or _remove_prefix_suffix(name, test_path_prefix, ".kt").replace("/", ".")
+            ),
             deps = deps,
             **kwargs
         )

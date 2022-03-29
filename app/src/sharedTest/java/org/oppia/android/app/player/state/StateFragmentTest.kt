@@ -3,8 +3,9 @@ package org.oppia.android.app.player.state
 import android.app.Application
 import android.content.Context
 import android.text.InputType
-import android.text.Spannable
+import android.text.Spanned
 import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -74,14 +75,18 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTENT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
@@ -127,6 +132,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
@@ -137,6 +143,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -164,8 +171,8 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -178,6 +185,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(application = StateFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 @LooperMode(LooperMode.Mode.PAUSED)
+// FunctionName: test names are conventionally named with underscores.
+// SameParameterValue: tests should have specific context included/excluded for readability.
+@Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -209,6 +219,9 @@ class StateFragmentTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -325,11 +338,10 @@ class StateFragmentTest {
 
       clickContinueInteractionButton()
 
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      verifySubmitAnswerButtonIsDisabled()
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
     }
   }
 
@@ -419,8 +431,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       // The submission button should now be disabled and there should be an error.
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      verifySubmitAnswerButtonIsDisabled()
       onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
@@ -437,8 +448,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       // The submission button should now be disabled and there should be an error.
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      verifySubmitAnswerButtonIsDisabled()
       onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
@@ -452,8 +462,7 @@ class StateFragmentTest {
       typeFractionText("1/")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      verifySubmitAnswerButtonIsDisabled()
     }
   }
 
@@ -484,8 +493,7 @@ class StateFragmentTest {
       typeFractionText("1/")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      verifySubmitAnswerButtonIsDisabled()
     }
   }
 
@@ -765,6 +773,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -838,7 +847,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -853,7 +862,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -873,7 +882,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -887,14 +896,13 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
       clickImageRegion(pointX = 0.1f, pointY = 0.5f)
 
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+      verifySubmitAnswerButtonIsDisabled()
     }
   }
 
@@ -902,7 +910,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -917,7 +925,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -937,7 +945,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -957,7 +965,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -973,7 +981,7 @@ class StateFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       waitForImageViewInteractionToFullyLoad()
 
@@ -2450,6 +2458,1174 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesExactly_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1+2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the second state.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffOrder_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("2+1")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("no reordering allowed")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffElems_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1+1+1")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("no reordering allowed")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1+3")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("no reordering allowed")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesUpTo_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("1+2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the third state.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffOrder_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("2+1")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the third state since reordering is allowed in this
+      // interaction.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffElems_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("1+1+1")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("1+3")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_equivalence_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState2()
+
+      typeNumericExpression("1+2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the fourth state.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("represents the product of")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_equivalence_diffOrder_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState2()
+
+      typeNumericExpression("2+1")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the fourth state since reordering is allowed in this
+      // interaction.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("represents the product of")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_equivalence_diffElems_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState2()
+
+      typeNumericExpression("1+1+1")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the fourth state since equivalence is checked (meaning
+      // different expressions will match if they evaluate to the same value).
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("represents the product of")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_equivalence_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState2()
+
+      typeNumericExpression("1+3")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_answerWithDivideByZero_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1/0")
+      clickSubmitAnswerButton()
+
+      verifyMathInteractionHasError("Dividing by zero is invalid. Please revise your answer.")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_answerWithVariable_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1+x")
+      clickSubmitAnswerButton()
+
+      // Numeric expressions cannot contain variables.
+      verifyMathInteractionHasError(
+        "It looks like you have entered some variables. Please make sure that your answer" +
+          " contains numbers only and remove any variables from your answer."
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_validAns_submissionDisplaysLatex() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("2*3/4")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      scenario.onActivity { activity ->
+        val htmlTextView = activity.findViewById<TextView>(R.id.submitted_answer_text_view)
+        assertThat(htmlTextView.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).contains("2 \\times 3 \\div 4")
+        assertThat(loadedModels.last().useInlineRendering).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionDisplaysLatex() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+
+      typeNumericExpression("2*3/4")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      scenario.onActivity { activity ->
+        val htmlTextView = activity.findViewById<TextView>(R.id.submitted_answer_text_view)
+        assertThat(htmlTextView.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX. Note that this
+        // state treats division as a fraction.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).contains("\\frac{2 \\times 3}{4}")
+        assertThat(loadedModels.last().useInlineRendering).isFalse()
+      }
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_numericExp_validAns_english_submissionHasA11yAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("1/2*2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(withContentDescription("Incorrect submitted answer: 1 divided by 2 times 2"))
+      )
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionHasA11yAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1/2*2")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withContentDescription("Incorrect submitted answer: one half times 2")))
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_numericExp_validAns_arabic_submissionHasA11yAnswer() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughMathInteractionExplorationState1()
+
+      typeNumericExpression("1/2*2")
+      clickSubmitAnswerButton()
+
+      // The raw expression is used as the content description if the current written language is
+      // unsupported.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withContentDescription("Incorrect submitted answer: 1/2*2")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesExactly_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("x^2-x-2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the fifth state.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesExactly_diffOrder_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("-2-x+x^2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("represents the product of")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesExactly_diffElems_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("(x+1)(x-2)")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("represents the product of")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesExactly_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("-x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("represents the product of")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesUpTo_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("x^2-x-2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the sixth state.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffOrder_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("-2-x+x^2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the sixth state since reordering is allowed in this
+      // interaction.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffElems_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("(x+1)(x-2)")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("-x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_equivalence_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState5()
+
+      typeAlgebraicExpression("x^2-x-2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the seventh state.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_equivalence_diffOrder_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState5()
+
+      typeAlgebraicExpression("-2-x+x^2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the seventh state since reordering is allowed in this
+      // interaction.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_equivalence_diffElems_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState5()
+
+      typeAlgebraicExpression("(x+1)(x-2)")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the seventh state since equivalence is checked (meaning
+      // different expressions will match if they evaluate to the same value).
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_equivalence_diffElems_andVals_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState5()
+
+      typeAlgebraicExpression("(x+1)(x-1)")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect due to one of the nested
+      // values being different.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_equivalence_diffOperations_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState5()
+
+      // Even polynomial division can result in the correct answer.
+      typeAlgebraicExpression("(x^3+2x^2-5x-6)/(x+3)")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the seventh state since equivalence is checked (meaning
+      // different expressions will match if they evaluate to the same value).
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_equivalence_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState5()
+
+      typeAlgebraicExpression("-x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_answerWithVariablePower_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("2^x")
+      clickSubmitAnswerButton()
+
+      // Variables cannot be in exponent powers.
+      verifyMathInteractionHasError(
+        "Sorry, variables in exponents are not supported by the app. Please revise your answer."
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_answerWithUnknownVars_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("a^2-a-2")
+      clickSubmitAnswerButton()
+
+      // Only the enabled variables can be used.
+      verifyMathInteractionHasError("Please use the variables specified in the question and not a.")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_validAns_submissionDisplaysLatex() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      scenario.onActivity { activity ->
+        val htmlTextView = activity.findViewById<TextView>(R.id.submitted_answer_text_view)
+        assertThat(htmlTextView.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).contains("x ^ {2} - x - 2 \\div x")
+        assertThat(loadedModels.last().useInlineRendering).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionDisplaysLatex() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      scenario.onActivity { activity ->
+        val htmlTextView = activity.findViewById<TextView>(R.id.submitted_answer_text_view)
+        assertThat(htmlTextView.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX. Note that this
+        // state treats division as a fraction.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).contains("x ^ {2} - x - \\frac{2}{x}")
+        assertThat(loadedModels.last().useInlineRendering).isFalse()
+      }
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_algExp_validAns_english_submissionHasA11yAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Incorrect submitted answer: x raised to the power of 2 minus x minus 2 divided by x"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionHasA11yAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+
+      typeAlgebraicExpression("x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Incorrect submitted answer: x raised to the power of 2 minus x minus 2 over x"
+          )
+        )
+      )
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_algExp_validAns_arabic_submissionHasA11yAnswer() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState4()
+
+      typeAlgebraicExpression("x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      // The raw expression is used as the content description if the current written language is
+      // unsupported.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withContentDescription("Incorrect submitted answer: x^2-x-2/x")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesExactly_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=x^2-x-2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the eighth state.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesExactly_flipped_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("x^2-x-2=2y")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect (order around the '='
+      // matters for this interaction).
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffOrder_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=-2-x+x^2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffElems_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("y+y=(x+1)(x-2)")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=-x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("algebraic equation represents the quantity")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesUpTo_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("2y=x^2-x-2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the ninth state.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesUpTo_flipped_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("x^2-x-2=2y")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect (order around the '='
+      // matters for this interaction).
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffOrder_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("y*2=-2-x+x^2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the ninth state since reordering is allowed in this
+      // interaction.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffElems_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("y+y=(x+1)(x-2)")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("2y=-x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("commutative and associative")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_canSubmitCorrectAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("2y=x^2-x-2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the tenth state.
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_flipped_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("x^2-x-2=2y")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the tenth state since reordering around the '=' is allowed
+      // in this interaction.
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_diffOrder_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("2y=-2-x+x^2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the tenth state since reordering is allowed in this
+      // interaction.
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_diffElems_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("y+y=(x+1)(x-2)")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the tenth state since equivalence is checked (meaning
+      // different expressions will match if they evaluate to the same value).
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_diffElems_andVals_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("2y=(x+1)(x-1)")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect due to one of the nested
+      // values being different.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_diffOperations_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      // Even polynomial division can result in the correct answer.
+      typeMathEquation("(y^3+y^3)/(y*y)=(x^3+2x^2-5x-6)/(x+3)")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the tenth state since equivalence is checked (meaning
+      // different expressions will match if they evaluate to the same value).
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_rearranged_answerIsCorrect() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("2y+2+x=x^2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the tenth state since elements can even be rearranged around
+      // the '='.
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_multiple_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("(4/3)(y+1)=(2x^2-2x)/3")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect (the interaction can't
+      // verify that the two sides are multiples of each other).
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_equivalence_diffValue_answerIsWrong() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState8()
+
+      typeMathEquation("2y=-x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Verify that the state hasn't changed since the answer is incorrect.
+      verifyViewTypeIsPresent(MATH_EQUATION_INPUT_INTERACTION)
+      verifyContentContains("any equivalent expression")
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_answerWithDoubleMult_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=x*/x")
+      clickSubmitAnswerButton()
+
+      verifyMathInteractionHasError("* and / should be separated by a number or a variable.")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_missingEquals_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("x^2-x-2")
+      clickSubmitAnswerButton()
+
+      // Equations must have '=' defined.
+      verifyMathInteractionHasError("Your equation is missing an '=' sign.")
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_answerWithUnknownVars_displaysError() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=a^2-b-2")
+      clickSubmitAnswerButton()
+
+      // Only the enabled variables can be used.
+      verifyMathInteractionHasError(
+        "Please use the variables specified in the question and not a, b."
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_validAns_submissionDisplaysLatex() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("2y=x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      scenario.onActivity { activity ->
+        val htmlTextView = activity.findViewById<TextView>(R.id.submitted_answer_text_view)
+        assertThat(htmlTextView.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).contains("2y = x ^ {2} - x - 2 \\div x")
+        assertThat(loadedModels.last().useInlineRendering).isFalse()
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionDisplaysLatex() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      scenario.onActivity { activity ->
+        val htmlTextView = activity.findViewById<TextView>(R.id.submitted_answer_text_view)
+        assertThat(htmlTextView.getSpans<ImageSpan>()).hasSize(1)
+
+        // Verify that an image drawable was loaded and with the correct LaTeX. Note that this
+        // state treats division as a fraction.
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+        assertThat(loadedModels.count()).isAtLeast(1)
+        assertThat(loadedModels.last().rawLatex).contains("2y = x ^ {2} - x - \\frac{2}{x}")
+        assertThat(loadedModels.last().useInlineRendering).isFalse()
+      }
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_mathEq_validAns_english_submissionHasA11yAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("2y=x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(
+          withContentDescription(
+            "Incorrect submitted answer: 2 y equals x raised to the power of 2 minus x minus 2" +
+              " divided by x"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionHasA11yAnswer() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("2y=x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(
+          matches(
+            withContentDescription(
+              "Incorrect submitted answer: 2 y equals x raised to the power of 2 minus x minus 2" +
+                " over x"
+            )
+          )
+        )
+    }
+  }
+
+  // TODO(#3858): Enable for Espresso.
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testStateFragment_mathInteractions_mathEq_validAns_arabic_submissionHasA11yAnswer() {
+    updateContentLanguage(profileId, OppiaLanguage.ARABIC)
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState7()
+
+      typeMathEquation("2y=x^2-x-2/x")
+      clickSubmitAnswerButton()
+
+      // The raw expression is used as the content description if the current written language is
+      // unsupported.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view))
+        .check(matches(withContentDescription("Incorrect submitted answer: 2y=x^2-x-2/x")))
+    }
+  }
+
   // TODO(#3171): Implement image region selection tests for English/Arabic to demonstrate that
   //  answers submit normally & with no special behaviors.
 
@@ -2463,7 +3639,6 @@ class StateFragmentTest {
     addException.invoke(/* obj= */ null, dataSource, exception)
   }
 
-  @Suppress("SameParameterValue")
   private fun createAudioDataSource(explorationId: String, audioFileName: String): Any {
     val audioUrl = createAudioUrl(explorationId, audioFileName)
     val classLoader = StateFragmentTest::class.java.classLoader!!
@@ -2622,6 +3797,97 @@ class StateFragmentTest {
     playThroughPrototypeState10()
   }
 
+  private fun playThroughMathInteractionExplorationState1() {
+    // First state: NumericExpressionInput.MatchesExactlyWith.
+    typeNumericExpression("1+2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState2() {
+    // Second state: NumericExpressionInput.MatchesUpToTrivialManipulations.
+    typeNumericExpression("1+2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState3() {
+    // Third state: NumericExpressionInput.IsEquivalentTo.
+    typeNumericExpression("1+2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState4() {
+    // Fourth state: AlgebraicExpressionInput.MatchesExactlyWith.
+    typeAlgebraicExpression("x^2-x-2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState5() {
+    // Fifth state: AlgebraicExpressionInput.MatchesUpToTrivialManipulations.
+    typeAlgebraicExpression("x^2-x-2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState6() {
+    // Sixth state: AlgebraicExpressionInput.IsEquivalentTo.
+    typeAlgebraicExpression("x^2-x-2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState7() {
+    // Seventh state: MathEquationInput.MatchesExactlyWith.
+    typeMathEquation("2y=x^2-x-2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughMathInteractionExplorationState8() {
+    // Eighth state: MathEquationInput.MatchesUpToTrivialManipulations.
+    typeMathEquation("2y=x^2-x-2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState2() {
+    playThroughMathInteractionExplorationState1()
+    playThroughMathInteractionExplorationState2()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState3() {
+    playUpThroughMathInteractionExplorationState2()
+    playThroughMathInteractionExplorationState3()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState4() {
+    playUpThroughMathInteractionExplorationState3()
+    playThroughMathInteractionExplorationState4()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState5() {
+    playUpThroughMathInteractionExplorationState4()
+    playThroughMathInteractionExplorationState5()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState6() {
+    playUpThroughMathInteractionExplorationState5()
+    playThroughMathInteractionExplorationState6()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState7() {
+    playUpThroughMathInteractionExplorationState6()
+    playThroughMathInteractionExplorationState7()
+  }
+
+  private fun playUpThroughMathInteractionExplorationState8() {
+    playUpThroughMathInteractionExplorationState7()
+    playThroughMathInteractionExplorationState8()
+  }
+
   private fun rotateToLandscape() {
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
@@ -2638,19 +3904,16 @@ class StateFragmentTest {
     typeTextIntoInteraction(text, interactionViewId = R.id.fraction_input_interaction_view)
   }
 
-  @Suppress("SameParameterValue")
   private fun typeNumericInput(text: String) {
     scrollToViewType(NUMERIC_INPUT_INTERACTION)
     typeTextIntoInteraction(text, interactionViewId = R.id.numeric_input_interaction_view)
   }
 
-  @Suppress("SameParameterValue")
   private fun typeTextInput(text: String) {
     scrollToViewType(TEXT_INPUT_INTERACTION)
     typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
   }
 
-  @Suppress("SameParameterValue")
   private fun typeRatioExpression(text: String) {
     scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
     typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
@@ -2700,12 +3963,32 @@ class StateFragmentTest {
     clickDragAndDropOption(position, targetViewId = R.id.drag_drop_content_unlink_items)
   }
 
-  @Suppress("SameParameterValue")
   private fun clickImageRegion(pointX: Float, pointY: Float) {
     onView(withId(R.id.image_click_interaction_image_view)).perform(
       clickPoint(pointX, pointY)
     )
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun typeNumericExpression(expression: String) {
+    scrollToViewType(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+    typeTextIntoInteraction(
+      expression, interactionViewId = R.id.math_expression_input_interaction_view
+    )
+  }
+
+  private fun typeAlgebraicExpression(expression: String) {
+    scrollToViewType(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
+    typeTextIntoInteraction(
+      expression, interactionViewId = R.id.math_expression_input_interaction_view
+    )
+  }
+
+  private fun typeMathEquation(equation: String) {
+    scrollToViewType(MATH_EQUATION_INPUT_INTERACTION)
+    typeTextIntoInteraction(
+      equation, interactionViewId = R.id.math_expression_input_interaction_view
+    )
   }
 
   private fun clickSubmitAnswerButton() {
@@ -2832,6 +4115,11 @@ class StateFragmentTest {
     ).check(matches(withHint(containsString(hint))))
   }
 
+  private fun verifySubmitAnswerButtonIsDisabled() {
+    scrollToViewType(SUBMIT_ANSWER_BUTTON)
+    onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+  }
+
   private fun verifyViewTypeIsPresent(viewType: StateItemViewModel.ViewType) {
     // Attempting to scroll to the specified view type is sufficient to verify that it's present.
     scrollToViewType(viewType)
@@ -2856,6 +4144,14 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  private fun verifyMathInteractionHasError(errorMessage: String) {
+    onView(withId(R.id.math_expression_input_error)).check(matches(isDisplayed()))
+    onView(withId(R.id.math_expression_input_error)).check(matches(withText(errorMessage)))
+
+    // The submission button should now be disabled.
+    verifySubmitAnswerButtonIsDisabled()
+  }
+
   private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
     return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
   }
@@ -2878,7 +4174,6 @@ class StateFragmentTest {
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
    */
-  @Suppress("SameParameterValue")
   private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
     return object : ViewAction {
       override fun getDescription(): String {
@@ -2947,7 +4242,6 @@ class StateFragmentTest {
    * within that text view that contains the specified text, then clicks it. The need for this was
    * inspired by https://stackoverflow.com/q/38314077.
    */
-  @Suppress("SameParameterValue")
   private fun openClickableSpan(text: String): ViewAction {
     return object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
@@ -2978,13 +4272,16 @@ class StateFragmentTest {
   }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
-    val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
+    val viewText = text as Spanned
+    return getSpans<ClickableSpan>().map {
       viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
     }
   }
+
+  private inline fun <reified T : Any> TextView.getSpans(): List<T> = (text as Spanned).getSpans()
+
+  private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
+    getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
 
   private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
     text: String
@@ -3021,7 +4318,7 @@ class StateFragmentTest {
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
       QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
       LogStorageModule::class, PrimeTopicAssetsControllerModule::class,
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
@@ -3035,7 +4332,7 @@ class StateFragmentTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class
+      MathEquationInputModule::class, SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

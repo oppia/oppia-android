@@ -7,6 +7,7 @@ import dagger.Component
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -97,7 +98,7 @@ import javax.inject.Singleton
     NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class,
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-    MathEquationInputModule::class,
+    MathEquationInputModule::class, SplitScreenInteractionModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class
