@@ -16,7 +16,6 @@ import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -124,14 +123,18 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun processWasProfileEverBeenAddedResult(
     wasProfileEverBeenAddedResult: AsyncResult<Boolean>
   ): Boolean {
-    if (wasProfileEverBeenAddedResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileChooserFragment",
-        "Failed to retrieve the information on wasProfileEverBeenAdded",
-        wasProfileEverBeenAddedResult.getErrorOrNull()!!
-      )
+    return when (wasProfileEverBeenAddedResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileChooserFragment",
+          "Failed to retrieve the information on wasProfileEverBeenAdded",
+          wasProfileEverBeenAddedResult.error
+        )
+        false
+      }
+      is AsyncResult.Pending -> false
+      is AsyncResult.Success -> wasProfileEverBeenAddedResult.value
     }
-    return wasProfileEverBeenAddedResult.getOrDefault(/* defaultValue= */ false)
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
@@ -174,7 +177,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               activity.startActivity(
                 (
                   HomeActivity.createHomeActivity(
@@ -249,7 +252,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun logProfileChooserEvent() {
     oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_PROFILE_CHOOSER, eventContext = null
+      oppiaClock.getCurrentTimeMs(), eventContext = oppiaLogger.createOpenProfileChooserContext()
     )
   }
 }

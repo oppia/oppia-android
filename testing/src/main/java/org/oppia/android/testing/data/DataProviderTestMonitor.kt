@@ -9,15 +9,16 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor.Factory
 import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
-// TODO(#3813): Migrate all data provider tests over to using this utility.
 /**
  * A test monitor for [DataProvider]s that provides operations to simplify waiting for the
  * provider's results, or to verify that notifications actually change the data provider when
@@ -118,17 +119,24 @@ class DataProviderTestMonitor<T> private constructor(
   }
 
   private fun retrieveSuccess(operation: () -> AsyncResult<T>): T {
-    return operation().also {
-      // Sanity check.
-      check(it.isSuccess()) { "Expected next result to be a success, not: $it" }
-    }.getOrThrow()
+    return when (val result = operation()) {
+      // Sanity check. Ensure that the full failure stack trace is thrown.
+      is AsyncResult.Failure -> {
+        throw IllegalStateException(
+          "Expected next result to be a success, not: $result", result.error
+        )
+      }
+      is AsyncResult.Pending -> error("Expected next result to be a success, not: $result")
+      is AsyncResult.Success -> result.value
+    }
   }
 
   private fun retrieveFailing(operation: () -> AsyncResult<T>): Throwable {
-    return operation().also {
-      // Sanity check.
-      check(it.isFailure()) { "Expected next result to be a failure, not: $it" }
-    }.getErrorOrNull() ?: error("Expect result to have a failure error")
+    return when (val result = operation()) {
+      is AsyncResult.Failure -> result.error
+      is AsyncResult.Pending, is AsyncResult.Success ->
+        error("Expected next result to be a failure, not: $result")
+    }
   }
 
   /**
@@ -145,6 +153,32 @@ class DataProviderTestMonitor<T> private constructor(
         // Immediately start observing since it doesn't make sense not to always be observing for
         // the current monitor.
         it.startObservingDataProvider()
+      }
+    }
+
+    /**
+     * Convenience method for verifying that [dataProvider] has at least one result (whether it be
+     * successful or an error), waiting if needed for the result (see [waitForNextResult]).
+     *
+     * This method ought to be used when data providers need to be processed mid-test since using
+     * [waitForNextSuccessfulResult] or [waitForNextFailureResult] have the disadvantages that they
+     * are also verifying pass/fail state (which is usually not desired mid-test during the
+     * arrangement and act portions). While this method is also verifying something (execution), it
+     * can be considered more of a sanity check than an actual check for correctness (i.e. "this
+     * data provider must have executed for the test to proceed").
+     *
+     * Note that this will fail if the result of the data provider is pending (it must provide at
+     * least one success or failure).
+     */
+    fun <T> ensureDataProviderExecutes(dataProvider: DataProvider<T>) {
+      // Waiting for a result is the same as ensuring the conditions are right for the provider to
+      // execute (since it must return a result if it's executed, even if it's pending).
+      val monitor = createMonitor(dataProvider)
+      monitor.waitForNextResult().also {
+        monitor.stopObservingDataProvider()
+      }.also {
+        // There must be an actual result for the provider to be successful.
+        assertThat(it).isNotPending()
       }
     }
 

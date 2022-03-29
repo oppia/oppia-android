@@ -15,6 +15,7 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
@@ -139,6 +140,7 @@ interface ActivityComponentImpl :
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
   fun inject(marginBindableAdaptersTestActivity: MarginBindingAdaptersTestActivity)
   fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
+  fun inject(mathExpressionParserActivity: MathExpressionParserActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)

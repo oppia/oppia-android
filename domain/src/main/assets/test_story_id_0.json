@@ -23,6 +23,18 @@
     "outline": "",
     "title": "Image Region Selection Exploration",
     "acquired_skill_ids": []
+  }, {
+    "description": "Test the different math expression/equation interactions.",
+    "exploration_id": "test_exp_id_5",
+    "destination_node_ids": [],
+    "thumbnail_filename": "",
+    "outline_is_finalized": true,
+    "id": "test_exp_id_5",
+    "prerequisite_skill_ids": [],
+    "thumbnail_bg_color": "#d68f78",
+    "outline": "Test the different math expression/equation interactions.",
+    "title": "Math Expressions",
+    "acquired_skill_ids": []
   }],
   "story_title": "First Story",
   "story_description": "<removed>"

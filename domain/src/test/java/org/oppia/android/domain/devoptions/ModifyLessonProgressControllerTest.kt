@@ -2,7 +2,6 @@ package org.oppia.android.domain.devoptions
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,21 +10,15 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.Topic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -36,8 +29,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -52,6 +43,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ModifyLessonProgressController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ModifyLessonProgressControllerTest.TestApplication::class)
@@ -71,43 +64,15 @@ class ModifyLessonProgressControllerTest {
     private const val RATIOS_STORY_ID_1 = "xBSdg4oOClga"
 
     private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
-    private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
-    private const val TEST_EXPLORATION_ID_5 = "13"
     private const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
     private const val FRACTIONS_EXPLORATION_ID_1 = "MjZzEVOG47_1"
-    private const val RATIOS_EXPLORATION_ID_0 = "2mzzFVDLuAj8"
-    private const val RATIOS_EXPLORATION_ID_1 = "5NWuolNcwH6e"
-    private const val RATIOS_EXPLORATION_ID_2 = "k2bQ7z5XHNbK"
-    private const val RATIOS_EXPLORATION_ID_3 = "tIoSb3HZFN6e"
   }
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var modifyLessonProgressController: ModifyLessonProgressController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Mock
-  lateinit var mockAllTopicsObserver: Observer<AsyncResult<List<Topic>>>
-
-  @Captor
-  lateinit var allTopicsResultCaptor: ArgumentCaptor<AsyncResult<List<Topic>>>
-
-  @Mock
-  lateinit var mockAllStoriesObserver: Observer<AsyncResult<Map<String, List<StorySummary>>>>
-
-  @Captor
-  lateinit var allStoriesResultCaptor: ArgumentCaptor<AsyncResult<Map<String, List<StorySummary>>>>
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var modifyLessonProgressController: ModifyLessonProgressController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId: ProfileId
 
@@ -120,24 +85,22 @@ class ModifyLessonProgressControllerTest {
 
   @Test
   fun testRetrieveAllTopics_isSuccessful() {
-    val allTopicsLiveData =
-      modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
-    allTopicsLiveData.observeForever(mockAllTopicsObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAllTopicsObserver).onChanged(allTopicsResultCaptor.capture())
-    val allTopicsResult = allTopicsResultCaptor.value
-    assertThat(allTopicsResult!!.isSuccess()).isTrue()
+    val topicsProvider = modifyLessonProgressController.getAllTopicsWithProgress(profileId)
+
+    monitorFactory.waitForNextSuccessfulResult(topicsProvider)
   }
 
   @Test
   fun testRetrieveAllTopics_providesListOfMultipleTopics() {
     val allTopics = retrieveAllTopics()
+
     assertThat(allTopics.size).isGreaterThan(1)
   }
 
   @Test
   fun testRetrieveAllTopics_firstTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
+
     val firstTopic = allTopics[0]
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.name).isEqualTo("First Test Topic")
@@ -146,6 +109,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllTopics_secondTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
+
     val secondTopic = allTopics[1]
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
     assertThat(secondTopic.name).isEqualTo("Second Test Topic")
@@ -154,6 +118,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllTopics_fractionsTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
+
     val fractionsTopic = allTopics[2]
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(fractionsTopic.name).isEqualTo("Fractions")
@@ -162,6 +127,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllTopics_ratiosTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
+
     val ratiosTopic = allTopics[3]
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
@@ -177,6 +143,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllTopics_firstTopic_withoutAnyProgress_correctProgressFound() {
     val allTopics = retrieveAllTopics()
+
     val firstTopic = allTopics[0]
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.storyList[0].chapterList[0].chapterPlayState)
@@ -190,7 +157,9 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllTopics_firstTopic_withTopicCompleted_correctProgressFound() {
     markFirstTestTopicCompleted()
+
     val allTopics = retrieveAllTopics()
+
     val firstTopic = allTopics[0]
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.storyList[0].chapterList[0].chapterPlayState)
@@ -202,43 +171,47 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllTopics_withoutAnyProgress_noTopicIsCompleted() {
     val allTopics = retrieveAllTopics()
-    allTopics.forEach { topic ->
-      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
-      assertThat(isCompleted).isFalse()
-    }
+
+    val topicsProgress = allTopics.map(modifyLessonProgressController::checkIfTopicIsCompleted)
+
+    // None of the topics have progress.
+    assertThat(topicsProgress.all { !it }).isTrue()
   }
 
   @Test
   fun markFirstTestTopicCompleted_testRetrieveAllTopics_onlyFirstTestTopicIsCompleted() {
     markFirstTestTopicCompleted()
     val allTopics = retrieveAllTopics()
-    allTopics.forEach { topic ->
-      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
-      if (topic.topicId.equals(TEST_TOPIC_ID_0)) assertThat(isCompleted).isTrue()
-      else assertThat(isCompleted).isFalse()
-    }
+
+    val topicsProgress =
+      allTopics.associateBy(Topic::getTopicId).mapValues { (_, topic) ->
+        modifyLessonProgressController.checkIfTopicIsCompleted(topic)
+      }
+
+    // All topics except the test topic 0 should not have progress.
+    val nonTestTopics = topicsProgress.filterNot { (id, _) -> id == TEST_TOPIC_ID_0 }
+    assertThat(nonTestTopics.values.count { !it }).isEqualTo(allTopics.size - 1)
+    assertThat(topicsProgress[TEST_TOPIC_ID_0]).isTrue()
   }
 
   @Test
   fun testRetrieveAllStories_isSuccessful() {
-    val allStoriesLiveData =
-      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
-    allStoriesLiveData.observeForever(mockAllStoriesObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAllStoriesObserver).onChanged(allStoriesResultCaptor.capture())
-    val allStoriesResult = allStoriesResultCaptor.value
-    assertThat(allStoriesResult!!.isSuccess()).isTrue()
+    val storyProgressProvider = modifyLessonProgressController.getStoryMapWithProgress(profileId)
+
+    monitorFactory.waitForNextSuccessfulResult(storyProgressProvider)
   }
 
   @Test
   fun testRetrieveAllStories_providesListOfMultipleStories() {
     val allStories = retrieveAllStories()
+
     assertThat(allStories.size).isGreaterThan(1)
   }
 
   @Test
   fun testRetrieveAllStories_firstStory_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
+
     val firstStory = allStories[0]
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(firstStory.storyName).isEqualTo("First Story")
@@ -247,6 +220,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_otherStory_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
+
     val secondStory = allStories[1]
     assertThat(secondStory.storyId).isEqualTo(TEST_STORY_ID_2)
     assertThat(secondStory.storyName).isEqualTo("Other Interesting Story")
@@ -255,6 +229,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_fractionsStory_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
+
     val fractionsStory = allStories[2]
     assertThat(fractionsStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(fractionsStory.storyName).isEqualTo("Matthew Goes to the Bakery")
@@ -263,6 +238,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_ratiosStory1_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
+
     val ratiosStory1 = allStories[3]
     assertThat(ratiosStory1.storyId).isEqualTo(RATIOS_STORY_ID_0)
     assertThat(ratiosStory1.storyName).isEqualTo("Ratios: Part 1")
@@ -271,6 +247,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_ratiosStory2_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
+
     val ratiosStory2 = allStories[4]
     assertThat(ratiosStory2.storyId).isEqualTo(RATIOS_STORY_ID_1)
     assertThat(ratiosStory2.storyName).isEqualTo("Ratios: Part 2")
@@ -279,6 +256,7 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_firstStory_withoutAnyProgress_correctProgressFound() {
     val allStories = retrieveAllStories()
+
     val firstStory = allStories[0]
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
@@ -291,7 +269,9 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_firstStory_withStoryCompleted_correctProgressFound() {
     markFirstStoryCompleted()
+
     val allStories = retrieveAllStories()
+
     val firstStory = allStories[0]
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -301,21 +281,27 @@ class ModifyLessonProgressControllerTest {
   @Test
   fun testRetrieveAllStories_withoutAnyProgress_noStoryIsCompleted() {
     val allStories = retrieveAllStories()
-    allStories.forEach { storySummary ->
-      val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
-      assertThat(isCompleted).isFalse()
-    }
+
+    val storiesProgress = allStories.map(modifyLessonProgressController::checkIfStoryIsCompleted)
+
+    // None of the stories have progress.
+    assertThat(storiesProgress.all { !it }).isTrue()
   }
 
   @Test
   fun markFirstStoryCompleted_testRetrieveAllStories_onlyFirstStoryIsCompleted() {
     markFirstStoryCompleted()
     val allStories = retrieveAllStories()
-    allStories.forEach { storySummary ->
-      val isCompleted = modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
-      if (storySummary.storyId.equals(TEST_STORY_ID_0)) assertThat(isCompleted).isTrue()
-      else assertThat(isCompleted).isFalse()
-    }
+
+    val storiesProgress =
+      allStories.associateBy(StorySummary::getStoryId).mapValues { (_, storySummary) ->
+        modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
+      }
+
+    // All stories except the test story 0 should not have progress.
+    val nonTestStories = storiesProgress.filterNot { (id, _) -> id == TEST_STORY_ID_0 }
+    assertThat(nonTestStories.values.count { !it }).isEqualTo(allStories.size - 1)
+    assertThat(storiesProgress[TEST_STORY_ID_0]).isTrue()
   }
 
   @Test
@@ -324,6 +310,7 @@ class ModifyLessonProgressControllerTest {
       profileId,
       listOf(TEST_TOPIC_ID_0, FRACTIONS_TOPIC_ID)
     )
+
     val allTopics = retrieveAllTopics()
     val firstTopic = allTopics[0]
     val fractionsTopic = allTopics[2]
@@ -345,6 +332,7 @@ class ModifyLessonProgressControllerTest {
       profileId,
       mapOf(TEST_STORY_ID_0 to TEST_TOPIC_ID_0, RATIOS_STORY_ID_1 to RATIOS_TOPIC_ID)
     )
+
     val allStories = retrieveAllStories()
     val firstStory = allStories[0]
     val ratios2Story = allStories[4]
@@ -366,6 +354,7 @@ class ModifyLessonProgressControllerTest {
         FRACTIONS_EXPLORATION_ID_1 to Pair(FRACTIONS_STORY_ID_0, FRACTIONS_TOPIC_ID)
       )
     )
+
     val allStories = retrieveAllStories()
     val firstStory = allStories[0]
     val fractionsStory = allStories[2]
@@ -396,21 +385,13 @@ class ModifyLessonProgressControllerTest {
   }
 
   private fun retrieveAllTopics(): List<Topic> {
-    val allTopicsLiveData =
-      modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
-    allTopicsLiveData.observeForever(mockAllTopicsObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAllTopicsObserver).onChanged(allTopicsResultCaptor.capture())
-    return allTopicsResultCaptor.value.getOrThrow()
+    val topicsProvider = modifyLessonProgressController.getAllTopicsWithProgress(profileId)
+    return monitorFactory.waitForNextSuccessfulResult(topicsProvider)
   }
 
   private fun retrieveAllStories(): List<StorySummary> {
-    val allStoriesLiveData =
-      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
-    allStoriesLiveData.observeForever(mockAllStoriesObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockAllStoriesObserver).onChanged(allStoriesResultCaptor.capture())
-    return allStoriesResultCaptor.value.getOrThrow().values.flatten()
+    val storyProgressProvider = modifyLessonProgressController.getStoryMapWithProgress(profileId)
+    return monitorFactory.waitForNextSuccessfulResult(storyProgressProvider).values.flatten()
   }
 
   // TODO(#89): Move this to a common test application component.

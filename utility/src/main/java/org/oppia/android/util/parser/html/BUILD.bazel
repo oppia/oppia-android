@@ -33,6 +33,7 @@ kt_android_library(
     visibility = ["//utility:__subpackages__"],
     deps = [
         ":custom_html_content_handler",
+        "//third_party:io_github_karino2_kotlitex",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )

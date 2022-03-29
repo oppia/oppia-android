@@ -13,9 +13,11 @@ import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.util.data.AsyncResult
@@ -240,7 +242,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockExplorationCheckpointObserver, atLeastOnce())
         .onChanged(explorationCheckpointCaptor.capture())
-      assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
+      assertThat(explorationCheckpointCaptor.value is AsyncResult.Success).isTrue()
     }
   }
 
@@ -270,11 +272,9 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockExplorationCheckpointObserver, atLeastOnce())
         .onChanged(explorationCheckpointCaptor.capture())
-      assertThat(explorationCheckpointCaptor.value.isFailure()).isTrue()
-
-      assertThat(explorationCheckpointCaptor.value.getErrorOrNull()).isInstanceOf(
-        ExplorationCheckpointController.ExplorationCheckpointNotFoundException::class.java
-      )
+      assertThat(explorationCheckpointCaptor.value)
+        .isFailureThat()
+        .isInstanceOf(ExplorationCheckpointNotFoundException::class.java)
     }
   }
 
@@ -322,7 +322,7 @@ class ExplorationCheckpointTestHelper @Inject constructor(
     InstrumentationRegistry.getInstrumentation().runOnMainSync {
       verify(mockLiveDataObserver, atLeastOnce())
         .onChanged(liveDataResultCaptor.capture())
-      assertThat(liveDataResultCaptor.value.isSuccess()).isTrue()
+      assertThat(liveDataResultCaptor.value is AsyncResult.Success).isTrue()
     }
   }
 
