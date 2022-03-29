@@ -91,6 +91,9 @@ import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
@@ -258,6 +261,15 @@ class OptionsFragmentTest {
     @EnableLanguageSelectionUi
     fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
+    }
+
+    @Provides
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(
+      platformParameterSingleton: PlatformParameterSingleton
+    ): PlatformParameterValue<Boolean> {
+      return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
+        ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
     }
 
     @Provides
