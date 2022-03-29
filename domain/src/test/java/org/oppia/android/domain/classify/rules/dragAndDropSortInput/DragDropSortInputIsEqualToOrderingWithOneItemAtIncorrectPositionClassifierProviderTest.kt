@@ -9,7 +9,7 @@ import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.domain.classify.InteractionObjectTestBuilder.createNonNegativeInt
 import org.oppia.android.domain.classify.RuleClassifier
@@ -73,7 +73,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 
@@ -92,7 +92,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -106,7 +106,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isTrue()
@@ -120,7 +120,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -134,7 +134,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
 
     assertThat(matches).isFalse()
@@ -148,7 +148,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
         inputs = inputs,
-        writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
+        classificationContext = ClassificationContext()
       )
     }
 

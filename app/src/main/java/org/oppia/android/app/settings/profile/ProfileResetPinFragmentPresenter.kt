@@ -16,6 +16,7 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ProfileResetPinFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -133,7 +134,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         .observe(
           activity,
           Observer {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
               intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
               activity.startActivity(intent)

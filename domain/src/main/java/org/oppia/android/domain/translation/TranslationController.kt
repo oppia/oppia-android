@@ -122,7 +122,7 @@ class TranslationController @Inject constructor(
   fun updateAppLanguage(profileId: ProfileId, selection: AppLanguageSelection): DataProvider<Any> {
     return dataProviders.createInMemoryDataProviderAsync(UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID) {
       updateAppLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
@@ -173,7 +173,7 @@ class TranslationController @Inject constructor(
     val providerId = UPDATE_WRITTEN_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateWrittenTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
@@ -224,7 +224,7 @@ class TranslationController @Inject constructor(
     val providerId = UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID
     return dataProviders.createInMemoryDataProviderAsync(providerId) {
       updateAudioTranslationContentLanguageSelection(profileId, selection)
-      return@createInMemoryDataProviderAsync AsyncResult.success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
@@ -281,6 +281,7 @@ class TranslationController @Inject constructor(
     // Translations that don't match this context are excluded (so app layer code is expected to
     // default to the base HTML translation).
     putAllTranslations(contentMapping)
+    language = writtenTranslationContentLocale.getCurrentLanguage()
   }.build()
 
   private fun computeAppLanguage(

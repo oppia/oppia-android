@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadImagesFromAssets
+import org.oppia.android.util.parser.math.MathModel
 import org.oppia.android.util.parser.svg.BlockPictureDrawable
 import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgBlurTransformation
@@ -65,6 +66,18 @@ class GlideImageLoader @Inject constructor(
       .asDrawable()
       .load(imageDrawableResId)
       .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
+      .intoTarget(target)
+  }
+
+  override fun loadMathDrawable(
+    rawLatex: String,
+    lineHeight: Float,
+    useInlineRendering: Boolean,
+    target: ImageTarget<Bitmap>
+  ) {
+    glide
+      .asBitmap()
+      .load(MathModel(rawLatex, lineHeight, useInlineRendering))
       .intoTarget(target)
   }
 

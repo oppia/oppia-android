@@ -76,6 +76,7 @@ class InteractionObjectTypeExtractorRepository @Inject constructor() {
           createMapping(InteractionObject::getListOfSetsOfTranslatableHtmlContentIds)
         ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING ->
           createMapping(InteractionObject::getTranslatableSetOfNormalizedString)
+        ObjectTypeCase.MATH_EXPRESSION -> createMapping(InteractionObject::getMathExpression)
         ObjectTypeCase.OBJECTTYPE_NOT_SET -> createMapping { error("Invalid object type") }
       }
     }

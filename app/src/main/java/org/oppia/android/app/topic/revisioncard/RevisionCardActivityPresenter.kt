@@ -118,15 +118,17 @@ class RevisionCardActivityPresenter @Inject constructor(
   private fun processSubtopicTitleResult(
     revisionCardResult: AsyncResult<EphemeralRevisionCard>
   ): String {
-    if (revisionCardResult.isFailure()) {
-      oppiaLogger.e(
-        "RevisionCardActivity",
-        "Failed to retrieve Revision Card",
-        revisionCardResult.getErrorOrNull()!!
-      )
-    }
     val ephemeralRevisionCard =
-      revisionCardResult.getOrDefault(EphemeralRevisionCard.getDefaultInstance())
+      when (revisionCardResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "RevisionCardActivity", "Failed to retrieve Revision Card", revisionCardResult.error
+          )
+          EphemeralRevisionCard.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> EphemeralRevisionCard.getDefaultInstance()
+        is AsyncResult.Success -> revisionCardResult.value
+      }
     return ephemeralRevisionCard.revisionCard.subtopicTitle
   }
 

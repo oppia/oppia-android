@@ -12,8 +12,6 @@
             "junit:junit:4.12": "junit:junit:4.13.2",
             "org.jetbrains.kotlin:kotlin-reflect:1.3.41": "org.jetbrains.kotlin:kotlin-reflect:1.5.0",
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72": "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10",
-            "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2": "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4",
-            "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1": "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
             "org.mockito:mockito-core:2.19.0": "org.mockito:mockito-core:3.9.0"
         },
         "dependencies": [
@@ -1706,9 +1704,9 @@
             {
                 "coord": "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0",
                 "dependencies": [
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1",
                     "androidx.lifecycle:lifecycle-common:2.2.0",
                     "androidx.annotation:annotation:1.1.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
                     "androidx.lifecycle:lifecycle-livedata-core:aar:2.2.0",
                     "androidx.lifecycle:lifecycle-livedata-core-ktx:aar:2.2.0",
@@ -1720,7 +1718,7 @@
                     "androidx.lifecycle:lifecycle-livedata:aar:2.2.0",
                     "androidx.lifecycle:lifecycle-livedata-core-ktx:aar:2.2.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
                 ],
                 "file": "v1/https/maven.google.com/androidx/lifecycle/lifecycle-livedata-ktx/2.2.0/lifecycle-livedata-ktx-2.2.0.aar",
                 "mirror_urls": [
@@ -1736,9 +1734,9 @@
             {
                 "coord": "androidx.lifecycle:lifecycle-livedata-ktx:jar:sources:2.2.0",
                 "dependencies": [
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1",
                     "androidx.arch.core:core-runtime:aar:sources:2.1.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4",
                     "androidx.lifecycle:lifecycle-livedata-core:aar:sources:2.2.0",
                     "androidx.lifecycle:lifecycle-livedata:aar:sources:2.2.0",
                     "androidx.lifecycle:lifecycle-livedata-core-ktx:aar:sources:2.2.0",
@@ -1750,7 +1748,7 @@
                     "androidx.lifecycle:lifecycle-livedata:aar:sources:2.2.0",
                     "androidx.lifecycle:lifecycle-livedata-core-ktx:aar:sources:2.2.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1"
                 ],
                 "file": "v1/https/maven.google.com/androidx/lifecycle/lifecycle-livedata-ktx/2.2.0/lifecycle-livedata-ktx-2.2.0-sources.jar",
                 "mirror_urls": [
@@ -1952,13 +1950,13 @@
                 "dependencies": [
                     "androidx.annotation:annotation:1.1.0",
                     "androidx.lifecycle:lifecycle-viewmodel:aar:2.2.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
                 ],
                 "directDependencies": [
                     "androidx.lifecycle:lifecycle-viewmodel:aar:2.2.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
                 ],
                 "file": "v1/https/maven.google.com/androidx/lifecycle/lifecycle-viewmodel-ktx/2.2.0/lifecycle-viewmodel-ktx-2.2.0.aar",
                 "mirror_urls": [
@@ -1974,15 +1972,15 @@
             {
                 "coord": "androidx.lifecycle:lifecycle-viewmodel-ktx:jar:sources:2.2.0",
                 "dependencies": [
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.3.4",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.4.1",
                     "androidx.lifecycle:lifecycle-viewmodel:aar:sources:2.2.0",
                     "androidx.annotation:annotation:jar:sources:1.1.0"
                 ],
                 "directDependencies": [
                     "androidx.lifecycle:lifecycle-viewmodel:aar:sources:2.2.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.4.1"
                 ],
                 "file": "v1/https/maven.google.com/androidx/lifecycle/lifecycle-viewmodel-ktx/2.2.0/lifecycle-viewmodel-ktx-2.2.0-sources.jar",
                 "mirror_urls": [
@@ -3918,16 +3916,14 @@
             {
                 "coord": "androidx.work:work-runtime-ktx:2.4.0",
                 "dependencies": [
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
-                    "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0",
-                    "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4",
-                    "androidx.work:work-runtime:aar:2.4.0"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1",
+                    "androidx.work:work-runtime:aar:2.4.0",
+                    "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
                 ],
                 "directDependencies": [
                     "androidx.work:work-runtime:aar:2.4.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
                 ],
                 "file": "v1/https/maven.google.com/androidx/work/work-runtime-ktx/2.4.0/work-runtime-ktx-2.4.0.aar",
                 "mirror_urls": [
@@ -3943,16 +3939,14 @@
             {
                 "coord": "androidx.work:work-runtime-ktx:aar:sources:2.4.0",
                 "dependencies": [
-                    "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4",
-                    "org.jetbrains.kotlin:kotlin-stdlib-common:jar:sources:1.5.0",
                     "androidx.work:work-runtime:aar:sources:2.4.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.3.4"
+                    "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.4.1"
                 ],
                 "directDependencies": [
                     "androidx.work:work-runtime:aar:sources:2.4.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.4.1"
                 ],
                 "file": "v1/https/maven.google.com/androidx/work/work-runtime-ktx/2.4.0/work-runtime-ktx-2.4.0-sources.jar",
                 "mirror_urls": [
@@ -8245,51 +8239,51 @@
                 "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-test/1.3.72/kotlin-test-1.3.72-sources.jar"
             },
             {
-                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4",
+                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1",
                 "dependencies": [
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
                 ],
                 "directDependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar",
-                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar",
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar"
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar",
+                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar",
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar"
                 ],
-                "sha256": "f36ea75c31934bfad0682cfc435cce922e28b3bffa5af26cf86f07db13008f8a",
-                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4.jar"
+                "sha256": "d4cadb673b2101f1ee5fbc147956ac78b1cfd9cc255fb53d3aeb88dff11d99ca",
+                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1.jar"
             },
             {
-                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.3.4",
+                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-android:jar:sources:1.4.1",
                 "dependencies": [
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:jar:sources:1.5.0"
                 ],
                 "directDependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4"
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar",
-                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar",
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar"
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar",
+                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar",
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar"
                 ],
-                "sha256": "0c58bb608c84609a7fc2409722739e958b26955962c917bbf1701db1ffa17f66",
-                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.3.4/kotlinx-coroutines-android-1.3.4-sources.jar"
+                "sha256": "b2370993da3e0a183109d58004d7fde48af9dbba93c6774299fda9069ebb5eeb",
+                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.4.1/kotlinx-coroutines-android-1.4.1-sources.jar"
             },
             {
-                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
+                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1",
                 "dependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
@@ -8298,19 +8292,19 @@
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:1.5.0"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar",
-                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar",
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar"
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar",
+                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar",
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar"
                 ],
-                "sha256": "17bec6112d93f5fcb11c27ecc8a14b48e30a5689ccf42c95025b89ba2210c28f",
-                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar"
+                "sha256": "6d2f87764b6638f27aff12ed380db4b63c9d46ba55dc32683a650598fa5a3e22",
+                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1.jar"
             },
             {
-                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4",
+                "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1",
                 "dependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:jar:sources:1.5.0"
@@ -8319,16 +8313,16 @@
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
                     "org.jetbrains.kotlin:kotlin-stdlib-common:jar:sources:1.5.0"
                 ],
-                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar",
+                "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar",
                 "mirror_urls": [
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar",
-                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar",
-                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar",
-                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar"
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar",
+                    "https://maven.fabric.io/public/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar",
+                    "https://maven.google.com/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar",
+                    "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar"
                 ],
-                "sha256": "4ec13fd64ce1494448cb5448952c7c006503d7715cf9fc4d5a7a6b4024a2cd9a",
-                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4-sources.jar"
+                "sha256": "bb339efebc2d9141401f1aa43a035abe929210e362cfff13d03c6b7b11dc0469",
+                "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.4.1/kotlinx-coroutines-core-1.4.1-sources.jar"
             },
             {
                 "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.2.2",
@@ -8363,13 +8357,13 @@
             {
                 "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2",
                 "dependencies": [
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1",
                     "org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.2.2",
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0"
                 ],
                 "directDependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1",
                     "org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.2.2"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-test/1.2.2/kotlinx-coroutines-test-1.2.2.jar",
@@ -8386,13 +8380,13 @@
             {
                 "coord": "org.jetbrains.kotlinx:kotlinx-coroutines-test:jar:sources:1.2.2",
                 "dependencies": [
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4",
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1",
                     "org.jetbrains.kotlinx:kotlinx-coroutines-debug:jar:sources:1.2.2"
                 ],
                 "directDependencies": [
                     "org.jetbrains.kotlin:kotlin-stdlib:jar:sources:1.5.0",
-                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.3.4",
+                    "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:sources:1.4.1",
                     "org.jetbrains.kotlinx:kotlinx-coroutines-debug:jar:sources:1.2.2"
                 ],
                 "file": "v1/https/repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-test/1.2.2/kotlinx-coroutines-test-1.2.2-sources.jar",

@@ -70,15 +70,14 @@ class StoryViewModel @Inject constructor(
   }
 
   private fun processStoryResult(storyResult: AsyncResult<StorySummary>): StorySummary {
-    if (storyResult.isFailure()) {
-      oppiaLogger.e(
-        "StoryFragment",
-        "Failed to retrieve Story: ",
-        storyResult.getErrorOrNull()!!
-      )
+    return when (storyResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("StoryFragment", "Failed to retrieve Story: ", storyResult.error)
+        StorySummary.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> StorySummary.getDefaultInstance()
+      is AsyncResult.Success -> storyResult.value
     }
-
-    return storyResult.getOrDefault(StorySummary.getDefaultInstance())
   }
 
   private fun processStoryChapterList(storySummary: StorySummary): List<StoryItemViewModel> {

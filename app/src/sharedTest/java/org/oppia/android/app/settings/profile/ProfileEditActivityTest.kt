@@ -42,6 +42,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -49,13 +50,16 @@ import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientati
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -82,7 +86,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -410,7 +413,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -431,7 +434,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -453,7 +456,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -476,7 +479,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -497,7 +500,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -518,7 +521,7 @@ class ProfileEditActivityTest {
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -565,7 +568,9 @@ class ProfileEditActivityTest {
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class
+      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
