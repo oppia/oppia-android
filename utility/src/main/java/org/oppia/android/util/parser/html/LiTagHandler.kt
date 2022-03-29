@@ -5,7 +5,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.*
+import java.util.Stack
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -117,7 +117,8 @@ class LiTagHandler(
 
       getLast<NumberListItem>(text)?.let { mark ->
         setSpanFromMark(
-          text, mark, ListItemLeadingMarginSpan(
+          text, mark,
+          ListItemLeadingMarginSpan(
             context,
             indentation,
             "${machineLocale.numberFormatter(mark.number)}.",
