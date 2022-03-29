@@ -465,11 +465,14 @@
     <item name="android:gravity">center_horizontal</item>
   </style>
 
-  <!-- ShapeableImageView
-     Note that When defining a style to be used as a shapeAppearanceOverlay in shapeableImageView , we generally
-     set an empty parent by setting parent="". This is what causes the overlay behavior and also
-     shapeAppearanceOverlay stacks on top of shapeAppearance, so all values will be set in the shapeAppearance.
-     context for ShapeableImageView https://howtodoandroid.com/shapeableimageview-material-components-android/ -->
+  <!-- ShapeableImageView -->
+  <!-- Note that when defining a style to be used as a shapeAppearanceOverlay in shapeableImageView , we generally
+       set an empty parent by setting parent="".This is what causes the overlay behavior.
+       When we define a style,we would provide a parent style, and then we can override specific attributes to alter specific parts of that style.
+       When we specify no parent, then the style will overlay whatever theme is being applied. Applying explicit parent attribute instead of a empty
+       parent may cause overriding(other properties may get added i.e. color or theme used in activity).
+       Thus here in ShapeAppearanceOverlay we have defined a empty parent to allow the active theme behavior to apply.
+       https://blog.stylingandroid.com/material-shape-shapeappearance/ -->
   <style name="ShapeAppearanceOverlay.App.Circular" parent="">
     <item name="cornerSize">50%</item>
   </style>
