@@ -111,11 +111,10 @@ class TopicController @Inject constructor(
    * @return a [DataProvider] for [Topic] combined with [TopicProgress].
    */
   fun getTopic(profileId: ProfileId, topicId: String): DataProvider<Topic> {
-    // TODO: Check to see if AsyncResult.Success can be converted to a reference.
     val topicDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPIC_PROVIDER_ID) {
         retrieveTopic(topicId)?.let { AsyncResult.Success(it) }
-          ?: AsyncResult.failed(IllegalStateException("Topic doesn't exist: $topicId"))
+          ?: AsyncResult.Failure(IllegalStateException("Topic doesn't exist: $topicId"))
       }
     val topicProgressDataProvider =
       storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)

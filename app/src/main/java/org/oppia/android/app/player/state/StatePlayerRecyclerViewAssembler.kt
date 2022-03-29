@@ -1098,7 +1098,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                   submittedAnswerViewModel.supportsConceptCards
                 )
             }
-            else -> {
+            else -> if (userAnswer.plainAnswer.isNotEmpty()) {
+              // Only show an answer if there's something to show.
               showSingleAnswer(binding)
               submittedAnswerViewModel.setSubmittedAnswer(
                 userAnswer.plainAnswer, accessibleAnswer = userAnswer.contentDescription

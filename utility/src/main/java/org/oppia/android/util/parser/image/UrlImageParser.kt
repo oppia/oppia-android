@@ -318,7 +318,10 @@ class UrlImageParser private constructor(
       override fun retrieveDrawable(resource: T): D = computeDrawable(resource)
 
       override fun computeBounds(
-        context: Context, drawable: D, viewWidth: Int, padding: Rect
+        context: Context,
+        drawable: D,
+        viewWidth: Int,
+        padding: Rect
       ): Rect {
         computeDimensions(drawable, htmlContentTextView)
         // Note that the original size is used here since inline images should be sized based on the
