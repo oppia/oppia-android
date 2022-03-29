@@ -3,8 +3,8 @@ package org.oppia.android.domain.oppialogger
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
-import javax.inject.Inject
 import org.oppia.android.util.system.OppiaClock
+import javax.inject.Inject
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(
@@ -80,23 +80,6 @@ class OppiaLogger @Inject constructor(
    */
   fun e(tag: String, msg: String, tr: Throwable?) {
     consoleLogger.e(tag, msg, tr)
-  }
-
-  /** Returns the context of an event related to exploration. */
-  fun createExplorationContext(
-    topicId: String,
-    storyId: String,
-    explorationId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setOpenExplorationActivity(
-        EventLog.ExplorationContext.newBuilder()
-          .setTopicId(topicId)
-          .setStoryId(storyId)
-          .setExplorationId(explorationId)
-          .build()
-      )
-      .build()
   }
 
   /** Returns the context of the event indicating that the user opened the home activity. */

@@ -297,6 +297,7 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputIsEquivalentToRuleClassifierProviderTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLoggerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionExtensionsTest.kt"

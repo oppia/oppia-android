@@ -9,16 +9,18 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
-import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.logging.FakeUserIdGenerator
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -31,6 +33,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -46,8 +49,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_ID = "test_id"
-
 /** Tests for [ApplicationLifecycleObserver]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -59,49 +60,96 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var fakeUserIdGenerator: FakeUserIdGenerator
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
-  }
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val monitor = monitorFactory.createMonitor(sessionIdProvider)
+    val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    fakeUserIdGenerator.randomUserId = TEST_ID
     waitInBackgroundFor(TimeUnit.MINUTES.toMillis(45))
 
-    val latestSessionId = monitor.ensureNextResultIsSuccess()
-    assertThat(latestSessionId).isEqualTo(TEST_ID)
+    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(firstSessionId).isNotEqualTo(latestSessionId)
   }
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    val defaultId = fakeUserIdGenerator.randomUserId
     val sessionIdProvider = loggingIdentifierController.getSessionId()
-    val monitor = monitorFactory.createMonitor(sessionIdProvider)
+    val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
 
-    fakeUserIdGenerator.randomUserId = TEST_ID
     waitInBackgroundFor(TimeUnit.MINUTES.toMillis(15))
 
-    val latestSessionId = monitor.ensureNextResultIsSuccess()
-    assertThat(latestSessionId).isEqualTo(defaultId)
+    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(firstSessionId).isEqualTo(latestSessionId)
   }
 
   @Test
-  fun testObserver_appInForeground_getSessionId_returnsDefaultSessionId() {
-    applicationLifecycleObserver.onAppInBackground()
-    val defaultId = fakeUserIdGenerator.randomUserId
-    val sessionIdProvider = loggingIdentifierController.getSessionId()
+  fun testObserver_onAppInForeground_loggedIntoProfile_studyOn_logsForegroundEventWithBothIds() {
+    setUpTestApplicationWithLearnerStudy()
+    logIntoAnalyticsReadyAdminProfile()
 
-    val latestSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(latestSessionId).isEqualTo(defaultId)
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasAppInForegroundContextThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_notLoggedIn_studyOn_logsForegroundEventWithoutLearnerId() {
+    setUpTestApplicationWithLearnerStudy()
+
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasAppInForegroundContextThat {
+      hasLearnerIdThat().isEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+  }
+
+  @Test
+  fun testObserver_onAppInBackground_loggedIntoProfile_studyOn_logsBackgroundEventWithBothIds() {
+    setUpTestApplicationWithLearnerStudy()
+    logIntoAnalyticsReadyAdminProfile()
+
+    applicationLifecycleObserver.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasAppInBackgroundContextThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+  }
+
+  @Test
+  fun testObserver_onAppInBackground_notLoggedIn_studyOn_logsBackgroundEventWithoutLearnerId() {
+    setUpTestApplicationWithLearnerStudy()
+
+    applicationLifecycleObserver.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasAppInBackgroundContextThat {
+      hasLearnerIdThat().isEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
   }
 
   private fun waitInBackgroundFor(millis: Long) {
@@ -112,6 +160,27 @@ class ApplicationLifecycleObserverTest {
 
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun logIntoAnalyticsReadyAdminProfile() {
+    val rootProfileId = ProfileId.getDefaultInstance()
+    val addProfileProvider = profileManagementController.addProfile(
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = 0,
+      isAdmin = true
+    )
+    monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.loginToProfile(rootProfileId)
+    )
+  }
+
+  private fun setUpTestApplicationWithLearnerStudy() {
+    TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
+    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -143,16 +212,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Module
-  class TestLogStorageModule {
-
-    @Provides
-    @EventLogStorageCacheSize
-    fun provideEventLogStorageCacheSize(): Int = 2
-  }
-
-  @Module
   class TestLoggingIdentifierModule {
-
     companion object {
       const val applicationIdSeed = 1L
     }
@@ -164,7 +224,6 @@ class ApplicationLifecycleObserverTest {
 
   @Module
   class TestPlatformParameterModule {
-
     companion object {
       var forceLearnerAnalyticsStudy: Boolean = false
     }
@@ -202,11 +261,12 @@ class ApplicationLifecycleObserverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

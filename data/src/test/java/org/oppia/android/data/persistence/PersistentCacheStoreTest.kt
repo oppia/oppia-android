@@ -6,14 +6,18 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +28,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -31,8 +36,10 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,6 +59,7 @@ class PersistentCacheStoreTest {
     private val TEST_MESSAGE_V2 = TestMessage.newBuilder().setIntValue(2).build()
   }
 
+  @Inject lateinit var context: Context
   @Inject lateinit var cacheFactory: PersistentCacheStore.Factory
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -430,20 +438,212 @@ class PersistentCacheStoreTest {
     assertThat(error).isInstanceOf(IOException::class.java)
   }
 
+  @Test
+  fun testNewCache_notYetRead_noCacheFileOnDisk() {
+    cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
+
+    val cacheFile = getCacheFile(CACHE_NAME_1)
+    assertThat(cacheFile.exists()).isFalse()
+  }
+
+  @Test
+  fun testNewCache_readIntoMemory_noCacheFileOnDisk() {
+    val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
+
+    monitorFactory.ensureDataProviderExecutes(cacheStore)
+
+    // Even though the cache was 'read', it doesn't yet exist on disk. This test helps provide the
+    // initial state for primeInMemoryAndDiskCacheAsync (to ensure it does what the caller expects).
+    val cacheFile = getCacheFile(CACHE_NAME_1)
+    assertThat(cacheFile.exists()).isFalse()
+  }
+
+  @Test
+  fun testNewCache_fileAlreadyOnDisk_readIntoMemory_returnsOnDiskValue() {
+    writeFileCache(CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "initial" }.build())
+    val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
+
+    monitorFactory.ensureDataProviderExecutes(cacheStore)
+
+    val cacheFile = getCacheFile(CACHE_NAME_1)
+    assertThat(cacheFile.exists()).isTrue()
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore).strValue).isEqualTo("initial")
+  }
+
+  @Test
+  fun testPrimeInMemoryAndOnDisk_newCache_notOnDisk_notInMem_writesFileAndRetsNewVal() {
+    val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
+
+    val deferred = cacheStore.primeInMemoryAndDiskCacheAsync {
+      it.toBuilder().apply { strValue += " first transform" }.build()
+    }
+
+    // The on-disk and in-memory values should change.
+    deferred.waitForSuccessfulResult()
+    val onDiskValue = readFileCache(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore)
+    assertThat(cacheValue).isEqualTo(onDiskValue)
+    assertThat(cacheValue.strValue.trim()).isEqualTo("first transform")
+  }
+
+  @Test
+  fun testPrimeInMemoryAndOnDisk_newCache_onDisk_notInMem_writesFileAndRetsOldVal() {
+    writeFileCache(CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "initial" }.build())
+    val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
+
+    val deferred = cacheStore.primeInMemoryAndDiskCacheAsync {
+      it.toBuilder().apply { strValue += " first transform" }.build()
+    }
+
+    // The on-disk value should be the same, and the in-memory value should become the on-disk
+    // value. The initializer shouldn't be used since the value is already on disk.
+    deferred.waitForSuccessfulResult()
+    val onDiskValue = readFileCache(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore)
+    assertThat(cacheValue).isEqualTo(onDiskValue)
+    assertThat(cacheValue.strValue).isEqualTo("initial")
+  }
+
+  @Test
+  fun testPrimeInMemoryAndOnDisk_existingCache_unchanged_onDisk_inMem_onlyReadsFileAndRetsOldVal() {
+    writeFileCache(CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "initial" }.build())
+    val cacheStore = cacheFactory.create(
+      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
+    )
+
+    val deferred = cacheStore.primeInMemoryAndDiskCacheAsync {
+      it.toBuilder().apply { strValue += " first transform" }.build()
+    }
+
+    // Priming should ignore both the on-disk and in-memory values of the cache store since only the
+    // initial value matters.
+    deferred.waitForSuccessfulResult()
+    val onDiskValue = readFileCache(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore)
+    assertThat(cacheValue).isEqualTo(onDiskValue)
+    assertThat(cacheValue.strValue).isEqualTo("initial")
+  }
+
+  @Test
+  fun testPrimeInMemoryAndOnDisk_existingCache_changed_notOnDisk_inMem_writesFileAndRetsOldVal() {
+    val cacheStore = cacheFactory.create(
+      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
+    )
+    cacheStore.storeDataAsync {
+      it.toBuilder().apply { strValue = "different update" }.build()
+    }.waitForResult()
+
+    val deferred = cacheStore.primeInMemoryAndDiskCacheAsync {
+      it.toBuilder().apply { strValue += " first transform" }.build()
+    }
+
+    // Priming shouldn't really change much since the recent change to the cache store takes
+    // precedence.
+    deferred.waitForSuccessfulResult()
+    val onDiskValue = readFileCache(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore)
+    assertThat(cacheValue).isEqualTo(onDiskValue)
+    assertThat(cacheValue.strValue).isEqualTo("different update")
+  }
+
+  @Test
+  fun testPrimeInMemoryAndOnDisk_existingCache_changed_onDisk_inMem_onlyReadsFileAndRetsOldVal() {
+    writeFileCache(CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "initial" }.build())
+    val cacheStore = cacheFactory.create(
+      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
+    )
+    cacheStore.storeDataAsync {
+      it.toBuilder().apply { strValue = "different update" }.build()
+    }.waitForResult()
+
+    val deferred = cacheStore.primeInMemoryAndDiskCacheAsync {
+      it.toBuilder().apply { strValue += " first transform" }.build()
+    }
+
+    // Priming shouldn't really change much since the recent change to the cache store takes
+    // precedence.
+    deferred.waitForSuccessfulResult()
+    val onDiskValue = readFileCache(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore)
+    assertThat(cacheValue).isEqualTo(onDiskValue)
+    assertThat(cacheValue.strValue).isEqualTo("different update")
+  }
+
+  @Test
+  fun testPrimeInMemoryAndOnDisk_existingCache_corruptedOnDisk_updatesFileAndRetsNewVal() {
+    corruptFileCache(CACHE_NAME_1)
+    val cacheStore1 = cacheFactory.create(
+      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
+    )
+    val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    monitorFactory.ensureDataProviderExecutes(cacheStore1)
+
+    val deferred = cacheStore1.primeInMemoryAndDiskCacheAsync {
+      it.toBuilder().apply { strValue += " first transform" }.build()
+    }
+
+    // The corrupted cache will trigger an in-memory only state that will lead to the cache being
+    // overwritten (since it can't be determined whether the on-disk cache matches the expected
+    // value). Note that the cache will be in a bad state since it failed to read its original
+    // state, but the on-disk copy will still be updated. Note also that the second instance of the
+    // cache wasn't yet primed until this step, so it's being used to validate that the in-memory
+    // copy is also correct after the on-disk value has been updated.
+    deferred.waitForSuccessfulResult()
+    monitorFactory.waitForNextFailureResult(cacheStore1)
+    val onDiskValue = readFileCache(CACHE_NAME_1, TestMessage.getDefaultInstance())
+    val cacheValue = monitorFactory.waitForNextSuccessfulResult(cacheStore2)
+    assertThat(cacheValue).isEqualTo(onDiskValue)
+    assertThat(onDiskValue.strValue).isEqualTo("different initial first transform")
+  }
+
+  private fun getCacheFile(cacheName: String) = File(context.filesDir, "$cacheName.cache")
+
   private fun corruptFileCache(cacheName: String) {
     // NB: This is unfortunately tied to the implementation details of PersistentCacheStore. If this
     // ends up being an issue, the store should be updated to call into a file path provider that
     // can also be used in this test to retrieve the file cache. This may also be needed for
     // downstream profile work if per-profile data stores are done via subdirectories or altered
     // filenames.
-    val cacheFileName = "$cacheName.cache"
-    val cacheFile = File(
-      ApplicationProvider.getApplicationContext<Context>().filesDir, cacheFileName
-    )
-    FileOutputStream(cacheFile).use {
-      it.write(byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    getCacheFile(cacheName).writeBytes(byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+  }
+
+  private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
+    getCacheFile(cacheName).writeBytes(value.toByteArray())
+  }
+
+  private fun File.writeBytes(data: ByteArray) {
+    FileOutputStream(this).use { it.write(data) }
+  }
+
+  private inline fun <reified T : MessageLite> readFileCache(cacheName: String, baseMessage: T): T {
+    return FileInputStream(getCacheFile(cacheName)).use {
+      baseMessage.newBuilderForType().mergeFrom(it).build()
+    } as T
+  }
+
+  private fun <T> Deferred<T>.waitForSuccessfulResult() {
+    return when (val result = waitForResult()) {
+      is AsyncResult.Pending -> error("Deferred never finished.")
+      is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
+      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
     }
   }
+
+  private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
+
+  private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
+    val deferred = this
+    return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
+      backgroundDispatcherScope.async {
+        flow.emit(AsyncResult.Success(deferred.await()))
+      }.invokeOnCompletion {
+        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+      }
+    }
+  }
+
+  private fun <T> StateFlow<T>.waitForLatestValue(): T =
+    also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

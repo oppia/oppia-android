@@ -1,59 +1,85 @@
 package org.oppia.android.domain.oppialogger.analytics
 
 import com.google.protobuf.MessageLite
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.oppia.android.app.model.EventLog.CardContext
-import org.oppia.android.app.model.EventLog.Context as EventContext
-import org.oppia.android.app.model.EventLog.Context.Builder as EventBuilder
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.PlayVoiceOverContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.Exploration
-import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger.BaseLogger.Companion.maybeLogEvent
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context as EventContext
+import org.oppia.android.app.model.EventLog.Context.Builder as EventBuilder
 
+/**
+ * Convenience logger for learner-related analytics events.
+ *
+ * This logger is meant primarily to be used directly in the controller responsible for exploration
+ * play session management, but it may be accessed outside that controller but within the same play
+ * session scope (e.g. for events that occur outside the core progress state).
+ *
+ * [beginExploration] can be used to initiate logging for a particular exploration, and
+ * [explorationAnalyticsLogger] can be used to access the corresponding [ExplorationAnalyticsLogger]
+ * for the current session, if any.
+ */
 @Singleton
 class LearnerAnalyticsLogger @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val loggingIdentifierController: LoggingIdentifierController
 ) {
+  /**
+   * The [ExplorationAnalyticsLogger] corresponding to the current play session, or ``null`` if
+   * there is no ongoing session.
+   */
   val explorationAnalyticsLogger by lazy { mutableExpAnalyticsLogger.asStateFlow() }
 
   private val mutableExpAnalyticsLogger = MutableStateFlow<ExplorationAnalyticsLogger?>(null)
 
+  /**
+   * Starts logging support for a new exploration play session and returns the
+   * [ExplorationAnalyticsLogger] corresponding to that session.
+   *
+   * Calling this function will override the current session logger indicated by
+   * [explorationAnalyticsLogger] (and notify any observers of the flow).
+   *
+   * When the session is over, [endExploration] should be called to make ensure that
+   * [explorationAnalyticsLogger] is properly reset.
+   *
+   * @param installationId the device installation ID corresponding to the new play session, or null
+   *     if not known (which may impact whether events are logged)
+   * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
+   *     null if not known (which may impact whether events are logged)
+   * @param exploration the [Exploration] for which a play session is starting
+   * @param topicId the ID of the topic to which the story indicated by [storyId] belongs
+   * @param storyId the ID of the story to which [exploration] belongs
+   */
   fun beginExploration(
     installationId: String?,
     learnerId: String?,
     exploration: Exploration,
-    checkpoint: ExplorationCheckpoint,
     topicId: String,
     storyId: String
   ): ExplorationAnalyticsLogger {
-    val startingStateName = if (checkpoint != ExplorationCheckpoint.getDefaultInstance()) {
-      checkpoint.pendingStateName
-    } else exploration.initStateName
-
     return ExplorationAnalyticsLogger(
       installationId,
       learnerId,
       topicId,
       storyId,
       exploration.id,
-      exploration.version.toString(),
-      startingStateName,
+      exploration.version,
       oppiaLogger,
       loggingIdentifierController
     ).also {
       if (!mutableExpAnalyticsLogger.compareAndSet(expect = null, update = it)) {
-        oppiaLogger.e(
+        oppiaLogger.w(
           "LearnerAnalyticsLogger",
           "Attempting to start an exploration without ending the previous."
         )
@@ -64,15 +90,27 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
   }
 
+  /**
+   * Ends the most recent session started by [beginExploration] and resets
+   * [explorationAnalyticsLogger].
+   */
   fun endExploration() {
     if (mutableExpAnalyticsLogger.value == null) {
-      oppiaLogger.e(
+      oppiaLogger.w(
         "LearnerAnalyticsLogger", "Attempting to end an exploration that hasn't been started."
       )
     }
     mutableExpAnalyticsLogger.value = null
   }
 
+  /**
+   * Logs that the app has entered the background.
+   *
+   * @param installationId the device installation ID corresponding to the new play session, or null
+   *     if not known (which may impact whether the event is logged)
+   * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
+   *     null if not known (which may impact whether the event is logged)
+   */
   fun logAppInBackground(installationId: String?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
     oppiaLogger.maybeLogEvent(
@@ -81,6 +119,14 @@ class LearnerAnalyticsLogger @Inject constructor(
     )
   }
 
+  /**
+   * Logs that the app has entered the foreground.
+   *
+   * @param installationId the device installation ID corresponding to the new play session, or null
+   *     if not known (which may impact whether the event is logged)
+   * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
+   *     null if not known (which may impact whether the event is logged)
+   */
   fun logAppInForeground(installationId: String?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
     oppiaLogger.maybeLogEvent(
@@ -89,6 +135,15 @@ class LearnerAnalyticsLogger @Inject constructor(
     )
   }
 
+  /**
+   * Logs that the profile corresponding to [learnerId] was deleted from the device and can no
+   * longer be used (i.e. no further events will be logged for this profile).
+   *
+   * @param installationId the device installation ID corresponding to the new play session, or null
+   *     if not known (which may impact whether the event is logged)
+   * @param learnerId the personal profile/learner ID corresponding to the new session learner, or
+   *     null if not known (which may impact whether the event is logged)
+   */
   fun logDeleteProfile(installationId: String?, learnerId: String?) {
     val learnerDetailsContext = createLearnerDetailsContextWithIdsPresent(installationId, learnerId)
     oppiaLogger.maybeLogEvent(
@@ -97,17 +152,27 @@ class LearnerAnalyticsLogger @Inject constructor(
     )
   }
 
+  /**
+   * Analytics logger for a specific exploration play session.
+   *
+   * Similar to how this logger has its own lifecycle defined within [LearnerAnalyticsLogger],
+   * [stateAnalyticsLogger] provides access to logging state-specific events corresponding to the
+   * current active (pending) state, if any.
+   */
   class ExplorationAnalyticsLogger internal constructor(
     installationId: String?,
     learnerId: String?,
     topicId: String,
     storyId: String,
     explorationId: String,
-    explorationVersion: String,
-    startingStateName: String,
+    explorationVersion: Int,
     private val oppiaLogger: OppiaLogger,
     private val loggingIdentifierController: LoggingIdentifierController
   ) {
+    /**
+     * The [StateAnalyticsLogger] corresponding to the current, pending state, or null if there is
+     * none (i.e. the most recent state is completed, or the terminal state has been reached).
+     */
     val stateAnalyticsLogger by lazy { mutableStateAnalyticsLogger.asStateFlow() }
 
     private val mutableStateAnalyticsLogger = MutableStateFlow<StateAnalyticsLogger?>(null)
@@ -125,38 +190,49 @@ class LearnerAnalyticsLogger @Inject constructor(
           this.topicId = topicId
           this.storyId = storyId
           this.explorationVersion = explorationVersion
-          stateName = startingStateName
           this.learnerDetails = learnerDetails
         }.build()
       }?.ensureNonEmpty()
     }
 
-    fun logExitExploration() {
-      getExpectedStateLogger()?.logExitExploration()
-    }
-
-    fun logFinishExploration() {
-      getExpectedStateLogger()?.logFinishExploration()
-    }
-
+    /** Logs that the current exploration was started by resuming from previous progress. */
     fun logResumeExploration() {
       baseLogger.maybeLogLearnerEvent(learnerDetailsContext) {
         createAnalyticsEvent(it, EventBuilder::setResumeExplorationContext)
       }
     }
 
+    /** Logs that the current exploration was restarted, ignoring previously available progress. */
     fun logStartExplorationOver() {
       baseLogger.maybeLogLearnerEvent(learnerDetailsContext) {
         createAnalyticsEvent(it, EventBuilder::setStartOverExplorationContext)
       }
     }
 
+    /** Logs that the current exploration has been exited (i.e. not finished). */
+    fun logExitExploration() {
+      getExpectedStateLogger()?.logExitExploration()
+    }
+
+    /** Logs that the current exploration has been fully completed by the learner. */
+    fun logFinishExploration() {
+      getExpectedStateLogger()?.logFinishExploration()
+    }
+
+    /**
+     * Begins analytics logging for the specified [newState], returning the [StateAnalyticsLogger]
+     * that can be used to log events for the [State].
+     *
+     * This overrides the current [stateAnalyticsLogger].
+     *
+     * [endCard] should be called when the current [State] is completed.
+     */
     fun startCard(newState: State): StateAnalyticsLogger {
       return StateAnalyticsLogger(
         loggingIdentifierController, baseLogger, newState, explorationLogContext
       ).also {
         if (!mutableStateAnalyticsLogger.compareAndSet(expect = null, update = it)) {
-          oppiaLogger.e(
+          oppiaLogger.w(
             "LearnerAnalyticsLogger", "Attempting to start a card without ending the previous."
           )
 
@@ -166,20 +242,26 @@ class LearnerAnalyticsLogger @Inject constructor(
       }
     }
 
+    /**
+     * Resets the current [stateAnalyticsLogger], indicating that the most recent [State] has been
+     * completed.
+     */
     fun endCard() {
-      getExpectedStateLogger() // Verifies that it's set, otherwise logs an error.
-      mutableStateAnalyticsLogger.value = null
+      if (mutableStateAnalyticsLogger.value == null) {
+        oppiaLogger.w("LearnerAnalyticsLogger", "Attempting to end a card not yet started.")
+      } else mutableStateAnalyticsLogger.value = null
     }
 
     private fun getExpectedStateLogger(): StateAnalyticsLogger? {
       return mutableStateAnalyticsLogger.value.also {
         if (it == null) {
-          oppiaLogger.e("LearnerAnalyticsLogger", "Attempting to log a state event outside state.")
+          oppiaLogger.w("LearnerAnalyticsLogger", "Attempting to log a state event outside state.")
         }
       }
     }
   }
 
+  /** Analytics logger for [State]-specific events. */
   class StateAnalyticsLogger internal constructor(
     private val loggingIdentifierController: LoggingIdentifierController,
     private val baseLogger: BaseLogger,
@@ -188,42 +270,59 @@ class LearnerAnalyticsLogger @Inject constructor(
   ) {
     private val linkedSkillId by lazy { currentState.linkedSkillId }
 
+    /** Logs that the current exploration has been exited (at this state). */
     internal fun logExitExploration() {
       logStateEvent(EventBuilder::setExitExplorationContext)
     }
 
+    /** Logs that the current exploration has been finished (at this state). */
     internal fun logFinishExploration() {
       logStateEvent(EventBuilder::setFinishExplorationContext)
     }
 
+    /** Logs that this card has been started. */
     fun logStartCard() {
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setStartCardContext)
     }
 
+    /** Logs that this card has been completed. */
     fun logEndCard() {
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setEndCardContext)
     }
 
+    /** Logs that the hint corresponding to [hintIndex] has been offered to the learner. */
     fun logHintOffered(hintIndex: Int) {
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setHintOfferedContext)
     }
 
+    /** Logs that the hint corresponding to [hintIndex] has been viewed by the learner. */
     fun logViewHint(hintIndex: Int) {
       logStateEvent(hintIndex, ::createHintContext, EventBuilder::setAccessHintContext)
     }
 
+    /** Logs that the solution to the current card has been offered to the learner. */
     fun logSolutionOffered() {
       logStateEvent(EventBuilder::setSolutionOfferedContext)
     }
 
+    /** Logs that the solution to the current card has been viewed by the learner. */
     fun logViewSolution() {
       logStateEvent(EventBuilder::setAccessSolutionContext)
     }
 
+    /**
+     * Logs that the learner submitted an answer, where [isCorrect] indicates whether the answer was
+     * labelled as correct.
+     */
     fun logSubmitAnswer(isCorrect: Boolean) {
       logStateEvent(isCorrect, ::createSubmitAnswerContext, EventBuilder::setSubmitAnswerContext)
     }
 
+    /**
+     * Logs that the learner started playing a voice over audio track corresponding to [contentId]
+     * (or null if something failed when retrieving the content ID--note that this may affect
+     * whether the event is logged).
+     */
     fun logPlayVoiceOver(contentId: String?) {
       logStateEvent(contentId, ::createPlayVoiceOverContext, EventBuilder::setPlayVoiceOverContext)
     }
@@ -257,9 +356,23 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
   }
 
+  /**
+   * The common base logger used by [ExplorationAnalyticsLogger] and [StateAnalyticsLogger], and
+   * should never be interacted with outside this class.
+   */
   internal class BaseLogger internal constructor(
-    private val oppiaLogger: OppiaLogger, private val installationId: String?
+    private val oppiaLogger: OppiaLogger,
+    private val installationId: String?
   ) {
+    /**
+     * Logs a learner-specific event defined by [learnerDetailsContext] and converted to a full
+     * [EventContext] by the provided [creationDelegate].
+     *
+     * See [maybeLogEvent] for specifics on when the event is logged.
+     *
+     * Also, this method is only meant to be used as a convenience function for nicer syntax when
+     * logging certain learner events.
+     */
     fun maybeLogLearnerEvent(
       learnerDetailsContext: LearnerDetailsContext?,
       creationDelegate: (LearnerDetailsContext) -> EventContext
@@ -270,16 +383,22 @@ class LearnerAnalyticsLogger @Inject constructor(
       )
     }
 
+    /** See [OppiaLogger.maybeLogEvent]. */
     fun maybeLogEvent(context: EventContext?) = oppiaLogger.maybeLogEvent(installationId, context)
 
     internal companion object {
+      /**
+       * Conditionally logs the event specified by [context] for the provided [installationId] in
+       * this logger if [context] is not null, otherwise logs an error analytics event for error
+       * tracking in the analytics pipeline.
+       */
       internal fun OppiaLogger.maybeLogEvent(installationId: String?, context: EventContext?) {
         if (context != null) {
           logImportantEvent(context)
         } else {
           this.e(
             "LearnerAnalyticsLogger",
-            "Event is being dropped due to incomplete event (or missing learner ID for profile)"
+            "Event is being dropped due to incomplete event (or missing learner ID for profile)."
           )
           logImportantEvent(createFailedToLogLearnerAnalyticsEvent(installationId))
         }
@@ -294,7 +413,8 @@ class LearnerAnalyticsLogger @Inject constructor(
       takeIf { it != it.defaultInstanceForType }
 
     private fun createLearnerDetailsContext(
-      installationId: String?, learnerId: String?
+      installationId: String?,
+      learnerId: String?
     ): LearnerDetailsContext? {
       return createLearnerDetailsContextWithIdsPresent(
         installationId?.takeUnless(String::isEmpty), learnerId?.takeUnless(String::isEmpty)
@@ -302,49 +422,55 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     private fun createLearnerDetailsContextWithIdsPresent(
-      installationId: String?, learnerId: String?
+      installationId: String?,
+      learnerId: String?
     ): LearnerDetailsContext {
       return LearnerDetailsContext.newBuilder().apply {
-        installationId?.let { this.deviceId = it }
+        installationId?.let { installId = it }
         learnerId?.let { this.learnerId = it }
       }.build()
     }
 
     private fun createCardContext(
-      skillId: String, explorationDetails: ExplorationContext
+      skillId: String,
+      explorationDetails: ExplorationContext
     ) = CardContext.newBuilder().apply {
       this.skillId = skillId
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun createHintContext(
-      hintIndex: Int, explorationDetails: ExplorationContext
+      hintIndex: Int,
+      explorationDetails: ExplorationContext
     ) = HintContext.newBuilder().apply {
       this.hintIndex = hintIndex
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun createSubmitAnswerContext(
-      isAnswerCorrect: Boolean, explorationDetails: ExplorationContext
+      isAnswerCorrect: Boolean,
+      explorationDetails: ExplorationContext
     ) = SubmitAnswerContext.newBuilder().apply {
       this.isAnswerCorrect = isAnswerCorrect
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun createPlayVoiceOverContext(
-      contentId: String?, explorationDetails: ExplorationContext
+      contentId: String?,
+      explorationDetails: ExplorationContext
     ) = PlayVoiceOverContext.newBuilder().apply {
       contentId?.let { this.contentId = it }
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun <T> createAnalyticsEvent(
-      baseContext: T, setter: EventBuilder.(T) -> EventContext.Builder
+      baseContext: T,
+      setter: EventBuilder.(T) -> EventContext.Builder
     ) = EventContext.newBuilder().setter(baseContext).build()
 
-    private fun createFailedToLogLearnerAnalyticsEvent(deviceId: String?): EventContext {
+    private fun createFailedToLogLearnerAnalyticsEvent(installId: String?): EventContext {
       return EventContext.newBuilder().apply {
-        deviceIdForFailedAnalyticsLog = deviceId ?: DEFAULT_INSTALLATION_ID
+        installIdForFailedAnalyticsLog = installId ?: DEFAULT_INSTALLATION_ID
       }.build()
     }
   }
