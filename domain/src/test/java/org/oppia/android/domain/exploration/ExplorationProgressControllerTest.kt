@@ -24,6 +24,10 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
@@ -56,6 +60,10 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -89,6 +97,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -96,15 +105,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.util.logging.SyncStatusModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -1889,7 +1889,10 @@ class ExplorationProgressControllerTest {
   }
 
   private fun startPlayingNewExploration(
-    topicId: String, storyId: String, explorationId: String, profileId: ProfileId = this.profileId
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
@@ -1913,7 +1916,10 @@ class ExplorationProgressControllerTest {
   }
 
   private fun restartExploration(
-    topicId: String, storyId: String, explorationId: String, profileId: ProfileId = this.profileId
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    profileId: ProfileId = this.profileId
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
@@ -1936,7 +1942,8 @@ class ExplorationProgressControllerTest {
   }
 
   private fun retrieveExplorationCheckpoint(
-    explorationId: String, profileId: ProfileId = this.profileId
+    explorationId: String,
+    profileId: ProfileId = this.profileId
   ): ExplorationCheckpoint {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -2187,7 +2194,9 @@ class ExplorationProgressControllerTest {
   }
 
   private fun endExploration() {
-    monitorFactory.waitForNextSuccessfulResult(explorationDataController.stopPlayingExploration(isCompletion = false))
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationDataController.stopPlayingExploration(isCompletion = false)
+    )
   }
 
   private fun createContinueButtonAnswer() =

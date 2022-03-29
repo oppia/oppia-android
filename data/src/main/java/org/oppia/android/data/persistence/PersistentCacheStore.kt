@@ -18,8 +18,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a

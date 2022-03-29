@@ -1,6 +1,5 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import java.lang.IllegalStateException
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
@@ -12,6 +11,7 @@ import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -81,7 +81,9 @@ class AnalyticsController @Inject constructor(
 
   /** Returns an event log containing relevant data for event reporting. */
   private fun createEventLog(
-    timestamp: Long, context: EventLog.Context, priority: Priority
+    timestamp: Long,
+    context: EventLog.Context,
+    priority: Priority
   ): EventLog {
     return EventLog.newBuilder().apply {
       this.timestamp = timestamp

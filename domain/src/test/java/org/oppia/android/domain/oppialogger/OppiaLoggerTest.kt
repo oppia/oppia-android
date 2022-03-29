@@ -7,6 +7,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -18,17 +24,14 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
-import dagger.Component
-import dagger.Module
-import dagger.Provides
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -50,10 +53,6 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.logging.EventLogSubject
-import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.testing.time.FakeOppiaClock
 
 /** Tests for [OppiaLogger]. */
 // FunctionName: test names are conventionally named with underscores.

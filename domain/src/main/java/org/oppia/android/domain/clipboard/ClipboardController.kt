@@ -3,13 +3,13 @@ package org.oppia.android.domain.clipboard
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import kotlinx.coroutines.flow.MutableStateFlow
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.oppia.android.util.data.AsyncResult
 
 private const val CURRENT_CLIP_PROVIDER_ID = "ClipboardController.current_clip"
 private const val SET_CLIP_PROVIDER_ID = "ClipboardController.set_clip"
@@ -24,7 +24,8 @@ private const val SET_CLIP_PROVIDER_ID = "ClipboardController.set_clip"
  */
 @Singleton
 class ClipboardController @Inject constructor(
-  private val dataProviders: DataProviders, context: Context
+  private val dataProviders: DataProviders,
+  context: Context
 ) {
   private val clipboardManager by lazy {
     (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).also {

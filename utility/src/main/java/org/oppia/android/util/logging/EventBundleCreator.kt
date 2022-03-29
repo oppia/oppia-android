@@ -1,12 +1,8 @@
 package org.oppia.android.util.logging
 
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
-import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
@@ -16,6 +12,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -33,15 +30,6 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
-import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
-import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
-import org.oppia.android.app.model.EventLog.PlayVoiceOverContext as PlayVoiceOverEventContext
-import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
-import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
-import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
-import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
-import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
@@ -55,6 +43,18 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Se
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
+import javax.inject.Inject
+import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
+import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
+import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
+import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
+import org.oppia.android.app.model.EventLog.PlayVoiceOverContext as PlayVoiceOverEventContext
+import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
+import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
+import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
+import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
+import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -209,7 +209,9 @@ class EventBundleCreator @Inject constructor() {
      * [EventActivityContext] property.
      */
     protected fun <T : EventActivityContext<V>, V> PropertyStore.putProperties(
-      propertyName: String, value: V, factory: (String, V) -> T
+      propertyName: String,
+      value: V,
+      factory: (String, V) -> T
     ) {
       factory(propertyName, value).run {
         try {
@@ -225,7 +227,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [CardEventContext]s. */
     class CardContext(
-      activityName: String, value: CardEventContext
+      activityName: String,
+      value: CardEventContext
     ) : EventActivityContext<CardEventContext>(activityName, value) {
       override fun CardEventContext.storeValue(store: PropertyStore) {
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
@@ -235,7 +238,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [ConceptCardEventContext]s. */
     class ConceptCardContext(
-      activityName: String, value: ConceptCardEventContext
+      activityName: String,
+      value: ConceptCardEventContext
     ) : EventActivityContext<ConceptCardEventContext>(activityName, value) {
       override fun ConceptCardEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("skill_id", skillId)
@@ -244,7 +248,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [ExplorationContext]s. */
     class ExplorationContext(
-      activityName: String, value: ExplorationEventContext
+      activityName: String,
+      value: ExplorationEventContext
     ) : EventActivityContext<ExplorationEventContext>(activityName, value) {
       override fun ExplorationEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("topic_id", topicId)
@@ -259,7 +264,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [HintEventContext]s. */
     class HintContext(
-      activityName: String, value: HintEventContext
+      activityName: String,
+      value: HintEventContext
     ) : EventActivityContext<HintEventContext>(activityName, value) {
       override fun HintEventContext.storeValue(store: PropertyStore) {
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
@@ -269,7 +275,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [LearnerDetailsEventContext]s. */
     class LearnerDetailsContext(
-      activityName: String, value: LearnerDetailsEventContext
+      activityName: String,
+      value: LearnerDetailsEventContext
     ) : EventActivityContext<LearnerDetailsEventContext>(activityName, value) {
       override fun LearnerDetailsEventContext.storeValue(store: PropertyStore) {
         store.putSensitiveValue("learner_id", learnerId)
@@ -279,7 +286,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [PlayVoiceOverEventContext]s. */
     class PlayVoiceOverContext(
-      activityName: String, value: PlayVoiceOverEventContext
+      activityName: String,
+      value: PlayVoiceOverEventContext
     ) : EventActivityContext<PlayVoiceOverEventContext>(activityName, value) {
       override fun PlayVoiceOverEventContext.storeValue(store: PropertyStore) {
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
@@ -289,7 +297,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [QuestionEventContext]s. */
     class QuestionContext(
-      activityName: String, value: QuestionEventContext
+      activityName: String,
+      value: QuestionEventContext
     ) : EventActivityContext<QuestionEventContext>(activityName, value) {
       override fun QuestionEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("question_id", questionId)
@@ -299,7 +308,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [RevisionCardEventContext]s. */
     class RevisionCardContext(
-      activityName: String, value: RevisionCardEventContext
+      activityName: String,
+      value: RevisionCardEventContext
     ) : EventActivityContext<RevisionCardEventContext>(activityName, value) {
       override fun RevisionCardEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("topic_id", topicId)
@@ -309,7 +319,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [StoryEventContext]s. */
     class StoryContext(
-      activityName: String, value: StoryEventContext
+      activityName: String,
+      value: StoryEventContext
     ) : EventActivityContext<StoryEventContext>(activityName, value) {
       override fun StoryEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("topic_id", topicId)
@@ -319,7 +330,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [SubmitAnswerEventContext]s. */
     class SubmitAnswerContext(
-      activityName: String, value: SubmitAnswerEventContext
+      activityName: String,
+      value: SubmitAnswerEventContext
     ) : EventActivityContext<SubmitAnswerEventContext>(activityName, value) {
       override fun SubmitAnswerEventContext.storeValue(store: PropertyStore) {
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
@@ -329,7 +341,8 @@ class EventBundleCreator @Inject constructor() {
 
     /** The [EventActivityContext] corresponding to [TopicEventContext]s. */
     class TopicContext(
-      activityName: String, value: TopicEventContext
+      activityName: String,
+      value: TopicEventContext
     ) : EventActivityContext<TopicEventContext>(activityName, value) {
       override fun TopicEventContext.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("topic_id", topicId)
@@ -338,7 +351,9 @@ class EventBundleCreator @Inject constructor() {
 
     /** [EventActivityContext] corresponding to sensitive string properties. */
     class SensitiveStringContext(
-      activityName: String, value: String, private val propertyName: String
+      activityName: String,
+      value: String,
+      private val propertyName: String
     ) : EventActivityContext<String>(activityName, value) {
       override fun String.storeValue(store: PropertyStore) {
         store.putSensitiveValue(propertyName, this)

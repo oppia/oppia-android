@@ -13,8 +13,11 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,6 +28,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -38,10 +42,6 @@ import java.io.IOException
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import org.oppia.android.util.data.AsyncResult
 
 private const val CACHE_NAME_1 = "test_cache_1"
 private const val CACHE_NAME_2 = "test_cache_2"
@@ -607,7 +607,7 @@ class PersistentCacheStoreTest {
     getCacheFile(cacheName).writeBytes(byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
   }
 
-  private fun <T: MessageLite> writeFileCache(cacheName: String, value: T) {
+  private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
   }
 
@@ -615,7 +615,7 @@ class PersistentCacheStoreTest {
     FileOutputStream(this).use { it.write(data) }
   }
 
-  private inline fun <reified T: MessageLite> readFileCache(cacheName: String, baseMessage: T): T {
+  private inline fun <reified T : MessageLite> readFileCache(cacheName: String, baseMessage: T): T {
     return FileInputStream(getCacheFile(cacheName)).use {
       baseMessage.newBuilderForType().mergeFrom(it).build()
     } as T

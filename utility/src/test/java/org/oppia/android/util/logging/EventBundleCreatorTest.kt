@@ -5,23 +5,18 @@ import android.content.Context
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.os.BundleSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
-import androidx.test.ext.truth.os.BundleSubject.assertThat
-import org.junit.After
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
-import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -36,6 +31,11 @@ import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 
 /**
  * Tests for [EventBundleCreator].
@@ -1011,7 +1011,8 @@ class EventBundleCreatorTest {
   ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
 
   private fun <T> createEventContext(
-    value: T, setter: EventContextBuilder.(T) -> EventContextBuilder
+    value: T,
+    setter: EventContextBuilder.(T) -> EventContextBuilder
   ) = EventLog.Context.newBuilder().setter(value).build()
 
   private fun createExplorationContext(
@@ -1033,7 +1034,8 @@ class EventBundleCreatorTest {
   }.build()
 
   private fun createLearnerDetailsContext(
-    learnerId: String = TEST_LEARNER_ID, installId: String = TEST_INSTALLATION_ID
+    learnerId: String = TEST_LEARNER_ID,
+    installId: String = TEST_INSTALLATION_ID
   ) = LearnerDetailsContext.newBuilder().apply {
     this.learnerId = learnerId
     this.installId = installId
@@ -1051,7 +1053,8 @@ class EventBundleCreatorTest {
   }.build()
 
   private fun createStoryContext(
-    topicId: String = TEST_TOPIC_ID, storyId: String = TEST_STORY_ID
+    topicId: String = TEST_TOPIC_ID,
+    storyId: String = TEST_STORY_ID
   ) = StoryContext.newBuilder().apply {
     this.topicId = topicId
     this.storyId = storyId
@@ -1061,7 +1064,8 @@ class EventBundleCreatorTest {
     ConceptCardContext.newBuilder().apply { this.skillId = skillId }.build()
 
   private fun createRevisionCardContext(
-    topicId: String = TEST_TOPIC_ID, subTopicIndex: Int = TEST_SUB_TOPIC_INDEX
+    topicId: String = TEST_TOPIC_ID,
+    subTopicIndex: Int = TEST_SUB_TOPIC_INDEX
   ) = RevisionCardContext.newBuilder().apply {
     this.topicId = topicId
     subTopicId = subTopicIndex

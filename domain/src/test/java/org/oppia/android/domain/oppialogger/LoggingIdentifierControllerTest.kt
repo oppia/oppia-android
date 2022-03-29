@@ -10,19 +10,26 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.io.File
-import java.io.FileOutputStream
-import java.lang.IllegalStateException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.DeviceContextDatabase
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -31,6 +38,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -40,23 +48,15 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.IllegalStateException
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import org.oppia.android.app.model.DeviceContextDatabase
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.threading.BackgroundDispatcher
 
 /** Tests for [LoggingIdentifierController]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -265,7 +265,7 @@ class LoggingIdentifierControllerTest {
     assertThat(sessionIdFlow.value).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
   }
 
-  private fun <T: MessageLite> writeFileCache(cacheName: String, value: T) {
+  private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
   }
 

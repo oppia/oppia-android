@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,6 +61,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [LearnerAnalyticsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -1395,7 +1395,7 @@ class LearnerAnalyticsLoggerTest {
     storyId: String = TEST_STORY_ID
   ) = beginExploration(installationId, learnerId, exploration, topicId, storyId)
 
-  private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag  == tag }
+  private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

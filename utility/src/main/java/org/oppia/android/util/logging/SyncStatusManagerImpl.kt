@@ -1,11 +1,11 @@
 package org.oppia.android.util.logging
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 
 private const val SYNC_STATUS_PROVIDER_ID = "SyncStatusManagerImpl.sync_status"
 

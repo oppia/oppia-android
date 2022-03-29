@@ -11,7 +11,6 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoSubject
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
@@ -20,6 +19,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -52,7 +52,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_A
 class EventLogSubject private constructor(
   metadata: FailureMetadata,
   private val actual: EventLog
-): LiteProtoSubject(metadata, actual) {
+) : LiteProtoSubject(metadata, actual) {
   /**
    * Returns a [LongSubject] to test [EventLog.getTimestamp].
    *
@@ -785,7 +785,7 @@ class EventLogSubject private constructor(
   class CardContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.CardContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test [EventLog.CardContext.getExplorationDetails].
      *
@@ -832,7 +832,7 @@ class EventLogSubject private constructor(
   class ConceptCardContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.ConceptCardContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.ConceptCardContext.getSkillId].
      *
@@ -862,7 +862,7 @@ class EventLogSubject private constructor(
   class ExplorationContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.ExplorationContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.ExplorationContext.getTopicId].
      *
@@ -950,7 +950,7 @@ class EventLogSubject private constructor(
   class HintContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.HintContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test [EventLog.HintContext.getExplorationDetails].
      *
@@ -997,7 +997,7 @@ class EventLogSubject private constructor(
   class LearnerDetailsContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.LearnerDetailsContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.LearnerDetailsContext.getLearnerId].
      *
@@ -1035,7 +1035,7 @@ class EventLogSubject private constructor(
   class PlayVoiceOverContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.PlayVoiceOverContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
      * [EventLog.PlayVoiceOverContext.getExplorationDetails].
@@ -1083,7 +1083,7 @@ class EventLogSubject private constructor(
   class QuestionContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.QuestionContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.QuestionContext.getQuestionId].
      *
@@ -1121,7 +1121,7 @@ class EventLogSubject private constructor(
   class RevisionCardContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.RevisionCardContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.RevisionCardContext.getTopicId].
      *
@@ -1159,7 +1159,7 @@ class EventLogSubject private constructor(
   class StoryContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.StoryContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.StoryContext.getTopicId].
      *
@@ -1197,7 +1197,7 @@ class EventLogSubject private constructor(
   class SubmitAnswerContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.SubmitAnswerContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
      * [EventLog.SubmitAnswerContext.getExplorationDetails].
@@ -1245,7 +1245,7 @@ class EventLogSubject private constructor(
   class TopicContextSubject private constructor(
     metadata: FailureMetadata,
     private val actual: EventLog.TopicContext
-  ): LiteProtoSubject(metadata, actual) {
+  ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.TopicContext.getTopicId].
      *

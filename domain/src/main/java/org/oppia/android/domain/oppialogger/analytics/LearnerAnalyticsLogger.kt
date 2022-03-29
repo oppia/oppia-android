@@ -1,13 +1,9 @@
 package org.oppia.android.domain.oppialogger.analytics
 
 import com.google.protobuf.MessageLite
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.oppia.android.app.model.EventLog.CardContext
-import org.oppia.android.app.model.EventLog.Context as EventContext
-import org.oppia.android.app.model.EventLog.Context.Builder as EventBuilder
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -18,6 +14,10 @@ import org.oppia.android.app.model.State
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger.BaseLogger.Companion.maybeLogEvent
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context as EventContext
+import org.oppia.android.app.model.EventLog.Context.Builder as EventBuilder
 
 /**
  * Convenience logger for learner-related analytics events.
@@ -361,7 +361,8 @@ class LearnerAnalyticsLogger @Inject constructor(
    * should never be interacted with outside this class.
    */
   internal class BaseLogger internal constructor(
-    private val oppiaLogger: OppiaLogger, private val installationId: String?
+    private val oppiaLogger: OppiaLogger,
+    private val installationId: String?
   ) {
     /**
      * Logs a learner-specific event defined by [learnerDetailsContext] and converted to a full
@@ -412,7 +413,8 @@ class LearnerAnalyticsLogger @Inject constructor(
       takeIf { it != it.defaultInstanceForType }
 
     private fun createLearnerDetailsContext(
-      installationId: String?, learnerId: String?
+      installationId: String?,
+      learnerId: String?
     ): LearnerDetailsContext? {
       return createLearnerDetailsContextWithIdsPresent(
         installationId?.takeUnless(String::isEmpty), learnerId?.takeUnless(String::isEmpty)
@@ -420,7 +422,8 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     private fun createLearnerDetailsContextWithIdsPresent(
-      installationId: String?, learnerId: String?
+      installationId: String?,
+      learnerId: String?
     ): LearnerDetailsContext {
       return LearnerDetailsContext.newBuilder().apply {
         installationId?.let { installId = it }
@@ -429,35 +432,40 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     private fun createCardContext(
-      skillId: String, explorationDetails: ExplorationContext
+      skillId: String,
+      explorationDetails: ExplorationContext
     ) = CardContext.newBuilder().apply {
       this.skillId = skillId
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun createHintContext(
-      hintIndex: Int, explorationDetails: ExplorationContext
+      hintIndex: Int,
+      explorationDetails: ExplorationContext
     ) = HintContext.newBuilder().apply {
       this.hintIndex = hintIndex
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun createSubmitAnswerContext(
-      isAnswerCorrect: Boolean, explorationDetails: ExplorationContext
+      isAnswerCorrect: Boolean,
+      explorationDetails: ExplorationContext
     ) = SubmitAnswerContext.newBuilder().apply {
       this.isAnswerCorrect = isAnswerCorrect
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun createPlayVoiceOverContext(
-      contentId: String?, explorationDetails: ExplorationContext
+      contentId: String?,
+      explorationDetails: ExplorationContext
     ) = PlayVoiceOverContext.newBuilder().apply {
       contentId?.let { this.contentId = it }
       this.explorationDetails = explorationDetails
     }.build()
 
     private fun <T> createAnalyticsEvent(
-      baseContext: T, setter: EventBuilder.(T) -> EventContext.Builder
+      baseContext: T,
+      setter: EventBuilder.(T) -> EventContext.Builder
     ) = EventContext.newBuilder().setter(baseContext).build()
 
     private fun createFailedToLogLearnerAnalyticsEvent(installId: String?): EventContext {

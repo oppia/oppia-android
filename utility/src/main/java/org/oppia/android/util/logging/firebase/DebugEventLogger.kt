@@ -1,8 +1,8 @@
 package org.oppia.android.util.logging.firebase
 
-import java.util.concurrent.CopyOnWriteArrayList
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.util.logging.EventLogger
+import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
 

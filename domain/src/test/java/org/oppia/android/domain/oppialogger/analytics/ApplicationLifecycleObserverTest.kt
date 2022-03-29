@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
+import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -43,7 +44,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LogStorageModule
 
 /** Tests for [ApplicationLifecycleObserver]. */
 // FunctionName: test names are conventionally named with underscores.

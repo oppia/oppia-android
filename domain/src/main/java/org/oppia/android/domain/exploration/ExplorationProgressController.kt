@@ -5,15 +5,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
@@ -25,6 +33,7 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -36,15 +45,6 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onStart
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
-import org.oppia.android.domain.profile.ProfileManagementController
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -524,7 +524,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState?.finishExplorationImpl(
-    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>, isCompletion: Boolean
+    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    isCompletion: Boolean
   ) {
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
@@ -704,7 +705,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun ControllerState.maybeLogUpdatedHelpIndex(
-    helpIndex: HelpIndex, activeSessionId: String
+    helpIndex: HelpIndex,
+    activeSessionId: String
   ) {
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
@@ -783,7 +785,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.finishLoadExploration(
-    exploration: Exploration, progress: ExplorationProgress
+    exploration: Exploration,
+    progress: ExplorationProgress
   ) {
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
@@ -1217,7 +1220,7 @@ class ExplorationProgressController @Inject constructor(
       val helpIndex: HelpIndex,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
-    ): ControllerMessage<Any?>()
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] to ensure a successfully saved checkpoint is reflected in other parts of

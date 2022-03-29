@@ -64,7 +64,10 @@ class ExplorationDataController @Inject constructor(
    * @return a [DataProvider] to observe whether initiating the play request succeeded
    */
   fun startPlayingNewExploration(
-    internalProfileId: Int, topicId: String, storyId: String, explorationId: String
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
@@ -119,7 +122,10 @@ class ExplorationDataController @Inject constructor(
    * lesson (otherwise [resumeExploration] should be used to resume the lesson).
    */
   fun restartExploration(
-    internalProfileId: Int, topicId: String, storyId: String, explorationId: String
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
@@ -147,7 +153,10 @@ class ExplorationDataController @Inject constructor(
    * instead, depending on the specific situation.
    */
   fun replayExploration(
-    internalProfileId: Int, topicId: String, storyId: String, explorationId: String
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
   ): DataProvider<Any?> {
     return startPlayingExploration(
       internalProfileId,
@@ -218,7 +227,7 @@ class ExplorationDataController @Inject constructor(
    * @param isCompletion indicates whether this stop action is fully ending the exploration (i.e. no
    *     checkpoint will be saved since this indicates the exploration is completed)
    */
-   fun stopPlayingExploration(isCompletion: Boolean = false): DataProvider<Any?> =
+  fun stopPlayingExploration(isCompletion: Boolean = false): DataProvider<Any?> =
     explorationProgressController.finishExplorationAsync(isCompletion)
 
   /**

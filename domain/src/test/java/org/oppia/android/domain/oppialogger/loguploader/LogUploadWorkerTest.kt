@@ -28,6 +28,7 @@ import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -54,7 +55,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
