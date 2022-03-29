@@ -32,14 +32,13 @@ class LoggingIdentifierController @Inject constructor(
   private val sessionIdDataProvider by lazy {
     dataProviders.run { sessionId.convertToAutomaticDataProvider(SESSION_ID_DATA_PROVIDER_ID) }
   }
-  private val deviceIdStore by lazy {
+  private val installationIdStore by lazy {
     persistentCacheStoreFactory.create(
       cacheName = "device_context_database", DeviceContextDatabase.getDefaultInstance()
     ).also {
       it.primeInMemoryAndDiskCacheAsync { database ->
-        val deviceId = computeDeviceId()
         database.toBuilder().apply {
-          installationId = deviceId
+          installationId = computeInstallationId()
         }.build()
       }.invokeOnCompletion { failure ->
         if (failure != null) {
@@ -70,13 +69,19 @@ class LoggingIdentifierController @Inject constructor(
    * suitable for short-term user studies.
    */
   fun getInstallationId(): DataProvider<String> {
-    return deviceIdStore.transform(
+    return installationIdStore.transform(
       INSTALLATION_ID_DATA_PROVIDER_ID, DeviceContextDatabase::getInstallationId
     )
   }
 
+  /**
+   * Returns the most recently known installation ID per [getInstallationId].
+   *
+   * Since checking for the latest installation ID is inherently asynchronous, this operation should
+   * only be called from a background coroutine.
+   */
   suspend fun fetchInstallationId(): String? =
-    deviceIdStore.readDataAsync().await().installationId.takeUnless(String::isEmpty)
+    installationIdStore.readDataAsync().await().installationId.takeUnless(String::isEmpty)
 
   /**
    * Returns an in-memory data provider pointing to a class variable of [sessionId].
@@ -85,6 +90,13 @@ class LoggingIdentifierController @Inject constructor(
    */
   fun getSessionId(): DataProvider<String> = sessionIdDataProvider
 
+  /**
+   * Returns the [StateFlow] backing the current session ID indicated by [getSessionId].
+   *
+   * Where the [DataProvider] returned by [getSessionId] can be composed by domain controllers or
+   * observed by the UI layer, the [StateFlow] returned by this method can be observed in background
+   * contexts.
+   */
   fun getSessionIdFlow(): StateFlow<String> = sessionId
 
   /**
@@ -92,7 +104,7 @@ class LoggingIdentifierController @Inject constructor(
    *
    * The [sessionId] is generally updated when:
    *  1. An exploration is started/resumed/started-over.
-   *  2. Inactivity duration exceeds 30 mins.
+   *  2. Inactivity duration exceeds the maximum time limit for an active session.
    */
   fun updateSessionId() {
     sessionId.value = computeSessionId()
@@ -100,7 +112,7 @@ class LoggingIdentifierController @Inject constructor(
 
   private fun computeSessionId(): String = learnerIdRandom.randomUuid().toString()
 
-  private fun computeDeviceId(): String {
+  private fun computeInstallationId(): String {
     return machineLocale.run {
       MessageDigest.getInstance("SHA-1")
         .digest(learnerIdRandom.randomUuid().toString().toByteArray())

@@ -113,7 +113,26 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     }
   }
 
-  // TODO: add tests & update documentation for above.
+  /**
+   * Primes the current cache such that both the in-memory and on-disk versions of this cache are
+   * guaranteed to be in sync, returning a [Deferred] that completes only after the operation is
+   * finished.
+   *
+   * The provided [initialize] initializer will only ever be called if the on-disk cache is not yet
+   * initialized, and it will be passed the initial value used to create this cache store. The value
+   * it returns will be used to initialize both the in-memory and on-disk copies of the cache.
+   *
+   * The value of the returned [Deferred] is not useful. The state of the cache should monitored by
+   * treating this provider as a [DataProvider]. This method may result in multiple update
+   * notifications to observers of this [DataProvider], but the latest value will be the source of
+   * truth.
+   *
+   * Where [primeInMemoryCacheAsync] is useful to ensure any on-disk cache is properly loaded into
+   * memory prior to using a cache store, this method is useful when a disk cache has a
+   * contextually-sensitive initialization routine (such as an ID that cannot change after
+   * initialization) as it ensures a reliable, initial clean state for the cache store that will be
+   * consistent with future runs of the app.
+   */
   fun primeInMemoryAndDiskCacheAsync(initialize: (T) -> T): Deferred<Any> {
     return cache.updateIfPresentAsync { cachePayload ->
       when (cachePayload.state) {
@@ -127,6 +146,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
             CacheState.IN_MEMORY_AND_ON_DISK -> loadedPayload // Loaded from disk successfully.
           }
         }
+        // This generally indicates that something went wrong reading the on-disk cache, so make
+        // sure it's properly initialized.
         CacheState.IN_MEMORY_ONLY -> storeFileCache(cachePayload, initialize)
         CacheState.IN_MEMORY_AND_ON_DISK -> cachePayload
       }
@@ -263,15 +284,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     update: suspend (T) -> Pair<T, V>
   ): Pair<CachePayload<T>, V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
-    // Note that this is safe since it blocks the current coroutine (which should be running in an
-    // Oppia cooperative dispatcher) until the I/O operation completes. This is a Kotlin best
-    // practice since the IO dispatcher is designed for handling large numbers of blocking calls
-    // that would otherwise reduce the parallelization potential for coroutines.
-    withContext(Dispatchers.IO) {
-      // This is correctly cooperating since it's relying on Dispatchers.IO.
-      @Suppress("BlockingMethodInNonBlockingContext")
-      FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
-    }
+    // TODO(#4264): Move this over to using an I/O-specific dispatcher.
+    FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
     return Pair(
       currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
       customResult

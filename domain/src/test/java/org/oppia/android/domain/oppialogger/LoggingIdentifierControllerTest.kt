@@ -2,23 +2,23 @@ package org.oppia.android.domain.oppialogger
 
 import android.app.Application
 import android.content.Context
-import android.content.Context.WIFI_SERVICE
-import android.net.wifi.WifiManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.IllegalStateException
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.logging.FakeUserIdGenerator
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -40,32 +40,39 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.security.MessageDigest
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import org.oppia.android.app.model.DeviceContextDatabase
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.logging.SyncStatusModule
-
-private const val TEST_ID = "test_id"
-private const val TEST_MAC_ADDRESS = "test_mac_address"
+import org.oppia.android.util.threading.BackgroundDispatcher
 
 /** Tests for [LoggingIdentifierController]. */
+// Same parameter value: helpers reduce test context, even if they are used by 1 test.
 // Function name: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+@Suppress("SameParameterValue", "FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LoggingIdentifierControllerTest.TestApplication::class)
 class LoggingIdentifierControllerTest {
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
-  @Inject lateinit var fakeUserIdGenerator: FakeUserIdGenerator
   @Inject lateinit var context: Context
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Before
   fun setUp() {
@@ -73,65 +80,227 @@ class LoggingIdentifierControllerTest {
   }
 
   @Test
-  fun testController_createLearnerId_verifyCreatesCorrectRandom() {
+  fun testCreateLearnerId_verifyCreatesCorrectRandomValue() {
     val randomLearnerId = loggingIdentifierController.createLearnerId()
+
     val testLearnerId = machineLocale.run {
       "%08x".formatForMachines(Random(TestLoggingIdentifierModule.applicationIdSeed).nextInt())
     }
-    assertThat(randomLearnerId.length).isEqualTo(8)
     assertThat(randomLearnerId).isEqualTo(testLearnerId)
+    assertThat(randomLearnerId.length).isEqualTo(8)
   }
 
   @Test
-  fun testController_createLearnerId_twice_bothAreDifferent() {
+  fun testCreateLearnerId_twice_bothAreDifferent() {
     val learnerId1 = loggingIdentifierController.createLearnerId()
     val learnerId2 = loggingIdentifierController.createLearnerId()
 
-    // Both learner IDs should be different since multiple learner IDs are needed per device.
+    // There's no actual good way to test the generator beyond just verifying that two subsequent
+    // IDs are different. Note that this technically has an extremely slim chance to flake, but it
+    // realistically should never happen.
     assertThat(learnerId1).isNotEqualTo(learnerId2)
   }
 
   @Test
-  fun testController_createSessionId_verifyReturnsRandomId() {
+  fun testGetInstallationId_initialAppState_providerReturnsNewInstallationIdValue() {
+    val installationId =
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
+
+    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+    assertThat(installationId.length).isEqualTo(12)
+  }
+
+  @Test
+  fun testGetInstallationId_secondAppOpen_providerReturnsSameInstallationIdValue() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
+    setUpTestApplicationComponent() // Simulate an app re-open.
+
+    val installationId =
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
+
+    // The same value should return for the second instance of the controller.
+    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+  }
+
+  @Test
+  fun testGetInstallationId_secondAppOpen_emptiedDatabase_providerReturnsEmptyString() {
+    writeFileCache("device_context_database", DeviceContextDatabase.getDefaultInstance())
+
+    val installationId =
+      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
+
+    // The installation ID is empty since the database was overwritten.
+    assertThat(installationId).isEmpty()
+  }
+
+  @Test
+  fun testFetchInstallationId_initialAppState_returnsNewInstallationIdValue() {
+    val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
+
+    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+    assertThat(installationId?.length).isEqualTo(12)
+  }
+
+  @Test
+  fun testFetchInstallationId_secondAppOpen_returnsSameInstallationIdValue() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getInstallationId())
+    setUpTestApplicationComponent() // Simulate an app re-open.
+
+    val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
+
+    // The same value should return for the second instance of the controller.
+    assertThat(installationId).isEqualTo("bc1f80ab5d8c")
+  }
+
+  @Test
+  fun testFetchInstallationId_secondAppOpen_emptiedDatabase_returnsNull() {
+    writeFileCache("device_context_database", DeviceContextDatabase.getDefaultInstance())
+
+    val installationId = fetchSuccessfulAsyncValue(loggingIdentifierController::fetchInstallationId)
+
+    // The installation ID is null since the database was overwritten.
+    assertThat(installationId).isNull()
+  }
+
+  @Test
+  fun testGetSessionId_initialState_returnsRandomId() {
     val sessionIdProvider = loggingIdentifierController.getSessionId()
 
     val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
-    assertThat(sessionId).isEqualTo(fakeUserIdGenerator.randomUserId)
+    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
   }
 
   @Test
-  fun testController_createSessionId_updateSessionId_verifyReturnsUpdatedValue() {
+  fun testGetSessionId_secondCall_returnsSameRandomId() {
+    monitorFactory.ensureDataProviderExecutes(loggingIdentifierController.getSessionId())
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+
+    // The second call should return the same ID (since the ID doesn't automatically change).
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+  }
+
+  @Test
+  fun testGetSessionIdFlow_initialState_returnsFlowWithRandomId() {
+    val sessionIdFlow = loggingIdentifierController.getSessionIdFlow()
+
+    val sessionId = sessionIdFlow.waitForLatestValue()
+    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+  }
+
+  @Test
+  fun testGetSessionIdFlow_secondCall_returnsFlowWithSameRandomId() {
+    loggingIdentifierController.getSessionIdFlow().waitForLatestValue()
+
+    val sessionIdFlow = loggingIdentifierController.getSessionIdFlow()
+
+    // The second call should return the same ID (since the ID doesn't automatically change).
+    val sessionId = sessionIdFlow.waitForLatestValue()
+    assertThat(sessionId).isEqualTo("1c46e9d5-5902-311a-bbba-a75973c3ccd2")
+  }
+
+  @Test
+  fun testUpdateSessionId_changesRandomIdReturnedByGetSessionId() {
+    loggingIdentifierController.updateSessionId()
+    testCoroutineDispatchers.runCurrent()
+
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
+
+    // The session ID should be changed since updateSessionId() was called.
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(sessionId).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+  }
+
+  @Test
+  fun testUpdateSessionId_notifiesExistingProviderOfTheChange() {
     val sessionIdProvider = loggingIdentifierController.getSessionId()
     val monitor = monitorFactory.createMonitor(sessionIdProvider)
-    monitor.waitForNextResult()
+    monitor.waitForNextResult() // Fetch the initial state.
 
-    fakeUserIdGenerator.randomUserId = TEST_ID
     loggingIdentifierController.updateSessionId()
+    testCoroutineDispatchers.runCurrent()
 
-    val sessionId = monitor.waitForNextSuccessResult()
-    assertThat(sessionId).isEqualTo(TEST_ID)
+    // The existing provider should've been notified of the changed session ID.
+    val sessionId = monitor.ensureNextResultIsSuccess()
+    assertThat(sessionId).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
   }
 
-  // TODO: Fix this test once the device ID thing is figured out.
   @Test
-  @Ignore
-  fun testController_createDeviceId_verifyReturnsCorrectDeviceId() {
-    val wifiManager = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-    val wifiInfo = wifiManager.connectionInfo
-    shadowOf(wifiInfo).setMacAddress(TEST_MAC_ADDRESS)
+  fun testUpdateSessionId_twice_changesRandomIdReturnedByGetSessionIdAgain() {
+    // Update the session ID twice.
+    loggingIdentifierController.updateSessionId()
+    testCoroutineDispatchers.runCurrent()
+    loggingIdentifierController.updateSessionId()
+    testCoroutineDispatchers.runCurrent()
 
-    val deviceId =
-      monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getInstallationId())
-    val expectedHash = machineLocale.run {
-      MessageDigest.getInstance("SHA-1")
-        .digest(TEST_MAC_ADDRESS.toByteArray())
-        .joinToString("") { "%02x".formatForMachines(it) }
-        .substring(startIndex = 0, endIndex = 12)
-    }
+    val sessionIdProvider = loggingIdentifierController.getSessionId()
 
-    assertThat(deviceId).isEqualTo(expectedHash)
-    assertThat(deviceId.length).isEqualTo(12)
+    // The session ID should be changed yet again due to updateSessionId() being called twice.
+    val sessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
+    assertThat(sessionId).isEqualTo("8aeabb00-af70-39e4-89b3-c47c9900ec4f")
   }
+
+  @Test
+  fun testUpdateSessionId_changesRandomIdReturnedByGetSessionIdFlow() {
+    loggingIdentifierController.updateSessionId()
+    testCoroutineDispatchers.runCurrent()
+
+    val sessionIdFlow = loggingIdentifierController.getSessionIdFlow()
+
+    // The session ID should be changed since updateSessionId() was called.
+    val sessionId = sessionIdFlow.waitForLatestValue()
+    assertThat(sessionId).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+  }
+
+  @Test
+  fun testUpdateSessionId_updatesExistingSessionIdFlowValue() {
+    val sessionIdFlow = loggingIdentifierController.getSessionIdFlow()
+    sessionIdFlow.waitForLatestValue() // Fetch the initial value.
+
+    loggingIdentifierController.updateSessionId()
+    testCoroutineDispatchers.runCurrent()
+
+    // The current value of the exist flow should be changed now since the session ID was updated.
+    assertThat(sessionIdFlow.value).isEqualTo("8808493e-6576-3e26-9cbf-d1008051b253")
+  }
+
+  private fun <T: MessageLite> writeFileCache(cacheName: String, value: T) {
+    getCacheFile(cacheName).writeBytes(value.toByteArray())
+  }
+
+  private fun getCacheFile(cacheName: String) = File(context.filesDir, "$cacheName.cache")
+
+  private fun File.writeBytes(data: ByteArray) {
+    FileOutputStream(this).use { it.write(data) }
+  }
+
+  private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
+    CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
+
+  private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
+    return when (val result = waitForResult()) {
+      is AsyncResult.Pending -> error("Deferred never finished.")
+      is AsyncResult.Success -> result.value
+      is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
+    }
+  }
+
+  private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
+
+  private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
+    val deferred = this
+    return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
+      CoroutineScope(backgroundDispatcher).async {
+        flow.emit(AsyncResult.Success(deferred.await()))
+      }.invokeOnCompletion {
+        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+      }
+    }
+  }
+
+  private fun <T> StateFlow<T>.waitForLatestValue(): T =
+    also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -171,9 +340,8 @@ class LoggingIdentifierControllerTest {
 
   @Module
   class TestLoggingIdentifierModule {
-
     companion object {
-      const val applicationIdSeed = 1L
+      internal const val applicationIdSeed = 1L
     }
 
     @Provides
@@ -225,8 +393,7 @@ class LoggingIdentifierControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

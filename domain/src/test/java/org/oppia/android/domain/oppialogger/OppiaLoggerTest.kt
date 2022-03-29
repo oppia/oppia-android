@@ -7,6 +7,17 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -40,78 +51,75 @@ import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.logging.EventLogSubject
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.time.FakeOppiaClock
 
-private const val TEST_TIMESTAMP = 1556094120000
-private const val TEST_TOPIC_ID = "test_topicId"
-private const val TEST_STORY_ID = "test_storyId"
-private const val TEST_EXPLORATION_ID = "test_explorationId"
-private const val TEST_QUESTION_ID = "test_questionId"
-private const val TEST_SKILL_ID = "test_skillId"
-private const val TEST_SKILL_LIST_ID = "test_skillListId"
-private const val TEST_SUB_TOPIC_ID = 1
-private const val TEST_LEARNER_ID = "test_learnerId"
-private const val TEST_DEVICE_ID = "test_deviceId"
-private const val TEST_SESSION_ID = "test_sessionId"
-private const val TEST_EXPLORATION_VERSION = "test_exploration_version"
-private const val TEST_STATE_NAME = "test_state_name"
-private const val TEST_HINT_INDEX = "test_hint_index"
-private const val TEST_IS_ANSWER_CORRECT = true
-private const val TEST_CONTENT_ID = "test_contentId"
-
-private const val TEST_VERBOSE_LOG_TAG = "test_verbose_log_tag"
-private const val TEST_VERBOSE_LOG_MSG = "test_verbose_log_msg"
-private const val TEST_VERBOSE_LOG_EXCEPTION = "test_verbose_log_exception"
-
-private const val TEST_DEBUG_LOG_TAG = "test_debug_log_tag"
-private const val TEST_DEBUG_LOG_MSG = "test_debug_log_msg"
-private const val TEST_DEBUG_LOG_EXCEPTION = "test_debug_log_exception"
-
-private const val TEST_INFO_LOG_TAG = "test_info_log_tag"
-private const val TEST_INFO_LOG_MSG = "test_info_log_msg"
-private const val TEST_INFO_LOG_EXCEPTION = "test_info_log_exception"
-
-private const val TEST_WARN_LOG_TAG = "test_warn_log_tag"
-private const val TEST_WARN_LOG_MSG = "test_warn_log_msg"
-private const val TEST_WARN_LOG_EXCEPTION = "test_warn_log_exception"
-
-private const val TEST_ERROR_LOG_TAG = "test_error_log_tag"
-private const val TEST_ERROR_LOG_MSG = "test_error_log_msg"
-private const val TEST_ERROR_LOG_EXCEPTION = "test_error_log_exception"
-
+/** Tests for [OppiaLogger]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class OppiaLoggerTest {
+  private companion object {
+    private const val TEST_TIMESTAMP = 1234567898765
+    private const val TEST_TOPIC_ID = "test_topicId"
+    private const val TEST_STORY_ID = "test_storyId"
+    private const val TEST_EXPLORATION_ID = "test_explorationId"
+    private const val TEST_QUESTION_ID = "test_questionId"
+    private const val TEST_SKILL_ID = "test_skillId"
+    private const val TEST_SKILL_LIST_ID = "test_skillListId"
+    private const val TEST_SUB_TOPIC_ID = 1
 
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
+    private const val TEST_VERBOSE_LOG_TAG = "test_verbose_log_tag"
+    private const val TEST_VERBOSE_LOG_MSG = "test_verbose_log_msg"
+    private const val TEST_VERBOSE_LOG_EXCEPTION = "test_verbose_log_exception"
 
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+    private const val TEST_DEBUG_LOG_TAG = "test_debug_log_tag"
+    private const val TEST_DEBUG_LOG_MSG = "test_debug_log_msg"
+    private const val TEST_DEBUG_LOG_EXCEPTION = "test_debug_log_exception"
 
-  private val TEST_VERBOSE_EXCEPTION = Throwable(TEST_VERBOSE_LOG_EXCEPTION)
-  private val TEST_DEBUG_EXCEPTION = Throwable(TEST_DEBUG_LOG_EXCEPTION)
-  private val TEST_INFO_EXCEPTION = Throwable(TEST_INFO_LOG_EXCEPTION)
-  private val TEST_WARN_EXCEPTION = Throwable(TEST_WARN_LOG_EXCEPTION)
-  private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
+    private const val TEST_INFO_LOG_TAG = "test_info_log_tag"
+    private const val TEST_INFO_LOG_MSG = "test_info_log_msg"
+    private const val TEST_INFO_LOG_EXCEPTION = "test_info_log_exception"
 
-  // TODO: Fix & update the tests below, and add any missing for new events.
-  /*private val GENERIC_DATA = EventLog.GenericData.newBuilder()
-    .setDeviceId(TEST_DEVICE_ID)
-    .setLearnerId(TEST_LEARNER_ID)
-    .build()
+    private const val TEST_WARN_LOG_TAG = "test_warn_log_tag"
+    private const val TEST_WARN_LOG_MSG = "test_warn_log_msg"
+    private const val TEST_WARN_LOG_EXCEPTION = "test_warn_log_exception"
 
-  private val EXPLORATION_DATA = EventLog.ExplorationData.newBuilder()
-    .setSessionId(TEST_SESSION_ID)
-    .setExplorationId(TEST_EXPLORATION_ID)
-    .setExplorationVersion(TEST_EXPLORATION_VERSION)
-    .setStateName(TEST_STATE_NAME)
-    .build()*/
+    private const val TEST_ERROR_LOG_TAG = "test_error_log_tag"
+    private const val TEST_ERROR_LOG_MSG = "test_error_log_msg"
+    private const val TEST_ERROR_LOG_EXCEPTION = "test_error_log_exception"
+
+    private val TEST_VERBOSE_EXCEPTION = Throwable(TEST_VERBOSE_LOG_EXCEPTION)
+    private val TEST_DEBUG_EXCEPTION = Throwable(TEST_DEBUG_LOG_EXCEPTION)
+    private val TEST_INFO_EXCEPTION = Throwable(TEST_INFO_LOG_EXCEPTION)
+    private val TEST_WARN_EXCEPTION = Throwable(TEST_WARN_LOG_EXCEPTION)
+    private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
+  }
+
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     ShadowLog.reset()
+  }
+
+  @Test
+  fun testLogImportantEvent_forOpenHomeEvent_logsEssentialEventWithCurrentTime() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
+    val openHomeEventContext = oppiaLogger.createOpenHomeContext()
+
+    oppiaLogger.logImportantEvent(openHomeEventContext)
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
   }
 
   @Test
@@ -209,7 +217,7 @@ class OppiaLoggerTest {
     assertThat(log.type).isEqualTo(Log.ERROR)
   }
 
-  /*@Test
+  @Test
   fun testController_createOpenExplorationActivityContext_returnsCorrectExplorationContext() {
     val eventContext = oppiaLogger.createOpenExplorationActivityContext(
       TEST_TOPIC_ID,
@@ -310,237 +318,7 @@ class OppiaLoggerTest {
     assertThat(eventContext.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
     assertThat(eventContext.openRevisionCard.topicId).matches(TEST_TOPIC_ID)
     assertThat(eventContext.openRevisionCard.subTopicId).isEqualTo(TEST_SUB_TOPIC_ID)
-  }*/
-
-  @Test
-  fun testController_featureDisabled_logLearnerAnalyticsEvent_verifyEventNotLogged() {
-    TestPlatformParameterModule.forceLearnerAnalyticsStudy = false
-    oppiaLogger.logImportantEvent(
-      oppiaLogger.createOpenHomeContext(),
-      TEST_TIMESTAMP
-    )
-
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
   }
-
-  @Test
-  fun testController_featureEnabled_logLearnerAnalyticsEvent_verifyEventLogged() {
-    TestPlatformParameterModule.forceLearnerAnalyticsStudy = true
-    setUpTestApplicationComponent()
-
-    oppiaLogger.logImportantEvent(
-      oppiaLogger.createOpenHomeContext(),
-      TEST_TIMESTAMP
-    )
-
-    assertThat(fakeEventLogger.noEventsPresent()).isFalse()
-  }
-
-  /*@Test
-  fun testController_createGenericData_returnsGenericDataWithCorrectValues() {
-    val genericData = oppiaLogger.createGenericData(TEST_DEVICE_ID, TEST_LEARNER_ID)
-
-    assertThat(genericData).isInstanceOf(EventLog.GenericData::class.java)
-    assertThat(genericData.deviceId).isEqualTo(TEST_DEVICE_ID)
-    assertThat(genericData.learnerId).isEqualTo(TEST_LEARNER_ID)
-  }
-
-  @Test
-  fun testController_createExplorationData_returnsExplorationDataWithCorrectValues() {
-    val explorationData = oppiaLogger.createExplorationData(
-      TEST_SESSION_ID,
-      TEST_EXPLORATION_ID,
-      TEST_EXPLORATION_VERSION,
-      TEST_STATE_NAME
-    )
-
-    assertThat(explorationData).isInstanceOf(EventLog.ExplorationData::class.java)
-    assertThat(explorationData.sessionId).isEqualTo(TEST_SESSION_ID)
-    assertThat(explorationData.explorationId).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(explorationData.explorationVersion).isEqualTo(TEST_EXPLORATION_VERSION)
-    assertThat(explorationData.stateName).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testController_createStartCardContext_returnsCorrectStartCardContext() {
-    val eventContext =
-      oppiaLogger.createStartCardContext(TEST_SKILL_ID, GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
-    )
-    assertThat(eventContext.startCardContext.skillId).matches(TEST_SKILL_ID)
-    assertThat(eventContext.startCardContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.startCardContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createEndCardContext_returnsCorrectEndCardContext() {
-    val eventContext =
-      oppiaLogger.createEndCardContext(TEST_SKILL_ID, GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
-    )
-    assertThat(eventContext.endCardContext.skillId).matches(TEST_SKILL_ID)
-    assertThat(eventContext.endCardContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.endCardContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createHintOfferedContext_returnsCorrectHintOfferedContext() {
-    val eventContext =
-      oppiaLogger.createHintOfferedContext(TEST_HINT_INDEX, GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
-    )
-    assertThat(eventContext.hintOfferedContext.hintIndex).matches(TEST_HINT_INDEX)
-    assertThat(eventContext.hintOfferedContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.hintOfferedContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createAccessHintContext_returnsCorrectAccessHintContext() {
-    val eventContext =
-      oppiaLogger.createAccessHintContext(TEST_HINT_INDEX, GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
-    )
-    assertThat(eventContext.accessHintContext.hintIndex).matches(TEST_HINT_INDEX)
-    assertThat(eventContext.accessHintContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.accessHintContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createSolutionOfferedContext_returnsCorrectSolutionOfferedContext() {
-    val eventContext =
-      oppiaLogger.createSolutionOfferedContext(GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
-    )
-    assertThat(eventContext.solutionOfferedContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.solutionOfferedContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createAccessSolutionContext_returnsCorrectAccessSolutionContext() {
-    val eventContext =
-      oppiaLogger.createAccessSolutionContext(GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
-    )
-    assertThat(eventContext.accessSolutionContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.accessSolutionContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createSubmitAnswerContext_returnsCorrectSubmitAnswerContext() {
-    val eventContext =
-      oppiaLogger.createSubmitAnswerContext(TEST_IS_ANSWER_CORRECT, GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-    )
-    assertThat(eventContext.submitAnswerContext.isAnswerCorrect).isEqualTo(TEST_IS_ANSWER_CORRECT)
-    assertThat(eventContext.submitAnswerContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.submitAnswerContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createPlayVoiceOverContext_returnsCorrectPlayVoiceOverContext() {
-    val eventContext =
-      oppiaLogger.createPlayVoiceOverContext(TEST_CONTENT_ID, GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
-    )
-    assertThat(eventContext.playVoiceOverContext.contentId).isEqualTo(TEST_CONTENT_ID)
-    assertThat(eventContext.playVoiceOverContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.playVoiceOverContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createAppInBackgroundContext_returnsCorrectAppInBackgroundContext() {
-    val eventContext =
-      oppiaLogger.createAppInBackgroundContext(GENERIC_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
-    )
-    assertThat(eventContext.appInBackgroundContext.genericData).isEqualTo(GENERIC_DATA)
-  }
-
-  @Test
-  fun testController_createAppInForegroundContext_returnsCorrectAppInForegroundContext() {
-    val eventContext =
-      oppiaLogger.createAppInForegroundContext(GENERIC_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
-    )
-    assertThat(eventContext.appInForegroundContext.genericData).isEqualTo(GENERIC_DATA)
-  }
-
-  @Test
-  fun testController_createExitExplorationContext_returnsCorrectExitExplorationContext() {
-    val eventContext =
-      oppiaLogger.createExitExplorationContext(GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
-    )
-    assertThat(eventContext.exitExplorationContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.exitExplorationContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createFinishExplorationContext_returnsCorrectFinishExplorationContext() {
-    val eventContext =
-      oppiaLogger.createFinishExplorationContext(GENERIC_DATA, EXPLORATION_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
-    )
-    assertThat(eventContext.finishExplorationContext.genericData).isEqualTo(GENERIC_DATA)
-    assertThat(eventContext.finishExplorationContext.explorationData).isEqualTo(EXPLORATION_DATA)
-  }
-
-  @Test
-  fun testController_createResumeExplorationContext_returnsCorrectResumeExplorationContext() {
-    val eventContext =
-      oppiaLogger.createResumeExplorationContext(GENERIC_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
-    )
-    assertThat(eventContext.resumeExplorationContext.genericData).isEqualTo(GENERIC_DATA)
-  }
-
-  @Test
-  fun testController_createStartOverExplorationContext_returnsCorrectStartOverExplorationContext() {
-    val eventContext =
-      oppiaLogger.createStartOverExplorationContext(GENERIC_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
-    )
-    assertThat(eventContext.startOverExplorationContext.genericData).isEqualTo(GENERIC_DATA)
-  }
-
-  @Test
-  fun testController_createDeleteProfileContext_returnsCorrectDeleteProfileContext() {
-    val eventContext =
-      oppiaLogger.createDeleteProfileContext(GENERIC_DATA)
-
-    assertThat(eventContext.activityContextCase).isEqualTo(
-      EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
-    )
-    assertThat(eventContext.deleteProfileContext.genericData).isEqualTo(GENERIC_DATA)
-  }*/
 
   private fun setUpTestApplicationComponent() {
     DaggerOppiaLoggerTest_TestApplicationComponent.builder()

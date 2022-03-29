@@ -2,7 +2,7 @@
   "exploration_id": "test_exp_id_5",
   "preferred_audio_language_code": "<unknown>",
   "correctness_feedback_enabled": false,
-  "version": 0,
+  "version": 5,
   "record_playthrough_probability": 0.0,
   "exploration": {
     "init_state_name": "NumericExpressionInput.MatchesExactlyWith",

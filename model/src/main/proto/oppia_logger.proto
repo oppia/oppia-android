@@ -125,7 +125,7 @@ message EventLog {
 
       // Indicates that something went wrong when trying to log a learner analytics even for the
       // device corresponding to the specified device ID.
-      string device_id_for_failed_analytics_log = 33;
+      string install_id_for_failed_analytics_log = 33;
     }
   }
 
@@ -211,7 +211,7 @@ message EventLog {
     string learner_id = 1;
 
     // The device id of the current device. This id is common across all profiles.
-    string device_id = 2;
+    string install_id = 2;
   }
 
   // Represents the event context for all exploration related events containing learner-specific and
@@ -229,8 +229,10 @@ message EventLog {
     // The session id of the current learning session.
     string session_id = 4;
 
+    reserved 5; // Deprecated string version of exploration version.
+
     // The version of the exploration.
-    string exploration_version = 5;
+    int32 exploration_version = 8;
 
     // The name of the current state of the exploration.
     string state_name = 6;
@@ -300,6 +302,9 @@ message OppiaExceptionLogs {
 // Data structure of device & app context that's stored on disk to be unique to each app
 // installation (or cross-installation if restoring from an app backup).
 message DeviceContextDatabase {
-  // TODO: probably should rename all 'device_id's to be installation_id. Also, add comment for this field.
+  // The per-installation UUID that can be used to generally uniquely identify this device among all
+  // others present in a user study. This shouldn't be relied on for anything other than analytics,
+  // and only for specific studies as the ID is not stable across app installations (but should
+  // survive app data backups & restores, as well as app upgrades).
   string installation_id = 1;
 }

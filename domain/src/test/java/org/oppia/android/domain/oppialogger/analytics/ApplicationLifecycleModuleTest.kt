@@ -16,10 +16,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.logging.UserIdTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -41,6 +39,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.LogStorageModule
 
 /** Tests for [ApplicationLifecycleModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -84,14 +83,6 @@ class ApplicationLifecycleModuleTest {
 
     @Multibinds
     fun bindStartupListenerSet(): Set<ApplicationStartupListener>
-  }
-
-  @Module
-  class TestLogStorageModule {
-
-    @Provides
-    @EventLogStorageCacheSize
-    fun provideEventLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -146,12 +137,11 @@ class ApplicationLifecycleModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
+      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      UserIdTestModule::class, LoggerModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, LoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -6,10 +6,11 @@ import org.oppia.android.util.logging.EventLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// TODO: update kdoc.
 /**
- * A debug specific implementation for the event logger. It stores all the event logs in a list
- * instead of pushing them to Firebase.
+ * A debug implementation of [EventLogger] used in developer-only builds of the event.
+ *
+ * It forwards events to a production [EventLogger] for real logging, but it also records logged
+ * events for later retrieval (e.g. via [getEventList]).
  */
 @Singleton
 class DebugEventLogger @Inject constructor(
@@ -23,6 +24,6 @@ class DebugEventLogger @Inject constructor(
     realEventLogger.logEvent(eventLog)
   }
 
-  /** Returns list of event logs. */
+  /** Returns the list of all [EventLog]s logged since the app opened. */
   fun getEventList(): List<EventLog> = eventList
 }

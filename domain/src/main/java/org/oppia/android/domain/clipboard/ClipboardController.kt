@@ -3,13 +3,13 @@ package org.oppia.android.domain.clipboard
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.MutableStateFlow
+import org.oppia.android.util.data.AsyncResult
 
 private const val CURRENT_CLIP_PROVIDER_ID = "ClipboardController.current_clip"
 private const val SET_CLIP_PROVIDER_ID = "ClipboardController.set_clip"
@@ -24,16 +24,14 @@ private const val SET_CLIP_PROVIDER_ID = "ClipboardController.set_clip"
  */
 @Singleton
 class ClipboardController @Inject constructor(
-  private val dataProviders: DataProviders,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  context: Context
+  private val dataProviders: DataProviders, context: Context
 ) {
   private val clipboardManager by lazy {
     (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).also {
       it.addPrimaryClipChangedListener(this::maybeRecomputeCurrentClip)
     }
   }
-  private var state = AtomicReference<CurrentClip>(CurrentClip.Unknown)
+  private val state = MutableStateFlow<CurrentClip>(CurrentClip.Unknown)
 
   /**
    * Returns a [DataProvider] that represents the [CurrentClip] copied to the user's clipboard.
@@ -54,8 +52,9 @@ class ClipboardController @Inject constructor(
    * However, since it's expected for the clipboard to only ever be changed manually by the user,
    * this case ought to be rare and possibly due to another app misbehaving.
    */
-  fun getCurrentClip(): DataProvider<CurrentClip> =
-    dataProviders.createInMemoryDataProvider(CURRENT_CLIP_PROVIDER_ID) { state.get() }
+  fun getCurrentClip(): DataProvider<CurrentClip> = dataProviders.run {
+    state.convertToAutomaticDataProvider(CURRENT_CLIP_PROVIDER_ID)
+  }
 
   /**
    * Copies the specified [text] with a specified human-readable [label] to the user's clipboard,
@@ -67,7 +66,7 @@ class ClipboardController @Inject constructor(
    */
   fun setCurrentClip(label: String, text: String): DataProvider<Any?> {
     val operationCompleted = AtomicBoolean()
-    return dataProviders.createInMemoryDataProvider(SET_CLIP_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(SET_CLIP_PROVIDER_ID) {
       // Only copy the text if it hasn't been copied yet.
       if (!operationCompleted.get()) {
         while (!operationCompleted.compareAndSet(/* expect= */ false, /* update= */ true)) {
@@ -78,9 +77,10 @@ class ClipboardController @Inject constructor(
         // This must use the setter since property syntax seems to break on SDK 30.
         @Suppress("UsePropertyAccessSyntax")
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text))
-        state.set(CurrentClip.SetWithAppText(label, text))
-        asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_CLIP_PROVIDER_ID)
+        state.emit(CurrentClip.SetWithAppText(label, text))
       }
+
+      return@createInMemoryDataProviderAsync AsyncResult.Success(null)
     }
   }
 
@@ -89,11 +89,12 @@ class ClipboardController @Inject constructor(
     // changes, and tries to account for data races (such as when the clipboard changes mid-loop).
     do {
       val currentPrimaryClipText = clipboardManager.primaryClip?.extractText()
-      val oldState = state.get()
+      val oldState = state.value
       val maybeNewState = when (oldState) {
         is CurrentClip.SetWithAppText -> {
           // Check if the current clip is actually what's been set from the Oppia app, or if it's
-          // different (including null which might indicate a non-text clip, or a cleared clipboard).
+          // different (including null which might indicate a non-text clip, or a cleared
+          // clipboard).
           if (currentPrimaryClipText == oldState.text) oldState else CurrentClip.SetWithOtherContent
         }
         // The clipboard state has potentially changed, but the app isn't interested in the change.
@@ -105,9 +106,8 @@ class ClipboardController @Inject constructor(
       if (oldState == maybeNewState) return
     } while (!state.compareAndSet(oldState, maybeNewState))
 
-    // Since the method hasn't ended, the atomic reference has changed and the data provider should
-    // be notified.
-    asyncDataSubscriptionManager.notifyChangeAsync(CURRENT_CLIP_PROVIDER_ID)
+    // No explicit notification is needed since changes to the value will automatically notify
+    // observers.
   }
 
   /**

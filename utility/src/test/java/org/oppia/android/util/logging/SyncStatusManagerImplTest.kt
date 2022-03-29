@@ -37,6 +37,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 
 /** Tests for [SyncStatusManagerImpl]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -79,6 +80,16 @@ class SyncStatusManagerImplTest {
 
     val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
     assertThat(syncStatus).isEqualTo(DATA_UPLOADED)
+  }
+
+  @Test
+  fun testGetSyncStatus_setSyncStatus_toNoConnectivity_returnsNoConnectivity() {
+    val syncStatusProvider = syncStatusManager.getSyncStatus()
+
+    syncStatusManager.setSyncStatus(NO_CONNECTIVITY)
+
+    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
+    assertThat(syncStatus).isEqualTo(NO_CONNECTIVITY)
   }
 
   @Test

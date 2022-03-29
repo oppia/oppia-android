@@ -80,7 +80,7 @@ class LogUploadWorker private constructor(
 
   /** Extracts event logs from the cache store and logs them to the remote service. */
   private suspend fun uploadEvents(): Result {
-    // TODO: Update sync status for these events.
+    // TODO(#4064): Ensure sync status is set correctly when events are being uploaded here.
     return try {
       analyticsController.getEventLogStoreList().forEach { eventLog ->
         eventLogger.logEvent(eventLog)

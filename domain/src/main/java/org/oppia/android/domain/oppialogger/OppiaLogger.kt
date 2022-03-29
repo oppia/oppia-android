@@ -91,23 +91,6 @@ class OppiaLogger @Inject constructor(
     consoleLogger.e(tag, msg, tr)
   }
 
-  /** Returns the context of an event related to exploration. */
-  fun createExplorationContext(
-    topicId: String,
-    storyId: String,
-    explorationId: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
-      .setOpenExplorationActivity(
-        EventLog.ExplorationContext.newBuilder()
-          .setTopicId(topicId)
-          .setStoryId(storyId)
-          .setExplorationId(explorationId)
-          .build()
-      )
-      .build()
-  }
-
   /** Returns the context of the event indicating that the user opened the home activity. */
   fun createOpenHomeContext(): EventLog.Context {
     return EventLog.Context.newBuilder().setOpenHome(true).build()

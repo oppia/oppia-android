@@ -1030,18 +1030,20 @@ class ExplorationProgressController @Inject constructor(
     private var helpIndex = HelpIndex.getDefaultInstance()
     private var availableCardCount: Int = -1
 
+    /**
+     * Initializes this state for event logging for the given [Exploration].
+     *
+     * This allows [startState] to be used.
+     */
     fun initializeEventLogger(exploration: Exploration) {
       // TODO(#4064): Log the 'begin exploration' event.
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
 
-    fun startState() {
-      // TODO(#4064): Log the 'start card' event.
-
-      // Force the card count to update.
-      availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
-    }
-
+    /**
+     * Indicates that a new state has started and to prepare for state-based logging, and logs the
+     * new card change.
+     */
     fun startState(logStartCard: Boolean = true) {
       if (logStartCard) {
         // TODO(#4064): Log the 'start card' event.
@@ -1051,6 +1053,10 @@ class ExplorationProgressController @Inject constructor(
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
 
+    /**
+     * Indicates that a new state has started only if forward progress in the exploration has been
+     * made (i.e. that [availableCardCount] is larger than what was previously known).
+     */
     fun maybeStartState(availableCardCount: Int) {
       // Only start the state if it hasn't already been started.
       if (this.availableCardCount < availableCardCount) {
@@ -1059,10 +1065,12 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
+    /** Ends state-based logging for the current state and logs that the card has ended. */
     fun endState() {
       // TODO(#4064): Log the 'end card' event.
     }
 
+    /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
     fun checkForChangedHintState(newHelpIndex: HelpIndex) {
       if (helpIndex != newHelpIndex) {
         // If the index changed to the new HelpIndex, that implies that whatever is observed in the
@@ -1094,8 +1102,11 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
+    /**
+     * Finishes the current exploration and logs its ending, also disabling any exploration-based
+     * logging capabilities.
+     */
     fun finishExplorationAndLog(isCompletion: Boolean) {
-      // TODO: Add test to make sure only this or the other is logged (but always, including in cases when finishExploration isn't called).
       if (isCompletion) {
         // TODO(#4064): Log the 'finish exploration' event.
       } else {
@@ -1195,6 +1206,13 @@ class ExplorationProgressController @Inject constructor(
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
     ) : ControllerMessage<Any?>()
 
+    /**
+     * [ControllerMessage] to log cases when [HelpIndex] has updated for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed (since that's generally indicative of an
+     * error--hints can't continue to change after the session has ended).
+     */
     data class LogUpdatedHelpIndex(
       val helpIndex: HelpIndex,
       override val sessionId: String,
