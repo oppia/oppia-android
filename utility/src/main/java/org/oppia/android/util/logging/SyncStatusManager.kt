@@ -37,15 +37,15 @@ interface SyncStatusManager {
     DATA_UPLOADED,
 
     /**
-     * Indicates a network error was encountered during analytics upload, and the logs may be
-     * attempted to be re-uploaded at a later time.
-     */
-    NETWORK_ERROR,
-
-    /**
      * Indicates that the network is currently unavailable and that logs will be attempted to be
      * uploaded once connectivity resumes.
      */
-    NO_CONNECTIVITY
+    NO_CONNECTIVITY,
+
+    /**
+     * Indicates a network error was encountered during analytics upload, and the logs may be
+     * attempted to be re-uploaded at a later time.
+     */
+    NETWORK_ERROR
   }
 }

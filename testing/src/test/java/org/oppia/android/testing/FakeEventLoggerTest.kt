@@ -14,32 +14,26 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
+import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.EventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.logging.SyncStatusModule
 
+/** Tests for [FakeEventLogger]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeEventLoggerTest {
 
-  // TODO: Update & finalize tests in this suite.
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
-  @Inject
-  lateinit var eventLogger: EventLogger
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var eventLogger: EventLogger
 
   private val eventLog1 = EventLog.newBuilder().setPriority(Priority.ESSENTIAL).build()
   private val eventLog2 = EventLog.newBuilder().setPriority(Priority.OPTIONAL).build()
@@ -149,97 +143,6 @@ class FakeEventLoggerTest {
     assertThat(eventLogStatus2).isTrue()
   }
 
-  @Test
-  fun testFakeEventLogger_logCachedEvent_returnsEvent() {
-    eventLogger.logCachedEvent(eventLog1)
-    val event = fakeEventLogger.getMostRecentCachedEvent()
-
-    assertThat(event).isEqualTo(eventLog1)
-    assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-  }
-
-  @Test
-  fun testFakeEventLogger_logCachedEventTwice_returnsLatestCachedEvent() {
-    eventLogger.logCachedEvent(eventLog1)
-    eventLogger.logCachedEvent(eventLog2)
-    val event = fakeEventLogger.getMostRecentCachedEvent()
-
-    assertThat(event).isEqualTo(eventLog2)
-    assertThat(event.priority).isEqualTo(Priority.OPTIONAL)
-  }
-
-  @Test
-  fun testFakeEventLogger_logCachedEvent_clearAllCachedEvents_logCachedEventAgain_returnsLatestCachedEvent() { // ktlint-disable max-line-length
-    eventLogger.logCachedEvent(eventLog1)
-    fakeEventLogger.clearAllCachedEvents()
-    eventLogger.logCachedEvent(eventLog2)
-    val event = fakeEventLogger.getMostRecentCachedEvent()
-
-    assertThat(event).isEqualTo(eventLog2)
-    assertThat(event.priority).isEqualTo(Priority.OPTIONAL)
-  }
-
-  @Test
-  fun testFakeEventLogger_logCachedEvent_clearAllCachedEvents_getMostRecent_returnsFailure() {
-    eventLogger.logCachedEvent(eventLog1)
-    fakeEventLogger.clearAllCachedEvents()
-
-    val eventException = assertThrows(NoSuchElementException::class) {
-      fakeEventLogger.getMostRecentCachedEvent()
-    }
-
-    assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
-  }
-
-  @Test
-  fun testFakeEventLogger_clearAllCachedEvents_returnsEmptyList() {
-    fakeEventLogger.clearAllCachedEvents()
-    val isListEmpty = fakeEventLogger.noCachedEventsPresent()
-
-    assertThat(isListEmpty).isTrue()
-  }
-
-  @Test
-  fun testFakeEventLogger_logCachedEvent_clearAllCachedEvents_returnsEmptyList() {
-    eventLogger.logCachedEvent(eventLog1)
-    fakeEventLogger.clearAllCachedEvents()
-    val isListEmpty = fakeEventLogger.noCachedEventsPresent()
-
-    assertThat(isListEmpty).isTrue()
-  }
-
-  @Test
-  fun testFakeEventLogger_logMultipleCachedEvents_clearAllCachedEvents_returnsEmptyList() {
-    eventLogger.logCachedEvent(eventLog1)
-    eventLogger.logCachedEvent(eventLog2)
-    fakeEventLogger.clearAllCachedEvents()
-    val isListEmpty = fakeEventLogger.noCachedEventsPresent()
-
-    assertThat(isListEmpty).isTrue()
-  }
-
-  @Test
-  fun testFakeEventLogger_logCachedEvent_returnsNonEmptyList() {
-    eventLogger.logCachedEvent(eventLog1)
-    val isListEmpty = fakeEventLogger.noCachedEventsPresent()
-
-    assertThat(isListEmpty).isFalse()
-  }
-
-  @Test
-  fun testFakeEventLogger_logMultipleCachedEvents_returnsNonEmptyList() {
-    eventLogger.logCachedEvent(eventLog1)
-    eventLogger.logCachedEvent(eventLog2)
-
-    val eventLogStatus1 = fakeEventLogger.hasCachedEventLogged(eventLog1)
-    val eventLogStatus2 = fakeEventLogger.hasCachedEventLogged(eventLog2)
-    val eventListStatus = fakeEventLogger.noCachedEventsPresent()
-
-    assertThat(eventListStatus).isFalse()
-    assertThat(eventLogStatus1).isTrue()
-    assertThat(eventLogStatus2).isTrue()
-  }
-
   private fun setUpTestApplicationComponent() {
     DaggerFakeEventLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
@@ -263,8 +166,9 @@ class FakeEventLoggerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, LogStorageModule::class, LoggingIdentifierModule::class,
-      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

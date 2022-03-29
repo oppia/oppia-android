@@ -5,15 +5,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
@@ -25,6 +33,7 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.hintsandsolution.HintHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -36,15 +45,6 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onStart
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
-import org.oppia.android.domain.profile.ProfileManagementController
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -524,7 +524,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState?.finishExplorationImpl(
-    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>, isCompletion: Boolean
+    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    isCompletion: Boolean
   ) {
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
@@ -704,7 +705,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun ControllerState.maybeLogUpdatedHelpIndex(
-    helpIndex: HelpIndex, activeSessionId: String
+    helpIndex: HelpIndex,
+    activeSessionId: String
   ) {
     // Only log if the current session is active.
     if (sessionId == activeSessionId) {
@@ -783,7 +785,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState.finishLoadExploration(
-    exploration: Exploration, progress: ExplorationProgress
+    exploration: Exploration,
+    progress: ExplorationProgress
   ) {
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
@@ -1030,18 +1033,20 @@ class ExplorationProgressController @Inject constructor(
     private var helpIndex = HelpIndex.getDefaultInstance()
     private var availableCardCount: Int = -1
 
+    /**
+     * Initializes this state for event logging for the given [Exploration].
+     *
+     * This allows [startState] to be used.
+     */
     fun initializeEventLogger(exploration: Exploration) {
       // TODO(#4064): Log the 'begin exploration' event.
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
 
-    fun startState() {
-      // TODO(#4064): Log the 'start card' event.
-
-      // Force the card count to update.
-      availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
-    }
-
+    /**
+     * Indicates that a new state has started and to prepare for state-based logging, and logs the
+     * new card change.
+     */
     fun startState(logStartCard: Boolean = true) {
       if (logStartCard) {
         // TODO(#4064): Log the 'start card' event.
@@ -1051,6 +1056,10 @@ class ExplorationProgressController @Inject constructor(
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
 
+    /**
+     * Indicates that a new state has started only if forward progress in the exploration has been
+     * made (i.e. that [availableCardCount] is larger than what was previously known).
+     */
     fun maybeStartState(availableCardCount: Int) {
       // Only start the state if it hasn't already been started.
       if (this.availableCardCount < availableCardCount) {
@@ -1059,10 +1068,12 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
+    /** Ends state-based logging for the current state and logs that the card has ended. */
     fun endState() {
       // TODO(#4064): Log the 'end card' event.
     }
 
+    /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
     fun checkForChangedHintState(newHelpIndex: HelpIndex) {
       if (helpIndex != newHelpIndex) {
         // If the index changed to the new HelpIndex, that implies that whatever is observed in the
@@ -1094,8 +1105,11 @@ class ExplorationProgressController @Inject constructor(
       }
     }
 
+    /**
+     * Finishes the current exploration and logs its ending, also disabling any exploration-based
+     * logging capabilities.
+     */
     fun finishExplorationAndLog(isCompletion: Boolean) {
-      // TODO: Add test to make sure only this or the other is logged (but always, including in cases when finishExploration isn't called).
       if (isCompletion) {
         // TODO(#4064): Log the 'finish exploration' event.
       } else {
@@ -1195,11 +1209,18 @@ class ExplorationProgressController @Inject constructor(
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
     ) : ControllerMessage<Any?>()
 
+    /**
+     * [ControllerMessage] to log cases when [HelpIndex] has updated for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed (since that's generally indicative of an
+     * error--hints can't continue to change after the session has ended).
+     */
     data class LogUpdatedHelpIndex(
       val helpIndex: HelpIndex,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
-    ): ControllerMessage<Any?>()
+    ) : ControllerMessage<Any?>()
 
     /**
      * [ControllerMessage] to ensure a successfully saved checkpoint is reflected in other parts of

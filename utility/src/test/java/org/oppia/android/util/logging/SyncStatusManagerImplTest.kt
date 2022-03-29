@@ -24,6 +24,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -79,6 +80,16 @@ class SyncStatusManagerImplTest {
 
     val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
     assertThat(syncStatus).isEqualTo(DATA_UPLOADED)
+  }
+
+  @Test
+  fun testGetSyncStatus_setSyncStatus_toNoConnectivity_returnsNoConnectivity() {
+    val syncStatusProvider = syncStatusManager.getSyncStatus()
+
+    syncStatusManager.setSyncStatus(NO_CONNECTIVITY)
+
+    val syncStatus = monitorFactory.waitForNextSuccessfulResult(syncStatusProvider)
+    assertThat(syncStatus).isEqualTo(NO_CONNECTIVITY)
   }
 
   @Test

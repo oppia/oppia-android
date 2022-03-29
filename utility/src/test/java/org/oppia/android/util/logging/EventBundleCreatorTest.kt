@@ -2,663 +2,1146 @@ package org.oppia.android.util.logging
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.os.BundleSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.CardContext
+import org.oppia.android.app.model.EventLog.ConceptCardContext
+import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.HintContext
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext
+import org.oppia.android.app.model.EventLog.PlayVoiceOverContext
+import org.oppia.android.app.model.EventLog.Priority.ESSENTIAL
+import org.oppia.android.app.model.EventLog.Priority.OPTIONAL
+import org.oppia.android.app.model.EventLog.QuestionContext
+import org.oppia.android.app.model.EventLog.RevisionCardContext
+import org.oppia.android.app.model.EventLog.StoryContext
+import org.oppia.android.app.model.EventLog.SubmitAnswerContext
+import org.oppia.android.app.model.EventLog.TopicContext
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 
-private const val TEST_TIMESTAMP = 1556094120000
-private const val TEST_TOPIC_ID = "test_topicId"
-private const val TEST_STORY_ID = "test_storyId"
-private const val TEST_EXPLORATION_ID = "test_explorationId"
-private const val TEST_QUESTION_ID = "test_questionId"
-private const val TEST_SKILL_ID_ONE = "test_skillId_one"
-private const val TEST_SKILL_ID_TWO = "test_skillId_two"
-private const val TEST_SUB_TOPIC_ID = 1
-private const val TEST_SKILL_ID = "test_skillId"
-private const val TEST_LEARNER_ID = "test_learnerId"
-private const val TEST_DEVICE_ID = "test_deviceId"
-private const val TEST_SESSION_ID = "test_sessionId"
-private const val TEST_EXPLORATION_VERSION = "test_exploration_version"
-private const val TEST_STATE_NAME = "test_state_name"
-private const val TEST_HINT_INDEX = "test_hint_index"
-private const val TEST_IS_ANSWER_CORRECT = true
-private const val TEST_CONTENT_ID = "test_contentId"
-
+/**
+ * Tests for [EventBundleCreator].
+ *
+ * Note that some of the properties of [EventLog]s logged via [EventBundleCreator] will 'namespace'
+ * their property names (for cases when properties are nested). The tests of this suite include
+ * verification for property names (based on the fact that certain properties need to be present in
+ * the filled [Bundle] in order for the test to pass since it's verifying values corresponding to
+ * those property names).
+ */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = EventBundleCreatorTest.TestApplication::class)
 class EventBundleCreatorTest {
+  private companion object {
+    private const val TEST_TIMESTAMP_1 = 1556094120000
+    private const val TEST_TIMESTAMP_2 = 1234567898765
+    private const val TEST_TOPIC_ID = "test_topic_id"
+    private const val TEST_STORY_ID = "test_story_id"
+    private const val TEST_EXPLORATION_ID = "test_exploration_id"
+    private const val TEST_QUESTION_ID = "test_question_id"
+    private const val TEST_SKILL_ID_1 = "test_skill_id_1"
+    private const val TEST_SKILL_ID_2 = "test_skill_id_2"
+    private const val TEST_SUB_TOPIC_INDEX = 1
+    private const val TEST_SUB_TOPIC_INDEX_STR = "1"
+    private const val TEST_LEARNER_ID = "test_learner_id"
+    private const val TEST_INSTALLATION_ID = "test_installation_id"
+    private const val TEST_LEARNER_SESSION_ID = "test_session_id"
+    private const val TEST_EXPLORATION_VERSION = 5
+    private const val TEST_EXPLORATION_VERSION_STR = "5"
+    private const val TEST_STATE_NAME = "test_state_name"
+    private const val TEST_HINT_INDEX = 1
+    private const val TEST_HINT_INDEX_STR = "1"
+    private const val TEST_IS_ANSWER_CORRECT = true
+    private const val TEST_IS_ANSWER_CORRECT_STR = "true"
+    private const val TEST_CONTENT_ID = "test_content_id"
+  }
 
-  // TODO: fix these tests (they need to be updated to match the new proto structure).
+  @Inject
+  lateinit var eventBundleCreator: EventBundleCreator
 
-  private val eventBundleCreator = EventBundleCreator()
-  /*private val GENERIC_DATA = EventLog.GenericData.newBuilder()
-    .setDeviceId(TEST_DEVICE_ID)
-    .setLearnerId(TEST_LEARNER_ID)
-    .build()
+  @After
+  fun tearDown() {
+    TestModule.enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+  }
 
-  private val EXPLORATION_DATA = EventLog.ExplorationData.newBuilder()
-    .setSessionId(TEST_SESSION_ID)
-    .setExplorationId(TEST_EXPLORATION_ID)
-    .setExplorationVersion(TEST_EXPLORATION_VERSION)
-    .setStateName(TEST_STATE_NAME)
-    .build()
+  @Test
+  fun testFillEventBundle_defaultEvent_defaultsBundleAndReturnsUnknownActivityContext() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
 
-  private val eventLogExplorationContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenExplorationActivity(
-          EventLog.ExplorationContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .setExplorationId(TEST_EXPLORATION_ID)
-            .setStoryId(TEST_STORY_ID)
-            .build()
-        )
-        .build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val typeName = eventBundleCreator.fillEventBundle(EventLog.getDefaultInstance(), bundle)
 
-  private val eventLogQuestionContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenQuestionPlayer(
-          EventLog.QuestionContext.newBuilder()
-            .setQuestionId(TEST_QUESTION_ID)
-            .addAllSkillId(listOf(TEST_SKILL_ID_ONE, TEST_SKILL_ID_TWO))
-            .build()
-        )
-        .build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    assertThat(typeName).isEqualTo("unknown_activity_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(0)
+    assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
+  }
 
-  private val eventLogTopicContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenInfoTab(
-          EventLog.TopicContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .build()
-        )
-        .build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+  @Test
+  fun testFillEventBundle_eventWithDefaultedContext_fillsPriorityAndTimeAndRetsUnknownContext() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val eventLog = createEventLog(timestamp = TEST_TIMESTAMP_1, priority = ESSENTIAL)
 
-  private val eventLogStoryContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenStoryActivity(
-          EventLog.StoryContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .setStoryId(TEST_STORY_ID)
-            .build()
-        )
-        .build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
 
-  private val eventLogConceptCardContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenConceptCard(
-          EventLog.ConceptCardContext.newBuilder()
-            .setSkillId(TEST_SKILL_ID_ONE)
-            .build()
-        )
-        .build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    assertThat(typeName).isEqualTo("unknown_activity_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
 
-  private val eventLogRevisionCardContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenRevisionCard(
-          EventLog.RevisionCardContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .setSubTopicId(TEST_SUB_TOPIC_ID)
-            .build()
-        )
-        .build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+  @Test
+  fun testFillEventBundle_eventWithDifferentTimestamp_savesDifferentTimestampInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val eventLog = createEventLog(timestamp = TEST_TIMESTAMP_2)
 
-  private val eventLogStartCardContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.START_CARD)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setStartCardContext(
-          EventLog.StartCardContext.newBuilder()
-            .setSkillId(TEST_SKILL_ID)
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
 
-  private val eventLogEndCardContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.END_CARD)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setEndCardContext(
-          EventLog.EndCardContext.newBuilder()
-            .setSkillId(TEST_SKILL_ID)
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_2)
+  }
 
-  private val eventLogHintOfferedContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.HINT_OFFERED)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setHintOfferedContext(
-          EventLog.HintOfferedContext.newBuilder()
-            .setHintIndex(TEST_HINT_INDEX)
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+  @Test
+  fun testFillEventBundle_eventWithDifferentPriority_savesDifferentPriorityInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val eventLog = createEventLog(priority = OPTIONAL)
 
-  private val eventLogAccessHintContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.ACCESS_HINT)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setAccessHintContext(
-          EventLog.AccessHintContext.newBuilder()
-            .setHintIndex(TEST_HINT_INDEX)
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    eventBundleCreator.fillEventBundle(eventLog, bundle)
 
-  private val eventLogSolutionOfferedContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.SOLUTION_OFFERED)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setSolutionOfferedContext(
-          EventLog.SolutionOfferedContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    assertThat(bundle).string("priority").isEqualTo("optional")
+  }
 
-  private val eventLogAccessSolutionContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.ACCESS_SOLUTION)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setAccessSolutionContext(
-          EventLog.AccessSolutionContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+  @Test
+  fun testFillEventBundle_openExpActivityEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
 
-  private val eventLogSubmitAnswerContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.SUBMIT_ANSWER)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setSubmitAnswerContext(
-          EventLog.SubmitAnswerContext.newBuilder()
-            .setIsAnswerCorrect(TEST_IS_ANSWER_CORRECT)
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val eventLog = createEventLog(context = createOpenExplorationActivity())
 
-  private val eventLogPlayVoiceOverContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.PLAY_VOICE_OVER)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setPlayVoiceOverContext(
-          EventLog.PlayVoiceOverContext.newBuilder()
-            .setContentId(TEST_CONTENT_ID)
-            .setGenericData(GENERIC_DATA)
-            .setExplorationData(EXPLORATION_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_exploration_activity")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
 
-  private val eventLogAppInBackgroundContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.APP_IN_BACKGROUND)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setAppInBackgroundContext(
-          EventLog.AppInBackgroundContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+  @Test
+  fun testFillEventBundle_openExpActivityEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
 
-  private val eventLogAppInForegroundContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.APP_IN_FOREGROUND)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setAppInForegroundContext(
-          EventLog.AppInForegroundContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val eventLog = createEventLog(context = createOpenExplorationActivity())
 
-  private val eventLogExitExplorationContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EXIT_EXPLORATION)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setExitExplorationContext(
-          EventLog.ExitExplorationContext.newBuilder()
-            .setExplorationData(EXPLORATION_DATA)
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_exploration_activity")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
 
-  private val eventLogFinishExplorationContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.FINISH_EXPLORATION)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setFinishExplorationContext(
-          EventLog.FinishExplorationContext.newBuilder()
-            .setExplorationData(EXPLORATION_DATA)
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+  @Test
+  fun testFillEventBundle_openInfoTabContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
 
-  private val eventLogResumeExplorationContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.RESUME_EXPLORATION)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setResumeExplorationContext(
-          EventLog.ResumeExplorationContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val eventLog = createEventLog(context = createOpenInfoTab())
 
-  private val eventLogStartOverExplorationContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.START_OVER_EXPLORATION)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setStartOverExplorationContext(
-          EventLog.StartOverExplorationContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_info_tab")
+    assertThat(bundle).hasSize(3)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
 
-  private val eventLogDeleteProfileContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.DELETE_PROFILE)
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setDeleteProfileContext(
-          EventLog.DeleteProfileContext.newBuilder()
-            .setGenericData(GENERIC_DATA)
-            .build()
-        ).build()
-    )
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()*/
+  @Test
+  fun testFillEventBundle_openLessonsTabContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
 
-  private val eventLogNoContext = EventLog.newBuilder()
-    .setTimestamp(TEST_TIMESTAMP)
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .build()
+    val eventLog = createEventLog(context = createOpenLessonsTab())
 
-  @Before
-  fun setUp() {
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_lessons_tab")
+    assertThat(bundle).hasSize(3)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_openPracticeTabContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenPracticeTab())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_practice_tab")
+    assertThat(bundle).hasSize(3)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_openRevisionTabContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenRevisionTab())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_revision_tab")
+    assertThat(bundle).hasSize(3)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_openQuestionPlayerContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenQuestionPlayer())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_question_player")
+    assertThat(bundle).hasSize(4)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("question_id").isEqualTo(TEST_QUESTION_ID)
+    assertThat(bundle).string("skill_ids").isEqualTo("$TEST_SKILL_ID_1,$TEST_SKILL_ID_2")
+  }
+
+  @Test
+  fun testFillEventBundle_openStoryActivityContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenStoryActivity())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_story_activity")
+    assertThat(bundle).hasSize(4)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_openConceptCardContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenConceptCard())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_concept_card")
+    assertThat(bundle).hasSize(3)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+  }
+
+  @Test
+  fun testFillEventBundle_openRevisionCardContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenRevisionCard())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_revision_card")
+    assertThat(bundle).hasSize(4)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("subtopic_index").isEqualTo(TEST_SUB_TOPIC_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_startCardContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createStartCardContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("start_card_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+  }
+
+  @Test
+  fun testFillEventBundle_startCardContextEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createStartCardContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("start_card_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+  }
+
+  @Test
+  fun testFillEventBundle_endCardContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createEndCardContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("end_card_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+  }
+
+  @Test
+  fun testFillEventBundle_endCardContextEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createEndCardContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("end_card_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+  }
+
+  @Test
+  fun testFillEventBundle_hintOfferedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createHintOfferedContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("hint_offered_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_hintOfferedEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createHintOfferedContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("hint_offered_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_accessHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAccessHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("access_hint_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_accessHintContextEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAccessHintContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("access_hint_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_solutionOfferedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createSolutionOfferedContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("solution_offered_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_solutionOfferedEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createSolutionOfferedContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("solution_offered_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_accessSolutionEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAccessSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("access_solution_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_accessSolutionEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAccessSolutionContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("access_solution_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_submitAnswerEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createSubmitAnswerContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("submit_answer_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("is_answer_correct").isEqualTo(TEST_IS_ANSWER_CORRECT_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_submitAnswerEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createSubmitAnswerContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("submit_answer_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("is_answer_correct").isEqualTo(TEST_IS_ANSWER_CORRECT_STR)
+  }
+
+  @Test
+  fun testFillEventBundle_playVoiceOverEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createPlayVoiceOverContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("play_voice_over_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_playVoiceOverEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createPlayVoiceOverContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("play_voice_over_context")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("ed_session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_appInBackgroundEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAppInBackgroundContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("app_in_background_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_appInBackgroundEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAppInBackgroundContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("app_in_background_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_appInForegroundEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAppInForegroundContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("app_in_foreground_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_appInForegroundEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createAppInForegroundContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("app_in_foreground_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_exitExplorationEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createExitExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("exit_exploration_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_exitExplorationEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createExitExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("exit_exploration_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_finishExplorationEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createFinishExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("finish_exploration_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_finishExplorationEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createFinishExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("finish_exploration_context")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_resumeExplorationEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createResumeExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("resume_exploration_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_resumeExplorationEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createResumeExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("resume_exploration_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_startOverExpEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createStartOverExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("start_over_exploration_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_startOverExpEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createStartOverExplorationContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("start_over_exploration_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_deleteProfileEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createDeleteProfileContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("delete_profile_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_deleteProfileEvent_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createDeleteProfileContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("delete_profile_context")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_openHomeContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenHomeContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_home")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_openProfileChooserContextEvent_fillsAllFieldsInBundleAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createOpenProfileChooserContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("open_profile_chooser")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_failedEventInstallId_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("failed_analytics_log")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  @Test
+  fun testFillEventBundle_failedEventInstallId_studyOn_fillsOnlyNonSensitiveFieldsAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("failed_analytics_log")
+    assertThat(bundle).hasSize(2)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+  }
+
+  private fun createEventLog(
+    timestamp: Long = TEST_TIMESTAMP_1,
+    priority: EventLog.Priority = ESSENTIAL,
+    context: EventLog.Context = EventLog.Context.getDefaultInstance()
+  ) = EventLog.newBuilder().apply {
+    this.timestamp = timestamp
+    this.priority = priority
+    this.context = context
+  }.build()
+
+  private fun createOpenExplorationActivity(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setOpenExplorationActivity)
+
+  private fun createOpenInfoTab(topicContext: TopicContext = createTopicContext()) =
+    createEventContext(topicContext, EventContextBuilder::setOpenInfoTab)
+
+  private fun createOpenLessonsTab(topicContext: TopicContext = createTopicContext()) =
+    createEventContext(topicContext, EventContextBuilder::setOpenLessonsTab)
+
+  private fun createOpenPracticeTab(topicContext: TopicContext = createTopicContext()) =
+    createEventContext(topicContext, EventContextBuilder::setOpenPracticeTab)
+
+  private fun createOpenRevisionTab(topicContext: TopicContext = createTopicContext()) =
+    createEventContext(topicContext, EventContextBuilder::setOpenRevisionTab)
+
+  private fun createOpenQuestionPlayer(questionContext: QuestionContext = createQuestionContext()) =
+    createEventContext(questionContext, EventContextBuilder::setOpenQuestionPlayer)
+
+  private fun createOpenStoryActivity(storyContext: StoryContext = createStoryContext()) =
+    createEventContext(storyContext, EventContextBuilder::setOpenStoryActivity)
+
+  private fun createOpenConceptCard(
+    conceptCardContext: ConceptCardContext = createConceptCardContext()
+  ) = createEventContext(conceptCardContext, EventContextBuilder::setOpenConceptCard)
+
+  private fun createOpenRevisionCard(
+    revisionCardContext: RevisionCardContext = createRevisionCardContext()
+  ) = createEventContext(revisionCardContext, EventContextBuilder::setOpenRevisionCard)
+
+  private fun createStartCardContext(cardContext: CardContext = createCardContext()) =
+    createEventContext(cardContext, EventContextBuilder::setStartCardContext)
+
+  private fun createEndCardContext(cardContext: CardContext = createCardContext()) =
+    createEventContext(cardContext, EventContextBuilder::setEndCardContext)
+
+  private fun createHintOfferedContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setHintOfferedContext)
+
+  private fun createAccessHintContext(hintContext: HintContext = createHintContext()) =
+    createEventContext(hintContext, EventContextBuilder::setAccessHintContext)
+
+  private fun createSolutionOfferedContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setSolutionOfferedContext)
+
+  private fun createAccessSolutionContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setAccessSolutionContext)
+
+  private fun createSubmitAnswerContext(
+    submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()
+  ) = createEventContext(submitAnswerContext, EventContextBuilder::setSubmitAnswerContext)
+
+  private fun createPlayVoiceOverContext(
+    playVoiceOverContext: PlayVoiceOverContext = createPlayVoiceOverContextDetails()
+  ) = createEventContext(playVoiceOverContext, EventContextBuilder::setPlayVoiceOverContext)
+
+  private fun createAppInBackgroundContext(
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
+  ) = createEventContext(learnerDetails, EventContextBuilder::setAppInBackgroundContext)
+
+  private fun createAppInForegroundContext(
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
+  ) = createEventContext(learnerDetails, EventContextBuilder::setAppInForegroundContext)
+
+  private fun createExitExplorationContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setExitExplorationContext)
+
+  private fun createFinishExplorationContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setFinishExplorationContext)
+
+  private fun createResumeExplorationContext(
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
+  ) = createEventContext(learnerDetails, EventContextBuilder::setResumeExplorationContext)
+
+  private fun createStartOverExplorationContext(
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
+  ) = createEventContext(learnerDetails, EventContextBuilder::setStartOverExplorationContext)
+
+  private fun createDeleteProfileContext(
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
+  ) = createEventContext(learnerDetails, EventContextBuilder::setDeleteProfileContext)
+
+  private fun createOpenHomeContext() =
+    createEventContext(value = true, EventContextBuilder::setOpenHome)
+
+  private fun createOpenProfileChooserContext() =
+    createEventContext(value = true, EventContextBuilder::setOpenProfileChooser)
+
+  private fun createInstallationIdForFailedAnalyticsLogContext(
+    installationId: String = TEST_INSTALLATION_ID
+  ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
+
+  private fun <T> createEventContext(
+    value: T,
+    setter: EventContextBuilder.(T) -> EventContextBuilder
+  ) = EventLog.Context.newBuilder().setter(value).build()
+
+  private fun createExplorationContext(
+    topicId: String = TEST_TOPIC_ID,
+    storyId: String = TEST_STORY_ID,
+    explorationId: String = TEST_EXPLORATION_ID,
+    sessionId: String = TEST_LEARNER_SESSION_ID,
+    explorationVersion: Int = TEST_EXPLORATION_VERSION,
+    stateName: String = TEST_STATE_NAME,
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
+  ) = ExplorationContext.newBuilder().apply {
+    this.topicId = topicId
+    this.storyId = storyId
+    this.explorationId = explorationId
+    this.sessionId = sessionId
+    this.explorationVersion = explorationVersion
+    this.stateName = stateName
+    this.learnerDetails = learnerDetails
+  }.build()
+
+  private fun createLearnerDetailsContext(
+    learnerId: String = TEST_LEARNER_ID,
+    installId: String = TEST_INSTALLATION_ID
+  ) = LearnerDetailsContext.newBuilder().apply {
+    this.learnerId = learnerId
+    this.installId = installId
+  }.build()
+
+  private fun createTopicContext(topicId: String = TEST_TOPIC_ID) =
+    TopicContext.newBuilder().apply { this.topicId = topicId }.build()
+
+  private fun createQuestionContext(
+    questionId: String = TEST_QUESTION_ID,
+    skillIds: List<String> = listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+  ) = QuestionContext.newBuilder().apply {
+    this.questionId = questionId
+    addAllSkillId(skillIds)
+  }.build()
+
+  private fun createStoryContext(
+    topicId: String = TEST_TOPIC_ID,
+    storyId: String = TEST_STORY_ID
+  ) = StoryContext.newBuilder().apply {
+    this.topicId = topicId
+    this.storyId = storyId
+  }.build()
+
+  private fun createConceptCardContext(skillId: String = TEST_SKILL_ID_1) =
+    ConceptCardContext.newBuilder().apply { this.skillId = skillId }.build()
+
+  private fun createRevisionCardContext(
+    topicId: String = TEST_TOPIC_ID,
+    subTopicIndex: Int = TEST_SUB_TOPIC_INDEX
+  ) = RevisionCardContext.newBuilder().apply {
+    this.topicId = topicId
+    subTopicId = subTopicIndex
+  }.build()
+
+  private fun createCardContext(
+    explorationDetails: ExplorationContext = createExplorationContext(),
+    skillId: String = TEST_SKILL_ID_1
+  ) = CardContext.newBuilder().apply {
+    this.explorationDetails = explorationDetails
+    this.skillId = skillId
+  }.build()
+
+  private fun createHintContext(
+    explorationDetails: ExplorationContext = createExplorationContext(),
+    hintIndex: Int = TEST_HINT_INDEX
+  ) = HintContext.newBuilder().apply {
+    this.explorationDetails = explorationDetails
+    this.hintIndex = hintIndex
+  }.build()
+
+  private fun createSubmitAnswerContextDetails(
+    explorationDetails: ExplorationContext = createExplorationContext(),
+    isAnswerCorrect: Boolean = TEST_IS_ANSWER_CORRECT
+  ) = SubmitAnswerContext.newBuilder().apply {
+    this.explorationDetails = explorationDetails
+    this.isAnswerCorrect = isAnswerCorrect
+  }.build()
+
+  private fun createPlayVoiceOverContextDetails(
+    explorationDetails: ExplorationContext = createExplorationContext(),
+    contentId: String = TEST_CONTENT_ID
+  ) = PlayVoiceOverContext.newBuilder().apply {
+    this.explorationDetails = explorationDetails
+    this.contentId = contentId
+  }.build()
+
+  private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
     setUpTestApplicationComponent()
   }
 
-  /*@Test
-  fun testBundleCreation_logEvent_withExplorationContext_isSuccessful() {
-    val eventBundle = EventBundleCreator().createEventBundle(eventLogExplorationContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
-    assertThat(eventBundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY)).isEqualTo(TEST_EXPLORATION_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withQuestionContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogQuestionContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(QUESTION_ID_KEY)).isEqualTo(TEST_QUESTION_ID)
-    assertThat(eventBundle.get(SKILL_ID_KEY))
-      .isEqualTo(listOf(TEST_SKILL_ID_ONE, TEST_SKILL_ID_TWO).joinToString())
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withTopicContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogTopicContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withStoryContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogStoryContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
-    assertThat(eventBundle.get(STORY_ID_KEY)).isEqualTo(TEST_STORY_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withConceptCardContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogConceptCardContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(SKILL_ID_KEY)).isEqualTo(TEST_SKILL_ID_ONE)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withRevisionCardContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogRevisionCardContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
-    assertThat(eventBundle.get(TOPIC_ID_KEY)).isEqualTo(TEST_TOPIC_ID)
-    assertThat(eventBundle.get(SUB_TOPIC_ID_KEY)).isEqualTo(TEST_SUB_TOPIC_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withStartCardContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogStartCardContext)
-
-    assertThat(eventBundle.get(START_CARD_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(SKILL_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SKILL_ID)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withEndCardContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogEndCardContext)
-
-    assertThat(eventBundle.get(END_CARD_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(SKILL_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SKILL_ID)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withHintOfferedContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogHintOfferedContext)
-
-    assertThat(eventBundle.get(HINT_OFFERED_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(HINT_INDEX_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_HINT_INDEX)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withAccessHintContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogAccessHintContext)
-
-    assertThat(eventBundle.get(ACCESS_HINT_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(HINT_INDEX_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_HINT_INDEX)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withSolutionOfferedContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogSolutionOfferedContext)
-
-    assertThat(eventBundle.get(SOLUTION_OFFERED_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withAccessSolutionContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogAccessSolutionContext)
-
-    assertThat(eventBundle.get(ACCESS_SOLUTION_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withSubmitAnswerContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogSubmitAnswerContext)
-
-    assertThat(eventBundle.get(SUBMIT_ANSWER_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(ANSWER_LABEL_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_IS_ANSWER_CORRECT.toString()
-    )
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withPlayVoiceOverContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogPlayVoiceOverContext)
-
-    assertThat(eventBundle.get(PLAY_VOICE_OVER_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(CONTENT_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_CONTENT_ID)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withAppInBackgroundContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogAppInBackgroundContext)
-
-    assertThat(eventBundle.get(APP_IN_BACKGROUND_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withAppInForegroundContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogAppInForegroundContext)
-
-    assertThat(eventBundle.get(APP_IN_FOREGROUND_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withExitExplorationContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogExitExplorationContext)
-
-    assertThat(eventBundle.get(EXIT_EXPLORATION_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-    assertThat(eventBundle.get(SESSION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_SESSION_ID)
-    assertThat(eventBundle.get(EXPLORATION_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_EXPLORATION_ID)
-    assertThat(eventBundle.get(EXPLORATION_VERSION_KEY_LEARNER_ANALYTICS)).isEqualTo(
-      TEST_EXPLORATION_VERSION
-    )
-    assertThat(eventBundle.get(STATE_NAME_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_STATE_NAME)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withFinishExplorationContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogFinishExplorationContext)
-
-    assertThat(eventBundle.get(FINISH_EXPLORATION_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withResumeExplorationContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogResumeExplorationContext)
-
-    assertThat(eventBundle.get(RESUME_EXPLORATION_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withStartOverExplorationContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogStartOverExplorationContext)
-
-    assertThat(eventBundle.get(START_OVER_EXPLORATION_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-  }
-
-  @Test
-  fun testBundleCreation_logEvent_withDeleteProfileContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogDeleteProfileContext)
-
-    assertThat(eventBundle.get(DELETE_PROFILE_TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(DEVICE_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_DEVICE_ID)
-    assertThat(eventBundle.get(LEARNER_ID_KEY_LEARNER_ANALYTICS)).isEqualTo(TEST_LEARNER_ID)
-  }*/
-
-  @Test
-  fun testBundleCreation_logEvent_withNoContext_isSuccessful() {
-    val eventBundle = eventBundleCreator.createEventBundle(eventLogNoContext)
-
-    assertThat(eventBundle.get(TIMESTAMP_KEY)).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventBundle.get(PRIORITY_KEY)).isEqualTo(EventLog.Priority.ESSENTIAL.toString())
+  private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
+    TestModule.enableLearnerStudyAnalytics = true
+    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    internal companion object {
+      // This is expected to be off by default, so this helps the tests above confirm that the
+      // feature's default value is, indeed, off.
+      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+    }
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
+    }
+
+    // The scoping here is to ensure changes to the module value above don't change the parameter
+    // within the same application instance.
+    @Provides
+    @Singleton
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      // Snapshot the value so that it doesn't change between injection and use.
+      val enableFeature = enableLearnerStudyAnalytics
+      return object : PlatformParameterValue<Boolean> {
+        override val value: Boolean = enableFeature
+      }
     }
   }
 
@@ -674,6 +1157,18 @@ class EventBundleCreatorTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(eventBundleCreatorTest: EventBundleCreatorTest)
+    fun inject(test: EventBundleCreatorTest)
+  }
+
+  class TestApplication : Application() {
+    private val component: TestApplicationComponent by lazy {
+      DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: EventBundleCreatorTest) {
+      component.inject(test)
+    }
   }
 }

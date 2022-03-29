@@ -42,6 +42,7 @@ class FirebaseEventLogger private constructor(
     }
   }
 
+  /** Application-scoped injectable factory for creating new [FirebaseEventLogger]s. */
   @SuppressLint("MissingPermission") // This is a false warning probably due to the IJwB plugin.
   class Factory @Inject constructor(
     private val context: Context,
@@ -52,6 +53,11 @@ class FirebaseEventLogger private constructor(
       FirebaseAnalytics.getInstance(context.applicationContext)
     }
 
+    /**
+     * Returns a new [FirebaseEventLogger] for the current application context.
+     *
+     * Generally, only one of these needs to be created per application.
+     */
     fun create(): EventLogger =
       FirebaseEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
   }
