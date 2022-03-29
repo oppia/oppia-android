@@ -165,9 +165,6 @@ class FakeEventLoggerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, LoggingIdentifierModule::class,
-      FakeOppiaClockModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
     ]
   )

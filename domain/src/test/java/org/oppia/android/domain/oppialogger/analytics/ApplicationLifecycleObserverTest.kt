@@ -44,6 +44,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusModule
 
 /** Tests for [ApplicationLifecycleObserver]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -181,7 +182,8 @@ class ApplicationLifecycleObserverTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

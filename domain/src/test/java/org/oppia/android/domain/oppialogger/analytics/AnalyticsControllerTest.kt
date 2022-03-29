@@ -41,6 +41,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -471,13 +475,11 @@ class AnalyticsControllerTest {
         )
       )
     )
-
-    // TODO(#4064): Ensure that sync status changes here.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
+    assertThat(fakeSyncStatusManager.getSyncStatuses()).containsExactly(NO_CONNECTIVITY)
   }
 
   @Test
-  fun testController_logEvent_afterCompletion_verifySyncStatusIsUnchanged() {
+  fun testController_logEvent_verifySyncStatusChangesToRepresentLoggedEvent() {
     analyticsController.logImportantEvent(
       1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
@@ -488,24 +490,8 @@ class AnalyticsControllerTest {
       )
     )
 
-    // TODO(#4064): Ensure that sync status changes here.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
-  }
-
-  @Test
-  fun testController_logEvent_beforeCompletion_verifySyncStatusIsUnchanged() {
-    analyticsController.logImportantEvent(
-      1556094120000,
-      oppiaLogger.createOpenQuestionPlayerContext(
-        TEST_QUESTION_ID,
-        listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
-      )
-    )
-
-    // TODO(#4064): Ensure that sync status changes here.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
+    val syncStatuses = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(syncStatuses).containsExactly(DATA_UPLOADING, DATA_UPLOADED)
   }
 
   private fun setUpTestApplicationComponent() {
