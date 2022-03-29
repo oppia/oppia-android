@@ -15,6 +15,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -102,11 +103,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
       ).toLiveData().observe(
         activity,
         Observer {
-          if (it.isFailure()) {
+          if (it is AsyncResult.Failure) {
             oppiaLogger.e(
-              "ProfileEditActivityPresenter",
-              "Failed to updated allow download access",
-              it.getErrorOrNull()!!
+              "ProfileEditActivityPresenter", "Failed to updated allow download access", it.error
             )
           }
         }
@@ -135,7 +134,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       .observe(
         fragment,
         Observer {
-          if (it.isSuccess()) {
+          if (it is AsyncResult.Success) {
             if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
               val intent =
                 Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)

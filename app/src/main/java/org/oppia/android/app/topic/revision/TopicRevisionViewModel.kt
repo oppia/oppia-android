@@ -54,14 +54,14 @@ class TopicRevisionViewModel @Inject constructor(
   }
 
   private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    if (topic.isFailure()) {
-      oppiaLogger.e(
-        "TopicRevisionFragment",
-        "Failed to retrieve topic",
-        topic.getErrorOrNull()!!
-      )
+    return when (topic) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("TopicRevisionFragment", "Failed to retrieve topic", topic.error)
+        Topic.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Topic.getDefaultInstance()
+      is AsyncResult.Success -> topic.value
     }
-    return topic.getOrDefault(Topic.getDefaultInstance())
   }
 
   fun setTopicId(topicId: String) {

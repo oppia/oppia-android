@@ -54,14 +54,16 @@ class AdministratorControlsViewModel @Inject constructor(
   private fun processGetDeviceSettingsResult(
     deviceSettingsResult: AsyncResult<DeviceSettings>
   ): DeviceSettings {
-    if (deviceSettingsResult.isFailure()) {
-      oppiaLogger.e(
-        "AdministratorControlsFragment",
-        "Failed to retrieve profile",
-        deviceSettingsResult.getErrorOrNull()!!
-      )
+    return when (deviceSettingsResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "AdministratorControlsFragment", "Failed to retrieve profile", deviceSettingsResult.error
+        )
+        DeviceSettings.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> DeviceSettings.getDefaultInstance()
+      is AsyncResult.Success -> deviceSettingsResult.value
     }
-    return deviceSettingsResult.getOrDefault(DeviceSettings.getDefaultInstance())
   }
 
   private fun processAdministratorControlsList(
