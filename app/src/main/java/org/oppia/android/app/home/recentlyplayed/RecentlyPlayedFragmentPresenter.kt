@@ -288,7 +288,10 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    topicId: String, storyId: String, explorationId: String, canHavePartialProgressSaved: Boolean
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    canHavePartialProgressSaved: Boolean
   ) {
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       // Regardless of whether there's saved progress, this is always a restart. Either the

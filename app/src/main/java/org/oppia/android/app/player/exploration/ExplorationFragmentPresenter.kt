@@ -14,7 +14,8 @@ import javax.inject.Inject
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
-  private val fragment: Fragment, private val oppiaLogger: OppiaLogger
+  private val fragment: Fragment,
+  private val oppiaLogger: OppiaLogger
 ) {
   fun handleCreateView(
     inflater: LayoutInflater,

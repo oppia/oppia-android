@@ -215,27 +215,6 @@ class ExplorationDataController @Inject constructor(
     )
   }
 
-  // TODO: Fix this documentation (w.r.t. the new methods), and remove this method.
-  private fun startPlayingExploration(
-    internalProfileId: Int,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint,
-    isRestart: Boolean = false
-  ): DataProvider<Any?> {
-    return explorationProgressController.beginExplorationAsync(
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      explorationCheckpoint,
-      isRestart
-    )
-  }
-
   /**
    * Finishes the most recent exploration started by [startPlayingNewExploration],
    * [resumeExploration], [restartExploration], or [replayExploration], and returns a [DataProvider]

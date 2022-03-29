@@ -9,7 +9,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
