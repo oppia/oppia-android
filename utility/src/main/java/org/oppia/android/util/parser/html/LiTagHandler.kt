@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.*
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -21,48 +22,108 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  */
 class LiTagHandler(
   private val context: Context,
-  private val tag: String,
   private val machineLocale: OppiaLocale.MachineLocale
 ) :
   CustomHtmlContentHandler.CustomTagHandler {
 
-  private var index = 1
+  private val lists = Stack<ListTag>()
 
-  override fun handleOpeningTag(output: Editable) {
-    appendNewLine(output)
+  override fun handleOpeningTag(output: Editable, tag: String) {
     when (tag) {
-      CUSTOM_LIST_UL_TAG -> {
-        start(output, BulletListItem())
-      }
-      CUSTOM_LIST_OL_TAG -> {
-        start(output, NumberListItem(index))
-        index++
+      CUSTOM_LIST_UL_TAG ->
+        lists.push(Ul(context, tag))
+
+      CUSTOM_LIST_OL_TAG ->
+        lists.push(Ol(context, tag, machineLocale))
+
+      CUSTOM_LIST_LI_TAG ->
+        lists.peek().openItem(output)
+    }
+  }
+
+  override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
+    when (tag) {
+      CUSTOM_LIST_UL_TAG ->
+        lists.pop()
+
+      CUSTOM_LIST_OL_TAG ->
+        lists.pop()
+
+      CUSTOM_LIST_LI_TAG ->
+        lists.peek().closeItem(output, indentation = lists.size - 1)
+    }
+  }
+
+  /**
+   * Handler for <li> tags. Subclasses set the bullet appearance.
+   */
+  private interface ListTag {
+
+    /**
+     * Called when an opening <li> tag is encountered.
+     *
+     * Inserts an invisible [ListItemMark] span that doesn't do any styling.
+     * Instead, [closeItem] will later find the location of this span so it knows where the opening tag was.
+     */
+    fun openItem(text: Editable)
+
+    /**
+     * Called when a closing </li> tag is encountered.
+     *
+     * Pops out the invisible [ListItemMark] span and uses it to get the opening tag location.
+     * Then, sets a [ListItemLeadingMarginSpan] from the opening tag position to closing tag position.
+     */
+    fun closeItem(text: Editable, indentation: Int)
+  }
+
+  /**
+   * Subclass of [ListTag] for unordered lists.
+   */
+  private class Ul(private val context: Context, private val tag: String) : ListTag {
+
+    override fun openItem(text: Editable) {
+      appendNewLine(text)
+      start(text, BulletListItem())
+    }
+
+    override fun closeItem(text: Editable, indentation: Int) {
+      appendNewLine(text)
+
+      getLast<BulletListItem>(text)?.let { mark ->
+        setSpanFromMark(text, mark, ListItemLeadingMarginSpan(context, indentation, "•", tag))
       }
     }
   }
 
-  override fun handleClosingTag(output: Editable, indentation: Int) {
-    appendNewLine(output)
+  /**
+   * Subclass of [ListTag] for ordered lists.
+   */
+  private class Ol(
+    private val context: Context,
+    private val tag: String,
+    private val machineLocale: OppiaLocale.MachineLocale
+  ) : ListTag {
 
-    when (tag) {
-      CUSTOM_LIST_UL_TAG -> {
-        getLast<BulletListItem>(output)?.let { mark ->
-          setSpanFromMark(output, mark, ListItemLeadingMarginSpan(context, indentation, "•", tag))
-        }
-      }
-      CUSTOM_LIST_OL_TAG -> {
-        getLast<NumberListItem>(output)?.let { mark ->
-          setSpanFromMark(
-            output,
-            mark,
-            ListItemLeadingMarginSpan(
-              context,
-              indentation,
-              "${machineLocale.numberFormatter(mark.number)}.",
-              tag
-            )
+    private var index = 1
+
+    override fun openItem(text: Editable) {
+      appendNewLine(text)
+      start(text, NumberListItem(index))
+      index++
+    }
+
+    override fun closeItem(text: Editable, indentation: Int) {
+      appendNewLine(text)
+
+      getLast<NumberListItem>(text)?.let { mark ->
+        setSpanFromMark(
+          text, mark, ListItemLeadingMarginSpan(
+            context,
+            indentation,
+            "${machineLocale.numberFormatter(mark.number)}.",
+            tag
           )
-        }
+        )
       }
     }
   }

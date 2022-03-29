@@ -1,6 +1,5 @@
 package org.oppia.android.util.parser.html
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Html
@@ -8,13 +7,11 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
-import org.oppia.android.util.locale.OppiaLocale
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.Stack
-import kotlin.collections.ArrayDeque
+import java.util.ArrayDeque
 
 /**
  * A custom [ContentHandler] and [Html.TagHandler] for processing custom HTML tags. This class must
@@ -22,16 +19,13 @@ import kotlin.collections.ArrayDeque
  *
  * This is based on the implementation provided in https://stackoverflow.com/a/36528149.
  */
-class CustomHtmlContentHandler(
-  private val context: Context,
+class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val imageRetriever: ImageRetriever?
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
-  private val lists = Stack<CustomTagHandler>()
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
@@ -104,17 +98,7 @@ class CustomHtmlContentHandler(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          when {
-            tag.equals(CUSTOM_LIST_UL_TAG) || tag.equals(CUSTOM_LIST_OL_TAG) -> {
-              lists.push(LiTagHandler(context, tag, machineLocale))
-            }
-            tag.equals(CUSTOM_LIST_LI_TAG) -> {
-              if (lists.isNotEmpty()) {
-                lists.peek().handleOpeningTag(output)
-              }
-            }
-            else -> customTagHandlers.getValue(tag).handleOpeningTag(output)
-          }
+          customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
         }
       }
       tag in customTagHandlers -> {
@@ -126,17 +110,7 @@ class CustomHtmlContentHandler(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
-        when (tag) {
-          CUSTOM_LIST_UL_TAG, CUSTOM_LIST_OL_TAG -> {
-            lists.pop()
-          }
-          CUSTOM_LIST_LI_TAG -> {
-            if (lists.isNotEmpty()) {
-              lists.peek().handleClosingTag(output, lists.size - 1)
-            }
-          }
-          else -> customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0)
-        }
+        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
@@ -178,7 +152,7 @@ class CustomHtmlContentHandler(
      *
      * @param output the destination [Editable] to which spans can be added
      */
-    fun handleOpeningTag(output: Editable) {}
+    fun handleOpeningTag(output: Editable, tag: String) {}
 
     /**
      * Called when the closing of a custom tag is encountered. This does not support processing
@@ -189,7 +163,7 @@ class CustomHtmlContentHandler(
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable, indentation: Int) {}
+    fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
   }
 
   /**
@@ -228,11 +202,9 @@ class CustomHtmlContentHandler(
      * tags. All possible custom tags must be registered in the [customTagHandlers] map.
      */
     fun <T> fromHtml(
-      context: Context,
       html: String,
       imageRetriever: T?,
-      customTagHandlers: Map<String, CustomTagHandler>,
-      machineLocale: OppiaLocale.MachineLocale
+      customTagHandlers: Map<String, CustomTagHandler>
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking.
@@ -240,7 +212,7 @@ class CustomHtmlContentHandler(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(context, customTagHandlers, imageRetriever, machineLocale),
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
       ) as Spannable
     }
   }

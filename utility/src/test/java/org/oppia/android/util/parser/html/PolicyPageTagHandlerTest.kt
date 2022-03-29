@@ -59,7 +59,6 @@ class PolicyPageTagHandlerTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithPolicyPageSupport: Map<String, CustomTagHandler>
@@ -84,11 +83,9 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_emptyString_doesNotIncludeClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "",
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -99,11 +96,9 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_withPolicyPageMarkup_includesClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -114,11 +109,9 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForPrivacyPolicy() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -133,11 +126,9 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForTermsOfService() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -152,11 +143,9 @@ class PolicyPageTagHandlerTest {
   fun testParseHtml_noTagHandler_withPolicyPageMarkup_doesNotIncludeClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = noTagHandlers,
-        machineLocale = machineLocale
+        customTagHandlers = noTagHandlers
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)

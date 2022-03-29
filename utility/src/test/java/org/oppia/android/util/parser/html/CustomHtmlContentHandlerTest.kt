@@ -59,9 +59,7 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_emptyString_returnsEmptyString() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
-        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf(),
-        machineLocale = machineLocale
+        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -71,11 +69,9 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_standardBoldHtml_returnsStringWithBoldSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "<strong>Text</strong>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(),
-        machineLocale = machineLocale
+        customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -85,11 +81,9 @@ class CustomHtmlContentHandlerTest {
   @Test
   fun testParseHtml_withImage_callsImageGetter() {
     CustomHtmlContentHandler.fromHtml(
-      context,
       html = "<img src=\"test_source.png\"></img>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf(),
-      machineLocale = machineLocale
+      customTagHandlers = mapOf()
     )
 
     verify(mockImageRetriever).getDrawable(anyString())
@@ -101,11 +95,9 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-        machineLocale = machineLocale
+        customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
       )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -118,11 +110,9 @@ class CustomHtmlContentHandlerTest {
     val fakeTagHandler = FakeTagHandler()
 
     CustomHtmlContentHandler.fromHtml(
-      context,
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-      machineLocale = machineLocale
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
@@ -139,11 +129,9 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_withOneCustomTag_missingHandler_keepsContent() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(),
-        machineLocale = machineLocale
+        customTagHandlers = mapOf()
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("content")
@@ -153,13 +141,11 @@ class CustomHtmlContentHandlerTest {
   fun testParseHtml_withOneCustomTag_handlerReplacesText_correctlyUpdatesText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "custom-tag" to ReplacingTagHandler("custom-attribute")
-        ),
-        machineLocale = machineLocale
+        )
       )
 
     // Verify that handlers which wish to replace text can successfully do so.
@@ -173,14 +159,12 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "<outer-tag>some <inner-tag>other</inner-tag> content</outer-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "outer-tag" to outerFakeTagHandler,
           "inner-tag" to innerFakeTagHandler
-        ),
-        machineLocale = machineLocale
+        )
       )
 
     // Verify that both tag handlers are called (showing support for nesting).
@@ -196,14 +180,12 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG, machineLocale),
-          CUSTOM_LIST_UL_TAG to LiTagHandler(context, CUSTOM_LIST_UL_TAG, machineLocale)
-        ),
-        machineLocale = machineLocale
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, machineLocale),
+          CUSTOM_LIST_UL_TAG to LiTagHandler(context, machineLocale)
+        )
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -217,14 +199,12 @@ class CustomHtmlContentHandlerTest {
 
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, CUSTOM_LIST_LI_TAG, machineLocale),
-          CUSTOM_LIST_OL_TAG to LiTagHandler(context, CUSTOM_LIST_OL_TAG, machineLocale)
-        ),
-        machineLocale = machineLocale
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, machineLocale),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, machineLocale)
+        )
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -329,12 +309,12 @@ class CustomHtmlContentHandlerTest {
       this.attributes = attributes
     }
 
-    override fun handleOpeningTag(output: Editable) {
+    override fun handleOpeningTag(output: Editable, tag: String) {
       handleOpeningTagCalled = true
       handleOpeningTagCallIndex = methodCallCount++
     }
 
-    override fun handleClosingTag(output: Editable, indentation: Int) {
+    override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++
     }

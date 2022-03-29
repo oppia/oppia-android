@@ -30,7 +30,6 @@ class HtmlParser private constructor(
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
-
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
@@ -52,7 +51,7 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { LiTagHandler(context, "", machineLocale) }
+  private val bulletTagHandler by lazy { LiTagHandler(context, machineLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
 
   /**
@@ -120,11 +119,7 @@ class HtmlParser private constructor(
     }
 
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
-      context,
-      htmlContent,
-      imageGetter,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView),
-      machineLocale
+      htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
 
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))

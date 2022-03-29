@@ -31,7 +31,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.ConceptCardTagHandler.ConceptCardLinkClickListener
@@ -72,7 +71,6 @@ class ConceptCardTagHandlerTest {
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithConceptCardSupport: Map<String, CustomTagHandler>
@@ -97,11 +95,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_emptyString_doesNotIncludeClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -112,11 +108,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_includesClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -127,11 +121,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_addsLinkText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     assertThat(parsedHtml.toString()).contains("refresher lesson")
@@ -141,11 +133,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_missingSkillId_doesNotIncludeClickableSpanOrText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = CONCEPT_CARD_LINK_WITHOUT_SKILL_ID_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -157,11 +147,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_missingText_doesNotIncludeClickableSpanOrText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = CONCEPT_CARD_LINK_WITHOUT_TEXT_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -173,11 +161,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_noTagHandler_withConceptCardMarkup_doesNotIncludeClickableSpanOrText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = noTagHandlers,
-        machineLocale = machineLocale
+        customTagHandlers = noTagHandlers
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -189,11 +175,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withMultipleConceptCardLinks_includesMultipleClickableSpan() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "$CONCEPT_CARD_LINK_MARKUP_1 and $CONCEPT_CARD_LINK_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -204,11 +188,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withMultipleConceptCardLinks_includesTextForBoth() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "$CONCEPT_CARD_LINK_MARKUP_1 and $CONCEPT_CARD_LINK_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     assertThat(parsedHtml.toString()).contains("refresher lesson and other lesson")
@@ -218,11 +200,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_clickSpan_callsClickListener() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -239,11 +219,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withConceptCardMarkup_andCustomLink_clickCustom_doesNotCallListener() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "Test and $CONCEPT_CARD_LINK_MARKUP_1",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     // Set a custom clickable span rather than using an anchor since the latter requires an activity
@@ -267,11 +245,9 @@ class ConceptCardTagHandlerTest {
   fun testParseHtml_withMultipleConceptCardLinks_clickBoth_callsClickListenerWithCorrectSkillIds() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        context,
         html = "$CONCEPT_CARD_LINK_MARKUP_2 and $CONCEPT_CARD_LINK_MARKUP_1",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport,
-        machineLocale = machineLocale
+        customTagHandlers = tagHandlersWithConceptCardSupport
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
