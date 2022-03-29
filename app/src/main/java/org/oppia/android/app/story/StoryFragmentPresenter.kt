@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
@@ -36,6 +35,7 @@ import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
@@ -253,8 +253,7 @@ class StoryFragmentPresenter @Inject constructor(
   private fun logStoryActivityEvent(topicId: String, storyId: String) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_STORY_ACTIVITY,
-      oppiaLogger.createStoryContext(topicId, storyId)
+      oppiaLogger.createOpenStoryActivityContext(topicId, storyId)
     )
   }
 
@@ -275,17 +274,14 @@ class StoryFragmentPresenter @Inject constructor(
       shouldSavePartialProgress = shouldSavePartialProgress,
       // Pass an empty checkpoint if the exploration does not have to be resumed.
       ExplorationCheckpoint.getDefaultInstance()
-    ).observe(
+    ).toLiveData().observe(
       fragment,
       Observer<AsyncResult<Any?>> { result ->
-        when {
-          result.isPending() -> oppiaLogger.d("Story Fragment", "Loading exploration")
-          result.isFailure() -> oppiaLogger.e(
-            "Story Fragment",
-            "Failed to load exploration",
-            result.getErrorOrNull()!!
-          )
-          else -> {
+        when (result) {
+          is AsyncResult.Pending -> oppiaLogger.d("Story Fragment", "Loading exploration")
+          is AsyncResult.Failure ->
+            oppiaLogger.e("Story Fragment", "Failed to load exploration", result.error)
+          is AsyncResult.Success -> {
             oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
             routeToExplorationListener.routeToExploration(
               internalProfileId,

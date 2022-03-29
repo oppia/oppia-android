@@ -116,14 +116,14 @@ package_group(
             "flavor": "oppia",
             "min_sdk_version": 21,
             "multidex": "native",
-            "target_sdk_version": 29,
+            "target_sdk_version": 30,
         },
         {
             "flavor": "oppia_kitkat",
             "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
             "min_sdk_version": 19,
             "multidex": "manual_main_dex",
-            "target_sdk_version": 29,
+            "target_sdk_version": 30,
         },
     ]
 ]

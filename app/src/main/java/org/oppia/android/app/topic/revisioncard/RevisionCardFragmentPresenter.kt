@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
@@ -95,8 +94,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
     oppiaLogger.logTransitionEvent(
       oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_REVISION_CARD,
-      oppiaLogger.createRevisionCardContext(topicId, subTopicId)
+      oppiaLogger.createOpenRevisionCardContext(topicId, subTopicId)
     )
   }
 

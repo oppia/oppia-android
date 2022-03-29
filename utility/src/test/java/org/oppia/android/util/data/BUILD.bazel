@@ -1,0 +1,87 @@
+"""
+Tests for lightweight exploration player domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "AsyncDataSubscriptionManagerTest",
+    srcs = ["AsyncDataSubscriptionManagerTest.kt"],
+    custom_package = "org.oppia.android.util.data",
+    test_class = "org.oppia.android.util.data.AsyncDataSubscriptionManagerTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_mockito_mockito-core",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "AsyncResultTest",
+    srcs = ["AsyncResultTest.kt"],
+    custom_package = "org.oppia.android.util.data",
+    test_class = "org.oppia.android.util.data.AsyncResultTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/data:async_result",
+    ],
+)
+
+oppia_android_test(
+    name = "DataProvidersTest",
+    srcs = ["DataProvidersTest.kt"],
+    custom_package = "org.oppia.android.util.data",
+    test_class = "org.oppia.android.util.data.DataProvidersTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "InMemoryBlockingCacheTest",
+    srcs = ["InMemoryBlockingCacheTest.kt"],
+    custom_package = "org.oppia.android.util.data",
+    test_class = "org.oppia.android.util.data.InMemoryBlockingCacheTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+dagger_rules()

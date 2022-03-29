@@ -4,12 +4,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 29
+  compileSdkVersion 30
   buildToolsVersion "29.0.2"
 
   defaultConfig {
     minSdkVersion 19
-    targetSdkVersion 29
+    targetSdkVersion 30
     versionCode 1
     versionName "1.0"
   }
@@ -76,13 +76,15 @@ dependencies {
       'com.google.dagger:dagger:2.24',
       'com.google.protobuf:protobuf-javalite:3.17.3',
       'com.google.truth:truth:1.1.3',
+      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'nl.dionsegijn:konfetti:1.2.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
-      'org.robolectric:robolectric:4.4',
+      'org.robolectric:robolectric:4.5',
       'org.jetbrains.kotlin:kotlin-reflect:$kotlin_version',
       'org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version',
       'org.mockito:mockito-core:2.19.0',
       project(":domain"),
+      project(":model"),
       project(":utility"),
   )
   compileOnly(

@@ -21,18 +21,15 @@ kt_android_library(
 kt_android_library(
     name = "extensions",
     srcs = [
-        "FloatExtensions.kt",
-        "FractionExtensions.kt",
         "InteractionObjectExtensions.kt",
         "JsonExtensions.kt",
-        "RatioExtensions.kt",
-        "StringExtensions.kt",
         "WorkDataExtensions.kt",
     ],
     visibility = ["//domain:__subpackages__"],
     deps = [
-        "//model:question_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
+        "//utility/src/main/java/org/oppia/android/util/math:extensions",
     ],
 )
 
@@ -44,7 +41,7 @@ kt_android_library(
     visibility = ["//domain:__subpackages__"],
     deps = [
         ":extensions",
-        "//model:question_java_proto_lite",
+        "//model/src/main/proto:question_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],
 )

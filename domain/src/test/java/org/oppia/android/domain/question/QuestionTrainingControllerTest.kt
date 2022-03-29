@@ -2,7 +2,6 @@ package org.oppia.android.domain.question
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,25 +10,20 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -51,8 +45,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -67,35 +59,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [QuestionTrainingController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionTrainingControllerTest.TestApplication::class)
 class QuestionTrainingControllerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var questionTrainingController: QuestionTrainingController
-
-  @Inject
-  lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockCurrentQuestionLiveDataObserver: Observer<AsyncResult<EphemeralQuestion>>
-
-  @Captor
-  lateinit var currentQuestionResultCaptor: ArgumentCaptor<AsyncResult<EphemeralQuestion>>
-
-  // TODO(#3813): Migrate all tests in this suite to use this factory.
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var questionTrainingController: QuestionTrainingController
+  @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
 
@@ -124,16 +98,10 @@ class QuestionTrainingControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.getCurrentQuestion()
 
-    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
-      TEST_QUESTION_ID_1
-    )
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.question.questionId).isEqualTo(TEST_QUESTION_ID_1)
   }
 
   @Test
@@ -156,16 +124,10 @@ class QuestionTrainingControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.getCurrentQuestion()
 
-    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
-      TEST_QUESTION_ID_0
-    )
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.question.questionId).isEqualTo(TEST_QUESTION_ID_0)
   }
 
   @Test
@@ -188,16 +150,10 @@ class QuestionTrainingControllerTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    val resultLiveData =
-      questionAssessmentProgressController.getCurrentQuestion().toLiveData()
-    resultLiveData.observeForever(mockCurrentQuestionLiveDataObserver)
-    testCoroutineDispatchers.runCurrent()
+    val result = questionAssessmentProgressController.getCurrentQuestion()
 
-    verify(mockCurrentQuestionLiveDataObserver).onChanged(currentQuestionResultCaptor.capture())
-    assertThat(currentQuestionResultCaptor.value.isSuccess()).isTrue()
-    assertThat(currentQuestionResultCaptor.value.getOrThrow().question.questionId).isEqualTo(
-      TEST_QUESTION_ID_3
-    )
+    val ephemeralQuestion = monitorFactory.waitForNextSuccessfulResult(result)
+    assertThat(ephemeralQuestion.question.questionId).isEqualTo(TEST_QUESTION_ID_3)
   }
 
   @Test
@@ -211,30 +167,14 @@ class QuestionTrainingControllerTest {
   }
 
   @Test
-  fun testController_startTrainingSession_noSkills_fails_logsException() {
+  fun testStopTrainingSession_withoutStartingSession_returnsFailure() {
     setUpTestApplicationComponent(questionSeed = 0)
-    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
-    questionTrainingController.startQuestionTrainingSession(profileId1, listOf())
-    testCoroutineDispatchers.runCurrent()
 
-    val exception = fakeExceptionLogger.getMostRecentException()
+    val resultProvider = questionTrainingController.stopQuestionTrainingSession()
 
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot start a new training session until the previous one is completed.")
-  }
-
-  @Test
-  fun testStopTrainingSession_withoutStartingSession_fails_logsException() {
-    setUpTestApplicationComponent(questionSeed = 0)
-    questionTrainingController.stopQuestionTrainingSession()
-    testCoroutineDispatchers.runCurrent()
-
-    val exception = fakeExceptionLogger.getMostRecentException()
-
-    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
-      .contains("Cannot stop a new training session which wasn't started")
+    val result = monitorFactory.waitForNextFailureResult(resultProvider)
+    assertThat(result).isInstanceOf(IllegalStateException::class.java)
+    assertThat(result).hasMessageThat().contains("Session isn't initialized yet.")
   }
 
   private fun setUpTestApplicationComponent(questionSeed: Long) {
@@ -329,7 +269,9 @@ class QuestionTrainingControllerTest {
       LogStorageModule::class, TestDispatcherModule::class, RatioInputModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

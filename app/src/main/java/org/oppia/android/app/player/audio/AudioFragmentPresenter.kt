@@ -71,10 +71,9 @@ class AudioFragmentPresenter @Inject constructor(
       .observe(
         fragment,
         Observer<AsyncResult<CellularDataPreference>> {
-          if (it.isSuccess()) {
-            val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-            showCellularDataDialog = !(prefs.hideDialog)
-            useCellularData = prefs.useCellularData
+          if (it is AsyncResult.Success) {
+            showCellularDataDialog = !it.value.hideDialog
+            useCellularData = it.value.useCellularData
           }
         }
       )
@@ -143,10 +142,15 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    val profile = when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
+    return getAudioLanguage(profile.audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel */
