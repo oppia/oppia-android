@@ -198,7 +198,7 @@ class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play(isPlayingFromAutoPlay: Boolean = false, reloadingMainContent: Boolean = false) {
+  fun play(isPlayingFromAutoPlay: Boolean = true, reloadingMainContent: Boolean = true) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {

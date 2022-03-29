@@ -63,7 +63,7 @@ class EventBundleCreatorTest {
     private const val TEST_SKILL_ID_2 = "test_skill_id_2"
     private const val TEST_SUB_TOPIC_INDEX = 1
     private const val TEST_SUB_TOPIC_INDEX_STR = "1"
-    private const val TEST_LEARNER_ID = "test_learner_id"
+    private const val TEST_LEARNER_ID = "test_ed_ld_learner_id"
     private const val TEST_INSTALLATION_ID = "test_installation_id"
     private const val TEST_LEARNER_SESSION_ID = "test_session_id"
     private const val TEST_EXPLORATION_VERSION = 5
@@ -162,7 +162,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_exploration_activity")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -171,6 +171,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
     assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -326,7 +328,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_card_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -336,6 +338,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -368,7 +372,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("end_card_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -378,6 +382,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -410,7 +416,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("hint_offered_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -420,6 +426,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -452,7 +460,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("access_hint_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -462,6 +470,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("hint_index").isEqualTo(TEST_HINT_INDEX_STR)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -493,7 +503,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("solution_offered_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -502,6 +512,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
     assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -533,7 +545,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("access_solution_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -542,6 +554,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
     assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -574,7 +588,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("submit_answer_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -584,6 +598,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("is_answer_correct").isEqualTo(TEST_IS_ANSWER_CORRECT_STR)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -616,7 +632,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("play_voice_over_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -626,6 +642,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("ed_exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("ed_state_name").isEqualTo(TEST_STATE_NAME)
     assertThat(bundle).string("content_id").isEqualTo(TEST_CONTENT_ID)
+    assertThat(bundle).string("ed_ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ed_ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -651,9 +669,11 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("app_in_background_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(bundle).hasSize(4)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -679,9 +699,11 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("app_in_foreground_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(bundle).hasSize(4)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -713,7 +735,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("exit_exploration_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -722,6 +744,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
     assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -753,7 +777,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("finish_exploration_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
@@ -762,6 +786,8 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
     assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
     assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -787,9 +813,11 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("resume_exploration_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(bundle).hasSize(4)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -815,9 +843,11 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("start_over_exploration_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(bundle).hasSize(4)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -843,9 +873,11 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("delete_profile_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(bundle).hasSize(4)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   @Test
@@ -899,9 +931,10 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("failed_analytics_log")
-    assertThat(bundle).hasSize(2)
+    assertThat(bundle).hasSize(3)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
   private fun createEventLog(

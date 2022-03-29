@@ -1044,7 +1044,16 @@ class ExplorationProgressController @Inject constructor(
     private var helpIndex = HelpIndex.getDefaultInstance()
     private var availableCardCount: Int = -1
 
+    /**
+     * The [LearnerAnalyticsLogger.ExplorationAnalyticsLogger] to be used for logging
+     * exploration-specific events.
+     */
     lateinit var explorationAnalyticsLogger: LearnerAnalyticsLogger.ExplorationAnalyticsLogger
+
+    /**
+     * The [LearnerAnalyticsLogger.StateAnalyticsLogger] to be used for logging state-specific
+     * events.
+     */
     val stateAnalyticsLogger: LearnerAnalyticsLogger.StateAnalyticsLogger?
       get() = explorationAnalyticsLogger.stateAnalyticsLogger.value
 
