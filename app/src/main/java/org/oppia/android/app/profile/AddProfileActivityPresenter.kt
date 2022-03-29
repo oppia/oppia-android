@@ -274,26 +274,30 @@ class AddProfileActivityPresenter @Inject constructor(
     result: AsyncResult<Any?>,
     binding: AddProfileActivityBinding
   ) {
-    if (result.isSuccess()) {
-      val intent = Intent(activity, ProfileChooserActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      activity.startActivity(intent)
-    } else if (result.isFailure()) {
-      when (result.getErrorOrNull()) {
-        is ProfileManagementController.ProfileNameNotUniqueException ->
-          profileViewModel.nameErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_not_unique
-            )
-          )
-        is ProfileManagementController.ProfileNameOnlyLettersException ->
-          profileViewModel.nameErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_only_letters
-            )
-          )
+    when (result) {
+      is AsyncResult.Success -> {
+        val intent = Intent(activity, ProfileChooserActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        activity.startActivity(intent)
       }
-      binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
+      is AsyncResult.Failure -> {
+        when (result.error) {
+          is ProfileManagementController.ProfileNameNotUniqueException ->
+            profileViewModel.nameErrorMsg.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_not_unique
+              )
+            )
+          is ProfileManagementController.ProfileNameOnlyLettersException ->
+            profileViewModel.nameErrorMsg.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters
+              )
+            )
+        }
+        binding.addProfileActivityScrollView.smoothScrollTo(0, 0)
+      }
+      is AsyncResult.Pending -> {} // Wait for an actual result.
     }
   }
 

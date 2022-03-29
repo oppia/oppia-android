@@ -1,22 +1,30 @@
 package org.oppia.android.util.parser.html
 
+import android.content.res.AssetManager
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
+import io.github.karino2.kotlitex.view.MathExpressionSpan
 import org.json.JSONObject
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
 import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [MathTagHandler]. */
 const val CUSTOM_MATH_TAG = "oppia-noninteractive-math"
-private const val CUSTOM_MATH_SVG_PATH_ATTRIBUTE = "math_content-with-value"
+private const val CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE = "math_content-with-value"
+private const val CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE = "render-type"
 
 /**
  * A custom tag handler for properly formatting math items in HTML parsed with
  * [CustomHtmlContentHandler].
  */
 class MathTagHandler(
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val assetManager: AssetManager,
+  private val lineHeight: Float,
+  private val cacheLatexRendering: Boolean
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
@@ -27,41 +35,77 @@ class MathTagHandler(
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(
-      attributes.getJsonObjectValue(CUSTOM_MATH_SVG_PATH_ATTRIBUTE)
+      attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     )
-    if (content != null) {
-      // Insert an image span where the custom tag currently is to load the SVG. In the future, this
-      // could also load a LaTeX span, instead. Note that this approach is based on Android's Html
-      // parser.
-      val drawable =
-        imageRetriever.loadDrawable(
-          content.svgFilename,
-          CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
+    // TODO(#4170): Fix vertical alignment centering for inline cached LaTeX.
+    val useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
+      "inline" -> true
+      "block" -> false
+      else -> true
+    }
+    val newSpan = when (content) {
+      is MathContent.MathAsSvg -> {
+        ImageSpan(
+          imageRetriever.loadDrawable(
+            content.svgFilename,
+            INLINE_TEXT_IMAGE
+          ),
+          content.svgFilename
         )
-      val (startIndex, endIndex) = output.run {
-        // Use a control character to ensure that there's at least 1 character on which to "attach"
-        // the image when rendering the HTML.
-        val startIndex = length
-        append('\uFFFC')
-        return@run startIndex to length
       }
-      output.setSpan(
-        ImageSpan(drawable, content.svgFilename),
-        startIndex,
-        endIndex,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
-    } else consoleLogger.e("MathTagHandler", "Failed to parse math tag")
+      is MathContent.MathAsLatex -> {
+        if (cacheLatexRendering) {
+          ImageSpan(
+            imageRetriever.loadMathDrawable(
+              content.rawLatex,
+              lineHeight,
+              type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
+            )
+          )
+        } else {
+          MathExpressionSpan(
+            content.rawLatex, lineHeight, assetManager, isMathMode = !useInlineRendering
+          )
+        }
+      }
+      null -> {
+        consoleLogger.e("MathTagHandler", "Failed to parse math tag")
+        return
+      }
+    }
+
+    // Insert an image span where the custom tag currently is to load the SVG/LaTeX span. Note that
+    // this approach is based on Android's HTML parser.
+    val (startIndex, endIndex) = output.run {
+      // Use a control character to ensure that there's at least 1 character on which to
+      // "attach" the image when rendering the HTML.
+      val startIndex = length
+      append('\uFFFC')
+      return@run startIndex to length
+    }
+    output.setSpan(
+      newSpan,
+      startIndex,
+      endIndex,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
   }
 
-  private data class MathContent(val rawLatex: String, val svgFilename: String) {
+  private sealed class MathContent {
+    data class MathAsSvg(val svgFilename: String) : MathContent()
+
+    data class MathAsLatex(val rawLatex: String) : MathContent()
+
     companion object {
       internal fun parseMathContent(obj: JSONObject?): MathContent? {
+        // Kotlitex expects escaped backslashes.
         val rawLatex = obj?.getOptionalString("raw_latex")
         val svgFilename = obj?.getOptionalString("svg_filename")
-        return if (rawLatex != null && svgFilename != null) {
-          MathContent(rawLatex, svgFilename)
-        } else null
+        return when {
+          svgFilename != null -> MathAsSvg(svgFilename)
+          rawLatex != null -> MathAsLatex(rawLatex)
+          else -> null
+        }
       }
 
       /**

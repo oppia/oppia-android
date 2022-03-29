@@ -134,6 +134,36 @@ class DisplayLocaleImplTest {
   }
 
   @Test
+  fun testFormatLong_forLargeLong_returnsStringWithExactDigits() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.formatLong(123456789)
+
+    assertThat(formattedString.filter { it.isDigit() }).isEqualTo("123456789")
+  }
+
+  @Test
+  fun testFormatLong_forDouble_returnsStringWithExactDigits() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.formatDouble(454545456.123)
+
+    val digitsOnly = formattedString.filter { it.isDigit() }
+    assertThat(digitsOnly).contains("454545456")
+    assertThat(digitsOnly).contains("123")
+  }
+
+  @Test
+  fun testFormatLong_forDouble_returnsStringWithPeriodsOrCommas() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.formatDouble(123456789.123)
+
+    // Depending on formatting, commas and/or periods are used for large doubles.
+    assertThat(formattedString).containsMatch("[,.]")
+  }
+
+  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
