@@ -38,7 +38,6 @@ class ContinueInteractionViewModel private constructor(
     answer = InteractionObject.newBuilder().apply {
       normalizedString = DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
     }.build()
-    plainAnswer = DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
     this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
   }.build()
 

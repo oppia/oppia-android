@@ -52,6 +52,8 @@ class TestNoOpAssetRepositoryTest {
     // Nothing happens since priming no-ops.
   }
 
+  // TODO: add test for new method.
+
   @Test
   fun testPrimeTextFileFromLocalAssets_thenLoadAsset_throwsException() {
     assetRepository.primeTextFileFromLocalAssets("asset.json")
