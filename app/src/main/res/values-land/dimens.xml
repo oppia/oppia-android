@@ -252,7 +252,7 @@
   <dimen name="general_screen_padding_bottom">108dp</dimen>
 
   <!-- Profile Edit -->
-  <dimen name="profile_edit_delete_margin_bottom">108dp</dimen>
+  <dimen name="profile_edit_delete_margin_bottom">12dp</dimen>
 
   <!-- Concept Card Fragment -->
   <dimen name="concept_card_heading_text_margin_start">52dp</dimen>
