@@ -76,10 +76,10 @@ kt_android_library(
         "ListItemMark.kt",
     ],
     visibility = [
-          "//app:__subpackages__",
+        "//app:__subpackages__",
     ],
     deps = [
-           "//utility",
+        "//utility",
     ],
 )
 
@@ -93,7 +93,6 @@ kt_android_library(
     ],
     deps = [
         "//third_party:androidx_core_core-ktx",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
 
