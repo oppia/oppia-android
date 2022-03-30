@@ -53,6 +53,7 @@ kt_android_library(
         "//app:__subpackages__",
     ],
     deps = [
+        ":tag_handlers",
         "//utility",
     ],
 )
