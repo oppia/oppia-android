@@ -10,6 +10,9 @@ import org.oppia.android.util.R
 
 // TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.
 
+const val UL_TAG = "oppia-ul"
+const val OL_TAG = "oppia-ol"
+
 /**
  * A version of [LeadingMarginSpan] that shows text inside the margin.
  *
@@ -58,7 +61,7 @@ class ListItemLeadingMarginSpan(
 
       val yPosition = (top + bottom) / 2f
       when (tag) {
-        CUSTOM_LIST_UL_TAG -> {
+        UL_TAG -> {
           val style = paint.style
           if (trueX == spacingBeforeBullet) {
             paint.style = Paint.Style.FILL
@@ -69,7 +72,7 @@ class ListItemLeadingMarginSpan(
           canvas.drawCircle(trueX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
           paint.style = style
         }
-        CUSTOM_LIST_OL_TAG -> {
+        OL_TAG -> {
           canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
         }
       }
