@@ -172,7 +172,7 @@
   <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
-  
+
   <!-- Pin Password -->
   <dimen name="pin_password_text_input_layout_width">244dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
@@ -434,7 +434,7 @@
 
   <!-- NavigationDrawer -->
   <dimen name="navigation_drawer_width">304dp</dimen>
-  
+
   <!-- General Bottom Padding -->
   <dimen name="general_screen_padding_bottom">128dp</dimen>
 
@@ -600,7 +600,7 @@
 
   <!-- TopicSummaryView -->
   <dimen name="topic_summary_lesson_count_text_view_padding_bottom">8dp</dimen>
-  
+
   <!-- TopicPracticeFragment -->
   <dimen name="topic_practice_fragment_padding_bottom">172dp</dimen>
   <dimen name="topic_practice_fragment_padding_start">0dp</dimen>
@@ -615,11 +615,11 @@
 
   <!-- AppLanguageFragment -->
   <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
-   
+
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
-<!-- RevisionCardFragment -->
+  <!-- RevisionCardFragment -->
   <dimen name="revision_card_fragment_layout_tablet_min_width">0dp</dimen>
   <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
   <dimen name="revision_card_fragment_layout_margin_start">28dp</dimen>
@@ -641,7 +641,30 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
-  
+
+  <!--  Profile edit fragment-->
+  <dimen name="profile_edit_image_marginStart">28dp</dimen>
+  <dimen name="profile_edit_image_marginTop">28dp</dimen>
+  <dimen name="profile_edit_name_marginStart">24dp</dimen>
+  <dimen name="profile_edit_name_marginEnd">16dp</dimen>
+  <dimen name="view2_marginTop">36dp</dimen>
+  <dimen name="profile_rename_button_paddingStart">16dp</dimen>
+  <dimen name="profile_rename_button_paddingEnd">16dp</dimen>
+  <dimen name="profile_reset_button_paddingStart">16dp</dimen>
+  <dimen name="profile_reset_button_paddingEnd">16dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_paddingStart">16dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_paddingTop">12dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_paddingEnd">24dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_paddingStart">16dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_paddingEnd">24dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_paddingBottom">12dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_paddingStart">12dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_paddingTop">0dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_paddingEnd">12dp</dimen>
+  <dimen name="profile_delete_button_paddingStart">16dp</dimen>
+  <dimen name="profile_delete_button_paddingEnd">16dp</dimen>
+
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
