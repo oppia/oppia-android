@@ -593,6 +593,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/audio:cellular_audio_dialog_controller",
+        "//model/src/main/proto:arguments_java_proto_lite",
         "//model/src/main/proto:question_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
         "//third_party:androidx_recyclerview_recyclerview",
