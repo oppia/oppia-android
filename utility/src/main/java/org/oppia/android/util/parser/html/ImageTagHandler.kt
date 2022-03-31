@@ -33,15 +33,11 @@ class ImageTagHandler(
         append('\uFFFC')
         return@run startIndex to length
       }
+      checkNotNull(imageRetriever) { "Expected imageRetriever to be not null."}
       val drawable =
-        checkNotNull(
-          imageRetriever!!.loadDrawable(
-            source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
-          )
-        ) {
-          "Expected imageRetriever to be not null."
-        }
-
+        imageRetriever.loadDrawable(
+          source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+        )
       output.setSpan(
         ImageSpan(drawable, source),
         startIndex,

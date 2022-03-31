@@ -26,9 +26,11 @@ class LiTagHandler(
 ) :
   CustomHtmlContentHandler.CustomTagHandler {
 
-  private val lists = Stack<ListTag>()
-
-  override fun handleOpeningTag(output: Editable, tag: String) {
+  override fun handleOpeningTag(
+    output: Editable,
+    tag: String,
+    lists: Stack<CustomHtmlContentHandler.ListTag>
+  ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG ->
         lists.push(Ul(context, tag))
@@ -38,10 +40,16 @@ class LiTagHandler(
 
       CUSTOM_LIST_LI_TAG ->
         lists.peek().openItem(output)
+
     }
   }
 
-  override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
+  override fun handleClosingTag(
+    output: Editable,
+    indentation: Int,
+    tag: String,
+    lists: Stack<CustomHtmlContentHandler.ListTag>
+  ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG ->
         lists.pop()
@@ -55,31 +63,10 @@ class LiTagHandler(
   }
 
   /**
-   * Handler for <li> tags. Subclasses set the bullet appearance.
-   */
-  private interface ListTag {
-
-    /**
-     * Called when an opening <li> tag is encountered.
-     *
-     * Inserts an invisible [ListItemMark] span that doesn't do any styling.
-     * Instead, [closeItem] will later find the location of this span so it knows where the opening tag was.
-     */
-    fun openItem(text: Editable)
-
-    /**
-     * Called when a closing </li> tag is encountered.
-     *
-     * Pops out the invisible [ListItemMark] span and uses it to get the opening tag location.
-     * Then, sets a [ListItemLeadingMarginSpan] from the opening tag position to closing tag position.
-     */
-    fun closeItem(text: Editable, indentation: Int)
-  }
-
-  /**
    * Subclass of [ListTag] for unordered lists.
    */
-  private class Ul(private val context: Context, private val tag: String) : ListTag {
+  private class Ul(private val context: Context, private val tag: String) :
+    CustomHtmlContentHandler.ListTag {
 
     override fun openItem(text: Editable) {
       appendNewLine(text)
@@ -102,7 +89,7 @@ class LiTagHandler(
     private val context: Context,
     private val tag: String,
     private val machineLocale: OppiaLocale.MachineLocale
-  ) : ListTag {
+  ) : CustomHtmlContentHandler.ListTag {
 
     private var index = 1
 

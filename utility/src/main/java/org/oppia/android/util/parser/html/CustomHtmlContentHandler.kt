@@ -11,7 +11,8 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.ArrayDeque
+import java.util.*
+import kotlin.collections.ArrayDeque
 
 /**
  * A custom [ContentHandler] and [Html.TagHandler] for processing custom HTML tags. This class must
@@ -26,6 +27,7 @@ class CustomHtmlContentHandler private constructor(
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
+  private val lists = Stack<ListTag>()
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
@@ -98,7 +100,7 @@ class CustomHtmlContentHandler private constructor(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
+          customTagHandlers.getValue(tag).handleOpeningTag(output, tag, lists)
         }
       }
       tag in customTagHandlers -> {
@@ -110,7 +112,7 @@ class CustomHtmlContentHandler private constructor(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
-        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
+        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag, lists)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
@@ -123,6 +125,28 @@ class CustomHtmlContentHandler private constructor(
     val attributes: Attributes,
     val openTagIndex: Int
   )
+
+  /**
+   * Handler interface for <li> tags. Subclasses set the bullet/numbered list appearance.
+   */
+  interface ListTag {
+
+    /**
+     * Called when an opening <li> tag is encountered.
+     *
+     * Inserts an invisible [ListItemMark] span that doesn't do any styling.
+     * Instead, [closeItem] will later find the location of this span so it knows where the opening tag was.
+     */
+    fun openItem(text: Editable)
+
+    /**
+     * Called when a closing </li> tag is encountered.
+     *
+     * Pops out the invisible [ListItemMark] span and uses it to get the opening tag location.
+     * Then, sets a [ListItemLeadingMarginSpan] from the opening tag position to closing tag position.
+     */
+    fun closeItem(text: Editable, indentation: Int)
+  }
 
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
@@ -152,7 +176,7 @@ class CustomHtmlContentHandler private constructor(
      *
      * @param output the destination [Editable] to which spans can be added
      */
-    fun handleOpeningTag(output: Editable, tag: String) {}
+    fun handleOpeningTag(output: Editable, tag: String, lists: Stack<ListTag>) {}
 
     /**
      * Called when the closing of a custom tag is encountered. This does not support processing
@@ -163,7 +187,7 @@ class CustomHtmlContentHandler private constructor(
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
+    fun handleClosingTag(output: Editable, indentation: Int, tag: String, lists: Stack<ListTag>) {}
   }
 
   /**

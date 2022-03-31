@@ -5,7 +5,6 @@ import android.content.Context
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
-import android.text.style.LeadingMarginSpan
 import android.text.style.StyleSpan
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,6 +31,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -48,7 +48,7 @@ class CustomHtmlContentHandlerTest {
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   @Mock
-  lateinit var mockImageRetriever: FakeImageRetriever
+  private var mockImageRetriever: FakeImageRetriever? = null
 
   @Before
   fun setUp() {
@@ -86,7 +86,7 @@ class CustomHtmlContentHandlerTest {
       customTagHandlers = mapOf()
     )
 
-    verify(mockImageRetriever).getDrawable(anyString())
+    verify(mockImageRetriever)!!.getDrawable(anyString())
   }
 
   @Test
@@ -189,7 +189,8 @@ class CustomHtmlContentHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(LeadingMarginSpan::class)).hasLength(1)
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+      .hasLength(1)
   }
 
   @Test
@@ -208,7 +209,8 @@ class CustomHtmlContentHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(LeadingMarginSpan::class)).hasLength(1)
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+      .hasLength(1)
   }
 
   @Test
@@ -309,12 +311,21 @@ class CustomHtmlContentHandlerTest {
       this.attributes = attributes
     }
 
-    override fun handleOpeningTag(output: Editable, tag: String) {
+    override fun handleOpeningTag(
+      output: Editable,
+      tag: String,
+      lists: Stack<CustomHtmlContentHandler.ListTag>
+    ) {
       handleOpeningTagCalled = true
       handleOpeningTagCallIndex = methodCallCount++
     }
 
-    override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
+    override fun handleClosingTag(
+      output: Editable,
+      indentation: Int,
+      tag: String,
+      lists: Stack<CustomHtmlContentHandler.ListTag>
+    ) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++
     }

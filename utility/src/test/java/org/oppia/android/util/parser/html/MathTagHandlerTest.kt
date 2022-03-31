@@ -80,7 +80,7 @@ class MathTagHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Mock private var mockImageRetriever: FakeImageRetriever? = null
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
   @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
   @Captor lateinit var floatCaptor: ArgumentCaptor<Float>
@@ -186,7 +186,7 @@ class MathTagHandlerTest {
     // The image span is a cached bitmap loaded from LaTeX.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
-    verify(mockImageRetriever).loadMathDrawable(
+    verify(mockImageRetriever)!!.loadMathDrawable(
       capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
@@ -205,7 +205,7 @@ class MathTagHandlerTest {
     // The image span is a cached bitmap loaded from LaTeX.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
-    verify(mockImageRetriever).loadMathDrawable(
+    verify(mockImageRetriever)!!.loadMathDrawable(
       capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
@@ -224,7 +224,7 @@ class MathTagHandlerTest {
     // The image span is a cached bitmap loaded from LaTeX.
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
-    verify(mockImageRetriever).loadMathDrawable(
+    verify(mockImageRetriever)!!.loadMathDrawable(
       capture(stringCaptor), capture(floatCaptor), capture(retrieverTypeCaptor)
     )
     assertThat(stringCaptor.value).isEqualTo("\\frac{2}{5}")
@@ -280,7 +280,7 @@ class MathTagHandlerTest {
       customTagHandlers = tagHandlersWithCachedMathSupport
     )
 
-    verify(mockImageRetriever).loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
+    verify(mockImageRetriever)!!.loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
     assertThat(stringCaptor.value).isEqualTo("math_image1.svg")
     assertThat(retrieverTypeCaptor.value).isEqualTo(ImageRetriever.Type.INLINE_TEXT_IMAGE)
   }
@@ -294,7 +294,7 @@ class MathTagHandlerTest {
     )
 
     // Verify that both images are loaded in order.
-    verify(mockImageRetriever, times(2))
+    verify(mockImageRetriever, times(2))!!
       .loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
     assertThat(stringCaptor.allValues)
       .containsExactly("math_image2.svg", "math_image1.svg")
