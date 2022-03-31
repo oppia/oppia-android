@@ -43,7 +43,7 @@ class MathTagHandler(
       "block" -> false
       else -> true
     }
-    checkNotNull(imageRetriever) { "Expected imageRetriever to be not null."}
+    checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
         ImageSpan(

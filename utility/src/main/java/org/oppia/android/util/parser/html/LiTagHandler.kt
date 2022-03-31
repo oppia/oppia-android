@@ -40,7 +40,6 @@ class LiTagHandler(
 
       CUSTOM_LIST_LI_TAG ->
         lists.peek().openItem(output)
-
     }
   }
 

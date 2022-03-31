@@ -33,7 +33,7 @@ class ImageTagHandler(
         append('\uFFFC')
         return@run startIndex to length
       }
-      checkNotNull(imageRetriever) { "Expected imageRetriever to be not null."}
+      checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
       val drawable =
         imageRetriever.loadDrawable(
           source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
