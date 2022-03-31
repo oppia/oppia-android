@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsTestParsersViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/debug_parsers_text_view"
+      style="@style/Heading5ViewStart"
+      android:layout_width="match_parent"
+      android:background="@color/color_def_mid_grey_30"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_test_parsers_label"
+      android:textColor="@color/oppia_primary" />
+
+    <TextView
+      android:id="@+id/math_expressions_text_view"
+      style="@style/Subtitle1ViewStart"
+      android:layout_width="match_parent"
+      android:background="@color/color_def_white"
+      android:onClick="@{(v) -> viewModel.onMathExpressionsClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_math_expressions"
+      android:textColor="@color/oppia_primary_text_dark" />
+
+  </LinearLayout>
+</layout>

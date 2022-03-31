@@ -4,13 +4,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import org.oppia.android.domain.classify.rules.AlgebraicExpressionInputRules
 import org.oppia.android.domain.classify.rules.ContinueRules
 import org.oppia.android.domain.classify.rules.DragDropSortInputRules
 import org.oppia.android.domain.classify.rules.FractionInputRules
 import org.oppia.android.domain.classify.rules.ImageClickInputRules
 import org.oppia.android.domain.classify.rules.ItemSelectionInputRules
+import org.oppia.android.domain.classify.rules.MathEquationInputRules
 import org.oppia.android.domain.classify.rules.MultipleChoiceInputRules
 import org.oppia.android.domain.classify.rules.NumberWithUnitsRules
+import org.oppia.android.domain.classify.rules.NumericExpressionInputRules
 import org.oppia.android.domain.classify.rules.NumericInputRules
 import org.oppia.android.domain.classify.rules.RatioExpressionInputRules
 import org.oppia.android.domain.classify.rules.TextInputRules
@@ -104,6 +107,34 @@ class InteractionsModule {
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputInteractionClassifier(
     @RatioExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
+
+  @Provides
+  @IntoMap
+  @StringKey("NumericExpressionInput")
+  fun provideNumericExpressionInputInteractionClassifier(
+    @NumericExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
+
+  @Provides
+  @IntoMap
+  @StringKey("AlgebraicExpressionInput")
+  fun provideAlgebraicExpressionInputInteractionClassifier(
+    @AlgebraicExpressionInputRules ruleClassifiers:
+      Map<String, @JvmSuppressWildcards RuleClassifier>
+  ): InteractionClassifier {
+    return GenericInteractionClassifier(ruleClassifiers)
+  }
+
+  @Provides
+  @IntoMap
+  @StringKey("MathEquationInput")
+  fun provideMathEquationInputInteractionClassifier(
+    @MathEquationInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
   ): InteractionClassifier {
     return GenericInteractionClassifier(ruleClassifiers)
   }

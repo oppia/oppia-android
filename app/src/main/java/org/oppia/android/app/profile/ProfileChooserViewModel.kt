@@ -42,14 +42,16 @@ class ProfileChooserViewModel @Inject constructor(
   private fun processGetProfilesResult(
     profilesResult: AsyncResult<List<Profile>>
   ): List<ProfileChooserUiModel> {
-    if (profilesResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileChooserViewModel",
-        "Failed to retrieve the list of profiles",
-        profilesResult.getErrorOrNull()!!
-      )
-    }
-    val profileList = profilesResult.getOrDefault(emptyList()).map {
+    val profileList = when (profilesResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileChooserViewModel", "Failed to retrieve the list of profiles", profilesResult.error
+        )
+        emptyList()
+      }
+      is AsyncResult.Pending -> emptyList()
+      is AsyncResult.Success -> profilesResult.value
+    }.map {
       ProfileChooserUiModel.newBuilder().setProfile(it).build()
     }.toMutableList()
 

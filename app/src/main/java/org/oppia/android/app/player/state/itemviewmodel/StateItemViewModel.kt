@@ -1,5 +1,9 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /**
@@ -27,5 +31,28 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
     DRAG_DROP_SORT_INTERACTION,
     IMAGE_REGION_SELECTION_INTERACTION,
     RATIO_EXPRESSION_INPUT_INTERACTION,
+    NUMERIC_EXPRESSION_INPUT_INTERACTION,
+    ALGEBRAIC_EXPRESSION_INPUT_INTERACTION,
+    MATH_EQUATION_INPUT_INTERACTION
+  }
+
+  /** Factory for creating new [StateItemViewModel]s for interactions. */
+  interface InteractionItemFactory {
+    /**
+     * Returns a new [StateItemViewModel] corresponding to this interaction with the GCS entity ID,
+     * the [Interaction] object corresponding to the interaction view, a receiver for answers if this
+     * interaction pushes answers, and whether there's a previous button enabled (only relevant for
+     * navigation-based interactions).
+     */
+    fun create(
+      entityId: String,
+      hasConversationView: Boolean,
+      interaction: Interaction,
+      interactionAnswerReceiver: InteractionAnswerReceiver,
+      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+      hasPreviousButton: Boolean,
+      isSplitView: Boolean,
+      writtenTranslationContext: WrittenTranslationContext
+    ): StateItemViewModel
   }
 }

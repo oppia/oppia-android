@@ -37,9 +37,7 @@ class AppStartupStateController @Inject constructor(
     onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
-          "DOMAIN",
-          "Failed to prime cache ahead of LiveData conversion for user onboarding data.",
-          it
+          "DOMAIN", "Failed to prime cache ahead of data retrieval for user onboarding data.", it
         )
       }
     }
