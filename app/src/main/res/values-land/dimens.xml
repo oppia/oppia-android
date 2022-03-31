@@ -462,6 +462,7 @@
   <dimen name="profile_edit_allow_download_switch_paddingEnd">12dp</dimen>
   <dimen name="profile_delete_button_paddingStart">16dp</dimen>
   <dimen name="profile_delete_button_paddingEnd">16dp</dimen>
+  <dimen name="view_layout_marginTop">50dp</dimen>
 
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">36dp</dimen>

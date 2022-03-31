@@ -198,6 +198,7 @@
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <View
+        android:id="@+id/view7"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/color_def_grey"
@@ -209,11 +210,13 @@
       <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="@dimen/view_layout_marginTop"
         android:background="@color/color_def_grey"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@+id/profile_delete_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view7" />
 
       <Button
         android:id="@+id/profile_delete_button"
