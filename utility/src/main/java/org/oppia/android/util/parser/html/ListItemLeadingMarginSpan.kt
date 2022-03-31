@@ -10,8 +10,8 @@ import org.oppia.android.util.R
 
 // TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.
 
-const val UL_TAG = "oppia-ul"
-const val OL_TAG = "oppia-ol"
+private const val UL_TAG = "oppia-ul"
+private const val OL_TAG = "oppia-ol"
 
 /**
  * A version of [LeadingMarginSpan] that shows text inside the margin.
