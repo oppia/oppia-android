@@ -63,9 +63,9 @@
           android:id="@+id/profile_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginStart="@dimen/profile_chooser_fragment_layout_margin_start"
+          android:layout_marginStart="@dimen/profile_chooser_profile_recycler_view_margin_start"
           android:layout_marginTop="@dimen/profile_chooser_fragment_profile_recycler_view_margin_top"
-          android:layout_marginEnd="@dimen/profile_chooser_fragment_layout_margin_end"
+          android:layout_marginEnd="@dimen/profile_chooser_profile_recycler_view_margin_end"
           android:clipToPadding="false"
           android:fadingEdge="horizontal"
           android:fadingEdgeLength="72dp"
@@ -83,7 +83,7 @@
 
     <View
       android:layout_width="match_parent"
-      android:layout_height="@dimen/profile_chooser_fragment_layout_height"
+      android:layout_height="@dimen/profile_chooser_profile_view_layout_height"
       android:background="@drawable/profile_chooser_gradient"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"

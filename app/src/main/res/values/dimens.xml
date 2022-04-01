@@ -459,6 +459,12 @@
   <dimen name="profile_chooser_fragment_profile_select_text_margin_top">64dp</dimen>
   <dimen name="profile_chooser_fragment_profile_recycler_view_margin_top">36dp</dimen>
   <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
+  <dimen name="profile_chooser_profile_recycler_view_margin_start">32dp</dimen>
+  <dimen name="profile_chooser_profile_recycler_view_margin_end">32dp</dimen>
+  <dimen name="profile_chooser_profile_view_layout_height">128dp</dimen>
+  <dimen name="profile_chooser_profile_select_text_margin_start">64dp</dimen>
+  <dimen name="profile_chooser_fragment_text_view_layout_margin_bottom">32dp</dimen>
+  <dimen name="profile_chooser_fragment_image_view_layout_margin_end">64dp</dimen>
 
   <dimen name="profile_chooser_fragment_layout_margin_start">32dp</dimen>
   <dimen name="profile_chooser_fragment_layout_margin_end">32dp</dimen>

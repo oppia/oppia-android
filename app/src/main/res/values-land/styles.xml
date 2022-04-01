@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="Heading1" parent="TextView.Common1">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textSize">24sp</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textAlignment">viewStart</item>
+  </style>
+</resources>

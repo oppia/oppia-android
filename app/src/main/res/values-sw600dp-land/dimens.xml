@@ -30,8 +30,11 @@
   <dimen name="profile_chooser_fragment_layout_margin_start">96dp</dimen>
   <dimen name="profile_chooser_fragment_layout_margin_bottom">28dp</dimen>
   <dimen name="profile_chooser_fragment_layout_margin_end">96dp</dimen>
-  <dimen name="profile_chooser_fragment_margin_top_profile_already_added">0dp</dimen>
+  <dimen name="profile_chooser_profile_select_text_margin_start">96dp</dimen>
+  <dimen name="profile_chooser_fragment_margin_top_profile_already_added">24dp</dimen>
   <dimen name="profile_chooser_fragment_margin_top_profile_not_added">84dp</dimen>
+  <dimen name="profile_chooser_fragment_text_view_layout_margin_bottom">28dp</dimen>
+  <dimen name="profile_chooser_fragment_image_view_layout_margin_end">96dp</dimen>
 
   <dimen name="submitted_answer_exploration_split_view_margin_end_no_extra_interaction_answer">24dp</dimen>
   <dimen name="submitted_answer_exploration_split_view_margin_top_no_extra_interaction_answer">24dp</dimen>
@@ -436,7 +439,7 @@
   <dimen name="revision_card_fragment_padding_bottom">148dp</dimen>
   <dimen name="revision_card_fragment_layout_text_margin_top">32dp</dimen>
   <dimen name="revision_card_fragment_layout_button_margin_top">24dp</dimen>
-
+  
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>

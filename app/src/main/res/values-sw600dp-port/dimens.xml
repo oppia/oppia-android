@@ -459,8 +459,7 @@
   <dimen name="option_story_text_size_padding_end">16dp</dimen>
 
   <!-- Profile Chooser Fragment -->
-  <dimen name="profile_chooser_fragment_layout_margin_start">64dp</dimen>
-  <dimen name="profile_chooser_fragment_layout_margin_bottom">32dp</dimen>
-  <dimen name="profile_chooser_fragment_layout_margin_end">64dp</dimen>
-  
+  <dimen name="profile_chooser_profile_select_text_margin_start">64dp</dimen>
+  <dimen name="profile_chooser_fragment_text_view_layout_margin_bottom">32dp</dimen>
+  <dimen name="profile_chooser_fragment_image_view_layout_margin_end">64dp</dimen>
 </resources>
