@@ -186,7 +186,7 @@ class PoliciesFragmentTest {
         assertThat(textView.text.toString())
           .isEqualTo(
             "Please visit [this page] for the latest version of" +
-              " these privacy policy."
+              " this privacy policy."
           )
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
@@ -221,7 +221,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
-          .isEqualTo("Please visit [this page] for the latest version of these terms.")
+          .isEqualTo("Please visit [this page] for the latest version of this terms.")
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
       }
