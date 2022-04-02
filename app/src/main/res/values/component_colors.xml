@@ -36,4 +36,9 @@
   <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
+  <!-- Option Activity -->
+  <color name="component_color_option_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_option_activity_sub_heading_text_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_option_activity_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_option_activity_options_background_color">@color/color_palette_container_background_color</color>
 </resources>
