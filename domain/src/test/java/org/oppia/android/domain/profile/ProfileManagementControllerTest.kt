@@ -68,9 +68,9 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-  private val allowedNames = listOf<String>("नमन", "Ben-Henning", "Rajat.T", "جيشنو")
+    private val allowedNames = listOf<String>("नमन", "Ben-Henning", "Rajat.T", "جيشنو")
 
-  private val disallowedNames = listOf<String>("नमन7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
+    private val disallowedNames = listOf<String>("नमन7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
 
     private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
     private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
@@ -137,8 +137,8 @@ class ProfileManagementControllerTest {
       ).toLiveData().observeForever(mockUpdateResultObserver)
       testCoroutineDispatchers.runCurrent()
 
-    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
-    assertThat(failure).hasMessageThat().contains("James034 does not contain only letters")
+      val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+      assertThat(failure).hasMessageThat().contains("James034 does not contain only letters")
       verifyUpdateFailed()
       assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
         .contains("$it does not contain only letters")
