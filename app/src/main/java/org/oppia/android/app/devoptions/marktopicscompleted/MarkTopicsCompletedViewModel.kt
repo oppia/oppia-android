@@ -45,14 +45,16 @@ class MarkTopicsCompletedViewModel @Inject constructor(
   }
 
   private fun processAllTopicsResult(allTopics: AsyncResult<List<Topic>>): List<Topic> {
-    if (allTopics.isFailure()) {
-      oppiaLogger.e(
-        "MarkTopicsCompletedFragment",
-        "Failed to retrieve all topics",
-        allTopics.getErrorOrNull()!!
-      )
+    return when (allTopics) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "MarkTopicsCompletedFragment", "Failed to retrieve all topics", allTopics.error
+        )
+        mutableListOf()
+      }
+      is AsyncResult.Pending -> mutableListOf()
+      is AsyncResult.Success -> allTopics.value
     }
-    return allTopics.getOrDefault(mutableListOf())
   }
 
   private fun processAllTopics(allTopics: List<Topic>): List<TopicViewModel> {

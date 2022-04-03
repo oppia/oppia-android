@@ -13,7 +13,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/hints_and_solution_app_bar_layout"
@@ -28,12 +28,12 @@
         android:id="@+id/hints_and_solution_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppia_dark_blue"
+        android:background="@color/color_def_oppia_dark_blue"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:title="@string/hints_toolbar_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -51,8 +51,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="20dp"
-        android:paddingBottom="168dp"
+        android:paddingTop="@dimen/hints_and_solution_recycler_view_padding_top"
+        android:paddingBottom="@dimen/hints_and_solution_recycler_view_padding_bottom"
         android:scrollbars="none"
         app:list="@{viewModel.itemList}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

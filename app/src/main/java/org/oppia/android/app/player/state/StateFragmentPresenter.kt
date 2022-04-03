@@ -39,6 +39,7 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
@@ -282,19 +283,15 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
-    if (result.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve ephemeral state",
-        result.getErrorOrNull()!!
-      )
-      return
-    } else if (result.isPending()) {
-      // Display nothing until a valid result is available.
-      return
+    when (result) {
+      is AsyncResult.Failure ->
+        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
+      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
+      is AsyncResult.Success -> processEphemeralState(result.value)
     }
+  }
 
-    val ephemeralState = result.getOrThrow()
+  private fun processEphemeralState(ephemeralState: EphemeralState) {
     explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
@@ -333,14 +330,12 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   /** Subscribes to the result of requesting to show a hint or solution. */
-  private fun subscribeToHintSolution(resultLiveData: LiveData<AsyncResult<Any?>>) {
-    resultLiveData.observe(
+  private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
+    resultDataProvider.toLiveData().observe(
       fragment,
       { result ->
-        if (result.isFailure()) {
-          oppiaLogger.e(
-            "StateFragment", "Failed to retrieve hint/solution", result.getErrorOrNull()!!
-          )
+        if (result is AsyncResult.Failure) {
+          oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
           viewModel.setHintOpenedAndUnRevealedVisibility(false)
@@ -389,18 +384,20 @@ class StateFragmentPresenter @Inject constructor(
   private fun processAnswerOutcome(
     ephemeralStateResult: AsyncResult<AnswerOutcome>
   ): AnswerOutcome {
-    if (ephemeralStateResult.isFailure()) {
-      oppiaLogger.e(
-        "StateFragment",
-        "Failed to retrieve answer outcome",
-        ephemeralStateResult.getErrorOrNull()!!
-      )
+    return when (ephemeralStateResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "StateFragment", "Failed to retrieve answer outcome", ephemeralStateResult.error
+        )
+        AnswerOutcome.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> AnswerOutcome.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralStateResult.value
     }
-    return ephemeralStateResult.getOrDefault(AnswerOutcome.getDefaultInstance())
   }
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer))
+    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
   }
 
   fun dismissConceptCard() {
@@ -413,7 +410,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun moveToNextState() {
     viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
-    explorationProgressController.moveToNextState().observe(
+    explorationProgressController.moveToNextState().toLiveData().observe(
       fragment,
       Observer {
         recyclerViewAssembler.collapsePreviousResponses()

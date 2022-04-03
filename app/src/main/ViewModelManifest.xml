@@ -3,5 +3,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.android.app.vm">
   <uses-sdk android:minSdkVersion="19"
-    android:targetSdkVersion="28" />
+    android:targetSdkVersion="30" />
 </manifest>
