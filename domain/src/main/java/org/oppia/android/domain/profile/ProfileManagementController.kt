@@ -127,7 +127,7 @@ class ProfileManagementController @Inject constructor(
       it?.let {
         oppiaLogger.e(
           "DOMAIN",
-          "Failed to prime cache ahead of LiveData conversion for ProfileManagementController.",
+          "Failed to prime cache ahead of data retrieval for ProfileManagementController.",
           it
         )
       }
@@ -146,9 +146,9 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
-        AsyncResult.success(profile)
+        AsyncResult.Success(profile)
       } else {
-        AsyncResult.failed(
+        AsyncResult.Failure(
           ProfileNotFoundException(
             "ProfileId ${profileId.internalId} does" +
               " not match an existing Profile"
@@ -162,7 +162,7 @@ class ProfileManagementController @Inject constructor(
   fun getWasProfileEverAdded(): DataProvider<Boolean> {
     return profileDataStore.transformAsync(GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID) {
       val wasProfileEverAdded = it.wasProfileEverAdded
-      AsyncResult.success(wasProfileEverAdded)
+      AsyncResult.Success(wasProfileEverAdded)
     }
   }
 
@@ -171,9 +171,9 @@ class ProfileManagementController @Inject constructor(
     return profileDataStore.transformAsync(GET_DEVICE_SETTINGS_PROVIDER_ID) {
       val deviceSettings = it.deviceSettings
       if (deviceSettings != null) {
-        AsyncResult.success(deviceSettings)
+        AsyncResult.Success(deviceSettings)
       } else {
-        AsyncResult.failed(DeviceSettingsNotFoundException("Device Settings not found."))
+        AsyncResult.Failure(DeviceSettingsNotFoundException("Device Settings not found."))
       }
     }
   }
@@ -580,9 +580,9 @@ class ProfileManagementController @Inject constructor(
       val profileDatabase = profileDataStore.readDataAsync().await()
       if (profileDatabase.profilesMap.containsKey(profileId.internalId)) {
         currentProfileId = profileId.internalId
-        return@createInMemoryDataProviderAsync AsyncResult.success<Any?>(0)
+        return@createInMemoryDataProviderAsync AsyncResult.Success(0)
       }
-      AsyncResult.failed<Any?>(
+      AsyncResult.Failure(
         ProfileNotFoundException(
           "ProfileId ${profileId.internalId} is" +
             " not associated with an existing profile"
@@ -645,41 +645,49 @@ class ProfileManagementController @Inject constructor(
     deferred: Deferred<ProfileActionStatus>
   ): AsyncResult<Any?> {
     return when (deferred.await()) {
-      ProfileActionStatus.SUCCESS -> AsyncResult.success(null)
-      ProfileActionStatus.INVALID_PROFILE_NAME -> AsyncResult.failed(
-        ProfileNameOnlyLettersException("$name does not contain only letters")
-      )
-      ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE -> AsyncResult.failed(
-        ProfileNameNotUniqueException("$name is not unique to other profiles")
-      )
-      ProfileActionStatus.FAILED_TO_STORE_IMAGE -> AsyncResult.failed(
-        FailedToStoreImageException(
-          "Failed to store user's selected avatar image"
+      ProfileActionStatus.SUCCESS -> AsyncResult.Success(null)
+      ProfileActionStatus.INVALID_PROFILE_NAME ->
+        AsyncResult.Failure(
+          ProfileNameOnlyLettersException("$name does not contain only letters")
         )
-      )
-      ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR -> AsyncResult.failed(
-        FailedToGenerateGravatarException("Failed to generate a gravatar url")
-      )
-      ProfileActionStatus.FAILED_TO_DELETE_DIR -> AsyncResult.failed(
-        FailedToDeleteDirException(
-          "Failed to delete directory with ${profileId?.internalId}"
+      ProfileActionStatus.PROFILE_NAME_NOT_UNIQUE ->
+        AsyncResult.Failure(
+          ProfileNameNotUniqueException("$name is not unique to other profiles")
         )
-      )
-      ProfileActionStatus.PROFILE_NOT_FOUND -> AsyncResult.failed(
-        ProfileNotFoundException(
-          "ProfileId ${profileId?.internalId} does not match an existing Profile"
+      ProfileActionStatus.FAILED_TO_STORE_IMAGE ->
+        AsyncResult.Failure(
+          FailedToStoreImageException(
+            "Failed to store user's selected avatar image"
+          )
         )
-      )
-      ProfileActionStatus.PROFILE_NOT_ADMIN -> AsyncResult.failed(
-        ProfileNotAdminException(
-          "ProfileId ${profileId?.internalId} does not match an existing admin"
+      ProfileActionStatus.FAILED_TO_GENERATE_GRAVATAR ->
+        AsyncResult.Failure(
+          FailedToGenerateGravatarException("Failed to generate a gravatar url")
         )
-      )
-      ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN -> AsyncResult.failed(
-        ProfileAlreadyHasAdminException(
-          "Profile cannot be an admin"
+      ProfileActionStatus.FAILED_TO_DELETE_DIR ->
+        AsyncResult.Failure(
+          FailedToDeleteDirException(
+            "Failed to delete directory with ${profileId?.internalId}"
+          )
         )
-      )
+      ProfileActionStatus.PROFILE_NOT_FOUND ->
+        AsyncResult.Failure(
+          ProfileNotFoundException(
+            "ProfileId ${profileId?.internalId} does not match an existing Profile"
+          )
+        )
+      ProfileActionStatus.PROFILE_NOT_ADMIN ->
+        AsyncResult.Failure(
+          ProfileNotAdminException(
+            "ProfileId ${profileId?.internalId} does not match an existing admin"
+          )
+        )
+      ProfileActionStatus.PROFILE_ALREADY_HAS_ADMIN ->
+        AsyncResult.Failure(
+          ProfileAlreadyHasAdminException(
+            "Profile cannot be an admin"
+          )
+        )
     }
   }
 

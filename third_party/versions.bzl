@@ -60,7 +60,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.protobuf:protobuf-javalite": "3.17.3",
     "com.squareup.moshi:moshi-kotlin": "1.11.0",
     "com.squareup.moshi:moshi-kotlin-codegen": "1.11.0",
-    "com.squareup.okhttp3:okhttp": "4.1.0",
+    "com.squareup.okhttp3:okhttp": "4.7.2",
     "com.squareup.retrofit2:converter-moshi": "2.5.0",
     "com.squareup.retrofit2:retrofit": "2.9.0",
     "de.hdodenhof:circleimageview": "3.0.1",
@@ -69,8 +69,8 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
     "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.3.2",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.2.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -93,7 +93,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.truth.extensions:truth-liteproto-extension": "1.1.3",
     "com.google.truth:truth": "0.43",
-    "com.squareup.okhttp3:mockwebserver": "4.1.0",
+    "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
     "junit:junit": "4.12",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
@@ -102,8 +102,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
-    "org.robolectric:annotations": "4.4",
-    "org.robolectric:robolectric": "4.4",
+    "org.robolectric:annotations": "4.5",
+    "org.robolectric:robolectric": "4.5",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.

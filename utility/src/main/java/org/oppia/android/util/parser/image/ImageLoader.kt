@@ -30,8 +30,8 @@ interface ImageLoader {
   )
 
   /**
-   * Same as [loadBlockSvg] except this specifically loads a [TextPictureDrawable] which can be rendered
-   * in-line with text.
+   * Same as [loadBlockSvg] except this specifically loads a [TextPictureDrawable] which can be
+   * rendered in-line with text.
    */
   fun loadTextSvg(
     imageUrl: String,
@@ -40,12 +40,25 @@ interface ImageLoader {
   )
 
   /**
-   * Loads the specified [imageDrawable] resource into the specified [target].
+   * Loads the specified [imageDrawableResId] resource into the specified [target].
+   *
    * Optional [transformations] may be applied to the image.
    */
   fun loadDrawable(
     @DrawableRes imageDrawableResId: Int,
     target: ImageTarget<Drawable>,
     transformations: List<ImageTransformation> = listOf()
+  )
+
+  /**
+   * Loads the specified cached math [rawLatex] into the specified [target] with the provided font
+   * [lineHeight] setting and details on how the image will be displayed indicated by
+   * [useInlineRendering].
+   */
+  fun loadMathDrawable(
+    rawLatex: String,
+    lineHeight: Float,
+    useInlineRendering: Boolean,
+    target: ImageTarget<Bitmap>
   )
 }

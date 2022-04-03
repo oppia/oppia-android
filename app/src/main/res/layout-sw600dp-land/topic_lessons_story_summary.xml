@@ -26,10 +26,10 @@
       android:layout_gravity="center"
       android:layout_marginTop="12dp"
       android:layout_marginBottom="12dp"
-      app:cardBackgroundColor="@color/white"
+      app:cardBackgroundColor="@color/color_def_white"
       app:cardCornerRadius="4dp"
       app:cardElevation="4dp"
-      app:rippleColor="@color/transparent">
+      app:rippleColor="@color/color_def_transparent">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -152,7 +152,7 @@
           android:id="@+id/chapter_list_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/white_light"
+          android:background="@color/color_def_white_light"
           android:orientation="vertical"
           android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 

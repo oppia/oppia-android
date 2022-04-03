@@ -17,7 +17,7 @@
     android:id="@+id/mark_chapters_completed_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/color_def_white">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/mark_chapters_completed_app_bar_layout"
@@ -39,7 +39,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/developer_options_mark_chapters_completed"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/color_def_white" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="@string/modify_lesson_progress_all"
-            android:textColor="@color/white"
+            android:textColor="@color/color_def_white"
             app:layout_constraintBottom_toTopOf="@id/mark_chapters_completed_all_check_box"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -78,7 +78,7 @@
             android:clickable="false"
             android:focusable="false"
             android:paddingBottom="10dp"
-            app:buttonTint="@color/white"
+            app:buttonTint="@color/color_def_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mark_chapters_completed_all_text_view" />
@@ -93,7 +93,7 @@
           android:minWidth="48dp"
           android:minHeight="48dp"
           android:text="@string/modify_lesson_progress_mark_completed_uppercase"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
