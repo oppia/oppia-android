@@ -549,7 +549,9 @@ class FractionInputInteractionViewTestActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(fractionInputInteractionViewTestActivityTest: FractionInputInteractionViewTestActivityTest)
+    fun inject(
+      fractionInputInteractionViewTestActivityTest: FractionInputInteractionViewTestActivityTest
+    )
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
