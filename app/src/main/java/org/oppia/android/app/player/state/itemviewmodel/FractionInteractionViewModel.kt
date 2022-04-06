@@ -20,7 +20,7 @@ import org.oppia.android.util.math.FractionParser
 import javax.inject.Inject
 
 /** [StateItemViewModel] for the fraction input interaction. */
-class FractionInteractionViewModel private constructor(
+class FractionInteractionViewModel public constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
