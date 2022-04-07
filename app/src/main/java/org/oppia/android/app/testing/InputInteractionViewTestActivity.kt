@@ -23,7 +23,6 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
@@ -55,9 +54,6 @@ class InputInteractionViewTestActivity :
   lateinit var textInputViewModelFactory: TextInputViewModel.FactoryImpl
 
   @Inject
-  lateinit var fractionInteractionViewModelFactory: FractionInteractionViewModel.FactoryImpl
-
-  @Inject
   lateinit var ratioViewModelFactory: RatioExpressionInputInteractionViewModel.FactoryImpl
 
   @Inject
@@ -66,10 +62,6 @@ class InputInteractionViewTestActivity :
   val numericInputViewModel by lazy { numericInputViewModelFactory.create<NumericInputViewModel>() }
 
   val textInputViewModel by lazy { textInputViewModelFactory.create<TextInputViewModel>() }
-
-  val fractionInteractionViewModel by lazy {
-    fractionInteractionViewModelFactory.create<FractionInteractionViewModel>()
-  }
 
   val ratioExpressionInputInteractionViewModel by lazy {
     ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
@@ -123,6 +115,7 @@ class InputInteractionViewTestActivity :
             .create(interaction = params.interaction)
       }
     }
+
     binding.numericInputViewModel = numericInputViewModel
     binding.textInputViewModel = textInputViewModel
     binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
