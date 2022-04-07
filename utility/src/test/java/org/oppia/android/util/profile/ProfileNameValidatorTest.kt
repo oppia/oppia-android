@@ -29,7 +29,7 @@ class ProfileNameValidatorTest {
   @Test
   fun testIsNameValid_nameWithDisallowedSymbol_returnsFalse() {
     val namesWithSymbols =
-      listOf<String>("Ben#Henning", "Rajay@T", "नमन**", "جيشنو^&&", "Jishnu_")
+      listOf<String>("Ben#Henning", "Rajay@T", "जिष्णु**", "جيشنو^&&", "_Jishnu")
     namesWithSymbols.forEach {
       assertThat(profileNameValidator.isNameValid(it)).isFalse()
     }
@@ -59,7 +59,7 @@ class ProfileNameValidatorTest {
 
   @Test
   fun testIsNameValid_nameWithHindiLetters_returnsTrue() {
-    val nameWithHindiLetters = "नमन"
+    val nameWithHindiLetters = "जिष्णु"
     assertThat(profileNameValidator.isNameValid(nameWithHindiLetters)).isTrue()
   }
 

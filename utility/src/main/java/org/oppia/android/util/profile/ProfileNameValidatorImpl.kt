@@ -19,9 +19,10 @@ class ProfileNameValidatorImpl @Inject constructor() : ProfileNameValidator {
     return (onlyLettersAndAllowedSymbols(name) && noRepeatedUseOfAllowedSymbols(name))
   }
 
+  /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
   private fun onlyLettersAndAllowedSymbols(name: String): Boolean {
     name.forEach {
-      if (!ProfileNameValidatorUtil().isNameValid(it)) {
+      if (!(it.isAlphabetic() || isSymbolAllowed(it))) {
         return false
       }
     }
@@ -30,5 +31,25 @@ class ProfileNameValidatorImpl @Inject constructor() : ProfileNameValidator {
 
   private fun noRepeatedUseOfAllowedSymbols(name: String): Boolean {
     return !name.contains(noRepeatedAllowedSymbolsRegex)
+  }
+
+  private fun isSymbolAllowed(symbol: Char): Boolean {
+    return symbol == '.' || symbol == '-' || symbol == '\''
+  }
+
+  private fun Char.isAlphabetic(): Boolean {
+    /**
+     * The following categories are based on Kotlin's Char.isLetter() and Character.isAlphabetic().
+     * It also adds spacing marks which can be safely ignored since they modify other Unicode
+     * characters (which are then being verified as being letters). Note also that 'LETTER_NUMBER'
+     * is included for roman numerals and other number-like letters since these can sometimes show
+     * up in names.
+     */
+    return when (category) {
+      CharCategory.UPPERCASE_LETTER, CharCategory.LOWERCASE_LETTER, CharCategory.TITLECASE_LETTER,
+      CharCategory.MODIFIER_LETTER, CharCategory.OTHER_LETTER, CharCategory.LETTER_NUMBER,
+      CharCategory.COMBINING_SPACING_MARK, CharCategory.NON_SPACING_MARK -> true
+      else -> false
+    }
   }
 }
