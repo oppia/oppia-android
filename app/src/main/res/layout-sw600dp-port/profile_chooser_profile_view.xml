@@ -46,7 +46,7 @@
         android:layout_height="108dp"
         app:strokeColor="@color/avatar_border"
         app:strokeWidth="1dp"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
         profile:src="@{viewModel.profile.avatar}" />
 

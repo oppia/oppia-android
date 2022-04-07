@@ -27,7 +27,7 @@
     <com.google.android.material.imageview.ShapeableImageView
       android:layout_width="64dp"
       android:layout_height="64dp"
-      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"

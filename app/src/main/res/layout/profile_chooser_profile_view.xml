@@ -43,7 +43,7 @@
         android:layout_height="72dp"
         app:strokeColor="@color/avatar_border"
         app:strokeWidth="1dp"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App"
         profile:src="@{viewModel.profile.avatar}" />
 
       <LinearLayout

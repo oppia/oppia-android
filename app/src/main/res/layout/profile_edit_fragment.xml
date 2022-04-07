@@ -43,7 +43,7 @@
         android:translationZ="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App"
         profile:src="@{viewModel.profile.avatar}" />
 
       <TextView
