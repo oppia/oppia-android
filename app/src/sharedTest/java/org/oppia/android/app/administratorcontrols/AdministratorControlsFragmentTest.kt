@@ -31,6 +31,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -48,9 +51,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.settings.profile.ProfileListActivity
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -106,8 +108,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -271,6 +271,7 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       clickUpdateOnWifiSwitch()
+      atAdminControlsItem(position = 2, viewId = R.id.topic_update_on_wifi_constraint_layout)
       testCoroutineDispatchers.runCurrent()
       checkUpdateOnWifiSwitchIsChecked()
     }
@@ -286,6 +287,7 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       clickUpdateOnWifiSwitch()
+      atAdminControlsItem(position = 2, viewId = R.id.topic_update_on_wifi_constraint_layout)
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
@@ -303,6 +305,7 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       clickUpdateOnWifiSwitch()
+      atAdminControlsItem(position = 2, viewId = R.id.topic_update_on_wifi_constraint_layout)
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(isRoot()).perform(orientationPortrait())
@@ -468,13 +471,13 @@ class AdministratorControlsFragmentTest {
   }
 
   private fun clickUpdateOnWifiSwitch() {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = 2,
-        targetViewId = R.id.topic_update_on_wifi_constraint_layout
-      )
-    ).perform(click())
+    onView(atAdminControlsItem(position = 2, R.id.topic_update_on_wifi_constraint_layout)).perform(
+      click()
+    )
+  }
+
+  private fun atAdminControlsItem(position: Int, viewId: Int): Matcher<View> {
+    return atPositionOnView(recyclerViewId = R.id.administrator_controls_list, position, viewId)
   }
 
   private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {
