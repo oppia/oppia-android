@@ -247,7 +247,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserDoesNotHasDownloadAccess_switchIsNotClickable() {
+  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchIsNotClickable() {
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
