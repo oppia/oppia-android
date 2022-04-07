@@ -109,14 +109,9 @@ class HtmlParser private constructor(
       LinkifyCompat.addLinks(htmlContentTextView, Linkify.WEB_URLS)
     }
 
-    val imageGetter: UrlImageParser?
-    if (urlImageParserFactory == null) {
-      imageGetter = null
-    } else {
-      imageGetter = urlImageParserFactory?.create(
-        htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
-      )
-    }
+    val imageGetter = urlImageParserFactory?.create(
+      htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
+    )
 
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
