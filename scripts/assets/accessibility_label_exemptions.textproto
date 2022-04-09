@@ -14,6 +14,7 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DragDropTest
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DrawableBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ExplorationInjectionActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ExplorationTestActivity"
+exempted_activity: "app/src/main/java/org/oppia/android/app/testing/FractionInputInteractionViewTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HomeTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/HtmlParserTestActivity"
