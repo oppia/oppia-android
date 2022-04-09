@@ -78,6 +78,18 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
               )
           }
         }
+      } else {
+        binding.isAllChecked = false
+        getMarkChaptersCompletedViewModel().getItemList().forEach { viewModel ->
+          if (viewModel is ChapterSummaryViewModel) {
+            if (!viewModel.checkIfChapterIsCompleted())
+              chapterUnselected(
+                viewModel.chapterIndex,
+                viewModel.nextStoryIndex,
+                //viewModel.chapterSummary.explorationId
+              )
+          }
+        }
       }
     }
 
