@@ -226,7 +226,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaNumberFormatter_validNumberFormat_returnsString() {
-    val number = machineLocale.run{0.toHumanReadableString(1)}
+    val number = machineLocale.run { 0.toHumanReadableString(1) }
 
     assertThat(number).isEqualTo("1")
   }
@@ -307,8 +307,10 @@ class MachineLocaleImplTest {
   private companion object {
     // Date & time: Wed Apr 24 2019 08:22:03 GMT.
     private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
+
     // Date & time: Tue Apr 23 2019 14:22:00 GMT.
     private const val AFTERNOON_UTC_TIMESTAMP_MILLIS = 1556029320000
+
     // Date & time: Tue Apr 23 2019 23:22:00 GMT.
     private const val EVENING_UTC_TIMESTAMP_MILLIS = 1556061720000
   }
