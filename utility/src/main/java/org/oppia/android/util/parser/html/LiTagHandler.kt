@@ -107,7 +107,7 @@ class LiTagHandler(
           ListItemLeadingMarginSpan(
             context,
             indentation,
-            "${machineLocale.numberFormatter(mark.number)}.",
+            "${machineLocale.run {(mark.number).toHumanReadableString(mark.number)}}.",
             tag
           )
         )

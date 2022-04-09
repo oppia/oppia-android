@@ -118,6 +118,9 @@ sealed class OppiaLocale {
     /** Returns the decapitalized version of this string. */
     abstract fun String.decapitalizeForMachines(): String
 
+    /** Returns a human-readable representation of this [Int]. */
+    abstract fun Int.toHumanReadableString(number: Int): String?
+
     /** Returns whether this string ends with the specified suffix, ignoring case differences. */
     abstract fun String.endsWithIgnoreCase(suffix: String): Boolean
 
@@ -152,9 +155,6 @@ sealed class OppiaLocale {
      * included, or in how this information is presented).
      */
     abstract fun computeCurrentTimeString(): String
-
-    /** An abstract representation of a number. */
-    abstract fun numberFormatter(number: Int): String
 
     /** Represents different times of day. */
     enum class TimeOfDay {

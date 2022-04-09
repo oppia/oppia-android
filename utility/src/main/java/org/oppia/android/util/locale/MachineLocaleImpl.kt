@@ -7,7 +7,6 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.util.system.OppiaClock
 import java.text.DateFormat
-import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -32,6 +31,9 @@ class MachineLocaleImpl @Inject constructor(
   private val timeFormat by lazy {
     DateFormat.getTimeInstance(DateFormat.MEDIUM, machineAndroidLocale)
   }
+  private val numberFormat by lazy {
+    NumberFormat.getInstance(machineAndroidLocale)
+  }
 
   override fun String.formatForMachines(vararg args: Any?): String =
     format(machineAndroidLocale, *args)
@@ -43,6 +45,8 @@ class MachineLocaleImpl @Inject constructor(
   override fun String.capitalizeForMachines(): String = capitalize(machineAndroidLocale)
 
   override fun String.decapitalizeForMachines(): String = decapitalize(machineAndroidLocale)
+
+  override fun Int.toHumanReadableString(number: Int): String? = numberFormat.format(number)
 
   override fun String.endsWithIgnoreCase(suffix: String): Boolean =
     toMachineLowerCase().endsWith(suffix.toMachineLowerCase())
@@ -70,11 +74,6 @@ class MachineLocaleImpl @Inject constructor(
 
   override fun computeCurrentTimeString(): String =
     timeFormat.format(Date(oppiaClock.getCurrentTimeMs()))
-
-  override fun numberFormatter(number: Int): String {
-    val numberFormat: NumberFormat = DecimalFormat("##")
-    return numberFormat.format(number)
-  }
 
   override fun toString(): String = "MachineLocaleImpl[context=$machineLocaleContext]"
 

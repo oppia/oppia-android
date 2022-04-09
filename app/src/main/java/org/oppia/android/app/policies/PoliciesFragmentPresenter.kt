@@ -52,14 +52,24 @@ class PoliciesFragmentPresenter @Inject constructor(
       policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
     }
 
-    binding.policyDescriptionTextView.text = htmlParserFactory.create().parseOppiaHtml(
+    binding.policyDescriptionTextView.text = htmlParserFactory.create(
+      gcsResourceName = "",
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+    ).parseOppiaHtml(
       policyDescription,
       binding.policyDescriptionTextView,
       supportsLinks = true,
       supportsConceptCards = false
     )
 
-    binding.policyWebLinkTextView.text = htmlParserFactory.create().parseOppiaHtml(
+    binding.policyWebLinkTextView.text = htmlParserFactory.create(
+      gcsResourceName = "",
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false
+    ).parseOppiaHtml(
       policyWebLink,
       binding.policyWebLinkTextView,
       supportsLinks = true,
