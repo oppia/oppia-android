@@ -24,7 +24,7 @@ class TopicViewerTest {
   }
 
   @Test
-  fun testTopicActivity_exploreInfoFragment_finishesSuccessfully() {
+  fun testTopicActivity_exploreInfoTab_finishesSuccessfully() {
     navigateToTopicActivity()
     device.findObjectByText("See More").click()
     device.waitForText("See Less")
@@ -33,7 +33,7 @@ class TopicViewerTest {
   }
 
   @Test
-  fun testTopicActivity_exploreLessonsFragment_finishesSuccessfully() {
+  fun testTopicActivity_exploreLessonsTab_finishesSuccessfully() {
     navigateToTopicActivity()
     device.findObjectByText("LESSONS").click()
     device.findObjectByRes("expand_list_icon").click()
@@ -59,7 +59,7 @@ class TopicViewerTest {
   }
 
   @Test
-  fun testTopicActivity_explorePracticeFragment_finishesSuccessfully() {
+  fun testTopicActivity_explorePracticeTab_finishesSuccessfully() {
     navigateToTopicActivity()
     device.findObjectByText("PRACTICE").click()
     assertThat(device.findObjectByText("START").isEnabled()).isFalse()
@@ -73,7 +73,7 @@ class TopicViewerTest {
   }
 
   @Test
-  fun testTopicActivity_exploreRevisionFragment_finishesSuccessfully() {
+  fun testTopicActivity_exploreRevisionTab_finishesSuccessfully() {
     navigateToTopicActivity()
     device.findObjectByText("REVISION").click()
     device.findObjectByText("Fractions of a group").click()
