@@ -226,7 +226,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaNumberFormatter_validNumberFormat_returnsString() {
-    val number = machineLocale.numberFormatter(1)
+    val number = machineLocale.run{0.toHumanReadableString(1)}
 
     assertThat(number).isEqualTo("1")
   }

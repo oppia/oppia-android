@@ -38,6 +38,8 @@ class ListItemLeadingMarginSpan(
   /** The space between the bullet and the text. */
   private val spacingBeforeText =
     resources.getDimensionPixelSize(R.dimen.spacing_before_text)
+  private val spacingBeforeNumberedText =
+    resources.getDimensionPixelSize(R.dimen.spacing_before_numbered_text)
 
   override fun drawLeadingMargin(
     canvas: Canvas,
@@ -80,6 +82,14 @@ class ListItemLeadingMarginSpan(
   }
 
   override fun getLeadingMargin(first: Boolean): Int {
-    return 2 * bulletRadius + spacingBeforeText
+    when (tag) {
+      UL_TAG -> {
+        return 2 * bulletRadius + spacingBeforeText
+      }
+      OL_TAG -> {
+        return (2 * string.length) + spacingBeforeNumberedText
+      }
+    }
+    return 0
   }
 }
