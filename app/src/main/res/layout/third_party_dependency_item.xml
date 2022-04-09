@@ -14,7 +14,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_third_party_dependency_list_activity_background_color">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -34,20 +34,23 @@
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
-        android:text="@{viewModel.dependencyName}" />
+        android:textColor="@color/component_color_third_party_dependency_items_text_list_activity_background_color"
+        android:text="@{viewModel.dependencyName}"
+        android:background="@color/component_color_third_party_dependency_options_list_activity_background_color"/>
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/component_color_third_party_dependency_options_list_activity_background_color"
         android:paddingStart="16dp"
         android:paddingTop="4dp"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
-        android:textColor="@color/color_def_accessible_grey"
         android:text="@{viewModel.dependencyVersion}"
-        android:textSize="12sp" />
+        android:textColor="@color/component_color_third_party_dependency_version_text_view_list_activity_color"
+        android:textSize="12sp"/>
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

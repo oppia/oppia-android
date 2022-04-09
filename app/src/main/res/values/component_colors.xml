@@ -36,4 +36,12 @@
   <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
+  <!-- Third Party Dependency List Activity -->
+  <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_third_party_dependency_options_list_activity_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_third_party_dependency_items_text_list_activity_background_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_third_party_dependency_version_text_view_list_activity_color">@color/color_palette_primary_text_color</color>
+
+
+
 </resources>
