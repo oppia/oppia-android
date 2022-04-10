@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 /**
  * This is a dummy activity to test input interaction views.
- * It contains [FractionInputInteractionView]
+ * It contains [FractionInputInteractionView].
  */
 class FractionInputInteractionViewTestActivity :
   InjectableAppCompatActivity(),
