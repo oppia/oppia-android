@@ -44,7 +44,8 @@ class TopicViewerTest {
     // Asserting that lessons fragment is open
     assertThat(device.findObjectByText("Stories You Can Play")).isNotNull()
     assertThat(device.findObjectByRes("chapter_play_state_icon")).isNotNull()
-    val contentDescription: String = device.findObjectByRes("story_progress_view").getParent().getContentDescription()
+    val contentDescription: String =
+      device.findObjectByRes("story_progress_view").getParent().getContentDescription()
     assertThat(contentDescription).isEqual("0% stories completed and 1 chapters in progress.")
 
     device.waitForRes("expand_list_icon")

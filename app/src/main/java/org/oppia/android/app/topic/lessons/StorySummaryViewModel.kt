@@ -21,7 +21,8 @@ class StorySummaryViewModel(
     ObservableField(computeStoryProgressPercentageText(DEFAULT_STORY_PERCENTAGE))
 
   val chaptersInProgress: ObservableField<Int> = ObservableField(DEFAULT_CHAPTERS_IN_PROGRESS)
-  val contentDescriptionText: ObservableField<String> = ObservableField(computeContentDescriptionText())
+  val contentDescriptionText: ObservableField<String> =
+    ObservableField(computeContentDescriptionText())
 
   val chapterSummaryItemList: List<ChapterSummaryViewModel> by lazy {
     computeChapterSummaryItemList()
@@ -66,7 +67,8 @@ class StorySummaryViewModel(
   }
 
   private fun computeContentDescriptionText(): String {
-    return "$storyProgressPercentageText stories completed and $chaptersInProgress chapters in progress."
+    return "$storyProgressPercentageText stories " +
+      "completed and $chaptersInProgress chapters in progress."
   }
 
   private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> {
