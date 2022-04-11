@@ -169,6 +169,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     val storyPercentage: Int =
       (completedChapterCount * 100) / storySummaryViewModel.storySummary.chapterCount
     storySummaryViewModel.setStoryPercentage(storyPercentage)
+    storySummaryViewModel.setChaptersInProgress(inProgressChapterCount)
     binding.storyProgressView.setStoryChapterDetails(
       storySummaryViewModel.storySummary.chapterCount,
       completedChapterCount,

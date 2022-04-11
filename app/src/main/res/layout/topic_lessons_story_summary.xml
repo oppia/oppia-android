@@ -52,7 +52,7 @@
             android:id="@+id/story_progress_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@{viewModel.storyProgressPercentageText}">
+            android:contentDescription="@{viewModel.contentDescriptionText}">
 
             <org.oppia.android.app.customview.SegmentedCircularProgressView
               android:id="@+id/story_progress_view"

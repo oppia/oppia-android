@@ -7,6 +7,7 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 private const val DEFAULT_STORY_PERCENTAGE = 0
+private const val DEFAULT_CHAPTERS_IN_PROGRESS = 0
 
 /** [ViewModel] for displaying a story summary. */
 class StorySummaryViewModel(
@@ -19,6 +20,9 @@ class StorySummaryViewModel(
   val storyProgressPercentageText: ObservableField<String> =
     ObservableField(computeStoryProgressPercentageText(DEFAULT_STORY_PERCENTAGE))
 
+  val chaptersInProgress: ObservableField<Int> = ObservableField(DEFAULT_CHAPTERS_IN_PROGRESS)
+  val contentDescriptionText: ObservableField<String> = ObservableField(computeContentDescriptionText())
+
   val chapterSummaryItemList: List<ChapterSummaryViewModel> by lazy {
     computeChapterSummaryItemList()
   }
@@ -30,6 +34,12 @@ class StorySummaryViewModel(
   fun setStoryPercentage(storyPercentage: Int) {
     this.storyPercentage.set(storyPercentage)
     storyProgressPercentageText.set(computeStoryProgressPercentageText(storyPercentage))
+    contentDescriptionText.set(computeContentDescriptionText())
+  }
+
+  fun setChaptersInProgress(chaptersInProgress: Int) {
+    this.chaptersInProgress.set(chaptersInProgress)
+    contentDescriptionText.set(computeContentDescriptionText())
   }
 
   fun computeStoryNameChapterCountContainerContentDescription(): String {
@@ -53,6 +63,10 @@ class StorySummaryViewModel(
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.topic_story_progress_percentage, storyPercentage.toString()
     )
+  }
+
+  private fun computeContentDescriptionText(): String {
+    return "$storyProgressPercentageText stories completed and $chaptersInProgress chapters in progress."
   }
 
   private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> {
