@@ -522,6 +522,15 @@ class HtmlParserTest {
         supportsConceptCards = true
       )
       textView.text = htmlResult
+
+      // Verify the displayed text is correct & has a clickable span.
+      val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
+      assertThat(htmlResult.toString()).isEqualTo(
+        "Visit refresher lesson"
+      )
+      assertThat(clickableSpans).hasLength(1)
+      clickableSpans.first().onClick(textView)
+
       return@runWithActivity textView
     }
 
