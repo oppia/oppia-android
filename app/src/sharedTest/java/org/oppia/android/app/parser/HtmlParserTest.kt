@@ -452,7 +452,9 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
-    val htmlParser = htmlParserFactory.create()
+    val htmlParser = htmlParserFactory.create(
+      gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false
+    )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(

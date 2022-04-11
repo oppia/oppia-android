@@ -115,6 +115,9 @@ class ListItemLeadingMarginSpanTest {
   val spacingBeforeText = context.resources.getDimensionPixelSize(
     org.oppia.android.util.R.dimen.spacing_before_text
   )
+  val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
+    org.oppia.android.util.R.dimen.spacing_before_numbered_text
+  )
 
   @Inject
   @field:DefaultResourceBucketName
@@ -289,7 +292,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
     assertThat(bulletSpan0).isNotNull()
     val leadingText = "1."
-    val expectedMargin = 2 * leadingText.length + spacingBeforeText
+    val expectedMargin = 2 * leadingText.length + spacingBeforeNumberedText
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
@@ -333,7 +336,7 @@ class ListItemLeadingMarginSpanTest {
     assertThat(bulletSpan0).isNotNull()
 
     val leadingText = "1."
-    val expectedMargin = 2 * leadingText.length + spacingBeforeText
+    val expectedMargin = 2 * leadingText.length + spacingBeforeNumberedText
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
