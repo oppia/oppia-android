@@ -34,7 +34,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:shadow_radius="8"
-      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App"
+      app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
       profile:src="@{viewModel.profile.avatar}" />
 
     <ImageView

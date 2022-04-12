@@ -43,7 +43,7 @@
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
         app:strokeColor="@color/avatar_border"
         app:strokeWidth="1dp"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape" />
 
       <LinearLayout
         android:layout_width="match_parent"
