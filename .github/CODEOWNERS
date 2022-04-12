@@ -66,7 +66,7 @@ gradlew.bat @BenHenning
 *.pro @BenHenning
 
 # Lesson assets.
-/domain/src/main/assets/ @BenHenning @BenHenning
+/domain/src/main/assets/ @BenHenning
 
 # Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
