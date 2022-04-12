@@ -86,7 +86,6 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
               chapterUnselected(
                 viewModel.chapterIndex,
                 viewModel.nextStoryIndex,
-                //viewModel.chapterSummary.explorationId
               )
           }
         }
