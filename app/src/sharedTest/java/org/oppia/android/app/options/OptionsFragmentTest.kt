@@ -99,6 +99,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -125,8 +126,7 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    PlatformParameterModule
-      .forceEnableLanguageSelectionUi(true, PlatformParameterForceMode.TESTING)
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -337,8 +337,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    PlatformParameterModule
-      .forceEnableLanguageSelectionUi(true, PlatformParameterForceMode.TESTING)
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -353,8 +352,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    PlatformParameterModule
-      .forceEnableLanguageSelectionUi(false, PlatformParameterForceMode.TESTING)
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -633,7 +631,7 @@ class OptionsFragmentTest {
   @Singleton
   @Component(
     modules = [
-      PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
       RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
