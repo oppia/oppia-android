@@ -57,7 +57,7 @@
         android:padding="4dp"
         android:textSize="14sp"
         android:text="@string/reveal_solution"
-        android:textColor="@color/white"
+        android:textColor="@color/color_def_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +116,7 @@
           style="@style/TextViewStart"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-black"
+          android:fontFamily="sans-serif-color_def_black"
           android:text="@string/the_only_solution_is"
           android:textColor="@color/oppia_primary_text"
           android:textSize="16sp" />
@@ -143,7 +143,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/solution_summary_margin_top_solution_summary_label"
-          android:fontFamily="sans-serif-black"
+          android:fontFamily="sans-serif-color_def_black"
           android:text="@string/explanation"
           android:textColor="@color/oppia_primary_text"
           android:textSize="16sp" />

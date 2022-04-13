@@ -249,6 +249,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
       onView(withSubstring("the pieces must be the same size.")).perform(click())
       testCoroutineDispatchers.runCurrent()
+      clickSubmitAnswerButton()
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_navigation_button)).perform(click())
@@ -1596,6 +1597,7 @@ class StateFragmentLocalTest {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     onView(withSubstring("the pieces must be the same size.")).perform(click())
     testCoroutineDispatchers.runCurrent()
+    clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
 
@@ -1819,6 +1821,7 @@ class StateFragmentLocalTest {
       expectedText = expectedOptionText,
       targetTextViewId = R.id.multiple_choice_content_text_view
     )
+    clickSubmitAnswerButton()
   }
 
   private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {

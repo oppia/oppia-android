@@ -147,8 +147,8 @@ class StoryActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.story_activity_title))
   }
 
-  @Test
-  @DisableAccessibilityChecks // TODO(#3362): Enable AccessibilityChecks
+  @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
+  @DisableAccessibilityChecks
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(

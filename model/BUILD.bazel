@@ -50,9 +50,11 @@ java_lite_proto_library(
     deps = [":arguments_proto"],
 )
 
-proto_library(
-    name = "event_logger_proto",
-    srcs = ["src/main/proto/oppia_logger.proto"],
+format_import_proto_library(
+    name = "event_logger",
+    src = "src/main/proto/oppia_logger.proto",
+    visibility = ["//visibility:public"],
+    deps = [":exploration_proto"],
 )
 
 java_lite_proto_library(
