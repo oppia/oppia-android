@@ -15,7 +15,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:overScrollMode="never"
-    android:background="@color/topic_activity_layout_background_color"
+    android:background="@color/component_color_topic_info_fragment_background_color"
     android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
