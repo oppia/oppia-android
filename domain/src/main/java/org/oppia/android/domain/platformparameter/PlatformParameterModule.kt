@@ -79,4 +79,3 @@ class PlatformParameterModule {
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
   }
 }
-
