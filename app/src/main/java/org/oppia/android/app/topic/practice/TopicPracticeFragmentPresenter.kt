@@ -20,7 +20,6 @@ import org.oppia.android.databinding.TopicPracticeHeaderViewBinding
 import org.oppia.android.databinding.TopicPracticeSubtopicBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
-import org.oppia.android.R
 
 /** The presenter for [TopicPracticeFragment]. */
 @FragmentScope
