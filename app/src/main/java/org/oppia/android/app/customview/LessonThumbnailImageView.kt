@@ -105,8 +105,7 @@ class LessonThumbnailImageView @JvmOverloads constructor(
       )
     }
     imageView.setBackgroundColor(
-      resources.getColor(R.color.topic_lessons_story_summary_card_background_color)
-        or lessonThumbnail.backgroundColorRgb.toLong().toInt()
+      (0xff000000L or lessonThumbnail.backgroundColorRgb.toLong()).toInt()
     )
     imageView.scaleType = ScaleType.FIT_CENTER
   }
