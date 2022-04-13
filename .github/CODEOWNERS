@@ -54,8 +54,11 @@ gradlew.bat @BenHenning
 *Test.kt @anandwana001
 
 # All resource files.
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /app/src/main/res/**/*.xml @BenHenning
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /utility/src/main/res/**/*.xml @BenHenning
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /app/src/main/res/values/colors_migrating.xml @ayush0402 @BenHenning
 
 # App UI strings.
@@ -66,6 +69,7 @@ gradlew.bat @BenHenning
 *.pro @BenHenning
 
 # Lesson assets.
+# TODO(#4296): Re-add rt4914 after 25-04-2021.
 /domain/src/main/assets/ @BenHenning
 
 # Android manifests and top-level app configuration.
@@ -108,7 +112,9 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global app module code ownership.
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /app/**/*.kt @BenHenning
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /app/**/*.java @BenHenning
 
 # State players.
@@ -185,12 +191,14 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /utility/**/*.kt @BenHenning
 
 # Accessibility utilities.
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @BenHenning
 
 # Core logging infrastructure.
 /utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
 
 # Miscellaneous statusbar UI utilities.
+# TODO(#4296): Replace BenHenning with rt4914 after 25-04-2021.
 /utility/src/*/java/org/oppia/android/util/statusbar/ @BenHenning
 
 #####################################################################################
