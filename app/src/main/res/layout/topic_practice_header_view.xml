@@ -12,26 +12,34 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginTop="32dp"
-    android:layout_marginEnd="24dp"
-    android:paddingBottom="24dp">
+    android:layout_marginTop="@dimen/topic_practice_header_parent_constraint_layout_margin_top"
+    android:paddingBottom="@dimen/topic_practice_header_parent_constraint_layout_padding_bottom">
 
-    <TextView
-      android:id="@+id/master_skills_text_view"
-      style="@style/Heading2ViewStart"
-      android:layout_marginEnd="88dp"
-      android:text="@string/topic_practice_master_these_skills"
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="@dimen/topic_practice_header_child_constraint_layout_width"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/topic_practice_header_child_constraint_layout_margin_start"
+      android:layout_marginEnd="@dimen/topic_practice_header_child_constraint_layout_margin_end"
+      app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-      android:id="@+id/skills_description_text_view"
-      style="@style/Subtitle1ViewStart"
-      android:layout_marginTop="4dp"
-      android:text="@string/topic_practice_skills_description"
-      android:textColor="@color/oppia_secondary_text"
-      app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
-      app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />
+      <TextView
+        android:id="@+id/master_skills_text_view"
+        style="@style/Heading2ViewStart"
+        android:layout_marginEnd="@dimen/master_skills_text_view_margin_end"
+        android:text="@string/topic_practice_master_these_skills"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/skills_description_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_marginTop="4dp"
+        android:text="@string/topic_practice_skills_description"
+        android:textColor="@color/oppia_secondary_text"
+        app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
