@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class ProfileNameValidatorTest {
   @Inject
-  lateinit var profileNameValidator: ProfileNameValidator
+  lateinit var profileNameValidator: ProfileNameValidatorImpl
 
   @Before
   fun setup() {
