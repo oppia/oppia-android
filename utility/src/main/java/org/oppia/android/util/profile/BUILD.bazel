@@ -17,12 +17,12 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "profile_name_validator_impl",
+    name = "profile_name_validator",
     srcs = [
-        "ProfileNameValidatorImpl.kt",
+        "ProfileNameValidator.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":profile_name_validator",
         "//third_party:javax_inject_javax_inject",
     ],
 )
