@@ -44,7 +44,7 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.profile.ProfileNameValidatorImpl
+import org.oppia.android.util.profile.ProfileNameValidator
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -707,7 +707,7 @@ class ProfileManagementControllerTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      ProfileNameValidatorImpl::class
+      ProfileNameValidator::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

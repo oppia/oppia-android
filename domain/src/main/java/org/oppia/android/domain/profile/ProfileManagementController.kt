@@ -31,7 +31,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.profile.ProfileNameValidatorImpl
+import org.oppia.android.util.profile.ProfileNameValidator
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -70,7 +70,7 @@ class ProfileManagementController @Inject constructor(
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val profileNameValidator: ProfileNameValidatorImpl
+  private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =

@@ -5,7 +5,7 @@ import javax.inject.Singleton
 
 /** Utility to validate that profile names are correctly formatted. */
 @Singleton
-class ProfileNameValidatorImpl @Inject constructor() {
+class ProfileNameValidator @Inject constructor() {
   private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[.'-]{2}") }
 
   /**
@@ -15,7 +15,7 @@ class ProfileNameValidatorImpl @Inject constructor() {
    * @param name name of the profile
    * @return if the profile name is allowed or not
    */
-  override fun isNameValid(name: String): Boolean {
+  fun isNameValid(name: String): Boolean {
     return (onlyLettersAndAllowedSymbols(name) && noRepeatedUseOfAllowedSymbols(name))
   }
 
