@@ -1,7 +1,7 @@
 package org.oppia.android.util.profile
 
+import dagger.Module
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Utility to validate that profile names are correctly formatted. */
 @Module
