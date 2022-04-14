@@ -17,7 +17,7 @@
     android:id="@+id/reading_text_size_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/component_color_option_activity_options_background_color"
+    android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex ? @color/component_color_option_activity_options_background_color_cyan : @color/component_color_option_activity_options_background_color}"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.onReadingTextSizeClicked()}"
     android:paddingStart="@dimen/option_story_text_size_padding_start"
