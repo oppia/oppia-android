@@ -67,10 +67,6 @@ class ProfileManagementControllerTest {
       Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
     )
 
-    private val allowedNames = listOf<String>("नमन", "Ben-Henning", "Rajat.T", "جيشنو")
-
-    private val disallowedNames = listOf<String>("नमन7", "Ben_Henning", "Rajat..T", "جيشنو^&&")
-
     private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
     private val PROFILE_ID_1 = ProfileId.newBuilder().setInternalId(1).build()
     private val PROFILE_ID_2 = ProfileId.newBuilder().setInternalId(2).build()
@@ -121,30 +117,13 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testAddProfile_addProfilesWithDisallowedNames_checkResultIsFailure() {
+  fun testAddProfile_addProfileWithNumberInName_checkResultIsFailure() {
     addTestProfiles()
 
     val dataProvider = addAdminProfile(name = "James034", pin = "321")
 
     val failure = monitorFactory.waitForNextFailureResult(dataProvider)
     assertThat(failure).hasMessageThat().contains("James034 does not contain only letters")
-  }
-
-  @Test
-  fun testAddProfiles_addProfilesWithAllowedNames_checkAllProfilesAreAdded() {
-    addAllowedNameProfiles()
-    testCoroutineDispatchers.runCurrent()
-
-    val profileDatabase = readProfileDatabase()
-
-    val profiles = profileDatabase.profilesMap
-
-    profiles.forEach { index, profile ->
-      assertThat(profile.name).isEqualTo(allowedNames[index])
-      assertThat(File(getAbsoluteDirPath("$index")).isDirectory).isTrue()
-    }
-
-    assertThat(profiles.size).isEqualTo(allowedNames.size)
   }
 
   @Test
@@ -579,12 +558,6 @@ class ProfileManagementControllerTest {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
     }
     profileAdditionProviders.forEach(monitorFactory::ensureDataProviderExecutes)
-  }
-
-  private fun addAllowedNameProfiles() {
-    allowedNames.forEach {
-      addNonAdminProfile(name = it, pin = "314", allowDownloadAccess = false, colorRgb = -10710042)
-    }
   }
 
   private fun checkTestProfilesArePresent(resultList: List<Profile>) {
