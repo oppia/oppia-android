@@ -10,6 +10,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
@@ -18,6 +19,9 @@ import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -54,6 +58,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TopicListControllerTest.TestApplication::class)
 class TopicListControllerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var context: Context
   @Inject lateinit var topicListController: TopicListController
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
@@ -619,6 +625,7 @@ class TopicListControllerTest {
   }
 
   @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // The failure is specific to loading protos.
   fun testGetPromotedActivityList_missingTopicsWithProgress_doesNotIncludeThoseTopics() {
     // This is a slightly hacky way to simulate a previous topic's progress that works because
     // StoryProgressController doesn't verify whether the IDs passed to it correspond to locally
