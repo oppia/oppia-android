@@ -356,7 +356,7 @@
   <dimen name="topic_lessons_fragment_layout_padding_bottom">100dp</dimen>
 
   <!--  Profile edit fragment-->
-  <dimen name="view_layout_marginTop">400dp</dimen>
+  <dimen name="view_layout_margin_top">400dp</dimen>
 
   <!-- Story Chapter View -->
   <dimen name="story_chapter_view_margin_top_first_item">20dp</dimen>

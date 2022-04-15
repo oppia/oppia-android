@@ -442,27 +442,27 @@
   <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
 
   <!--  Profile edit fragment-->
-  <dimen name="profile_edit_image_marginStart">28dp</dimen>
-  <dimen name="profile_edit_image_marginTop">28dp</dimen>
-  <dimen name="profile_edit_name_marginStart">24dp</dimen>
-  <dimen name="profile_edit_name_marginEnd">16dp</dimen>
-  <dimen name="view2_marginTop">36dp</dimen>
-  <dimen name="profile_rename_button_paddingStart">16dp</dimen>
-  <dimen name="profile_rename_button_paddingEnd">16dp</dimen>
-  <dimen name="profile_reset_button_paddingStart">16dp</dimen>
-  <dimen name="profile_reset_button_paddingEnd">16dp</dimen>
-  <dimen name="profile_edit_allow_download_heading_paddingStart">16dp</dimen>
-  <dimen name="profile_edit_allow_download_heading_paddingTop">12dp</dimen>
-  <dimen name="profile_edit_allow_download_heading_paddingEnd">24dp</dimen>
-  <dimen name="profile_edit_allow_download_sub_paddingStart">16dp</dimen>
-  <dimen name="profile_edit_allow_download_sub_paddingEnd">24dp</dimen>
-  <dimen name="profile_edit_allow_download_sub_paddingBottom">12dp</dimen>
-  <dimen name="profile_edit_allow_download_switch_paddingStart">12dp</dimen>
-  <dimen name="profile_edit_allow_download_switch_paddingTop">0dp</dimen>
-  <dimen name="profile_edit_allow_download_switch_paddingEnd">12dp</dimen>
-  <dimen name="profile_delete_button_paddingStart">16dp</dimen>
-  <dimen name="profile_delete_button_paddingEnd">16dp</dimen>
-  <dimen name="view_layout_marginTop">50dp</dimen>
+  <dimen name="profile_edit_image_margin_start">28dp</dimen>
+  <dimen name="profile_edit_image_margin_top">28dp</dimen>
+  <dimen name="profile_edit_name_margin_start">24dp</dimen>
+  <dimen name="profile_edit_name_margin_end">16dp</dimen>
+  <dimen name="view2_margin_top">36dp</dimen>
+  <dimen name="profile_rename_button_padding_start">16dp</dimen>
+  <dimen name="profile_rename_button_padding_end">16dp</dimen>
+  <dimen name="profile_reset_button_padding_start">16dp</dimen>
+  <dimen name="profile_reset_button_padding_end">16dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_padding_start">16dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_padding_top">12dp</dimen>
+  <dimen name="profile_edit_allow_download_heading_padding_end">24dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_padding_start">16dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_padding_end">24dp</dimen>
+  <dimen name="profile_edit_allow_download_sub_padding_bottom">12dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_padding_start">12dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_padding_top">0dp</dimen>
+  <dimen name="profile_edit_allow_download_switch_padding_end">12dp</dimen>
+  <dimen name="profile_delete_button_padding_start">16dp</dimen>
+  <dimen name="profile_delete_button_padding_end">16dp</dimen>
+  <dimen name="view_layout_margin_top">50dp</dimen>
 
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">36dp</dimen>
