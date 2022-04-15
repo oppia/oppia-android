@@ -52,8 +52,6 @@ class TestNoOpAssetRepositoryTest {
     // Nothing happens since priming no-ops.
   }
 
-  // TODO: add test for new method.
-
   @Test
   fun testPrimeTextFileFromLocalAssets_thenLoadAsset_throwsException() {
     assetRepository.primeTextFileFromLocalAssets("asset.json")
@@ -85,6 +83,18 @@ class TestNoOpAssetRepositoryTest {
 
     // tryLoad() will always return the default message provided since no local assets exist.
     assertThat(result).isEqualTo(testMessage)
+  }
+
+  @Test
+  fun testMaybeLoadProtoFromLocalAssets_returnsDefaultProto() {
+    val testMessage = TestMessage.newBuilder().apply {
+      intValue = 12
+    }.build()
+
+    val result = assetRepository.maybeLoadProtoFromLocalAssets("test", testMessage)
+
+    // The load is always failing (since the implementation no-ops), so null is returned.
+    assertThat(result).isNull()
   }
 
   @Test

@@ -60,6 +60,7 @@ class TopicListControllerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var storyProgressController: StoryProgressController
 
   private lateinit var profileId0: ProfileId
 
@@ -615,6 +616,33 @@ class TopicListControllerTest {
     verifyOngoingStoryAsRatioStory1Exploration2(
       promotedActivityList.promotedStoryList.recentlyPlayedStoryList[1]
     )
+  }
+
+  @Test
+  fun testGetPromotedActivityList_missingTopicsWithProgress_doesNotIncludeThoseTopics() {
+    // This is a slightly hacky way to simulate a previous topic's progress that works because
+    // StoryProgressController doesn't verify whether the IDs passed to it correspond to locally
+    // available topics.
+    val previousTopicId = "previous_topic_id"
+    val recordProgressDataProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId0,
+        topicId = previousTopicId,
+        storyId = "previous_story_id",
+        explorationId = "previous_exploration_id",
+        lastPlayedTimestamp = 123456789L
+      )
+    monitorFactory.ensureDataProviderExecutes(recordProgressDataProvider)
+
+    val promotionList = retrievePromotedActivityList()
+
+    val promotedStoryList = promotionList.promotedStoryList
+    val olderTopicIds = promotedStoryList.olderPlayedStoryList.map { it.topicId }
+    val recentTopicIds = promotedStoryList.recentlyPlayedStoryList.map { it.topicId }
+    val upcomingTopicIds = promotionList.comingSoonTopicList.upcomingTopicList.map { it.topicId }
+    assertThat(olderTopicIds).doesNotContain(previousTopicId)
+    assertThat(recentTopicIds).doesNotContain(previousTopicId)
+    assertThat(upcomingTopicIds).doesNotContain(previousTopicId)
   }
 
   private fun verifyPromotedStoryAsFirstTestTopicStory0Exploration0(promotedStory: PromotedStory) {

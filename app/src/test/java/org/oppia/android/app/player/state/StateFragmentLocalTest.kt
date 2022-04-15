@@ -1755,6 +1755,7 @@ class StateFragmentLocalTest {
   }
 
   private fun clickNextStateNavigationButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
