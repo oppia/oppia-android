@@ -38,7 +38,6 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.profile.ProfileNameValidator
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
@@ -127,8 +126,8 @@ class ProfileManagementControllerTest {
 
     val dataProvider = addAdminProfile(name = "James034", pin = "321")
 
-      val failure = monitorFactory.waitForNextFailureResult(dataProvider)
-      assertThat(failure).hasMessageThat().contains("James034 does not contain only letters")
+    val failure = monitorFactory.waitForNextFailureResult(dataProvider)
+    assertThat(failure).hasMessageThat().contains("James034 does not contain only letters")
   }
 
   @Test
