@@ -1,10 +1,10 @@
 package org.oppia.android.util.profile
 
-import dagger.Module
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Utility to validate that profile names are correctly formatted. */
-@Module
+@Singleton
 class ProfileNameValidator @Inject constructor() {
   private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[.'-]{2}") }
 
