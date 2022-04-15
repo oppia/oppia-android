@@ -35,6 +35,7 @@ kt_android_library(
         ":dagger",
         ":test_constants",
         "//utility",
+        "//app"
     ],
 )
 
