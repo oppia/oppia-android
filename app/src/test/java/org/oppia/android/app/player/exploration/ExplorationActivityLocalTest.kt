@@ -140,7 +140,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeEventLogger.getOldestEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
