@@ -126,23 +126,9 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     val dataProvider = addAdminProfile(name = "James034", pin = "321")
-    disallowedNames.forEach {
-      profileManagementController.addProfile(
-        name = it,
-        pin = "321",
-        avatarImagePath = null,
-        allowDownloadAccess = false,
-        colorRgb = -10710042,
-        isAdmin = true
-      ).toLiveData().observeForever(mockUpdateResultObserver)
-      testCoroutineDispatchers.runCurrent()
 
       val failure = monitorFactory.waitForNextFailureResult(dataProvider)
       assertThat(failure).hasMessageThat().contains("James034 does not contain only letters")
-      verifyUpdateFailed()
-      assertThat(updateResultCaptor.value.getErrorOrNull()).hasMessageThat()
-        .contains("$it does not contain only letters")
-    }
   }
 
   @Test
@@ -151,7 +137,6 @@ class ProfileManagementControllerTest {
     testCoroutineDispatchers.runCurrent()
 
     val profileDatabase = readProfileDatabase()
-    verifyUpdateSucceeded()
 
     val profiles = profileDatabase.profilesMap
 
@@ -599,14 +584,7 @@ class ProfileManagementControllerTest {
 
   private fun addAllowedNameProfiles() {
     allowedNames.forEach {
-      profileManagementController.addProfile(
-        name = it,
-        pin = "314",
-        avatarImagePath = null,
-        allowDownloadAccess = false,
-        colorRgb = -10710042,
-        isAdmin = false
-      ).toLiveData().observeForever(mockUpdateResultObserver)
+      addNonAdminProfile(name = it, pin = "314", allowDownloadAccess = false, colorRgb = -10710042)
     }
   }
 
@@ -706,8 +684,7 @@ class ProfileManagementControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      ProfileNameValidator::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
