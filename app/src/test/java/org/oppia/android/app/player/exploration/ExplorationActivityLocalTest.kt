@@ -24,7 +24,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
-import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -127,9 +126,7 @@ class ExplorationActivityLocalTest {
       internalProfileId,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2,
-      shouldSavePartialProgress = false,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      TEST_EXPLORATION_ID_2
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -154,21 +151,17 @@ class ExplorationActivityLocalTest {
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    explorationId: String,
-    shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationId: String
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
         networkConnectionUtil = activity.networkConnectionUtil
         explorationDataController = activity.explorationDataController
-        explorationDataController.startPlayingExploration(
+        explorationDataController.startPlayingNewExploration(
           internalProfileId,
           topicId,
           storyId,
-          explorationId,
-          shouldSavePartialProgress,
-          explorationCheckpoint
+          explorationId
         )
       }
     }
