@@ -650,8 +650,8 @@
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
 
-  <!--  Profile list fragment-->
-  <dimen name="profile_list_recycler_view_paddingBottom">40dp</dimen>
+  <!--  Profile List Fragment-->
+  <dimen name="profile_list_recycler_view_padding_bottom">40dp</dimen>
   
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
