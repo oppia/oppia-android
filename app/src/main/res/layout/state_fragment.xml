@@ -104,7 +104,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|start"
-      android:contentDescription="@string/show_hints_and_solution"
       android:background="@color/audio_component_background"
       android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
 
