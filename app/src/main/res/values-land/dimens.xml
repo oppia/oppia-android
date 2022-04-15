@@ -447,7 +447,7 @@
   <dimen name="hints_and_solution_recycler_view_padding_top">24dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">120dp</dimen>
 
-  <!--  Profile edit fragment-->
+  <!--  Profile Edit Fragment-->
   <dimen name="profile_edit_image_margin_start">28dp</dimen>
   <dimen name="profile_edit_image_margin_top">28dp</dimen>
   <dimen name="profile_edit_name_margin_start">24dp</dimen>
