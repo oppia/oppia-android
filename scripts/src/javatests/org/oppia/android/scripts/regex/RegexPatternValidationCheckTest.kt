@@ -124,6 +124,13 @@ class RegexPatternValidationCheckTest {
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
+  private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
+  private val parameterizedTestRunnerRequiresException =
+    "To use OppiaParameterizedTestRunner, please add an exemption to" +
+      " file_content_validation_checks.textproto and add an explanation for your use case in your" +
+      " PR description. Note that parameterized tests should only be used in special" +
+      " circumstances where a single behavior can be tested across multiple inputs, or for" +
+      " especially large test suites that can be trivially reduced."
   private val doesNotHaveColorSuffixOrSnakeCasing =
     "All color declarations in component_color.xml and color_palette.xml should end with _color" +
       " suffix following snake_case naming convention."
@@ -1586,6 +1593,32 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
+  fun testFileContent_kotlinTestUsesParameterizedTestRunner_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+      @RunWith(OppiaParameterizedTestRunner::class)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "domain", "src", "test")
+    val stringFilePath = "domain/src/test/SomeTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $parameterizedTestRunnerRequiresException
+        $stringFilePath:2: $parameterizedTestRunnerRequiresException
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
   fun testFileContent_java8OptionalImport_fileContentIsNotCorrect() {
     val prohibitedContent = "import java.util.Optional"
     tempFolder.newFolder("testfiles", "data", "src", "main")
@@ -1601,6 +1634,48 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $useJava8OptionalErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_buildFileUsesProtoLibrary_fileContentIsNotCorrect() {
+    val prohibitedContent = "proto_library("
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/BUILD"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseProtoLibrary
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_buildBazelFileUsesProtoLibrary_fileContentIsNotCorrect() {
+    val prohibitedContent = "proto_library("
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/BUILD.bazel"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseProtoLibrary
         $wikiReferenceNote
         """.trimIndent()
       )

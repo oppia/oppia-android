@@ -80,14 +80,14 @@ class ProfilePictureActivityPresenter @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfilePictureActivity",
-        "Failed to retrieve profile",
-        profileResult.getErrorOrNull()!!
-      )
+    return when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("ProfilePictureActivity", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return profileResult.getOrDefault(Profile.getDefaultInstance())
   }
 
   private fun setProfileAvatar(avatar: ProfileAvatar) {

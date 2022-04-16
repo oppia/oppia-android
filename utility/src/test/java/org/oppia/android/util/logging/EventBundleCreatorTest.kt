@@ -33,10 +33,9 @@ class EventBundleCreatorTest {
 
   private val eventBundleCreator = EventBundleCreator()
   private val eventLogExplorationContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setExplorationContext(
+        .setOpenExplorationActivity(
           EventLog.ExplorationContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .setExplorationId(TEST_EXPLORATION_ID)
@@ -50,10 +49,9 @@ class EventBundleCreatorTest {
     .build()
 
   private val eventLogQuestionContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setQuestionContext(
+        .setOpenQuestionPlayer(
           EventLog.QuestionContext.newBuilder()
             .setQuestionId(TEST_QUESTION_ID)
             .addAllSkillId(listOf(TEST_SKILL_ID_ONE, TEST_SKILL_ID_TWO))
@@ -66,10 +64,9 @@ class EventBundleCreatorTest {
     .build()
 
   private val eventLogTopicContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setTopicContext(
+        .setOpenInfoTab(
           EventLog.TopicContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .build()
@@ -81,10 +78,9 @@ class EventBundleCreatorTest {
     .build()
 
   private val eventLogStoryContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setStoryContext(
+        .setOpenStoryActivity(
           EventLog.StoryContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .setStoryId(TEST_STORY_ID)
@@ -97,10 +93,9 @@ class EventBundleCreatorTest {
     .build()
 
   private val eventLogConceptCardContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setConceptCardContext(
+        .setOpenConceptCard(
           EventLog.ConceptCardContext.newBuilder()
             .setSkillId(TEST_SKILL_ID_ONE)
             .build()
@@ -112,10 +107,9 @@ class EventBundleCreatorTest {
     .build()
 
   private val eventLogRevisionCardContext = EventLog.newBuilder()
-    .setActionName(EventLog.EventAction.EVENT_ACTION_UNSPECIFIED)
     .setContext(
       EventLog.Context.newBuilder()
-        .setRevisionCardContext(
+        .setOpenRevisionCard(
           EventLog.RevisionCardContext.newBuilder()
             .setTopicId(TEST_TOPIC_ID)
             .setSubTopicId(TEST_SUB_TOPIC_ID)
