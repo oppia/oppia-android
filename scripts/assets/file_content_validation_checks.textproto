@@ -295,3 +295,18 @@ file_content_checks {
   prohibited_content_regex: "name=.+>@color\\/.+<"
   failure_message: "color_defs.xml should only have raw hex color declarations."
 }
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/component_colors.xml"
+  prohibited_content_regex: "name=\"(?!component_color_).+\""
+  failure_message: "All colors in component_colors must start with 'component_color_'."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/color_palette.xml"
+  prohibited_content_regex: "name=\"(?!color_palette_).+\""
+  failure_message: "All colors in color_palette must start with 'color_palette_'."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/color_defs.xml"
+  prohibited_content_regex: "name=\"(?!color_defs_).+\""
+  failure_message: "All colors in color_defs must start with 'color_defs_'."
+}

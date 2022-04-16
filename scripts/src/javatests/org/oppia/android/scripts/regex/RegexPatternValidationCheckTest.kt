@@ -135,6 +135,12 @@ class RegexPatternValidationCheckTest {
       " or color_palette.xml"
   private val doesNotHaveRawColorDeclaration =
     "color_defs.xml should only have raw hex color declarations."
+  private val doesNotStartWithComponentColor =
+    "All colors in component_colors must start with 'component_color_'."
+  private val doesNotStartWithColorPalette =
+    "All colors in color_palette must start with 'color_palette_'."
+  private val doesNotStartWithColorDefs = "All colors in color_defs must start with 'color_defs_'."
+
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1816,6 +1822,148 @@ class RegexPatternValidationCheckTest {
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_startsWithComponentColors_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="component_color_shared_text_view_heading_text_color">@color/highlighted_text_color</color>
+        <color name="component_color_shared_text_input_layout_text_color">@color/primary_text_color</color>
+        <color name="component_color_shared_text_input_layout_stroke_color">@color/primary_text_color</color>
+        <color name="component_color_shared_text_input_edit_text_text_color">@color/primary_text_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_doesNotstartWithComponentColors_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
+        <color name="shared_text_input_layout_text_color">@color/primary_text_color</color>
+        <color name="component_color_shared_text_input_layout_stroke_color">@color/primary_text_color</color>
+        <color name="shared_text_input_edit_text_text_color">@color/primary_text_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotStartWithComponentColor
+        $stringFilePath:2: $doesNotStartWithComponentColor
+        $stringFilePath:4: $doesNotStartWithComponentColor
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_startsWithColorPalette_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_palette_primary_color">@color/oppia_green</color>
+        <color name="color_palette_primary_dark_color">@color/dark_green</color>
+        <color name="color_palette_accent_color">@color/oppia_dark_blue</color>
+        <color name="color_palette_primary_text_color">@color/accessible_grey</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_doesNotstartWithColorPalette_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="primary_color">@color/oppia_green</color>
+        <color name="color_palette_primary_dark_color">@color/dark_green</color>
+        <color name="color_palette_accent_color">@color/oppia_dark_blue</color>
+        <color name="primary_text_color">@color/accessible_grey</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotStartWithColorPalette
+        $stringFilePath:4: $doesNotStartWithColorPalette
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_startsWithColorDefs_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_def_oppia_green">#00645C</color>
+        <color name="color_def_dark_green">#003933</color>
+        <color name="color_def_oppia_light_green">#F0FFFF</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_doesNotstartWithColorPalette_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_def_oppia_green">#00645C</color>
+        <color name="color_def_dark_green">#003933</color>
+        <color name="oppia_dark_blue">#2D4A9D</color>
+        <color name="color_def_oppia_light_green">#F0FFFF</color>
+        <color name="oppia_light_yellow">#FFFFF0</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:3: $doesNotStartWithColorDefs
+        $stringFilePath:5: $doesNotStartWithColorDefs
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   /** Runs the regex_pattern_validation_check. */
