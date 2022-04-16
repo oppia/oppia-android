@@ -12,7 +12,7 @@
   <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/general_navigation_background"
+    android:background="@color/component_color_license_list_activity_background_color"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="@dimen/faq_list_scroll_padding_bottom"
@@ -25,7 +25,7 @@
       android:id="@+id/license_list_fragment_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/color_def_white"
+      android:background="@color/component_color_license_list_activity_items_background_color"
       android:clipToPadding="false"
       android:nestedScrollingEnabled="false"
       app:list="@{viewModel.licenseItemList}" />

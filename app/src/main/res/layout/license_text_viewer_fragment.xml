@@ -11,7 +11,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_third_party_dependency_options_list_activity_background_color">
+    android:background="@color/component_color_license_list_text_viewer_activity_background_color">
 
     <TextView
       android:id="@+id/copyright_license_text_view"

@@ -41,6 +41,15 @@
   <color name="component_color_third_party_dependency_options_list_activity_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_third_party_dependency_items_text_list_activity_background_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_third_party_dependency_version_text_view_list_activity_color">@color/color_palette_primary_text_color</color>
+  <!-- License List Activity -->
+  <color name="component_color_license_list_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_license_list_activity_items_background_color">@color/color_palette_container_background_color</color>
+  <!-- License List Text Viewer Activity -->
+  <color name="component_color_license_list_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_license_list_text_viewer_items_activity_background_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_License_Text_Viewer_List_options_activity_background_color">@color/color_palette_container_background_color</color>
+
+
 
 
 
