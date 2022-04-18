@@ -1,7 +1,7 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 
 load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "increase_major_version", "increase_minor_version", "increase_version_code")
 
 # This is exported here since config/ isn't a Bazel package.
 exports_files(["config/kitkat_main_dex_class_list.txt"])

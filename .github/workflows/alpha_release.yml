@@ -1,0 +1,15 @@
+name: Alpha Release
+on:
+  schedule:
+    - cron: "0 3 * * *"
+
+jobs:
+  local_environment_setup:
+    name: Local Environment Setup
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    env:
+      ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
