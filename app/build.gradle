@@ -107,7 +107,7 @@ _excludeTestFiles(filesToExclude)
 // one shard after another without cleaning first (since Gradle doesn't handle file exclusion well,
 // it expects files to be present corresponding to generated code, such as Dagger, from previous
 // runs).
-def appModuleShardCount = 4
+def appModuleShardCount = 8
 def shardIndexes = 0..(appModuleShardCount - 1)
 shardIndexes.each { shardIndex ->
   if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--shard$shardIndex".toString())) {
