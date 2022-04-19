@@ -314,7 +314,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
-  prohibited_content_regex: "name=.+color.+>#|name=.*[A-Z].*>#"
+  prohibited_content_regex: "name=.+(?<=color).>#|name=.*[A-Z].*>#"
   failure_message: "All color declarations in color_defs.xml should be named using snake_case convention and not contain color keyword."
 }
 file_content_checks {
@@ -339,6 +339,17 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
-  prohibited_content_regex: "name=\"(?!color_defs_).+\""
+  prohibited_content_regex: "name=\"(?!color_def_).+\""
   failure_message: "All colors in color_defs must start with 'color_defs_'."
 }
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/component_colors.xml"
+  prohibited_content_regex: "@color/(?!color_palette_).+"
+  failure_message: "Only colors from color_palette.xml may be used in component_colors."
+}
+file_content_checks {
+  file_path_regex: "app/src/main/res/values/color_palette.xml"
+  prohibited_content_regex: "@color/(?!color_def_).+"
+  failure_message: "Only colors from color_defs.xml may be used in color_palette."
+}
+
