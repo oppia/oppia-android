@@ -11,7 +11,6 @@ Thanks for your interest in contributing to the Oppia Android project, and makin
 * [Finding something to do](#finding-something-to-do)
 * [Communication channels](#communication-channels)
 
-
 ## Onboarding instructions
 If you'd like to help out with the Android project, please follow the following steps to get started:
 
@@ -135,3 +134,5 @@ Welcome! Please make sure to follow the onboarding instructions above if you hav
 ### Mailing lists
 
 We have a developer chat room [here](https://gitter.im/oppia/oppia-android). Feel free to drop in and say hi!
+
+If you run into any problems, you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
