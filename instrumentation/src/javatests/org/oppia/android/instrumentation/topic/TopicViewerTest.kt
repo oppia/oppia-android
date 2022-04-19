@@ -46,7 +46,7 @@ class TopicViewerTest {
     assertThat(device.findObjectByRes("chapter_play_state_icon")).isNotNull()
     val contentDescription: String =
       device.findObjectByRes("story_progress_view").getParent().getContentDescription()
-    assertThat(contentDescription).isEqual("0% stories completed and 1 chapters in progress.")
+    assertThat(contentDescription).isEqualTo("0% stories completed and 1 chapters in progress.")
 
     device.waitForRes("expand_list_icon")
     device.findObjectByRes("expand_list_icon").click()
