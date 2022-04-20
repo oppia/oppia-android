@@ -38,19 +38,21 @@
           android:paddingTop="@dimen/add_profile_main_padding_top"
           android:paddingBottom="@dimen/add_profile_main_padding_bottom">
 
-          <com.jackandphantom.circularimageview.CircleImage
+          <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/add_profile_activity_user_image_view"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
+            android:elevation="4dp"
             app:add_shadow="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:srcCompat="@drawable/ic_default_avatar" />
+            app:srcCompat="@{@drawable/ic_add_profile}"/>
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
@@ -59,6 +61,7 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
+            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
             app:srcCompat="@drawable/rounded_white_background_with_shadow" />
