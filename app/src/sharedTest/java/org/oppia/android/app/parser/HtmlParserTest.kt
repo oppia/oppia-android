@@ -127,8 +127,10 @@ class HtmlParserTest {
 
   @Mock
   lateinit var mockCustomOppiaTagActionListener: HtmlParser.CustomOppiaTagActionListener
+
   @Captor
   lateinit var viewCaptor: ArgumentCaptor<View>
+
   @Captor
   lateinit var stringCaptor: ArgumentCaptor<String>
 
@@ -525,9 +527,7 @@ class HtmlParserTest {
 
       // Verify the displayed text is correct & has a clickable span.
       val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
-      assertThat(htmlResult.toString()).isEqualTo(
-        "Visit refresher lesson"
-      )
+      assertThat(htmlResult.toString()).isEqualTo("Visit refresher lesson")
       assertThat(clickableSpans).hasLength(1)
       clickableSpans.first().onClick(textView)
 
