@@ -202,8 +202,7 @@ class HtmlParser private constructor(
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
-      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
     ): HtmlParser {
       return HtmlParser(
         context,
@@ -215,6 +214,30 @@ class HtmlParser private constructor(
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener,
+        null,
+        machineLocale
+      )
+    }
+
+    /**
+     * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
+     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
+     * loading is specifically not supported (see the other [create] method if image support is
+     * needed).
+     */
+    fun create(
+      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+    ): HtmlParser {
+      return HtmlParser(
+        context = context,
+        urlImageParserFactory = null,
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        consoleLogger = consoleLogger,
+        cacheLatexRendering = false,
+        customOppiaTagActionListener = null,
         policyOppiaTagActionListener = policyOppiaTagActionListener,
         machineLocale = machineLocale
       )

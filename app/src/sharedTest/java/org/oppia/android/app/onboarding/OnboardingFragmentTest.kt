@@ -696,7 +696,6 @@ class OnboardingFragmentTest {
   @Test
   fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListenerForTermsOfService() {
     val htmlParser = htmlParserFactory.create(
-      gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
       policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
     )
     testCoroutineDispatchers.runCurrent()
@@ -738,7 +737,6 @@ class OnboardingFragmentTest {
   @Test
   fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListenerForPrivacyPolicy() {
     val htmlParser = htmlParserFactory.create(
-      gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
       policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
     )
     testCoroutineDispatchers.runCurrent()
