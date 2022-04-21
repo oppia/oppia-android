@@ -35,13 +35,14 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
-      <de.hdodenhof.circleimageview.CircleImageView
+      <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_avatar_img"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginBottom="8dp"
-        app:civ_border_color="@color/avatar_border"
-        app:civ_border_width="1dp"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+        app:strokeColor="@color/avatar_border"
+        app:strokeWidth="1dp"
         profile:src="@{viewModel.profile.avatar}" />
 
       <LinearLayout
@@ -57,14 +58,14 @@
           android:maxLines="2"
           android:singleLine="false"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/white" />
+          android:textColor="@color/color_def_white" />
 
         <TextView
           android:id="@+id/profile_last_visited"
           style="@style/SubtitleLight1Center"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
@@ -74,7 +75,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/profile_chooser_admin"
-          android:textColor="@color/white"
+          android:textColor="@color/color_def_white"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
       </LinearLayout>
     </LinearLayout>

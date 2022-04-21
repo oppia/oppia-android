@@ -45,13 +45,15 @@ class ExplorationManagerFragmentPresenter @Inject constructor(
   private fun processReadingTextSizeResult(
     readingTextSizeResult: AsyncResult<Profile>
   ): ReadingTextSize {
-    if (readingTextSizeResult.isFailure()) {
-      oppiaLogger.e(
-        "ExplorationManagerFragment",
-        "Failed to retrieve profile",
-        readingTextSizeResult.getErrorOrNull()!!
-      )
-    }
-    return readingTextSizeResult.getOrDefault(Profile.getDefaultInstance()).readingTextSize
+    return when (readingTextSizeResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ExplorationManagerFragment", "Failed to retrieve profile", readingTextSizeResult.error
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> readingTextSizeResult.value
+    }.readingTextSize
   }
 }

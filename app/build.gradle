@@ -6,12 +6,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 29
+  compileSdkVersion 30
   buildToolsVersion "29.0.2"
   defaultConfig {
     applicationId "org.oppia.android"
     minSdkVersion 19
-    targetSdkVersion 29
+    targetSdkVersion 30
     versionCode 1
     versionName "1.0"
     multiDexEnabled true
@@ -97,11 +97,48 @@ def filesToExclude = [
     '**/*AppLanguageResourceHandlerTest*.kt',
     '**/*AppLanguageWatcherMixinTest*.kt',
 ]
-tasks.withType(SourceTask.class).configureEach {
-  it.exclude(filesToExclude)
+_excludeTestFiles(filesToExclude)
+
+// Check if sharding is being attempted and, if so, exclude all tests that aren't in the specified
+// shard. The approach to using arguments was inspired by
+// https://prandroid.dev/Parallel-unit-tests-in-android/.
+
+// NOTE TO DEVELOPER: You likely will need to clean before running any of these, and you can't run
+// one shard after another without cleaning first (since Gradle doesn't handle file exclusion well,
+// it expects files to be present corresponding to generated code, such as Dagger, from previous
+// runs).
+def appModuleShardCount = 4
+def shardIndexes = 0..(appModuleShardCount - 1)
+shardIndexes.each { shardIndex ->
+  if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--shard$shardIndex".toString())) {
+    def filesToExcludeForShard = _computeTestsCorrespondingToShard(appModuleShardCount, shardIndex, true)
+    println("Excluding ${filesToExcludeForShard.size} tests for shard $shardIndex")
+    _excludeTestFiles(filesToExcludeForShard.collect {
+      // Ensure the test paths are properly relative to the app module so that their exclusion
+      // filters match (but keep the unique relative paths to avoid accidentally skipping tests that
+      // share names). Note that the 'org/oppia/android/app' part is specifically included to ensure
+      // that cases where a path relative to org/oppia/android/app is fully overlapping with another
+      // path result in one of the tests being ignored in all shards.
+      def prefixToExclude = "org/oppia/android/app/"
+      "**/${it.substring(it.indexOf(prefixToExclude))}"
+    })
+  }
 }
-android.sourceSets.test.java.exclude(filesToExclude)
-android.sourceSets.test.kotlin.exclude(filesToExclude)
+if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--list-shards")) {
+  println()
+  println("The app module supports $appModuleShardCount shards")
+  println()
+  shardIndexes.each { shardIndex ->
+    def filesInShard = _computeTestsCorrespondingToShard(appModuleShardCount, shardIndex, false).sort()
+    println("Shard $shardIndex has ${filesInShard.size} tests:")
+    filesInShard.each { filePath ->
+      println("- $filePath")
+    }
+    println()
+  }
+  // This is a hacky way to make an 'information' command.
+  _excludeTestFiles("**/*Test.kt")
+}
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -124,7 +161,7 @@ dependencies {
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.flexbox:flexbox:3.0.0',
-      'com.google.android.material:material:1.2.0-alpha02',
+      'com.google.android.material:material:1.2.0',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics:17.5.0',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
@@ -136,8 +173,8 @@ dependencies {
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
       "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1',
-      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
+      'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
       'org.mockito:mockito-core:2.7.22',
   )
   compileOnly(
@@ -156,8 +193,8 @@ dependencies {
       'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:1.1.3',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
-      'org.robolectric:annotations:4.4',
-      'org.robolectric:robolectric:4.4',
+      'org.robolectric:annotations:4.5',
+      'org.robolectric:robolectric:4.5',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
       'org.mockito:mockito-core:2.7.22',
@@ -171,9 +208,10 @@ dependencies {
       'androidx.test.ext:junit:1.1.1',
       'com.github.bumptech.glide:mocks:4.11.0',
       'com.google.truth:truth:1.1.3',
+      'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-android:2.7.22',
-      'org.robolectric:annotations:4.4',
+      'org.robolectric:annotations:4.5',
   )
   // Adding the testing module directly causes duplicates of the below groups so we need to
   // exclude them before adding the testing module to the androidTestImplementation dependencies
@@ -216,4 +254,48 @@ dependencies {
 // The below command stops that from happening: https://github.com/google/tink/issues/282
 configurations {
   all*.exclude module: 'protobuf-java'
+}
+
+def _computeTestsCorrespondingToShard(shardCount, shardIndex, exclude) {
+  def allAppTestDirs = android.sourceSets.test.java.source +
+          android.sourceSets.test.kotlin.source +
+          android.sourceSets.androidTest.java.source +
+          android.sourceSets.androidTest.kotlin.source
+  def allAppTestFiles = []
+  // https://stackoverflow.com/a/38899519/3689782 for file traversal in Groovy.
+  allAppTestDirs.unique().each { testSrcDir ->
+    def testSrcDirFile = testSrcDir instanceof File ? testSrcDir : new File(testSrcDir)
+    if (!testSrcDirFile.isAbsolute()) {
+      testSrcDirFile = new File(projectDir, testSrcDirFile.path).getAbsoluteFile()
+    }
+    if (testSrcDirFile.exists()) {
+      testSrcDirFile.traverse(type: groovy.io.FileType.FILES, nameFilter: ~/^.+?Test\.kt$/) { it ->
+        allAppTestFiles += new File(it.path).getAbsoluteFile()
+      }
+    }
+  }
+  def testFilePaths = allAppTestFiles.collect {
+    projectDir.toPath().relativize(it.toPath()).toFile().path
+  }.unique()
+
+  // Use Random so that the division of tests is relatively even (using just the file path hash
+  // alone can result in some skew which may hamper performance). Since the random class is being
+  // reseeded this should be deterministic. It should also be consistent across different platforms
+  // since only relative paths are used.
+  def random = new Random()
+  return testFilePaths.findAll {
+    random.seed = it.hashCode()
+    def rolledIndex = random.nextInt(shardCount)
+    exclude ? rolledIndex != shardIndex : rolledIndex == shardIndex
+  }.sort()
+}
+
+def _excludeTestFiles(filesToExclude) {
+  tasks.withType(SourceTask.class).configureEach {
+    it.exclude(filesToExclude)
+  }
+  android.sourceSets.test.java.exclude(filesToExclude)
+  android.sourceSets.test.kotlin.exclude(filesToExclude)
+  android.sourceSets.androidTest.java.exclude(filesToExclude)
+  android.sourceSets.androidTest.kotlin.exclude(filesToExclude)
 }

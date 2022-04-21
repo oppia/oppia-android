@@ -44,14 +44,18 @@ class ProfileEditViewModel @Inject constructor(
 
   /** Fetches the profile of a user asynchronously. */
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileEditViewModel",
-        "Failed to retrieve the profile with ID: ${profileId.internalId}",
-        profileResult.getErrorOrNull()!!
-      )
+    val profile = when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileEditViewModel",
+          "Failed to retrieve the profile with ID: ${profileId.internalId}",
+          profileResult.error
+        )
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    val profile = profileResult.getOrDefault(Profile.getDefaultInstance())
     isAllowedDownloadAccessMutableLiveData.value = profile.allowDownloadAccess
     isAdmin = profile.isAdmin
     return profile

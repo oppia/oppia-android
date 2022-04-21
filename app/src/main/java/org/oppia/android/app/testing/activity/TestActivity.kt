@@ -2,11 +2,14 @@ package org.oppia.android.app.testing.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
+import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import javax.inject.Inject
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
@@ -36,9 +39,17 @@ open class TestActivity : InjectableAppCompatActivity() {
   @Inject
   lateinit var appLanguageWatcherMixin: AppLanguageWatcherMixin
 
+  @Inject
+  lateinit var mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(newBase)
     (activityComponent as Injector).inject(this)
+  }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.test_activity)
   }
 
   /** Activity injector for [TestActivity]. */

@@ -30,6 +30,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
@@ -339,20 +340,19 @@ class CoroutineExecutorServiceTest {
 
     val getResult = testDispatcherScope.async {
       try {
-        AsyncResult.success(callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS))
+        AsyncResult.Success(callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS))
       } catch (e: ExecutionException) {
-        AsyncResult.failed<String>(e)
+        AsyncResult.Failure<String>(e)
       }
     }
     testDispatcher.runUntilIdle()
 
     // The getter should return since the task has finished.
     assertThat(getResult.isCompleted).isTrue()
-    assertThat(getResult.getCompleted().isFailure()).isTrue()
-    assertThat(getResult.getCompleted().getErrorOrNull())
-      .isInstanceOf(ExecutionException::class.java)
-    assertThat(getResult.getCompleted().getErrorOrNull()?.cause)
-      .isInstanceOf(TimeoutException::class.java)
+    assertThat(getResult.getCompleted()).isFailureThat().apply {
+      isInstanceOf(ExecutionException::class.java)
+      hasCauseThat().isInstanceOf(TimeoutException::class.java)
+    }
   }
 
   @Test

@@ -1,0 +1,34 @@
+"""
+Components required to render LaTeX math expressions through Glide.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "math_latex_model",
+    srcs = [
+        "MathModel.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__",
+    ],
+    deps = [
+        "//third_party:com_github_bumptech_glide_glide",
+    ],
+)
+
+kt_android_library(
+    name = "math_bitmap_model_loader",
+    srcs = [
+        "MathBitmapModelLoader.kt",
+    ],
+    visibility = ["//utility/src/main/java/org/oppia/android/util/parser/image:__pkg__"],
+    deps = [
+        ":math_latex_model",
+        "//third_party:com_github_bumptech_glide_glide",
+        "//third_party:io_github_karino2_kotlitex",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
+    ],
+)

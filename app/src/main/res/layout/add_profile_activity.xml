@@ -28,7 +28,7 @@
         android:id="@+id/add_profile_activity_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/add_profile_activity_layout_background_color">
+        android:background="@color/component_color_add_profile_activity_layout_background_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="wrap_content"
@@ -38,19 +38,21 @@
           android:paddingTop="@dimen/add_profile_main_padding_top"
           android:paddingBottom="@dimen/add_profile_main_padding_bottom">
 
-          <com.jackandphantom.circularimageview.CircleImage
+          <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/add_profile_activity_user_image_view"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
             android:focusable="true"
+            android:elevation="4dp"
             app:add_shadow="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:srcCompat="@drawable/ic_default_avatar" />
+            app:srcCompat="@{@drawable/ic_add_profile}"/>
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
@@ -59,6 +61,7 @@
             android:contentDescription="@string/edit_profile_picture_content_description"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
+            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
             app:srcCompat="@drawable/rounded_white_background_with_shadow" />
@@ -71,7 +74,7 @@
             android:layout_marginTop="32dp"
             android:contentDescription="@string/required_fields_content_description"
             android:text="@{viewModel.requiredTextWithStar}"
-            android:textColor="@color/add_profile_activity_label_text_color"
+            android:textColor="@color/component_color_add_profile_activity_label_text_color"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
-            android:textColor="@color/add_profile_activity_label_text_color"
+            android:textColor="@color/component_color_add_profile_activity_label_text_color"
             android:minHeight="48dp"
             android:text="@string/add_profile_create_a_3_digit_pin"
             app:layout_constraintStart_toStartOf="parent"
@@ -194,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_heading"
-                android:textColor="@{viewModel.validPin ? @color/add_profile_activity_switch_text_color : @color/add_profile_activity_switch_description_color}"
+                android:textColor="@{viewModel.validPin ? @color/component_color_add_profile_activity_switch_text_color : @color/component_color_add_profile_activity_switch_description_color}"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -206,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/add_profile_allow_download_sub"
-                android:textColor="@color/add_profile_activity_switch_description_color"
+                android:textColor="@color/component_color_add_profile_activity_switch_description_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_allow_download_heading_text_view"
@@ -234,7 +237,7 @@
             android:gravity="center"
             android:text="@string/add_profile_create_btn"
             android:textAllCaps="true"
-            android:textColor="@{viewModel.isButtonActive() ? @color/white : @color/submit_button_inactive_text }"
+            android:textColor="@{viewModel.isButtonActive() ? @color/color_def_white : @color/submit_button_inactive_text }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin_constraint_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
