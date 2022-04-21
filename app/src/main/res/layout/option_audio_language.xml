@@ -16,7 +16,7 @@
     android:id="@+id/audio_laguage_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex ? @color/component_color_option_activity_options_background_color_cyan : @color/component_color_option_activity_options_background_color}"
+    android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex ? @drawable/general_item_border_cyan : @drawable/general_item_border}"
     android:minHeight="48dp"
     android:onClick="@{(v) -> viewModel.onAudioLanguageClicked()}"
     android:paddingStart="@dimen/option_audio_language_padding_start"
