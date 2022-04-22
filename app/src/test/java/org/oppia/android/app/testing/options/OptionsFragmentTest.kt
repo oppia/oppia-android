@@ -149,7 +149,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageItemIsDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
 

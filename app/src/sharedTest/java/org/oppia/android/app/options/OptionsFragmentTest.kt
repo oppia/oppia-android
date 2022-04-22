@@ -191,9 +191,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionFragment_notFromNavigationDrawer_navigationDrawerIsNotPresent() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
-      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-    )
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -342,7 +339,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(

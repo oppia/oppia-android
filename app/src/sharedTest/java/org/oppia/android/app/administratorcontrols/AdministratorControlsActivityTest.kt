@@ -182,7 +182,6 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
