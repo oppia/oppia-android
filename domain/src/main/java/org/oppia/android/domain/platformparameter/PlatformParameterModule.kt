@@ -1,5 +1,6 @@
 package org.oppia.android.domain.platformparameter
 
+import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
@@ -49,7 +50,7 @@ class PlatformParameterModule {
   @EnableLanguageSelectionUi
   fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      enableLanguageSelectionUi
     )
   }
 
@@ -57,7 +58,7 @@ class PlatformParameterModule {
   @EnableEditAccountsOptionsUi
   fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      enableEditAccountsOptionsUi
     )
   }
 
@@ -77,5 +78,20 @@ class PlatformParameterModule {
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
+  }
+
+  companion object {
+    private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+    private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableLanguageSelectionUi(value: Boolean) {
+      enableLanguageSelectionUi = value
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableEditAccountsOptionsUi(value: Boolean) {
+      enableEditAccountsOptionsUi = value
+    }
   }
 }
