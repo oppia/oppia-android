@@ -211,7 +211,7 @@
       <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/view_layout_margin_top"
+        android:layout_marginTop="@dimen/view_layout_marginTop"
         android:background="@color/color_def_grey"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toTopOf="@+id/profile_delete_button"
