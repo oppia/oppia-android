@@ -20,6 +20,7 @@
       android:layout_gravity="center_horizontal"
       android:autoLink="web"
       android:padding="32dp"
+      android:textColor="@color/component_color_license_Text_viewer_text_background_color"
       android:text="@{viewModel.licenseText}" />
   </ScrollView>
 </layout>
