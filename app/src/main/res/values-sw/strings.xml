@@ -167,7 +167,7 @@
   <string name="topic_prefix">\nMada: %s</string>
   <string name="chapter_count_with_story_name">\n%1$s katika %2$s</string>
   <plurals name="chapter_count">
-    <item quantity="one">\nSura 1\n    </item>
+    <item quantity="one">Sura 1\n    </item>
     <item quantity="other">\n\n      Sura %s \n    </item>
   </plurals>
   <plurals name="story_count">
