@@ -76,7 +76,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -97,6 +96,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -125,8 +125,8 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
+    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
+    PlatformParameterModule.forceEnableEditAccountsOptionsUi(
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
     Intents.init()
@@ -353,7 +353,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
+    PlatformParameterModule.forceEnableLanguageSelectionUi(false)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -632,7 +632,7 @@ class OptionsFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestPlatformParameterModule::class,
+      PlatformParameterModule::class,
       RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
