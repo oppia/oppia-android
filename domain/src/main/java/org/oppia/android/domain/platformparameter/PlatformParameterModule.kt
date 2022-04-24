@@ -84,11 +84,13 @@ class PlatformParameterModule {
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 
+    /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableLanguageSelectionUi(value: Boolean) {
       enableLanguageSelectionUi = value
     }
 
+    /** Enables forcing [EnableEditAccountsOptionsUI] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableEditAccountsOptionsUi(value: Boolean) {
       enableEditAccountsOptionsUi = value
