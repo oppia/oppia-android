@@ -1,12 +1,22 @@
 package org.oppia.android.util.profile
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
 import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.runner.RunWith
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -21,7 +31,7 @@ class ProfileNameValidatorTest {
 
   @Before
   fun setup() {
-//    profileNameValidator = ProfileNameValidator()
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -77,5 +87,25 @@ class ProfileNameValidatorTest {
   fun testIsNameValid_nameWithArabicLetters_returnsTrue() {
     val nameWithArabicLetters = "جيشنو"
     assertThat(profileNameValidator.isNameValid(nameWithArabicLetters)).isTrue()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerProfileNameValidatorTest_TestApplicationComponent
+      .builder()
+      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+  }
+
+  @Singleton
+  @Component(modules = [RobolectricModule::class])
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(test: ProfileNameValidatorTest)
   }
 }
