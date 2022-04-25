@@ -4,14 +4,24 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import javax.inject.Inject
+import org.junit.runner.RunWith
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
+@Suppress("FunctionName")
+@RunWith(OppiaParameterizedTestRunner::class)
+@OppiaParameterizedTestRunner.SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
+@LooperMode(LooperMode.Mode.PAUSED)
+@Config(manifest = Config.NONE)
 class ProfileNameValidatorTest {
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
 
   @Before
   fun setup() {
-    profileNameValidator = ProfileNameValidator()
+//    profileNameValidator = ProfileNameValidator()
   }
 
   @Test
@@ -53,7 +63,7 @@ class ProfileNameValidatorTest {
 
   @Test
   fun testIsNameValid_nameWithEnglishLetters_returnsTrue() {
-    val nameWithEnglishLetters = "BenHenning"
+    val nameWithEnglishLetters = "Jerry"
     assertThat(profileNameValidator.isNameValid(nameWithEnglishLetters)).isTrue()
   }
 
