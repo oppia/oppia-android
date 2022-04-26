@@ -10,4 +10,15 @@ class AddProfileActivityTest {
     device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     device.startOppiaFromScratch()
   }
+
+  @Test
+  fun testAddANewProfile() {
+  }
+
+  private fun navigateToAddProfileActivity() {
+      device.findObjectByRes("skip_text_view").click()
+      device.findObjectByRes("get_started_button").click()
+      device.waitForRes("profile_select_text")
+      device.findObjectByRes("profile_add_button").click()
+    }
 }
