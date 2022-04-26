@@ -7,18 +7,14 @@ import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
 import org.junit.Test
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.runner.RunWith
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -28,6 +24,9 @@ import org.robolectric.annotation.LooperMode
 class ProfileNameValidatorTest {
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
+
+  @OppiaParameterizedTestRunner.Parameter
+  lateinit var name: String
 
   @Before
   fun setup() {
@@ -47,28 +46,33 @@ class ProfileNameValidatorTest {
   }
 
   @Test
+  @OppiaParameterizedTestRunner.RunParameterized(
+    OppiaParameterizedTestRunner.Iteration("Ben#Henning", "name=Ben#Henning"),
+    OppiaParameterizedTestRunner.Iteration("Rajay@T", "name=Rajay@T"),
+    OppiaParameterizedTestRunner.Iteration("جيشنو^&&", "name=جيشنو^&&"),
+    OppiaParameterizedTestRunner.Iteration("_Jishnu", "name=_Jishnu"),
+  )
   fun testIsNameValid_nameWithDisallowedSymbol_returnsFalse() {
-    val namesWithSymbols =
-      listOf<String>("Ben#Henning", "Rajay@T", "जिष्णु**", "جيشنو^&&", "_Jishnu")
-    namesWithSymbols.forEach {
-      assertThat(profileNameValidator.isNameValid(it)).isFalse()
-    }
+    assertThat(profileNameValidator.isNameValid(name)).isFalse()
   }
 
   @Test
+  @OppiaParameterizedTestRunner.RunParameterized(
+    OppiaParameterizedTestRunner.Iteration("Ben-Henning", "name=Ben-Henning"),
+    OppiaParameterizedTestRunner.Iteration("Rajat.T", "name=Rajat.T"),
+    OppiaParameterizedTestRunner.Iteration("G'Jishnu", "name=G'Jishnu"),
+  )
   fun testIsNameValid_nameWithAllowedSymbols_returnsTrue() {
-    val namesWithAllowedSymbol = listOf<String>("Ben-Henning", "Rajat.T", "G'Jishnu")
-    namesWithAllowedSymbol.forEach {
-      assertThat(profileNameValidator.isNameValid(it)).isTrue()
-    }
+    assertThat(profileNameValidator.isNameValid(name)).isTrue()
   }
 
   @Test
+  @OppiaParameterizedTestRunner.RunParameterized(
+    OppiaParameterizedTestRunner.Iteration("Ben-.Henning", "name=Ben-.Henning"),
+    OppiaParameterizedTestRunner.Iteration("Rajat..T", "name=Rajat..T"),
+  )
   fun testIsNameValid_nameWithRepeatedAllowedSymbols_returnsFalse() {
-    val namesWithRepeatedAllowedSymbol = listOf<String>("Ben-.Henning", "Rajat..T")
-    namesWithRepeatedAllowedSymbol.forEach {
-      assertThat(profileNameValidator.isNameValid(it)).isFalse()
-    }
+    assertThat(profileNameValidator.isNameValid(name)).isFalse()
   }
 
   @Test
