@@ -92,3 +92,36 @@ const val CACHE_LATEX_RENDERING = "cache_latex_rendering"
 
 /** Default value for whether to cache LaTeX rendering using Glide. */
 const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
+
+@Qualifier
+annotation class PerformanceMetricsCollection
+
+const val PERFORMANCE_METRICS_COLLECTION = "performance_metrics_collection"
+
+const val PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
+
+@Qualifier
+annotation class PerformanceMetricsCollectionUploadTimeIntervalInMinutes
+
+const val PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES =
+  "performance_metrics_collection_upload_time_interval_in_minutes"
+
+const val PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL = 15
+
+@Qualifier
+annotation class PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
+
+const val PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES =
+  "performance_metrics_collection_frequent_record_time_interval_in_minutes"
+
+const val PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL = 15
+
+@Qualifier
+annotation class PerformanceMetricsCollectionRecordTimeIntervalInMinutes
+
+const val PERFORMANCE_METRICS_COLLECTION_RECORD_TIME_INTERVAL_IN_MINUTES =
+  "performance_metrics_collection_record_time_interval_in_minutes"
+
+const val PERFORMANCE_METRICS_COLLECTION_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL = 1440
+
+
