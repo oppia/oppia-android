@@ -184,6 +184,7 @@
     <activity android:name=".app.testing.HtmlParserTestActivity" />
     <activity android:name=".app.testing.HomeTestActivity" />
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
+    <activity android:name=".app.testing.FractionInputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />

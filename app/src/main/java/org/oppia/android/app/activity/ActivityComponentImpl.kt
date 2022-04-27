@@ -58,6 +58,7 @@ import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.testing.ExplorationTestActivity
+import org.oppia.android.app.testing.FractionInputInteractionViewTestActivity
 import org.oppia.android.app.testing.HomeFragmentTestActivity
 import org.oppia.android.app.testing.HomeTestActivity
 import org.oppia.android.app.testing.HtmlParserTestActivity
@@ -123,6 +124,7 @@ interface ActivityComponentImpl :
   fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
   fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
+  fun inject(fractionInputInteractionViewTestActivity: FractionInputInteractionViewTestActivity)
   fun inject(helpActivity: HelpActivity)
   fun inject(homeActivity: HomeActivity)
   fun inject(homeFragmentTestActivity: HomeFragmentTestActivity)
