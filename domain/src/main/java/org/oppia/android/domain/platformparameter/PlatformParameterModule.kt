@@ -10,6 +10,18 @@ import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
@@ -67,5 +79,50 @@ class PlatformParameterModule {
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
+  }
+
+  @Provides
+  @PerformanceMetricsCollection
+  fun providePerformanceMetricCollection(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(PERFORMANCE_METRICS_COLLECTION)
+      ?: PlatformParameterValue.createDefaultParameter(PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE)
+  }
+
+  @Provides
+  @PerformanceMetricsCollectionUploadTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionUploadTimeIntervalInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+    )
+  }
+
+  @Provides
+  @PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+    )
+  }
+
+  @Provides
+  @PerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+    )
   }
 }
