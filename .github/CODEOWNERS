@@ -56,7 +56,7 @@ gradlew.bat @BenHenning
 # All resource files.
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
-/app/src/main/res/values/colors_migrating.xml @ayush0402 @rt4914
+/app/src/main/res/values/colors_migrating.xml @rt4914
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
@@ -157,10 +157,10 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /domain/src/test/res/values/strings.xml @BenHenning
 
 # Questions support.
-/domain/src/*/java/org/oppia/android/domain/question/ @vinitamurthi
+/domain/src/*/java/org/oppia/android/domain/question/ @BenHenning
 
 # Oppia logging support.
-/domain/src/main/java/org/oppia/android/domain/oppialogger/ @vinitamurthi
+/domain/src/main/java/org/oppia/android/domain/oppialogger/ @BenHenning
 
 #####################################################################################
 #                                  testing module                                   #
@@ -188,7 +188,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
 
 # Core logging infrastructure.
-/utility/src/*/java/org/oppia/android/util/logging/ @vinitamurthi
+/utility/src/*/java/org/oppia/android/util/logging/ @BenHenning
 
 # Miscellaneous statusbar UI utilities.
 /utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
@@ -214,10 +214,10 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global proto file ownership for model/.
-/model/**/*.proto @vinitamurthi @BenHenning
+/model/**/*.proto @BenHenning
 
 # Global model ownership.
-/model/ @vinitamurthi @BenHenning
+/model/ @BenHenning
 
 
 #####################################################################################
