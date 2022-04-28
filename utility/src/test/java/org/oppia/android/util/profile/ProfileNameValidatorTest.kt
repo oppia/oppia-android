@@ -9,6 +9,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.robolectric.annotation.Config
@@ -18,14 +22,14 @@ import javax.inject.Singleton
 
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
-@OppiaParameterizedTestRunner.SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
+@SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ProfileNameValidatorTest {
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
 
-  @OppiaParameterizedTestRunner.Parameter
+  @Parameter
   lateinit var name: String
 
   @Before
@@ -46,30 +50,30 @@ class ProfileNameValidatorTest {
   }
 
   @Test
-  @OppiaParameterizedTestRunner.RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("Ben#Henning", "name=Ben#Henning"),
-    OppiaParameterizedTestRunner.Iteration("Rajay@T", "name=Rajay@T"),
-    OppiaParameterizedTestRunner.Iteration("جيشنو^&&", "name=جيشنو^&&"),
-    OppiaParameterizedTestRunner.Iteration("_Jishnu", "name=_Jishnu"),
+  @RunParameterized(
+    Iteration("Ben#Henning", "name=Ben#Henning"),
+    Iteration("Rajay@T", "name=Rajay@T"),
+    Iteration("جيشنو^&&", "name=جيشنو^&&"),
+    Iteration("_Jishnu", "name=_Jishnu"),
   )
   fun testIsNameValid_nameWithDisallowedSymbol_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
   }
 
   @Test
-  @OppiaParameterizedTestRunner.RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("Ben-Henning", "name=Ben-Henning"),
-    OppiaParameterizedTestRunner.Iteration("Rajat.T", "name=Rajat.T"),
-    OppiaParameterizedTestRunner.Iteration("G'Jishnu", "name=G'Jishnu"),
+  @RunParameterized(
+    Iteration("Ben-Henning", "name=Ben-Henning"),
+    Iteration("Rajat.T", "name=Rajat.T"),
+    Iteration("G'Jishnu", "name=G'Jishnu"),
   )
   fun testIsNameValid_nameWithAllowedSymbols_returnsTrue() {
     assertThat(profileNameValidator.isNameValid(name)).isTrue()
   }
 
   @Test
-  @OppiaParameterizedTestRunner.RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("Ben-.Henning", "name=Ben-.Henning"),
-    OppiaParameterizedTestRunner.Iteration("Rajat..T", "name=Rajat..T"),
+  @RunParameterized(
+    Iteration("Ben-.Henning", "name=Ben-.Henning"),
+    Iteration("Rajat..T", "name=Rajat..T"),
   )
   fun testIsNameValid_nameWithRepeatedAllowedSymbols_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
