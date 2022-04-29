@@ -10,15 +10,15 @@ import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-import org.oppia.android.util.platformparameter.PerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
@@ -82,12 +82,12 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @PerformanceMetricsCollection
-  fun providePerformanceMetricCollection(
+  @EnablePerformanceMetricsCollection
+  fun provideEnablePerformanceMetricCollection(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(PERFORMANCE_METRICS_COLLECTION)
-      ?: PlatformParameterValue.createDefaultParameter(PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE)
+    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_PERFORMANCE_METRICS_COLLECTION)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE)
   }
 
   @Provides

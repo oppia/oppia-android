@@ -95,13 +95,13 @@ const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
 
 /** Qualifier for the platform parameter that controls whether to record performance metrics. */
 @Qualifier
-annotation class PerformanceMetricsCollection
+annotation class EnablePerformanceMetricsCollection
 
 /** Name of the platform parameter that controls whether to record performance metrics. */
-const val PERFORMANCE_METRICS_COLLECTION = "performance_metrics_collection"
+const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_collection"
 
 /** Default value for whether to record performance metrics. */
-const val PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
+const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls the time interval in minutes of uploading
