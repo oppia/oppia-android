@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+message OppiaMetricLog {
+  // unit: long/millis, timezone: UTC
+  int64 timestampMillis = 1;
+  Priority priority = 3;
+  bool isAppInForeground = 4;
+  MemoryTier memoryTier = 5;
+  StorageTier storageTier = 6;
+  NetworkType networkType = 7;
+  CurrentActivity currentActivity = 8;
+
+  message ApkSize {
+    int64 apkSizeBytes = 1; //unit: bytes
+  }
+
+  message StorageUsage {
+    int64 storageUsageBytes = 1; //unit: bytes
+  }
+
+  message StartupLatency {
+    int64 startupLatencyMillis = 1; //unit: bytes
+  }
+
+  message MemoryMetric {
+    int64 total_pss_bytes = 1; //unit: bytes
+  }
+
+  message NetworkUsage{
+    int64 bytesReceived = 1;
+    int64 bytesTransmitted = 2;
+  }
+
+  message CpuUsage{
+    int64 cpuUsage = 1; //unit: bytes
+  }
+
+  enum Priority {
+    PRIORITY_UNSPECIFIED = 0;
+    LOW_PRIORITY = 1;
+    MEDIUM_PRIORITY = 2;
+    HIGH_PRIORITY = 3;
+  }
+
+  enum CurrentActivity {
+    ACTIVITY_UNSPECIFIED = 0;
+    HOME_ACTIVITY = 1;
+    // this enum would contain the names of all the activities where logging metrics would be added.
+    // TODO(#): Add Activity
+  }
+
+  enum MemoryTier {
+    MEMORY_TIER_UNSPECIFIED = 0;
+    LOW_MEMORY_TIER = 1; // =<1GB
+    MEDIUM_MEMORY_TIER = 2; // =<2GB && >1GB
+    HIGH_MEMORY_TIER = 3; // >2GB
+  }
+
+  enum StorageTier {
+    STORAGE_TIER_UNSPECIFIED = 0;
+    LOW_STORAGE = 1; // =<5GB
+    MEDIUM_STORAGE = 2; // =<20GB && >5GB
+    HIGH_STORAGE = 3; // >20GB
+  }
+
+  enum NetworkType {
+    NETWORK_UNSPECIFIED = 0;
+    NONE = 1;
+    WIFI = 2;
+    CELLULAR = 3;
+  }
+}
+
+message OppiaMetricLogs {
+  repeated OppiaMetricLog oppiaMetricLog = 1;
+}
