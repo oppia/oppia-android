@@ -53,7 +53,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HtmlParserTestActivity
@@ -187,9 +186,7 @@ class HtmlParserTest {
     val htmlParser = htmlParserFactory.create(
       policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
     )
-
-    ActivityScenario.launch(OnboardingActivity::class.java).use {
-
+    activityScenarioRule.scenario.runWithActivity {
       val textView: TextView =
         it.findViewById(R.id.test_html_content_text_view)
 
