@@ -5,7 +5,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */

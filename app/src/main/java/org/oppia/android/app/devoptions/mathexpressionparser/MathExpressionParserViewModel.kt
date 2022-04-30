@@ -92,8 +92,7 @@ class MathExpressionParserViewModel @Inject constructor(
       htmlParser.parseOppiaHtml(
         newText.replace("\n", "<br />"),
         parseResultTextView,
-        displayLocale =
-        appLanguageResourceHandler.getDisplayLocale()
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
       )
     } else newText
   }

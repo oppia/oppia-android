@@ -9,7 +9,7 @@ import org.oppia.android.util.system.OppiaClock
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 // TODO(#3766): Restrict to be 'internal'.

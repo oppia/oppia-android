@@ -29,7 +29,7 @@ class HtmlParser private constructor(
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
   policyOppiaTagActionListener: PolicyOppiaTagActionListener?
 ) {
-  private lateinit var displayLocale:OppiaLocale.DisplayLocale
+  private lateinit var displayLocale: OppiaLocale.DisplayLocale
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
