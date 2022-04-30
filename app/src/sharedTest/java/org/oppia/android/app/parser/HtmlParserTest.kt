@@ -192,7 +192,7 @@ class HtmlParserTest {
       onView(withId(R.id.skip_text_view)).perform(click())
 
       val textView: TextView =
-        it.findViewById(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)
+        it.findViewById(R.id.test_html_content_text_view)
 
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">" +
