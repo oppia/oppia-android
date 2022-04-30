@@ -27,9 +27,9 @@ class HtmlParser private constructor(
   private val consoleLogger: ConsoleLogger,
   private val cacheLatexRendering: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
-  policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
-  private val machineLocale: OppiaLocale.MachineLocale
+  policyOppiaTagActionListener: PolicyOppiaTagActionListener?
 ) {
+  private lateinit var displayLocale:OppiaLocale.DisplayLocale
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
@@ -51,7 +51,7 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { LiTagHandler(context, machineLocale) }
+  private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
 
   /**
@@ -68,9 +68,10 @@ class HtmlParser private constructor(
     rawString: String,
     htmlContentTextView: TextView,
     supportsLinks: Boolean = false,
-    supportsConceptCards: Boolean = false
+    supportsConceptCards: Boolean = false,
+    displayLocale: OppiaLocale.DisplayLocale
   ): Spannable {
-
+    this.displayLocale = displayLocale
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     when (getLayoutDirection(htmlContentTextView)) {
@@ -189,8 +190,7 @@ class HtmlParser private constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
     private val context: Context,
-    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>,
-    private val machineLocale: OppiaLocale.MachineLocale
+    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -214,8 +214,7 @@ class HtmlParser private constructor(
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener,
-        null,
-        machineLocale
+        null
       )
     }
 
@@ -238,8 +237,7 @@ class HtmlParser private constructor(
         consoleLogger = consoleLogger,
         cacheLatexRendering = false,
         customOppiaTagActionListener = null,
-        policyOppiaTagActionListener = policyOppiaTagActionListener,
-        machineLocale = machineLocale
+        policyOppiaTagActionListener = policyOppiaTagActionListener
       )
     }
   }

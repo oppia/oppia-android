@@ -140,7 +140,8 @@ class OnboardingFragmentPresenter @Inject constructor(
       completeString,
       binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView,
       supportsLinks = true,
-      supportsConceptCards = false
+      supportsConceptCards = false,
+      displayLocale = resourceHandler.getDisplayLocale()
     )
   }
 

@@ -1,4 +1,4 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -6,8 +6,6 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.text.TextUtilsCompat
 import org.oppia.android.app.model.OppiaLocaleContext
-import org.oppia.android.util.locale.OppiaBidiFormatter
-import org.oppia.android.util.locale.OppiaLocale
 import java.text.DateFormat
 import java.text.NumberFormat
 import java.util.Date
@@ -51,6 +49,8 @@ class DisplayLocaleImpl(
   override fun formatLong(value: Long): String = numberFormat.format(value)
 
   override fun formatDouble(value: Double): String = numberFormat.format(value)
+
+  override fun Int.toHumanReadableString(number: Int): String? = numberFormat.format(number)
 
   override fun computeDateString(timestampMillis: Long): String =
     dateFormat.format(Date(timestampMillis))

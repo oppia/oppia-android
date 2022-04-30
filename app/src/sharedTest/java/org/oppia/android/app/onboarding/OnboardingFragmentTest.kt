@@ -67,6 +67,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -147,6 +148,9 @@ class OnboardingFragmentTest {
 
   @Inject
   lateinit var context: Context
+
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @Inject
   @field:DefaultResourceBucketName
@@ -713,7 +717,8 @@ class OnboardingFragmentTest {
           "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
         textView,
         supportsLinks = true,
-        supportsConceptCards = false
+        supportsConceptCards = false,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
 
@@ -754,7 +759,8 @@ class OnboardingFragmentTest {
           "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
         textView,
         supportsLinks = true,
-        supportsConceptCards = false
+        supportsConceptCards = false,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
 

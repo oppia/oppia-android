@@ -58,6 +58,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HtmlParserTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -146,6 +147,9 @@ class HtmlParserTest {
   lateinit var context: Context
 
   @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
+  @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject
@@ -196,7 +200,8 @@ class HtmlParserTest {
           "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
         textView,
         supportsLinks = true,
-        supportsConceptCards = false
+        supportsConceptCards = false,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
 
@@ -237,7 +242,8 @@ class HtmlParserTest {
           "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp" +
           "\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
           "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -269,7 +275,8 @@ class HtmlParserTest {
           "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp" +
           "\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
           "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -301,7 +308,8 @@ class HtmlParserTest {
           "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6" +
           "\u003c/strong\u003e: What fraction of the cake has big " +
           "red cherries in the pineapple slices?\u003c/p\u003e",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       return@runWithActivity textView to htmlResult
     }
@@ -323,7 +331,8 @@ class HtmlParserTest {
       val htmlResult = htmlParser.parseOppiaHtml(
         "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li><li>How to tell whether one" +
           " counting number is bigger or smaller than another.</li></ul>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -347,7 +356,8 @@ class HtmlParserTest {
       return@runWithActivity htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
           "</oppia-noninteractive-image>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -419,7 +429,8 @@ class HtmlParserTest {
       return@runWithActivity htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
           "</oppia-noninteractive-image>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -447,7 +458,8 @@ class HtmlParserTest {
           "</oppia-noninteractive-image>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -472,7 +484,8 @@ class HtmlParserTest {
           "</oppia-noninteractive-image>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -496,7 +509,8 @@ class HtmlParserTest {
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
-        supportsConceptCards = false
+        supportsConceptCards = false,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -521,7 +535,8 @@ class HtmlParserTest {
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -543,6 +558,7 @@ class HtmlParserTest {
           "<a href=\"https://creativecommons.org/licenses/by-sa/4.0/legalcode\"> here</a>",
         textView,
         supportsLinks = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -572,7 +588,8 @@ class HtmlParserTest {
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
         supportsLinks = false,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -600,7 +617,8 @@ class HtmlParserTest {
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
 
@@ -640,7 +658,8 @@ class HtmlParserTest {
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -666,7 +685,8 @@ class HtmlParserTest {
           "</oppia-noninteractive-math>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -694,7 +714,8 @@ class HtmlParserTest {
           "</oppia-noninteractive-math>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -723,7 +744,8 @@ class HtmlParserTest {
           "</oppia-noninteractive-math>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true
+        supportsConceptCards = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -745,7 +767,8 @@ class HtmlParserTest {
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another<br></li></ul>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       return@runWithActivity textView
     }

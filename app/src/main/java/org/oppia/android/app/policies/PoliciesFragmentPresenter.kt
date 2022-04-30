@@ -61,7 +61,8 @@ class PoliciesFragmentPresenter @Inject constructor(
       policyDescription,
       binding.policyDescriptionTextView,
       supportsLinks = true,
-      supportsConceptCards = false
+      supportsConceptCards = false,
+      resourceHandler.getDisplayLocale()
     )
 
     binding.policyWebLinkTextView.text = htmlParserFactory.create(
@@ -73,7 +74,8 @@ class PoliciesFragmentPresenter @Inject constructor(
       policyWebLink,
       binding.policyWebLinkTextView,
       supportsLinks = true,
-      supportsConceptCards = false
+      supportsConceptCards = false,
+      displayLocale = resourceHandler.getDisplayLocale()
     )
   }
 }

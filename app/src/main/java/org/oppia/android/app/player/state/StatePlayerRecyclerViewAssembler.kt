@@ -941,7 +941,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
               contentViewModel.htmlContent.toString(),
               binding.contentTextView,
               supportsLinks = true,
-              supportsConceptCards = contentViewModel.supportsConceptCards
+              supportsConceptCards = contentViewModel.supportsConceptCards,
+              displayLocale = resourceHandler.getDisplayLocale()
             )
         }
       )
@@ -975,7 +976,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
               feedbackViewModel.htmlContent.toString(),
               binding.feedbackTextView,
               supportsLinks = true,
-              supportsConceptCards = feedbackViewModel.supportsConceptCards
+              supportsConceptCards = feedbackViewModel.supportsConceptCards,
+              displayLocale = resourceHandler.getDisplayLocale()
             )
         }
       )
@@ -1084,7 +1086,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 htmlParser.parseOppiaHtml(
                   userAnswer.htmlAnswer,
                   binding.submittedAnswerTextView,
-                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
+                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards,
+                  displayLocale = resourceHandler.getDisplayLocale()
                 ),
                 accessibleAnswer
               )
@@ -1157,7 +1160,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
               ).parseOppiaHtml(
                 viewModel,
                 binding.submittedAnswerContentTextView,
-                supportsConceptCards = supportsConceptCards
+                supportsConceptCards = supportsConceptCards,
+                displayLocale = resourceHandler.getDisplayLocale()
               )
           }
         )

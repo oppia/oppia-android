@@ -54,7 +54,8 @@ class FAQSingleActivityPresenter @Inject constructor(
       imageCenterAlign = false
     ).parseOppiaHtml(
       answer,
-      answerTextView
+      answerTextView,
+      displayLocale = resourceHandler.getDisplayLocale()
     )
   }
 }

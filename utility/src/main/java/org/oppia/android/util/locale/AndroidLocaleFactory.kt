@@ -1,4 +1,4 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
 import android.os.Build
 import org.oppia.android.app.model.LanguageSupportDefinition
@@ -6,9 +6,6 @@ import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.util.locale.AndroidLocaleProfile
-import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.locale.getFallbackLanguageId
-import org.oppia.android.util.locale.getLanguageId
 import java.util.Locale
 import javax.inject.Inject
 

@@ -118,9 +118,6 @@ sealed class OppiaLocale {
     /** Returns the decapitalized version of this string. */
     abstract fun String.decapitalizeForMachines(): String
 
-    /** Returns a human-readable representation of this [Int]. */
-    abstract fun Int.toHumanReadableString(number: Int): String?
-
     /** Returns whether this string ends with the specified suffix, ignoring case differences. */
     abstract fun String.endsWithIgnoreCase(suffix: String): Boolean
 
@@ -228,6 +225,9 @@ sealed class OppiaLocale {
      * function may round and/or truncate the double for formatting simplicity.
      */
     abstract fun formatDouble(value: Double): String
+
+    /** Returns a human-readable representation of this [Int]. */
+    abstract fun Int.toHumanReadableString(number: Int): String?
 
     /**
      * Returns a locally formatted date string representing the specified Unix timestamp.

@@ -5,7 +5,8 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.Stack
+import java.util.*
+import javax.inject.Inject
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -20,9 +21,9 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  * A custom tag handler for properly formatting bullet items in HTML parsed with
  * [CustomHtmlContentHandler].
  */
-class LiTagHandler(
+class LiTagHandler @Inject constructor(
   private val context: Context,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val displayLocale: OppiaLocale.DisplayLocale
 ) :
   CustomHtmlContentHandler.CustomTagHandler {
 
@@ -36,7 +37,7 @@ class LiTagHandler(
         lists.push(Ul(context, tag))
 
       CUSTOM_LIST_OL_TAG ->
-        lists.push(Ol(context, tag, machineLocale))
+        lists.push(Ol(context, tag, displayLocale))
 
       CUSTOM_LIST_LI_TAG ->
         lists.peek().openItem(output)
@@ -87,7 +88,7 @@ class LiTagHandler(
   private class Ol(
     private val context: Context,
     private val tag: String,
-    private val machineLocale: OppiaLocale.MachineLocale
+    private val displayLocale: OppiaLocale.DisplayLocale
   ) : CustomHtmlContentHandler.ListTag {
 
     private var index = 1
@@ -107,7 +108,7 @@ class LiTagHandler(
           ListItemLeadingMarginSpan(
             context,
             indentation,
-            "${machineLocale.run {(mark.number).toHumanReadableString(mark.number)}}.",
+            "${displayLocale.run {(mark.number).toHumanReadableString(mark.number)}}.",
             tag
           )
         )

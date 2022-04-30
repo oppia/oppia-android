@@ -8,6 +8,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -28,7 +29,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
   private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
 
@@ -70,7 +72,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
           resourceBucketName, entityType, topicId, imageCenterAlign = true,
           customOppiaTagActionListener = this
         ).parseOppiaHtml(
-          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
+          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true,
+          displayLocale = appLanguageResourceHandler.getDisplayLocale()
         )
       }
     )

@@ -14,6 +14,7 @@ import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.databinding.DragDropSingleItemBinding
@@ -34,7 +35,8 @@ import javax.inject.Inject
  */
 // TODO(#1619): Remove file post-Gradle
 class ViewBindingShimImpl @Inject constructor(
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) : ViewBindingShim {
 
   override fun providePromotedStoryCardInflatedView(
@@ -106,7 +108,8 @@ class ViewBindingShimImpl @Inject constructor(
         false
       ).parseOppiaHtml(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
-        binding.itemSelectionContentsTextView
+        binding.itemSelectionContentsTextView,
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
       )
     binding.viewModel = viewModel
   }
@@ -139,7 +142,8 @@ class ViewBindingShimImpl @Inject constructor(
         resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
       ).parseOppiaHtml(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
-        binding.multipleChoiceContentTextView
+        binding.multipleChoiceContentTextView,
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
       )
     binding.viewModel = viewModel
   }
@@ -224,7 +228,8 @@ class ViewBindingShimImpl @Inject constructor(
       entityId,
       /* imageCenterAlign= */ false
     ).parseOppiaHtml(
-      viewModel, dragDropSingleItemBinding.dragDropContentTextView
+      viewModel, dragDropSingleItemBinding.dragDropContentTextView,
+      displayLocale = appLanguageResourceHandler.getDisplayLocale()
     )
   }
 

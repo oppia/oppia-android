@@ -44,16 +44,35 @@ kt_android_library(
 kt_android_library(
     name = "impl",
     srcs = [
+        "DisplayLocaleImpl.kt",
         "MachineLocaleImpl.kt",
         "OppiaBidiFormatterImpl.kt",
     ],
     visibility = ["//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__"],
     deps = [
+        ":android_locale_factory",
         ":dagger",
         ":oppia_bidi_formatter",
         ":oppia_locale",
         "//third_party:androidx_core_core",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_bidi_formatter",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+    ],
+)
+
+kt_android_library(
+    name = "android_locale_factory",
+    srcs = [
+        "AndroidLocaleFactory.kt",
+    ],
+    visibility = [
+        "//utility:utility_testing_visibility",
+    ],
+    deps = [
+        ":dagger",
+        "//utility/src/main/java/org/oppia/android/util/locale:android_locale_profile",
     ],
 )
 

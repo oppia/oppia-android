@@ -37,6 +37,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ListItemLeadingMarginSpanTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -120,6 +121,9 @@ class ListItemLeadingMarginSpanTest {
   )
 
   @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
+  @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
@@ -164,7 +168,8 @@ class ListItemLeadingMarginSpanTest {
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another</li></ul>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -220,7 +225,8 @@ class ListItemLeadingMarginSpanTest {
           "          </ul>" +
           "        </li>" +
           "      </ul>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -276,7 +282,8 @@ class ListItemLeadingMarginSpanTest {
           "          </ol>" +
           "        </li>" +
           "        </ol>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 
@@ -319,7 +326,8 @@ class ListItemLeadingMarginSpanTest {
           "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another</li></ol>",
-        textView
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
     }
 

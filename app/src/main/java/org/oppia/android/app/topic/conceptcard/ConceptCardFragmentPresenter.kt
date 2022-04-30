@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ConceptCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -27,7 +28,8 @@ class ConceptCardFragmentPresenter @Inject constructor(
   @ConceptCardHtmlParserEntityType private val entityType: String,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) {
   /**
    * Sets up data binding and toolbar.
@@ -73,7 +75,10 @@ class ConceptCardFragmentPresenter @Inject constructor(
           )
         view.text = htmlParserFactory
           .create(resourceBucketName, entityType, skillId, imageCenterAlign = true)
-          .parseOppiaHtml(explanationHtml, view)
+          .parseOppiaHtml(
+            explanationHtml, view,
+            displayLocale = appLanguageResourceHandler.getDisplayLocale()
+          )
       }
     )
 
