@@ -7,24 +7,24 @@ option java_multiple_files = true;
 
 message OppiaMetricLog {
   // unit: long/millis, timezone: UTC
-  int64 timestampMillis = 1;
+  int64 timestamp_millis = 1;
   Priority priority = 3;
-  bool isAppInForeground = 4;
-  MemoryTier memoryTier = 5;
-  StorageTier storageTier = 6;
-  NetworkType networkType = 7;
-  CurrentActivity currentActivity = 8;
+  bool is_app_in_foreground = 4;
+  MemoryTier memory_tier = 5;
+  StorageTier storage_tier = 6;
+  NetworkType network_type = 7;
+  CurrentActivity current_activity = 8;
 
   message ApkSize {
-    int64 apkSizeBytes = 1; //unit: bytes
+    int64 apk_size_bytes = 1; //unit: bytes
   }
 
   message StorageUsage {
-    int64 storageUsageBytes = 1; //unit: bytes
+    int64 storage_usage_bytes = 1; //unit: bytes
   }
 
   message StartupLatency {
-    int64 startupLatencyMillis = 1; //unit: bytes
+    int64 startup_latency_millis = 1; //unit: bytes
   }
 
   message MemoryMetric {
@@ -32,12 +32,12 @@ message OppiaMetricLog {
   }
 
   message NetworkUsage{
-    int64 bytesReceived = 1;
-    int64 bytesTransmitted = 2;
+    int64 bytes_received = 1;
+    int64 bytes_transmitted = 2;
   }
 
   message CpuUsage{
-    int64 cpuUsage = 1; //unit: bytes
+    int64 cpu_usage = 1; //unit: bytes
   }
 
   enum Priority {
@@ -51,7 +51,6 @@ message OppiaMetricLog {
     ACTIVITY_UNSPECIFIED = 0;
     HOME_ACTIVITY = 1;
     // this enum would contain the names of all the activities where logging metrics would be added.
-    // TODO(#): Add Activity
   }
 
   enum MemoryTier {
@@ -77,5 +76,5 @@ message OppiaMetricLog {
 }
 
 message OppiaMetricLogs {
-  repeated OppiaMetricLog oppiaMetricLog = 1;
+  repeated OppiaMetricLog oppia_metric_log = 1;
 }
