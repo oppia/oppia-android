@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+message OnboardingActivitySpotlight{
+  SpotlightState spotlight_state = 1;
+
+  enum LastScreenViewed{
+    ONBOARDING_SCREEN_1 = 0;
+    ONBOARDING_SCREEN_2 = 1;
+    ONBOARDING_SCREEN_3 = 2;
+    ONBOARDING_SCREEN_4 = 3;
+  }
+
+  LastScreenViewed last_screen_viewed = 2;
+}
+
+enum SpotlightState{
+  SPOTLIGHT_STATE_COMPLETED = 0;
+  SPOTLIGHT_STATE_PARTIAL = 1;
+  SPOTLIGHT_STATE_DISMISSED = 2;
+  SPOTLIGHT_STATE_UNSPECIFIED = 3;
+}
+
+message ProfileActivitySpotlight{
+  SpotlightState spotlight_state = 1;
+
+  enum LastScreenViewed{
+    PROFILE_SCREEN_1 = 0;
+    PROFILE_SCREEN_2 = 1;
+    PROFILE_SCREEN_3 = 2;
+  }
+
+  LastScreenViewed last_screen_viewed = 2;
+}
+
+message SpotlightCheckpointDatabase {
+  OnboardingActivitySpotlight onboarding_spotlight_checkpoint = 1;
+  ProfileActivitySpotlight profile_spotlight_checkpoint = 2;
+}
+
+
+
+}
