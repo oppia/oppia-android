@@ -9,6 +9,8 @@ import org.oppia.android.util.system.OppiaClock
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
