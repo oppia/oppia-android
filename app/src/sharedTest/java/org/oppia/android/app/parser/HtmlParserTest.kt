@@ -189,7 +189,6 @@ class HtmlParserTest {
     )
 
     ActivityScenario.launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.skip_text_view)).perform(click())
 
       val textView: TextView =
         it.findViewById(R.id.test_html_content_text_view)
