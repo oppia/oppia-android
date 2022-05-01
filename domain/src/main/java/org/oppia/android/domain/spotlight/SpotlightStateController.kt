@@ -42,10 +42,15 @@ class SpotlightStateController @Inject constructor(
     ) {
       val spotlightCheckpointDatabaseBuilder = it.toBuilder()
 
-      val checkpoint = spotlightCheckpointDatabaseBuilder
-        .setOnboardingSpotlightCheckpoint(
+      val checkpoint : SpotlightState = when (spotlightActivity) {
+        SpotlightActivity.ONBOARDING_ACTIVITY -> {
+          spotlightCheckpointDatabaseBuilder.onboardingSpotlightCheckpoint.spotlightState
+        }
+        SpotlightActivity.PROFILE_ACTIVITY -> {
+          spotlightCheckpointDatabaseBuilder.profileSpotlightCheckpoint.spotlightState
+        }
+      }
 
-        )
 
 
       val spotlightCheckpointDatabase = spotlightCheckpointDatabaseBuilder.build()
