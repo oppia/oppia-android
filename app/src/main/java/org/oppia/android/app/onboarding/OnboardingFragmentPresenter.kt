@@ -3,11 +3,18 @@ package org.oppia.android.app.onboarding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.takusemba.spotlight.OnSpotlightListener
+import com.takusemba.spotlight.OnTargetListener
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.Target
+import com.takusemba.spotlight.shape.Circle
+import java.util.*
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -18,6 +25,7 @@ import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.databinding.OverlayBinding
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -30,6 +38,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
+  private lateinit var overlayBinding: OverlayBinding
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = OnboardingFragmentBinding.inflate(
@@ -46,6 +55,7 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
     setUpViewPager()
     addDots()
+    startSpotlight(inflater, container)
     return binding.root
   }
 
@@ -213,4 +223,56 @@ class OnboardingFragmentPresenter @Inject constructor(
       dotsList[index].alpha = alphaValue
     }
   }
+
+  private fun startSpotlight(inflater: LayoutInflater, container: ViewGroup?) {
+    val targets = ArrayList<Target>()
+
+//    val firstRoot = FrameLayout(fragment.requireContext())
+//    val first = fragment.layoutInflater.inflate(overlayBinding, firstRoot)
+
+     overlayBinding = OverlayBinding.inflate(inflater, container, false)
+
+    val firstTarget = Target.Builder()
+      .setAnchor(binding.onboardingFragmentNextImageView)
+      .setShape(Circle(100f))
+      .setOverlay(overlayBinding.root)
+      .setOnTargetListener(object : OnTargetListener {
+        override fun onStarted() {
+
+        }
+
+        override fun onEnded() {
+
+        }
+      })
+      .build()
+
+    targets.add(firstTarget)
+
+    // create spotlight
+    val spotlight = Spotlight.Builder(activity)
+      .setTargets(targets)
+      .setBackgroundColorRes(R.color.spotlightBackground)
+      .setDuration(1000L)
+      .setAnimation(DecelerateInterpolator(2f))
+      .setOnSpotlightListener(object : OnSpotlightListener {
+        override fun onStarted() {
+
+
+        }
+
+        override fun onEnded() {
+
+
+        }
+      })
+      .build()
+
+    spotlight.start()
+
+
+
+    binding.onboardingFragmentConstraintLayout?.setOnClickListener { spotlight.finish() }
+  }
 }
+
