@@ -5,76 +5,145 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
+// Structure for an oppia metric log.
 message OppiaMetricLog {
+  // The timestamp of the event.
   // unit: long/millis, timezone: UTC
   int64 timestamp_millis = 1;
-  Priority priority = 3;
-  bool is_app_in_foreground = 4;
-  MemoryTier memory_tier = 5;
-  StorageTier storage_tier = 6;
-  NetworkType network_type = 7;
-  CurrentActivity current_activity = 8;
 
+  // The priority of the event.
+  Priority priority = 2;
+
+  // Indicates whether the application is in foreground.
+  bool is_app_in_foreground = 3;
+
+  // The memory tier of the current device.
+  MemoryTier memory_tier = 4;
+
+  // The storage tier of the current device.
+  StorageTier storage_tier = 5;
+
+  // The current network type of the device.
+  NetworkType network_type = 6;
+
+  // The current activity where the event is getting logged.
+  CurrentActivity current_activity = 7;
+
+  // Structure of the apk size package.
   message ApkSize {
-    int64 apk_size_bytes = 1; //unit: bytes
+    // Size of the android package file of the app on the device in bytes.
+    int64 apk_size_bytes = 1;
   }
 
+  // Structure of the storage usage package.
   message StorageUsage {
-    int64 storage_usage_bytes = 1; //unit: bytes
+    // Amount of storage usage by the app on user's device in bytes.
+    int64 storage_usage_bytes = 1;
   }
 
+  // Structure of the startup latency package.
   message StartupLatency {
-    int64 startup_latency_millis = 1; //unit: bytes
+    // Amount of latency on application startup in millis.
+    int64 startup_latency_millis = 1;
   }
 
-  message MemoryMetric {
-    int64 total_pss_bytes = 1; //unit: bytes
+  // Structure of the memory usage package.
+  message MemoryUsage {
+    // Amount of memory used by the application on the device in bytes.
+    int64 total_pss_bytes = 1;
   }
 
+  // Structure of the network usage package.
   message NetworkUsage{
+    // Number of bytes received by the application on the device during the bucket's time interval.
     int64 bytes_received = 1;
+
+    // Number of bytes transmitted by the application from the device during the bucket's time
+    // interval.
     int64 bytes_transmitted = 2;
   }
 
+  // Structure of the cpu usage package.
   message CpuUsage{
-    int64 cpu_usage = 1; //unit: bytes
+    // Amount of cpu used by the application.
+    int64 cpu_usage = 1;
   }
 
+  // Supported priority of events for performance metric logging.
   enum Priority {
+    // The undefined priority of an event.
     PRIORITY_UNSPECIFIED = 0;
+
+    // The priority of events whose logs will be the first to be removed from the storage if the
+    // size exceeds a certain limit
     LOW_PRIORITY = 1;
+
+    // The priority of events whose logs will be the ones to be removed from the storage if the
+    // size exceeds a certain limit and no low priority logs exist.
     MEDIUM_PRIORITY = 2;
+
+    // The priority of events whose logs should not be removed from the storage on most occasions
+    // but can be removed if they're the only ones there and size limit exceeds.
     HIGH_PRIORITY = 3;
   }
 
+  // Supported activities for indicating the current activity where the event logging is occuring.
   enum CurrentActivity {
+    // The undefined current activity of an event.
     ACTIVITY_UNSPECIFIED = 0;
+
+    // The metric log was taken when home activity was opened.
     HOME_ACTIVITY = 1;
-    // this enum would contain the names of all the activities where logging metrics would be added.
+    // TODO(#4340): Add support for all activities which are going to be used for metric logging.
   }
 
+  // Supported memory tiers for indicating the total memory of user's device.
   enum MemoryTier {
+    // The undefined memory tier of a device.
     MEMORY_TIER_UNSPECIFIED = 0;
+
+    // The memory tier where the amount of memory is less than or equal to 1GB.
     LOW_MEMORY_TIER = 1; // =<1GB
+
+    // The memory tier where the amount of memory is less than or equal to 2GB and more than 1GB.
     MEDIUM_MEMORY_TIER = 2; // =<2GB && >1GB
+
+    // The memory tier where the amount of memory is greater than 2GB.
     HIGH_MEMORY_TIER = 3; // >2GB
   }
 
+  // Supported storage tiers for indicating the total storage space on user's device.
   enum StorageTier {
+    // The undefined storage tier of a device.
     STORAGE_TIER_UNSPECIFIED = 0;
+
+    // The storage tier where the amount of storage is less than or equal to 5GB.
     LOW_STORAGE = 1; // =<5GB
+
+    // The storage tier where the amount of storage is less than or equal to 2GB and more than 1GB.
     MEDIUM_STORAGE = 2; // =<20GB && >5GB
+
+    // The storage tier where the amount of storage is greater than 2GB.
     HIGH_STORAGE = 3; // >20GB
   }
 
+  // Supported network types for indicating the current network situation on user's device.
   enum NetworkType {
+    // The undefined network type of a device.
     NETWORK_UNSPECIFIED = 0;
+
+    // Indicates that the device is not connected to any network.
     NONE = 1;
+
+    // Indicates that the device is connected to wifi or ethernet.
     WIFI = 2;
+
+    // Indicates that the device is connected to mobile or WiMax.
     CELLULAR = 3;
   }
 }
 
+// Structure for a container that contains metric log reports.
 message OppiaMetricLogs {
   repeated OppiaMetricLog oppia_metric_log = 1;
 }
