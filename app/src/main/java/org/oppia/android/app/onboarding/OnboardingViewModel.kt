@@ -2,16 +2,21 @@ package org.oppia.android.app.onboarding
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 import org.oppia.android.R
+import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
+import org.oppia.android.domain.spotlight.SpotlightStateController
 
 private const val INITIAL_SLIDE_NUMBER = 0
 
 /** [ViewModel] for [OnboardingFragment]. */
 class OnboardingViewModel @Inject constructor(
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val spotlightStateController: SpotlightStateController
 ) : ObservableViewModel() {
   val slideNumber = ObservableField(INITIAL_SLIDE_NUMBER)
   val totalNumberOfSlides = TOTAL_NUMBER_OF_SLIDES
@@ -32,4 +37,20 @@ class OnboardingViewModel @Inject constructor(
       totalNumberOfSlides.toString()
     )
   }
+
+  fun recordSpotlightCheckpoint(
+    lastScreenViewed: OnboardingSpotlightCheckpoint.LastScreenViewed,
+    spotlightState: SpotlightState
+  ) {
+    val checkpoint = OnboardingSpotlightCheckpoint.newBuilder()
+      .setLastScreenViewed(lastScreenViewed)
+      .setSpotlightState(spotlightState)
+      .build()
+
+    val profileId = ProfileId.newBuilder()
+      .setInternalId(123)
+      .build()
+    spotlightStateController.recordSpotlightCheckpoint(profileId, checkpoint)
+  }
+
 }

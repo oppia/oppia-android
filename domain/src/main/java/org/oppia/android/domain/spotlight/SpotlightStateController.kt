@@ -3,9 +3,10 @@ package org.oppia.android.domain.spotlight
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
+import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileSpotlightCheckpoint
 import org.oppia.android.app.model.SpotlightCheckpointDatabase
-import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -34,40 +35,38 @@ class SpotlightStateController @Inject constructor(
 
   private fun recordSpotlightStateAsync(
     profileId: ProfileId,
-    spotlightState: SpotlightState,
-    spotlightActivity: SpotlightActivity
-  ): Deferred<SpotlightState> {
+    checkpoint: Any,
+  ): Deferred<Any> {
     return retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
       val spotlightCheckpointDatabaseBuilder = it.toBuilder()
 
-      val checkpoint : SpotlightState = when (spotlightActivity) {
-        SpotlightActivity.ONBOARDING_ACTIVITY -> {
-          spotlightCheckpointDatabaseBuilder.onboardingSpotlightCheckpoint.spotlightState
+      val newCheckpoint : Any = when (checkpoint) {
+        is OnboardingSpotlightCheckpoint -> {
+          spotlightCheckpointDatabaseBuilder.setOnboardingSpotlightCheckpoint(checkpoint)
         }
-        SpotlightActivity.PROFILE_ACTIVITY -> {
-          spotlightCheckpointDatabaseBuilder.profileSpotlightCheckpoint.spotlightState
+        is ProfileSpotlightCheckpoint -> {
+          spotlightCheckpointDatabaseBuilder.setProfileSpotlightCheckpoint(checkpoint)
+        }
+        else -> {
+          // throw exception
         }
       }
 
-
-
       val spotlightCheckpointDatabase = spotlightCheckpointDatabaseBuilder.build()
 
-      Pair(spotlightCheckpointDatabase, checkpoint)
+      Pair(spotlightCheckpointDatabase, newCheckpoint)
     }
   }
 
-  fun recordSpotlightState(
+  fun recordSpotlightCheckpoint(
     profileId: ProfileId,
-    spotlightState: SpotlightState,
-    spotlightActivity: SpotlightActivity
+    checkpoint: Any,
   ): DataProvider<Any?> {
     val deferred = recordSpotlightStateAsync(
       profileId,
-      spotlightState,
-      spotlightActivity
+      checkpoint
     )
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
@@ -76,21 +75,28 @@ class SpotlightStateController @Inject constructor(
     }
   }
 
-  fun retrieveSpotlightState(
+  fun retrieveSpotlightCheckpoint(
     profileId: ProfileId,
-    explorationId: String,
-    spotlightActivity: SpotlightActivity
-  ): DataProvider<SpotlightState> {
+    spotlightActivity: SpotlightActivity,
+  ): DataProvider<Any> {
     return retrieveCacheStore(profileId)
       .transformAsync(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
       ) {
 
-        val checkpoint = it.onboardingSpotlightCheckpoint.spotlightState
 
-        if (checkpoint != null) {
+        val checkpoint = when (spotlightActivity) {
+           SpotlightActivity.ONBOARDING_ACTIVITY -> {
+            it.onboardingSpotlightCheckpoint
+          }
+           SpotlightActivity.PROFILE_ACTIVITY -> {
+            it.profileSpotlightCheckpoint
+          }
+        }
+
+        if (checkpoint != null){
           AsyncResult.Success(checkpoint)
-        } else {
+        }else {
           AsyncResult.Failure(SpotlightStateNotFoundException("State not found "))
         }
 

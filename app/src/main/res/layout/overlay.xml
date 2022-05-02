@@ -6,7 +6,7 @@
     <import type="android.view.View" />
     <variable
       name="presenter"
-      type="org.oppia.android.app.onboarding.OnboardingNavigationListener" />
+      type="org.oppia.android.app.onboarding.SpotlightNavigationListener" />
 
     <variable
       name="viewModel"
@@ -21,40 +21,44 @@
       android:id="@+id/custom_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
+      android:layout_marginBottom="20dp"
       android:gravity="center"
       android:text="this is a custom text"
       android:textAlignment="center"
       android:textColor="@android:color/white"
       android:textSize="24dp"
       android:textStyle="bold"
+      android:visibility="gone"
       app:layout_constraintBottom_toTopOf="@+id/close_target"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.497"
       app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <TextView
       android:id="@+id/close_target"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
-      android:layout_marginEnd="16dp"
-      android:layout_marginStart="16dp"
-      android:text="next_target"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintBottom_toTopOf="@+id/close_spotlight"
+      android:layout_marginTop="50dp"
+      android:layout_marginEnd="10dp"
+      android:onClick="@{(v) -> presenter.clickOnNextTip()}"
+      android:text="next tip"
+      android:textColor="#FFFFFF"
+      android:textSize="20sp"
+      android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <TextView
       android:id="@+id/close_spotlight"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="60dp"
-      android:layout_marginEnd="16dp"
-      android:layout_marginStart="16dp"
-      android:text="close_spotlight"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      android:layout_marginStart="10dp"
+      android:layout_marginTop="50dp"
+      android:text="dismiss"
+      android:textColor="#FFFFFF"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
