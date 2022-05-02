@@ -1969,7 +1969,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotstartWithColorPalette_fileContentIsNotCorrect() {
+  fun testFileContent_doesNotStartWithColorPalette_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="primary_color">@color/oppia_green</color>
@@ -2015,7 +2015,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotstartWithColorPalette_fileContentIsNotCorrect() {
+  fun testFileContent_doesNotStartWithColorDef_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="color_def_oppia_green">#00645C</color>

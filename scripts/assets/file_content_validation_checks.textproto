@@ -306,7 +306,6 @@ file_content_checks {
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/RealExtensionsTest.kt"
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
-
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
   prohibited_content_regex: "name=.+(?<!_color).>@|name=.*[A-Z].*>@"
@@ -319,7 +318,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
-  prohibited_content_regex: ".>#\\w+<\\/color>"
+  prohibited_content_regex: ".>#\\x+<\\/color>"
   failure_message: "Hex color declarations should only be in color_defs.xml and not in component_colors.xml or color_palette.xml"
 }
 file_content_checks {
@@ -330,26 +329,26 @@ file_content_checks {
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml"
   prohibited_content_regex: "name=\"(?!component_color_).+\""
-  failure_message: "All colors in component_colors must start with 'component_color_'."
+  failure_message: "All colors in component_colors.xml must start with 'component_color_'."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_palette.xml"
   prohibited_content_regex: "name=\"(?!color_palette_).+\""
-  failure_message: "All colors in color_palette must start with 'color_palette_'."
+  failure_message: "All colors in color_palette.xml must start with 'color_palette_'."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_defs.xml"
   prohibited_content_regex: "name=\"(?!color_def_).+\""
-  failure_message: "All colors in color_defs must start with 'color_defs_'."
+  failure_message: "All colors in color_defs.xml must start with 'color_def_'."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml"
   prohibited_content_regex: "@color/(?!color_palette_).+"
-  failure_message: "Only colors from color_palette.xml may be used in component_colors."
+  failure_message: "Only colors from color_palette.xml may be used in component_colors.xml."
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/color_palette.xml"
   prohibited_content_regex: "@color/(?!color_def_).+"
-  failure_message: "Only colors from color_defs.xml may be used in color_palette."
+  failure_message: "Only colors from color_defs.xml may be used in color_palette.xml."
 }
 
