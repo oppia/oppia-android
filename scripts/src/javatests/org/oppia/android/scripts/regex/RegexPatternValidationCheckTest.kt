@@ -1711,14 +1711,14 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_doesNotHaveColorSuffixOrSnakeCasing_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-      <color name="color_palette_background_color">@color/oppia_light_yellow</color>
-      <color name="color_palette_darkBackgroundColor">@color/mid_grey_30</color>
-      <color name="color_palette_description_text_color">@color/accessible_light_grey</color>
-      <color name="color_palette_text_input_background">@color/white</color>
-      <color name="color_palette_DarkText">@color/black_87</color>
-      <color name="color_palette_error_color">@color/oppia_red</color>
-      <color name="color_palette_CONTAINER_BACKGROUND_COLOR">@color/white</color>
-      <color name="color_palette_toolbar">@color/oppia_green</color>
+      <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
+      <color name="color_palette_darkBackgroundColor">@color/color_def_mid_grey_30</color>
+      <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
+      <color name="color_palette_text_input_background">@color/color_def_white</color>
+      <color name="color_palette_DarkText">@color/color_def_black_87</color>
+      <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+      <color name="color_palette_CONTAINER_BACKGROUND_COLOR">@color/color_def_white</color>
+      <color name="color_palette_toolbar">@color/color_def_oppia_green</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
@@ -1747,9 +1747,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_hasColorSuffixAndSnakeCasing_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_palette_toolbar_color">@color/oppia_green</color>
-        <color name="color_palette_status_bar_color">@color/dark_green</color>
-        <color name="color_palette_action_bar_color">@color/oppia_green</color>
+        <color name="color_palette_toolbar_color">@color/color_def_oppia_green</color>
+        <color name="color_palette_status_bar_color">@color/color_def_dark_green</color>
+        <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
@@ -1813,10 +1813,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_hasHexColorValue_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_admin_controls_options_highlighted_background_color">@color/highlighted_background_color</color>
+        <color name="component_color_admin_controls_options_highlighted_background_color">@color/color_palette_highlighted_background_color</color>
         <color name="component_color_admin_controls_sub_heading_color">#6B0086FB</color>
         <color name="component_color_admin_controls_switch_description_color">#FFFFFF</color>
-        <color name="component_color_admin_controls_menu_options_text_color">@color/dark_text_color</color>
+        <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -1842,9 +1842,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_doesNotHaveHexColorValue_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_add_profile_activity_switch_text_color">@color/dark_text_color</color>
-        <color name="component_color_add_profile_activity_switch_description_color">@color/description_text_color</color>
-        <color name="component_color_add_profile_activity_layout_background_color">@color/background_color</color>
+        <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
+        <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
+        <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -1906,10 +1906,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_startsWithComponentColors_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_shared_text_view_heading_text_color">@color/highlighted_text_color</color>
-        <color name="component_color_shared_text_input_layout_text_color">@color/primary_text_color</color>
-        <color name="component_color_shared_text_input_layout_stroke_color">@color/primary_text_color</color>
-        <color name="component_color_shared_text_input_edit_text_text_color">@color/primary_text_color</color>
+        <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+        <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+        <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+        <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -1924,10 +1924,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_doesNotstartWithComponentColors_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
-        <color name="shared_text_input_layout_text_color">@color/primary_text_color</color>
-        <color name="component_color_shared_text_input_layout_stroke_color">@color/primary_text_color</color>
-        <color name="shared_text_input_edit_text_text_color">@color/primary_text_color</color>
+        <color name="shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+        <color name="shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+        <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+        <color name="shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -1954,10 +1954,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_startsWithColorPalette_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_palette_primary_color">@color/oppia_green</color>
-        <color name="color_palette_primary_dark_color">@color/dark_green</color>
-        <color name="color_palette_accent_color">@color/oppia_dark_blue</color>
-        <color name="color_palette_primary_text_color">@color/accessible_grey</color>
+        <color name="color_palette_primary_color">@color/color_def_oppia_green</color>
+        <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
+        <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
+        <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
@@ -1972,10 +1972,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_doesNotStartWithColorPalette_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="primary_color">@color/oppia_green</color>
-        <color name="color_palette_primary_dark_color">@color/dark_green</color>
-        <color name="color_palette_accent_color">@color/oppia_dark_blue</color>
-        <color name="primary_text_color">@color/accessible_grey</color>
+        <color name="primary_color">@color/color_def_oppia_green</color>
+        <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
+        <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
+        <color name="primary_text_color">@color/color_def_accessible_grey</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
