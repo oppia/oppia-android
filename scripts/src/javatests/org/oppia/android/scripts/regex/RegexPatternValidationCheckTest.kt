@@ -1708,7 +1708,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotHaveColorSuffixOrSnakeCasing_fileContentIsNotCorrect() {
+  fun testFileContent_colorPalette_doesNotHaveColorSuffixOrSnakeCasing_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
       <color name="color_palette_background_color">@color/oppia_light_yellow</color>
@@ -1744,7 +1744,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_hasColorSuffixAndSnakeCasing_fileContentIsCorrect() {
+  fun testFileContent_colorPalette_hasColorSuffixAndSnakeCasing_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="color_palette_toolbar_color">@color/oppia_green</color>
@@ -1761,7 +1761,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_hasColorKeywordOrNoSnakeCasing_fileContentIsNotCorrect() {
+  fun testFileContent_colorDefs_hasColorKeywordOrNoSnakeCasing_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
       <color name="color_defs_oppia_metallic_blue_color">#2B5F73</color>
@@ -1793,7 +1793,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotHaveColorKeywordHasSnakeCasing_fileContentIsCorrect() {
+  fun testFileContent_colorDefs_doesNotHaveColorKeywordHasSnakeCasing_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="color_defs_oppia_dark_grey">#4D4D4D</color>
@@ -1810,7 +1810,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_hasHexColorValue_fileContentIsNotCorrect() {
+  fun testFileContent_componentColors_hasHexColorValue_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="component_color_admin_controls_options_highlighted_background_color">@color/highlighted_background_color</color>
@@ -1839,7 +1839,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotHaveHexColorValue_fileContentIsCorrect() {
+  fun testFileContent_componentColors_doesNotHaveHexColorValue_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="component_color_add_profile_activity_switch_text_color">@color/dark_text_color</color>
@@ -1856,7 +1856,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotHaveRawColorDeclaration_fileContentIsNotCorrect() {
+  fun testFileContent_colorDefs_doesNotHaveRawColorDeclaration_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
        <color name="color_defs_oppia_metallic_blue">@color/color_name</color>
@@ -1886,7 +1886,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_hasRawColorDeclaration_fileContentIsCorrect() {
+  fun testFileContent_colorDefs_hasRawColorDeclaration_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="color_defs_oppia_silver">#C4C4C4</color>
@@ -1903,7 +1903,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_startsWithComponentColors_fileContentIsCorrect() {
+  fun testFileContent_componentColors_startsWithComponentColors_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="component_color_shared_text_view_heading_text_color">@color/highlighted_text_color</color>
@@ -1921,7 +1921,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotstartWithComponentColors_fileContentIsNotCorrect() {
+  fun testFileContent_componentColors_doesNotstartWithComponentColors_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="shared_text_view_heading_text_color">@color/highlighted_text_color</color>
@@ -1951,7 +1951,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_startsWithColorPalette_fileContentIsCorrect() {
+  fun testFileContent_colorPalette_startsWithColorPalette_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="color_palette_primary_color">@color/oppia_green</color>
@@ -1969,7 +1969,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotStartWithColorPalette_fileContentIsNotCorrect() {
+  fun testFileContent_colorPalette_doesNotStartWithColorPalette_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="primary_color">@color/oppia_green</color>
@@ -1998,7 +1998,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_startsWithColorDefs_fileContentIsCorrect() {
+  fun testFileContent_colorDefs_startsWithColorDefs_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="color_def_oppia_green">#00645C</color>
@@ -2015,7 +2015,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotStartWithColorDef_fileContentIsNotCorrect() {
+  fun testFileContent_colorDefs_doesNotStartWithColorDef_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="color_def_oppia_green">#00645C</color>
@@ -2045,7 +2045,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_referencesColorFromColorPalette_fileContentIsCorrect() {
+  fun testFileContent_componentColors_referencesColorFromColorPalette_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
@@ -2062,7 +2062,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotReferenceColorFromColorPalette_fileContentIsNotCorrect() {
+  fun testFileContent_componentColors_doesNotReferenceColorFromColorPalette_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
@@ -2089,7 +2089,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_referencesColorFromColorDefs_fileContentIsCorrect() {
+  fun testFileContent_colorPalette_referencesColorFromColorDefs_fileContentIsCorrect() {
     val prohibitedContent =
       """
         <color name="color_palette_text_input_background_color">@color/color_def_white</color>
@@ -2107,7 +2107,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotReferenceColorFromColorDefs_fileContentIsNotCorrect() {
+  fun testFileContent_colorPalette_doesNotReferenceColorFromColorDefs_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
