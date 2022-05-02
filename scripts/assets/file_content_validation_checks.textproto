@@ -318,7 +318,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/values/component_colors.xml|app/src/main/res/values/color_palette.xml"
-  prohibited_content_regex: ".>#\\x+<\\/color>"
+  prohibited_content_regex: ".>#\\w+<\\/color>"
   failure_message: "Hex color declarations should only be in color_defs.xml and not in component_colors.xml or color_palette.xml"
 }
 file_content_checks {
