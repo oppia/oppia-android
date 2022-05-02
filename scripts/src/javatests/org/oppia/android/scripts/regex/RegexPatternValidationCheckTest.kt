@@ -146,7 +146,8 @@ class RegexPatternValidationCheckTest {
     "All colors in component_colors.xml must start with 'component_color_'."
   private val doesNotStartWithColorPalette =
     "All colors in color_palette.xml must start with 'color_palette_'."
-  private val doesNotStartWithColorDefs = "All colors in color_defs.xml must start with 'color_def_'."
+  private val doesNotStartWithColorDefs =
+    "All colors in color_defs.xml must start with 'color_def_'."
   private val doesNotReferenceColorFromColorPalette =
     "Only colors from color_palette.xml may be used in component_colors.xml."
   private val doesNotReferenceColorFromColorDefs =
