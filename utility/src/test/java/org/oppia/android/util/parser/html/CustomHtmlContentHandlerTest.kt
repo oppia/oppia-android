@@ -45,7 +45,9 @@ class CustomHtmlContentHandlerTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject lateinit var context: Context
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Mock
+  lateinit var mockDisplayLocale: OppiaLocale.DisplayLocale
 
   @Mock
   private var mockImageRetriever: FakeImageRetriever? = null
@@ -183,8 +185,8 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, machineLocale),
-          CUSTOM_LIST_UL_TAG to LiTagHandler(context, machineLocale)
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, mockDisplayLocale),
+          CUSTOM_LIST_UL_TAG to LiTagHandler(context, mockDisplayLocale)
         )
       )
 
@@ -203,8 +205,8 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, machineLocale),
-          CUSTOM_LIST_OL_TAG to LiTagHandler(context, machineLocale)
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, mockDisplayLocale),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, mockDisplayLocale)
         )
       )
 

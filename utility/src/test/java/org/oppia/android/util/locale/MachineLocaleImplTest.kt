@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.robolectric.annotation.Config
@@ -30,6 +31,8 @@ class MachineLocaleImplTest {
   @Inject
   lateinit var machineLocale: OppiaLocale.MachineLocale
 
+  @Mock
+  lateinit var mockDisplayLocale: OppiaLocale.DisplayLocale
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
@@ -226,7 +229,7 @@ class MachineLocaleImplTest {
 
   @Test
   fun testOppiaNumberFormatter_validNumberFormat_returnsString() {
-    val number = machineLocale.run { 0.toHumanReadableString(1) }
+    val number = mockDisplayLocale.run { 0.toHumanReadableString(1) }
 
     assertThat(number).isEqualTo("1")
   }
