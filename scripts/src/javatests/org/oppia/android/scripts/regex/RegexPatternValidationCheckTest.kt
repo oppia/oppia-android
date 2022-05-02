@@ -143,14 +143,14 @@ class RegexPatternValidationCheckTest {
   private val doesNotHaveRawColorDeclaration =
     "color_defs.xml should only have raw hex color declarations."
   private val doesNotStartWithComponentColor =
-    "All colors in component_colors must start with 'component_color_'."
+    "All colors in component_colors.xml must start with 'component_color_'."
   private val doesNotStartWithColorPalette =
-    "All colors in color_palette must start with 'color_palette_'."
-  private val doesNotStartWithColorDefs = "All colors in color_defs must start with 'color_defs_'."
+    "All colors in color_palette.xml must start with 'color_palette_'."
+  private val doesNotStartWithColorDefs = "All colors in color_defs.xml must start with 'color_def_'."
   private val doesNotReferenceColorFromColorPalette =
-    "Only colors from color_palette.xml may be used in component_colors."
+    "Only colors from color_palette.xml may be used in component_colors.xml."
   private val doesNotReferenceColorFromColorDefs =
-    "Only colors from color_defs.xml may be used in color_palette."
+    "Only colors from color_defs.xml may be used in color_palette.xml."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1764,11 +1764,11 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_hasColorKeywordOrNoSnakeCasing_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-      <color name="color_defs_oppia_metallic_blue_color">#2B5F73</color>
-      <color name="color_defs_oppia_light_black_color">#24282B</color>
-      <color name="color_defs_oppiaDarkGrey">#4D4D4D</color>
-      <color name="color_defs_oppia_pink">#FF938F</color>
-      <color name="color_defs_oppia_grayish_black_color">#32363B</color>
+      <color name="color_def_oppia_metallic_blue_color">#2B5F73</color>
+      <color name="color_def_oppia_light_black_color">#24282B</color>
+      <color name="color_def_oppiaDarkGrey">#4D4D4D</color>
+      <color name="color_def_oppia_pink">#FF938F</color>
+      <color name="color_def_oppia_grayish_black_color">#32363B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -1796,9 +1796,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_doesNotHaveColorKeywordHasSnakeCasing_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_defs_oppia_dark_grey">#4D4D4D</color>
-        <color name="color_defs_oppia_pink">#FF938F</color>
-        <color name="color_defs_oppia_grayish_black">#32363B</color>
+        <color name="color_def_oppia_dark_grey">#4D4D4D</color>
+        <color name="color_def_oppia_pink">#FF938F</color>
+        <color name="color_def_oppia_grayish_black">#32363B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -1859,11 +1859,11 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_doesNotHaveRawColorDeclaration_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-       <color name="color_defs_oppia_metallic_blue">@color/color_name</color>
-       <color name="color_defs_oppia_light_black">#24282B</color>
-       <color name="color_defs_oppia_dark_grey">#4D4D4D</color>
-       <color name="color_defs_oppia_pink">@color/another_color_name</color>
-       <color name="color_defs_oppia_grayish_black">#32363B</color>
+       <color name="color_def_oppia_metallic_blue">@color/color_name</color>
+       <color name="color_def_oppia_light_black">#24282B</color>
+       <color name="color_def_oppia_dark_grey">#4D4D4D</color>
+       <color name="color_def_oppia_pink">@color/another_color_name</color>
+       <color name="color_def_oppia_grayish_black">#32363B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -1889,9 +1889,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_hasRawColorDeclaration_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_defs_oppia_silver">#C4C4C4</color>
-        <color name="color_defs_oppia_turquoise">#3bd1c4</color>
-        <color name="color_defs_oppia_bangladesh_green">#03635B</color>
+        <color name="color_def_oppia_silver">#C4C4C4</color>
+        <color name="color_def_oppia_turquoise">#3bd1c4</color>
+        <color name="color_def_oppia_bangladesh_green">#03635B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -2111,7 +2111,7 @@ class RegexPatternValidationCheckTest {
     val prohibitedContent =
       """
         <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
-        <color name="color_palette_text_input_background_color">#FFFFFF</color>
+        <color name="color_palette_text_input_background_color">@color/blue</color>
         <color name="color_palette_dark_text_color">@color/component_color_black_87</color>
         <color name="color_palette_error_color">@color/color_def_oppia_red</color>
       """.trimIndent()
