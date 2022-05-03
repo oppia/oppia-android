@@ -63,10 +63,10 @@ kt_android_library(
         "PolicyType.kt",
     ],
     visibility = [
-         "//app:__subpackages__",
+        "//app:__subpackages__",
      ],
     deps = [
-         "//utility",
+        "//utility",
      ],
 )
 
