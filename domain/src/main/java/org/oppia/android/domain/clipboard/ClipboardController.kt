@@ -27,11 +27,13 @@ class ClipboardController @Inject constructor(
   private val dataProviders: DataProviders,
   context: Context
 ) {
-  private val clipboardManager by lazy {
+  // Note that this has to be initialized upon construction to ensure that it occurs on the main
+  // thread (since older versions of Android assume that ClipboardManager is only ever created on
+  // the main thread).
+  private val clipboardManager =
     (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).also {
       it.addPrimaryClipChangedListener(this::maybeRecomputeCurrentClip)
     }
-  }
   private val state = MutableStateFlow<CurrentClip>(CurrentClip.Unknown)
 
   /**
