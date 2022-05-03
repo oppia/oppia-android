@@ -8,42 +8,44 @@
       type="org.oppia.android.app.administratorcontrols.learneranalytics.DeviceIdItemViewModel" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center">
+    android:layout_height="wrap_content">
 
     <TextView
       style="@style/Heading2"
       android:id="@+id/device_id_label"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="@{viewModel.computeDeviceIdLabel(viewModel.deviceId)}"
       android:textColor="@color/color_def_black"
+      app:layout_constraintHorizontal_chainStyle="spread_inside"
+      app:layout_constraintHorizontal_weight="2"
+      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/device_id_copy_button"
-      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintBottom_toBottomOf="parent" />
 
     <org.oppia.android.app.administratorcontrols.learneranalytics.CopyIdMaterialButtonView
       style="@style/BorderlessMaterialButton"
       android:id="@+id/device_id_copy_button"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:minWidth="48dp"
       android:minHeight="48dp"
-      android:textColor="#333333"
+      android:textColor="@color/component_color_profile_and_device_id_activity_primary_text_color"
       android:enabled="@{viewModel.deviceId != null}"
       android:text="@{viewModel.currentCopiedId == viewModel.deviceId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
       android:onClick="@{(v) -> viewModel.copyDeviceId(viewModel.deviceId)}"
       app:icon="@{viewModel.currentCopiedId == viewModel.deviceId ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}"
       app:iconGravity="top"
       app:iconSize="24dp"
-      app:iconTint="#333333"
+      app:iconTint="@color/component_color_profile_and_device_id_activity_enabled_icon_button_color"
       app:backgroundTint="@color/color_def_white"
       app:layout_constraintStart_toEndOf="@+id/device_id_label"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent" />
-  </LinearLayout>
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintHorizontal_weight="1" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

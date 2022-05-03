@@ -37,7 +37,7 @@
       android:id="@+id/profile_and_device_id_text_view"
       style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
-      android:background="@color/color_def_white"
+      android:background="@{commonViewModel.selectedFragmentIndex == viewModel.itemIndex? @color/component_color_admin_controls_options_highlighted_background_color : @color/component_color_admin_controls_options_background_color}"
       android:onClick="@{(v) -> viewModel.showLearnerAnalyticsScreen()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
