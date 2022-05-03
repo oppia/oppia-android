@@ -92,3 +92,10 @@ const val CACHE_LATEX_RENDERING = "cache_latex_rendering"
 
 /** Default value for whether to cache LaTeX rendering using Glide. */
 const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
+
+/** Qualifier for the feature flag corresponding to enabling the spotlight UI. */
+@Qualifier
+annotation class EnableSpotlightUi
+
+/** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
+const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
