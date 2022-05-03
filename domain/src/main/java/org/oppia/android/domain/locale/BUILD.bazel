@@ -19,6 +19,7 @@ kt_android_library(
         "//model/src/main/proto:languages_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/locale:android_locale_profile",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
 )
