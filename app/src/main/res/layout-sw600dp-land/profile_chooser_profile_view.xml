@@ -42,12 +42,13 @@
       app:layout_constraintTop_toTopOf="parent"
       profile:ignore="RtlSymmetry">
 
-      <de.hdodenhof.circleimageview.CircleImageView
+      <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_avatar_img"
         android:layout_width="108dp"
         android:layout_height="108dp"
-        app:civ_border_color="@color/avatar_border"
-        app:civ_border_width="1dp"
+        app:strokeColor="@color/avatar_border"
+        app:strokeWidth="1dp"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_profile_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
         profile:src="@{viewModel.profile.avatar}" />
 

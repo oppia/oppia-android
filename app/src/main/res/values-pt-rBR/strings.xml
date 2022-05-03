@@ -4,6 +4,7 @@
 * Eduardoaddad
 * Leosls
 * Svjatysberega
+* YuriNikolai
 -->
 <resources>
   <string name="nav_header_desc">Cabeçalho de navegação</string>
@@ -87,6 +88,10 @@
   <string name="fractions_default_hint_text_no_integer">Insira uma fração no formato x/x.</string>
   <string name="numeric_input_hint">Digite um número.</string>
   <string name="number_with_units_input_hint_text">Escreva números com unidades aqui.</string>
+  <string name="math_equation_default_hint_text">Digite uma equação aqui.</string>
+  <string name="math_expression_error_spaces_in_numerical_input">Por favor, remova os espaços entre os números em sua resposta.</string>
+  <string name="math_expression_error_consecutive_unary_operators">Por favor, remova os símbolos extras em sua resposta.</string>
+  <string name="math_expression_error_exponent_too_large">Desculpe, potências maiores do que 5 não são suportadas pelo serviço. Por favor, revise sua resposta.</string>
   <string name="enable_audio_playback_content_description">Habilitar narração de áudio para esta lição.</string>
   <string name="recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="last_played_stories">Últimas Histórias Reproduzidas</string>
