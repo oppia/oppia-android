@@ -77,6 +77,6 @@
   <string name="learner_analytics_sync_status_data_uploading" translatable="false">Profile data is currently uploading…</string>
   <string name="learner_analytics_sync_status_data_uploaded" translatable="false">All profile data has been uploaded.</string>
   <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
-  <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installed installation ID</string>
+  <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installation ID</string>
   <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
 </resources>

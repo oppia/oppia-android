@@ -215,7 +215,7 @@ class ProfileAndDeviceIdFragmentTest {
     testCoroutineDispatchers.runCurrent()
 
     val clipData = getCurrentClipData()
-    assertThat(clipData?.description?.label).isEqualTo("Oppia installed device ID")
+    assertThat(clipData?.description?.label).isEqualTo("Oppia installation ID")
     assertThat(clipData?.itemCount).isEqualTo(1)
     assertThat(clipData?.getItemAt(0)?.text).isEqualTo("c85606ca6390")
   }
