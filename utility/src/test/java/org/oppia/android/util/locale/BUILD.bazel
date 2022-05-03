@@ -24,6 +24,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     ],
 )
+
 oppia_android_test(
     name = "AndroidLocaleProfileTest",
     srcs = ["AndroidLocaleProfileTest.kt"],

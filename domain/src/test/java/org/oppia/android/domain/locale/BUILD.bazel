@@ -5,8 +5,6 @@ Tests for language & locale domain components.
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
-
-
 oppia_android_test(
     name = "ContentLocaleImplTest",
     srcs = ["ContentLocaleImplTest.kt"],
