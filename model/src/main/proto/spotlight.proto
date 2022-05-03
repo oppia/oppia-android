@@ -8,6 +8,7 @@ option java_multiple_files = true;
 message SpotlightCheckpointDatabase{
   OnboardingSpotlightCheckpoint onboarding_spotlight_checkpoint = 1 ;
   ProfileSpotlightCheckpoint profile_spotlight_checkpoint = 2 ;
+  TopicSpotlightCheckpoint topic_spotlight_checkpoint = 3 ;
 }
 
 message OnboardingSpotlightCheckpoint{
@@ -24,6 +25,17 @@ message ProfileSpotlightCheckpoint{
   enum LastScreenViewed {
     PROFILE1 = 0;
     PROFILE2 = 1;
+  }
+  LastScreenViewed last_screen_viewed = 2;
+}
+
+message TopicSpotlightCheckpoint{
+  SpotlightState spotlight_state = 1 ;
+  enum LastScreenViewed {
+    TOPIC1 = 0;
+    TOPIC2 = 1;
+    TOPIC3 = 2;
+    TOPIC4 = 3;
   }
   LastScreenViewed last_screen_viewed = 2;
 }

@@ -108,7 +108,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     overlayBinding.let {
       it.lifecycleOwner = fragment
       it.presenter = this
-      it.viewModel = getOnboardingViewModel()
     }
     setUpViewPager()
     addDots()

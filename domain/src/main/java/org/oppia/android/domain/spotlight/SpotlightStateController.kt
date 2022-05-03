@@ -7,6 +7,7 @@ import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileSpotlightCheckpoint
 import org.oppia.android.app.model.SpotlightCheckpointDatabase
+import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -29,6 +30,7 @@ class SpotlightStateController @Inject constructor(
 ) {
 
   class SpotlightStateNotFoundException(message: String) : Exception(message)
+  class SpotlightActivityUnrecognizedException(message: String) : Exception(message)
 
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<SpotlightCheckpointDatabase>>()
@@ -42,15 +44,19 @@ class SpotlightStateController @Inject constructor(
     ) {
       val spotlightCheckpointDatabaseBuilder = it.toBuilder()
 
-      val newCheckpoint : Any = when (checkpoint) {
+      val newCheckpoint: Any = when (checkpoint) {
         is OnboardingSpotlightCheckpoint -> {
           spotlightCheckpointDatabaseBuilder.setOnboardingSpotlightCheckpoint(checkpoint)
         }
         is ProfileSpotlightCheckpoint -> {
           spotlightCheckpointDatabaseBuilder.setProfileSpotlightCheckpoint(checkpoint)
         }
+        is TopicSpotlightCheckpoint -> {
+          spotlightCheckpointDatabaseBuilder.setTopicSpotlightCheckpoint(checkpoint)
+        }
         else -> {
           // throw exception
+          throw SpotlightActivityUnrecognizedException("spotlight activity is not one of the recognized types")
         }
       }
 
@@ -84,19 +90,24 @@ class SpotlightStateController @Inject constructor(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
       ) {
 
-
         val checkpoint = when (spotlightActivity) {
-           SpotlightActivity.ONBOARDING_ACTIVITY -> {
+          SpotlightActivity.ONBOARDING_ACTIVITY -> {
             it.onboardingSpotlightCheckpoint
           }
-           SpotlightActivity.PROFILE_ACTIVITY -> {
+          SpotlightActivity.PROFILE_ACTIVITY -> {
             it.profileSpotlightCheckpoint
+          }
+          SpotlightActivity.TOPIC_ACTIVITY -> {
+            it.topicSpotlightCheckpoint
+          }
+          else -> {
+            throw SpotlightActivityUnrecognizedException("spotlight activity is not one of the recognized types")
           }
         }
 
-        if (checkpoint != null){
+        if (checkpoint != null) {
           AsyncResult.Success(checkpoint)
-        }else {
+        } else {
           AsyncResult.Failure(SpotlightStateNotFoundException("State not found "))
         }
 
@@ -134,5 +145,6 @@ class SpotlightStateController @Inject constructor(
 
 enum class SpotlightActivity {
   ONBOARDING_ACTIVITY,
-  PROFILE_ACTIVITY
+  PROFILE_ACTIVITY,
+  TOPIC_ACTIVITY
 }

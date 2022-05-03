@@ -13,13 +13,19 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
+import org.oppia.android.app.model.ProfileSpotlightCheckpoint
+import org.oppia.android.app.model.SpotlightState
+import org.oppia.android.app.model.TopicSpotlightCheckpoint
+import org.oppia.android.domain.spotlight.SpotlightStateController
 
 /** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope
 class TopicViewModel @Inject constructor(
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val spotlightStateController: SpotlightStateController
 ) : ObservableViewModel() {
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -60,5 +66,20 @@ class TopicViewModel @Inject constructor(
       is AsyncResult.Pending -> Topic.getDefaultInstance()
       is AsyncResult.Success -> topicResult.value
     }
+  }
+
+  fun recordSpotlightCheckpoint(
+    lastScreenViewed: TopicSpotlightCheckpoint.LastScreenViewed,
+    spotlightState: SpotlightState
+  ) {
+    val checkpoint = TopicSpotlightCheckpoint.newBuilder()
+      .setLastScreenViewed(lastScreenViewed)
+      .setSpotlightState(spotlightState)
+      .build()
+
+    val profileId = ProfileId.newBuilder()
+      .setInternalId(internalProfileId)
+      .build()
+    spotlightStateController.recordSpotlightCheckpoint(profileId, checkpoint)
   }
 }

@@ -8,9 +8,7 @@
       name="presenter"
       type="org.oppia.android.app.onboarding.SpotlightNavigationListener" />
 
-    <variable
-      name="viewModel"
-      type="org.oppia.android.app.onboarding.OnboardingViewModel" />
+
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
