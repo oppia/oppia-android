@@ -27,29 +27,6 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "DisplayLocaleImplTest",
-    srcs = ["DisplayLocaleImplTest.kt"],
-    custom_package = "org.oppia.android.domain.locale",
-    test_class = "org.oppia.android.domain.locale.DisplayLocaleImplTest",
-    test_manifest = "//domain:test_manifest",
-    deps = [
-        ":dagger",
-        "//domain:test_resources",
-        "//domain/src/main/java/org/oppia/android/domain/locale:display_locale_impl",
-        "//model/src/main/proto:languages_java_proto_lite",
-        "//testing",
-        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-        "//third_party:androidx_test_ext_junit",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
-        "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
-    ],
-)
-
-oppia_android_test(
     name = "LanguageConfigRetrieverTest",
     srcs = ["LanguageConfigRetrieverTest.kt"],
     custom_package = "org.oppia.android.domain.locale",
