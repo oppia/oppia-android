@@ -63,7 +63,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
         override fun onEnded() {
           getOnboardingViewModel().recordSpotlightCheckpoint(
-            OnboardingSpotlightCheckpoint.LastScreenViewed.ONBOARDING1,
+            OnboardingSpotlightCheckpoint.LastScreenViewed.NEXT_BUTTON_SPOTLIGHT,
             SpotlightState.SPOTLIGHT_STATE_PARTIAL
           )
         }
@@ -83,7 +83,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
         override fun onEnded() {
           getOnboardingViewModel().recordSpotlightCheckpoint(
-            OnboardingSpotlightCheckpoint.LastScreenViewed.ONBOARDING2,
+            OnboardingSpotlightCheckpoint.LastScreenViewed.SKIP_BUTTON_SPOTLIGHT,
             SpotlightState.SPOTLIGHT_STATE_COMPLETED
           )
         }
@@ -313,7 +313,7 @@ class OnboardingFragmentPresenter @Inject constructor(
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_PARTIAL) {
               val lastScreenViewed = (it.value as OnboardingSpotlightCheckpoint).lastScreenViewed
               when (lastScreenViewed) {
-                OnboardingSpotlightCheckpoint.LastScreenViewed.ONBOARDING1 -> {
+                OnboardingSpotlightCheckpoint.LastScreenViewed.NEXT_BUTTON_SPOTLIGHT -> {
                   targets.add(secondTarget)
                   startSpotlight(targets)
                 }

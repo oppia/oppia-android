@@ -7,6 +7,7 @@ import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileSpotlightCheckpoint
 import org.oppia.android.app.model.SpotlightCheckpointDatabase
+import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -140,6 +141,29 @@ class SpotlightStateController @Inject constructor(
       }
     }
     return cacheStore
+  }
+
+  fun computeSpotlightState(lastScreenViewed: Any): SpotlightState {
+    return when (lastScreenViewed) {
+      is OnboardingSpotlightCheckpoint.LastScreenViewed -> {
+        if (lastScreenViewed.ordinal == OnboardingSpotlightCheckpoint.LastScreenViewed.values().size - 1)
+          SpotlightState.SPOTLIGHT_STATE_COMPLETED
+        else SpotlightState.SPOTLIGHT_STATE_PARTIAL
+      }
+      is ProfileSpotlightCheckpoint.LastScreenViewed -> {
+        if (lastScreenViewed.ordinal == ProfileSpotlightCheckpoint.LastScreenViewed.values().size - 1)
+          SpotlightState.SPOTLIGHT_STATE_COMPLETED
+        else SpotlightState.SPOTLIGHT_STATE_PARTIAL
+      }
+      is TopicSpotlightCheckpoint.LastScreenViewed -> {
+        if (lastScreenViewed.ordinal == TopicSpotlightCheckpoint.LastScreenViewed.values().size - 1)
+          SpotlightState.SPOTLIGHT_STATE_COMPLETED
+        else SpotlightState.SPOTLIGHT_STATE_PARTIAL
+      }
+      else -> {
+        throw SpotlightStateNotFoundException("couldn't find spotlight state")
+      }
+    }
   }
 }
 

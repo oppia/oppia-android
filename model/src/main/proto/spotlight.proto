@@ -9,13 +9,15 @@ message SpotlightCheckpointDatabase{
   OnboardingSpotlightCheckpoint onboarding_spotlight_checkpoint = 1 ;
   ProfileSpotlightCheckpoint profile_spotlight_checkpoint = 2 ;
   TopicSpotlightCheckpoint topic_spotlight_checkpoint = 3 ;
+  HomeSpotlightCheckpoint home_spotlight_checkpoint = 4;
+  ExplorationSpotlightCheckpoint exploration_spotlight_checkpoint = 5 ;
 }
 
 message OnboardingSpotlightCheckpoint{
   SpotlightState spotlight_state = 1 ;
   enum LastScreenViewed {
-    ONBOARDING1 = 0;
-    ONBOARDING2 = 1;
+    NEXT_BUTTON_SPOTLIGHT = 0;
+    SKIP_BUTTON_SPOTLIGHT = 1;
   }
   LastScreenViewed last_screen_viewed = 2;
 }
@@ -23,8 +25,9 @@ message OnboardingSpotlightCheckpoint{
 message ProfileSpotlightCheckpoint{
   SpotlightState spotlight_state = 1 ;
   enum LastScreenViewed {
-    PROFILE1 = 0;
-    PROFILE2 = 1;
+    NEW_PROFILE_BUTTON_SPOTLIGHT= 0;
+    ENTER_NAME_SPOTLIGHT = 1;
+    ADD_PIN_SPOTLIGHT = 2;
   }
   LastScreenViewed last_screen_viewed = 2;
 }
@@ -32,18 +35,26 @@ message ProfileSpotlightCheckpoint{
 message TopicSpotlightCheckpoint{
   SpotlightState spotlight_state = 1 ;
   enum LastScreenViewed {
-    TOPIC1 = 0;
-    TOPIC2 = 1;
-    TOPIC3 = 2;
-    TOPIC4 = 3;
+    INFO_TAB_SPOTLIGHT = 0;
+    LESSONS_TAB_SPOTLIGHT = 1;
+    PRACTICE_TAB_SPOTLIGHT = 2;
+    REVISION_TAB_SPOTLIGHT = 3;
   }
   LastScreenViewed last_screen_viewed = 2;
+}
+
+message HomeSpotlightCheckpoint{
+
+}
+
+message ExplorationSpotlightCheckpoint{
+
 }
 
 enum SpotlightState{
   SPOTLIGHT_STATE_UNKNOWN = 0 ;
   SPOTLIGHT_STATE_PARTIAL = 1 ;
   SPOTLIGHT_STATE_DISMISSED = 2 ;
-  SPOTLIGHT_STATE_COMPLETED = 3 ; // take this to index 0.
+  SPOTLIGHT_STATE_COMPLETED = 3 ;
 }
 

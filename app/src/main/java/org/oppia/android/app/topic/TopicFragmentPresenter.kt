@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
@@ -18,26 +17,25 @@ import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import java.util.*
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.databinding.TopicFragmentBinding
-import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
-import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
-import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightState
+import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.app.onboarding.SpotlightNavigationListener
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OverlayBinding
+import org.oppia.android.databinding.TopicFragmentBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.spotlight.SpotlightActivity
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.system.OppiaClock
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -48,10 +46,10 @@ class TopicFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val oppiaClock: OppiaClock,
   private val spotlightStateController: SpotlightStateController,
-  @EnableSpotlightUi private val enableSpotlightUi: PlatformParameterValue<Boolean>,
+  @EnableSpotlightUi val enableSpotlightUi: PlatformParameterValue<Boolean>,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
-): SpotlightNavigationListener {
+) : SpotlightNavigationListener {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -61,10 +59,28 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var binding: TopicFragmentBinding
   private lateinit var spotlight: Spotlight
 
-  private val firstTarget by lazy {
+  private val infoTabSpotlightTarget by lazy {
+    Target.Builder()
+      .setAnchor(getTab(TopicTab.INFO))
+      .setShape(Circle(80f))
+      .setOverlay(overlayBinding.root)
+      .setOnTargetListener(object : OnTargetListener {
+        override fun onStarted() {
+
+        }
+        override fun onEnded() {
+          getTopicViewModel().recordSpotlightCheckpoint(
+            TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT,
+          )
+        }
+      })
+      .build()
+  }
+
+  private val lessonsTabSpotlightTarget by lazy {
 
     Target.Builder()
-      .setAnchor(getTab(0))
+      .setAnchor(getTab(TopicTab.LESSONS))
       .setShape(Circle(80f))
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
@@ -74,38 +90,15 @@ class TopicFragmentPresenter @Inject constructor(
 
         override fun onEnded() {
           getTopicViewModel().recordSpotlightCheckpoint(
-            TopicSpotlightCheckpoint.LastScreenViewed.TOPIC1,
-            SpotlightState.SPOTLIGHT_STATE_PARTIAL
+            TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT,
           )
         }
       })
       .build()
   }
 
-  private val secondTarget by lazy {
-
-    Target.Builder()
-      .setAnchor(getTab(1))
-      .setShape(Circle(80f))
-      .setOverlay(overlayBinding.root)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-
-        }
-
-        override fun onEnded() {
-          getTopicViewModel().recordSpotlightCheckpoint(
-            TopicSpotlightCheckpoint.LastScreenViewed.TOPIC2,
-            SpotlightState.SPOTLIGHT_STATE_COMPLETED
-          )
-        }
-      })
-      .build()
-  }
-
-
-  fun getTab(position: Int): View{
-    return tabLayout.getTabAt(position)!!.view
+  private fun getTab(tab: TopicTab): View {
+    return tabLayout.getTabAt(tab.ordinal)!!.view
   }
 
   fun handleCreateView(
@@ -214,7 +207,7 @@ class TopicFragmentPresenter @Inject constructor(
     )
   }
 
-  fun computeLastSpotlightCheckpoint() {
+  fun retrieveCheckpointAndInitializeSpotlight() {
     val targets = ArrayList<Target>()
 
     val profileId = ProfileId.newBuilder()
@@ -236,14 +229,14 @@ class TopicFragmentPresenter @Inject constructor(
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_PARTIAL) {
               val lastScreenViewed = (it.value as TopicSpotlightCheckpoint).lastScreenViewed
               when (lastScreenViewed) {
-                TopicSpotlightCheckpoint.LastScreenViewed.TOPIC1 -> {
-                  targets.add(secondTarget)
+                TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT -> {
+                  targets.add(lessonsTabSpotlightTarget)
                   startSpotlight(targets)
                 }
               }
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
-              targets.add(firstTarget)
-              targets.add(secondTarget)
+              targets.add(infoTabSpotlightTarget)
+              targets.add(lessonsTabSpotlightTarget)
               startSpotlight(targets)
             }
           }
@@ -252,7 +245,7 @@ class TopicFragmentPresenter @Inject constructor(
       })
   }
 
-  private fun startSpotlight(targets: ArrayList<Target>){
+  private fun startSpotlight(targets: ArrayList<Target>) {
     spotlight = Spotlight.Builder(activity)
       .setTargets(targets)
       .setBackgroundColorRes(R.color.spotlightBackground)

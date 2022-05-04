@@ -13,9 +13,6 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
-import org.oppia.android.app.model.ProfileSpotlightCheckpoint
-import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.domain.spotlight.SpotlightStateController
 
@@ -69,12 +66,11 @@ class TopicViewModel @Inject constructor(
   }
 
   fun recordSpotlightCheckpoint(
-    lastScreenViewed: TopicSpotlightCheckpoint.LastScreenViewed,
-    spotlightState: SpotlightState
+    lastScreenViewed: TopicSpotlightCheckpoint.LastScreenViewed
   ) {
     val checkpoint = TopicSpotlightCheckpoint.newBuilder()
       .setLastScreenViewed(lastScreenViewed)
-      .setSpotlightState(spotlightState)
+      .setSpotlightState(spotlightStateController.computeSpotlightState(lastScreenViewed))
       .build()
 
     val profileId = ProfileId.newBuilder()
