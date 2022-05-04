@@ -45,7 +45,7 @@
   <color name="component_color_developer_options_activity_view_divider_color">@color/color_palette_dark_background_color</color>
   <!-- View Events Logs Activity -->
   <color name="component_color_view_events_logs_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_view_events_logs_activity_options_description_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_view_events_logs_activity_options_description_color">@color/color_palette_light_description_text_color</color>
   <color name="component_color_view_events_logs_activity_menu_options_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_view_events_logs_activity_options_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_view_events_logs_activity_view_divider_color">@color/color_palette_dark_background_color</color>
@@ -54,5 +54,11 @@
   <color name="component_color_force_network_type_activity_menu_options_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_force_network_type_activity_options_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_force_network_type_activity_view_divider_color">@color/color_palette_dark_background_color</color>
+  <!-- Math Expression Parser Activity -->
+  <color name="component_color_math_expression_parser_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_math_expression_parser_activity_heading_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_math_expression_parser_activity_radio_buttons_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_math_expression_parser_activity_edit_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_math_expression_parser_activity_hint_text_color">@color/color_palette_hint_text_color</color>
 
 </resources>
