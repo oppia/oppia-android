@@ -66,7 +66,7 @@ class TopicFragmentPresenter @Inject constructor(
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
+          // any additional behaviour
         }
         override fun onEnded() {
           getTopicViewModel().recordSpotlightCheckpoint(
@@ -91,6 +91,46 @@ class TopicFragmentPresenter @Inject constructor(
         override fun onEnded() {
           getTopicViewModel().recordSpotlightCheckpoint(
             TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT,
+          )
+        }
+      })
+      .build()
+  }
+
+  private val practiceTabSpotlightTarget by lazy {
+
+    Target.Builder()
+      .setAnchor(getTab(TopicTab.PRACTICE))
+      .setShape(Circle(80f))
+      .setOverlay(overlayBinding.root)
+      .setOnTargetListener(object : OnTargetListener {
+        override fun onStarted() {
+
+        }
+
+        override fun onEnded() {
+          getTopicViewModel().recordSpotlightCheckpoint(
+            TopicSpotlightCheckpoint.LastScreenViewed.PRACTICE_TAB_SPOTLIGHT,
+          )
+        }
+      })
+      .build()
+  }
+
+  private val revisionTabSpotlightTarget by lazy {
+
+    Target.Builder()
+      .setAnchor(getTab(TopicTab.REVISION))
+      .setShape(Circle(80f))
+      .setOverlay(overlayBinding.root)
+      .setOnTargetListener(object : OnTargetListener {
+        override fun onStarted() {
+
+        }
+
+        override fun onEnded() {
+          getTopicViewModel().recordSpotlightCheckpoint(
+            TopicSpotlightCheckpoint.LastScreenViewed.REVISION_TAB_SPOTLIGHT,
           )
         }
       })
@@ -231,6 +271,17 @@ class TopicFragmentPresenter @Inject constructor(
               when (lastScreenViewed) {
                 TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT -> {
                   targets.add(lessonsTabSpotlightTarget)
+                  targets.add(practiceTabSpotlightTarget)
+                  targets.add(revisionTabSpotlightTarget)
+                  startSpotlight(targets)
+                }
+                TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT -> {
+                  targets.add(practiceTabSpotlightTarget)
+                  targets.add(revisionTabSpotlightTarget)
+                  startSpotlight(targets)
+                }
+                TopicSpotlightCheckpoint.LastScreenViewed.PRACTICE_TAB_SPOTLIGHT -> {
+                  targets.add(revisionTabSpotlightTarget)
                   startSpotlight(targets)
                 }
               }
