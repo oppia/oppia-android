@@ -408,9 +408,11 @@ class StateFragmentPresenter @Inject constructor(
   }
   fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
     if (::currentHighlightedContentItem.isInitialized) {
-      if (currentHighlightedContentItem is ContentViewModel && (currentHighlightedContentItem as ContentViewModel).contentId != contentId) {
+      if (currentHighlightedContentItem is ContentViewModel &&
+        (currentHighlightedContentItem as ContentViewModel).contentId != contentId) {
         (currentHighlightedContentItem as ContentViewModel).updateIsAudioPlaying(false)
-      } else if (currentHighlightedContentItem is FeedbackViewModel && (currentHighlightedContentItem as FeedbackViewModel).contentId != contentId) {
+      } else if (currentHighlightedContentItem is FeedbackViewModel &&
+        (currentHighlightedContentItem as FeedbackViewModel).contentId != contentId) {
         (currentHighlightedContentItem as FeedbackViewModel).updateIsAudioPlaying(false)
       }
     }
@@ -426,10 +428,12 @@ class StateFragmentPresenter @Inject constructor(
         }
       }
     }
-    if (::currentHighlightedContentItem.isInitialized && currentHighlightedContentItem is ContentViewModel) {
+    if (::currentHighlightedContentItem.isInitialized &&
+      currentHighlightedContentItem is ContentViewModel) {
       (currentHighlightedContentItem as ContentViewModel).updateIsAudioPlaying(playing)
     }
-    if (::currentHighlightedContentItem.isInitialized && currentHighlightedContentItem is FeedbackViewModel) {
+    if (::currentHighlightedContentItem.isInitialized &&
+      currentHighlightedContentItem is FeedbackViewModel) {
       (currentHighlightedContentItem as FeedbackViewModel).updateIsAudioPlaying(playing)
     }
   }

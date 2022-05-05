@@ -6,8 +6,8 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.Voiceover
-import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import org.oppia.android.app.model.VoiceoverMapping
+import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
@@ -130,7 +130,7 @@ class AudioViewModel @Inject constructor(
     } else {
       audioPlayerController.play()
       if (audioContentIdListener != null) {
-        audioContentIdListener!!.contentIdForCurrentAudio(contentId,true)
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, true)
       }
     }
   }
@@ -185,7 +185,7 @@ class AudioViewModel @Inject constructor(
         PlayStatus.PREPARED -> {
           if (autoPlay) audioPlayerController.play()
           if (audioContentIdListener != null) {
-            audioContentIdListener!!.contentIdForCurrentAudio(contentId,true)
+            audioContentIdListener!!.contentIdForCurrentAudio(contentId, true)
           }
           autoPlay = false
           UiAudioPlayStatus.PREPARED

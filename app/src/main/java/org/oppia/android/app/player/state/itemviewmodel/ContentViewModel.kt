@@ -13,7 +13,7 @@ class ContentViewModel(
 ) : StateItemViewModel(ViewType.CONTENT) {
   val isAudioPlaying = ObservableBoolean(false)
 
-  fun updateIsAudioPlaying(isPlaying: Boolean){
+  fun updateIsAudioPlaying(isPlaying: Boolean) {
     isAudioPlaying.set(isPlaying)
   }
 }

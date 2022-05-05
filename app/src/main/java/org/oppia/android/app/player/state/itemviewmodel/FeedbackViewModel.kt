@@ -13,7 +13,7 @@ class FeedbackViewModel(
 ) : StateItemViewModel(ViewType.FEEDBACK) {
   val isAudioPlaying = ObservableBoolean(false)
 
-  fun updateIsAudioPlaying(isPlaying: Boolean){
+  fun updateIsAudioPlaying(isPlaying: Boolean) {
     isAudioPlaying.set(isPlaying)
   }
 }

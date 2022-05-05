@@ -139,6 +139,5 @@ class StateFragment :
 
   override fun contentIdForCurrentAudio(contentId: String, isPlaying: Boolean) {
     stateFragmentPresenter.handleContentCardHighlighting(contentId, isPlaying)
-
   }
 }
