@@ -29,6 +29,10 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.itemviewmodel.ContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
@@ -52,7 +56,7 @@ const val STATE_FRAGMENT_TOPIC_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_f
 const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_fragment_story_id"
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_exploration_id"
-private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -81,6 +85,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var explorationId: String
   private lateinit var currentStateName: String
   private lateinit var binding: StateFragmentBinding
+  private lateinit var currentHighlightedContentItem: StateItemViewModel
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
 
@@ -269,6 +274,7 @@ class StateFragmentPresenter @Inject constructor(
       val audioFragment: AudioFragment = AudioFragment.newInstance(profileId.internalId)
       fragment.childFragmentManager.beginTransaction()
         .add(R.id.audio_fragment_placeholder, audioFragment, TAG_AUDIO_FRAGMENT).commitNow()
+      audioFragment.setContentIdListener(fragment as AudioContentIdListener)
     }
     return getAudioFragment() as? AudioUiManager
   }
@@ -286,7 +292,8 @@ class StateFragmentPresenter @Inject constructor(
     when (result) {
       is AsyncResult.Failure ->
         oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
-      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
+      is AsyncResult.Pending -> {
+      } // Display nothing until a valid result is available.
       is AsyncResult.Success -> processEphemeralState(result.value)
     }
   }
@@ -398,6 +405,33 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
+  }
+  fun handleContentCardHighlighting(contentId: String, playing: Boolean) {
+    if (::currentHighlightedContentItem.isInitialized) {
+      if (currentHighlightedContentItem is ContentViewModel && (currentHighlightedContentItem as ContentViewModel).contentId != contentId) {
+        (currentHighlightedContentItem as ContentViewModel).updateIsAudioPlaying(false)
+      } else if (currentHighlightedContentItem is FeedbackViewModel && (currentHighlightedContentItem as FeedbackViewModel).contentId != contentId) {
+        (currentHighlightedContentItem as FeedbackViewModel).updateIsAudioPlaying(false)
+      }
+    }
+    val itemList = viewModel.itemList
+    for (item in itemList) {
+      if (item is ContentViewModel) {
+        if (item.contentId == contentId) {
+          currentHighlightedContentItem = item
+        }
+      } else if (item is FeedbackViewModel) {
+        if (item.contentId == contentId) {
+          currentHighlightedContentItem = item
+        }
+      }
+    }
+    if (::currentHighlightedContentItem.isInitialized && currentHighlightedContentItem is ContentViewModel) {
+      (currentHighlightedContentItem as ContentViewModel).updateIsAudioPlaying(playing)
+    }
+    if (::currentHighlightedContentItem.isInitialized && currentHighlightedContentItem is FeedbackViewModel) {
+      (currentHighlightedContentItem as FeedbackViewModel).updateIsAudioPlaying(playing)
+    }
   }
 
   fun dismissConceptCard() {

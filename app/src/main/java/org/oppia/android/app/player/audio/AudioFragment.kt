@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.State
+import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import javax.inject.Inject
 
 /** Fragment that controls audio for a content-card. */
@@ -56,6 +57,10 @@ class AudioFragment :
 
   override fun onLanguageSelected(currentLanguageCode: String) {
     audioFragmentPresenter.languageSelected(currentLanguageCode)
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    audioFragmentPresenter.setContentIdListener(audioContentIdListener)
   }
 
   override fun onStop() {

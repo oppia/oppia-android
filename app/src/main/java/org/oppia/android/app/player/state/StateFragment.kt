@@ -12,6 +12,7 @@ import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
@@ -34,7 +35,8 @@ class StateFragment :
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
-  ShowHintAvailabilityListener {
+  ShowHintAvailabilityListener,
+  AudioContentIdListener {
   companion object {
     /**
      * Creates a new instance of a StateFragment.
@@ -134,4 +136,9 @@ class StateFragment :
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
+
+  override fun contentIdForCurrentAudio(contentId: String, isPlaying: Boolean) {
+    stateFragmentPresenter.handleContentCardHighlighting(contentId, isPlaying)
+
+  }
 }

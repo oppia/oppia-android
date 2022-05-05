@@ -331,6 +331,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       )
     if (contentSubtitledHtml.isNotEmpty()) {
       pendingItemList += ContentViewModel(
+        ephemeralState.state.content.contentId,
         contentSubtitledHtml,
         gcsEntityId,
         hasConversationView,
@@ -575,6 +576,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val feedbackHtml = translationController.extractString(feedback, writtenTranslationContext)
     if (feedbackHtml.isNotEmpty()) {
       return FeedbackViewModel(
+        feedback.contentId,
         feedbackHtml,
         gcsEntityId,
         hasConversationView,

@@ -21,6 +21,7 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
@@ -158,6 +159,10 @@ class AudioFragmentPresenter @Inject constructor(
     if (viewModel.selectedLanguageCode != language) {
       viewModel.setAudioLanguageCode(language)
     }
+  }
+
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    getAudioViewModel().setContentIdListener(audioContentIdListener)
   }
 
   /** Shows language dialog fragment with language list from exploration */

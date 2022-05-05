@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.Voiceover
+import org.oppia.android.app.player.state.listener.AudioContentIdListener
 import org.oppia.android.app.model.VoiceoverMapping
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.audio.AudioPlayerController
@@ -26,6 +27,7 @@ class AudioViewModel @Inject constructor(
 
   private lateinit var state: State
   private lateinit var explorationId: String
+  private lateinit var contentId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
   private val defaultLanguage = "en"
   private var languageSelectionShown = false
@@ -34,6 +36,7 @@ class AudioViewModel @Inject constructor(
 
   var selectedLanguageCode: String = ""
   var languages = listOf<String>()
+  private var audioContentIdListener: AudioContentIdListener? = null
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
@@ -79,6 +82,7 @@ class AudioViewModel @Inject constructor(
    * @param allowAutoPlay If false, audio is guaranteed not to be autoPlayed.
    */
   private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
+    this.contentId = contentId ?: state.content.contentId
     autoPlay = allowAutoPlay
     voiceoverMap = (
       state.recordedVoiceoversMap[contentId ?: state.content.contentId]
@@ -105,6 +109,10 @@ class AudioViewModel @Inject constructor(
     }
   }
 
+  fun setContentIdListener(audioContentIdListener: AudioContentIdListener) {
+    this.audioContentIdListener = audioContentIdListener
+  }
+
   /** Sets language code for data binding and changes data source to correct audio */
   fun setAudioLanguageCode(languageCode: String) {
     selectedLanguageCode = languageCode
@@ -116,12 +124,24 @@ class AudioViewModel @Inject constructor(
   fun togglePlayPause(type: UiAudioPlayStatus?) {
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId, false)
+      }
     } else {
       audioPlayerController.play()
+      if (audioContentIdListener != null) {
+        audioContentIdListener!!.contentIdForCurrentAudio(contentId,true)
+      }
     }
   }
 
-  fun pauseAudio() = audioPlayerController.pause()
+  fun pauseAudio() {
+    audioPlayerController.pause()
+    if (audioContentIdListener != null) {
+      audioContentIdListener!!.contentIdForCurrentAudio(contentId, false)
+    }
+  }
+
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
 
@@ -164,6 +184,9 @@ class AudioViewModel @Inject constructor(
       is AsyncResult.Success -> when (playProgressResult.value.type) {
         PlayStatus.PREPARED -> {
           if (autoPlay) audioPlayerController.play()
+          if (audioContentIdListener != null) {
+            audioContentIdListener!!.contentIdForCurrentAudio(contentId,true)
+          }
           autoPlay = false
           UiAudioPlayStatus.PREPARED
         }

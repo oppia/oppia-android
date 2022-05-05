@@ -17,7 +17,7 @@
   <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@{viewModel.hasConversationView ? @drawable/content_blue_background : @drawable/transparent_background}"
+    android:background="@{viewModel.isAudioPlaying ? @drawable/content_yellow_background : @drawable/content_blue_background}"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
     app:explorationSplitViewMarginEnd="@{@dimen/feedback_item_exploration_split_view_margin_end}"
