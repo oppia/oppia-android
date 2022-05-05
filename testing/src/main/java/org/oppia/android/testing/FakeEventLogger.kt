@@ -17,7 +17,7 @@ class FakeEventLogger @Inject constructor() : EventLogger {
   /** Returns the most recently logged event. */
   fun getMostRecentEvent(): EventLog = eventList.last()
 
-  /** Clears all the events that are currently logged.. */
+  /** Clears all the events that are currently logged. */
   fun clearAllEvents() = eventList.clear()
 
   /** Checks if a certain event has been logged or not. */

@@ -80,13 +80,11 @@ class LogUploadWorker private constructor(
 
   /** Extracts event logs from the cache store and logs them to the remote service. */
   private suspend fun uploadEvents(): Result {
+    // TODO(#4064): Ensure sync status is set correctly when events are being uploaded here.
     return try {
-      val eventLogs = analyticsController.getEventLogStoreList()
-      eventLogs.let {
-        for (eventLog in it) {
-          eventLogger.logEvent(eventLog)
-          analyticsController.removeFirstEventLogFromStore()
-        }
+      analyticsController.getEventLogStoreList().forEach { eventLog ->
+        eventLogger.logEvent(eventLog)
+        analyticsController.removeFirstEventLogFromStore()
       }
       Result.success()
     } catch (e: Exception) {
