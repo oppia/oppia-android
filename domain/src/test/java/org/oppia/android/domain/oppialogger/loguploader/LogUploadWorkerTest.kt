@@ -25,19 +25,26 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
@@ -54,9 +61,8 @@ private const val TEST_TOPIC_ID = "test_topicId"
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
+@Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
@@ -116,7 +122,7 @@ class LogUploadWorkerTest {
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifySuccess() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       eventLogTopicContext.timestamp,
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
@@ -229,10 +235,12 @@ class LogUploadWorkerTest {
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class
+      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusTestModule::class, ApplicationLifecycleModule::class
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -241,5 +249,19 @@ class LogUploadWorkerTest {
     }
 
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(logUploadWorkerTest: LogUploadWorkerTest) {
+      component.inject(logUploadWorkerTest)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
