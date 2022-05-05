@@ -13,6 +13,7 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
