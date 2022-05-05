@@ -43,23 +43,24 @@ private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
 private const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
 private const val TEST_EXPLORATION_ID_13 = "13"
+private const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
 
 /** Tests for [StateRetriever]. */
-@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
+// Function name: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class StateRetrieverTest {
-  private val DRAG_DROP_CHOICE_CONTENT_ID_0 = createXlatableContentId(contentId = "ca_choices_0")
-  private val DRAG_DROP_CHOICE_CONTENT_ID_1 = createXlatableContentId(contentId = "ca_choices_1")
-  private val DRAG_DROP_CHOICE_CONTENT_ID_2 = createXlatableContentId(contentId = "ca_choices_2")
-  private val DRAG_DROP_CHOICE_CONTENT_ID_3 = createXlatableContentId(contentId = "ca_choices_3")
+  private companion object {
+    private val DRAG_DROP_CHOICE_CONTENT_ID_0 = createXlatableContentId(contentId = "ca_choices_0")
+    private val DRAG_DROP_CHOICE_CONTENT_ID_1 = createXlatableContentId(contentId = "ca_choices_1")
+    private val DRAG_DROP_CHOICE_CONTENT_ID_2 = createXlatableContentId(contentId = "ca_choices_2")
+    private val DRAG_DROP_CHOICE_CONTENT_ID_3 = createXlatableContentId(contentId = "ca_choices_3")
+  }
 
-  @Inject
-  lateinit var stateRetriever: StateRetriever
-
-  @Inject
-  lateinit var jsonAssetRetriever: JsonAssetRetriever
+  @Inject lateinit var stateRetriever: StateRetriever
+  @Inject lateinit var jsonAssetRetriever: JsonAssetRetriever
 
   @Before
   fun setUp() {
@@ -610,6 +611,26 @@ class StateRetrieverTest {
     assertThat(customArgs["customOskLetters"]?.objectTypeCase).isEqualTo(SCHEMA_OBJECT_LIST)
   }
 
+  @Test
+  fun testParseState_withoutLinkedSkillId_doesNotSetLinkedSkillId() {
+    val state = loadStateFromJson(
+      stateName = "Introduction", explorationName = FRACTIONS_EXPLORATION_ID_0
+    )
+
+    // No linked skill ID should be set since there isn't one defined for this state.
+    assertThat(state.linkedSkillId).isEmpty()
+  }
+
+  @Test
+  fun testParseState_withLinkedSkillId_setsLinkedSkillId() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith", explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // The skill ID from the state should be parsed & included in its represented proto structure.
+    assertThat(state.linkedSkillId).isEqualTo("test_skill_id_2")
+  }
+
   /**
    * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
    * if one cannot be found.
@@ -619,11 +640,6 @@ class StateRetrieverTest {
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == ruleType } ?: error("Failed to find rule type: $ruleType")
   }
-
-  private fun createXlatableContentId(contentId: String): TranslatableHtmlContentId =
-    TranslatableHtmlContentId.newBuilder().apply {
-      this.contentId = contentId
-    }.build()
 
   private fun crateSetOfContentIds(
     vararg items: TranslatableHtmlContentId
@@ -699,3 +715,8 @@ class StateRetrieverTest {
     fun inject(stateRetrieverTest: StateRetrieverTest)
   }
 }
+
+private fun createXlatableContentId(contentId: String): TranslatableHtmlContentId =
+  TranslatableHtmlContentId.newBuilder().apply {
+    this.contentId = contentId
+  }.build()

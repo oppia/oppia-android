@@ -16,6 +16,7 @@ import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -28,6 +29,7 @@ class LogUploadWorker private constructor(
   private val exceptionLogger: ExceptionLogger,
   private val eventLogger: EventLogger,
   private val consoleLogger: ConsoleLogger,
+  private val syncStatusManager: SyncStatusManager,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ListenableWorker(context, params) {
 
@@ -81,15 +83,15 @@ class LogUploadWorker private constructor(
   /** Extracts event logs from the cache store and logs them to the remote service. */
   private suspend fun uploadEvents(): Result {
     return try {
-      val eventLogs = analyticsController.getEventLogStoreList()
-      eventLogs.let {
-        for (eventLog in it) {
-          eventLogger.logEvent(eventLog)
-          analyticsController.removeFirstEventLogFromStore()
-        }
+      syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+      analyticsController.getEventLogStoreList().forEach { eventLog ->
+        eventLogger.logEvent(eventLog)
+        analyticsController.removeFirstEventLogFromStore()
       }
+      syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
       Result.success()
     } catch (e: Exception) {
+      syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NETWORK_ERROR)
       consoleLogger.e(TAG, "Failed to upload events", e)
       Result.failure()
     }
@@ -102,6 +104,7 @@ class LogUploadWorker private constructor(
     private val exceptionLogger: ExceptionLogger,
     private val eventLogger: EventLogger,
     private val consoleLogger: ConsoleLogger,
+    private val syncStatusManager: SyncStatusManager,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
 
@@ -114,6 +117,7 @@ class LogUploadWorker private constructor(
         exceptionLogger,
         eventLogger,
         consoleLogger,
+        syncStatusManager,
         backgroundDispatcher
       )
     }

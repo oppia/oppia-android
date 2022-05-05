@@ -9,23 +9,31 @@ The Android app is a new, not-yet-released frontend for Oppia that provides acce
 
 Oppia Android is written using Kotlin and Java, and leverages Bazel, databinding, Dagger 2, and AndroidX. See also:
 
-  * [Oppia.org community site](https://www.oppia.org)
   * [Contributors' wiki](https://github.com/oppia/oppia-android/wiki)
-  * [Developer mailing list](http://groups.google.com/group/oppia-android-dev)
+  * [Oppia.org community site](https://www.oppia.org)
   * [File an issue](https://github.com/oppia/oppia-android/issues/new/choose)
 
 ## Installation
 
-Please refer to the [installation wiki page](https://github.com/oppia/oppia-android/wiki#installation) for full instructions.
+Please refer to the [installation wiki page](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android) for full instructions.
 
 ## Contributing
 
 The Oppia project is built by the community for the community. We welcome contributions from everyone, especially new contributors.
 
-You can help with Oppia's development in many ways, including [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change), [instructional design & storytelling](https://github.com/oppia/oppia/wiki/Teaching-with-Oppia), [UX research](https://github.com/oppia/oppia/wiki/Conducting-research-with-students), [creating voiceovers](https://github.com/oppia/oppia/wiki/Instructions-for-voice-artists), [design & art](https://github.com/oppia/oppia/wiki/Contributing-to-Oppia%27s-design), and documentation.
-  * **Mobile developers**: please see [this wiki page](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) for instructions on how to set things up and commit changes.
-  * **Other developers**: see [this wiki page](https://github.com/oppia/oppia/wiki/Contributing-code-to-Oppia#setting-things-up) for instructions on how to set things up for development on Oppia's frontend or backend.
-  * **All other contributors**: please see our [general contributor guidelines](https://github.com/oppia/oppia/wiki).
+You can help with Oppia's development in many ways, including 
+- [coding](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) 
+- [instructional design & storytelling](https://github.com/oppia/oppia/wiki/Teaching-with-Oppia)
+- [UX research](https://github.com/oppia/oppia/wiki/Conducting-research-with-students)
+- [creating voiceovers](https://github.com/oppia/oppia/wiki/Instructions-for-voice-artists)
+- [design & art](https://github.com/oppia/oppia/wiki/Contributing-to-Oppia%27s-design)
+- [documentation](https://github.com/oppia/oppia-android/issues/1723)
+
+**Mobile developers**: please see [this wiki page](https://github.com/oppia/oppia-android/wiki#instructions-for-making-a-code-change) for instructions on setting things up and committing changes.
+
+**Other developers**: see [this wiki page](https://github.com/oppia/oppia/wiki/Contributing-code-to-Oppia#setting-things-up) for instructions on setting things up for development on Oppia's frontend or backend.
+
+**All other contributors**: please see our [general contributor guidelines](https://github.com/oppia/oppia/wiki).
 
 
 ## Development
