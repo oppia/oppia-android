@@ -60,5 +60,4 @@
   <color name="component_color_math_expression_parser_activity_radio_buttons_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_edit_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_hint_text_color">@color/color_palette_hint_text_color</color>
-
 </resources>
