@@ -1,6 +1,5 @@
 package org.oppia.android.app.options
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,15 +37,6 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
 
     binding.viewModel = readingTextSizeSelectionViewModel
     readingTextSizeSelectionViewModel.selectedTextSize.value = fontSize
-
-    binding.readingTextSizeToolbar?.setNavigationOnClickListener {
-      val message = readingTextSizeSelectionViewModel.selectedTextSize.value
-      val intent = Intent()
-      intent.putExtra(MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY, message)
-      (fragment.activity as ReadingTextSizeActivity).setResult(REQUEST_CODE_TEXT_SIZE, intent)
-      (fragment.activity as ReadingTextSizeActivity).finish()
-    }
-
     binding.textSizeRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
