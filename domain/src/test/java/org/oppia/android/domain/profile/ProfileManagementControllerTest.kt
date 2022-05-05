@@ -16,6 +16,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguage
@@ -29,8 +30,10 @@ import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -57,7 +60,6 @@ import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
 import java.lang.IllegalStateException
-import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -75,6 +77,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -95,6 +98,11 @@ class ProfileManagementControllerTest {
     private const val DEFAULT_PIN = "12345"
     private const val DEFAULT_ALLOW_DOWNLOAD_ACCESS = true
     private const val DEFAULT_AVATAR_COLOR_RGB = -10710042
+  }
+
+  @After
+  fun tearDown() {
+    TestModule.enableLearnerStudyAnalytics = false
   }
 
   @Test
@@ -132,17 +140,13 @@ class ProfileManagementControllerTest {
   @Test
   fun testAddProfile_addProfile_studyOn_checkProfileDoesNotIncludeLearnerId() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
-    val expectedLearnerId = machineLocale.run {
-      "%08x".formatForMachines(createRandomReadyForProfileLearnerIds().nextInt())
-    }
     val dataProvider = addAdminProfile(name = "James", pin = "123")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
 
-    // TODO(#4064): Ensure that the learner ID is correctly set here & update test title.
     val profileDatabase = readProfileDatabase()
     val profile = profileDatabase.profilesMap[0]!!
-    assertThat(profile.learnerId).isNotEqualTo(expectedLearnerId)
+    assertThat(profile.learnerId).isEqualTo("bb1ad573")
   }
 
   @Test
@@ -233,12 +237,6 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_withStudy_learnerIdIsUnchanged() {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
-    val expectedLearnerId = machineLocale.run {
-      val random = createRandomReadyForProfileLearnerIds().also {
-        it.advanceBy(learnerCount = PROFILES_LIST.size)
-      }
-      "%08x".formatForMachines(random.nextInt())
-    }
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
@@ -247,9 +245,8 @@ class ProfileManagementControllerTest {
     monitorFactory.ensureDataProviderExecutes(updateProvider)
     val profileProvider = profileManagementController.getProfile(profileId)
 
-    // TODO(#4064): Ensure that the learner ID is correctly set here & update test title.
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.learnerId).isNotEqualTo(expectedLearnerId)
+    assertThat(profile.learnerId).isEqualTo("68fb0e6f")
   }
 
   @Test
@@ -285,8 +282,7 @@ class ProfileManagementControllerTest {
 
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
 
-    // TODO(#4064): Ensure that the learner ID is correctly set here & update test title.
-    assertThat(learnerId).isEmpty()
+    assertThat(learnerId).isEqualTo("19b89cd8")
   }
 
   @Test
@@ -321,8 +317,7 @@ class ProfileManagementControllerTest {
       profileManagementController.fetchLearnerId(PROFILE_ID_2)
     }
 
-    // TODO(#4064): Ensure that the learner ID is correctly set here & update test title.
-    assertThat(learnerId).isEmpty()
+    assertThat(learnerId).isEqualTo("68fb0e6f")
   }
 
   @Test
@@ -488,8 +483,8 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
 
-    profileManagementController.deleteProfile(PROFILE_ID_3)
-    profileManagementController.deleteProfile(PROFILE_ID_4)
+    profileManagementController.deleteProfile(PROFILE_ID_3).ensureExecutes()
+    profileManagementController.deleteProfile(PROFILE_ID_4).ensureExecutes()
     addAdminProfileAndWait(name = "John", pin = "321")
 
     val profilesProvider = profileManagementController.getProfiles()
@@ -509,9 +504,9 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
 
-    profileManagementController.deleteProfile(PROFILE_ID_1)
-    profileManagementController.deleteProfile(PROFILE_ID_2)
-    profileManagementController.deleteProfile(PROFILE_ID_3)
+    profileManagementController.deleteProfile(PROFILE_ID_1).ensureExecutes()
+    profileManagementController.deleteProfile(PROFILE_ID_2).ensureExecutes()
+    profileManagementController.deleteProfile(PROFILE_ID_3).ensureExecutes()
     testCoroutineDispatchers.runCurrent()
     setUpTestApplicationComponent()
 
@@ -608,7 +603,7 @@ class ProfileManagementControllerTest {
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
-    profileManagementController.deleteProfile(PROFILE_ID_1)
+    profileManagementController.deleteProfile(PROFILE_ID_1).ensureExecutes()
     testCoroutineDispatchers.runCurrent()
 
     val profileDatabase = readProfileDatabase()
@@ -620,7 +615,7 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
-    profileManagementController.deleteProfile(PROFILE_ID_1)
+    profileManagementController.deleteProfile(PROFILE_ID_1).ensureExecutes()
     testCoroutineDispatchers.runCurrent()
 
     val wasProfileAddedProvider = profileManagementController.getWasProfileEverAdded()
@@ -628,6 +623,23 @@ class ProfileManagementControllerTest {
 
     val wasProfileEverAdded = monitorFactory.waitForNextSuccessfulResult(wasProfileAddedProvider)
     assertThat(wasProfileEverAdded).isTrue()
+  }
+
+  @Test
+  fun testDeleteProfile_logsDeleteProfileEvent() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    addTestProfiles()
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.deleteProfile(PROFILE_ID_2)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(eventLog).hasDeleteProfileContextThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
   }
 
   @Test
@@ -810,16 +822,6 @@ class ProfileManagementControllerTest {
     )
   }
 
-  private fun createRandomReadyForProfileLearnerIds(): Random {
-    return Random(TestLoggingIdentifierModule.applicationIdSeed).also {
-      it.nextBytes(ByteArray(16))
-    }
-  }
-
-  private fun Random.advanceBy(learnerCount: Int) {
-    repeat(learnerCount) { nextInt() }
-  }
-
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
@@ -847,7 +849,10 @@ class ProfileManagementControllerTest {
   private fun <T> StateFlow<T>.waitForLatestValue(): T =
     also { testCoroutineDispatchers.runCurrent() }.value
 
+  private fun <T> DataProvider<T>.ensureExecutes() = monitorFactory.ensureDataProviderExecutes(this)
+
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
+    TestModule.enableLearnerStudyAnalytics = false
     setUpTestApplicationComponent()
   }
 

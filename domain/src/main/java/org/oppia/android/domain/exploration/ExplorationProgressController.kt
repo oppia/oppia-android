@@ -31,7 +31,9 @@ import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.SUBMIT
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.VIEWING_STATE
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
@@ -101,7 +103,9 @@ class ExplorationProgressController @Inject constructor(
   private val hintHandlerFactory: HintHandler.Factory,
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
+  private val loggingIdentifierController: LoggingIdentifierController,
   private val profileManagementController: ProfileManagementController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#179): Add support for parameters.
@@ -390,7 +394,8 @@ class ExplorationProgressController @Inject constructor(
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
               // Synchronously fetch the learner & installation IDs (these may result in file I/O).
-              profileManagementController.fetchLearnerId(message.profileId)
+              val learnerId = profileManagementController.fetchLearnerId(message.profileId)
+              val installationId = loggingIdentifierController.fetchInstallationId()
 
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
@@ -400,7 +405,10 @@ class ExplorationProgressController @Inject constructor(
                   message.isRestart,
                   message.sessionId,
                   message.ephemeralStateFlow,
-                  commandQueue
+                  commandQueue,
+                  installationId,
+                  learnerId,
+                  learnerAnalyticsLogger
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -572,7 +580,7 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.stateDeck.submitAnswer(
           userAnswer, answerOutcome.feedback, answerOutcome.labelledAsCorrectAnswer
         )
-        // TODO(#4064): Log the 'submit answer' event.
+        stateAnalyticsLogger?.logSubmitAnswer(answerOutcome.labelledAsCorrectAnswer)
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
@@ -801,14 +809,14 @@ class ExplorationProgressController @Inject constructor(
         progress.explorationCheckpoint.helpIndex,
         progress.stateDeck.getCurrentState()
       )
-      // TODO(#4064): Log the 'resume exploration' event.
+      explorationAnalyticsLogger.logResumeExploration()
       startState(logStartCard = false)
     } else {
       // If the exploration is not being resumed, reset the StateDeck and the HintHandler.
       progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
 
       if (isRestart) {
-        // TODO(#4064): Log the 'start exploration over' event.
+        explorationAnalyticsLogger.logStartExplorationOver()
       }
 
       val state = progress.stateDeck.getCurrentState()
@@ -1022,7 +1030,10 @@ class ExplorationProgressController @Inject constructor(
     val isRestart: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
-    val commandQueue: SendChannel<ControllerMessage<*>>
+    val commandQueue: SendChannel<ControllerMessage<*>>,
+    private val installationId: String?,
+    private val learnerId: String?,
+    private val learnerAnalyticsLogger: LearnerAnalyticsLogger
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -1034,12 +1045,31 @@ class ExplorationProgressController @Inject constructor(
     private var availableCardCount: Int = -1
 
     /**
+     * The [LearnerAnalyticsLogger.ExplorationAnalyticsLogger] to be used for logging
+     * exploration-specific events.
+     */
+    lateinit var explorationAnalyticsLogger: LearnerAnalyticsLogger.ExplorationAnalyticsLogger
+
+    /**
+     * The [LearnerAnalyticsLogger.StateAnalyticsLogger] to be used for logging state-specific
+     * events.
+     */
+    val stateAnalyticsLogger: LearnerAnalyticsLogger.StateAnalyticsLogger?
+      get() = explorationAnalyticsLogger.stateAnalyticsLogger.value
+
+    /**
      * Initializes this state for event logging for the given [Exploration].
      *
      * This allows [startState] to be used.
      */
     fun initializeEventLogger(exploration: Exploration) {
-      // TODO(#4064): Log the 'begin exploration' event.
+      explorationAnalyticsLogger = learnerAnalyticsLogger.beginExploration(
+        installationId,
+        learnerId,
+        exploration,
+        explorationProgress.currentTopicId,
+        explorationProgress.currentStoryId
+      )
       availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
     }
 
@@ -1048,12 +1078,14 @@ class ExplorationProgressController @Inject constructor(
      * new card change.
      */
     fun startState(logStartCard: Boolean = true) {
-      if (logStartCard) {
-        // TODO(#4064): Log the 'start card' event.
-      }
+      explorationAnalyticsLogger.startCard(explorationProgress.stateDeck.getCurrentState()).also {
+        if (logStartCard) {
+          it.logStartCard()
+        }
 
-      // Force the card count to update.
-      availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
+        // Force the card count to update.
+        availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
+      }
     }
 
     /**
@@ -1070,7 +1102,8 @@ class ExplorationProgressController @Inject constructor(
 
     /** Ends state-based logging for the current state and logs that the card has ended. */
     fun endState() {
-      // TODO(#4064): Log the 'end card' event.
+      stateAnalyticsLogger?.logEndCard()
+      explorationAnalyticsLogger.endCard()
     }
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
@@ -1079,23 +1112,15 @@ class ExplorationProgressController @Inject constructor(
         // If the index changed to the new HelpIndex, that implies that whatever is observed in the
         // new HelpIndex indicates its previous state and therefore what changed.
         when (newHelpIndex.indexTypeCase) {
-          NEXT_AVAILABLE_HINT_INDEX -> {
-            // TODO(#4064): Log the 'hint offered' event.
-          }
-          LATEST_REVEALED_HINT_INDEX -> {
-            // TODO(#4064): Log the 'view hint' event.
-          }
-          SHOW_SOLUTION -> {
-            // TODO(#4064): Log the 'solution offered' event.
-          }
+          NEXT_AVAILABLE_HINT_INDEX ->
+            stateAnalyticsLogger?.logHintOffered(newHelpIndex.nextAvailableHintIndex)
+          LATEST_REVEALED_HINT_INDEX ->
+            stateAnalyticsLogger?.logViewHint(newHelpIndex.latestRevealedHintIndex)
+          SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionOffered()
           EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
-            SHOW_SOLUTION -> {
-              // TODO(#4064): Log the 'view solution' event.
-            }
-            NEXT_AVAILABLE_HINT_INDEX -> {
-              // No solution, so revealing the hint ends available help.
-              // TODO(#4064): Log the 'view hint' event.
-            }
+            SHOW_SOLUTION -> stateAnalyticsLogger?.logViewSolution()
+            NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
+              stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
             LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
           }
@@ -1111,10 +1136,11 @@ class ExplorationProgressController @Inject constructor(
      */
     fun finishExplorationAndLog(isCompletion: Boolean) {
       if (isCompletion) {
-        // TODO(#4064): Log the 'finish exploration' event.
+        explorationAnalyticsLogger.logFinishExploration()
       } else {
-        // TODO(#4064): Log the 'exit exploration' event.
+        explorationAnalyticsLogger.logExitExploration()
       }
+      learnerAnalyticsLogger.endExploration()
     }
   }
 

@@ -17,7 +17,9 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -25,6 +27,8 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
@@ -69,7 +73,10 @@ class ProfileManagementController @Inject constructor(
   private val directoryManagementUtil: DirectoryManagementUtil,
   private val exceptionsController: ExceptionsController,
   private val oppiaClock: OppiaClock,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val loggingIdentifierController: LoggingIdentifierController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -225,7 +232,10 @@ class ProfileManagementController @Inject constructor(
         appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 
-        // TODO(#4064): Initialize the learner ID here (only if the study parameter is enabled).
+        if (learnerStudyAnalytics.value) {
+          // Only set a learner ID if there's an ongoing user study.
+          learnerId = loggingIdentifierController.createLearnerId()
+        }
 
         avatar = ProfileAvatar.newBuilder().apply {
           if (avatarImagePath != null) {
@@ -548,7 +558,8 @@ class ProfileManagementController @Inject constructor(
         )
       val updatedProfile = profile.toBuilder().apply {
         learnerId = when {
-          // TODO(#4064): Update the learner ID here (only if the study parameter is enabled).
+          !learnerStudyAnalytics.value -> "" // There should be no learner ID if no ongoing study.
+          learnerId.isEmpty() -> loggingIdentifierController.createLearnerId() // Generate new ID.
           else -> learnerId // Keep it unchanged.
         }
       }.build()
@@ -657,7 +668,9 @@ class ProfileManagementController @Inject constructor(
       if (!directoryManagementUtil.deleteDir(profileId.internalId.toString())) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.FAILED_TO_DELETE_DIR)
       }
-      // TODO(#4064): Log the 'delete profile' event here.
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      val learnerId = it.profilesMap.getValue(profileId.internalId).learnerId
+      learnerAnalyticsLogger.logDeleteProfile(installationId, learnerId)
       Pair(it.toBuilder().removeProfiles(profileId.internalId).build(), ProfileActionStatus.SUCCESS)
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {

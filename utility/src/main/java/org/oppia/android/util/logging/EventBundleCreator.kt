@@ -43,6 +43,8 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Se
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
@@ -65,7 +67,9 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
  * This class is only expected to be used by internal logging mechanisms and should not be called
  * directly.
  */
-class EventBundleCreator @Inject constructor() {
+class EventBundleCreator @Inject constructor(
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+) {
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
    * string representation of the high-level type of event logged (per
@@ -76,8 +80,7 @@ class EventBundleCreator @Inject constructor() {
     bundle.putString("priority", eventLog.priority.toAnalyticsName())
     return eventLog.context.convertToActivityContext()?.also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
-      // TODO(#4064): Enable allowing user IDs if the study parameter is enabled.
-      eventContext.storeValue(PropertyStore(bundle, allowUserIds = false))
+      eventContext.storeValue(PropertyStore(bundle, allowUserIds = learnerStudyAnalytics.value))
     }?.activityName ?: "unknown_activity_context"
   }
 

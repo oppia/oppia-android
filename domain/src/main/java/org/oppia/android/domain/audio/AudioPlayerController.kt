@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
@@ -35,6 +36,7 @@ class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val exceptionsController: ExceptionsController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
@@ -196,7 +198,7 @@ class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play(isPlayingFromAutoPlay: Boolean = false, reloadingMainContent: Boolean = false) {
+  fun play(isPlayingFromAutoPlay: Boolean = true, reloadingMainContent: Boolean = true) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {
@@ -207,7 +209,9 @@ class AudioPlayerController @Inject constructor(
         // corresponds to manually clicking the 'play' button). Note this will not log any play
         // events after the state completes (since there'll no longer be a state logger).
         if (!isPlayingFromAutoPlay || !reloadingMainContent) {
-          // TODO(#4064): Remove the defaults above, and log the 'play voice over' event here.
+          val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
+          val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
+          stateLogger?.logPlayVoiceOver(currentContentId)
         }
       }
     }
