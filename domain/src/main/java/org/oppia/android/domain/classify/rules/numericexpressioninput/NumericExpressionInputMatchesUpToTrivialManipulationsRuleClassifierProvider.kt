@@ -12,6 +12,10 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingRes
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseNumericExpression
 
 /**
  * Provider for a classifier that determines whether a numeric expression is equal to the
@@ -40,13 +44,15 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
     input: String,
     classificationContext: ClassificationContext
   ): Boolean {
-    val answerExpression = parseComparableOperation(answer) ?: return false
-    val inputExpression = parseComparableOperation(input) ?: return false
+    val answerExpression = parseComparableOperation(answer, ALL_ERRORS) ?: return false
+    val inputExpression = parseComparableOperation(input, REQUIRED_ONLY) ?: return false
     return answerExpression.isApproximatelyEqualTo(inputExpression)
   }
 
-  private fun parseComparableOperation(rawExpression: String): ComparableOperation? {
-    return when (val expResult = MathExpressionParser.parseNumericExpression(rawExpression)) {
+  private fun parseComparableOperation(
+    rawExpression: String, checkingMode: ErrorCheckingMode
+  ): ComparableOperation? {
+    return when (val expResult = parseNumericExpression(rawExpression, checkingMode)) {
       is MathParsingResult.Success -> expResult.result.toComparableOperation()
       is MathParsingResult.Failure -> {
         consoleLogger.e(

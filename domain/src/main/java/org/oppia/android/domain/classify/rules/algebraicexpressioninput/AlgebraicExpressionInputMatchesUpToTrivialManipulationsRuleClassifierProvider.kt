@@ -8,10 +8,14 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression as parseExpression
 
 /**
  * Provider for a classifier that determines whether an algebraic expression is equal to the
@@ -41,16 +45,19 @@ class AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvi
     classificationContext: ClassificationContext
   ): Boolean {
     val allowedVariables = classificationContext.extractAllowedVariables()
-    val answerExpression = parseComparableOperation(answer, allowedVariables) ?: return false
-    val inputExpression = parseComparableOperation(input, allowedVariables) ?: return false
+    val answerExpression =
+      parseComparableOperation(answer, allowedVariables, ALL_ERRORS) ?: return false
+    val inputExpression =
+      parseComparableOperation(input, allowedVariables, REQUIRED_ONLY) ?: return false
     return answerExpression.isApproximatelyEqualTo(inputExpression)
   }
 
   private fun parseComparableOperation(
     rawExpression: String,
-    allowedVariables: List<String>
+    allowedVariables: List<String>,
+    checkingMode: ErrorCheckingMode
   ): ComparableOperation? {
-    return when (val expResult = parseAlgebraicExpression(rawExpression, allowedVariables)) {
+    return when (val expResult = parseExpression(rawExpression, allowedVariables, checkingMode)) {
       is MathParsingResult.Success -> expResult.result.toComparableOperation()
       is MathParsingResult.Failure -> {
         consoleLogger.e(

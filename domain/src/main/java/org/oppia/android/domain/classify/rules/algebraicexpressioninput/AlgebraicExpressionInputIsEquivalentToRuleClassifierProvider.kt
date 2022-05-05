@@ -8,10 +8,14 @@ import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toPolynomial
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression as parseExpression
 
 /**
  * Provider for a classifier that determines whether an algebraic expression is mathematically
@@ -39,13 +43,15 @@ class AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider @Inject const
     classificationContext: ClassificationContext
   ): Boolean {
     val allowedVariables = classificationContext.extractAllowedVariables()
-    val answerExpression = parsePolynomial(answer, allowedVariables) ?: return false
-    val inputExpression = parsePolynomial(input, allowedVariables) ?: return false
+    val answerExpression = parsePolynomial(answer, allowedVariables, ALL_ERRORS) ?: return false
+    val inputExpression = parsePolynomial(input, allowedVariables, REQUIRED_ONLY) ?: return false
     return answerExpression.isApproximatelyEqualTo(inputExpression)
   }
 
-  private fun parsePolynomial(rawExpression: String, allowedVariables: List<String>): Polynomial? {
-    return when (val expResult = parseAlgebraicExpression(rawExpression, allowedVariables)) {
+  private fun parsePolynomial(
+    rawExpression: String, allowedVariables: List<String>, checkingMode: ErrorCheckingMode
+  ): Polynomial? {
+    return when (val expResult = parseExpression(rawExpression, allowedVariables, checkingMode)) {
       is MathParsingResult.Success -> {
         expResult.result.toPolynomial().also {
           if (it == null) {
