@@ -50,6 +50,137 @@ class ExplorationDataController @Inject constructor(
    * [stopPlayingExploration] may be optionally called to clean up the session--see the
    * documentation for that method for details.
    *
+   * Note that this method is specifically meant to only be called for explorations which have never
+   * been played by the current user before, as it will not resume any saved progress checkpoints,
+   * and it will save the user's progress. See [resumeExploration], [restartExploration], and
+   * [replayExploration] for other situations.
+   *
+   * @param internalProfileId the ID corresponding to the profile for which exploration is to be
+   *     played
+   * @param topicId the ID corresponding to the topic for which exploration has to be played
+   * @param storyId the ID corresponding to the story for which exploration has to be played
+   * @param explorationId the ID of the exploration which has to be played
+   * @return a [DataProvider] to observe whether initiating the play request succeeded
+   */
+  fun startPlayingNewExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
+      isRestart = false
+    )
+  }
+
+  /**
+   * Resumes the specified exploration indicated by [topicId], [storyId], and [explorationId] for
+   * the user corresponding to [internalProfileId] by restoring the provided
+   * [explorationCheckpoint], and returns a [DataProvider] tracking whether the start succeeded.
+   *
+   * This method behaves the same as [startPlayingNewExploration] except it resumes a previous
+   * session. All progress that the user makes during this session will be recorded.
+   *
+   * This method should generally be called when a user wants to play a lesson for which they have
+   * saved progress (unless they want to start over in which case [restartExploration] should be
+   * used).
+   */
+  fun resumeExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String,
+    explorationCheckpoint: ExplorationCheckpoint
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = true,
+      explorationCheckpoint,
+      isRestart = false
+    )
+  }
+
+  /**
+   * Restarts the specified exploration indicated by [topicId], [storyId], and [explorationId] for
+   * the user corresponding to [internalProfileId], and returns a [DataProvider] tracking whether
+   * the start succeeded.
+   *
+   * This method behaves the same as [resumeExploration] except any prior progress the user might
+   * had for the lesson is dropped and overwritten by any new progress that they achieve.
+   *
+   * This method should only be used when a user has saved lesson progress and wishes to restart the
+   * lesson (otherwise [resumeExploration] should be used to resume the lesson).
+   */
+  fun restartExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = true, // Implied since only checkpoints can be restarted.
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
+      isRestart = true
+    )
+  }
+
+  /**
+   * Replays the specified exploration indicated by [topicId], [storyId], and [explorationId] for
+   * the user corresponding to [internalProfileId], and returns a [DataProvider] tracking whether
+   * the start succeeded.
+   *
+   * This method behaves the same as [startPlayingNewExploration] except no progress is tracked
+   * during the lesson. This method is only meant to be used in cases when a user wants to play a
+   * lesson but has already completed that lesson (and, since partial progress can't be conveyed in
+   * the UI for completed lessons, such lessons do not have their progress retained).
+   *
+   * This method should only be called when starting a lesson that's been completed, otherwise one
+   * of [startPlayingNewExploration], [resumeExploration], or [restartExploration] should be used,\
+   * instead, depending on the specific situation.
+   */
+  fun replayExploration(
+    internalProfileId: Int,
+    topicId: String,
+    storyId: String,
+    explorationId: String
+  ): DataProvider<Any?> {
+    return startPlayingExploration(
+      internalProfileId,
+      topicId,
+      storyId,
+      explorationId,
+      shouldSavePartialProgress = false, // Finished lessons can't be partially saved.
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
+      isRestart = false
+    )
+  }
+
+  /**
+   * Begins playing an exploration of the specified ID.
+   *
+   * [ExplorationProgressController] should be used to manage the play state, and monitor the load
+   * success/failure of the exploration.
+   *
+   * This can be called even if a session is currently active as it will force initiate a new play
+   * session, resetting any data from the previous session (though any pending unsaved checkpoint
+   * progress is guaranteed to be saved from the previous session, first).
+   *
+   * [stopPlayingExploration] may be optionally called to clean up the session--see the
+   * documentation for that method for details.
+   *
    * @param internalProfileId the ID corresponding to the profile for which exploration has to be
    *     played
    * @param topicId the ID corresponding to the topic for which exploration has to be played
@@ -58,16 +189,20 @@ class ExplorationDataController @Inject constructor(
    * @param shouldSavePartialProgress indicates if partial progress should be saved for the new play
    *     session
    * @param explorationCheckpoint the checkpoint which may be used to resume the exploration
+   * @param isRestart whether starting this exploration is erasing a previous checkpoint. In cases
+   *     where this is ``true``, [explorationCheckpoint] is expected to be the default proto
+   *     instance.
    * @return a [DataProvider] to observe whether initiating the play request, or future play
    *     requests, succeeded
    */
-  fun startPlayingExploration(
+  private fun startPlayingExploration(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
+    isRestart: Boolean
   ): DataProvider<Any?> {
     return explorationProgressController.beginExplorationAsync(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
@@ -75,25 +210,26 @@ class ExplorationDataController @Inject constructor(
       storyId,
       explorationId,
       shouldSavePartialProgress,
-      explorationCheckpoint
+      explorationCheckpoint,
+      isRestart
     )
   }
 
   /**
-   * Finishes the most recent exploration started by [startPlayingExploration], and returns a
-   * [DataProvider] indicating whether the operation succeeded.
+   * Finishes the most recent exploration started by [startPlayingNewExploration],
+   * [resumeExploration], [restartExploration], or [replayExploration], and returns a [DataProvider]
+   * indicating whether the operation succeeded.
    *
    * This method should only be called if an active exploration is being played, otherwise the
    * resulting provider will fail. Note that this doesn't actually need to be called between
    * sessions unless the caller wants to ensure other providers monitored from
    * [ExplorationProgressController] are reset to a proper out-of-session state.
    *
-   * Note that the returned provider monitors the long-term stopping state of exploration sessions
-   * and will be reset to 'pending' when a session is currently active, or before any session has
-   * started.
+   * @param isCompletion indicates whether this stop action is fully ending the exploration (i.e. no
+   *     checkpoint will be saved since this indicates the exploration is completed)
    */
-  fun stopPlayingExploration(): DataProvider<Any?> =
-    explorationProgressController.finishExplorationAsync()
+  fun stopPlayingExploration(isCompletion: Boolean): DataProvider<Any?> =
+    explorationProgressController.finishExplorationAsync(isCompletion)
 
   /**
    * Fetches the details of the oldest saved exploration for a specified profileId.

@@ -371,7 +371,7 @@ class StoryProgressController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeCacheAsync().invokeOnCompletion {
+    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion {
       it?.let { it ->
         oppiaLogger.e(
           "StoryProgressController",
