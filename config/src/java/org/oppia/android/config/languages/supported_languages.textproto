@@ -116,3 +116,25 @@ language_definitions {
     }
   }
 }
+language_definitions {
+  language: SWAHILI
+  min_android_sdk_version: 1
+  app_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+    android_resources_language_id {
+      language_code: "sw"
+    }
+  }
+  content_string_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+  }
+  audio_translation_id {
+    ietf_bcp47_id {
+      ietf_language_tag: "sw"
+    }
+  }
+}

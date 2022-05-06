@@ -7,10 +7,14 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression
 import org.oppia.android.util.math.isApproximatelyEqualTo
+import org.oppia.android.util.math.stripRedundantGroups
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression as parseExpression
 
 /**
  * Provider for a classifier that determines whether an algebraic expression is exactly equal to the
@@ -37,16 +41,19 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject c
     classificationContext: ClassificationContext
   ): Boolean {
     val allowedVariables = classificationContext.extractAllowedVariables()
-    val answerExpression = parseExpression(answer, allowedVariables) ?: return false
-    val inputExpression = parseExpression(input, allowedVariables) ?: return false
-    return answerExpression.isApproximatelyEqualTo(inputExpression)
+    val answerExpression =
+      parseAlgebraicExpression(answer, allowedVariables, ALL_ERRORS) ?: return false
+    val inputExpression =
+      parseAlgebraicExpression(input, allowedVariables, REQUIRED_ONLY) ?: return false
+    return answerExpression.isApproximatelyEqualTo(inputExpression.stripRedundantGroups())
   }
 
-  private fun parseExpression(
+  private fun parseAlgebraicExpression(
     rawExpression: String,
-    allowedVariables: List<String>
+    allowedVariables: List<String>,
+    checkingMode: ErrorCheckingMode
   ): MathExpression? {
-    return when (val expResult = parseAlgebraicExpression(rawExpression, allowedVariables)) {
+    return when (val expResult = parseExpression(rawExpression, allowedVariables, checkingMode)) {
       is MathParsingResult.Success -> expResult.result
       is MathParsingResult.Failure -> {
         consoleLogger.e(

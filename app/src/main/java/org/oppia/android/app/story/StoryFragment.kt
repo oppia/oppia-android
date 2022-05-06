@@ -70,7 +70,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     storyId: String,
     explorationId: String,
     canExplorationBeResumed: Boolean,
-    shouldSavePartialProgress: Boolean,
+    canHavePartialProgressSaved: Boolean,
     backflowScreen: Int?,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
@@ -80,7 +80,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       storyId,
       explorationId,
       canExplorationBeResumed,
-      shouldSavePartialProgress,
+      canHavePartialProgressSaved,
       backflowScreen,
       explorationCheckpoint
     )

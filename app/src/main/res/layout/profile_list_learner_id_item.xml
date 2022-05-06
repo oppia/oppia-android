@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.administratorcontrols.learneranalytics.ProfileLearnerIdItemViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/general_item_background_border">
+
+    <TextView
+      android:id="@+id/profile_id_view_profile_name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:ellipsize="end"
+      android:maxLines="1"
+      android:text="@{viewModel.profile.name}"
+      android:textColor="@color/component_color_profile_and_device_id_activity_primary_text_color"
+      android:textSize="16sp"
+      app:layout_constraintHorizontal_chainStyle="spread_inside"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/profile_id_view_learner_id"
+      app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+      android:id="@+id/profile_id_view_learner_id"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:text="@{viewModel.profile.learnerId}"
+      android:textColor="@color/component_color_profile_and_device_id_activity_primary_text_color"
+      android:textSize="16sp"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/profile_id_view_profile_name"
+      app:layout_constraintEnd_toStartOf="@+id/learner_id_copy_button"
+      app:layout_constraintBottom_toBottomOf="parent" />
+
+    <org.oppia.android.app.administratorcontrols.learneranalytics.CopyIdMaterialButtonView
+      style="@style/BorderlessMaterialButton"
+      android:id="@+id/learner_id_copy_button"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:minWidth="48dp"
+      android:minHeight="48dp"
+      android:textColor="@{viewModel.profile.learnerId.isEmpty() ? @color/component_color_profile_and_device_id_activity_disabled_icon_button_color : @color/component_color_profile_and_device_id_activity_enabled_icon_button_color}"
+      android:text="@{viewModel.currentCopiedId == viewModel.profile.learnerId ? @string/learner_analytics_copied_to_clipboard_label : @string/learner_analytics_copy_to_clipboard_label}"
+      android:onClick="@{(v) -> viewModel.copyLearnerId()}"
+      android:enabled="@{!viewModel.profile.learnerId.isEmpty()}"
+      app:icon="@{viewModel.currentCopiedId == viewModel.profile.learnerId ? @drawable/ic_baseline_check_24 : @drawable/ic_baseline_content_copy_24}"
+      app:iconGravity="top"
+      app:iconSize="24dp"
+      app:iconTint="@{viewModel.profile.learnerId.isEmpty() ? @color/component_color_profile_and_device_id_activity_disabled_icon_button_color : @color/component_color_profile_and_device_id_activity_enabled_icon_button_color}"
+      app:backgroundTint="@color/color_def_white"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/profile_id_view_learner_id"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

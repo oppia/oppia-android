@@ -76,6 +76,8 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
     "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
@@ -108,6 +110,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    "//utility/src/main/java/org/oppia/android/util/system:prod_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

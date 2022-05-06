@@ -107,7 +107,7 @@ _excludeTestFiles(filesToExclude)
 // one shard after another without cleaning first (since Gradle doesn't handle file exclusion well,
 // it expects files to be present corresponding to generated code, such as Dagger, from previous
 // runs).
-def appModuleShardCount = 4
+def appModuleShardCount = 8
 def shardIndexes = 0..(appModuleShardCount - 1)
 shardIndexes.each { shardIndex ->
   if (project.gradle.startParameter?.taskRequests?.args[0]?.remove("--shard$shardIndex".toString())) {
@@ -161,7 +161,7 @@ dependencies {
       'androidx.work:work-runtime-ktx:2.4.0',
       'com.github.bumptech.glide:glide:4.11.0',
       'com.google.android.flexbox:flexbox:3.0.0',
-      'com.google.android.material:material:1.2.0',
+      'com.google.android.material:material:1.3.0',
       'com.google.dagger:dagger:2.24',
       'com.google.firebase:firebase-analytics:17.5.0',
       'com.google.firebase:firebase-analytics-ktx:17.5.0',
