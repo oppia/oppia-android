@@ -464,4 +464,13 @@
   <style name="TextViewCenterHorizontal" parent="TextView.Common1">
     <item name="android:gravity">center_horizontal</item>
   </style>
+
+  <!-- ShapeableImageView -->
+  <!-- The corner size & family type are set up to ensure a circular shape is created for components
+       with equal width & height
+       (per https://material.io/design/shape/about-shape.html#shape-customization-tool). -->
+  <style name="ShapeAppearanceOverlay.RoundedShape">
+    <item name="cornerSize">50%</item>
+    <item name="cornerFamily">rounded</item>
+  </style>
 </resources>

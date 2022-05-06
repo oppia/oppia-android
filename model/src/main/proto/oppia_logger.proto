@@ -20,12 +20,13 @@ message EventLog {
 
   // Structure of an activity context.
   message Context {
-
-    // Deprecated exploration context. This is now handled via the open_exploration_activity context below.
+    // Deprecated exploration context. This is now handled via the open_exploration_activity context
+    // below.
     reserved 1;
 
     // Deprecated topic context. This is now broken down into 4 different contexts and is handled
-    // via the open_info_tab, open_lessons_tab, open_practice_tab and open_revision_tab contexts below.
+    // via the open_info_tab, open_lessons_tab, open_practice_tab and open_revision_tab contexts
+    // below.
     reserved 2;
 
     // Deprecated question context. This is now handled via the open_question_player context below.
@@ -37,7 +38,8 @@ message EventLog {
     // Deprecated concept card context. This is now handled via the open_concept_card context below.
     reserved 5;
 
-    // Deprecated revision card context. This is now handled via the open_concept_card context below.
+    // Deprecated revision card context. This is now handled via the open_concept_card context
+    // below.
     reserved 6;
 
     oneof activity_context {
@@ -113,13 +115,17 @@ message EventLog {
       // The event being logged is related to deleting a profile.
       LearnerDetailsContext delete_profile_context = 30;
 
-      // The event being logged is related to the opening of home activity. The boolean value here has no
-      // importance and is always 'true'.
+      // The event being logged is related to the opening of home activity. The boolean value here
+      // has no importance and is always 'true'.
       bool open_home = 31;
 
-      // The event being logged is related to the opening of profile chooser activity. The boolean value here
-      // has no importance and is always 'true'.
+      // The event being logged is related to the opening of profile chooser activity. The boolean
+      // value here has no importance and is always 'true'.
       bool open_profile_chooser = 32;
+
+      // Indicates that something went wrong when trying to log a learner analytics even for the
+      // device corresponding to the specified device ID.
+      string install_id_for_failed_analytics_log = 33;
     }
   }
 
@@ -173,12 +179,11 @@ message EventLog {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
-    // Corresponds to the index of a hint or solution in a state. This structure is set up
-    // to properly account for variable numbers of hints, for cases when only a solution or no solution
-    // exists, and for when there are no hints or solutions. This structure represents the entire state
-    // needed to determine which hints can be shown, have been seen, whether the solution can be shown,
-    // and whether the solution has been seen.
-    HelpIndex help_index = 3;
+    // Corresponds to the index of the index being shown or last seen.
+    int32 hint_index = 4;
+
+    reserved 2;
+    reserved 3;
   }
 
   // Represents the event context for submitting an answer within an exploration.
@@ -199,13 +204,14 @@ message EventLog {
     string content_id = 3;
   }
 
-  // Represents event context which contains learner-specific details that are logged with every event.
+  // Represents event context which contains learner-specific details that are logged with every
+  // event.
   message LearnerDetailsContext {
     // The learner id of the current user. This id is profile-specific.
     string learner_id = 1;
 
     // The device id of the current device. This id is common across all profiles.
-    string device_id = 2;
+    string install_id = 2;
   }
 
   // Represents the event context for all exploration related events containing learner-specific and
@@ -223,8 +229,10 @@ message EventLog {
     // The session id of the current learning session.
     string session_id = 4;
 
+    reserved 5; // Deprecated string version of exploration version.
+
     // The version of the exploration.
-    string exploration_version = 5;
+    int32 exploration_version = 8;
 
     // The name of the current state of the exploration.
     string state_name = 6;
@@ -240,7 +248,8 @@ message EventLog {
     // The priority of events whose logs should not be removed from the storage on most occasions
     // but can be removed if they're the only ones there and size limit exceeds.
     ESSENTIAL = 1;
-    // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
+    // The priority of events whose logs can be removed from the storage if the size exceeds a
+    // certain limit
     OPTIONAL = 2;
   }
 }
@@ -288,4 +297,14 @@ message OppiaEventLogs {
 // Structure for a container that contains exception log reports.
 message OppiaExceptionLogs {
   repeated ExceptionLog exception_log = 1;
+}
+
+// Data structure of device & app context that's stored on disk to be unique to each app
+// installation (or cross-installation if restoring from an app backup).
+message DeviceContextDatabase {
+  // The per-installation UUID that can be used to generally uniquely identify this device among all
+  // others present in a user study. This shouldn't be relied on for anything other than analytics,
+  // and only for specific studies as the ID is not stable across app installations (but should
+  // survive app data backups & restores, as well as app upgrades).
+  string installation_id = 1;
 }
