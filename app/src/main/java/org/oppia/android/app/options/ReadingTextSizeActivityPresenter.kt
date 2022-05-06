@@ -1,6 +1,7 @@
 package org.oppia.android.app.options
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
@@ -14,11 +15,19 @@ class ReadingTextSizeActivityPresenter @Inject constructor(
 
   fun handleOnCreate(prefSummaryValue: String) {
     activity.setContentView(R.layout.reading_text_size_activity)
+    setToolbar()
     fontSize = prefSummaryValue
     if (getReadingTextSizeFragment() == null) {
       val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(prefSummaryValue)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.reading_text_size_container, readingTextSizeFragment).commitNow()
+    }
+  }
+
+  private fun setToolbar() {
+    val readingTextSizeToolbar: Toolbar = activity.findViewById(R.id.reading_text_size_toolbar)
+    readingTextSizeToolbar.setNavigationOnClickListener {
+      activity.onBackPressed()
     }
   }
 

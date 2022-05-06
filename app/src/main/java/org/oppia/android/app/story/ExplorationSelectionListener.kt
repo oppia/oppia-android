@@ -11,7 +11,7 @@ interface ExplorationSelectionListener {
     storyId: String,
     explorationId: String,
     canExplorationBeResumed: Boolean,
-    shouldSavePartialProgress: Boolean,
+    canHavePartialProgressSaved: Boolean,
     backflowId: Int?,
     explorationCheckpoint: ExplorationCheckpoint
   )

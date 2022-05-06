@@ -224,56 +224,73 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
-    val shouldSavePartialProgress =
+    val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
-        else -> false
+        ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED,
+        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES, ChapterPlayState.UNRECOGNIZED,
+        ChapterPlayState.COMPLETED -> false
       }
 
-    if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
-      val explorationCheckpointLiveData =
-        explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build(),
-          explorationId
-        ).toLiveData()
-      explorationCheckpointLiveData.observe(
-        fragment,
-        object : Observer<AsyncResult<ExplorationCheckpoint>> {
-          override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
-            if (it is AsyncResult.Success) {
-              explorationCheckpointLiveData.removeObserver(this)
-              routeToResumeLessonListener.routeToResumeLesson(
-                internalProfileId,
-                topicId,
-                storyId,
-                explorationId,
-                backflowScreen = 0,
-                explorationCheckpoint = it.value
-              )
-            } else if (it is AsyncResult.Failure) {
-              explorationCheckpointLiveData.removeObserver(this)
-              playExploration(
-                internalProfileId,
-                topicId,
-                storyId,
-                explorationId,
-                shouldSavePartialProgress
-              )
+    when (chapterPlayState) {
+      ChapterPlayState.IN_PROGRESS_SAVED -> {
+        val explorationCheckpointLiveData =
+          explorationCheckpointController.retrieveExplorationCheckpoint(
+            ProfileId.newBuilder().apply {
+              internalId = internalProfileId
+            }.build(),
+            explorationId
+          ).toLiveData()
+        explorationCheckpointLiveData.observe(
+          fragment,
+          object : Observer<AsyncResult<ExplorationCheckpoint>> {
+            override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
+              if (it is AsyncResult.Success) {
+                explorationCheckpointLiveData.removeObserver(this)
+                routeToResumeLessonListener.routeToResumeLesson(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  backflowScreen = 0,
+                  explorationCheckpoint = it.value
+                )
+              } else if (it is AsyncResult.Failure) {
+                explorationCheckpointLiveData.removeObserver(this)
+                playExploration(
+                  internalProfileId,
+                  topicId,
+                  storyId,
+                  explorationId,
+                  canHavePartialProgressSaved,
+                  hadProgress = true
+                )
+              }
             }
           }
-        }
-      )
-    } else {
-      playExploration(
-        internalProfileId,
-        topicId,
-        storyId,
-        explorationId,
-        shouldSavePartialProgress
-      )
+        )
+      }
+      ChapterPlayState.IN_PROGRESS_NOT_SAVED -> {
+        playExploration(
+          internalProfileId,
+          topicId,
+          storyId,
+          explorationId,
+          canHavePartialProgressSaved,
+          hadProgress = true
+        )
+      }
+      else -> {
+        playExploration(
+          internalProfileId,
+          topicId,
+          storyId,
+          explorationId,
+          canHavePartialProgressSaved,
+          hadProgress = false
+        )
+      }
     }
   }
 
@@ -282,36 +299,48 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    shouldSavePartialProgress: Boolean
+    canHavePartialProgressSaved: Boolean,
+    hadProgress: Boolean
   ) {
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      // Pass an empty checkpoint if the exploration does not have to be resumed.
-      ExplorationCheckpoint.getDefaultInstance()
-    ).toLiveData().observe(
-      fragment,
-      Observer<AsyncResult<Any?>> { result ->
-        when (result) {
-          is AsyncResult.Pending -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
-          is AsyncResult.Failure ->
-            oppiaLogger.e("TopicLessonsFragment", "Failed to load exploration", result.error)
-          is AsyncResult.Success -> {
-            oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
-            routeToExplorationListener.routeToExploration(
-              internalProfileId,
-              topicId,
-              storyId,
-              explorationId,
-              backflowScreen = 0,
-              shouldSavePartialProgress
-            )
-          }
+    val startPlayingProvider = when {
+      !canHavePartialProgressSaved -> {
+        // Only explorations that have been completed can't be saved, so replay the lesson.
+        explorationDataController.replayExploration(
+          internalProfileId, topicId, storyId, explorationId
+        )
+      }
+      hadProgress -> {
+        // If there was progress, either the checkpoint was never saved, failed to save, or failed
+        // to be retrieved. In all cases, this is a restart.
+        explorationDataController.restartExploration(
+          internalProfileId, topicId, storyId, explorationId
+        )
+      }
+      else -> {
+        // If there's no progress and it was never completed, then it's a new play through (or the
+        // user is very low on device memory).
+        explorationDataController.startPlayingNewExploration(
+          internalProfileId, topicId, storyId, explorationId
+        )
+      }
+    }
+    startPlayingProvider.toLiveData().observe(fragment) { result ->
+      when (result) {
+        is AsyncResult.Pending -> oppiaLogger.d("TopicLessonsFragment", "Loading exploration")
+        is AsyncResult.Failure ->
+          oppiaLogger.e("TopicLessonsFragment", "Failed to load exploration", result.error)
+        is AsyncResult.Success -> {
+          oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(
+            internalProfileId,
+            topicId,
+            storyId,
+            explorationId,
+            backflowScreen = 0,
+            isCheckpointingEnabled = canHavePartialProgressSaved
+          )
         }
       }
-    )
+    }
   }
 }

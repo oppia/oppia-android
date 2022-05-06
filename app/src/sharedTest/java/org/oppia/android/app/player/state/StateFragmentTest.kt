@@ -126,6 +126,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowT
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -167,6 +169,7 @@ import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -1223,58 +1226,6 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
 
       onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testStateFragment_showHintsAndSolutionBulb_dotHasCorrectContentDescription() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      selectMultipleChoiceOption(
-        optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
-      )
-      clickSubmitAnswerButton()
-      clickContinueNavigationButton()
-
-      // Entering incorrect answer twice.
-      typeFractionText("1/2")
-      clickSubmitAnswerButton()
-      scrollToViewType(FRACTION_INPUT_INTERACTION)
-      typeFractionText("1/2")
-      clickSubmitAnswerButton()
-
-      onView(withId(R.id.dot_hint)).check(
-        matches(
-          withContentDescription(R.string.new_hint_available)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectContentDescription() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      selectMultipleChoiceOption(
-        optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
-      )
-      clickSubmitAnswerButton()
-      clickContinueNavigationButton()
-
-      // Entering incorrect answer twice.
-      typeFractionText("1/2")
-      clickSubmitAnswerButton()
-      scrollToViewType(FRACTION_INPUT_INTERACTION)
-      typeFractionText("1/2")
-      clickSubmitAnswerButton()
-
-      onView(withId(R.id.hint_bulb)).check(
-        matches(
-          withContentDescription(R.string.show_hints_and_solution)
-        )
-      )
     }
   }
 
@@ -3629,6 +3580,37 @@ class StateFragmentTest {
   // TODO(#3171): Implement image region selection tests for English/Arabic to demonstrate that
   //  answers submit normally & with no special behaviors.
 
+  @Test
+  fun testStateFragment_clickContinue_returnToState_doesNotHaveFeedbackBox() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      clickPreviousNavigationButton()
+
+      // The continue interaction should not show feedback.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.submitted_answer_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_clickContinue_finishNextState_returnToContinue_doesNotHaveFeedbackBox() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // Finish the current state, then return back to the previous one.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickPreviousNavigationButton()
+
+      // The continue interaction should not show feedback.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.submitted_answer_text_view)).check(doesNotExist())
+    }
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
@@ -4332,7 +4314,9 @@ class StateFragmentTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

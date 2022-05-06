@@ -13,7 +13,9 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:learner_analytics_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//model/src/main/proto:profile_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
