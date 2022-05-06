@@ -282,7 +282,7 @@ class ExplorationCheckpointController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "ExplorationCheckpointController",

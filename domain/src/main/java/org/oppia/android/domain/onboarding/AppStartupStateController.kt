@@ -34,7 +34,7 @@ class AppStartupStateController @Inject constructor(
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to
     // markOnboardingFlowCompleted().
-    onboardingFlowStore.primeCacheAsync().invokeOnCompletion {
+    onboardingFlowStore.primeInMemoryCacheAsync().invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
           "DOMAIN", "Failed to prime cache ahead of data retrieval for user onboarding data.", it

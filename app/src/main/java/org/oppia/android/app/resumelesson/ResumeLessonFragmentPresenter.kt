@@ -161,40 +161,37 @@ class ResumeLessonFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     explorationId: String,
-    explorationCheckpoint: ExplorationCheckpoint,
+    checkpoint: ExplorationCheckpoint,
     backflowScreen: Int?
   ) {
-    explorationDataController.startPlayingExploration(
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      // shouldSavePartialProgress is set to true by default because stating lesson from
-      // ResumeLessonFragment implies that learner has not completed the lesson.
-      shouldSavePartialProgress = true,
-      explorationCheckpoint
-    ).toLiveData().observe(
-      fragment,
-      Observer<AsyncResult<Any?>> { result ->
-        when (result) {
-          is AsyncResult.Pending -> oppiaLogger.d("ResumeLessonFragment", "Loading exploration")
-          is AsyncResult.Failure ->
-            oppiaLogger.e("ResumeLessonFragment", "Failed to load exploration", result.error)
-          is AsyncResult.Success -> {
-            oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
-            routeToExplorationListener.routeToExploration(
-              internalProfileId,
-              topicId,
-              storyId,
-              explorationId,
-              backflowScreen,
-              // Checkpointing is enabled be default because stating lesson from
-              // ResumeLessonFragment implies that learner has not completed the lesson.
-              isCheckpointingEnabled = true
-            )
-          }
+    val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
+      explorationDataController.restartExploration(
+        internalProfileId, topicId, storyId, explorationId
+      )
+    } else {
+      explorationDataController.resumeExploration(
+        internalProfileId, topicId, storyId, explorationId, checkpoint
+      )
+    }
+    startPlayingProvider.toLiveData().observe(fragment) { result ->
+      when (result) {
+        is AsyncResult.Pending -> oppiaLogger.d("ResumeLessonFragment", "Loading exploration")
+        is AsyncResult.Failure ->
+          oppiaLogger.e("ResumeLessonFragment", "Failed to load exploration", result.error)
+        is AsyncResult.Success -> {
+          oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
+          routeToExplorationListener.routeToExploration(
+            internalProfileId,
+            topicId,
+            storyId,
+            explorationId,
+            backflowScreen,
+            // Checkpointing is enabled be default because stating lesson from
+            // ResumeLessonFragment implies that learner has not completed the lesson.
+            isCheckpointingEnabled = true
+          )
         }
       }
-    )
+    }
   }
 }

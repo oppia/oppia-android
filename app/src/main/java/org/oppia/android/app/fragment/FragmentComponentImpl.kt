@@ -6,6 +6,7 @@ import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
@@ -136,6 +137,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(policiesFragment: PoliciesFragment)
+  fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)
   fun inject(profileEditFragment: ProfileEditFragment)

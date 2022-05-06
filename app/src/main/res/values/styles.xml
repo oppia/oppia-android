@@ -438,6 +438,8 @@
     <item name="android:textSize">14sp</item>
   </style>
 
+  <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
+
   <style name="MarqueeToolbarTitleTextView" parent="TextView.Common1">
     <item name="android:ellipsize">marquee</item>
     <item name="android:fadingEdge">horizontal</item>

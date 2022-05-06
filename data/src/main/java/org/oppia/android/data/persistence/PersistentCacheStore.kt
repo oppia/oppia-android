@@ -23,7 +23,7 @@ import kotlin.concurrent.withLock
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a
  * well-defined order. Note that if this cache is used like a [DataProvider], there is a race
  * condition between the initial store's data being retrieved and any early writes to the store
- * (writes generally win). If this is not ideal, callers should use [primeCacheAsync] to
+ * (writes generally win). If this is not ideal, callers should use [primeInMemoryCacheAsync] to
  * synchronously kick-off a read update to the store that is guaranteed to complete before any
  * writes. This will be reflected in the first time the store's state is delivered to a subscriber
  * to a LiveData version of this data provider.
@@ -97,7 +97,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    *     LiveData-converted version of this data provider, so it must be handled at the callsite for
    *     this method.
    */
-  fun primeCacheAsync(forceUpdate: Boolean = false): Deferred<Any> {
+  fun primeInMemoryCacheAsync(forceUpdate: Boolean = false): Deferred<Any> {
     return cache.updateIfPresentAsync { cachePayload ->
       if (forceUpdate || cachePayload.state == CacheState.UNLOADED) {
         // Store the retrieved on-disk cache, if it's present (otherwise set up state such that
@@ -107,6 +107,47 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       } else {
         // Otherwise, keep the cache the same.
         cachePayload
+      }
+    }
+  }
+
+  /**
+   * Primes the current cache such that both the in-memory and on-disk versions of this cache are
+   * guaranteed to be in sync, returning a [Deferred] that completes only after the operation is
+   * finished.
+   *
+   * The provided [initialize] initializer will only ever be called if the on-disk cache is not yet
+   * initialized, and it will be passed the initial value used to create this cache store. The value
+   * it returns will be used to initialize both the in-memory and on-disk copies of the cache.
+   *
+   * The value of the returned [Deferred] is not useful. The state of the cache should monitored by
+   * treating this provider as a [DataProvider]. This method may result in multiple update
+   * notifications to observers of this [DataProvider], but the latest value will be the source of
+   * truth.
+   *
+   * Where [primeInMemoryCacheAsync] is useful to ensure any on-disk cache is properly loaded into
+   * memory prior to using a cache store, this method is useful when a disk cache has a
+   * contextually-sensitive initialization routine (such as an ID that cannot change after
+   * initialization) as it ensures a reliable, initial clean state for the cache store that will be
+   * consistent with future runs of the app.
+   */
+  fun primeInMemoryAndDiskCacheAsync(initialize: (T) -> T): Deferred<Any> {
+    return cache.updateIfPresentAsync { cachePayload ->
+      when (cachePayload.state) {
+        CacheState.UNLOADED -> {
+          val loadedPayload = loadFileCache(cachePayload)
+          when (loadedPayload.state) {
+            // The state should never stay as UNLOADED.
+            CacheState.UNLOADED ->
+              error("Something went wrong loading the cache during priming: $cacheFile")
+            CacheState.IN_MEMORY_ONLY -> storeFileCache(loadedPayload, initialize) // Needs saving.
+            CacheState.IN_MEMORY_AND_ON_DISK -> loadedPayload // Loaded from disk successfully.
+          }
+        }
+        // This generally indicates that something went wrong reading the on-disk cache, so make
+        // sure it's properly initialized.
+        CacheState.IN_MEMORY_ONLY -> storeFileCache(cachePayload, initialize)
+        CacheState.IN_MEMORY_AND_ON_DISK -> cachePayload
       }
     }
   }
@@ -157,7 +198,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
   fun <V> storeDataWithCustomChannelAsync(
     updateInMemoryCache: Boolean = true,
-    update: (T) -> Pair<T, V>
+    update: suspend (T) -> Pair<T, V>
   ): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
@@ -173,7 +214,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * does notify subscribers.
    */
   fun clearCacheAsync(): Deferred<Any> {
-    return cache.updateIfPresentAsync {
+    return cache.updateIfPresentAsync { currentPayload ->
       if (cacheFile.exists()) {
         cacheFile.delete()
       }
@@ -183,7 +224,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       // Always clear the in-memory cache and reset it to the initial value (the cache itself should
       // never be fully deleted since the rest of the store assumes a value is always present in
       // it).
-      CachePayload(state = CacheState.UNLOADED, value = initialValue)
+      currentPayload.copy(state = CacheState.UNLOADED, value = initialValue)
     }
   }
 
@@ -206,12 +247,12 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private fun loadFileCache(currentPayload: CachePayload<T>): CachePayload<T> {
     if (!cacheFile.exists()) {
       // The store is not yet persisted on disk.
-      return currentPayload.moveToState(CacheState.IN_MEMORY_ONLY)
+      return currentPayload.copy(state = CacheState.IN_MEMORY_ONLY)
     }
 
     val cacheBuilder = currentPayload.value.toBuilder()
     return try {
-      CachePayload(
+      currentPayload.copy(
         state = CacheState.IN_MEMORY_AND_ON_DISK,
         value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T
       )
@@ -221,10 +262,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       }
       // Update the cache to have an in-memory copy of the current payload since on-disk retrieval
       // failed.
-      CachePayload(
-        state = CacheState.IN_MEMORY_ONLY,
-        value = currentPayload.value
-      )
+      currentPayload.copy(state = CacheState.IN_MEMORY_ONLY, value = currentPayload.value)
     }
   }
 
@@ -235,18 +273,19 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private fun storeFileCache(currentPayload: CachePayload<T>, update: (T) -> T): CachePayload<T> {
     val updatedCacheValue = update(currentPayload.value)
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
-    return CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
+    return currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
   }
 
   /** See [storeFileCache]. Returns payload and custom result. */
-  private fun <V> storeFileCacheWithCustomChannel(
+  private suspend fun <V> storeFileCacheWithCustomChannel(
     currentPayload: CachePayload<T>,
-    update: (T) -> Pair<T, V>
+    update: suspend (T) -> Pair<T, V>
   ): Pair<CachePayload<T>, V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
+    // TODO(#4264): Move this over to using an I/O-specific dispatcher.
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
     return Pair(
-      CachePayload(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
+      currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
       customResult
     )
   }
@@ -265,12 +304,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     IN_MEMORY_AND_ON_DISK
   }
 
-  private data class CachePayload<T>(val state: CacheState, val value: T) {
-    /** Returns a copy of this payload with the new, specified [CacheState]. */
-    fun moveToState(newState: CacheState): CachePayload<T> {
-      return CachePayload(state = newState, value = value)
-    }
-  }
+  private data class CachePayload<T>(val state: CacheState, val value: T)
 
   // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for
   //  cross-module circular ependencies. Currently, the data module cannot depend on the app module.

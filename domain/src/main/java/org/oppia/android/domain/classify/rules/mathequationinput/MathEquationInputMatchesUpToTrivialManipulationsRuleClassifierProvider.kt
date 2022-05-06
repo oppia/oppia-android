@@ -7,11 +7,14 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation as parseEquation
 
 /**
  * Provider for a classifier that determines whether a math equation is equal to the
@@ -41,8 +44,10 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
     classificationContext: ClassificationContext
   ): Boolean {
     val allowedVariables = classificationContext.extractAllowedVariables()
-    val (answerLhs, answerRhs) = parseComparableLists(answer, allowedVariables) ?: return false
-    val (inputLhs, inputRhs) = parseComparableLists(input, allowedVariables) ?: return false
+    val (answerLhs, answerRhs) =
+      parseComparableLists(answer, allowedVariables, ALL_ERRORS) ?: return false
+    val (inputLhs, inputRhs) =
+      parseComparableLists(input, allowedVariables, REQUIRED_ONLY) ?: return false
 
     // Sides must match (reordering around the '=' is not allowed by this classifier).
     return answerLhs.isApproximatelyEqualTo(inputLhs) && answerRhs.isApproximatelyEqualTo(inputRhs)
@@ -50,9 +55,10 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
 
   private fun parseComparableLists(
     rawEquation: String,
-    allowedVariables: List<String>
+    allowedVariables: List<String>,
+    checkingMode: ErrorCheckingMode
   ): Pair<ComparableOperation, ComparableOperation>? {
-    return when (val eqResult = parseAlgebraicEquation(rawEquation, allowedVariables)) {
+    return when (val eqResult = parseEquation(rawEquation, allowedVariables, checkingMode)) {
       is MathParsingResult.Success -> {
         val lhsExp = eqResult.result.leftSide
         val rhsExp = eqResult.result.rightSide
