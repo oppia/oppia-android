@@ -256,7 +256,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun updateLearnerIdIfAbsent(profile: Profile) {
     if (profile.learnerId.isNullOrEmpty()) {
-      // TODO: need to block on this completing before proceeding with the login.
+      // TODO(#4345): Block on the following data provider before allowing the user to log in.
       profileManagementController.initializeLearnerId(profile.id)
     }
   }

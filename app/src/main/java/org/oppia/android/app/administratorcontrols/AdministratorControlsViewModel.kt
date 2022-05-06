@@ -77,7 +77,7 @@ class AdministratorControlsViewModel @Inject constructor(
         loadProfileListListener
       )
     )
-    // TODO: Add tests to verify on/off state.
+    // TODO(#4345): Add tests to verify this behavior both for the study flag being on & off.
     if (learnerStudyAnalytics.value) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
