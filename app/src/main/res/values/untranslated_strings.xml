@@ -44,22 +44,6 @@
   <string name="math_expression_human_readable_string" translatable="false">Human-readable string</string>
   <string name="math_expression_allowed_variables_input_hint" translatable="false">Allowed variables (comma-separated)</string>
   <string name="math_expression_treat_divisions_as_fractions_label" translatable="false">Treat divisions as fractions</string>
-  <!-- AdministratorControlsFragment -->
-  <string name="administrator_controls_learner_analytics_title" translatable="false">Learner Study Analytics</string>
-  <string name="administrator_controls_learner_analytics_label" translatable="false">Profile &amp; Device IDs</string>
-  <!-- ProfileAndDeviceIDsActivity -->
-  <string name="profile_and_device_id_activity_title" translatable="false">Profile &amp; Device IDs</string>
-  <string name="learner_analytics_profile_id_label" translatable="false">Profile ID</string>
-  <string name="learner_analytics_profile_name_label" translatable="false">Profile Name</string>
-  <string name="learner_analytics_device_id_label" translatable="false">Device ID:</string>
-  <string name="learner_analytics_copy_to_clipboard_label" translatable="false">Copy</string>
-  <string name="learner_analytics_copied_to_clipboard_label" translatable="false">Copied</string>
-  <string name="learner_analytics_copied_to_clipboard_snackbar_text" translatable="false">Copied "%s"</string>
-  <!-- Learner Analytics Sync Statuses -->
-  <string name="learner_analytics_sync_status_default" translatable="false">No data has been collected yet to upload.</string>
-  <string name="learner_analytics_sync_status_data_uploading" translatable="false">Profile data is currently uploading…</string>
-  <string name="learner_analytics_sync_status_data_uploaded" translatable="false">All profile data has been uploaded.</string>
-  <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
   <!-- Accessibility string generation for math expressions. Note that these are in lowercase on purpose. -->
   <string name="math_accessibility_part_zed" translatable="false">zed</string>
   <string name="math_accessibility_part_one_half" translatable="false">one half</string>
@@ -77,4 +61,22 @@
   <string name="math_accessibility_implicit_multiplication" translatable="false">%s %s</string>
   <string name="math_accessibility_simple_fraction" translatable="false">%s over %s</string>
   <string name="math_accessibility_complex_fraction" translatable="false">the fraction with numerator %s and denominator %s</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_learner_analytics_title" translatable="false">Learner Study Analytics</string>
+  <string name="administrator_controls_learner_analytics_label" translatable="false">Profile &amp; Install IDs</string>
+  <!-- ProfileAndDeviceIDsActivity -->
+  <string name="profile_and_device_id_activity_title" translatable="false">Profile Learner IDs &amp; Sync Status</string>
+  <string name="learner_analytics_profile_id_label" translatable="false">Profile ID</string>
+  <string name="learner_analytics_profile_name_label" translatable="false">Profile Name</string>
+  <string name="learner_analytics_device_id_label" translatable="false">Installation ID: %s</string>
+  <string name="learner_analytics_error_retrieving_device_id_error" translatable="false">Error retrieving installation ID</string>
+  <string name="learner_analytics_copy_to_clipboard_label" translatable="false">Copy</string>
+  <string name="learner_analytics_copied_to_clipboard_label" translatable="false">Copied</string>
+  <!-- Learner Analytics Sync Statuses -->
+  <string name="learner_analytics_sync_status_default" translatable="false">No data has been collected yet to upload.</string>
+  <string name="learner_analytics_sync_status_data_uploading" translatable="false">Profile data is currently uploading…</string>
+  <string name="learner_analytics_sync_status_data_uploaded" translatable="false">All profile data has been uploaded.</string>
+  <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
+  <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installation ID</string>
+  <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
 </resources>
