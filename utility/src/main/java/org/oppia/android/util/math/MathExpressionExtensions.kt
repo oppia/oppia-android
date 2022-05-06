@@ -54,7 +54,12 @@ fun MathExpression.toComparableOperation(): ComparableOperation = convertToCompa
  */
 fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()
 
-// TODO: Add tests & docs.
+// TODO(#4345): Add tests for this method.
+/**
+ * Returns a new version of this [MathExpression] with single-term redundant parentheses removed
+ * (i.e. the expression representing '(2)+(1*(3))' would instead be simplified to the same
+ * expression as needed to represent '2+(1*3)').
+ */
 fun MathExpression.stripRedundantGroups(): MathExpression {
   return when (expressionTypeCase) {
     BINARY_OPERATION -> toBuilder().apply {

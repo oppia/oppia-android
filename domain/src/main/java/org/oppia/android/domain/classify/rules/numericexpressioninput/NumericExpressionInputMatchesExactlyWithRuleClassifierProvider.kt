@@ -7,14 +7,14 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.isApproximatelyEqualTo
-import javax.inject.Inject
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
+import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseNumericExpression
+import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.stripRedundantGroups
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether a numeric expression is exactly equal to the
@@ -45,9 +45,11 @@ class NumericExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject con
     return answerExpression.isApproximatelyEqualTo(inputExpression.stripRedundantGroups())
   }
 
-  // TODO: Here & elsewhere: add checks for verifying that rule inputs can include minor errors, including redundant parentheses.
+  // TODO(#4345): Add tests for this & other math expression classifiers to verifying that rule
+  //  inputs can include minor errors (particularly, redundant parentheses).
   private fun parseExpression(
-    rawExpression: String, checkingMode: ErrorCheckingMode
+    rawExpression: String,
+    checkingMode: ErrorCheckingMode
   ): MathExpression? {
     return when (val expResult = parseNumericExpression(rawExpression, checkingMode)) {
       is MathParsingResult.Success -> expResult.result

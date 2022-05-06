@@ -7,14 +7,13 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toComparableOperation
 import javax.inject.Inject
-import org.oppia.android.util.math.MathExpressionParser
-import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
-import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
-import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicExpression as parseExpression
 
 /**

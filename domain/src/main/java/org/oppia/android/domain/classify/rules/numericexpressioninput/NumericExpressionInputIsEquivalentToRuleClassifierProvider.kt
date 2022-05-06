@@ -7,15 +7,14 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.math.MathExpressionParser
-import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.evaluateAsNumericExpression
-import org.oppia.android.util.math.isApproximatelyEqualTo
-import javax.inject.Inject
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
+import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseNumericExpression
+import org.oppia.android.util.math.evaluateAsNumericExpression
+import org.oppia.android.util.math.isApproximatelyEqualTo
+import javax.inject.Inject
 
 /**
  * Provider for a classifier that determines whether a numeric expression is numerically equivalent
@@ -46,7 +45,8 @@ class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constru
   }
 
   private fun evaluateNumericExpression(
-    rawExpression: String, checkingMode: ErrorCheckingMode
+    rawExpression: String,
+    checkingMode: ErrorCheckingMode
   ): Real? {
     return when (val expResult = parseNumericExpression(rawExpression, checkingMode)) {
       is MathParsingResult.Success -> {
