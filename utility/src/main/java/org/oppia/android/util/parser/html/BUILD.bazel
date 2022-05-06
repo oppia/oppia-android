@@ -64,10 +64,10 @@ kt_android_library(
     ],
     visibility = [
         "//app:__subpackages__",
-     ],
+    ],
     deps = [
         "//utility",
-     ],
+    ],
 )
 
 kt_android_library(
