@@ -3,6 +3,7 @@ package org.oppia.android.util.parser.svg
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Paint
@@ -20,7 +21,7 @@ import org.oppia.android.util.parser.image.ImageTransformation
  * rendering methods available.
  */
 abstract class SvgPictureDrawable(
-  context: Context,
+  private val context: Context,
   private val scalableVectorGraphic: ScalableVectorGraphic
 ) : Drawable() {
   // TODO(#1523): Once Glide can be orchestrated, add tests for verifying this drawable's state.
@@ -59,6 +60,12 @@ abstract class SvgPictureDrawable(
             translate(left.toFloat(), top.toFloat())
           }
 
+          // If the destination is larger than the intrinsic size (such as when the app needs the
+          // image to be larger for accessibility) then ensure the picture is correspondingly
+          // scaled.
+          val scaleX = bounds.width().toFloat() / intrinsicWidth
+          val scaleY = bounds.height().toFloat() / intrinsicHeight
+          scale(scaleX, scaleY)
           drawPicture(picture)
         }
       }
@@ -91,6 +98,7 @@ abstract class SvgPictureDrawable(
     picture = textPaint?.let {
       scalableVectorGraphic.renderToTextPicture(it)
     } ?: scalableVectorGraphic.renderToBlockPicture()
+    // TODO(#4246): Fix both SVG rendering performance and upscaling to ensure images aren't blurry.
     intrinsicSize = scalableVectorGraphic.computeSizeSpecs(textPaint)
     if (scalableVectorGraphic.shouldBeRenderedAsBitmap()) {
       recomputeBitmap()
@@ -99,8 +107,7 @@ abstract class SvgPictureDrawable(
 
   private fun recomputeBitmap() {
     bitmap = picture?.let { picture ->
-      val renderedPictureBitmap =
-        Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+      val renderedPictureBitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, ARGB_8888)
       val canvas = Canvas(renderedPictureBitmap)
       canvas.drawPicture(picture)
       return@let transformBitmap(renderedPictureBitmap)

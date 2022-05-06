@@ -3580,6 +3580,37 @@ class StateFragmentTest {
   // TODO(#3171): Implement image region selection tests for English/Arabic to demonstrate that
   //  answers submit normally & with no special behaviors.
 
+  @Test
+  fun testStateFragment_clickContinue_returnToState_doesNotHaveFeedbackBox() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      clickPreviousNavigationButton()
+
+      // The continue interaction should not show feedback.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.submitted_answer_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_clickContinue_finishNextState_returnToContinue_doesNotHaveFeedbackBox() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      // Finish the current state, then return back to the previous one.
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickPreviousNavigationButton()
+
+      // The continue interaction should not show feedback.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.submitted_answer_text_view)).check(doesNotExist())
+    }
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")

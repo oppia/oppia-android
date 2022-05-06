@@ -7,14 +7,17 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.minus
 import org.oppia.android.util.math.sort
 import org.oppia.android.util.math.toPolynomial
 import org.oppia.android.util.math.unaryMinus
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation as parseEquation
 
 /**
  * Provider for a classifier that determines whether a math equation expression is mathematically
@@ -44,8 +47,10 @@ class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
     classificationContext: ClassificationContext
   ): Boolean {
     val allowedVariables = classificationContext.extractAllowedVariables()
-    val (answerLhs, answerRhs) = parsePolynomials(answer, allowedVariables) ?: return false
-    val (inputLhs, inputRhs) = parsePolynomials(input, allowedVariables) ?: return false
+    val (answerLhs, answerRhs) =
+      parsePolynomials(answer, allowedVariables, ALL_ERRORS) ?: return false
+    val (inputLhs, inputRhs) =
+      parsePolynomials(input, allowedVariables, REQUIRED_ONLY) ?: return false
 
     val newAnswerLhs = (answerLhs - answerRhs).sort()
     val newInputLhs = (inputLhs - inputRhs).sort()
@@ -65,9 +70,10 @@ class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
 
   private fun parsePolynomials(
     rawEquation: String,
-    allowedVariables: List<String>
+    allowedVariables: List<String>,
+    checkingMode: ErrorCheckingMode
   ): Pair<Polynomial, Polynomial>? {
-    return when (val eqResult = parseAlgebraicEquation(rawEquation, allowedVariables)) {
+    return when (val eqResult = parseEquation(rawEquation, allowedVariables, checkingMode)) {
       is MathParsingResult.Success -> {
         val lhsExp = eqResult.result.leftSide.toPolynomial()
         val rhsExp = eqResult.result.rightSide.toPolynomial()
