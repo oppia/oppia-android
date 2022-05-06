@@ -22,6 +22,9 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
@@ -35,8 +38,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.logging.FakeSyncStatusManager
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -46,49 +50,44 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
 
+/** Tests for [LogUploadWorker]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-
-  @Inject
-  lateinit var analyticsController: AnalyticsController
-
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+  @field:[Inject MockEventLogger] lateinit var mockEventLogger: EventLogger
 
   private lateinit var context: Context
 
@@ -147,6 +146,34 @@ class LogUploadWorkerTest {
   }
 
   @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      eventLogTopicContext.timestamp,
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    setUpEventLoggerToFail()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+  }
+
+  @Test
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
@@ -176,6 +203,66 @@ class LogUploadWorkerTest {
     assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
   }
 
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyCorrectSyncStatusSequence() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      eventLogTopicContext.timestamp,
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val statusList = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(statusList).containsExactly(NO_CONNECTIVITY, DATA_UPLOADING, DATA_UPLOADED).inOrder()
+  }
+
+  @Test
+  fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifySyncStatusIsFailed() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      eventLogTopicContext.timestamp,
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.EVENT_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+
+    setUpEventLoggerToFail()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val statusList = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(statusList).containsExactly(NO_CONNECTIVITY, DATA_UPLOADING, NETWORK_ERROR).inOrder()
+  }
+
+  private fun setUpEventLoggerToFail() {
+    // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
+    // to remove the default stubbing for the mock so that it can properly trigger a failure.
+    reset(mockEventLogger)
+    `when`(mockEventLogger.logEvent(anyOrNull())).thenThrow(IllegalStateException("Failure."))
+  }
+
   /**
    * Returns a list of lists of each relevant element of a [StackTraceElement] to be used for
    * comparison in a way that's consistent across JDK versions.
@@ -198,14 +285,31 @@ class LogUploadWorkerTest {
       .inject(this)
   }
 
+  @Qualifier annotation class MockEventLogger
+
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
+    fun provideContext(application: Application): Context = application
+
+    @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
+    @MockEventLogger
+    fun bindMockEventLogger(fakeLogger: FakeEventLogger): EventLogger {
+      return mock(EventLogger::class.java).also {
+        `when`(it.logEvent(anyOrNull())).then { answer ->
+          fakeLogger.logEvent(answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java))
+          return@then null
+        }
+      }
     }
+
+    @Provides
+    fun bindFakeEventLogger(@MockEventLogger delegate: EventLogger): EventLogger = delegate
+
+    @Provides
+    fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
   }
 
   @Module
@@ -231,13 +335,12 @@ class LogUploadWorkerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestLogStorageModule::class, TestDispatcherModule::class,
-      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, ApplicationLifecycleModule::class
+      TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
+      TestDispatcherModule::class, LogUploadWorkerModule::class,
+      TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

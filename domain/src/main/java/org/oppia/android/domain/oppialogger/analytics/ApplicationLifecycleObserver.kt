@@ -21,6 +21,7 @@ import javax.inject.Singleton
 class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val loggingIdentifierController: LoggingIdentifierController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
@@ -42,17 +43,16 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
-    // TODO(#4064): Log the 'app in foreground' event here.
+    logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
   }
 
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
     firstTimestamp = oppiaClock.getCurrentTimeMs()
-    // TODO(#4064): Log the 'app in background' event here.
+    logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
   }
 
-  @Suppress("unused") // TODO(#4064): Add usage for this method.
   private fun logAppLifecycleEventInBackground(logMethod: (String?, String?) -> Unit) {
     CoroutineScope(backgroundDispatcher).launch {
       val installationId = loggingIdentifierController.fetchInstallationId()

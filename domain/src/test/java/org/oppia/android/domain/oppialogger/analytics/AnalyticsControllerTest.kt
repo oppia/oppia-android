@@ -34,6 +34,9 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -471,13 +474,11 @@ class AnalyticsControllerTest {
         )
       )
     )
-
-    // TODO(#4064): Ensure that sync status changes here.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
+    assertThat(fakeSyncStatusManager.getSyncStatuses()).containsExactly(NO_CONNECTIVITY)
   }
 
   @Test
-  fun testController_logEvent_afterCompletion_verifySyncStatusIsUnchanged() {
+  fun testController_logEvent_verifySyncStatusChangesToRepresentLoggedEvent() {
     analyticsController.logImportantEvent(
       1556094120000,
       oppiaLogger.createOpenQuestionPlayerContext(
@@ -488,24 +489,8 @@ class AnalyticsControllerTest {
       )
     )
 
-    // TODO(#4064): Ensure that sync status changes here.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
-  }
-
-  @Test
-  fun testController_logEvent_beforeCompletion_verifySyncStatusIsUnchanged() {
-    analyticsController.logImportantEvent(
-      1556094120000,
-      oppiaLogger.createOpenQuestionPlayerContext(
-        TEST_QUESTION_ID,
-        listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
-      )
-    )
-
-    // TODO(#4064): Ensure that sync status changes here.
-    assertThat(fakeSyncStatusManager.getSyncStatuses()).isEmpty()
+    val syncStatuses = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(syncStatuses).containsExactly(DATA_UPLOADING, DATA_UPLOADED)
   }
 
   private fun setUpTestApplicationComponent() {

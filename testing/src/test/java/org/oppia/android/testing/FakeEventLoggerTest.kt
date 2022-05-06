@@ -75,11 +75,7 @@ class FakeEventLoggerTest {
 
   @Test
   fun testFakeEventLogger_logNothing_getMostRecent_returnsFailure() {
-    val eventException = assertThrows(NoSuchElementException::class) {
-      fakeEventLogger.getMostRecentEvent()
-    }
-
-    assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
+    assertThrows(NoSuchElementException::class) { fakeEventLogger.getMostRecentEvent() }
   }
 
   @Test
@@ -141,6 +137,128 @@ class FakeEventLoggerTest {
     assertThat(eventListStatus).isFalse()
     assertThat(eventLogStatus1).isTrue()
     assertThat(eventLogStatus2).isTrue()
+  }
+
+  @Test
+  fun testGetOldestEvent_noEventsLogged_throwsException() {
+    assertThrows(NoSuchElementException::class) { fakeEventLogger.getOldestEvent() }
+  }
+
+  @Test
+  fun testGetOldestEvent_oneEventLogged_returnsLoggedEvent() {
+    eventLogger.logEvent(eventLog1)
+
+    val oldestEvent = fakeEventLogger.getOldestEvent()
+
+    assertThat(oldestEvent).isEqualTo(eventLog1)
+  }
+
+  @Test
+  fun testGetOldestEvent_twoEventsLogged_returnsFirstEventLogged() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+
+    val oldestEvent = fakeEventLogger.getOldestEvent()
+
+    assertThat(oldestEvent).isEqualTo(eventLog2)
+  }
+
+  @Test
+  fun testGetOldestEvent_twoEventsLogged_clearEvents_throwsException() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+    fakeEventLogger.clearAllEvents()
+
+    assertThrows(NoSuchElementException::class) { fakeEventLogger.getOldestEvent() }
+  }
+
+  @Test
+  fun testGetOldestEvent_eventLogged_cleared_newEventLogged_returnsLatestEventLog() {
+    eventLogger.logEvent(eventLog2)
+    fakeEventLogger.clearAllEvents()
+    eventLogger.logEvent(eventLog1)
+
+    val oldestEvent = fakeEventLogger.getOldestEvent()
+
+    assertThat(oldestEvent).isEqualTo(eventLog1)
+  }
+
+  @Test
+  fun testGetMostRecentEvents_twoEvents_noEventsLogged_returnsEmptyList() {
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+
+    assertThat(mostRecentEvents).isEmpty()
+  }
+
+  @Test
+  fun testGetMostRecentEvents_twoEvents_oneEventLogged_returnsOneItemList() {
+    eventLogger.logEvent(eventLog1)
+
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+
+    assertThat(mostRecentEvents).containsExactly(eventLog1)
+  }
+
+  @Test
+  fun testGetMostRecentEvents_twoEvents_twoEventsLogged_returnsEventsInOrder() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+
+    assertThat(mostRecentEvents).containsExactly(eventLog2, eventLog1).inOrder()
+  }
+
+  @Test
+  fun testGetMostRecentEvents_oneEvent_twoEventsLogged_returnsSingleLatestEvent() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 1)
+
+    assertThat(mostRecentEvents).containsExactly(eventLog1)
+  }
+
+  @Test
+  fun testGetMostRecentEvents_zeroEvents_twoEventsLogged_returnsEmptyList() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 0)
+
+    assertThat(mostRecentEvents).isEmpty()
+  }
+
+  @Test
+  fun testGetMostRecentEvents_negativeEvents_twoEventsLogged_throwsException() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+
+    assertThrows(IllegalArgumentException::class) {
+      fakeEventLogger.getMostRecentEvents(count = -1)
+    }
+  }
+
+  @Test
+  fun testGetMostRecentEvents_twoEventsLogged_eventsCleared_returnsEmptyList() {
+    eventLogger.logEvent(eventLog2)
+    eventLogger.logEvent(eventLog1)
+    fakeEventLogger.clearAllEvents()
+
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+
+    assertThat(mostRecentEvents).isEmpty()
+  }
+
+  @Test
+  fun testGetMostRecentEvents_eventLogged_cleared_newEventLogged_returnsNewestEvent() {
+    eventLogger.logEvent(eventLog1)
+    fakeEventLogger.clearAllEvents()
+    eventLogger.logEvent(eventLog2)
+
+    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+
+    assertThat(mostRecentEvents).containsExactly(eventLog2)
   }
 
   private fun setUpTestApplicationComponent() {

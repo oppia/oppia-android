@@ -62,8 +62,11 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -74,6 +77,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -81,6 +85,8 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
+import org.oppia.android.testing.logging.EventLogSubject
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -99,6 +105,8 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -140,6 +148,8 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var profileManagementController: ProfileManagementController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -1884,6 +1894,306 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.writtenTranslationContext.translationsMap).isNotEmpty()
   }
 
+  @Test
+  fun testPlayNewExploration_logsStartCardEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val exploration = loadExploration(TEST_EXPLORATION_ID_2)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(eventLog).hasStartCardContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
+  }
+
+  @Test
+  fun testResumeExploration_logsResumeExplorationEventAndNotStartCardEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    val checkpoint = createTestExp2CheckpointToState6()
+    fakeEventLogger.clearAllEvents()
+
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Resuming shouldn't log a 'start card' event.
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(eventLog).hasResumeExplorationContextThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+  }
+
+  @Test
+  fun testStartOverExploration_logsStartCardAndStartOverEvents() {
+    logIntoAnalyticsReadyAdminProfile()
+    createTestExp2CheckpointToState6()
+    fakeEventLogger.clearAllEvents()
+
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val (eventLog1, eventLog2) = fakeEventLogger.getMostRecentEvents(count = 2)
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(2)
+    assertThat(eventLog1).hasStartOverExplorationContextThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+    assertThat(eventLog2).hasStartCardContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      // The exploration should have been started over.
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
+  }
+
+  @Test
+  fun testPlayExplorationAgain_logsStartCardEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    createTestExp2CheckpointToState6()
+    fakeEventLogger.clearAllEvents()
+
+    replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(eventLog).hasStartCardContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      // The exploration should have been started over.
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
+  }
+
+  @Test
+  fun testSubmitAnswer_correctAnswer_logsEndCardAndSubmitAnswerEvents() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    fakeEventLogger.clearAllEvents()
+
+    submitPrototypeState2Answer()
+
+    val (eventLog1, eventLog2) = fakeEventLogger.getMostRecentEvents(count = 2)
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(2)
+    assertThat(eventLog1).hasSubmitAnswerContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasAnswerCorrectValueThat().isTrue()
+    }
+    assertThat(eventLog2).hasEndCardContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
+  }
+
+  @Test
+  fun testSubmitAnswer_wrongAnswer_logsSubmitAnswerEventOnly() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    fakeEventLogger.clearAllEvents()
+
+    submitWrongAnswerForPrototypeState2()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(eventLog).hasSubmitAnswerContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasAnswerCorrectValueThat().isFalse()
+    }
+  }
+
+  @Test
+  fun testMoveToNextState_logsStartCardEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    submitPrototypeState1Answer()
+    fakeEventLogger.clearAllEvents()
+
+    moveToNextState()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    assertThat(eventLog).hasStartCardContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
+  }
+
+  @Test
+  fun testHint_offered_logsHintOfferedEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // Submit 2 wrong answers to trigger a hint becoming available.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasHintOfferedContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasHintIndexThat().isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testHint_offeredThenViewed_logsViewHintEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger a hint becoming available.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAccessHintContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
+      hasHintIndexThat().isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testHint_lastHintWithNoSolution_offered_logsHintOfferedEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
+    waitForGetCurrentStateSuccessfulLoad()
+    submitContinueButtonAnswerAndContinue() // 'Introduction' -> 'A Problem'
+    submitContinueButtonAnswerAndContinue() // 'A Problem' -> 'Mr. Baker'
+    submitContinueButtonAnswerAndContinue() // 'Mr. Baker' -> 'Parts of a whole'
+
+    // Submit the wrong answer twice to trigger a hint.
+    submitMultipleChoiceAnswer(choiceIndex = 0)
+    submitMultipleChoiceAnswer(choiceIndex = 0)
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasHintOfferedContextThat {
+      hasExplorationDetailsThat().containsFractionsExp0Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
+      hasHintIndexThat().isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testHint_lastHintWithNoSolution_offeredThenViewed_logsViewHintEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0)
+    waitForGetCurrentStateSuccessfulLoad()
+    submitContinueButtonAnswerAndContinue() // 'Introduction' -> 'A Problem'
+    submitContinueButtonAnswerAndContinue() // 'A Problem' -> 'Mr. Baker'
+    submitContinueButtonAnswerAndContinue() // 'Mr. Baker' -> 'Parts of a whole'
+    // Submit the wrong answer twice to trigger a hint.
+    submitMultipleChoiceAnswer(choiceIndex = 0)
+    submitMultipleChoiceAnswer(choiceIndex = 0)
+
+    // View the hint.
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAccessHintContextThat {
+      hasExplorationDetailsThat().containsFractionsExp0Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
+      hasHintIndexThat().isEqualTo(0)
+    }
+  }
+
+  @Test
+  fun testSolution_offered_logsSolutionOfferedEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger the hint.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+
+    // Submit another wrong answer to trigger the solution.
+    submitWrongAnswerForPrototypeState2()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasSolutionOfferedContextThat().containsTestExp2Details()
+    assertThat(eventLog).hasSolutionOfferedContextThat().hasStateNameThat().isEqualTo("Fractions")
+  }
+
+  @Test
+  fun testSolution_offeredThenViewed_logsViewSolutionEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    // Submit 2 wrong answers to trigger the hint.
+    submitWrongAnswerForPrototypeState2()
+    submitWrongAnswerForPrototypeState2()
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitHintIsRevealed(hintIndex = 0)
+    )
+    // Submit another wrong answer to trigger the solution.
+    submitWrongAnswerForPrototypeState2()
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+    monitorFactory.ensureDataProviderExecutes(
+      explorationProgressController.submitSolutionIsRevealed()
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasAccessSolutionContextThat().containsTestExp2Details()
+    assertThat(eventLog).hasAccessSolutionContextThat().hasStateNameThat().isEqualTo("Fractions")
+  }
+
+  @Test
+  fun testEndExploration_withoutFinishing_logsExitExplorationEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    endExploration(isCompletion = false)
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasExitExplorationContextThat().containsTestExp2Details()
+    assertThat(eventLog).hasExitExplorationContextThat().hasStateNameThat().isEqualTo("Continue")
+  }
+
+  @Test
+  fun testEndExploration_afterFinishing_logsFinishExplorationEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeExploration()
+
+    endExploration(isCompletion = true)
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasFinishExplorationContextThat().containsTestExp2Details()
+    assertThat(eventLog).hasFinishExplorationContextThat().hasStateNameThat().isEqualTo("End")
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1964,6 +2274,11 @@ class ExplorationProgressControllerTest {
 
   private fun submitContinueButtonAnswer(): EphemeralState {
     return submitAnswer(createContinueButtonAnswer())
+  }
+
+  private fun submitContinueButtonAnswerAndContinue(): EphemeralState {
+    submitAnswer(createContinueButtonAnswer())
+    return moveToNextState()
   }
 
   private fun submitFractionAnswer(fraction: Fraction): EphemeralState {
@@ -2193,9 +2508,9 @@ class ExplorationProgressControllerTest {
     return waitForGetCurrentStateSuccessfulLoad()
   }
 
-  private fun endExploration() {
+  private fun endExploration(isCompletion: Boolean = false) {
     monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.stopPlayingExploration(isCompletion = false)
+      explorationDataController.stopPlayingExploration(isCompletion)
     )
   }
 
@@ -2321,6 +2636,30 @@ class ExplorationProgressControllerTest {
   private fun EphemeralState.isSolutionRevealed(): Boolean =
     pendingState.helpIndex.isSolutionRevealed()
 
+  private fun EventLogSubject.ExplorationContextSubject.containsTestExp2Details() {
+    hasTopicIdThat().isEqualTo(TEST_TOPIC_ID_0)
+    hasStoryIdThat().isEqualTo(TEST_STORY_ID_0)
+    hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+    hasVersionThat().isEqualTo(loadExploration(TEST_EXPLORATION_ID_2).version)
+    hasSessionIdThat().isNotEmpty()
+    hasLearnerDetailsThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+  }
+
+  private fun EventLogSubject.ExplorationContextSubject.containsFractionsExp0Details() {
+    hasTopicIdThat().isEqualTo(FRACTIONS_TOPIC_ID)
+    hasStoryIdThat().isEqualTo(FRACTIONS_STORY_ID_0)
+    hasExplorationIdThat().isEqualTo(FRACTIONS_EXPLORATION_ID_0)
+    hasVersionThat().isEqualTo(loadExploration(FRACTIONS_EXPLORATION_ID_0).version)
+    hasSessionIdThat().isNotEmpty()
+    hasLearnerDetailsThat {
+      hasLearnerIdThat().isNotEmpty()
+      hasInstallationIdThat().isNotEmpty()
+    }
+  }
+
   private fun retrieveCheckpointPendingAnswerCount(explorationId: String) =
     retrieveExplorationCheckpoint(explorationId).pendingUserAnswersCount
 
@@ -2332,6 +2671,40 @@ class ExplorationProgressControllerTest {
 
   private fun retrieveCheckpointHelpIndex(explorationId: String) =
     retrieveExplorationCheckpoint(explorationId).helpIndex
+
+  private fun loadExploration(expId: String) =
+    monitorFactory.waitForNextSuccessfulResult(explorationDataController.getExplorationById(expId))
+
+  private fun logIntoAnalyticsReadyAdminProfile() {
+    val rootProfileId = ProfileId.getDefaultInstance()
+    val addProfileProvider = profileManagementController.addProfile(
+      name = "Admin",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = 0,
+      isAdmin = true
+    )
+    monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
+    monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.loginToProfile(rootProfileId)
+    )
+  }
+
+  private fun createTestExp2CheckpointToState6(): ExplorationCheckpoint {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Play through some states in the exploration.
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    endExploration()
+
+    return retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+  }
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -2366,6 +2739,13 @@ class ExplorationProgressControllerTest {
     @LoadLessonProtosFromAssets
     fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
       testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      // Enable the study by default in tests.
+      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
+    }
   }
 
   @Module
@@ -2400,8 +2780,7 @@ class ExplorationProgressControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      SyncStatusModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
