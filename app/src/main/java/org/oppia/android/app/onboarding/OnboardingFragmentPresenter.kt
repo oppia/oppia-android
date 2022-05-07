@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.takusemba.spotlight.OnSpotlightListener
@@ -16,8 +15,6 @@ import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
-import java.util.*
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
@@ -35,6 +32,8 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
+import java.util.*
+import javax.inject.Inject
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -58,7 +57,6 @@ class OnboardingFragmentPresenter @Inject constructor(
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -78,7 +76,6 @@ class OnboardingFragmentPresenter @Inject constructor(
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -238,7 +235,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     // use this interface to start the next tip
 
     spotlight.next()
-
   }
 
   override fun clickOnNext() {
@@ -302,7 +298,8 @@ class OnboardingFragmentPresenter @Inject constructor(
       SpotlightActivity.ONBOARDING_ACTIVITY
     ).toLiveData()
 
-    checkpointLiveData.observe(fragment,
+    checkpointLiveData.observe(
+      fragment,
       object : Observer<AsyncResult<Any>> {
         override fun onChanged(it: AsyncResult<Any>?) {
           if (it is AsyncResult.Success) {
@@ -325,10 +322,10 @@ class OnboardingFragmentPresenter @Inject constructor(
             }
           }
         }
-
-      })
+      }
+    )
   }
-  private fun startSpotlight(targets: ArrayList<Target>){
+  private fun startSpotlight(targets: ArrayList<Target>) {
     spotlight = Spotlight.Builder(activity)
       .setTargets(targets)
       .setBackgroundColorRes(R.color.spotlightBackground)
@@ -336,11 +333,9 @@ class OnboardingFragmentPresenter @Inject constructor(
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
-
         }
       })
       .build()
@@ -348,4 +343,3 @@ class OnboardingFragmentPresenter @Inject constructor(
     spotlight.start()
   }
 }
-

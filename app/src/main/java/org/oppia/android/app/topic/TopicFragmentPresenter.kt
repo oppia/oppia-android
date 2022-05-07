@@ -16,8 +16,6 @@ import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
-import java.util.*
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -36,6 +34,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
+import java.util.*
+import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -67,6 +67,7 @@ class TopicFragmentPresenter @Inject constructor(
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
           // any additional behaviour
+          overlayBinding.closeTarget.requestFocus()
         }
         override fun onEnded() {
           getTopicViewModel().recordSpotlightCheckpoint(
@@ -85,7 +86,6 @@ class TopicFragmentPresenter @Inject constructor(
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -105,7 +105,6 @@ class TopicFragmentPresenter @Inject constructor(
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -125,7 +124,6 @@ class TopicFragmentPresenter @Inject constructor(
       .setOverlay(overlayBinding.root)
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -179,8 +177,6 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
-
-
 
     setUpViewPager(viewPager, topicId, isConfigChanged)
 
@@ -258,13 +254,15 @@ class TopicFragmentPresenter @Inject constructor(
       SpotlightActivity.TOPIC_ACTIVITY
     ).toLiveData()
 
-    checkpointLiveData.observe(fragment,
+    checkpointLiveData.observe(
+      fragment,
       object : Observer<AsyncResult<Any>> {
         override fun onChanged(it: AsyncResult<Any>?) {
           if (it is AsyncResult.Success) {
             checkpointLiveData.removeObserver(this)
             val spotlightState = (it.value as TopicSpotlightCheckpoint).spotlightState
-            if (spotlightState == SpotlightState.SPOTLIGHT_STATE_COMPLETED || spotlightState == SpotlightState.SPOTLIGHT_STATE_DISMISSED) {
+            if (spotlightState == SpotlightState.SPOTLIGHT_STATE_COMPLETED ||
+              spotlightState == SpotlightState.SPOTLIGHT_STATE_DISMISSED) {
               return
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_PARTIAL) {
               val lastScreenViewed = (it.value as TopicSpotlightCheckpoint).lastScreenViewed
@@ -292,8 +290,8 @@ class TopicFragmentPresenter @Inject constructor(
             }
           }
         }
-
-      })
+      }
+    )
   }
 
   private fun startSpotlight(targets: ArrayList<Target>) {
@@ -304,11 +302,9 @@ class TopicFragmentPresenter @Inject constructor(
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
-
         }
       })
       .build()

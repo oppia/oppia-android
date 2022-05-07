@@ -2,7 +2,6 @@ package org.oppia.android.app.onboarding
 
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
@@ -10,6 +9,7 @@ import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.spotlight.SpotlightStateController
+import javax.inject.Inject
 
 private const val INITIAL_SLIDE_NUMBER = 0
 
@@ -52,5 +52,4 @@ class OnboardingViewModel @Inject constructor(
       .build()
     spotlightStateController.recordSpotlightCheckpoint(profileId, checkpoint)
   }
-
 }

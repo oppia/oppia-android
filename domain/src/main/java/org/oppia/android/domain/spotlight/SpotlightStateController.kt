@@ -1,7 +1,5 @@
 package org.oppia.android.domain.spotlight
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
@@ -15,6 +13,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val SPOTLIGHT_STATE_DATA_PROVIDER_ID = "spotlight_state_data_provider_id"
 private const val CACHE_NAME = "spotlight_checkpoint_database"
@@ -56,13 +56,10 @@ class SpotlightStateController @Inject constructor(
           spotlightCheckpointDatabaseBuilder.setTopicSpotlightCheckpoint(checkpoint)
         }
         else -> {
-          // throw exception
           throw SpotlightActivityUnrecognizedException("spotlight activity is not one of the recognized types")
         }
       }
-
       val spotlightCheckpointDatabase = spotlightCheckpointDatabaseBuilder.build()
-
       Pair(spotlightCheckpointDatabase, newCheckpoint)
     }
   }
@@ -111,7 +108,6 @@ class SpotlightStateController @Inject constructor(
         } else {
           AsyncResult.Failure(SpotlightStateNotFoundException("State not found "))
         }
-
       }
   }
 

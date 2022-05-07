@@ -7,8 +7,6 @@
     <variable
       name="presenter"
       type="org.oppia.android.app.onboarding.SpotlightNavigationListener" />
-
-
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

@@ -43,9 +43,8 @@ class TopicFragment : InjectableFragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    if (topicFragmentPresenter.enableSpotlightUi.value){
+    if (topicFragmentPresenter.enableSpotlightUi.value) {
       topicFragmentPresenter.retrieveCheckpointAndInitializeSpotlight()
     }
   }
-
 }
