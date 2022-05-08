@@ -77,7 +77,7 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
         R.string.progress_database_full_dialog_leave_without_saving_progress_button
       ) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
-          .deleteCurrentProgressAndStopSession()
+          .deleteCurrentProgressAndStopSession(isCompletion = false)
         dismiss()
       }
       .setNegativeButton(

@@ -297,6 +297,7 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputIsEquivalentToRuleClassifierProviderTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/classify/rules/numericexpressioninput/NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLoggerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionExtensionsTest.kt"
@@ -305,4 +306,13 @@ file_content_checks {
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/PolynomialExtensionsTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/RealExtensionsTest.kt"
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "android\\.content\\.ClipboardManager"
+  failure_message: "Don't use Android's ClipboardManager directly. Instead, use ClipboardController."
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileAndDeviceIdFragmentTest.kt"
+  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/clipboard/ClipboardController.kt"
+  exempted_file_name: "domain/src/test/java/org/oppia/android/domain/clipboard/ClipboardControllerTest.kt"
+  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }

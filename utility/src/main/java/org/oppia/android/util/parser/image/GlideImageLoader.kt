@@ -3,10 +3,13 @@ package org.oppia.android.util.parser.image
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.Resource
+import com.bumptech.glide.load.resource.SimpleResource
 import com.bumptech.glide.request.RequestOptions
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
@@ -17,6 +20,7 @@ import org.oppia.android.util.parser.svg.ScalableVectorGraphic
 import org.oppia.android.util.parser.svg.SvgBlurTransformation
 import org.oppia.android.util.parser.svg.SvgDecoder
 import org.oppia.android.util.parser.svg.SvgPictureDrawable
+import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -93,7 +97,7 @@ class GlideImageLoader @Inject constructor(
       .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
       .apply(SvgDecoder.createLoadSvgFromPipelineOption())
       .load(loadImage(imageUrl))
-      .transformWithAll(transformations.toPictureGlideTransformations())
+      .transformWithAll(transformations.toPictureGlideTransformations(imageUrl))
       .intoTarget(target)
   }
 
@@ -120,8 +124,9 @@ class GlideImageLoader @Inject constructor(
   private fun <T> RequestBuilder<T>.transformWithAll(
     transformations: List<Transformation<ScalableVectorGraphic>>
   ): RequestBuilder<T> {
-    transformations.forEach { transform(ScalableVectorGraphic::class.java, it) }
-    return this
+    return transformations.fold(this) { builder, transformation ->
+      builder.transform(ScalableVectorGraphic::class.java, transformation)
+    }
   }
 
   private fun List<ImageTransformation>.toBitmapGlideTransformations():
@@ -133,12 +138,51 @@ class GlideImageLoader @Inject constructor(
       }
     }
 
-  private fun List<ImageTransformation>.toPictureGlideTransformations():
+  private fun List<ImageTransformation>.toPictureGlideTransformations(imageUrl: String):
     List<Transformation<ScalableVectorGraphic>> {
       return map {
         when (it) {
           ImageTransformation.BLUR -> pictureBitmapBlurTransformation
         }
-      }
+      } + UpdatePictureDrawableSize(imageUrl)
     }
+
+  private class UpdatePictureDrawableSize(
+    private val url: String
+  ) : Transformation<ScalableVectorGraphic> {
+    private val filename by lazy { Uri.parse(url).lastPathSegment }
+
+    private val extractedWidth by lazy {
+      filename?.let(WIDTH_REGEX::find)?.destructured?.component1()?.toIntOrNull()
+    }
+    private val extractedHeight by lazy {
+      filename?.let(HEIGHT_REGEX::find)?.destructured?.component1()?.toIntOrNull()
+    }
+
+    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+      messageDigest.update(ID.toByteArray())
+      messageDigest.update(url.toByteArray())
+    }
+
+    override fun transform(
+      context: Context,
+      toTransform: Resource<ScalableVectorGraphic>,
+      outWidth: Int,
+      outHeight: Int
+    ): Resource<ScalableVectorGraphic> {
+      return SimpleResource(
+        toTransform.get().also {
+          it.initializeWithExtractedDimensions(extractedWidth, extractedHeight)
+        }
+      )
+    }
+
+    private companion object {
+      // See: https://bumptech.github.io/glide/doc/transformations.html#required-methods.
+      private val ID = UpdatePictureDrawableSize::class.java.name
+
+      private val WIDTH_REGEX by lazy { "width_(\\d+)".toRegex() }
+      private val HEIGHT_REGEX by lazy { "height_(\\d+)".toRegex() }
+    }
+  }
 }
