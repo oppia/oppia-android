@@ -91,7 +91,6 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -121,6 +120,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -166,7 +166,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -206,7 +206,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -770,7 +770,7 @@ class AdministratorControlsActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

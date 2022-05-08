@@ -62,7 +62,6 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -104,6 +103,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = OptionsFragmentTest.TestApplication::class, qualifiers = "sw600dp")
@@ -117,8 +117,8 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
     setUpTestApplicationComponent()
@@ -174,7 +174,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageItemIsNotDisplayed() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(false)
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -244,7 +244,7 @@ class OptionsFragmentTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

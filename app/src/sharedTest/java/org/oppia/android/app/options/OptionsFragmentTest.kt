@@ -71,7 +71,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.TestPlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -115,6 +115,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [OptionsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -141,8 +142,8 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(true)
-    PlatformParameterModule.forceEnableEditAccountsOptionsUi(
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
       ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
     Intents.init()
@@ -368,7 +369,7 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    PlatformParameterModule.forceEnableLanguageSelectionUi(false)
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
 
     launch<OptionsActivity>(
       createOptionActivityIntent(
@@ -647,7 +648,7 @@ class OptionsFragmentTest {
   @Singleton
   @Component(
     modules = [
-      PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
       RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
