@@ -54,7 +54,7 @@ class ProfileNameValidatorTest {
     Iteration("Ben#Henning", "name=Ben#Henning"),
     Iteration("Rajay@T", "name=Rajay@T"),
     Iteration("جيشنو^&&", "name=جيشنو^&&"),
-    Iteration("_Jishnu", "name=_Jishnu"),
+    Iteration("_Jishnu", "name=_Jishnu")
   )
   fun testIsNameValid_nameWithDisallowedSymbol_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
@@ -64,7 +64,7 @@ class ProfileNameValidatorTest {
   @RunParameterized(
     Iteration("Ben-Henning", "name=Ben-Henning"),
     Iteration("Rajat.T", "name=Rajat.T"),
-    Iteration("G'Jishnu", "name=G'Jishnu"),
+    Iteration("G'Jishnu", "name=G'Jishnu")
   )
   fun testIsNameValid_nameWithAllowedSymbols_returnsTrue() {
     assertThat(profileNameValidator.isNameValid(name)).isTrue()
@@ -73,7 +73,7 @@ class ProfileNameValidatorTest {
   @Test
   @RunParameterized(
     Iteration("Ben-.Henning", "name=Ben-.Henning"),
-    Iteration("Rajat..T", "name=Rajat..T"),
+    Iteration("Rajat..T", "name=Rajat..T")
   )
   fun testIsNameValid_nameWithRepeatedAllowedSymbols_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
