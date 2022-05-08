@@ -35,7 +35,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
-import java.util.*
+import java.util.Stack
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass

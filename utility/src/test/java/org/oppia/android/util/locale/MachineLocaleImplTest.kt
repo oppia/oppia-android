@@ -12,12 +12,11 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
