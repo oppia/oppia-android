@@ -39,8 +39,8 @@
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginStart="16dp"
-          android:layout_marginEnd="16dp"
+          android:layout_marginStart="@dimen/topic_lessons_summary_card_view_margin_start"
+          android:layout_marginEnd="@dimen/topic_lessons_summary_card_view_margin_end"
           android:layout_marginBottom="24dp"
           android:orientation="horizontal">
 
@@ -96,7 +96,7 @@
               android:id="@+id/story_name_chapter_count_container"
               android:layout_width="0dp"
               android:layout_height="wrap_content"
-              android:layout_marginStart="20dp"
+              android:layout_marginStart="@dimen/topic_lessons_summary_story_name_chapter_count_container_margin_start"
               android:layout_weight="1"
               android:contentDescription="@{viewModel.computeStoryNameChapterCountContainerContentDescription()}"
               android:gravity="center_vertical"

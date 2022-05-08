@@ -1,6 +1,7 @@
 package org.oppia.android.util.parser.svg
 
 import android.graphics.Picture
+import android.graphics.RectF
 import android.text.TextPaint
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
@@ -15,6 +16,8 @@ import org.oppia.android.util.parser.image.ImageTransformation
  */
 class ScalableVectorGraphic {
   private val parsedSvg: Lazy<SVG>
+  private var extractedWidth: Int? = null
+  private var extractedHeight: Int? = null
   val transformations: List<ImageTransformation>
 
   /** Constructs a new [ScalableVectorGraphic] from the specified SVG source code. */
@@ -23,9 +26,16 @@ class ScalableVectorGraphic {
     transformations = listOf()
   }
 
-  private constructor(parsedSvg: SVG, transformations: List<ImageTransformation>) {
+  private constructor(
+    parsedSvg: SVG,
+    transformations: List<ImageTransformation>,
+    extractedWidth: Int?,
+    extractedHeight: Int?
+  ) {
     this.parsedSvg = lazy { parsedSvg }
     this.transformations = transformations.distinct()
+    this.extractedWidth = extractedWidth
+    this.extractedHeight = extractedHeight
   }
 
   /**
@@ -35,19 +45,31 @@ class ScalableVectorGraphic {
    * manner.
    */
   fun computeSizeSpecs(textPaint: TextPaint?): SvgSizeSpecs {
-    return if (textPaint != null) {
-      val options = RenderOptionsBase().textPaint(textPaint)
-      val width = parsedSvg.value.getDocumentWidth(options)
-      val height = parsedSvg.value.getDocumentHeight(options)
-      val verticalAlignment =
-        adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
-      SvgSizeSpecs(width, height, verticalAlignment)
-    } else {
-      val options = RenderOptionsBase()
-      val width = parsedSvg.value.getDocumentWidth(options)
-      val height = parsedSvg.value.getDocumentHeight(options)
-      SvgSizeSpecs(width, height, verticalAlignment = 0f)
-    }
+    val options = RenderOptionsBase().also { if (textPaint != null) it.textPaint(textPaint) }
+    val documentWidth = parsedSvg.value.getDocumentWidthOrNull(options)
+    val documentHeight = parsedSvg.value.getDocumentHeightOrNull(options)
+    val verticalAlignment = if (textPaint != null) {
+      adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
+    } else 0f
+
+    val viewBox: RectF? = parsedSvg.value.documentViewBox
+    val viewBoxWidth = viewBox?.width()
+    val viewBoxHeight = viewBox?.height()
+
+    val imageFileNameWidth = extractedWidth?.toFloat()
+    val imageFileNameHeight = extractedHeight?.toFloat()
+
+    // Prioritize the document size, then view box, then image filename. From observation, the
+    // document size seems correct in cases where it's available, and otherwise the viewbox is
+    // generally correct. The image filename can sometimes be wrong (as it actually represents the
+    // size the image should be rendered at one web rather than its actual size), but it's a
+    // reasonable fallback if the other two are unavailable. If no dimension is available, default
+    // to a value that can hopefully be scaled (though it's likely at that point the image will not
+    // render well).
+    val width = documentWidth ?: viewBoxWidth ?: imageFileNameWidth ?: DEFAULT_SIZE_PX
+    val height = documentHeight ?: viewBoxHeight ?: imageFileNameHeight ?: DEFAULT_SIZE_PX
+
+    return SvgSizeSpecs(width, height, verticalAlignment)
   }
 
   /**
@@ -72,8 +94,16 @@ class ScalableVectorGraphic {
    * Returns a new [ScalableVectorGraphic] that will be transformed by the specified
    * transformations. Any existing transformations on the graphic will also be included.
    */
-  fun transform(transformations: List<ImageTransformation>): ScalableVectorGraphic =
-    ScalableVectorGraphic(parsedSvg.value, this.transformations + transformations)
+  fun transform(transformations: List<ImageTransformation>): ScalableVectorGraphic {
+    return ScalableVectorGraphic(
+      parsedSvg.value, this.transformations + transformations, extractedWidth, extractedHeight
+    )
+  }
+
+  fun initializeWithExtractedDimensions(width: Int?, height: Int?) {
+    extractedWidth = width
+    extractedHeight = height
+  }
 
   // It seems that vertical alignment needs to be halved to work in Android's coordinate system as
   // compared with SVGs. This might be due to SVGs seemingly using an origin in the middle of the
@@ -94,4 +124,16 @@ class ScalableVectorGraphic {
     /** The amount of vertical pixels that should be translated when drawing the picture. */
     val verticalAlignment: Float = 0f
   )
+
+  private companion object {
+    // Without knowing what size to default to, just pick 1 and let the app & other utilities try to
+    // scale the image.
+    private const val DEFAULT_SIZE_PX = 1f
+
+    private fun SVG.getDocumentWidthOrNull(options: RenderOptionsBase): Float? =
+      getDocumentWidth(options).takeIf { it > 0 }
+
+    private fun SVG.getDocumentHeightOrNull(options: RenderOptionsBase): Float? =
+      getDocumentHeight(options).takeIf { it > 0 }
+  }
 }

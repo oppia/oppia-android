@@ -10,6 +10,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
@@ -18,6 +19,13 @@ import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -39,6 +47,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
@@ -54,12 +63,15 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TopicListControllerTest.TestApplication::class)
 class TopicListControllerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var context: Context
   @Inject lateinit var topicListController: TopicListController
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var storyProgressController: StoryProgressController
 
   private lateinit var profileId0: ProfileId
 
@@ -617,6 +629,34 @@ class TopicListControllerTest {
     )
   }
 
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // The failure is specific to loading protos.
+  fun testGetPromotedActivityList_missingTopicsWithProgress_doesNotIncludeThoseTopics() {
+    // This is a slightly hacky way to simulate a previous topic's progress that works because
+    // StoryProgressController doesn't verify whether the IDs passed to it correspond to locally
+    // available topics.
+    val previousTopicId = "previous_topic_id"
+    val recordProgressDataProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId0,
+        topicId = previousTopicId,
+        storyId = "previous_story_id",
+        explorationId = "previous_exploration_id",
+        lastPlayedTimestamp = 123456789L
+      )
+    monitorFactory.ensureDataProviderExecutes(recordProgressDataProvider)
+
+    val promotionList = retrievePromotedActivityList()
+
+    val promotedStoryList = promotionList.promotedStoryList
+    val olderTopicIds = promotedStoryList.olderPlayedStoryList.map { it.topicId }
+    val recentTopicIds = promotedStoryList.recentlyPlayedStoryList.map { it.topicId }
+    val upcomingTopicIds = promotionList.comingSoonTopicList.upcomingTopicList.map { it.topicId }
+    assertThat(olderTopicIds).doesNotContain(previousTopicId)
+    assertThat(recentTopicIds).doesNotContain(previousTopicId)
+    assertThat(upcomingTopicIds).doesNotContain(previousTopicId)
+  }
+
   private fun verifyPromotedStoryAsFirstTestTopicStory0Exploration0(promotedStory: PromotedStory) {
     assertThat(promotedStory.explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
     assertThat(promotedStory.storyId).isEqualTo(TEST_STORY_ID_0)
@@ -820,7 +860,10 @@ class TopicListControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

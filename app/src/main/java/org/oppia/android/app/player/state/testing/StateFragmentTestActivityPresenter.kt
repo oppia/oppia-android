@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.HintsAndSolutionExplorationManagerFragment
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_EXPLORATION_MANAGER
@@ -64,7 +63,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     }
   }
 
-  fun stopExploration() = finishExploration()
+  fun stopExploration(isCompletion: Boolean) = finishExploration(isCompletion)
 
   fun scrollToTop() = getStateFragment()?.scrollToTop()
 
@@ -72,12 +71,12 @@ class StateFragmentTestActivityPresenter @Inject constructor(
 
   fun revealSolution() = getStateFragment()?.revealSolution()
 
-  fun deleteCurrentProgressAndStopExploration() {
+  fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
       ProfileId.newBuilder().setInternalId(profileId).build(),
       explorationId
     )
-    stopExploration()
+    stopExploration(isCompletion)
   }
 
   private fun startPlayingExploration(
@@ -89,15 +88,15 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   ) {
     // TODO(#59): With proper test ordering & isolation, this hacky clean-up should not be necessary since each test
     //  should run with a new application instance.
-    explorationDataController.stopPlayingExploration()
-    explorationDataController.startPlayingExploration(
-      profileId,
-      topicId,
-      storyId,
-      explorationId,
-      shouldSavePartialProgress,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
-    ).toLiveData().observe(
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+    val startPlayingProvider = if (shouldSavePartialProgress) {
+      explorationDataController.startPlayingNewExploration(
+        profileId, topicId, storyId, explorationId
+      )
+    } else {
+      explorationDataController.replayExploration(profileId, topicId, storyId, explorationId)
+    }
+    startPlayingProvider.toLiveData().observe(
       activity,
       Observer<AsyncResult<Any?>> { result ->
         when (result) {
@@ -140,7 +139,9 @@ class StateFragmentTestActivityPresenter @Inject constructor(
     }
   }
 
-  private fun finishExploration() {
+  private fun finishExploration(isCompletion: Boolean) {
+    explorationDataController.stopPlayingExploration(isCompletion)
+
     getStateFragment()?.let { fragment ->
       activity.supportFragmentManager.beginTransaction().remove(fragment).commitNow()
     }
