@@ -31,8 +31,6 @@ class MachineLocaleImplTest {
   @Inject
   lateinit var machineLocale: OppiaLocale.MachineLocale
 
-  @Mock
-  lateinit var mockDisplayLocale: OppiaLocale.DisplayLocale
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
@@ -225,13 +223,6 @@ class MachineLocaleImplTest {
 
     // The date is in an invalid/unexpected format.
     assertThat(date).isNull()
-  }
-
-  @Test
-  fun testOppiaNumberFormatter_validNumberFormat_returnsString() {
-    val number = mockDisplayLocale.run { 0.toHumanReadableString(1) }
-
-    assertThat(number).isEqualTo("1")
   }
 
   @Test

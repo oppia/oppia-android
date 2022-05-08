@@ -22,16 +22,20 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.AndroidLocaleFactory
+import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
-import java.util.Stack
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -46,8 +50,14 @@ class CustomHtmlContentHandlerTest {
 
   @Inject lateinit var context: Context
 
-  @Mock
-  lateinit var mockDisplayLocale: OppiaLocale.DisplayLocale
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  lateinit var androidLocaleFactory: AndroidLocaleFactory
+
+  @Inject
+  lateinit var formatterFactory: OppiaBidiFormatter.Factory
 
   @Mock
   private var mockImageRetriever: FakeImageRetriever? = null
@@ -177,6 +187,8 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
+    val displayLocale = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+
     val htmlString = "<p>Paragraph 1</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>" +
       "<p>Paragraph 2.</p>"
 
@@ -185,8 +197,8 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, mockDisplayLocale),
-          CUSTOM_LIST_UL_TAG to LiTagHandler(context, mockDisplayLocale)
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
+          CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale)
         )
       )
 
@@ -197,6 +209,8 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoNumberedListSpan() {
+    val displayLocale = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+
     val htmlString = "<p>Paragraph 1</p><oppia-ol><oppia-li>Item</oppia-li></oppia-ol>" +
       "<p>Paragraph 2.</p>"
 
@@ -205,8 +219,8 @@ class CustomHtmlContentHandlerTest {
         html = htmlString,
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, mockDisplayLocale),
-          CUSTOM_LIST_OL_TAG to LiTagHandler(context, mockDisplayLocale)
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale)
         )
       )
 
@@ -290,6 +304,9 @@ class CustomHtmlContentHandlerTest {
       value
     )
   }
+
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
+    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
 
   private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     var handleTagCalled = false

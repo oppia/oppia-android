@@ -4,10 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
-import android.text.Spannable
-import android.text.style.ClickableSpan
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -36,7 +33,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -47,12 +43,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -102,7 +94,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -120,14 +111,12 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 /** Tests for [OnboardingFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -158,16 +147,6 @@ class OnboardingFragmentTest {
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
-
-  @Captor
-  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
-
-  @Mock
-  lateinit var mockPolicyOppiaTagActionListener: HtmlParser.PolicyOppiaTagActionListener
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Before
   fun setUp() {
@@ -700,91 +679,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  @Test
-  fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListenerForTermsOfService() {
-    val htmlParser = htmlParserFactory.create(
-      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val textView: TextView =
-        it.findViewById(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)
-
-      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">" +
-          " Terms of Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
-          "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
-        textView,
-        supportsLinks = true,
-        supportsConceptCards = false,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-      )
-      textView.text = htmlResult
-
-      // Verify the displayed text is correct & has a clickable span.
-      val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
-      assertThat(htmlResult.toString()).isEqualTo(
-        "By using %s, you agree to our \n" +
-          "Terms of Service and Privacy Policy."
-      )
-      assertThat(clickableSpans).hasLength(2)
-      clickableSpans.first().onClick(textView)
-
-      // Verify that the tag listener is called.
-      verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
-        capture(policyTypeCaptor)
-      )
-      assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.TERMS_OF_SERVICE)
-    }
-  }
-
-  @Test
-  fun testHtmlContent_withPolicies_linkSupport_clickSpan_callsTagListenerForPrivacyPolicy() {
-    val htmlParser = htmlParserFactory.create(
-      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
-    )
-    testCoroutineDispatchers.runCurrent()
-
-    launch(OnboardingActivity::class.java).use {
-      onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val textView: TextView =
-        it.findViewById(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)
-
-      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        "By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">" +
-          " Terms of Service </oppia-noninteractive-policy> and <oppia-noninteractive-policy " +
-          "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
-        textView,
-        supportsLinks = true,
-        supportsConceptCards = false,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-      )
-      textView.text = htmlResult
-
-      // Verify the displayed text is correct & has a clickable span.
-      val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
-      assertThat(htmlResult.toString()).isEqualTo(
-        "By using %s, you agree to our \n" +
-          "Terms of Service and Privacy Policy."
-      )
-      assertThat(clickableSpans).hasLength(2)
-      clickableSpans[1].onClick(textView)
-
-      // Verify that the tag listener is called.
-      verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
-        capture(policyTypeCaptor)
-      )
-
-      assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
-    }
-  }
-
   private fun getResources(): Resources =
     ApplicationProvider.getApplicationContext<Context>().resources
 
@@ -832,9 +726,6 @@ class OnboardingFragmentTest {
     verify(fakeMock).consume(valueCaptor.capture())
     return valueCaptor.value
   }
-
-  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
-    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
