@@ -50,7 +50,7 @@ class PlatformParameterModule {
   @EnableLanguageSelectionUi
   fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      enableLanguageSelectionUi
+      ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     )
   }
 
@@ -58,7 +58,7 @@ class PlatformParameterModule {
   @EnableEditAccountsOptionsUi
   fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      enableEditAccountsOptionsUi
+      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     )
   }
 
@@ -78,22 +78,5 @@ class PlatformParameterModule {
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
-  }
-
-  companion object {
-    private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-    private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-
-    /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableLanguageSelectionUi(value: Boolean) {
-      enableLanguageSelectionUi = value
-    }
-
-    /** Enables forcing [EnableEditAccountsOptionsUI] platform parameter flag from tests. */
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableEditAccountsOptionsUi(value: Boolean) {
-      enableEditAccountsOptionsUi = value
-    }
   }
 }
