@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Strings that should only be used in tests. -->
+<resources>
+  <string name="test_basic_string" translatable="false">Basic string</string>
+  <string name="test_basic_string2" translatable="false">Basic string2</string>
+  <string name="test_string_with_arg_hebrew" translatable="false">האם התכוונת ל %s</string>
+  <plurals name="test_plural_string_no_args" translatable="false">
+    <item quantity="one">
+      1 item
+    </item>
+    <item quantity="other">
+      2 items
+    </item>
+  </plurals>
+  <plurals name="test_plural_string_with_args" translatable="false">
+    <item quantity="one">
+      1 item
+    </item>
+    <item quantity="other">
+      %s items
+    </item>
+  </plurals>
+  <string-array name="test_str_array">
+    <item>@string/test_basic_string</item>
+    <item>@string/test_basic_string2</item>
+  </string-array>
+</resources>
