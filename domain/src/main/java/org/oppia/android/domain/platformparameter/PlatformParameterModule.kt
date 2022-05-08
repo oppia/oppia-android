@@ -1,6 +1,5 @@
 package org.oppia.android.domain.platformparameter
 
-import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
