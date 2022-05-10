@@ -51,6 +51,7 @@
         android:text="@{viewModel.dependencyVersion}"
         android:textColor="@color/component_color_third_party_dependency_version_text_view_list_activity_color"
         android:textSize="12sp"/>
+
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
