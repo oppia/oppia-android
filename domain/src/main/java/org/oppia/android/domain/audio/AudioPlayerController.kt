@@ -113,12 +113,11 @@ class AudioPlayerController @Inject constructor(
     return progressLiveData
   }
 
-  // TODO(#4064): Pass in a content ID here.
   /**
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  fun changeDataSource(url: String, contentId: String? = null) {
+  fun changeDataSource(url: String, contentId: String?) {
     audioLock.withLock {
       prepared = false
       currentContentId = contentId
@@ -198,7 +197,7 @@ class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play(isPlayingFromAutoPlay: Boolean = true, reloadingMainContent: Boolean = true) {
+  fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {

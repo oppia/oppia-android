@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel" />
+  </data>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/profile_and_device_id_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:data="@{viewModel.profileModels}"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    android:layout_margin="28dp"
+    android:overScrollMode="never"
+    android:scrollbars="none" />
+</layout>

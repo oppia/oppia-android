@@ -373,7 +373,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             answerAndResponse.userAnswer,
             gcsEntityId,
             /* isAnswerCorrect= */ false
-          ).let { viewModel ->
+          )?.let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
             }
@@ -397,17 +397,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
       if (playerFeatureSet.pastAnswerSupport) {
         if (isLastAnswerCorrect && isSplitView.get()!!) {
-          rightPendingItemList += createSubmittedAnswer(
+          createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
             isAnswerCorrect = true
-          )
+          )?.let(rightPendingItemList::add)
         } else {
-          pendingItemList += createSubmittedAnswer(
+          createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
             isLastAnswerCorrect || answerAndResponse.isCorrectAnswer
-          )
+          )?.let(pendingItemList::add)
         }
       }
       if (playerFeatureSet.feedbackSupport) {
@@ -551,8 +551,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     userAnswer: UserAnswer,
     gcsEntityId: String,
     isAnswerCorrect: Boolean
-  ): SubmittedAnswerViewModel {
-    val submittedAnswerViewModel =
+  ): SubmittedAnswerViewModel? {
+    return userAnswer.takeIf { it.hasAnswerToDisplayToUser() }?.let {
       SubmittedAnswerViewModel(
         userAnswer,
         gcsEntityId,
@@ -560,10 +560,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
         isSplitView.get()!!,
         playerFeatureSet.conceptCardSupport,
         resourceHandler
-      )
-    submittedAnswerViewModel.setIsCorrectAnswer(isAnswerCorrect)
-    submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
-    return submittedAnswerViewModel
+      ).also { submittedAnswerViewModel ->
+        submittedAnswerViewModel.setIsCorrectAnswer(isAnswerCorrect)
+        submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
+      }
+    }
   }
 
   private fun createFeedbackItem(
@@ -1452,6 +1453,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport
       )
+    }
+  }
+
+  private companion object {
+    private fun UserAnswer.hasAnswerToDisplayToUser(): Boolean {
+      return when (textualAnswerCase) {
+        UserAnswer.TextualAnswerCase.HTML_ANSWER -> htmlAnswer.isNotEmpty()
+        UserAnswer.TextualAnswerCase.PLAIN_ANSWER -> plainAnswer.isNotEmpty()
+        UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS ->
+          listOfHtmlAnswers.setOfHtmlStringsOrBuilderList.isNotEmpty()
+        UserAnswer.TextualAnswerCase.TEXTUALANSWER_NOT_SET, null -> false
+      }
     }
   }
 }
