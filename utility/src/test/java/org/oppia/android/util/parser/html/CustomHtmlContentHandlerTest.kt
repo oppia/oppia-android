@@ -22,7 +22,11 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -48,7 +52,8 @@ class CustomHtmlContentHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var machineLocale: OppiaLocale.MachineLocale
@@ -187,7 +192,7 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val displayLocale = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
     val htmlString = "<p>Paragraph 1</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>" +
       "<p>Paragraph 2.</p>"
@@ -209,7 +214,7 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoNumberedListSpan() {
-    val displayLocale = createDisplayLocaleImpl(OppiaLocaleContext.getDefaultInstance())
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
     val htmlString = "<p>Paragraph 1</p><oppia-ol><oppia-li>Item</oppia-li></oppia-ol>" +
       "<p>Paragraph 2.</p>"
@@ -401,5 +406,84 @@ class CustomHtmlContentHandlerTest {
     }
 
     fun inject(customHtmlContentHandlerTest: CustomHtmlContentHandlerTest)
+  }
+
+  private companion object {
+
+    private val US_ENGLISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ENGLISH
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "en"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.UNITED_STATES
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "US"
+        }.build()
+      }.build()
+    }.build()
+
+    private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ARABIC
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "ar"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.REGION_UNSPECIFIED
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "EG"
+        }.build()
+      }.build()
+    }.build()
+
+    private val TURKEY_TURKISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.LANGUAGE_UNSPECIFIED
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "tr"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.REGION_UNSPECIFIED
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "TR"
+        }.build()
+      }.build()
+    }.build()
+
+    private val HEBREW_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ARABIC
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "he"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.UNITED_STATES
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "US"
+        }.build()
+      }.build()
+    }.build()
   }
 }
