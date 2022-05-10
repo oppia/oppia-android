@@ -81,8 +81,10 @@ class AudioFragment :
   override fun setStateAndExplorationId(newState: State, explorationId: String) =
     audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
 
-  override fun loadMainContentAudio(allowAutoPlay: Boolean) =
-    audioFragmentPresenter.loadMainContentAudio(allowAutoPlay)
+  override fun loadMainContentAudio(allowAutoPlay: Boolean) {
+    // This function is only called for new states loading their audio.
+    audioFragmentPresenter.loadMainContentAudio(allowAutoPlay, reloadingContent = true)
+  }
 
   override fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
     audioFragmentPresenter.loadFeedbackAudio(contentId, allowAutoPlay)

@@ -36,17 +36,8 @@
   <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
-  <!-- Third Party Dependency List Activity -->
-  <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_third_party_dependency_options_list_activity_background_color">@color/color_palette_container_background_color</color>
-  <color name="component_color_third_party_dependency_items_text_list_activity_background_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_third_party_dependency_version_text_view_list_activity_color">@color/color_palette_primary_text_color</color>
-  <!-- License List Activity -->
-  <color name="component_color_license_list_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_license_list_activity_items_background_color">@color/color_palette_container_background_color</color>
-  <!-- License List Text Viewer Activity -->
-  <color name="component_color_license_list_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_license_list_text_viewer_items_activity_background_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_license_text_viewer_list_options_activity_background_color">@color/color_palette_container_background_color</color>
-  <color name="component_color_license_text_viewer_text_color">@color/color_palette_description_text_color</color>
+  <!-- Profile and Device ID Activity -->
+  <color name="component_color_profile_and_device_id_activity_primary_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_profile_and_device_id_activity_disabled_icon_button_color">@color/oppia_disabled_button_background</color>
 </resources>
