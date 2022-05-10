@@ -74,6 +74,7 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -122,10 +123,14 @@ class ViewEventLogsFragmentTest {
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     logMultipleEvents()
   }
 
@@ -478,29 +483,23 @@ class ViewEventLogsFragmentTest {
 
   /** Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated */
   private fun logMultipleEvents() {
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP,
-      eventContext = oppiaLogger.createOpenProfileChooserContext(),
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenProfileChooserContext())
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 10000)
+    oppiaLogger.logImportantEvent(eventContext = oppiaLogger.createOpenHomeContext())
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 20000)
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID))
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 30000)
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 10000,
-      eventContext = oppiaLogger.createOpenHomeContext()
-    )
-
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 20000,
-      eventContext = oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
-    )
-
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 30000,
-      eventContext = oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
-    )
-
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 40000,
-      eventContext = oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 40000)
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
   }
 

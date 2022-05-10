@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.databinding.AdministratorControlsActivityBinding
@@ -42,9 +43,11 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       AdministratorControlsFragment.newInstance(isMultipane)
     ).commitNow()
     if (isMultipane) {
+      val adminControlsActivity = activity as AdministratorControlsActivity
       when (lastLoadedFragment) {
-        PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
-        APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
+        PROFILE_LIST_FRAGMENT -> adminControlsActivity.loadProfileList()
+        APP_VERSION_FRAGMENT -> adminControlsActivity.loadAppVersion()
+        PROFILE_AND_DEVICE_ID_FRAGMENT -> adminControlsActivity.loadLearnerAnalyticsData()
       }
     }
   }
@@ -75,7 +78,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun loadProfileList() {
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       ProfileListFragment.newInstance(isMultipane)
     ).commitNow()
@@ -84,9 +87,18 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   fun loadAppVersion() {
     lastLoadedFragment = APP_VERSION_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
-    activity.supportFragmentManager.beginTransaction().add(
+    activity.supportFragmentManager.beginTransaction().replace(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
+    ).commitNow()
+  }
+
+  fun loadLearnerAnalyticsData() {
+    lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    activity.supportFragmentManager.beginTransaction().replace(
+      R.id.administrator_controls_fragment_multipane_placeholder,
+      ProfileAndDeviceIdFragment()
     ).commitNow()
   }
 

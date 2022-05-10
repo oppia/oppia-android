@@ -25,6 +25,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -83,6 +84,7 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -619,9 +621,11 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       submitTwoWrongAnswersForFractionsState2()
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -714,7 +718,8 @@ class StateFragmentLocalTest {
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -727,7 +732,8 @@ class StateFragmentLocalTest {
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -741,7 +747,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // After the first hint, waiting 30 more seconds is sufficient for displaying another hint.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -819,7 +826,8 @@ class StateFragmentLocalTest {
       submitWrongAnswerToFractionsState2()
 
       // Submitting a single wrong answer after the previous hint won't immediately show another.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -834,7 +842,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Waiting 10 seconds after submitting a wrong answer should allow another hint to be shown.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -880,7 +889,8 @@ class StateFragmentLocalTest {
 
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -896,7 +906,8 @@ class StateFragmentLocalTest {
       // Since no answer was submitted after viewing the first hint, the second hint should be
       // revealed in 30 seconds.
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -906,10 +917,12 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       playThroughFractionsState1()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -921,7 +934,8 @@ class StateFragmentLocalTest {
       produceAndViewFirstHintForFractionState2()
       clickPreviousStateNavigationButton()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -934,7 +948,8 @@ class StateFragmentLocalTest {
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -948,7 +963,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // The solution should now be visible after waiting for 30 seconds.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -985,7 +1001,8 @@ class StateFragmentLocalTest {
       submitWrongAnswerToFractionsState2()
 
       // Submitting a wrong answer will not immediately reveal the solution.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1000,7 +1017,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting a wrong answer and waiting will reveal the solution.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -1147,7 +1165,8 @@ class StateFragmentLocalTest {
       produceAndViewSolutionInFractionsState2(scenario, revealedHintCount = 4)
 
       // No hint should be indicated as available after revealing the solution.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1162,7 +1181,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
 
       // Even waiting 30 seconds should not indicate anything since the solution's been revealed.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1178,7 +1198,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // Submitting a wrong answer should not change anything since the solution's been revealed.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1190,7 +1211,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
       // No hint should be shown since there are no hints for this state.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1205,7 +1227,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // No hint indicator should be shown since there is no solution for this state.
-      onView(withId(R.id.dot_hint)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
     }
   }
 
@@ -1256,7 +1279,8 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
       // The new hint indicator should be shown since a solution is now available.
-      onView(withId(R.id.dot_hint)).check(matches(isDisplayed()))
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
     }
   }
 
@@ -1571,6 +1595,148 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.new_hint_available)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_bulbHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_resolvedHint_bulbHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription(R.string.no_new_hint_available)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_resolvedHint_bulbHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_arrowHasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.open_hint_dialog_arrow))
+        .check(matches(withContentDescription(R.string.show_hints_and_solution)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_arrowHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_keyboard_arrow_down_white_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showHintsAndSolutionBulb_resolvedHint_arrowHasCorrectDrawable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickContinueNavigationButton()
+      // Entering incorrect answer twice.
+      submitFractionAnswer("1/2")
+      submitFractionAnswer("1/2")
+
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      closeHintsAndSolutionsDialog()
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_keyboard_arrow_right_white_48)))
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1758,6 +1924,7 @@ class StateFragmentLocalTest {
   }
 
   private fun clickNextStateNavigationButton() {
+    onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(NEXT_NAVIGATION_BUTTON))
     onView(withId(R.id.next_state_navigation_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
