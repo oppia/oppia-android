@@ -174,12 +174,13 @@
 
   <!-- PinPasswordActivity -->
   <dimen name="pin_password_activity_layout_width">0dp</dimen>
-  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
+  <dimen name="pin_password_activity_margin_start">28dp</dimen>
+  <dimen name="pin_password_activity_margin_end">28dp</dimen>
+  <dimen name="pin_password_activity_padding_top">40dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
-  <dimen name="pin_password_margin_start">28dp</dimen>
-  <dimen name="pin_password_margin_end">28dp</dimen>
-  <dimen name="pin_password_padding_top">40dp</dimen>
-  <dimen name="pin_password_min_width">304dp</dimen>
 
   <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
   <dimen name="submitted_answer_question_view_margin_start">64dp</dimen>

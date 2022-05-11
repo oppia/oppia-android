@@ -300,13 +300,14 @@
   <dimen name="app_version_image_view_margin_start">36dp</dimen>
   <dimen name="app_version_text_view_margin_end">36dp</dimen>
 
-  <!-- Pin Password -->
-  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
+  <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_padding_top">28dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_start">72dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_end">72dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">304dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.5</item>
-  <dimen name="pin_password_margin_start">72dp</dimen>
-  <dimen name="pin_password_margin_end">72dp</dimen>
-  <dimen name="pin_password_padding_top">48dp</dimen>
-  <dimen name="pin_password_min_width">496dp</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">304dp</dimen>
