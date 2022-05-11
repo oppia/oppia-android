@@ -171,8 +171,9 @@
   <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
-  
-  <!-- Pin Password -->
+
+  <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_layout_width">0dp</dimen>
   <dimen name="pin_password_text_input_layout_width">244dp</dimen>
   <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
   <dimen name="pin_password_margin_start">28dp</dimen>
