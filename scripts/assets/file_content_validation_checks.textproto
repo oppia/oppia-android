@@ -244,10 +244,10 @@ file_content_checks {
   prohibited_content_regex: "java\\.text"
   failure_message: "Don't perform date/time formatting directly. Instead, use OppiaLocale."
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
-  exempted_file_name: "domain/src/main/java/org/oppia/android/domain/locale/DisplayLocaleImpl.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/DisplayLocaleImpl.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
 }
 file_content_checks {
