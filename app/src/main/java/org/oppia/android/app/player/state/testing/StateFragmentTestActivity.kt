@@ -53,8 +53,8 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
-  override fun deleteCurrentProgressAndStopSession() {
-    stateFragmentTestActivityPresenter.deleteCurrentProgressAndStopExploration()
+  override fun deleteCurrentProgressAndStopSession(isCompletion: Boolean) {
+    stateFragmentTestActivityPresenter.deleteCurrentProgressAndStopExploration(isCompletion)
   }
 
   override fun deleteOldestProgressAndStopSession() {}

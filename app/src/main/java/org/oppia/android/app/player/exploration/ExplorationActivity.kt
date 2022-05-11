@@ -120,8 +120,8 @@ class ExplorationActivity :
     explorationActivityPresenter.backButtonPressed()
   }
 
-  override fun deleteCurrentProgressAndStopSession() {
-    explorationActivityPresenter.deleteCurrentProgressAndStopExploration()
+  override fun deleteCurrentProgressAndStopSession(isCompletion: Boolean) {
+    explorationActivityPresenter.deleteCurrentProgressAndStopExploration(isCompletion)
   }
 
   override fun deleteOldestProgressAndStopSession() {

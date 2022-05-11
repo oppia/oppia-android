@@ -65,6 +65,11 @@ message Profile {
 
   // Represents user selected app-language.
   AppLanguage app_language = 12;
+
+  // Represents a generally study-unique ID that helps identify this profile for analytics logs that
+  // are enabled as part of a user study. In non-user study cases this is expected to either be
+  // empty or a meaningless value.
+  string learner_id = 13;
 }
 
 // Represents a profile avatar image.
