@@ -243,7 +243,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
-          .isEqualTo("Please visit [this page] for the latest version of this terms.")
+          .isEqualTo("Please visit [this page] for the latest version of these terms.")
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
       }
