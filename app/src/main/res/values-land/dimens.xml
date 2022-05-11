@@ -501,4 +501,7 @@
 
   <!-- ReadingTextSizeFragment -->
   <dimen name="reading_text_size_fragment_padding_bottom">96dp</dimen>
+
+  <!-- ProfileListFragment -->
+  <dimen name="profile_list_fragment_recycler_view_padding_bottom">108dp</dimen>
 </resources>

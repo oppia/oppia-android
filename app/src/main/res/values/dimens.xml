@@ -704,4 +704,12 @@
 
   <!-- ReadingTextSizeFragment -->
   <dimen name="reading_text_size_fragment_padding_bottom">132dp</dimen>
+
+  <!-- TopicFragment -->
+  <dimen name="topic_fragment_tab_layout_margin_start">0dp</dimen>
+  <dimen name="topic_fragment_tab_layout_margin_end">0dp</dimen>
+  <dimen name="topic_fragment_tab_layout_tab_indicator_height">2dp</dimen>
+
+  <!-- ProfileListFragment -->
+  <dimen name="profile_list_fragment_recycler_view_padding_bottom">40dp</dimen>
 </resources>

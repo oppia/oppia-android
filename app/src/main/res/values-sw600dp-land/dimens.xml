@@ -306,7 +306,7 @@
   <dimen name="completed_story_list_fragment_recyclerview_padding_top">24dp</dimen>
   <dimen name="completed_story_list_fragment_recyclerview_padding_end">64dp</dimen>
   <dimen name="completed_story_list_fragment_recyclerview_padding_bottom">112dp</dimen>
-  
+
   <!-- App Version -->
   <dimen name="app_version_text_view_padding_start">16dp</dimen>
   <dimen name="app_version_text_view_padding_end">16dp</dimen>
@@ -403,7 +403,7 @@
 
   <!-- TopicSummaryView -->
   <dimen name="topic_summary_lesson_count_text_view_padding_bottom">12dp</dimen>
-  
+
   <!-- TopicPracticeFragment -->
   <dimen name="topic_practice_fragment_padding_bottom">112dp</dimen>
 
@@ -416,7 +416,7 @@
 
   <!-- AppLanguageFragment -->
   <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
-  
+
   <!-- ProfileProgressRecentlyPlayedStoryCard -->
   <dimen name="profile_progress_recently_played_story_card_layout_margin_start">32dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_end">32dp</dimen>
@@ -432,7 +432,7 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
-  
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
@@ -447,7 +447,7 @@
   <dimen name="topic_lessons_summary_linear_layout_margin_start">16dp</dimen>
   <dimen name="topic_lessons_summary_linear_layout_margin_end">16dp</dimen>
   <dimen name="topic_lessons_summary_story_name_chapter_count_container_margin_start">20dp</dimen>
-  
+
   <!-- TopicPracticeHeader -->
   <dimen name="topic_practice_header_parent_constraint_layout_margin_top">32dp</dimen>
   <dimen name="topic_practice_header_parent_constraint_layout_padding_bottom">20dp</dimen>
@@ -455,12 +455,17 @@
   <dimen name="topic_practice_header_child_constraint_layout_margin_end">0dp</dimen>
   <dimen name="master_skills_text_view_margin_end">0dp</dimen>
   <dimen name="topic_practice_header_child_constraint_layout_width">360dp</dimen>
-  
+
   <!-- OptionAudioLanguage -->
   <dimen name="option_audio_language_padding_start">16dp</dimen>
   <dimen name="option_audio_language_padding_end">16dp</dimen>
-  
+
   <!-- OptionsStoryTextSize -->
   <dimen name="option_story_text_size_padding_start">16dp</dimen>
   <dimen name="option_story_text_size_padding_end">16dp</dimen>
+
+  <!-- TopicFragment -->
+  <dimen name="topic_fragment_tab_layout_margin_start">192dp</dimen>
+  <dimen name="topic_fragment_tab_layout_margin_end">192dp</dimen>
+  <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
 </resources>
