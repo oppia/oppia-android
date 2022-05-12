@@ -300,7 +300,7 @@
   <dimen name="app_version_image_view_margin_start">36dp</dimen>
   <dimen name="app_version_text_view_margin_end">36dp</dimen>
 
-  <!-- AdminPinActivity -->
+  <!-- AdminAuthActivity -->
   <dimen name="admin_auth_activity_layout_width">0dp</dimen>
   <dimen name="admin_auth_activity_margin_start">0dp</dimen>
   <dimen name="admin_auth_activity_margin_end">0dp</dimen>
@@ -321,6 +321,7 @@
   <dimen name="admin_pin_activity_input_width">304dp</dimen>
 
   <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_layout_width">0dp</dimen>
   <dimen name="pin_password_activity_margin_start">0dp</dimen>
   <dimen name="pin_password_activity_margin_end">0dp</dimen>
   <dimen name="pin_password_activity_padding_top">28dp</dimen>
