@@ -174,7 +174,7 @@
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
 
   <!-- AdminAuthActivity -->
-  <dimen name="admin_auth_activity_layout_width">@dimen/match_parent</dimen>
+  <dimen name="admin_auth_activity_layout_width">0dp</dimen>
   <dimen name="admin_auth_activity_margin_start">28dp</dimen>
   <dimen name="admin_auth_activity_margin_end">28dp</dimen>
   <dimen name="admin_auth_activity_padding_top">32dp</dimen>

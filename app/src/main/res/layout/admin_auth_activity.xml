@@ -38,79 +38,91 @@
         app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
+      android:id="@+id/scrollViewAdminPin"
       android:layout_width="@dimen/admin_auth_activity_layout_width"
       android:layout_height="0dp"
-      android:layout_marginStart="@dimen/admin_auth_activity_margin_start"
-      android:layout_marginEnd="@dimen/admin_auth_activity_margin_end"
-      android:paddingBottom="@dimen/admin_auth_activity_padding_bottom"
+      android:fillViewport="true"
+      android:overScrollMode="never"
+      android:scrollbars="none"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/admin_auth_app_bar_layout">
 
-      <TextView
-        android:id="@+id/admin_auth_heading_textview"
-        style="@style/Heading2ViewStart"
+      <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/admin_auth_activity_admin_pin_main_text_view_margin_start"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="@dimen/admin_auth_activity_admin_pin_main_text_view_margin_end"
-        android:maxLines="2"
-        android:text="@string/admin_auth_heading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="@dimen/admin_auth_activity_margin_start"
+        android:layout_marginEnd="@dimen/admin_auth_activity_margin_end"
+        android:paddingBottom="@dimen/admin_auth_activity_padding_bottom">
 
-      <TextView
-        android:id="@+id/admin_auth_sub_text"
-        style="@style/Subtitle1ViewStart"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="@string/admin_auth_sub"
-        android:textColor="@color/component_color_admin_auth_secondary_text_color"
-        app:layout_constraintEnd_toEndOf="@id/admin_auth_heading_textview"
-        app:layout_constraintStart_toStartOf="@id/admin_auth_heading_textview"
-        app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
-
-      <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/admin_auth_input_pin"
-        style="@style/TextInputLayout"
-        android:layout_width="@dimen/admin_auth_activity_input_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:hint="@string/admin_auth_pin"
-        app:errorMessage="@{viewModel.errorMessage}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text">
-
-        <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/admin_auth_input_pin_edit_text"
-          style="@style/TextInputEditText"
-          android:layout_width="match_parent"
+        <TextView
+          android:id="@+id/admin_auth_heading_textview"
+          style="@style/Heading2ViewStart"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:imeOptions="actionDone"
-          android:inputType="numberPassword"
-          android:maxLength="5"
-          app:textChangedListener="@{viewModel.inputPinTextWatcher}" />
-      </com.google.android.material.textfield.TextInputLayout>
+          android:layout_marginStart="@dimen/admin_auth_activity_admin_pin_main_text_view_margin_start"
+          android:layout_marginTop="40dp"
+          android:layout_marginEnd="@dimen/admin_auth_activity_admin_pin_main_text_view_margin_end"
+          android:maxLines="2"
+          android:text="@string/admin_auth_heading"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
-      <Button
-        android:id="@+id/admin_auth_submit_button"
-        style="@style/StateButtonActive"
-        android:layout_marginTop="48dp"
-        android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
-        android:enabled="@{viewModel.isSubmitButtonActive}"
-        android:minHeight="48dp"
-        android:text="@string/admin_auth_submit"
-        android:textColor="@{viewModel.isSubmitButtonActive ? @color/color_def_white : @color/submit_button_inactive_text }"
-        app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+          android:id="@+id/admin_auth_sub_text"
+          style="@style/Subtitle1ViewStart"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="12dp"
+          android:text="@string/admin_auth_sub"
+          android:textColor="@color/component_color_admin_auth_secondary_text_color"
+          app:layout_constraintEnd_toEndOf="@id/admin_auth_heading_textview"
+          app:layout_constraintStart_toStartOf="@id/admin_auth_heading_textview"
+          app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
+
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/admin_auth_input_pin"
+          style="@style/TextInputLayout"
+          android:layout_width="@dimen/admin_auth_activity_input_width"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="48dp"
+          android:hint="@string/admin_auth_pin"
+          app:errorMessage="@{viewModel.errorMessage}"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/admin_auth_sub_text">
+
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/admin_auth_input_pin_edit_text"
+            style="@style/TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="numberPassword"
+            android:maxLength="5"
+            app:textChangedListener="@{viewModel.inputPinTextWatcher}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+          android:id="@+id/admin_auth_submit_button"
+          style="@style/StateButtonActive"
+          android:layout_marginStart="0dp"
+          android:layout_marginTop="48dp"
+          android:layout_marginEnd="0dp"
+          android:background="@{viewModel.isSubmitButtonActive ? @drawable/state_button_primary_background :@drawable/start_button_transparent_background}"
+          android:enabled="@{viewModel.isSubmitButtonActive}"
+          android:minHeight="48dp"
+          android:text="@string/admin_auth_submit"
+          android:textColor="@{viewModel.isSubmitButtonActive ? @color/color_def_white : @color/submit_button_inactive_text }"
+          app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
+          app:layout_constraintHorizontal_bias="1.0"
+          app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <View
       android:id="@+id/admin_auth_toolbar_shadow_view"
