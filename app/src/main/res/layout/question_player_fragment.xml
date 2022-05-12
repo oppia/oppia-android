@@ -15,7 +15,7 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/question_player_activity_layout_background_color">
+    android:background="@color/question_player_fragment_background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -30,7 +30,7 @@
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
         android:text="@string/question_training_session_finished_header"
-        android:textColor="@color/question_player_activity_textview_secondary_color"
+        android:textColor="@color/question_player_fragment_textview_secondary_color"
         android:textSize="24sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
         android:layout_marginEnd="28dp"
         android:fontFamily="sans-serif"
         android:text="@string/question_training_session_finished_message"
-        android:textColor="@color/question_player_activity_textview_secondary_color"
+        android:textColor="@color/question_player_fragment_textview_secondary_color"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"

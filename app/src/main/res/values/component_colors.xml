@@ -42,11 +42,11 @@
   <color name="pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Question Player Activity -->
-  <color name="question_player_activity_layout_background_color">@color/color_palette_primary_background_color</color>
-  <color name="question_player_activity_textview_highlighted_color">@color/color_palette_highlighted_text_color</color>
-  <color name="question_player_activity_textview_secondary_color">@color/color_palette_secondary_text_color</color>
+  <color name="question_player_fragment_background_color">@color/color_palette_primary_background_color</color>
+  <color name="shared_player_text_view_primary_color">@color/color_palette_highlighted_text_color</color>
+  <color name="question_player_fragment_textview_secondary_color">@color/color_palette_secondary_text_color</color>
   <color name="question_player_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Exploration Activity -->
-  <color name="exploration_activity_layout_background_color">@color/color_palette_primary_background_color</color>
+  <color name="exploration_fragment_background_color">@color/color_palette_primary_background_color</color>
   <color name="exploration_activity_toolbar_color">@color/color_palette_toolbar_color</color>
 </resources>
