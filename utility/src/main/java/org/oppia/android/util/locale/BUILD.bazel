@@ -48,7 +48,10 @@ kt_android_library(
         "MachineLocaleImpl.kt",
         "OppiaBidiFormatterImpl.kt",
     ],
-    visibility = ["//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__"],
+    visibility = [
+        "//domain/src/main/java/org/oppia/android/domain/locale:__pkg__",
+        "//utility:utility_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__"],
     deps = [
         ":android_locale_factory",
         ":dagger",
