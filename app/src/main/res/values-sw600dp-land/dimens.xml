@@ -313,13 +313,34 @@
   <dimen name="app_version_image_view_margin_start">24dp</dimen>
   <dimen name="app_version_text_view_margin_end">28dp</dimen>
 
-  <!-- Pin Password -->
-  <dimen name="pin_password_text_input_layout_width">304dp</dimen>
-  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
-  <dimen name="pin_password_margin_start">332dp</dimen>
-  <dimen name="pin_password_margin_end">332dp</dimen>
-  <dimen name="pin_password_padding_top">48dp</dimen>
-  <dimen name="pin_password_min_width">360dp</dimen>
+  <!-- AdminAuthActivity -->
+  <dimen name="admin_auth_activity_layout_width">360dp</dimen>
+  <dimen name="admin_auth_activity_margin_start">0dp</dimen>
+  <dimen name="admin_auth_activity_margin_end">0dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_end">0dp</dimen>
+  <dimen name="admin_auth_activity_padding_top">48dp</dimen>
+  <dimen name="admin_auth_activity_padding_bottom">96dp</dimen>
+  <dimen name="admin_auth_activity_input_width">0dp</dimen>
+
+  <!-- AdminPinActivity -->
+  <dimen name="admin_pin_activity_layout_width">360dp</dimen>
+  <dimen name="admin_pin_activity_margin_start">0dp</dimen>
+  <dimen name="admin_pin_activity_margin_end">0dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_end">0dp</dimen>
+  <dimen name="admin_pin_activity_padding_top">48dp</dimen>
+  <dimen name="admin_pin_activity_padding_bottom">96dp</dimen>
+  <dimen name="admin_pin_activity_input_width">0dp</dimen>
+
+  <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_layout_width">360dp</dimen>
+  <dimen name="pin_password_activity_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_padding_top">48dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">360dp</dimen>
