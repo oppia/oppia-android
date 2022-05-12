@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "exploration.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -9,8 +11,8 @@ option java_multiple_files = true;
 message EventLog {
   // The timestamp of the event.
   int64 timestamp = 1;
-  // The action happening in the event.
-  EventAction action_name = 2;
+  // Deprecated Event Action. This is now handled via the context below.
+  reserved 2;
   // The priority of the event.
   Priority priority = 3;
   // The activity context of the event.
@@ -18,30 +20,113 @@ message EventLog {
 
   // Structure of an activity context.
   message Context {
-    oneof activity_context {
-      // The event being logged is related to exploration.
-      ExplorationContext exploration_context = 1;
-      // The event being logged is related to the question player.
-      QuestionContext question_context = 2;
-      // The event being logged is related to the topic activity.
-      TopicContext topic_context = 3;
-      // The event being logged is related to the story activity.
-      StoryContext story_context = 4;
-      // The event being logged is related to the concept card.
-      ConceptCardContext concept_card_context = 5;
-      // The event being logged is related to the revision card.
-      RevisionCardContext revision_card_context = 6;
-    }
-  }
+    // Deprecated exploration context. This is now handled via the open_exploration_activity context
+    // below.
+    reserved 1;
 
-  // Structure of an exploration context.
-  message ExplorationContext {
-    // The active topic ID when the event is logged.
-    string topic_id = 1;
-    // The active story ID when the event is logged.
-    string story_id = 2;
-    // The active exploration ID when the event is logged.
-    string exploration_id = 3;
+    // Deprecated topic context. This is now broken down into 4 different contexts and is handled
+    // via the open_info_tab, open_lessons_tab, open_practice_tab and open_revision_tab contexts
+    // below.
+    reserved 2;
+
+    // Deprecated question context. This is now handled via the open_question_player context below.
+    reserved 3;
+
+    // Deprecated story context. This is now handled via the open_story_activity context below.
+    reserved 4;
+
+    // Deprecated concept card context. This is now handled via the open_concept_card context below.
+    reserved 5;
+
+    // Deprecated revision card context. This is now handled via the open_concept_card context
+    // below.
+    reserved 6;
+
+    oneof activity_context {
+      // The event being logged is related to opening of exploration activity.
+      ExplorationContext open_exploration_activity = 7;
+
+      // The event being logged is related to opening of info tab under topic activity.
+      TopicContext open_info_tab = 8;
+
+      // The event being logged is related to opening of lessons tab under topic activity.
+      TopicContext open_lessons_tab = 9;
+
+      // The event being logged is related to opening of practice tab under topic activity.
+      TopicContext open_practice_tab = 10;
+
+      // The event being logged is related to opening of revision tab under topic activity.
+      TopicContext open_revision_tab = 11;
+
+      // The event being logged is related to the opening of question player.
+      QuestionContext open_question_player = 12;
+
+      // The event being logged is related to the opening of story activity.
+      StoryContext open_story_activity = 13;
+
+      // The event being logged is related to the opening of concept card.
+      ConceptCardContext open_concept_card = 14;
+
+      // The event being logged is related to the opening of revision card.
+      RevisionCardContext open_revision_card = 15;
+
+      // The event being logged is related to starting an exploration card.
+      CardContext start_card_context = 16;
+
+      // The event being logged is related to ending an exploration card.
+      CardContext end_card_context = 17;
+
+      // The event being logged is related to offering a hint when it becomes available.
+      HintContext hint_offered_context = 18;
+
+      // The event being logged is related to accessing a hint.
+      HintContext access_hint_context = 19;
+
+      // The event being logged is related to offering a solution when it becomes available.
+      ExplorationContext solution_offered_context = 20;
+
+      // The event being logged is related to accessing a solution.
+      ExplorationContext access_solution_context = 21;
+
+      // The event being logged is related to submitting an answer.
+      SubmitAnswerContext submit_answer_context = 22;
+
+      // The event being logged is related to playing a voiceover.
+      PlayVoiceOverContext play_voice_over_context = 23;
+
+      // The event being logged is related to backgrounding of the application.
+      LearnerDetailsContext app_in_background_context = 24;
+
+      // The event being logged is related to foregrounding of the application.
+      LearnerDetailsContext app_in_foreground_context = 25;
+
+      // The event being logged is related to exiting an exploration.
+      ExplorationContext exit_exploration_context = 26;
+
+      // The event being logged is related to finishing an exploration.
+      ExplorationContext finish_exploration_context = 27;
+
+      // The event being logged is related to resuming an exploration.
+      LearnerDetailsContext resume_exploration_context = 28;
+
+      // The event being logged is related to restarting an exploration.
+      LearnerDetailsContext start_over_exploration_context = 29;
+
+      // The event being logged is related to deleting a profile.
+      LearnerDetailsContext delete_profile_context = 30;
+
+      // The event being logged is related to the opening of home activity. The boolean value here
+      // has no importance and is always 'true'.
+      bool open_home = 31;
+
+      // The event being logged is related to the opening of profile chooser activity. The boolean
+      // value here has no importance and is always 'true'.
+      bool open_profile_chooser = 32;
+
+      // Indicates that something went wrong when trying to log a learner analytics even for the
+      // device corresponding to the specified device ID.
+      string install_id_for_failed_analytics_log = 33;
+    }
   }
 
   // Structure of a question context.
@@ -80,32 +165,80 @@ message EventLog {
     int32 sub_topic_id = 2;
   }
 
-  // Supported event actions for event logging.
-  enum EventAction {
-    // The undefined user action of an event.
-    EVENT_ACTION_UNSPECIFIED = 0;
-    // Opening of home activity.
-    OPEN_HOME = 1;
-    // Opening of info tab under topic activity.
-    OPEN_INFO_TAB = 2;
-    // Opening of lessons tab under topic activity.
-    OPEN_LESSONS_TAB = 3;
-    // Opening of practice tab under topic activity.
-    OPEN_PRACTICE_TAB = 4;
-    // Opening of revision tab under topic activity.
-    OPEN_REVISION_TAB = 5;
-    // Opening of story activity.
-    OPEN_STORY_ACTIVITY = 6;
-    // Opening of exploration activity.
-    OPEN_EXPLORATION_ACTIVITY = 7;
-    // Opening of question player.
-    OPEN_QUESTION_PLAYER = 8;
-    // Opening of concept card.
-    OPEN_CONCEPT_CARD = 9;
-    // Opening of revision card.
-    OPEN_REVISION_CARD = 10;
-    // Opening of profile chooser activity.
-    OPEN_PROFILE_CHOOSER = 11;
+  // Represents the event context for interacting with a card within an exploration.
+  message CardContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // The ID of skill to which this exploration card is associated.
+    string skill_id = 3;
+  }
+
+  // Represents the event context for a hint related event within an exploration.
+  message HintContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // Corresponds to the index of the index being shown or last seen.
+    int32 hint_index = 4;
+
+    reserved 2;
+    reserved 3;
+  }
+
+  // Represents the event context for submitting an answer within an exploration.
+  message SubmitAnswerContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // Whether the answer that the learner submitted is the correct answer.
+    bool is_answer_correct = 3;
+  }
+
+  // Represents the event context for playing a voiceover within an exploration.
+  message PlayVoiceOverContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // The content id of the voiceover recording being played.
+    string content_id = 3;
+  }
+
+  // Represents event context which contains learner-specific details that are logged with every
+  // event.
+  message LearnerDetailsContext {
+    // The learner id of the current user. This id is profile-specific.
+    string learner_id = 1;
+
+    // The device id of the current device. This id is common across all profiles.
+    string install_id = 2;
+  }
+
+  // Represents the event context for all exploration related events containing learner-specific and
+  // exploration-specific details.
+  message ExplorationContext {
+    // The active topic ID when the event is logged.
+    string topic_id = 1;
+
+    // The active story ID when the event is logged.
+    string story_id = 2;
+
+    // The active exploration ID when the event is logged.
+    string exploration_id = 3;
+
+    // The session id of the current learning session.
+    string session_id = 4;
+
+    reserved 5; // Deprecated string version of exploration version.
+
+    // The version of the exploration.
+    int32 exploration_version = 8;
+
+    // The name of the current state of the exploration.
+    string state_name = 6;
+
+    // Defined attributes that are common among all learner analytics related event log contexts.
+    LearnerDetailsContext learner_details = 7;
   }
 
   // Supported priority of events for event logging
@@ -115,7 +248,8 @@ message EventLog {
     // The priority of events whose logs should not be removed from the storage on most occasions
     // but can be removed if they're the only ones there and size limit exceeds.
     ESSENTIAL = 1;
-    // The priority of events whose logs can be removed from the storage if the size exceeds a certain limit
+    // The priority of events whose logs can be removed from the storage if the size exceeds a
+    // certain limit
     OPTIONAL = 2;
   }
 }
@@ -163,4 +297,14 @@ message OppiaEventLogs {
 // Structure for a container that contains exception log reports.
 message OppiaExceptionLogs {
   repeated ExceptionLog exception_log = 1;
+}
+
+// Data structure of device & app context that's stored on disk to be unique to each app
+// installation (or cross-installation if restoring from an app backup).
+message DeviceContextDatabase {
+  // The per-installation UUID that can be used to generally uniquely identify this device among all
+  // others present in a user study. This shouldn't be relied on for anything other than analytics,
+  // and only for specific studies as the ID is not stable across app installations (but should
+  // survive app data backups & restores, as well as app upgrades).
+  string installation_id = 1;
 }

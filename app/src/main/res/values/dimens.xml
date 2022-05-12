@@ -76,7 +76,6 @@
   <dimen name="coming_soon_padding_start">12dp</dimen>
 
   <dimen name="default_reading_text_size">18sp</dimen>
-  <dimen name="reading_text_size_fragment_padding_bottom">132dp</dimen>
   <dimen name="font_scale_content_text_size">20dp</dimen>
   <dimen name="profile_view_already_added_margin">20dp</dimen>
   <dimen name="profile_view_not_added_margin">20dp</dimen>
@@ -632,6 +631,14 @@
   <dimen name="topic_lessons_title_margin_top">32dp</dimen>
   <dimen name="topic_lessons_title_margin_end">32dp</dimen>
 
+  <!-- TopicPracticeHeader -->
+  <dimen name="topic_practice_header_child_constraint_layout_margin_start">32dp</dimen>
+  <dimen name="topic_practice_header_parent_constraint_layout_margin_top">32dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_margin_end">24dp</dimen>
+  <dimen name="topic_practice_header_parent_constraint_layout_padding_bottom">24dp</dimen>
+  <dimen name="master_skills_text_view_margin_end">88dp</dimen>
+  <dimen name="topic_practice_header_child_constraint_layout_width">0dp</dimen>
+
   <!-- ProfileProgressRecentlyPlayedStoryCard -->
   <dimen name="profile_progress_recently_played_story_card_layout_margin_start">8dp</dimen>
   <dimen name="profile_progress_recently_played_story_card_layout_margin_end">8dp</dimen>
@@ -683,4 +690,18 @@
   <!-- OptionAudioLanguage -->
   <dimen name="option_audio_language_padding_start">16dp</dimen>
   <dimen name="option_audio_language_padding_end">16dp</dimen>
+
+  <!-- TopicLessonsSummary -->
+  <dimen name="topic_lessons_summary_card_view_margin_start">20dp</dimen>
+  <dimen name="topic_lessons_summary_card_view_margin_end">20dp</dimen>
+  <dimen name="topic_lessons_summary_linear_layout_margin_start">12dp</dimen>
+  <dimen name="topic_lessons_summary_linear_layout_margin_end">12dp</dimen>
+  <dimen name="topic_lessons_summary_story_name_chapter_count_container_margin_start">12dp</dimen>
+  
+  <!-- OptionsStoryTextSize -->
+  <dimen name="option_story_text_size_padding_start">16dp</dimen>
+  <dimen name="option_story_text_size_padding_end">16dp</dimen>
+
+  <!-- ReadingTextSizeFragment -->
+  <dimen name="reading_text_size_fragment_padding_bottom">132dp</dimen>
 </resources>

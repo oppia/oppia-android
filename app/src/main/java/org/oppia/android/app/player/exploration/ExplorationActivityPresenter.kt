@@ -214,12 +214,12 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Deletes the saved progress for the current exploration and then stops the exploration. */
-  fun deleteCurrentProgressAndStopExploration() {
+  fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       explorationId
     )
-    stopExploration()
+    stopExploration(isCompletion)
   }
 
   /** Deletes the oldest saved checkpoint and then stops the exploration. */
@@ -233,23 +233,20 @@ class ExplorationActivityPresenter @Inject constructor(
         oldestCheckpointExplorationId
       )
     }
-    stopExploration()
+    stopExploration(isCompletion = false)
   }
 
-  fun stopExploration() {
+  fun stopExploration(isCompletion: Boolean) {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
-    explorationDataController.stopPlayingExploration()
+    explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
         Observer<AsyncResult<Any?>> {
-          when {
-            it.isPending() -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
-            it.isFailure() -> oppiaLogger.e(
-              "ExplorationActivity",
-              "Failed to stop exploration",
-              it.getErrorOrNull()!!
-            )
-            else -> {
+          when (it) {
+            is AsyncResult.Pending -> oppiaLogger.d("ExplorationActivity", "Stopping exploration")
+            is AsyncResult.Failure ->
+              oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
+            is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
               backPressActivitySelector(backflowScreen)
               (activity as ExplorationActivity).finish()
@@ -320,14 +317,16 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Helper for subscribeToExploration. */
   private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
-    if (ephemeralStateResult.isFailure()) {
-      oppiaLogger.e(
-        "ExplorationActivity",
-        "Failed to retrieve answer outcome",
-        ephemeralStateResult.getErrorOrNull()!!
-      )
+    return when (ephemeralStateResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralStateResult.error
+        )
+        Exploration.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Exploration.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralStateResult.value
     }
-    return ephemeralStateResult.getOrDefault(Exploration.getDefaultInstance())
   }
 
   private fun backPressActivitySelector(backflowScreen: Int?) {
@@ -374,7 +373,7 @@ class ExplorationActivityPresenter @Inject constructor(
       !::oldestCheckpointExplorationId.isInitialized ||
       !::oldestCheckpointExplorationTitle.isInitialized
     ) {
-      stopExploration()
+      stopExploration(isCompletion = false)
       return
     }
 
@@ -420,15 +419,17 @@ class ExplorationActivityPresenter @Inject constructor(
     ).toLiveData().observe(
       activity,
       Observer {
-        if (it.isSuccess()) {
-          oldestCheckpointExplorationId = it.getOrThrow().explorationId
-          oldestCheckpointExplorationTitle = it.getOrThrow().explorationTitle
-        } else if (it.isFailure()) {
-          oppiaLogger.e(
-            "ExplorationActivity",
-            "Failed to retrieve oldest saved checkpoint details.",
-            it.getErrorOrNull()
-          )
+        when (it) {
+          is AsyncResult.Success -> {
+            oldestCheckpointExplorationId = it.value.explorationId
+            oldestCheckpointExplorationTitle = it.value.explorationTitle
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for an actual result.
         }
       }
     )
@@ -453,7 +454,7 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
-          stopExploration()
+          stopExploration(isCompletion = false)
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
           showProgressDatabaseFullDialogFragment()

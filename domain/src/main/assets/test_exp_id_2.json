@@ -59,7 +59,7 @@
                 "content_id": "feedback_1",
                 "html": "<b>Correct!</b>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -233,7 +233,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "MultipleChoice": {
         "content": {
@@ -270,7 +271,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct! Eagles can sustain flight.</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -376,7 +377,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "Fractions": {
         "content": {
@@ -421,7 +423,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -546,7 +548,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "Continue": {
         "content": {
@@ -568,7 +571,7 @@
               "content_id": "default_outcome",
               "html": "Continuing onward."
             },
-            "labelled_as_correct": false,
+            "labelled_as_correct": true,
             "param_changes": [],
             "refresher_exploration_id": "",
             "missing_prerequisite_skill_id": ""
@@ -612,7 +615,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "NumberInput": {
         "content": {
@@ -636,7 +640,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -808,7 +812,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "RatioInput": {
         "content": {
@@ -861,7 +866,7 @@
                 "content_id": "feedback_2",
                 "html": "<p>Correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -880,7 +885,7 @@
                 "content_id": "feedback_3",
                 "html": "<p>Correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -988,7 +993,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "Text": {
         "content": {
@@ -1025,7 +1031,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1119,7 +1125,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "ItemSelectionMinOne": {
         "content": {
@@ -1162,7 +1169,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>Correct!</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1268,7 +1275,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "DragDropNoGroup": {
         "content": {
@@ -1311,7 +1319,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>That's correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1495,7 +1503,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "DragDropGroup": {
         "content": {
@@ -1538,7 +1547,7 @@
                 "content_id": "feedback_1",
                 "html": "<p>That's correct</p>"
               },
-              "labelled_as_correct": false,
+              "labelled_as_correct": true,
               "param_changes": [],
               "refresher_exploration_id": "",
               "missing_prerequisite_skill_id": ""
@@ -1691,7 +1700,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       },
       "End": {
         "content": {
@@ -1734,7 +1744,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_0"
       }
     },
     "objective": "Demonstrate core interactions used in the Oppia prototype.",

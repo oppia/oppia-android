@@ -27,9 +27,11 @@ class AudioViewModel @Inject constructor(
   private lateinit var state: State
   private lateinit var explorationId: String
   private var voiceoverMap = mapOf<String, Voiceover>()
+  private var currentContentId: String? = null
   private val defaultLanguage = "en"
   private var languageSelectionShown = false
   private var autoPlay = false
+  private var reloadingMainContent = false
   private var hasFeedback = false
 
   var selectedLanguageCode: String = ""
@@ -62,14 +64,14 @@ class AudioViewModel @Inject constructor(
     explorationId = id
   }
 
-  fun loadMainContentAudio(allowAutoPlay: Boolean) {
+  fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
     hasFeedback = false
-    loadAudio(null, allowAutoPlay)
+    loadAudio(contentId = null, allowAutoPlay, reloadingContent)
   }
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) {
     hasFeedback = true
-    loadAudio(contentId, allowAutoPlay)
+    loadAudio(contentId, allowAutoPlay, reloadingMainContent = false)
   }
 
   /**
@@ -78,22 +80,25 @@ class AudioViewModel @Inject constructor(
    * @param contentId If contentId is null, then state.content.contentId is used as default.
    * @param allowAutoPlay If false, audio is guaranteed not to be autoPlayed.
    */
-  private fun loadAudio(contentId: String?, allowAutoPlay: Boolean) {
+  private fun loadAudio(contentId: String?, allowAutoPlay: Boolean, reloadingMainContent: Boolean) {
+    val targetContentId = contentId ?: state.content.contentId
+    val voiceoverMapping =
+      state.recordedVoiceoversMap[targetContentId] ?: VoiceoverMapping.getDefaultInstance()
+
     autoPlay = allowAutoPlay
-    voiceoverMap = (
-      state.recordedVoiceoversMap[contentId ?: state.content.contentId]
-        ?: VoiceoverMapping.getDefaultInstance()
-      ).voiceoverMappingMap
+    this.reloadingMainContent = reloadingMainContent
+    voiceoverMap = voiceoverMapping.voiceoverMappingMap
+    currentContentId = targetContentId
     languages = voiceoverMap.keys.toList().map { machineLocale.run { it.toMachineLowerCase() } }
     when {
       selectedLanguageCode.isEmpty() && languages.any {
         it == defaultLanguage
-      } -> setAudioLanguageCode(
-        defaultLanguage
-      )
-      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
+      } -> setAudioLanguageCode(defaultLanguage)
+      languages.any { it == selectedLanguageCode } ->
+        setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
+        this.reloadingMainContent = false
         languageSelectionShown = true
         val languageCode = if (languages.contains("en")) {
           "en"
@@ -109,7 +114,9 @@ class AudioViewModel @Inject constructor(
   fun setAudioLanguageCode(languageCode: String) {
     selectedLanguageCode = languageCode
     currentLanguageCode.set(languageCode)
-    audioPlayerController.changeDataSource(voiceOverToUri(voiceoverMap[languageCode]))
+    audioPlayerController.changeDataSource(
+      voiceOverToUri(voiceoverMap[languageCode]), currentContentId
+    )
   }
 
   /** Plays or pauses AudioController depending on passed in state */
@@ -117,7 +124,7 @@ class AudioViewModel @Inject constructor(
     if (type == UiAudioPlayStatus.PLAYING) {
       audioPlayerController.pause()
     } else {
-      audioPlayerController.play()
+      audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     }
   }
 
@@ -142,35 +149,40 @@ class AudioViewModel @Inject constructor(
   }
 
   private fun processDurationResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (!playProgressResult.isSuccess()) {
+    if (playProgressResult !is AsyncResult.Success) {
       return 0
     }
-    return playProgressResult.getOrThrow().duration
+    return playProgressResult.value.duration
   }
 
   private fun processPositionResultLiveData(playProgressResult: AsyncResult<PlayProgress>): Int {
-    if (!playProgressResult.isSuccess()) {
+    if (playProgressResult !is AsyncResult.Success) {
       return 0
     }
-    return playProgressResult.getOrThrow().position
+    return playProgressResult.value.position
   }
 
   private fun processPlayStatusResultLiveData(
     playProgressResult: AsyncResult<PlayProgress>
   ): UiAudioPlayStatus {
-    return when {
-      playProgressResult.isPending() -> UiAudioPlayStatus.LOADING
-      playProgressResult.isFailure() -> UiAudioPlayStatus.FAILED
-      else -> when (playProgressResult.getOrThrow().type) {
+    return when (playProgressResult) {
+      is AsyncResult.Pending -> UiAudioPlayStatus.LOADING
+      is AsyncResult.Failure -> UiAudioPlayStatus.FAILED
+      is AsyncResult.Success -> when (playProgressResult.value.type) {
         PlayStatus.PREPARED -> {
-          if (autoPlay) audioPlayerController.play()
+          if (autoPlay) {
+            audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent)
+          }
           autoPlay = false
+          reloadingMainContent = false
           UiAudioPlayStatus.PREPARED
         }
         PlayStatus.PLAYING -> UiAudioPlayStatus.PLAYING
         PlayStatus.PAUSED -> UiAudioPlayStatus.PAUSED
         PlayStatus.COMPLETED -> {
-          if (hasFeedback) loadAudio(null, false)
+          if (hasFeedback) {
+            loadAudio(contentId = null, allowAutoPlay = false, reloadingMainContent = false)
+          }
           hasFeedback = false
           UiAudioPlayStatus.COMPLETED
         }

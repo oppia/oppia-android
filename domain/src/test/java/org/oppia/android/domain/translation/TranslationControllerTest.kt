@@ -42,6 +42,10 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -53,6 +57,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -1143,7 +1148,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testComputeTranslationContext_englishLocale_emptyMap_returnsEmptyContext() {
+  fun testComputeTranslationContext_englishLocale_emptyMap_returnsContextWithEngAndNoXlations() {
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
     val writtenTranslationsMap = mapOf<String, TranslationMapping>()
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
@@ -1152,11 +1157,14 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
-  fun testComputeTranslationContext_englishLocale_returnsEmptyContext() {
+  fun testComputeTranslationContext_englishLocale_returnsContextWithEnglishAndNoTranslations() {
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
     val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
@@ -1165,11 +1173,14 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
-  fun testComputeTranslationContext_defaultMismatchedLocale_returnsEmptyContext() {
+  fun testComputeTranslationContext_defaultMismatchedLocale_returnsContextWithEngAndNoXlations() {
     val writtenTranslationsMap = TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
     val contentLocale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
@@ -1177,11 +1188,14 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ENGLISH
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
-  fun testComputeTranslationContext_arabicLocale_noArabicTranslationsInMap_returnsEmptyContext() {
+  fun testComputeTranslationContext_arabicLocale_emptyXlationsMap_returnsArabicContextNoXlations() {
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ARABIC)
     val writtenTranslationsWithoutArabicMap = createTranslationMappingWithout("ar")
     val localeProvider = translationController.getWrittenTranslationContentLocale(PROFILE_ID_0)
@@ -1192,7 +1206,10 @@ class TranslationControllerTest {
         writtenTranslationsWithoutArabicMap, contentLocale
       )
 
-    assertThat(translationContext).isEqualToDefaultInstance()
+    val expectedContext = WrittenTranslationContext.newBuilder().apply {
+      language = ARABIC
+    }.build()
+    assertThat(translationContext).isEqualTo(expectedContext)
   }
 
   @Test
@@ -1363,7 +1380,9 @@ class TranslationControllerTest {
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
-      AssetModule::class
+      AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -27,6 +27,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PracticeTabModule
@@ -34,13 +35,16 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -49,6 +53,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -70,6 +76,7 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -422,6 +429,39 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
+  fun testFormatLong_forLargeLong_returnsStringWithExactDigits() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.formatLong(123456789)
+
+    assertThat(formattedString.filter { it.isDigit() }).isEqualTo("123456789")
+  }
+
+  @Test
+  fun testFormatLong_forDouble_returnsStringWithExactDigits() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.formatDouble(454545456.123)
+
+    val digitsOnly = formattedString.filter { it.isDigit() }
+    assertThat(digitsOnly).contains("454545456")
+    assertThat(digitsOnly).contains("123")
+  }
+
+  @Test
+  fun testFormatLong_forDouble_returnsStringWithPeriodsOrCommas() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.formatDouble(123456789.123)
+
+    // Depending on formatting, commas and/or periods are used for large doubles.
+    assertThat(formattedString).containsMatch("[,.]")
+  }
+
+  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
@@ -512,7 +552,11 @@ class AppLanguageResourceHandlerTest {
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleTestModule::class, ActivityRecreatorTestModule::class,
-      ActivityIntentFactoriesModule::class, PlatformParameterSingletonModule::class
+      ActivityIntentFactoriesModule::class, PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

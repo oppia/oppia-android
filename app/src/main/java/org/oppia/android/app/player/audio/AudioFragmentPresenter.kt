@@ -71,10 +71,9 @@ class AudioFragmentPresenter @Inject constructor(
       .observe(
         fragment,
         Observer<AsyncResult<CellularDataPreference>> {
-          if (it.isSuccess()) {
-            val prefs = it.getOrDefault(CellularDataPreference.getDefaultInstance())
-            showCellularDataDialog = !(prefs.hideDialog)
-            useCellularData = prefs.useCellularData
+          if (it is AsyncResult.Success) {
+            showCellularDataDialog = !it.value.hideDialog
+            useCellularData = it.value.useCellularData
           }
         }
       )
@@ -126,7 +125,7 @@ class AudioFragmentPresenter @Inject constructor(
       activity,
       Observer<String> { result ->
         viewModel.selectedLanguageCode = result
-        viewModel.loadMainContentAudio(false)
+        viewModel.loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
       }
     )
   }
@@ -143,10 +142,15 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun processGetProfileResult(profileResult: AsyncResult<Profile>): String {
-    if (profileResult.isFailure()) {
-      oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.getErrorOrNull()!!)
+    val profile = when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("AudioFragment", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
     }
-    return getAudioLanguage(profileResult.getOrDefault(Profile.getDefaultInstance()).audioLanguage)
+    return getAudioLanguage(profile.audioLanguage)
   }
 
   /** Sets selected language code in presenter and ViewModel */
@@ -186,7 +190,8 @@ class AudioFragmentPresenter @Inject constructor(
   fun setStateAndExplorationId(newState: State, explorationId: String) =
     viewModel.setStateAndExplorationId(newState, explorationId)
 
-  fun loadMainContentAudio(allowAutoPlay: Boolean) = viewModel.loadMainContentAudio(allowAutoPlay)
+  fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) =
+    viewModel.loadMainContentAudio(allowAutoPlay, reloadingContent)
 
   fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
     viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
@@ -251,7 +256,8 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.showAudioStreamingOn()
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
-      loadMainContentAudio(true)
+      // This isn't reloading content since it's the first case of the content auto-playing.
+      loadMainContentAudio(allowAutoPlay = true, reloadingContent = false)
     } else {
       loadFeedbackAudio(feedbackId!!, true)
     }

@@ -2,7 +2,6 @@ package org.oppia.android.testing.lightweightcheckpointing
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,26 +10,22 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -41,8 +36,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -50,6 +43,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -57,34 +51,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationCheckpointTestHelperTest.TestApplication::class)
 class ExplorationCheckpointTestHelperTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-
-  @Inject
-  lateinit var explorationCheckpointController: ExplorationCheckpointController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockExplorationCheckpointObserver: Observer<AsyncResult<ExplorationCheckpoint>>
-
-  @Captor
-  lateinit var explorationCheckpointCaptor: ArgumentCaptor<AsyncResult<ExplorationCheckpoint>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -105,12 +83,11 @@ class ExplorationCheckpointTestHelperTest {
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = FRACTIONS_EXPLORATION_ID_0,
-      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
-      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_0)
+    assertThat(checkpoint.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+    assertThat(checkpoint.pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME)
   }
 
   @Test
@@ -120,24 +97,22 @@ class ExplorationCheckpointTestHelperTest {
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = FRACTIONS_EXPLORATION_ID_0,
-      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
-      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_0)
+    assertThat(checkpoint.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+    assertThat(checkpoint.pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME)
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = FRACTIONS_EXPLORATION_ID_0,
-      explorationTitle = FRACTIONS_EXPLORATION_0_TITLE,
-      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint1 = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_0)
+    assertThat(checkpoint1.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_0_TITLE)
+    assertThat(checkpoint1.pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME)
   }
 
   @Test
@@ -147,12 +122,11 @@ class ExplorationCheckpointTestHelperTest {
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = FRACTIONS_EXPLORATION_ID_1,
-      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
-      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_1)
+    assertThat(checkpoint.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
+    assertThat(checkpoint.pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME)
   }
 
   @Test
@@ -162,24 +136,24 @@ class ExplorationCheckpointTestHelperTest {
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = FRACTIONS_EXPLORATION_ID_1,
-      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
-      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_1)
+    assertThat(checkpoint.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
+    assertThat(checkpoint.pendingStateName)
+      .isEqualTo(
+        FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
+      )
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration1(
       profileId = profileId,
       version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION,
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = FRACTIONS_EXPLORATION_ID_1,
-      explorationTitle = FRACTIONS_EXPLORATION_1_TITLE,
-      pendingStateName = FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint1 = retrieveCheckpoint(profileId, FRACTIONS_EXPLORATION_ID_1)
+    assertThat(checkpoint1.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
+    assertThat(checkpoint1.pendingStateName)
+      .isEqualTo(FRACTIONS_STORY_0_EXPLORATION_1_SECOND_STATE_NAME)
   }
 
   @Test
@@ -189,12 +163,10 @@ class ExplorationCheckpointTestHelperTest {
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = RATIOS_EXPLORATION_ID_0,
-      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
-      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint = retrieveCheckpoint(profileId, RATIOS_EXPLORATION_ID_0)
+    assertThat(checkpoint.explorationTitle).isEqualTo(RATIOS_EXPLORATION_0_TITLE)
+    assertThat(checkpoint.pendingStateName).isEqualTo(RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME)
   }
 
   @Test
@@ -204,49 +176,30 @@ class ExplorationCheckpointTestHelperTest {
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = RATIOS_EXPLORATION_ID_0,
-      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
-      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint = retrieveCheckpoint(profileId, RATIOS_EXPLORATION_ID_0)
+    assertThat(checkpoint.explorationTitle).isEqualTo(RATIOS_EXPLORATION_0_TITLE)
+    assertThat(checkpoint.pendingStateName).isEqualTo(RATIOS_STORY_0_EXPLORATION_0_FIRST_STATE_NAME)
 
     explorationCheckpointTestHelper.updateCheckpointForRatiosStory0Exploration0(
       profileId = profileId,
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
 
-    verifySavedCheckpointHasCorrectExplorationDetails(
-      profileId = profileId,
-      explorationId = RATIOS_EXPLORATION_ID_0,
-      explorationTitle = RATIOS_EXPLORATION_0_TITLE,
-      pendingStateName = RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME
-    )
+    // Verify saved checkpoint has correct exploration title and pending state name.
+    val checkpoint1 = retrieveCheckpoint(profileId, RATIOS_EXPLORATION_ID_0)
+    assertThat(checkpoint1.explorationTitle).isEqualTo(RATIOS_EXPLORATION_0_TITLE)
+    assertThat(checkpoint1.pendingStateName)
+      .isEqualTo(RATIOS_STORY_0_EXPLORATION_0_SECOND_STATE_NAME)
   }
 
-  private fun verifySavedCheckpointHasCorrectExplorationDetails(
+  private fun retrieveCheckpoint(
     profileId: ProfileId,
-    explorationId: String,
-    explorationTitle: String,
-    pendingStateName: String
-  ) {
-    reset(mockExplorationCheckpointObserver)
-    val retrieveFakeCheckpointLiveData =
-      explorationCheckpointController.retrieveExplorationCheckpoint(
-        profileId,
-        explorationId
-      ).toLiveData()
-    retrieveFakeCheckpointLiveData.observeForever(mockExplorationCheckpointObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    // Verify saved checkpoint has correct exploration title and pending state name.
-    verify(mockExplorationCheckpointObserver, atLeastOnce())
-      .onChanged(explorationCheckpointCaptor.capture())
-    assertThat(explorationCheckpointCaptor.value.isSuccess()).isTrue()
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().explorationTitle)
-      .isEqualTo(explorationTitle)
-    assertThat(explorationCheckpointCaptor.value.getOrThrow().pendingStateName)
-      .isEqualTo(pendingStateName)
+    explorationId: String
+  ): ExplorationCheckpoint {
+    val retrieveCheckpointProvider =
+      explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
+    return monitorFactory.waitForNextSuccessfulResult(retrieveCheckpointProvider)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -293,7 +246,9 @@ class ExplorationCheckpointTestHelperTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
-      LocaleProdModule::class
+      LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

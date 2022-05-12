@@ -2,7 +2,6 @@ package org.oppia.android.domain.topic
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -14,21 +13,21 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
-import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -40,8 +39,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -50,6 +47,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
@@ -59,42 +57,21 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [TopicListController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TopicListControllerTest.TestApplication::class)
 class TopicListControllerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var topicListController: TopicListController
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Mock
-  lateinit var mockTopicListObserver: Observer<AsyncResult<TopicList>>
-
-  @Mock
-  lateinit var mockPromotedActivityListObserver: Observer<AsyncResult<PromotedActivityList>>
-
-  @Captor
-  lateinit var topicListResultCaptor: ArgumentCaptor<AsyncResult<TopicList>>
-
-  @Captor
-  lateinit var promotedActivityListResultCaptor:
-    ArgumentCaptor<AsyncResult<PromotedActivityList>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var topicListController: TopicListController
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var storyProgressController: StoryProgressController
 
   private lateinit var profileId0: ProfileId
 
@@ -108,31 +85,24 @@ class TopicListControllerTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
   @Test
   fun testRetrieveTopicList_isSuccessful() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
+    val topicListProvider = topicListController.getTopicList()
 
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicListResult = topicListResultCaptor.value
-    assertThat(topicListResult!!.isSuccess()).isTrue()
+    monitorFactory.waitForNextSuccessfulResult(topicListProvider)
   }
 
   @Test
   fun testRetrieveTopicList_providesListOfMultipleTopics() {
     val topicList = retrieveTopicList()
+
     assertThat(topicList.topicSummaryCount).isGreaterThan(1)
   }
 
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
+
     val firstTopic = topicList.getTopicSummary(0)
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.name).isEqualTo("First Test Topic")
@@ -141,13 +111,15 @@ class TopicListControllerTest {
   @Test
   fun testRetrieveTopicList_firstTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
+
     val firstTopic = topicList.getTopicSummary(0)
-    assertThat(firstTopic.totalChapterCount).isEqualTo(2)
+    assertThat(firstTopic.totalChapterCount).isEqualTo(3)
   }
 
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
+
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
     assertThat(secondTopic.name).isEqualTo("Second Test Topic")
@@ -156,6 +128,7 @@ class TopicListControllerTest {
   @Test
   fun testRetrieveTopicList_secondTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
+
     val secondTopic = topicList.getTopicSummary(1)
     assertThat(secondTopic.totalChapterCount).isEqualTo(1)
   }
@@ -163,6 +136,7 @@ class TopicListControllerTest {
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
+
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(fractionsTopic.name).isEqualTo("Fractions")
@@ -171,6 +145,7 @@ class TopicListControllerTest {
   @Test
   fun testRetrieveTopicList_fractionsTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
+
     val fractionsTopic = topicList.getTopicSummary(2)
     assertThat(fractionsTopic.totalChapterCount).isEqualTo(2)
   }
@@ -178,6 +153,7 @@ class TopicListControllerTest {
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectTopicInfo() {
     val topicList = retrieveTopicList()
+
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
@@ -186,32 +162,26 @@ class TopicListControllerTest {
   @Test
   fun testRetrieveTopicList_ratiosTopic_hasCorrectLessonCount() {
     val topicList = retrieveTopicList()
+
     val ratiosTopic = topicList.getTopicSummary(3)
     assertThat(ratiosTopic.totalChapterCount).isEqualTo(4)
   }
 
   @Test
   fun testRetrieveTopicList_doesNotContainUnavailableTopic() {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val topicList = retrieveTopicList()
 
     // Verify that the topic list does not contain a not-yet published topic (since it can't be
     // played by the user).
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    val topicList = topicListResultCaptor.value.getOrThrow()
     val topicIds = topicList.topicSummaryList.map(TopicSummary::getTopicId)
     assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
   @Test
   fun testRetrievePromotedActivityList_defaultLesson_hasCorrectInfo() {
-    topicListController.getPromotedActivityList(profileId0).toLiveData()
-      .observeForever(mockPromotedActivityListObserver)
-    testCoroutineDispatchers.runCurrent()
+    val promotedActivityProvider = topicListController.getPromotedActivityList(profileId0)
 
-    verifyGetPromotedActivityListSucceeded()
+    monitorFactory.waitForNextSuccessfulResult(promotedActivityProvider)
   }
 
   @Test
@@ -659,12 +629,32 @@ class TopicListControllerTest {
     )
   }
 
-  private fun verifyGetPromotedActivityListSucceeded() {
-    verify(
-      mockPromotedActivityListObserver,
-      atLeastOnce()
-    ).onChanged(promotedActivityListResultCaptor.capture())
-    assertThat(promotedActivityListResultCaptor.value.isSuccess()).isTrue()
+  @Test
+  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // The failure is specific to loading protos.
+  fun testGetPromotedActivityList_missingTopicsWithProgress_doesNotIncludeThoseTopics() {
+    // This is a slightly hacky way to simulate a previous topic's progress that works because
+    // StoryProgressController doesn't verify whether the IDs passed to it correspond to locally
+    // available topics.
+    val previousTopicId = "previous_topic_id"
+    val recordProgressDataProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId0,
+        topicId = previousTopicId,
+        storyId = "previous_story_id",
+        explorationId = "previous_exploration_id",
+        lastPlayedTimestamp = 123456789L
+      )
+    monitorFactory.ensureDataProviderExecutes(recordProgressDataProvider)
+
+    val promotionList = retrievePromotedActivityList()
+
+    val promotedStoryList = promotionList.promotedStoryList
+    val olderTopicIds = promotedStoryList.olderPlayedStoryList.map { it.topicId }
+    val recentTopicIds = promotedStoryList.recentlyPlayedStoryList.map { it.topicId }
+    val upcomingTopicIds = promotionList.comingSoonTopicList.upcomingTopicList.map { it.topicId }
+    assertThat(olderTopicIds).doesNotContain(previousTopicId)
+    assertThat(recentTopicIds).doesNotContain(previousTopicId)
+    assertThat(upcomingTopicIds).doesNotContain(previousTopicId)
   }
 
   private fun verifyPromotedStoryAsFirstTestTopicStory0Exploration0(promotedStory: PromotedStory) {
@@ -675,7 +665,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
-    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(3)
   }
 
   private fun verifyOngoingStoryAsFirstTopicStory0Exploration0(promotedStory: PromotedStory) {
@@ -686,7 +676,7 @@ class TopicListControllerTest {
     assertThat(promotedStory.nextChapterName).isEqualTo("Prototype Exploration")
     assertThat(promotedStory.completedChapterCount).isEqualTo(0)
     assertThat(promotedStory.isTopicLearned).isFalse()
-    assertThat(promotedStory.totalChapterCount).isEqualTo(2)
+    assertThat(promotedStory.totalChapterCount).isEqualTo(3)
   }
 
   private fun verifyPromotedStoryAsSecondTestTopicStory0Exploration0(promotedStory: PromotedStory) {
@@ -795,21 +785,17 @@ class TopicListControllerTest {
     assertThat(promotedStory.totalChapterCount).isEqualTo(2)
   }
 
-  private fun retrieveTopicList(): TopicList {
-    val topicListLiveData = topicListController.getTopicList().toLiveData()
-    topicListLiveData.observeForever(mockTopicListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verify(mockTopicListObserver).onChanged(topicListResultCaptor.capture())
-    return topicListResultCaptor.value.getOrThrow()
-  }
+  private fun retrieveTopicList() =
+    monitorFactory.waitForNextSuccessfulResult(topicListController.getTopicList())
 
   private fun retrievePromotedActivityList(): PromotedActivityList {
-    testCoroutineDispatchers.runCurrent()
-    topicListController.getPromotedActivityList(profileId0).toLiveData()
-      .observeForever(mockPromotedActivityListObserver)
-    testCoroutineDispatchers.runCurrent()
-    verifyGetPromotedActivityListSucceeded()
-    return promotedActivityListResultCaptor.value.getOrThrow()
+    return monitorFactory.waitForNextSuccessfulResult(
+      topicListController.getPromotedActivityList(profileId0)
+    )
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -874,7 +860,10 @@ class TopicListControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

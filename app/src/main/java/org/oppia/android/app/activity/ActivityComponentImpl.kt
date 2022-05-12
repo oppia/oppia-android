@@ -5,6 +5,7 @@ import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
@@ -15,6 +16,7 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStoriesCompletedTestActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
+import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
@@ -139,12 +141,14 @@ interface ActivityComponentImpl :
   fun inject(markTopicsCompletedActivity: MarkTopicsCompletedActivity)
   fun inject(marginBindableAdaptersTestActivity: MarginBindingAdaptersTestActivity)
   fun inject(markTopicsCompletedTestActivity: MarkTopicsCompletedTestActivity)
+  fun inject(mathExpressionParserActivity: MathExpressionParserActivity)
   fun inject(myDownloadsActivity: MyDownloadsActivity)
   fun inject(navigationDrawerTestActivity: NavigationDrawerTestActivity)
   fun inject(onboardingActivity: OnboardingActivity)
   fun inject(ongoingTopicListActivity: OngoingTopicListActivity)
   fun inject(optionActivity: OptionsActivity)
   fun inject(pinPasswordActivity: PinPasswordActivity)
+  fun inject(profileAndDeviceIdActivity: ProfileAndDeviceIdActivity)
   fun inject(profileChooserActivity: ProfileChooserActivity)
   fun inject(profileChooserFragmentTestActivity: ProfileChooserFragmentTestActivity)
   fun inject(profileEditActivity: ProfileEditActivity)

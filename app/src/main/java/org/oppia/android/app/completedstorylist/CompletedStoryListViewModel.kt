@@ -48,14 +48,18 @@ class CompletedStoryListViewModel @Inject constructor(
   private fun processCompletedStoryListResult(
     completedStoryListResult: AsyncResult<CompletedStoryList>
   ): CompletedStoryList {
-    if (completedStoryListResult.isFailure()) {
-      oppiaLogger.e(
-        "CompletedStoryListFragment",
-        "Failed to retrieve CompletedStory list: ",
-        completedStoryListResult.getErrorOrNull()!!
-      )
+    return when (completedStoryListResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "CompletedStoryListFragment",
+          "Failed to retrieve CompletedStory list: ",
+          completedStoryListResult.error
+        )
+        CompletedStoryList.getDefaultInstance()
+      }
+      is AsyncResult.Pending -> CompletedStoryList.getDefaultInstance()
+      is AsyncResult.Success -> completedStoryListResult.value
     }
-    return completedStoryListResult.getOrDefault(CompletedStoryList.getDefaultInstance())
   }
 
   private fun processCompletedStoryList(

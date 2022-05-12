@@ -1,7 +1,6 @@
 package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.EventLog.EventAction
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -10,13 +9,17 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
-/** Controller for handling analytics event logging.
- * [OppiaLogger] should be the only caller of this class. Any other classes that want to log
- * events should call either [OppiaLogger.logTransitionEvent] or [OppiaLogger.logClickEvent].
+/**
+ * Controller for handling analytics event logging.
+ *
+ * Callers should not use this class directly; instead, they should use ``OppiaLogger`` which
+ * provides convenience log methods.
  */
 class AnalyticsController @Inject constructor(
   private val eventLogger: EventLogger,
@@ -24,87 +27,77 @@ class AnalyticsController @Inject constructor(
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
+  private val syncStatusManager: SyncStatusManager,
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int
 ) {
   private val eventLogStore =
     cacheStoreFactory.create("event_logs", OppiaEventLogs.getDefaultInstance())
 
   /**
-   * Logs transition events.
-   * These events are given HIGH priority.
+   * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].
+   *
+   * This will schedule a background upload of the event if there's internet connectivity, otherwise
+   * it will cache the event for a later upload.
+   *
+   * This method should only be used for events which are important to log and should be prioritized
+   * over events logged via [logLowPriorityEvent].
    */
-  fun logTransitionEvent(
-    timestamp: Long,
-    eventAction: EventAction,
-    eventContext: EventLog.Context?
-  ) {
-    uploadOrCacheEventLog(
-      createEventLog(
-        timestamp,
-        eventAction,
-        eventContext,
-        Priority.ESSENTIAL
-      )
-    )
+  fun logImportantEvent(timestamp: Long, eventContext: EventLog.Context) {
+    uploadOrCacheEventLog(createEventLog(timestamp, eventContext, Priority.ESSENTIAL))
   }
 
   /**
-   * Logs click events.
-   * These events are given LOW priority.
+   * Logs a low priority event defined by [eventContext] corresponding to time [timestamp].
+   *
+   * This will schedule a background upload of the event if there's internet connectivity, otherwise
+   * it will cache the event for a later upload.
+   *
+   * Low priority events may be removed from the event cache if device space is limited, and there's
+   * no connectivity for immediately sending events.
+   *
+   * Callers should use this for events that are nice to have, but okay to miss occasionally (as
+   * it's unexpected for events to actually be dropped since the app is configured to support a
+   * large number of cached events at one time).
    */
-  fun logClickEvent(
-    timestamp: Long,
-    eventAction: EventAction,
-    eventContext: EventLog.Context?
-  ) {
-    uploadOrCacheEventLog(
-      createEventLog(
-        timestamp,
-        eventAction,
-        eventContext,
-        Priority.OPTIONAL
-      )
-    )
+  fun logLowPriorityEvent(timestamp: Long, eventContext: EventLog.Context) {
+    uploadOrCacheEventLog(createEventLog(timestamp, eventContext, Priority.OPTIONAL))
   }
 
   /** Returns an event log containing relevant data for event reporting. */
   private fun createEventLog(
     timestamp: Long,
-    eventAction: EventAction,
-    eventContext: EventLog.Context?,
+    context: EventLog.Context,
     priority: Priority
   ): EventLog {
-    val event: EventLog.Builder = EventLog.newBuilder()
-    event.timestamp = timestamp
-    event.actionName = eventAction
-    event.priority = priority
-
-    if (eventContext != null)
-      event.context = eventContext
-
-    return event.build()
+    return EventLog.newBuilder().apply {
+      this.timestamp = timestamp
+      this.priority = priority
+      this.context = context
+    }.build()
   }
 
-  /**
-   * Checks network connectivity of the device.
-   *
-   * Saves the [eventLog] to the [eventLogStore] in the absence of it.
-   * Uploads to remote service in the presence of it.
-   */
+  /** Either uploads or caches [eventLog] depending on current internet connectivity. */
   private fun uploadOrCacheEventLog(eventLog: EventLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
-      NONE -> cacheEventLog(eventLog)
-      else -> eventLogger.logEvent(eventLog)
+      NONE -> {
+        syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.NO_CONNECTIVITY)
+        cacheEventLog(eventLog)
+      }
+      else -> {
+        syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
+        eventLogger.logEvent(eventLog)
+        syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
+      }
     }
   }
 
   /**
    * Adds an event to the storage.
    *
-   * At first, it checks if the size of the store isn't exceeding [eventLogStorageCacheSize]
-   * If the limit is exceeded then the least recent event is removed from the [eventLogStore]
-   * After this, the [eventLog] is added to the store.
-   * */
+   * At first, it checks if the size of the store isn't exceeding [eventLogStorageCacheSize]. If the
+   * limit is exceeded then the least recent event is removed from the [eventLogStore]. After this,
+   * the [eventLog] is added to the store.
+   */
   private fun cacheEventLog(eventLog: EventLog) {
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       val storeSize = oppiaEventLogs.eventLogList.size
@@ -118,38 +111,33 @@ class AnalyticsController @Inject constructor(
         } else {
           // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
-            NullPointerException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
-          consoleLogger.e("Analytics Controller", exception.toString())
+            IllegalStateException("Least Recent Event index absent -- EventLogCacheStoreSize is 0")
+          consoleLogger.e("AnalyticsController", "Failure while caching event.", exception)
           exceptionLogger.logException(exception)
         }
       }
       return@storeDataAsync oppiaEventLogs.toBuilder().addEventLog(eventLog).build()
     }.invokeOnCompletion {
-      it?.let {
-        consoleLogger.e(
-          "Analytics Controller",
-          "Failed to store event log",
-          it
-        )
-      }
+      it?.let { consoleLogger.e("AnalyticsController", "Failed to store event log.", it) }
     }
   }
 
   /**
-   * Returns the index of the least recent event from the existing store on the basis of recency and priority.
+   * Returns the index of the least recent event from the existing store on the basis of recency and
+   * priority.
    *
-   * At first, it checks the index of the least recent event which has OPTIONAL priority.
-   * If that returns null, then the index of the least recent event regardless of the priority is returned.
+   * At first, it checks the index of the least recent event which has OPTIONAL priority. If that
+   * returns null, then the index of the least recent event regardless of the priority is returned.
    */
   private fun getLeastRecentEventIndex(oppiaEventLogs: OppiaEventLogs): Int? =
     oppiaEventLogs.eventLogList.withIndex()
       .filter { it.value.priority == Priority.OPTIONAL }
-      .minBy { it.value.timestamp }?.index ?: getLeastRecentGeneralEventIndex(oppiaEventLogs)
+      .minByOrNull { it.value.timestamp }?.index ?: getLeastRecentGeneralEventIndex(oppiaEventLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */
   private fun getLeastRecentGeneralEventIndex(oppiaEventLogs: OppiaEventLogs): Int? =
     oppiaEventLogs.eventLogList.withIndex()
-      .minBy { it.value.timestamp }?.index
+      .minByOrNull { it.value.timestamp }?.index
 
   /** Returns a data provider for log reports that have been recorded for upload. */
   fun getEventLogStore(): DataProvider<OppiaEventLogs> {
@@ -159,7 +147,8 @@ class AnalyticsController @Inject constructor(
   /**
    * Returns a list of event log reports that have been recorded for upload.
    *
-   * As we are using the await call on the deferred output of readDataAsync, the failure case would be caught and it'll throw an error.
+   * As we are using the await call on the deferred output of readDataAsync, the failure case would
+   * be caught and it'll throw an error.
    */
   suspend fun getEventLogStoreList(): MutableList<EventLog> {
     return eventLogStore.readDataAsync().await().eventLogList
@@ -170,13 +159,7 @@ class AnalyticsController @Inject constructor(
     eventLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeEventLog(0).build()
     }.invokeOnCompletion {
-      it?.let {
-        consoleLogger.e(
-          "Analytics Controller",
-          "Failed to remove event log",
-          it
-        )
-      }
+      it?.let { consoleLogger.e("AnalyticsController", "Failed to remove event log.", it) }
     }
   }
 }

@@ -72,9 +72,9 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platform-tools"
       shell: bash
 
-    - name: Install SDK 28
+    - name: Install SDK 30
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-28"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-30"
       shell: bash
 
     - name: Install build tools 29.0.2

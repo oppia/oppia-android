@@ -3,8 +3,6 @@ package org.oppia.android.domain.onboarding
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -14,30 +12,23 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.AppStartupState
-import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -45,6 +36,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows.shadowOf
@@ -58,66 +50,42 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [AppStartupStateController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @Config(application = AppStartupStateControllerTest.TestApplication::class)
 class AppStartupStateControllerTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Rule
-  @JvmField
-  val executorRule = InstantTaskExecutorRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var appStartupStateController: AppStartupStateController
-
-  @Inject
-  lateinit var cacheFactory: PersistentCacheStore.Factory
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockOnboardingObserver: Observer<AsyncResult<AppStartupState>>
-
-  @Captor
-  lateinit var appStartupStateCaptor: ArgumentCaptor<AsyncResult<AppStartupState>>
+  @Inject lateinit var context: Context
+  @Inject lateinit var appStartupStateController: AppStartupStateController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
   //  package to generate these strings).
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
   @Test
-  fun testController_providesInitialLiveData_indicatesUserHasNotOnboardedTheApp() {
+  fun testController_providesInitialState_indicatesUserHasNotOnboardedTheApp() {
     setUpDefaultTestApplicationComponent()
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesLiveData_userDidNotOnboardApp() { // ktlint-disable max-line-length
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesState_userDidNotOnboardApp() {
     setUpDefaultTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    appStartupState.observeForever(mockOnboardingObserver)
     appStartupStateController.markOnboardingFlowCompleted()
     testCoroutineDispatchers.runCurrent()
 
     // The result should not indicate that the user onboarded the app because markUserOnboardedApp
     // does not notify observers of the change.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -130,15 +98,12 @@ class AppStartupStateControllerTest {
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpDefaultTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    // The app should be considered onboarded since a new LiveData instance was observed after
+    // The app should be considered onboarded since a new DataProvider instance was observed after
     // marking the app as onboarded.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
   }
 
   @Test
@@ -162,14 +127,11 @@ class AppStartupStateControllerTest {
 
     // Create the application after previous arrangement to simulate a re-creation.
     setUpDefaultTestApplicationComponent()
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
     // The app should be considered not yet onboarded since the previous history was cleared.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -177,13 +139,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -191,13 +150,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringForToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   @Test
@@ -205,13 +161,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   @Test
@@ -219,13 +172,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = false, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -240,13 +190,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_NOT_YET_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
   }
 
   @Test
@@ -261,13 +208,10 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   @Test
@@ -285,14 +229,11 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringAfterToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
     // The user should be considered onboarded, but the app is not yet deprecated.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(USER_IS_ONBOARDED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
   }
 
   @Test
@@ -310,14 +251,11 @@ class AppStartupStateControllerTest {
     setUpTestApplicationComponent()
     setUpOppiaApplication(expirationEnabled = true, expDate = dateStringBeforeToday())
 
-    val appStartupState = appStartupStateController.getAppStartupState().toLiveData()
-    appStartupState.observeForever(mockOnboardingObserver)
-    testCoroutineDispatchers.runCurrent()
+    val appStartupState = appStartupStateController.getAppStartupState()
 
     // Despite the user completing the onboarding flow, the app is still deprecated.
-    verify(mockOnboardingObserver, atLeastOnce()).onChanged(appStartupStateCaptor.capture())
-    assertThat(appStartupStateCaptor.value.isSuccess()).isTrue()
-    assertThat(appStartupStateCaptor.getStartupMode()).isEqualTo(APP_IS_DEPRECATED)
+    val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+    assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -400,10 +338,6 @@ class AppStartupStateControllerTest {
     packageManager.installPackage(packageInfo)
   }
 
-  private fun ArgumentCaptor<AsyncResult<AppStartupState>>.getStartupMode(): StartupMode {
-    return value.getOrThrow().startupMode
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -436,7 +370,10 @@ class AppStartupStateControllerTest {
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverModule::class // Use real implementation to test closer to prod.
+      ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

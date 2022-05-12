@@ -33,13 +33,41 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "console_logger_injector",
+    srcs = [
+        "ConsoleLoggerInjector.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":console_logger",
+    ],
+)
+
+kt_android_library(
+    name = "console_logger_injector_provider",
+    srcs = [
+        "ConsoleLoggerInjectorProvider.kt",
+    ],
+    visibility = [
+        "//:oppia_api_visibility",
+    ],
+    deps = [
+        ":console_logger_injector",
+    ],
+)
+
+kt_android_library(
     name = "event_bundle_creator",
     srcs = [
         "EventBundleCreator.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+        "//utility",
     ],
 )
 
@@ -50,7 +78,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//model:event_logger_java_proto_lite",
+        "//model/src/main/proto:event_logger_java_proto_lite",
     ],
 )
 
@@ -74,12 +102,14 @@ kt_android_library(
     name = "prod_module",
     srcs = [
         "LoggerModule.kt",
+        "SyncStatusModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":annotations",
         ":dagger",
         ":log_level",
+        ":sync_status_manager_impl",
         "//third_party:javax_inject_javax_inject",
     ],
 )
@@ -93,6 +123,32 @@ kt_android_library(
     deps = [
         "//third_party:androidx_work_work-runtime",
         "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
+    name = "sync_status_manager",
+    srcs = [
+        "SyncStatusManager.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+    ],
+)
+
+kt_android_library(
+    name = "sync_status_manager_impl",
+    srcs = [
+        "SyncStatusManagerImpl.kt",
+    ],
+    visibility = [
+        "//testing/src/main/java/org/oppia/android/testing/logging:__pkg__",
+    ],
+    deps = [
+        ":sync_status_manager",
+        "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
+        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],
 )
 
