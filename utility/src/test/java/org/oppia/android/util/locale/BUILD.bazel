@@ -8,8 +8,8 @@ load("//:oppia_android_test.bzl", "oppia_android_test")
 oppia_android_test(
     name = "AndroidLocaleFactoryTest",
     srcs = ["AndroidLocaleFactoryTest.kt"],
-    custom_package = "org.oppia.android.domain.locale",
-    test_class = "org.oppia.android.domain.locale.AndroidLocaleFactoryTest",
+    custom_package = "org.oppia.android.util.locale",
+    test_class = "org.oppia.android.util.locale.AndroidLocaleFactoryTest",
     test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
@@ -65,8 +65,8 @@ oppia_android_test(
 oppia_android_test(
     name = "DisplayLocaleImplTest",
     srcs = ["DisplayLocaleImplTest.kt"],
-    custom_package = "org.oppia.android.domain.locale",
-    test_class = "org.oppia.android.domain.locale.DisplayLocaleImplTest",
+    custom_package = "org.oppia.android.util.locale",
+    test_class = "org.oppia.android.util.locale.DisplayLocaleImplTest",
     test_manifest = "//utility:test_manifest",
     deps = [
         ":dagger",
