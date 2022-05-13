@@ -13,14 +13,14 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
-import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionMoreFrequentRecordTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -106,26 +106,26 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
+  @PerformanceMetricsCollectionMoreFrequentRecordTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
     return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+      PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
     )
   }
 
   @Provides
-  @PerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes
+  @PerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
     return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES
+      PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
     )
   }
 }
