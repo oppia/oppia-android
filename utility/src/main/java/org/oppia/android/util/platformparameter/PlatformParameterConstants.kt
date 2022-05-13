@@ -128,34 +128,39 @@ const val PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT
  * performance metrics that are to be recorded more frequently.
  */
 @Qualifier
-annotation class PerformanceMetricsCollectionFrequentRecordTimeIntervalInMinutes
+annotation class PerformanceMetricsCollectionMoreFrequentRecordTimeIntervalInMinutes
 
 /**
  * Name of the platform parameter that controls the time interval in minutes of recording
  * performance metrics that are to be recorded more frequently.
  */
-const val PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES =
+const val PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES =
   "performance_metrics_collection_frequent_record_time_interval_in_minutes"
 
 /**
  * Default value of the time interval in minutes of recording performance metrics that are to be
  * recorded more frequently.
  */
-const val PERFORMANCE_METRICS_COLLECTION_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL = 15
+const val PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
+  15
 
 /**
  * Qualifier for the platform parameter that controls the time interval in minutes of recording
- * performance metrics.
+ * performance metrics that are to be recorded less frequently.
  */
 @Qualifier
-annotation class PerformanceMetricsCollectionRegularRecordTimeIntervalInMinutes
+annotation class PerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes
 
 /**
  * Name of the platform parameter that controls the time interval in minutes of recording
- * performance metrics.
+ * performance metrics that are to be recorded less frequently.
  */
-const val PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES =
+const val PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES =
   "performance_metrics_collection_regular_record_time_interval_in_minutes"
 
-/** Default value of the time interval in minutes of recording performance metrics. */
-const val PERFORMANCE_METRICS_COLLECTION_REGULAR_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL = 1440
+/**
+ * Default value of the time interval in minutes of recording performance metrics that are to be
+ * recorded less frequently.
+ */
+const val PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
+  1440
