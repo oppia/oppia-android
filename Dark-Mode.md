@@ -17,14 +17,14 @@ The following files have been added for maintaining the colors :
 	 example:<br>
 	 > Don't
 	 ```xml
-	 <color name="background_green">#90EE90</color>
-	 <color name="secondary_green">#90EE90</color>
-	 <color name="text_view_error_red">#FF0000</color>
+	 <color name="color_def_background_green">#90EE90</color>
+	 <color name="color_def_secondary_green">#90EE90</color>
+	 <color name="color_def_text_view_error_red">#FF0000</color>
 	 ```
 	 > Do
 	 ```xml
-	 <color name="lime_green">#90EE90</color>
-	 <color name="blue">#0000FF</color>
+	 <color name="color_def_lime_green">#90EE90</color>
+	 <color name="color_def_blue">#0000FF</color>
 	 ```
 	 Declarations from this file should be only used in `color_palette.xml`.
 
@@ -33,38 +33,40 @@ The following files have been added for maintaining the colors :
 	The declarations in this file should only reference `color_defs.xml`.
 	>Don't:
 	```xml
- 	<color name="add_profile_background_color">@color/light_black</color>
- 	<color name="text_input_layout_error_color">@color/oppia_pink</color>
+ 	<color name="color_palette_add_profile_background_color">@color/light_black</color>
+ 	<color name="color_palette_text_input_layout_error_color">@color/oppia_pink</color>
 	```
 	>Do:
 	```xml
- 	<color name="background_color">@color/light_black</color>
- 	<color name="error_color">@color/oppia_pink</color>
+ 	<color name="color_palette_background_color">@color/light_black</color>
+ 	<color name="color_palette_error_color">@color/oppia_pink</color>
 	```
 	You can refer to both variations of these files to see how it separates the colors.
 3. **`component_colors.xml`**<br>
 	This file contains the highest level of color declarations. The declarations in this file should only reference `color_palette.xml`. It uses UI component specific names. Component colors should be shared very little outside of their respective views/fragments/activities. *All the layouts/views should only reference this file for colors.*<br>
 	examples:<br>
 	```xml
- 	<color name="shared_text_input_edit_text_cursor_color">@color/primary_text_color</color>
-  	<color name="shared_activity_toolbar_color">@color/toolbar_color</color>
+ 	<color name="component_color_shared_text_input_edit_text_cursor_color">@color/primary_text_color</color>
+  	<color name="component_color_shared_activity_toolbar_color">@color/toolbar_color</color>
   	<!-- styles.xml -->
-  	<color name="shared_text_input_layout_text_color">@color/primary_text_color</color>
-  	<color name="shared_input_interaction_edit_text_text_color">@color/primary_text_color</color>
-  	<color name="shared_text_input_layout_background_color">@color/text_input_background_color</color>
+  	<color name="component_color_shared_text_input_layout_text_color">@color/primary_text_color</color>
+  	<color name="component_color_shared_input_interaction_edit_text_text_color">@color/primary_text_color</color>
+  	<color name="component_color_shared_text_input_layout_background_color">@color/text_input_background_color</color>
   	<!-- Admin Auth Activity -->
-  	<color name="admin_auth_secondary_text_color">@color/description_text_color</color>
-  	<color name="admin_auth_layout_background_color">@color/background_color</color>
+  	<color name="component_color_admin_auth_secondary_text_color">@color/description_text_color</color>
+  	<color name="component_color_admin_auth_layout_background_color">@color/background_color</color>
   	<!-- Add Profile Activity -->
-  	<color name="add_profile_activity_label_text_color">@color/primary_text_color</color>
-  	<color name="add_profile_activity_switch_text_color">@color/dark_text_color</color>
+  	<color name="component_color_add_profile_activity_label_text_color">@color/primary_text_color</color>
+  	<color name="component_color_add_profile_activity_switch_text_color">@color/dark_text_color</color>
 	```
 4. **`colors_migrating.xml`**<br>
 	This file contains color declarations which are supposed to be in color_defs.xml but has not been renamed yet to have actual color name instead of names linked to their use and components. This is a temporary measure to make sure other 4 color files follows the convention decided for them.
 	This file should be deleted after all colors have been shifted to `color_defs.xml`.<br>
 
-*Note: All color names should strictly follow `snake_case` naming convention.*<br>
-*All colors in `component_colors.xml` and `color_palette.xml` should have `_color` as suffix and just the opposite for `color_defs.xml`*
+_Note:_ 
+- *All color names should strictly follow `snake_case` naming convention.*<br>
+- *All colors in `component_colors.xml` and `color_palette.xml` should have `_color` as suffix and just the opposite for `color_defs.xml`*<br>
+- *All color declaration must have their parent file name as prefix of their name, i.e. "`<file_name>_<color_name>`" (Look at the color name examples for better understanding.)*
 
 
 <p align="center">
@@ -75,10 +77,10 @@ Currently most of the layouts are directly referencing colors from `color_defs.x
 
 You can refer to the design mocks for expected final result : [Dark Mode Mocks](https://xd.adobe.com/view/c05e9343-60f6-4c11-84ac-c756b75b940f-950d/grid/)
 
-#### How to acheive this goal?
+#### How to achieve this goal?
 Here is how I would go around working with any particular layout...<br>
 
-- Replace all the generic colors in the layout with something more specific to the component by defining it in the `component_colors.xml`, generally it should be named in the format *`<activity_name>_<component_name>_color`*. 
+- Replace all the generic colors in the layout with something more specific to the component by defining it in the `component_colors.xml`, generally it should be named in the format *`component_color_<activity_name>_<component_name>_color`*. 
 
 - Go through the mock for the concerned activity and note down which component of the app needs separate colors for day and night modes. The mock has provided hex color codes for all the elements in the UI, if any of the colors is not already present in the `color_defs.xml` then add it to the file with the actual color name.
 
