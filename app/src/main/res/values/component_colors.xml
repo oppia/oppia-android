@@ -40,6 +40,12 @@
   <color name="component_color_profile_and_device_id_activity_primary_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_disabled_icon_button_color">@color/oppia_disabled_button_background</color>
+  <!-- Option Activity -->
+  <color name="component_color_option_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_option_activity_sub_heading_text_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_option_activity_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_option_activity_options_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_option_activity_options_background_color_cyan">@color/color_palette_highlighted_background_color</color>
   <!-- Hints And Solution Fragment -->
   <color name="component_color_hints_and_solutions_fragment_background_color">@color/color_palette_secondary_background_color</color>
   <color name="component_color_hints_and_solutions_fragment_text_color">@color/color_palette_highlighted_text_color</color>
