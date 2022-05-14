@@ -133,6 +133,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     ).commitNow()
   }
 
+  /** Loads the [ProfileAndDeviceIdFragment] in the multipane tablet mode. */
   fun loadLearnerAnalyticsData() {
     lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
     getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)

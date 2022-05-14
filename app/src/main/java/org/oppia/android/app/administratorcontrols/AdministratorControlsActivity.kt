@@ -39,6 +39,8 @@ const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
 
 /** Argument key used to identify [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+
+/** Argument key used to identify [ProfileAndDeviceIdFragment] in the backstack. */
 const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
