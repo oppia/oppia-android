@@ -14,17 +14,16 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/component_color_third_party_dependency_list_activity_background_color">
+    android:background="@color/color_def_white">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/general_item_background_border"
+      android:background="@drawable/general_item_background_border_black"
       android:onClick="@{(v) -> viewModel.clickOnThirdPartyDependencyItem()}"
       android:orientation="vertical"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
-
       <TextView
         android:id="@+id/third_party_dependency_name_text_view"
         style="@style/Subtitle1ViewStart"
@@ -35,15 +34,13 @@
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
         android:textColor="@color/component_color_third_party_dependency_items_text_list_activity_background_color"
-        android:text="@{viewModel.dependencyName}"
-        android:background="@color/component_color_third_party_dependency_options_list_activity_background_color"/>
+        android:text="@{viewModel.dependencyName}"/>
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_third_party_dependency_options_list_activity_background_color"
         android:paddingStart="16dp"
         android:paddingTop="4dp"
         android:paddingEnd="16dp"
@@ -51,7 +48,6 @@
         android:text="@{viewModel.dependencyVersion}"
         android:textColor="@color/component_color_third_party_dependency_version_text_view_list_activity_color"
         android:textSize="12sp"/>
-
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

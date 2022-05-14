@@ -28,7 +28,7 @@
       android:paddingBottom="20dp"
       android:textColor="@color/component_color_license_list_text_viewer_items_activity_background_color"
       android:text="@{viewModel.licenseName}"
-      android:background="@color/component_color_License_Text_Viewer_List_options_activity_background_color"
+      android:background="@color/component_color_license_text_viewer_list_options_activity_background_color"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
