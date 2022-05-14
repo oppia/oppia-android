@@ -91,10 +91,12 @@ ANNOTATIONS = [
 # keep sorted
 LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/LoadLearnerAnalyticsListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileEditListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ProfileEditDeletionDialogListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/RouteToLearnerAnalyticsListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
@@ -180,6 +182,10 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
@@ -240,6 +246,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileAndDeviceIdViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt",

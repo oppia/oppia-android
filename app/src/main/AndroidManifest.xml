@@ -16,6 +16,7 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
+    <!-- NOTE TO DEVELOPER: You can enable debug logs for fast upload & better inspection in Firebase console using https://support.google.com/analytics/answer/7201382. -->
     <meta-data
       android:name="firebase_analytics_collection_deactivated"
       android:value="true" />
@@ -28,7 +29,6 @@
     <meta-data
       android:name="expiration_date"
       android:value="2020-09-01" />
-
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
       android:label="@string/administrator_controls_title"
@@ -41,6 +41,10 @@
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
       android:label="@string/app_version_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity"
+      android:label="@string/profile_and_device_id_activity_title"
+      android:theme="@style/OppiaThemeWithoutActionBar"/>
     <activity
       android:name=".app.completedstorylist.CompletedStoryListActivity"
       android:label="@string/completed_story_list_activity_title"

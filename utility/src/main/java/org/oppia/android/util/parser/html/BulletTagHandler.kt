@@ -14,20 +14,26 @@ const val CUSTOM_BULLET_LIST_TAG = "oppia-li"
  */
 class BulletTagHandler : CustomHtmlContentHandler.CustomTagHandler {
   /** Helper marker class. */
-  private class Bullet
+  private class BulletMark
 
   override fun handleOpeningTag(output: Editable) {
-    output.setSpan(Bullet(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    output.ensureEndingNewlines(count = 2)
+    output.setSpan(BulletMark(), output.length, output.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
   }
 
   override fun handleClosingTag(output: Editable) {
-    output.append("\n")
-    output.getSpans(0, output.length, Bullet::class.java).lastOrNull()?.let {
+    output.ensureEndingNewlines(count = 2)
+    output.getSpans(0, output.length, BulletMark::class.java).lastOrNull()?.let {
       val start = output.getSpanStart(it)
       output.removeSpan(it)
       if (start != output.length) {
-        output.setSpan(BulletSpan(), start, output.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        output.setSpan(BulletSpan(), start, output.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
       }
     }
+  }
+
+  private fun Editable.ensureEndingNewlines(count: Int) {
+    val newlinesToAdd = (count - takeLastWhile { it == '\n' }.length).coerceAtLeast(0)
+    append("\n".repeat(newlinesToAdd))
   }
 }

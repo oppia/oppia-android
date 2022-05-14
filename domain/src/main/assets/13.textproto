@@ -39,6 +39,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_1"
   }
 }
 states {
@@ -623,6 +624,7 @@ states {
         }
       }
     }
+    linked_skill_id: "test_skill_id_1"
   }
 }
 init_state_name: "ImageClickInput"

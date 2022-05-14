@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.settings.profile.LoadProfileEditDeletionDialogListener
 import org.oppia.android.app.settings.profile.ProfileEditFragment
@@ -59,6 +60,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
       AdministratorControlsFragment.newInstance(isMultipane)
     ).commitNow()
     if (isMultipane) {
+      val adminControlsActivity = activity as AdministratorControlsActivity
       when (lastLoadedFragment) {
         PROFILE_LIST_FRAGMENT -> (activity as AdministratorControlsActivity).loadProfileList()
         APP_VERSION_FRAGMENT -> (activity as AdministratorControlsActivity).loadAppVersion()
@@ -78,6 +80,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
             }
           }
         }
+        PROFILE_AND_DEVICE_ID_FRAGMENT -> adminControlsActivity.loadLearnerAnalyticsData()
       }
       setBackButtonClickListener()
     }
@@ -127,6 +130,15 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     activity.supportFragmentManager.beginTransaction().add(
       R.id.administrator_controls_fragment_multipane_placeholder,
       AppVersionFragment()
+    ).commitNow()
+  }
+
+  fun loadLearnerAnalyticsData() {
+    lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
+    getAdministratorControlsFragment()!!.setSelectedFragment(lastLoadedFragment)
+    activity.supportFragmentManager.beginTransaction().replace(
+      R.id.administrator_controls_fragment_multipane_placeholder,
+      ProfileAndDeviceIdFragment()
     ).commitNow()
   }
 

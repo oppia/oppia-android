@@ -7,10 +7,14 @@ import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.ALL_ERRORS
+import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
-import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
 import org.oppia.android.util.math.isApproximatelyEqualTo
+import org.oppia.android.util.math.stripRedundantGroups
 import javax.inject.Inject
+import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation as parseExpression
 
 /**
  * Provider for a classifier that determines whether a math equation is exactly equal to the
@@ -37,16 +41,19 @@ class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject construc
     classificationContext: ClassificationContext
   ): Boolean {
     val allowedVariables = classificationContext.extractAllowedVariables()
-    val answerEquation = parseEquation(answer, allowedVariables) ?: return false
-    val inputEquation = parseEquation(input, allowedVariables) ?: return false
+    val answerEquation =
+      parseAlgebraicEquation(answer, allowedVariables, ALL_ERRORS) ?: return false
+    val inputEquation =
+      parseAlgebraicEquation(input, allowedVariables, REQUIRED_ONLY) ?: return false
     return answerEquation.approximatelyEquals(inputEquation)
   }
 
-  private fun parseEquation(
+  private fun parseAlgebraicEquation(
     rawEquation: String,
-    allowedVariables: List<String>
+    allowedVariables: List<String>,
+    checkingMode: ErrorCheckingMode
   ): MathEquation? {
-    return when (val eqResult = parseAlgebraicEquation(rawEquation, allowedVariables)) {
+    return when (val eqResult = parseExpression(rawEquation, allowedVariables, checkingMode)) {
       is MathParsingResult.Success -> eqResult.result
       is MathParsingResult.Failure -> {
         consoleLogger.e(
@@ -68,9 +75,9 @@ class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject construc
         ?: listOf()
     }
 
-    private fun MathEquation.approximatelyEquals(other: MathEquation): Boolean {
-      return leftSide.isApproximatelyEqualTo(other.leftSide) &&
-        rightSide.isApproximatelyEqualTo(other.rightSide)
+    private fun MathEquation.approximatelyEquals(input: MathEquation): Boolean {
+      return leftSide.isApproximatelyEqualTo(input.leftSide.stripRedundantGroups()) &&
+        rightSide.isApproximatelyEqualTo(input.rightSide.stripRedundantGroups())
     }
   }
 }

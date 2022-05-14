@@ -3,17 +3,18 @@ package org.oppia.android.app.administratorcontrols
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
+import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
-import javax.inject.Inject
 
 /** Argument key for of title for selected controls in [AdministratorControlsActivity]. */
 const val SELECTED_CONTROLS_TITLE_SAVED_KEY =
@@ -38,12 +39,15 @@ const val IS_PROFILE_DELETION_DIALOG_VISIBLE_KEY =
 
 /** Argument key used to identify [AppVersionFragment] in the backstack. */
 const val APP_VERSION_FRAGMENT = "APP_VERSION_FRAGMENT"
+const val PROFILE_AND_DEVICE_ID_FRAGMENT = "PROFILE_AND_DEVICE_ID_FRAGMENT"
 
 /** Activity [AdministratorControlsActivity] that allows user to change admin controls. */
 class AdministratorControlsActivity :
   InjectableAppCompatActivity(),
   RouteToProfileListListener,
   RouteToAppVersionListener,
+  RouteToLearnerAnalyticsListener,
+  LoadLearnerAnalyticsListener,
   LoadProfileListListener,
   LoadAppVersionListener,
   LoadProfileEditListener,
@@ -54,7 +58,6 @@ class AdministratorControlsActivity :
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
-
   private lateinit var lastLoadedFragment: String
   private var isProfileDeletionDialogVisible: Boolean = false
 
@@ -89,39 +92,8 @@ class AdministratorControlsActivity :
     startActivity(ProfileListActivity.createProfileListActivityIntent(this))
   }
 
-  override fun onBackPressed() {
-    val fragment =
-      supportFragmentManager.findFragmentById(
-        R.id.administrator_controls_fragment_multipane_placeholder
-      )
-    /*
-     * If the current fragment is ProfileListFragment then the activity should end on back press.
-     * If it's instead ProfileEditFragment then profileListFragment should be inflated via
-     * handleOnBackPressed.
-     */
-    if (fragment is ProfileEditFragment) {
-      administratorControlsActivityPresenter.handleOnBackPressed()
-    } else {
-      super.onBackPressed()
-    }
-  }
-
-  override fun loadProfileList() {
-    lastLoadedFragment = PROFILE_LIST_FRAGMENT
-    administratorControlsActivityPresenter
-      .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
-      )
-    administratorControlsActivityPresenter.loadProfileList()
-  }
-
-  override fun loadAppVersion() {
-    lastLoadedFragment = APP_VERSION_FRAGMENT
-    administratorControlsActivityPresenter
-      .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
-      )
-    administratorControlsActivityPresenter.loadAppVersion()
+  override fun routeToLearnerAnalytics() {
+    startActivity(ProfileAndDeviceIdActivity.createIntent(this))
   }
 
   override fun loadProfileEdit(profileId: Int, profileName: String) {
@@ -148,12 +120,56 @@ class AdministratorControlsActivity :
     }
   }
 
+  override fun onBackPressed() {
+    val fragment =
+      supportFragmentManager.findFragmentById(
+        R.id.administrator_controls_fragment_multipane_placeholder
+      )
+    /*
+      * If the current fragment is ProfileListFragment then the activity should end on back press.
+      * If it's instead ProfileEditFragment then profileListFragment should be inflated via
+      * handleOnBackPressed.
+      */
+    if (fragment is ProfileEditFragment) {
+      administratorControlsActivityPresenter.handleOnBackPressed()
+    } else {
+      super.onBackPressed()
+    }
+  }
+
+  override fun loadProfileList() {
+    lastLoadedFragment = PROFILE_LIST_FRAGMENT
+    administratorControlsActivityPresenter
+      .setExtraControlsTitle(
+        resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
+      )
+    administratorControlsActivityPresenter.loadProfileList()
+  }
+
+  override fun loadAppVersion() {
+    lastLoadedFragment = APP_VERSION_FRAGMENT
+    administratorControlsActivityPresenter
+      .setExtraControlsTitle(
+        resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
+      )
+    administratorControlsActivityPresenter.loadAppVersion()
+  }
+
+  override fun loadLearnerAnalyticsData() {
+    lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
+    administratorControlsActivityPresenter.setExtraControlsTitle(
+      resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title)
+    )
+    administratorControlsActivityPresenter.loadLearnerAnalyticsData()
+  }
+
   override fun showLogoutDialog() {
     LogoutDialogFragment.newInstance()
       .showNow(supportFragmentManager, LogoutDialogFragment.TAG_LOGOUT_DIALOG_FRAGMENT)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
+    administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
     super.onSaveInstanceState(outState)
     administratorControlsActivityPresenter.handleOnSaveInstanceState(outState)
   }

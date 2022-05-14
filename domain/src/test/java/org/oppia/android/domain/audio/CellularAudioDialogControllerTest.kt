@@ -13,6 +13,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -26,6 +30,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -142,7 +147,10 @@ class CellularAudioDialogControllerTest {
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class
+      LocaleProdModule::class, FakeOppiaClockModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

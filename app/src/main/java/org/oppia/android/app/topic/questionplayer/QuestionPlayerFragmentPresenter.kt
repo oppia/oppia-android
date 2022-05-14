@@ -35,7 +35,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [QuestionPlayerFragment]. */
@@ -43,10 +42,8 @@ import javax.inject.Inject
 class QuestionPlayerFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val context: Context,
   private val viewModelProvider: ViewModelProvider<QuestionPlayerViewModel>,
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
-  private val oppiaClock: OppiaClock,
   private val oppiaLogger: OppiaLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
@@ -357,12 +354,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   private fun logQuestionPlayerEvent(questionId: String, skillIds: List<String>) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      oppiaLogger.createOpenQuestionPlayerContext(
-        questionId,
-        skillIds
-      )
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenQuestionPlayerContext(questionId, skillIds)
     )
   }
 
