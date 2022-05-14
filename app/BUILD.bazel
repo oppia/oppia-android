@@ -402,6 +402,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEWS = [
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/CopyIdMaterialButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/MathExpressionInteractionsView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
@@ -673,6 +674,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/utility/datetime:date_time_util",
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
@@ -781,6 +783,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",
