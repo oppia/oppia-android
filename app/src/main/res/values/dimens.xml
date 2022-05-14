@@ -3,6 +3,7 @@
   <!-- Default screen margins, per the Android Design guidelines. -->
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="match_parent">-2px</dimen>
   <dimen name="answer_tick_size">24dp</dimen>
   <dimen name="answer_tick_margin">12dp</dimen>
   <integer name="fade_in_duration_ms">1000</integer>
@@ -171,14 +172,35 @@
   <dimen name="drag_drop_content_group_item_margin">8dp</dimen>
   <dimen name="walkthrough_final_no_button_margin_end">8dp</dimen>
   <dimen name="walkthrough_final_yes_button_margin_start">8dp</dimen>
-  
-  <!-- Pin Password -->
-  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
-  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.0</item>
-  <dimen name="pin_password_margin_start">28dp</dimen>
-  <dimen name="pin_password_margin_end">28dp</dimen>
-  <dimen name="pin_password_padding_top">40dp</dimen>
-  <dimen name="pin_password_min_width">304dp</dimen>
+
+  <!-- AdminAuthActivity -->
+  <dimen name="admin_auth_activity_layout_width">0dp</dimen>
+  <dimen name="admin_auth_activity_margin_start">28dp</dimen>
+  <dimen name="admin_auth_activity_margin_end">28dp</dimen>
+  <dimen name="admin_auth_activity_padding_top">32dp</dimen>
+  <dimen name="admin_auth_activity_padding_bottom">96dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_end">0dp</dimen>
+  <dimen name="admin_auth_activity_input_width">0dp</dimen>
+
+  <!-- AdminPinActivity -->
+  <dimen name="admin_pin_activity_layout_width">@dimen/match_parent</dimen>
+  <dimen name="admin_pin_activity_margin_start">28dp</dimen>
+  <dimen name="admin_pin_activity_margin_end">28dp</dimen>
+  <dimen name="admin_pin_activity_padding_top">32dp</dimen>
+  <dimen name="admin_pin_activity_padding_bottom">96dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_start">0dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_end">0dp</dimen>
+  <dimen name="admin_pin_activity_input_width">0dp</dimen>
+
+  <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_layout_width">0dp</dimen>
+  <dimen name="pin_password_activity_margin_start">28dp</dimen>
+  <dimen name="pin_password_activity_margin_end">28dp</dimen>
+  <dimen name="pin_password_activity_padding_top">40dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
 
   <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
   <dimen name="submitted_answer_question_view_margin_start">64dp</dimen>
