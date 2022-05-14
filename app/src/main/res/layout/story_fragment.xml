@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/component_color_Story_activity_background_color"
+        android:background="@color/component_color_story_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/story_fragment_padding_bottom"
