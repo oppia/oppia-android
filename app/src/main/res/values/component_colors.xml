@@ -51,5 +51,15 @@
   <color name="component_color_audio_fragment_icon_background_color">@color/color_palette_icon_background_color</color>
   <color name="component_color_audio_fragment_thumb_background_color">@color/color_palette_icon_background_color</color>
   <color name="component_color_audio_fragment_seekbar_progress_background_color">@color/color_palette_seekbar_progress_background_color</color>
-
+  <!-- Revision Card Activity -->
+  <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_toolbar_secondary_color</color>
+  <color name="component_color_revision_card_activity_background_color">@color/color_palette_secondary_background_color</color>
+  <color name="component_color_revision_card_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_revision_card_activity_highlighted_text_color">@color/color_palette_primary_color</color>
+  <color name="component_color_revision_card_activity_button_background_color">@color/color_palette_toolbar_secondary_color</color>
+  <color name="component_color_revision_card_activity_button_border_color">@color/color_palette_primary_color</color>
+  <!-- Concept Card Fragment -->
+  <color name="component_color_concept_card_fragment_toolbar_color">@color/color_palette_concept_card_toolbar_color</color>
+  <color name="component_color_concept_card_fragment_background_color">@color/color_palette_background_color</color>
+  <color name="component_color_concept_card_fragment_text_color">@color/color_palette_highlighted_text_color</color>
 </resources>
