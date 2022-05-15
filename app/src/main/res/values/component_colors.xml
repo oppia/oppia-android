@@ -46,4 +46,10 @@
   <color name="component_color_option_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_option_activity_options_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_option_activity_options_background_color_cyan">@color/color_palette_highlighted_background_color</color>
+  <!-- Audio Fragment-->
+  <color name="component_color_audio_fragment_background_color">@color/color_palette_accent_background_color</color>
+  <color name="component_color_audio_fragment_icon_background_color">@color/color_palette_icon_background_color</color>
+  <color name="component_color_audio_fragment_thumb_background_color">@color/color_palette_icon_background_color</color>
+  <color name="component_color_audio_fragment_seekbar_progress_background_color">@color/color_palette_seekbar_progress_background_color</color>
+
 </resources>
