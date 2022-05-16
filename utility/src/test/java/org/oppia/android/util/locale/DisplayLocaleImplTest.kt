@@ -265,6 +265,33 @@ class DisplayLocaleImplTest {
   }
 
   @Test
+  fun testNumbersForHumans_egyptArabicLocale_numberFormat_returnsHumanReadableString() {
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+
+    val localizedNumber = impl.run { 0.toHumanReadableString(1) }
+
+    assertThat(localizedNumber).isEqualTo("١")
+  }
+
+  @Test
+  fun testNumbersForHumans_turkishLocale_numberFormat_returnsHumanReadableString() {
+    val impl = createDisplayLocaleImpl(TURKEY_TURKISH_CONTEXT)
+
+    val localizedNumber = impl.run { 0.toHumanReadableString(1) }
+
+    assertThat(localizedNumber).isEqualTo("1")
+  }
+
+  @Test
+  fun testNumbersForHumans_englishLocale_numberFormat_returnsHumanReadableString() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val localizedNumber = impl.run { 0.toHumanReadableString(1) }
+
+    assertThat(localizedNumber).isEqualTo("1")
+  }
+
+  @Test
   fun testCapitalizeForHumans_englishLocale_localeSensitiveCharAtStart_returnsConvertedCase() {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
