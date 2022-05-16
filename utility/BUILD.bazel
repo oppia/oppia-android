@@ -42,6 +42,18 @@ package_group(
     ],
 )
 
+android_library(
+    name = "test_resources",
+    testonly = True,
+    custom_package = "org.oppia.android.util",
+    manifest = ":test_manifest",
+    resource_files = glob(["src/test/res/**"]),
+    visibility = [
+        ":utility_testing_visibility",
+        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
+    ],
+)
+
 # Library for general-purpose utilities.
 kt_android_library(
     name = "utility",
