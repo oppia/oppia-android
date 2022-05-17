@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/question_player_fragment_background_color"
+    android:background="@color/component_color_question_player_activity_background_color"
     tools:context=".player.exploration.ExplorationActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@color/question_player_activity_toolbar_color"
+        android:background="@color/component_color_question_player_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp"

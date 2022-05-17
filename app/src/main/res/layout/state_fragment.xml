@@ -15,7 +15,7 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/question_player_fragment_background_color"
+    android:background="@color/component_color_question_player_activity_background_color"
     android:descendantFocusability="beforeDescendants"
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">

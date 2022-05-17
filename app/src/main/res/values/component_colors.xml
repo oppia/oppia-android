@@ -42,13 +42,13 @@
   <color name="pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Question Player Activity -->
-  <color name="question_player_fragment_background_color">@color/color_palette_primary_background_color</color>
-  <color name="shared_player_text_view_primary_color">@color/color_palette_highlighted_text_color</color>
-  <color name="question_player_fragment_textview_secondary_color">@color/color_palette_secondary_text_color</color>
-  <color name="question_player_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_question_player_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_question_player_activity_textview_primary_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_question_player_activity_textview_secondary_color">@color/color_palette_secondary_text_color</color>
+  <color name="component_color_question_player_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Exploration Activity -->
-  <color name="exploration_fragment_background_color">@color/color_palette_primary_background_color</color>
-  <color name="exploration_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_exploration_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_exploration_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Profile and Device ID Activity -->
   <color name="component_color_profile_and_device_id_activity_primary_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>

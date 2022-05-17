@@ -20,5 +20,4 @@
   <color name="color_palette_secondary_text_color">@color/color_def_oppia_stroke_black</color>
   <color name="color_palette_primary_background_color">@color/color_def_white_light</color>
   <color name="color_palette_dialog_primary_text_color">@color/color_def_black</color>
-
 </resources>

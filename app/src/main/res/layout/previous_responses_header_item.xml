@@ -42,7 +42,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="2dp"
-      android:background="@color/shared_player_text_view_primary_color"
+      android:background="@color/component_color_question_player_activity_textview_primary_color"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toStartOf="@+id/previous_responses_header_text"
       app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
       android:paddingEnd="8dp"
       android:text="@{viewModel.computePreviousResponsesHeaderText()}"
       android:textAllCaps="true"
-      android:textColor="@color/shared_player_text_view_primary_color"
+      android:textColor="@color/component_color_question_player_activity_textview_primary_color"
       android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +69,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="2dp"
-      android:background="@color/shared_player_text_view_primary_color"
+      android:background="@color/component_color_question_player_activity_textview_primary_color"
       app:layout_constraintBottom_toBottomOf="@+id/previous_responses_header_text"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/previous_responses_header_text"
