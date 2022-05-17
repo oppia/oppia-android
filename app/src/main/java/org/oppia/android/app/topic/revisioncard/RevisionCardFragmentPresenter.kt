@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
@@ -16,7 +15,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
@@ -24,7 +22,6 @@ import javax.inject.Inject
 class RevisionCardFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
@@ -93,11 +90,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
   }
 
   private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_REVISION_CARD,
-      oppiaLogger.createRevisionCardContext(topicId, subTopicId)
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenRevisionCardContext(topicId, subTopicId))
   }
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {

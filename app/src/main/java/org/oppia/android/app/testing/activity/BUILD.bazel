@@ -7,16 +7,29 @@ fragments (such as views).
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
+# Resource shim needed so that TestActivity can build in both Gradle & Bazel.
+genrule(
+    name = "update_TestActivity",
+    srcs = ["TestActivity.kt"],
+    outs = ["TestActivity_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' > $(OUTS)
+    """,
+)
+
 # TODO(#2747): Move this to the testing package once Gradle doesn't force this into the app module.
 # Also, re-add testonly attribute when this TODO can be addressed.
 kt_android_library(
     name = "test_activity",
     srcs = [
-        "TestActivity.kt",
+        "TestActivity_updated.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
+        "//app:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
     ],
 )

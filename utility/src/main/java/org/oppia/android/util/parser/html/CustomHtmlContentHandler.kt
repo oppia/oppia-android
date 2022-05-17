@@ -50,6 +50,7 @@ class CustomHtmlContentHandler private constructor(
 
   override fun endDocument() {
     originalContentHandler?.endDocument()
+    originalContentHandler = null // There's nothing left to read.
   }
 
   override fun startElement(uri: String?, localName: String?, qName: String?, atts: Attributes?) {
@@ -173,6 +174,12 @@ class CustomHtmlContentHandler private constructor(
     /** Returns a new [Drawable] corresponding to the specified image filename and [Type]. */
     fun loadDrawable(filename: String, type: Type): Drawable
 
+    /**
+     * Returns a new [Drawable] representing a cached render of the specified [rawLatex] for the
+     * given [lineHeight] and for the rendering [type].
+     */
+    fun loadMathDrawable(rawLatex: String, lineHeight: Float, type: Type): Drawable
+
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {
       /**
@@ -200,9 +207,16 @@ class CustomHtmlContentHandler private constructor(
       customTagHandlers: Map<String, CustomTagHandler>
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
-      // tracking.
+      // tracking. Also, make sure that paragraph tags are always preceded by newlines since that's
+      // expected by SpannableStringBuilder (see:
+      // https://developer.android.com/reference/android/text/Spanned#SPAN_PARAGRAPH). The same must
+      // be done for other block-like tags, including: divs, ols, uls, and lis. Note that the regex
+      // uses a positive lookahead to match the closing tag since multiple of these tags can be
+      // consecutive.
+      val lineAdjustedHtml =
+        html.replace("([^\n])<(p|ol|ul|li|oppia-li|div)(?=>)".toRegex(), "$1\n<$2")
       return HtmlCompat.fromHtml(
-        "<init-custom-handler/>$html",
+        "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
         CustomHtmlContentHandler(customTagHandlers, imageRetriever),

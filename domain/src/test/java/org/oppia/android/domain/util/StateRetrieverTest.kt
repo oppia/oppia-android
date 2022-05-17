@@ -14,9 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.InteractionObject.ObjectTypeCase.MATH_EXPRESSION
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.RuleSpec
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.BOOL_VALUE
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SCHEMA_OBJECT_LIST
+import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_UNICODE
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -37,24 +41,26 @@ import javax.inject.Singleton
 
 private const val TEST_EXPLORATION_ID_2 = "test_exp_id_2"
 private const val TEST_EXPLORATION_ID_4 = "test_exp_id_4"
-private const val TEST_EXPLORATION_ID_5 = "13"
+private const val TEST_EXPLORATION_ID_5 = "test_exp_id_5"
+private const val TEST_EXPLORATION_ID_13 = "13"
+private const val FRACTIONS_EXPLORATION_ID_0 = "umPkwp0L1M0-"
 
 /** Tests for [StateRetriever]. */
-@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
+// Function name: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class StateRetrieverTest {
-  private val DRAG_DROP_CHOICE_CONTENT_ID_0 = createXlatableContentId(contentId = "ca_choices_0")
-  private val DRAG_DROP_CHOICE_CONTENT_ID_1 = createXlatableContentId(contentId = "ca_choices_1")
-  private val DRAG_DROP_CHOICE_CONTENT_ID_2 = createXlatableContentId(contentId = "ca_choices_2")
-  private val DRAG_DROP_CHOICE_CONTENT_ID_3 = createXlatableContentId(contentId = "ca_choices_3")
+  private companion object {
+    private val DRAG_DROP_CHOICE_CONTENT_ID_0 = createXlatableContentId(contentId = "ca_choices_0")
+    private val DRAG_DROP_CHOICE_CONTENT_ID_1 = createXlatableContentId(contentId = "ca_choices_1")
+    private val DRAG_DROP_CHOICE_CONTENT_ID_2 = createXlatableContentId(contentId = "ca_choices_2")
+    private val DRAG_DROP_CHOICE_CONTENT_ID_3 = createXlatableContentId(contentId = "ca_choices_3")
+  }
 
-  @Inject
-  lateinit var stateRetriever: StateRetriever
-
-  @Inject
-  lateinit var jsonAssetRetriever: JsonAssetRetriever
+  @Inject lateinit var stateRetriever: StateRetriever
+  @Inject lateinit var jsonAssetRetriever: JsonAssetRetriever
 
   @Before
   fun setUp() {
@@ -230,7 +236,7 @@ class StateRetrieverTest {
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleIsInRegionRuleSpec() {
     val state = loadStateFromJson(
       stateName = "ImageClickInput",
-      explorationName = TEST_EXPLORATION_ID_5
+      explorationName = TEST_EXPLORATION_ID_13
     )
 
     val ruleSpecMap = state.interaction.answerGroupsList
@@ -243,7 +249,7 @@ class StateRetrieverTest {
   fun testParseState_withImageRegionSelectionInteraction_parsesRuleWithIsInRegionWithValueAtX() {
     val state = loadStateFromJson(
       stateName = "ImageClickInput",
-      explorationName = TEST_EXPLORATION_ID_5
+      explorationName = TEST_EXPLORATION_ID_13
     )
 
     val ruleSpecMap = lookUpRuleSpec(state, "IsInRegion")
@@ -380,6 +386,251 @@ class StateRetrieverTest {
     assertThat(ruleInputTranslations?.get("ar")?.htmlList?.htmlList).containsExactly("الفنلندية")
   }
 
+  @Test
+  fun testParseState_withNumericExpressionInput_matchesExactlyWith_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesExactlyWith")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_matchesUpTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesUpToTrivialManipulations",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesUpToTrivialManipulations")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_isEquivalentTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.IsEquivalentTo",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalentTo")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_customizationArgs_hasPlaceholder() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("placeholder")
+    assertThat(customArgs["placeholder"]?.objectTypeCase).isEqualTo(SUBTITLED_UNICODE)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_customizationArgs_hasDivAsFraction() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("useFractionForDivision")
+    assertThat(customArgs["useFractionForDivision"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+  }
+
+  @Test
+  fun testParseState_withNumericExpressionInput_customizationArgs_doesNotHaveCustomVars() {
+    val state = loadStateFromJson(
+      stateName = "NumericExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // Custom OSK letters are specific to algebraic interactions.
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).doesNotContainKey("customOskLetters")
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_matchesExactlyWith_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesExactlyWith")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_matchesUpTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesUpToTrivialManipulations",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesUpToTrivialManipulations")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_isEquivalentTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.IsEquivalentTo",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalentTo")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_customizationArgs_doesNotHavePlaceholder() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).doesNotContainKey("placeholder")
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_customizationArgs_hasDivAsFraction() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("useFractionForDivision")
+    assertThat(customArgs["useFractionForDivision"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+  }
+
+  @Test
+  fun testParseState_withAlgebraicExpressionInput_customizationArgs_hasCustomVars() {
+    val state = loadStateFromJson(
+      stateName = "AlgebraicExpressionInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // Custom OSK letters are specific to algebraic interactions.
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("customOskLetters")
+    assertThat(customArgs["customOskLetters"]?.objectTypeCase).isEqualTo(SCHEMA_OBJECT_LIST)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_matchesExactlyWith_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesExactlyWith")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_matchesUpTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesUpToTrivialManipulations",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "MatchesUpToTrivialManipulations")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_isEquivalentTo_parsesMathExpInput() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.IsEquivalentTo",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val ruleSpecMap = lookUpRuleSpec(state, "IsEquivalentTo")
+    assertThat(ruleSpecMap.inputCount).isEqualTo(1)
+    assertThat(ruleSpecMap.inputMap).containsKey("x")
+    assertThat(ruleSpecMap.inputMap["x"]?.objectTypeCase).isEqualTo(MATH_EXPRESSION)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_customizationArgs_doesNotHavePlaceholder() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).doesNotContainKey("placeholder")
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_customizationArgs_hasDivAsFraction() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("useFractionForDivision")
+    assertThat(customArgs["useFractionForDivision"]?.objectTypeCase).isEqualTo(BOOL_VALUE)
+  }
+
+  @Test
+  fun testParseState_withMathEquationInput_customizationArgs_hasCustomVars() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith",
+      explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // Custom OSK letters are specific to algebraic interactions.
+    val customArgs = state.interaction.customizationArgsMap
+    assertThat(customArgs).containsKey("customOskLetters")
+    assertThat(customArgs["customOskLetters"]?.objectTypeCase).isEqualTo(SCHEMA_OBJECT_LIST)
+  }
+
+  @Test
+  fun testParseState_withoutLinkedSkillId_doesNotSetLinkedSkillId() {
+    val state = loadStateFromJson(
+      stateName = "Introduction", explorationName = FRACTIONS_EXPLORATION_ID_0
+    )
+
+    // No linked skill ID should be set since there isn't one defined for this state.
+    assertThat(state.linkedSkillId).isEmpty()
+  }
+
+  @Test
+  fun testParseState_withLinkedSkillId_setsLinkedSkillId() {
+    val state = loadStateFromJson(
+      stateName = "MathEquationInput.MatchesExactlyWith", explorationName = TEST_EXPLORATION_ID_5
+    )
+
+    // The skill ID from the state should be parsed & included in its represented proto structure.
+    assertThat(state.linkedSkillId).isEqualTo("test_skill_id_2")
+  }
+
   /**
    * Return the first [RuleSpec] in the specified [State] matching the specified rule type, or fails
    * if one cannot be found.
@@ -389,11 +640,6 @@ class StateRetrieverTest {
       .flatMap(AnswerGroup::getRuleSpecsList)
       .find { it.ruleType == ruleType } ?: error("Failed to find rule type: $ruleType")
   }
-
-  private fun createXlatableContentId(contentId: String): TranslatableHtmlContentId =
-    TranslatableHtmlContentId.newBuilder().apply {
-      this.contentId = contentId
-    }.build()
 
   private fun crateSetOfContentIds(
     vararg items: TranslatableHtmlContentId
@@ -469,3 +715,8 @@ class StateRetrieverTest {
     fun inject(stateRetrieverTest: StateRetrieverTest)
   }
 }
+
+private fun createXlatableContentId(contentId: String): TranslatableHtmlContentId =
+  TranslatableHtmlContentId.newBuilder().apply {
+    this.contentId = contentId
+  }.build()

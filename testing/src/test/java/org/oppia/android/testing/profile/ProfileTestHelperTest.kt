@@ -21,16 +21,20 @@ import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.Profile
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -38,44 +42,31 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ProfileTestHelperTest]. */
+/** Tests for [ProfileTestHelper]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileTestHelperTest.TestApplication::class)
 class ProfileTestHelperTest {
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
+  @Mock lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
 
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockProfilesObserver: Observer<AsyncResult<List<Profile>>>
-
-  @Captor
-  lateinit var profilesResultCaptor: ArgumentCaptor<AsyncResult<List<Profile>>>
-
-  @Mock
-  lateinit var mockUpdateResultObserver: Observer<AsyncResult<Any?>>
-
-  @Captor
-  lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
+  @Captor lateinit var updateResultCaptor: ArgumentCaptor<AsyncResult<Any?>>
 
   @Before
   fun setUp() {
@@ -89,14 +80,12 @@ class ProfileTestHelperTest {
   @Test
   fun testInitializeProfiles_initializeProfiles_checkProfilesAreAddedAndCurrentIsSet() {
     profileTestHelper.initializeProfiles().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
+    val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    val profiles = profilesResultCaptor.value.getOrThrow()
+    assertThat(updateResultCaptor.value).isSuccess()
+    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
     assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
     assertThat(profiles[1].name).isEqualTo("Ben")
@@ -107,14 +96,12 @@ class ProfileTestHelperTest {
   @Test
   fun testInitializeProfiles_addOnlyAdminProfile_checkProfileIsAddedAndCurrentIsSet() {
     profileTestHelper.addOnlyAdminProfile().observeForever(mockUpdateResultObserver)
-    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
+    val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
-    val profiles = profilesResultCaptor.value.getOrThrow()
+    assertThat(updateResultCaptor.value).isSuccess()
+    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
     assertThat(profiles.size).isEqualTo(1)
     assertThat(profiles[0].name).isEqualTo("Admin")
     assertThat(profiles[0].isAdmin).isTrue()
@@ -125,12 +112,11 @@ class ProfileTestHelperTest {
   fun testAddMoreProfiles_addMoreProfiles_checkProfilesAreAdded() {
     profileTestHelper.addMoreProfiles(10)
     testCoroutineDispatchers.runCurrent()
-    profileManagementController.getProfiles().toLiveData().observeForever(mockProfilesObserver)
+    val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()
 
-    verify(mockProfilesObserver, atLeastOnce()).onChanged(profilesResultCaptor.capture())
-    assertThat(profilesResultCaptor.value.isSuccess()).isTrue()
-    assertThat(profilesResultCaptor.value.getOrThrow().size).isEqualTo(10)
+    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
+    assertThat(profiles).hasSize(10)
   }
 
   @Test
@@ -141,7 +127,7 @@ class ProfileTestHelperTest {
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(updateResultCaptor.value).isSuccess()
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
   }
 
@@ -153,7 +139,7 @@ class ProfileTestHelperTest {
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(updateResultCaptor.value).isSuccess()
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
   }
 
@@ -165,7 +151,7 @@ class ProfileTestHelperTest {
     testCoroutineDispatchers.runCurrent()
 
     verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value.isSuccess()).isTrue()
+    assertThat(updateResultCaptor.value).isSuccess()
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
   }
 
@@ -199,7 +185,9 @@ class ProfileTestHelperTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

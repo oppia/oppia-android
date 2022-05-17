@@ -2,7 +2,6 @@ package org.oppia.android.domain.platformparameter.syncup
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -23,12 +22,8 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
@@ -38,10 +33,14 @@ import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
@@ -55,8 +54,6 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -64,6 +61,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
@@ -77,6 +75,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -84,31 +84,13 @@ import javax.inject.Singleton
   manifest = Config.NONE
 )
 class PlatformParameterSyncUpWorkerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Mock
-  lateinit var mockUnitObserver: Observer<AsyncResult<Unit>>
-
-  @Inject
-  lateinit var platformParameterSingleton: PlatformParameterSingleton
-
-  @Inject
-  lateinit var platformParameterController: PlatformParameterController
-
-  @Inject
-  lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
+  @Inject lateinit var platformParameterController: PlatformParameterController
+  @Inject lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val expectedTestStringParameter = PlatformParameter.newBuilder()
     .setName(TEST_STRING_PARAM_NAME)
@@ -173,8 +155,7 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
     // Retrieve the previously cached Platform Parameters from Cache Store.
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
@@ -242,8 +223,7 @@ class PlatformParameterSyncUpWorkerTest {
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
 
     // Retrieve the previously cached Platform Parameters from Cache Store.
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
@@ -327,8 +307,7 @@ class PlatformParameterSyncUpWorkerTest {
       .isEqualTo(PlatformParameterSyncUpWorker.EMPTY_RESPONSE_EXCEPTION_MSG)
 
     // Retrieve the previously cached Platform Parameters from Cache Store.
-    platformParameterController.getParameterDatabase().toLiveData().observeForever(mockUnitObserver)
-    testCoroutineDispatchers.runCurrent()
+    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
 
     // Values retrieved from Cache store will be sent to Platform Parameter Singleton by the
     // Controller in the form of a Map, therefore verify the retrieved values from that Map.
@@ -437,7 +416,8 @@ class PlatformParameterSyncUpWorkerTest {
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      LocaleProdModule::class
+      LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -37,11 +37,13 @@ class StoryChapterSummaryViewModel(
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
 
   fun onExplorationClicked() {
-    val shouldSavePartialProgress =
+    val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
         ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
-        else -> false
+        ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED,
+        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES, ChapterPlayState.UNRECOGNIZED,
+        ChapterPlayState.COMPLETED -> false
       }
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
@@ -56,7 +58,7 @@ class StoryChapterSummaryViewModel(
         fragment,
         object : Observer<AsyncResult<ExplorationCheckpoint>> {
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 internalProfileId,
@@ -64,11 +66,11 @@ class StoryChapterSummaryViewModel(
                 storyId,
                 explorationId,
                 canExplorationBeResumed = true,
-                shouldSavePartialProgress,
+                canHavePartialProgressSaved,
                 backflowId = 1,
-                explorationCheckpoint = it.getOrThrow()
+                explorationCheckpoint = it.value
               )
-            } else if (it.isFailure()) {
+            } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
                 internalProfileId,
@@ -76,7 +78,7 @@ class StoryChapterSummaryViewModel(
                 storyId,
                 explorationId,
                 canExplorationBeResumed = false,
-                shouldSavePartialProgress,
+                canHavePartialProgressSaved,
                 backflowId = 1,
                 explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
               )
@@ -91,7 +93,7 @@ class StoryChapterSummaryViewModel(
         storyId,
         explorationId,
         canExplorationBeResumed = false,
-        shouldSavePartialProgress,
+        canHavePartialProgressSaved,
         backflowId = 1,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )

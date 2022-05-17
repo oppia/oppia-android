@@ -199,13 +199,13 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     // Reference: https://stackoverflow.com/a/37713320.
     val application = context.applicationContext as Application
     application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-      override fun onActivityPaused(activity: Activity?) {}
-      override fun onActivityResumed(activity: Activity?) {}
-      override fun onActivityStarted(activity: Activity?) {}
-      override fun onActivityDestroyed(activity: Activity?) {}
-      override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-      override fun onActivityStopped(activity: Activity?) {}
-      override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+      override fun onActivityPaused(activity: Activity) {}
+      override fun onActivityResumed(activity: Activity) {}
+      override fun onActivityStarted(activity: Activity) {}
+      override fun onActivityDestroyed(activity: Activity) {}
+      override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+      override fun onActivityStopped(activity: Activity) {}
+      override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!dialogDismissed.get()) {
           activity?.let {
             val appCompatActivity = it as AppCompatActivity
@@ -279,7 +279,8 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun loadTopics(topicIds: Collection<String>): Collection<Topic> {
-    return topicIds.map(topicController::retrieveTopic)
+    // Ignore topics no longer on the device.
+    return topicIds.mapNotNull(topicController::retrieveTopic)
   }
 
   private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {

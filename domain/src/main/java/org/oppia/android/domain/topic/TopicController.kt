@@ -25,7 +25,6 @@ import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicPlayAvailability
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
-import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
@@ -94,7 +93,6 @@ class TopicController @Inject constructor(
   private val conceptCardRetriever: ConceptCardRetriever,
   private val revisionCardRetriever: RevisionCardRetriever,
   private val storyProgressController: StoryProgressController,
-  private val exceptionsController: ExceptionsController,
   private val assetRepository: AssetRepository,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
   private val translationController: TranslationController
@@ -115,7 +113,8 @@ class TopicController @Inject constructor(
   fun getTopic(profileId: ProfileId, topicId: String): DataProvider<Topic> {
     val topicDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPIC_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveTopic(topicId))
+        retrieveTopic(topicId)?.let { AsyncResult.Success(it) }
+          ?: AsyncResult.Failure(IllegalStateException("Topic doesn't exist: $topicId"))
       }
     val topicProgressDataProvider =
       storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
@@ -142,7 +141,7 @@ class TopicController @Inject constructor(
   ): DataProvider<StorySummary> {
     val storyDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
-        return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+        return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
       }
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
@@ -168,13 +167,13 @@ class TopicController @Inject constructor(
     explorationId: String
   ): DataProvider<ChapterSummary> {
     return dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync AsyncResult.success(retrieveStory(topicId, storyId))
+      return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
     }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
       val chapterSummary = fetchChapter(storySummary, explorationId)
       if (chapterSummary != null) {
-        AsyncResult.success(chapterSummary)
+        AsyncResult.Success(chapterSummary)
       } else {
-        AsyncResult.failed(
+        AsyncResult.Failure(
           ChapterNotFoundException(
             "Chapter for exploration $explorationId not found in story $storyId and topic $topicId"
           )
@@ -230,23 +229,18 @@ class TopicController @Inject constructor(
   fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
     return storyProgressController.retrieveTopicProgressListDataProvider(
       profileId
-    ).transformAsync(GET_COMPLETED_STORY_LIST_PROVIDER_ID) {
-      val completedStoryListBuilder = CompletedStoryList.newBuilder()
-      it.forEach { topicProgress ->
+    ).transformAsync(GET_COMPLETED_STORY_LIST_PROVIDER_ID) { progressList ->
+      val completedStories = progressList.flatMap { topicProgress ->
         val topic = retrieveTopic(topicProgress.topicId)
-        val storyProgressList = mutableListOf<StoryProgress>()
-        val transformedStoryProgressList = topicProgress
-          .storyProgressMap.values.toList()
-        storyProgressList.addAll(transformedStoryProgressList)
-
-        completedStoryListBuilder.addAllCompletedStory(
-          createCompletedStoryListFromProgress(
-            topic,
-            storyProgressList
-          )
-        )
+        return@flatMap topic?.let {
+          createCompletedStoryListFromProgress(it, topicProgress.storyProgressMap.values.toList())
+        } ?: listOf() // Ignore topics that are no longer on the device.
       }
-      AsyncResult.success(completedStoryListBuilder.build())
+      return@transformAsync AsyncResult.Success(
+        CompletedStoryList.newBuilder().apply {
+          addAllCompletedStory(completedStories)
+        }.build()
+      )
     }
   }
 
@@ -258,7 +252,7 @@ class TopicController @Inject constructor(
       profileId
     ).transformAsync(GET_ONGOING_TOPIC_LIST_PROVIDER_ID) {
       val ongoingTopicList = createOngoingTopicListFromProgress(it)
-      AsyncResult.success(ongoingTopicList)
+      AsyncResult.Success(ongoingTopicList)
     }
   }
 
@@ -271,16 +265,17 @@ class TopicController @Inject constructor(
   private fun createOngoingTopicListFromProgress(
     topicProgressList: List<TopicProgress>
   ): OngoingTopicList {
-    val ongoingTopicListBuilder = OngoingTopicList.newBuilder()
-    topicProgressList.forEach { topicProgress ->
-      val topic = retrieveTopic(topicProgress.topicId)
-      if (topicProgress.storyProgressCount != 0) {
-        if (checkIfTopicIsOngoing(topic, topicProgress)) {
-          ongoingTopicListBuilder.addTopic(topic)
-        }
+    // Ignore progress from topics no longer on the device.
+    val inProgressTopics = topicProgressList.mapNotNull { topicProgress ->
+      retrieveTopic(topicProgress.topicId)?.let { topic ->
+        if (topicProgress.storyProgressCount != 0 && checkIfTopicIsOngoing(topic, topicProgress)) {
+          topic
+        } else null
       }
     }
-    return ongoingTopicListBuilder.build()
+    return OngoingTopicList.newBuilder().apply {
+      addAllTopic(inProgressTopics)
+    }.build()
   }
 
   private fun checkIfTopicIsOngoing(topic: Topic, topicProgress: TopicProgress): Boolean {
@@ -391,27 +386,29 @@ class TopicController @Inject constructor(
     }
   }
 
-  internal fun retrieveTopic(topicId: String): Topic {
+  internal fun retrieveTopic(topicId: String): Topic? {
     return if (loadLessonProtosFromAssets) {
-      val topicRecord =
-        assetRepository.loadProtoFromLocalAssets(
-          assetName = topicId,
-          baseMessage = TopicRecord.getDefaultInstance()
-        )
-      val subtopics = topicRecord.subtopicIdsList.map { loadSubtopic(topicId, it) }
-      val stories = topicRecord.canonicalStoryIdsList.map { loadStorySummary(it) }
-      return Topic.newBuilder().apply {
-        this.topicId = topicId
-        name = topicRecord.name
-        description = topicRecord.description
-        addAllStory(stories)
-        topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
-        diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
-        addAllSubtopic(subtopics)
-        topicPlayAvailability = TopicPlayAvailability.newBuilder().apply {
-          if (topicRecord.isPublished) availableToPlayNow = true else availableToPlayInFuture = true
+      assetRepository.maybeLoadProtoFromLocalAssets(
+        assetName = topicId,
+        baseMessage = TopicRecord.getDefaultInstance()
+      )?.let { topicRecord ->
+        val subtopics = topicRecord.subtopicIdsList.map { loadSubtopic(topicId, it) }
+        val stories = topicRecord.canonicalStoryIdsList.map { loadStorySummary(it) }
+        return Topic.newBuilder().apply {
+          this.topicId = topicId
+          name = topicRecord.name
+          description = topicRecord.description
+          addAllStory(stories)
+          topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
+          diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
+          addAllSubtopic(subtopics)
+          topicPlayAvailability = TopicPlayAvailability.newBuilder().apply {
+            if (topicRecord.isPublished) {
+              availableToPlayNow = true
+            } else availableToPlayInFuture = true
+          }.build()
         }.build()
-      }.build()
+      }
     } else createTopicFromJson(topicId)
   }
 

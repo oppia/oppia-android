@@ -11,7 +11,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 28,
+    api_level = 30,
     build_tools_version = "29.0.2",
 )
 
@@ -96,8 +96,8 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
-    strip_prefix = "robolectric-bazel-4.4",
-    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.4.tar.gz"],
+    strip_prefix = "robolectric-bazel-4.5",
+    urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.5.tar.gz"],
 )
 
 load("@robolectric//bazel:robolectric.bzl", "robolectric_repositories")
@@ -125,8 +125,18 @@ git_repository(
 # to correctly size in-line SVGs (such as those needed for LaTeX-based math expressions).
 git_repository(
     name = "androidsvg",
-    commit = "6bd15f69caee3e6857fcfcd123023716b4adec1d",
+    commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
     remote = "https://github.com/oppia/androidsvg",
+    shallow_since = "1647295507 -0700",
+)
+
+# A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
+# min target SDK version to be compatible with Oppia.
+git_repository(
+    name = "kotlitex",
+    commit = "6b7db8ff9e0f4a70bdaa25f482143e038fd0c301",
+    remote = "https://github.com/oppia/kotlitex",
+    shallow_since = "1647554845 -0700",
 )
 
 bind(

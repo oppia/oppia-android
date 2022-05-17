@@ -11,12 +11,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
@@ -26,7 +24,6 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -106,34 +103,18 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun logInfoFragmentEvent(topicId: String) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_INFO_TAB,
-      oppiaLogger.createTopicContext(topicId)
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenInfoTabContext(topicId))
   }
 
   private fun logLessonsFragmentEvent(topicId: String) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_LESSONS_TAB,
-      oppiaLogger.createTopicContext(topicId)
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenLessonsTabContext(topicId))
   }
 
   private fun logPracticeFragmentEvent(topicId: String) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_PRACTICE_TAB,
-      oppiaLogger.createTopicContext(topicId)
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenPracticeTabContext(topicId))
   }
 
   private fun logRevisionFragmentEvent(topicId: String) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_REVISION_TAB,
-      oppiaLogger.createTopicContext(topicId)
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenRevisionTabContext(topicId))
   }
 }

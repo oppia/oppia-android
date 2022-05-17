@@ -80,3 +80,15 @@ const val LEARNER_STUDY_ANALYTICS = "learner_study_analytics"
  * and working of learner study related analytics logging.
  */
 const val LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the platform parameter that controls whether to cache LaTeX rendering using Glide.
+ */
+@Qualifier
+annotation class CacheLatexRendering
+
+/** Name of the platform that controls whether to cache LaTeX rendering using Glide. */
+const val CACHE_LATEX_RENDERING = "cache_latex_rendering"
+
+/** Default value for whether to cache LaTeX rendering using Glide. */
+const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true

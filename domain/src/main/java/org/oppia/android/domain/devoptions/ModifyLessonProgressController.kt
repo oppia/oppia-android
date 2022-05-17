@@ -39,12 +39,11 @@ class ModifyLessonProgressController @Inject constructor(
   fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<Topic>> {
     val allTopicsDataProvider = topicListController.getTopicList()
       .transformAsync(GET_ALL_TOPICS_PROVIDER_ID) { topicList ->
-        val listOfTopics = mutableListOf<Topic>()
-        topicList.topicSummaryList.forEach { topicSummary ->
-          val topicId = topicSummary.topicId
-          listOfTopics.add(topicController.retrieveTopic(topicId))
+        // Ignore topics no longer on the device.
+        val listOfTopics = topicList.topicSummaryList.mapNotNull { topicSummary ->
+          topicController.retrieveTopic(topicSummary.topicId)
         }
-        AsyncResult.success(listOfTopics.toList())
+        AsyncResult.Success(listOfTopics)
       }
     val topicProgressListDataProvider =
       storyProgressController.retrieveTopicProgressListDataProvider(profileId)
@@ -71,7 +70,7 @@ class ModifyLessonProgressController @Inject constructor(
         listOfTopics.forEach { topic ->
           storyMap[topic.topicId] = topic.storyList
         }
-        AsyncResult.success(storyMap.toMap())
+        AsyncResult.Success(storyMap.toMap())
       }
   }
 
@@ -111,7 +110,9 @@ class ModifyLessonProgressController @Inject constructor(
    */
   fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
     topicIdList.forEach { topicId ->
-      val topic = topicController.retrieveTopic(topicId)
+      val topic = checkNotNull(topicController.retrieveTopic(topicId)) {
+        "Expected topic to be present in order to update its completion state: $topicId."
+      }
       topic.storyList.forEach { storySummary ->
         storySummary.chapterList.forEach { chapterSummary ->
           storyProgressController.recordCompletedChapter(

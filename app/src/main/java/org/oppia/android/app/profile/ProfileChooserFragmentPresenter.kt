@@ -16,7 +16,7 @@ import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -28,7 +28,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 private val COLORS_LIST = listOf(
@@ -66,8 +65,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val context: Context,
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -124,14 +122,18 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun processWasProfileEverBeenAddedResult(
     wasProfileEverBeenAddedResult: AsyncResult<Boolean>
   ): Boolean {
-    if (wasProfileEverBeenAddedResult.isFailure()) {
-      oppiaLogger.e(
-        "ProfileChooserFragment",
-        "Failed to retrieve the information on wasProfileEverBeenAdded",
-        wasProfileEverBeenAddedResult.getErrorOrNull()!!
-      )
+    return when (wasProfileEverBeenAddedResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileChooserFragment",
+          "Failed to retrieve the information on wasProfileEverBeenAdded",
+          wasProfileEverBeenAddedResult.error
+        )
+        false
+      }
+      is AsyncResult.Pending -> false
+      is AsyncResult.Success -> wasProfileEverBeenAddedResult.value
     }
-    return wasProfileEverBeenAddedResult.getOrDefault(/* defaultValue= */ false)
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
@@ -170,11 +172,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
+      updateLearnerIdIfAbsent(model.profile)
       if (model.profile.pin.isEmpty()) {
         profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
           fragment,
           Observer {
-            if (it.isSuccess()) {
+            if (it is AsyncResult.Success) {
               activity.startActivity(
                 (
                   HomeActivity.createHomeActivity(
@@ -248,8 +251,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun logProfileChooserEvent() {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(), EventLog.EventAction.OPEN_PROFILE_CHOOSER, eventContext = null
-    )
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenProfileChooserContext())
+  }
+
+  private fun updateLearnerIdIfAbsent(profile: Profile) {
+    if (profile.learnerId.isNullOrEmpty()) {
+      // TODO(#4345): Block on the following data provider before allowing the user to log in.
+      profileManagementController.initializeLearnerId(profile.id)
+    }
   }
 }

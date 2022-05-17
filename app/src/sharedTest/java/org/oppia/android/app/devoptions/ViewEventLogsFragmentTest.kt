@@ -32,7 +32,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
-import org.oppia.android.app.model.EventLog.EventAction
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -42,13 +42,16 @@ import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientati
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
 import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
 import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
 import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
 import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
 import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
 import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
@@ -57,7 +60,9 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -69,6 +74,7 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -76,6 +82,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -116,10 +123,14 @@ class ViewEventLogsFragmentTest {
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     logMultipleEvents()
   }
 
@@ -178,31 +189,31 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Open Revision Card",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Story Activity",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Lessons Tab",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Home",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Open Profile Chooser",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
     }
   }
@@ -216,65 +227,30 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Open Revision Card",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Story Activity",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Lessons Tab",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Home",
-        targetViewId = R.id.view_event_logs_action_name_text_view
+        targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Open Profile Chooser",
-        targetViewId = R.id.view_event_logs_action_name_text_view
-      )
-    }
-  }
-
-  @Test
-  fun testViewEventLogsFragment_contextIsNull_contextIsNotDisplayed() {
-    launch(ViewEventLogsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
-      verifyItemNotDisplayedOnEventLogItemViewAtPosition(
-        position = 3,
-        targetViewId = R.id.view_event_logs_context_text_view
-      )
-      scrollToPosition(position = 4)
-      verifyItemNotDisplayedOnEventLogItemViewAtPosition(
-        position = 4,
-        targetViewId = R.id.view_event_logs_context_text_view
-      )
-    }
-  }
-
-  @Test
-  fun testViewEventLogsFragment_configChange_contextIsNull_contextIsNotDisplayed() {
-    launch(ViewEventLogsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 3)
-      verifyItemNotDisplayedOnEventLogItemViewAtPosition(
-        position = 3,
-        targetViewId = R.id.view_event_logs_context_text_view
-      )
-      scrollToPosition(position = 4)
-      verifyItemNotDisplayedOnEventLogItemViewAtPosition(
-        position = 4,
         targetViewId = R.id.view_event_logs_context_text_view
       )
     }
@@ -291,7 +267,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Revision Card",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
@@ -301,7 +277,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Story",
+        stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
@@ -311,7 +287,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Topic",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
     }
@@ -329,7 +305,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
-        stringToMatch = "Revision Card",
+        stringToMatch = "Open Revision Card",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 1)
@@ -339,7 +315,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
-        stringToMatch = "Story",
+        stringToMatch = "Open Story Activity",
         targetViewId = R.id.view_event_logs_context_text_view
       )
       scrollToPosition(position = 2)
@@ -349,7 +325,7 @@ class ViewEventLogsFragmentTest {
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
-        stringToMatch = "Topic",
+        stringToMatch = "Open Lessons Tab",
         targetViewId = R.id.view_event_logs_context_text_view
       )
     }
@@ -507,34 +483,23 @@ class ViewEventLogsFragmentTest {
 
   /** Logs multiple event logs so that the recyclerview in [ViewEventLogsFragment] gets populated */
   private fun logMultipleEvents() {
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP,
-      eventAction = EventAction.OPEN_PROFILE_CHOOSER,
-      eventContext = null
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenProfileChooserContext())
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 10000)
+    oppiaLogger.logImportantEvent(eventContext = oppiaLogger.createOpenHomeContext())
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 20000)
+    oppiaLogger.logImportantEvent(oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID))
+
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 30000)
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 10000,
-      eventAction = EventAction.OPEN_HOME,
-      eventContext = null
-    )
-
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 20000,
-      eventAction = EventAction.OPEN_LESSONS_TAB,
-      eventContext = oppiaLogger.createTopicContext(TEST_TOPIC_ID)
-    )
-
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 30000,
-      eventAction = EventAction.OPEN_STORY_ACTIVITY,
-      eventContext = oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
-    )
-
-    oppiaLogger.logTransitionEvent(
-      timestamp = TEST_TIMESTAMP + 40000,
-      eventAction = EventAction.OPEN_REVISION_CARD,
-      eventContext = oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 40000)
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
   }
 
@@ -550,19 +515,6 @@ class ViewEventLogsFragmentTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun verifyItemNotDisplayedOnEventLogItemViewAtPosition(
-    position: Int,
-    targetViewId: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.view_event_logs_recycler_view,
-        position = position,
-        targetViewId = targetViewId
-      )
-    ).check(matches(not(isDisplayed())))
   }
 
   private fun verifyItemDisplayedOnEventLogItemViewAtPosition(
@@ -619,7 +571,10 @@ class ViewEventLogsFragmentTest {
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class,
+      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
+      MathEquationInputModule::class, SplitScreenInteractionModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )
 

@@ -6,19 +6,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val oppiaLogger: OppiaLogger,
-  private val oppiaClock: OppiaClock
+  private val oppiaLogger: OppiaLogger
 ) {
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -75,10 +72,8 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   private fun logPracticeFragmentEvent(topicId: String, storyId: String, explorationId: String) {
-    oppiaLogger.logTransitionEvent(
-      oppiaClock.getCurrentTimeMs(),
-      EventLog.EventAction.OPEN_EXPLORATION_ACTIVITY,
-      oppiaLogger.createExplorationContext(topicId, storyId, explorationId)
+    oppiaLogger.logImportantEvent(
+      oppiaLogger.createOpenExplorationActivityContext(topicId, storyId, explorationId)
     )
   }
 }

@@ -1,0 +1,311 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Represents a fraction.
+//
+// Values of this proto can be analyzed using FractionSubject.
+message Fraction {
+  // Defines whether the fraction is negative.
+  bool is_negative = 1;
+
+  // Defines the whole number component of the fraction.
+  uint32 whole_number = 2;
+
+  // Defines the numerator of the fraction.
+  uint32 numerator = 3;
+
+  // Defines the denominator of the fraction. This should never be zero.
+  uint32 denominator = 4;
+}
+
+// Represents a structured real value.
+//
+// Values of this proto can be analyzed using RealSubject.
+message Real {
+  // Defines type of real value.
+  oneof real_type {
+    // Indicates that this real value is a fraction.
+    Fraction rational = 1;
+
+    // Indicates that this real value is a decimal. Technically these can sometimes be rational, but
+    // given IEEE-754 rounding errors and the difficulty of factoring fractions, many rational
+    // decimal values need to be treated as irrational and non-factorable.
+    double irrational = 2;
+
+    // Indicates that this real value is an integer (as a special case of rational values since
+    // integers are easier to work with than fraction objects). Note that this isn't the only case
+    // where the real value can be an integer. It can also be an integer double value, or a fraction
+    // with only a whole number component.
+    int32 integer = 3;
+  }
+}
+
+// Represents a ratio, e.g. 1:2:3.
+message RatioExpression {
+  // List of components in a ratio. For example, the ratio 1:2:3 will have component values
+  // [1, 2, 3]. It's expected that list should have more than 1 element.
+  repeated uint32 ratio_component = 1;
+}
+
+// Represents a mathematical expression such as 1+2*7. Expressions are inherently recursive, so the
+// overall expressiveness of this structure (& math expressions as a whole) is defined based on its
+// constituent substructures.
+//
+// This structure is designed to represent both numeric and algebraic expressions.
+//
+// Values of this proto can be analyzed using MathExpressionSubject.
+message MathExpression {
+  // The index within the input text stream at which point the expression starts (it's an inclusive
+  // index). If both this and the end index are the same then no parsing information is included for
+  // this specific expression.
+  uint32 parse_start_index = 1;
+
+  // The index within the input text stream at which point the expression ends, exclusively. If both
+  // this and the start index are the same then no parsing information is included for this specific
+  // expression.
+  uint32 parse_end_index = 2;
+
+  // The type of expression.
+  oneof expression_type {
+    // Indicates that this expression is a real value.
+    Real constant = 3;
+
+    // Indicates that this expression is a variable (which is not valid for numeric-only
+    // expressions).
+    string variable = 4;
+
+    // Indicates that this expression is a binary operation between two sub-expressions.
+    MathBinaryOperation binary_operation = 5;
+
+    // Indicates that this expression is a unary operation that's operating on a sub-expression.
+    MathUnaryOperation unary_operation = 6;
+
+    // Indicates that this expression is a function call with a sub-expression argument.
+    MathFunctionCall function_call = 7;
+
+    // Indicates that this expression represents a nested group, e.g. 1+(2+3).
+    MathExpression group = 8;
+  }
+}
+
+// Represents a binary operation like addition or multiplication.
+//
+// Values of this proto can be analyzed using MathExpressionSubject (within the context of a
+// MathExpression).
+message MathBinaryOperation {
+  // Types of supported binary operations.
+  enum Operator {
+    // Represents an unknown operator (which is never supported).
+    OPERATOR_UNSPECIFIED = 0;
+
+    // Represents adding two values, e.g.: 1+x.
+    ADD = 1;
+
+    // Represents subtracting two values, e.g.: x-2.
+    SUBTRACT = 2;
+
+    // Represents multiplying two values, e.g.: x*y.
+    MULTIPLY = 3;
+
+    // Represents dividing two values, e.g.: 1/x.
+    DIVIDE = 4;
+
+    // Represents taking the exponentiation of one value by another, e.g.: x^2.
+    EXPONENTIATE = 5;
+  }
+
+  // The type of binary operation.
+  Operator operator = 1;
+
+  // The left-hand side of the operation, e.g. the '1' in 1+2.
+  MathExpression left_operand = 2;
+
+  // The right-hand side of the operation, e.g. the '2' in 1+2.
+  MathExpression right_operand = 3;
+
+  // Indicates whether this operation is implicit. This is currently only supported for
+  // multiplication, and helps represent expressions like '2x' (which should be treated as 2*x).
+  bool is_implicit = 4;
+}
+
+// Represents a unary operation like negation.
+//
+// Values of this proto can be analyzed using MathExpressionSubject (within the context of a
+// MathExpression).
+message MathUnaryOperation {
+  // Types of supported unary operations.
+  enum Operator {
+    // Represents an unknown operator (which is never supported).
+    OPERATOR_UNSPECIFIED = 0;
+
+    // Represents negating a value, e.g.: -y.
+    NEGATE = 1;
+
+    // Represents indicating a value as positive, e.g.: +y.
+    POSITIVE = 2;
+  }
+
+  // The type of unary operation, e.g. the '1' in -1.
+  Operator operator = 1;
+
+  // The operand being operated upon.
+  MathExpression operand = 2;
+}
+
+// Represents a function call, like square root.
+//
+// Values of this proto can be analyzed using MathExpressionSubject (within the context of a
+// MathExpression).
+message MathFunctionCall {
+  // The types of supported function calls.
+  enum FunctionType {
+    // Represents an unknown function (which is never supported).
+    FUNCTION_UNSPECIFIED = 0;
+
+    // Represents a square root operation, e.g. sqrt(4).
+    SQUARE_ROOT = 1;
+  }
+
+  // The type of function being called within this subexpression.
+  FunctionType function_type = 1;
+
+  // The subexpression being passed as an argument to the function.
+  MathExpression argument = 2;
+}
+
+// Represents a mathematical equation (generally algebraic) such as: 2x+3y=0.
+//
+// Values of this proto can be analyzed using MathEquationSubject.
+message MathEquation {
+  // The MathExpression representing the left-hand side of the equation, e.g. the '2x+3y' in
+  // 2x+3y=0.
+  MathExpression left_side = 1;
+
+  // The MathExpression representing the left-hand side of the equation, e.g. the '0' in 2x+3y=0.
+  MathExpression right_side = 2;
+}
+
+// An operation that can be compared in a way that does not change the value based on commutativity
+// or associativity.
+//
+// 'Comparable' here means that this structure provides a trivial way to compare commutative and
+// associative operations (i.e. by extracting terms from multiple subsequent commutative &
+// associative operations into lists that can be deterministically sorted). This structure is meant
+// to provide a means to compare two expressions without considering associativity or commutativity
+// (though the latter requires the operation lists stored within this structure to be sorted before
+// using standard proto equals checking). Also note that care must be taken when performing equality
+// checking since this structure can contain floating point values that require an epsilon check to
+// approximate equality.
+message ComparableOperation {
+  // Indicates that this operation (e.g. x) should be treated as negated (e.g. -x).
+  bool is_negated = 1;
+
+  // Indicates that this operation (e.g. x) should be treated as a multiplicative inverse
+  // (e.g. 1/x).
+  bool is_inverted = 2;
+
+  // The supported comparison types.
+  oneof comparison_type {
+    // Indicates that this operation is a commutative accumulation (that is, a list of subsequent
+    // operations of the same type that are commutative, e.g. addition or multiplication).
+    CommutativeAccumulation commutative_accumulation = 3;
+
+    // Indicates that this operation is a non-commutative operation and thus cannot be
+    // accumulated (e.g. exponentiation).
+    NonCommutativeOperation non_commutative_operation = 4;
+
+    // Indicates that this operation represents a constant value.
+    Real constant_term = 5;
+
+    // Indicates that this operation represents a variable.
+    string variable_term = 6;
+  }
+
+  // Represents an accumulation of operations (such as a summation or product).
+  //
+  // This helps simplify comparison across commutative and associative boundaries by collecting
+  // terms into sortable lists, such as the expression 1+2+3 becoming [1,2,3] and trivially
+  // comparable to [3,2,1] from 3+2+1 (once sorted).
+  //
+  // Subsequent subtractions are treated as additions with each term arithmetically negated (i.e.
+  // f(x)=-x). Similarly, divisions are considered multiplications with each divisor being
+  // multiplicatively inverted (i.e. the reciprocal function: f(x)=1/x).
+  message CommutativeAccumulation {
+    // The types of supported accumulations.
+    enum AccumulationType {
+      // Represents an unsupported accumulation type (which is always invalid).
+      ACCUMULATION_TYPE_UNSPECIFIED = 0;
+
+      // Represents an accumulation of sums, e.g. 1+2+3.
+      SUMMATION = 1;
+
+      // Represents an accumulation of products, e.g. 2*3*4.
+      PRODUCT = 2;
+    }
+
+    // The type of this accumulation.
+    AccumulationType accumulation_type = 1;
+
+    // The list of operations being combined in this accumulation (which can be subsequent
+    // accumulations in more complex expressions).
+    repeated ComparableOperation combined_operations = 2;
+  }
+
+  // Represents a non-commutative operation (such as exponentiation or square roots).
+  //
+  // Operations represented by this structure cannot be combined in an accumulation which means they
+  // can't be "internally" sorted (in order to maintain the commutativity and associativity of the
+  // operation).
+  message NonCommutativeOperation {
+    // The types of supported non-commutative operations.
+    oneof operation_type {
+      // Indicates that this is an exponentiation operation.
+      BinaryOperation exponentiation = 1;
+
+      // Indicates that this is a square root operation with this operation representing the
+      // argument passed to the square root function.
+      ComparableOperation square_root = 2;
+    }
+
+    // Represents a non-commutative binary operation, such as exponentiation.
+    message BinaryOperation {
+      // The left-hand side of the operation (which itself is another operation), e.g. the '2' in
+      // 2^3.
+      ComparableOperation left_operand = 1;
+
+      // The right-hand side of the operation (which itself is another operation), e.g. the '3' in
+      // 2^3.
+      ComparableOperation right_operand = 2;
+    }
+  }
+}
+
+// Represents a polynomial, e.g.: 2x^3+3x-y+7.
+message Polynomial {
+  // The list of terms in this polynomial, e.g. the '2x^3', '3x', '-y', and '-7' in 2x^3+3x-y+7.
+  repeated Term term = 1;
+
+  // Represents a polynomial term, i.e. a real coefficient multiplied by one or more variables, each
+  // of which may have a power >= 1.
+  message Term {
+    // The coefficient of this term (which may be zero or negative), e.g. '2' in '2x^3'.
+    Real coefficient = 1;
+
+    // The variables of this term. This list can be zero or more variables long (where zero
+    // variables indicate a constant polynomial term).
+    repeated Variable variable = 2;
+
+    // A variable within the term, that is, a variable with a positive power.
+    message Variable {
+      // The name of the variable, e.g. 'x' in 'x^3'.
+      string name = 1;
+
+      // The power of the variable, e.g. '3' in 'x^3'.
+      uint32 power = 2;
+    }
+  }
+}

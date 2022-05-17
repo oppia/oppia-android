@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -11,37 +10,23 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONCEPT_CARD_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXPLORATION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.QUESTION_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REVISION_CARD_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.STORY_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.TOPIC_CONTEXT
-import org.oppia.android.app.model.EventLog.EventAction
-import org.oppia.android.app.model.EventLog.Priority
-import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.logging.FakeSyncStatusManager
+import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -49,6 +34,9 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
+import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -66,38 +54,20 @@ private const val TEST_SKILL_ID = "test_skillId"
 private const val TEST_SKILL_LIST_ID = "test_skillListId"
 private const val TEST_SUB_TOPIC_ID = 1
 
+/** Tests for [AnalyticsController]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var analyticsController: AnalyticsController
-
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-
-  @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var dataProviders: DataProviders
-
-  @Mock
-  lateinit var mockOppiaEventLogsObserver: Observer<AsyncResult<OppiaEventLogs>>
-
-  @Captor
-  lateinit var oppiaEventLogsResultCaptor: ArgumentCaptor<AsyncResult<OppiaEventLogs>>
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
 
   @Before
   fun setUp() {
@@ -105,11 +75,10 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  fun testController_logTransitionEvent_withQuestionContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+  fun testController_logImportantEvent_withQuestionContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -117,127 +86,118 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(QUESTION_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenQuestionPlayerContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withExplorationContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
+  fun testController_logImportantEvent_withExplorationContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createExplorationContext(
+      oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(EXPLORATION_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenExplorationActivityContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withTopicContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+  fun testController_logImportantEvent_withOpenInfoTabContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(TOPIC_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenInfoTabContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withStoryContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+  fun testController_logImportantEvent_withOpenPracticeTabContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(STORY_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenPracticeTabContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withRevisionContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+  fun testController_logImportantEvent_withOpenLessonsTabContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(REVISION_CARD_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenLessonsTabContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withConceptCardContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+  fun testController_logImportantEvent_withOpenRevisionTabContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(CONCEPT_CARD_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenRevisionTabContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withNoContext_checkLogsEvent() {
-    analyticsController.logTransitionEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      null
+  fun testController_logImportantEvent_withStoryContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenStoryActivityContext()
   }
 
   @Test
-  fun testController_logClickEvent_withQuestionContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+  fun testController_logImportantEvent_withRevisionContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenRevisionCardContext()
+  }
+
+  @Test
+  fun testController_logImportantEvent_withConceptCardContext_checkLogsEvent() {
+    analyticsController.logImportantEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenConceptCardContext()
+  }
+
+  @Test
+  fun testController_logLowPriorityEvent_withQuestionContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -245,130 +205,122 @@ class AnalyticsControllerTest {
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(QUESTION_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenQuestionPlayerContext()
   }
 
   @Test
-  fun testController_logClickEvent_withExplorationContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
+  fun testController_logLowPriorityEvent_withExplorationContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createExplorationContext(
+      oppiaLogger.createOpenExplorationActivityContext(
         TEST_TOPIC_ID,
         TEST_STORY_ID,
         TEST_EXPLORATION_ID
       )
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(EXPLORATION_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenExplorationActivityContext()
   }
 
   @Test
-  fun testController_logClickEvent_withTopicContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createTopicContext(TEST_TOPIC_ID)
+  fun testController_logLowPriorityEvent_withOpenInfoTabContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(TOPIC_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenInfoTabContext()
   }
 
   @Test
-  fun testController_logClickEvent_withStoryContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createStoryContext(TEST_TOPIC_ID, TEST_STORY_ID)
+  fun testController_logLowPriorityEvent_withOpenPracticeTabContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(STORY_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenPracticeTabContext()
   }
 
   @Test
-  fun testController_logClickEvent_withRevisionContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+  fun testController_logLowPriorityEvent_withOpenLessonsTabContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(REVISION_CARD_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenLessonsTabContext()
   }
 
   @Test
-  fun testController_logClickEvent_withConceptCardContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createConceptCardContext(TEST_SKILL_ID)
+  fun testController_logLowPriorityEvent_withOpenRevisionTabContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(CONCEPT_CARD_CONTEXT)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenRevisionTabContext()
   }
 
   @Test
-  fun testController_logClickEvent_withNoContext_checkLogsEvent() {
-    analyticsController.logClickEvent(
-      TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      null
+  fun testController_logLowPriorityEvent_withStoryContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    assertThat(fakeEventLogger.getMostRecentEvent().actionName)
-      .isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
-    assertThat(fakeEventLogger.getMostRecentEvent().timestamp).isEqualTo(TEST_TIMESTAMP)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(fakeEventLogger.getMostRecentEvent().priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(fakeEventLogger.getMostRecentEvent().context.activityContextCase)
-      .isEqualTo(ACTIVITYCONTEXT_NOT_SET)
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenStoryActivityContext()
   }
 
-  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to the remote service.
+  @Test
+  fun testController_logLowPriorityEvent_withRevisionContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenRevisionCardContext()
+  }
 
   @Test
-  fun testController_logTransitionEvent_withNoNetwork_checkLogsEventToStore() {
+  fun testController_logLowPriorityEvent_withConceptCardContext_checkLogsEvent() {
+    analyticsController.logLowPriorityEvent(
+      TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
+    )
+
+    val eventLog = fakeEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenConceptCardContext()
+  }
+
+  // TODO(#3621): Addition of tests tracking behaviour of the controller after uploading of logs to
+  //  the remote service.
+
+  @Test
+  fun testController_logImportantEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -376,29 +328,20 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(eventLog.priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
-    assertThat(eventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    val eventLog = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider).getEventLog(0)
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenQuestionPlayerContext()
   }
 
   @Test
-  fun testController_logClickEvent_withNoNetwork_checkLogsEventToStore() {
+  fun testController_logLowPriorityEvent_withNoNetwork_checkLogsEventToStore() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -406,56 +349,40 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val eventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(eventLog.priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(eventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
-    assertThat(eventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(eventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    val eventLog = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider).getEventLog(0)
+    assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(eventLog).isOptionalPriority()
+    assertThat(eventLog).hasOpenQuestionPlayerContext()
   }
 
   @Test
-  fun testController_logTransitionEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
+  fun testController_logImportantEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
-    assertThat(eventLogStoreSize).isEqualTo(2)
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider)
+    assertThat(eventLogs.eventLogList).hasSize(2)
   }
 
   @Test
-  fun testController_logTransitionEvent_logClickEvent_withNoNetwork_checkOrderinCache() {
+  fun testController_logImportantEvent_logLowPriorityEvent_withNoNetwork_checkOrderinCache() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
         )
       )
     )
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -463,29 +390,21 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLogs = analyticsController.getEventLogStore().toLiveData()
-    eventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val eventLogsProvider = analyticsController.getEventLogStore()
 
-    val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
-    val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(eventLogsProvider)
+    val firstEventLog = eventLogs.getEventLog(0)
+    val secondEventLog = eventLogs.getEventLog(1)
 
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(firstEventLog.priority).isEqualTo(Priority.OPTIONAL)
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(secondEventLog.priority).isEqualTo(Priority.ESSENTIAL)
+    assertThat(firstEventLog).isOptionalPriority()
+    assertThat(secondEventLog).isEssentialPriority()
   }
 
   @Test
-  fun testController_logTransitionEvent_switchToNoNetwork_logClickEvent_checkManagement() {
-    analyticsController.logTransitionEvent(
+  fun testController_logImportantEvent_switchToNoNetwork_logLowPriorityEvent_checkManagement() {
+    analyticsController.logImportantEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -493,10 +412,9 @@ class AnalyticsControllerTest {
       )
     )
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       TEST_TIMESTAMP,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -504,28 +422,18 @@ class AnalyticsControllerTest {
       )
     )
 
-    val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()
-    cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val logsProvider = analyticsController.getEventLogStore()
 
     val uploadedEventLog = fakeEventLogger.getMostRecentEvent()
-    val cachedEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
+    val cachedEventLog = monitorFactory.waitForNextSuccessfulResult(logsProvider).getEventLog(0)
 
-    // ESSENTIAL priority confirms that the event logged is a transition event.
-    assertThat(uploadedEventLog.priority).isEqualTo(Priority.ESSENTIAL)
-    assertThat(uploadedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
-    assertThat(uploadedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(uploadedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(uploadedEventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(uploadedEventLog).isEssentialPriority()
+    assertThat(uploadedEventLog).hasOpenQuestionPlayerContext()
 
-    // OPTIONAL priority confirms that the event logged is a click event.
-    assertThat(cachedEventLog.priority).isEqualTo(Priority.OPTIONAL)
-    assertThat(cachedEventLog.context.activityContextCase).isEqualTo(QUESTION_CONTEXT)
-    assertThat(cachedEventLog.timestamp).isEqualTo(TEST_TIMESTAMP)
-    assertThat(cachedEventLog.actionName).isEqualTo(EventAction.EVENT_ACTION_UNSPECIFIED)
+    assertThat(cachedEventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
+    assertThat(cachedEventLog).isOptionalPriority()
+    assertThat(cachedEventLog).hasOpenQuestionPlayerContext()
   }
 
   @Test
@@ -533,27 +441,56 @@ class AnalyticsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logMultipleEvents()
 
-    val cachedEventLogs = analyticsController.getEventLogStore().toLiveData()
-    cachedEventLogs.observeForever(this.mockOppiaEventLogsObserver)
-    testCoroutineDispatchers.advanceUntilIdle()
-    verify(
-      this.mockOppiaEventLogsObserver,
-      atLeastOnce()
-    ).onChanged(oppiaEventLogsResultCaptor.capture())
+    val logsProvider = analyticsController.getEventLogStore()
 
-    val firstEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(0)
-    val secondEventLog = oppiaEventLogsResultCaptor.value.getOrThrow().getEventLog(1)
-    val eventLogStoreSize = oppiaEventLogsResultCaptor.value.getOrThrow().eventLogList.size
-    assertThat(eventLogStoreSize).isEqualTo(2)
-    // In this case, 3 ESSENTIAL and 1 OPTIONAL event was logged. So while pruning, none of the retained logs should have OPTIONAL priority.
-    assertThat(firstEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
-    assertThat(secondEventLog.priority).isNotEqualTo(Priority.OPTIONAL)
-    // If we analyse the implementation of logMultipleEvents(), we can see that record pruning will begin from the logging of the third record.
-    // At first, the second event log will be removed as it has OPTIONAL priority and the event logged at the third place will become the event record at the second place in the store.
-    // When the forth event gets logged then the pruning will be purely based on timestamp of the event as both event logs have ESSENTIAL priority.
-    // As the third event's timestamp was lesser than that of the first event, it will be pruned from the store and the forth event will become the second event in the store.
-    assertThat(firstEventLog.timestamp).isEqualTo(1556094120000)
-    assertThat(secondEventLog.timestamp).isEqualTo(1556094100000)
+    val eventLogs = monitorFactory.waitForNextSuccessfulResult(logsProvider)
+    val firstEventLog = eventLogs.getEventLog(0)
+    val secondEventLog = eventLogs.getEventLog(1)
+    assertThat(eventLogs.eventLogList).hasSize(2)
+    // In this case, 3 ESSENTIAL and 1 OPTIONAL event was logged. So while pruning, none of the
+    // retained logs should have OPTIONAL priority.
+    assertThat(firstEventLog).isEssentialPriority()
+    assertThat(secondEventLog).isEssentialPriority()
+    // If we analyse the implementation of logMultipleEvents(), we can see that record pruning will
+    // begin from the logging of the third record. At first, the second event log will be removed as
+    // it has OPTIONAL priority and the event logged at the third place will become the event record
+    // at the second place in the store. When the forth event gets logged then the pruning will be
+    // purely based on timestamp of the event as both event logs have ESSENTIAL priority. As the
+    // third event's timestamp was lesser than that of the first event, it will be pruned from the
+    // store and the forth event will become the second event in the store.
+    assertThat(firstEventLog).hasTimestampThat().isEqualTo(1556094120000)
+    assertThat(secondEventLog).hasTimestampThat().isEqualTo(1556094100000)
+  }
+
+  @Test
+  fun testController_logEvent_withoutNetwork_verifySyncStatusIsUnchanged() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    analyticsController.logImportantEvent(
+      1556094120000,
+      oppiaLogger.createOpenQuestionPlayerContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+    assertThat(fakeSyncStatusManager.getSyncStatuses()).containsExactly(NO_CONNECTIVITY)
+  }
+
+  @Test
+  fun testController_logEvent_verifySyncStatusChangesToRepresentLoggedEvent() {
+    analyticsController.logImportantEvent(
+      1556094120000,
+      oppiaLogger.createOpenQuestionPlayerContext(
+        TEST_QUESTION_ID,
+        listOf(
+          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
+        )
+      )
+    )
+
+    val syncStatuses = fakeSyncStatusManager.getSyncStatuses()
+    assertThat(syncStatuses).containsExactly(DATA_UPLOADING, DATA_UPLOADED)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -561,10 +498,9 @@ class AnalyticsControllerTest {
   }
 
   private fun logMultipleEvents() {
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094120000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -572,10 +508,9 @@ class AnalyticsControllerTest {
       )
     )
 
-    analyticsController.logClickEvent(
+    analyticsController.logLowPriorityEvent(
       1556094110000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -583,10 +518,9 @@ class AnalyticsControllerTest {
       )
     )
 
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556093100000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -594,10 +528,9 @@ class AnalyticsControllerTest {
       )
     )
 
-    analyticsController.logTransitionEvent(
+    analyticsController.logImportantEvent(
       1556094100000,
-      EventAction.EVENT_ACTION_UNSPECIFIED,
-      oppiaLogger.createQuestionContext(
+      oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
           TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
@@ -644,7 +577,9 @@ class AnalyticsControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class, SyncStatusTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
