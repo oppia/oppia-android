@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/component_color_faq_container_background_color">
+    android:background="@color/component_color_faq_activity_container_background_color">
 
     <LinearLayout
       android:layout_width="match_parent"
