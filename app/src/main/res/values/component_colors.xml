@@ -54,11 +54,11 @@
   <color name="component_color_developer_options_activity_sub_heading_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_developer_options_activity_view_divider_color">@color/color_palette_dark_background_color</color>
   <!-- View Events Logs Activity -->
-  <color name="component_color_view_events_logs_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_view_events_logs_activity_options_description_color">@color/color_palette_light_description_text_color</color>
-  <color name="component_color_view_events_logs_activity_menu_options_text_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_view_events_logs_activity_options_background_color">@color/color_palette_container_background_color</color>
-  <color name="component_color_view_events_logs_activity_view_divider_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_view_event_logs_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_view_event_logs_activity_options_description_color">@color/color_palette_light_description_text_color</color>
+  <color name="component_color_view_event_logs_activity_menu_options_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_view_event_logs_activity_options_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_view_event_logs_activity_view_divider_color">@color/color_palette_dark_background_color</color>
   <!-- Force Network Type Activity -->
   <color name="component_color_force_network_type_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_force_network_type_activity_menu_options_text_color">@color/color_palette_dark_text_color</color>
