@@ -28,6 +28,6 @@
       android:background="@color/component_color_third_party_dependency_list_activity_background_color"
       android:clipToPadding="false"
       android:nestedScrollingEnabled="false"
-      app:list="@{viewModel.thirdPartyDependencyItemList}"/>
+      app:list="@{viewModel.thirdPartyDependencyItemList}" />
   </androidx.core.widget.NestedScrollView>
 </layout>
