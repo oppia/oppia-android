@@ -78,7 +78,7 @@
           android:layout_gravity="center_vertical"
           android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
           android:padding="8dp"
-          android:tint="@color/color_palette_icon_background_color"
+          android:tint="@color/component_color_hints_and_solutions_drawable_tint_color"
           app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
           app:isRotationAnimationClockwise="@{isListExpanded}"
           app:rotationAnimationAngle="@{180f}" />

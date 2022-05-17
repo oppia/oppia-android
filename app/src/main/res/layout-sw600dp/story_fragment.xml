@@ -28,7 +28,7 @@
         android:id="@+id/story_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/color_palette_toolbar_color"
+        android:background="@color/component_color_story_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
