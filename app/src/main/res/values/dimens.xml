@@ -571,6 +571,12 @@
   <dimen name="topic_revision_fragment_padding_top">20dp</dimen>
   <dimen name="topic_revision_fragment_padding_end">20dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">144dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_start">8dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_top">12dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_end">8dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_bottom">12dp</dimen>
+  <dimen name="topic_revision_summary_view_subtopic_title_text_view_padding_start">8dp</dimen>
+  <dimen name="topic_revision_summary_view_subtopic_title_text_view_padding_end">8dp</dimen>
 
   <!-- Solution Summary -->
   <dimen name="solution_summary_margin_top_linear_layout_first">32dp</dimen>
