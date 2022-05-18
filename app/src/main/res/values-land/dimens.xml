@@ -300,13 +300,34 @@
   <dimen name="app_version_image_view_margin_start">36dp</dimen>
   <dimen name="app_version_text_view_margin_end">36dp</dimen>
 
-  <!-- Pin Password -->
-  <dimen name="pin_password_text_input_layout_width">244dp</dimen>
-  <item name="pin_password_constraintHorizontal_bias" format="float" type="integer">0.5</item>
-  <dimen name="pin_password_margin_start">72dp</dimen>
-  <dimen name="pin_password_margin_end">72dp</dimen>
-  <dimen name="pin_password_padding_top">48dp</dimen>
-  <dimen name="pin_password_min_width">496dp</dimen>
+  <!-- AdminAuthActivity -->
+  <dimen name="admin_auth_activity_layout_width">0dp</dimen>
+  <dimen name="admin_auth_activity_margin_start">0dp</dimen>
+  <dimen name="admin_auth_activity_margin_end">0dp</dimen>
+  <dimen name="admin_auth_activity_padding_top">32dp</dimen>
+  <dimen name="admin_auth_activity_padding_bottom">104dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_start">72dp</dimen>
+  <dimen name="admin_auth_activity_admin_pin_main_text_view_margin_end">72dp</dimen>
+  <dimen name="admin_auth_activity_input_width">304dp</dimen>
+
+  <!-- AdminPinActivity -->
+  <dimen name="admin_pin_activity_layout_width">@dimen/match_parent</dimen>
+  <dimen name="admin_pin_activity_margin_start">0dp</dimen>
+  <dimen name="admin_pin_activity_margin_end">0dp</dimen>
+  <dimen name="admin_pin_activity_padding_top">32dp</dimen>
+  <dimen name="admin_pin_activity_padding_bottom">104dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_start">72dp</dimen>
+  <dimen name="admin_pin_activity_admin_pin_main_text_view_margin_end">72dp</dimen>
+  <dimen name="admin_pin_activity_input_width">304dp</dimen>
+
+  <!-- PinPasswordActivity -->
+  <dimen name="pin_password_activity_layout_width">0dp</dimen>
+  <dimen name="pin_password_activity_margin_start">0dp</dimen>
+  <dimen name="pin_password_activity_margin_end">0dp</dimen>
+  <dimen name="pin_password_activity_padding_top">28dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_start">72dp</dimen>
+  <dimen name="pin_password_activity_hello_text_view_margin_end">72dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">304dp</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">304dp</dimen>
@@ -501,4 +522,7 @@
 
   <!-- ReadingTextSizeFragment -->
   <dimen name="reading_text_size_fragment_padding_bottom">96dp</dimen>
+
+  <!-- ProfileListFragment -->
+  <dimen name="profile_list_fragment_recycler_view_padding_bottom">108dp</dimen>
 </resources>
