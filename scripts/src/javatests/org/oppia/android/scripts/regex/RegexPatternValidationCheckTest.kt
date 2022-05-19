@@ -2086,7 +2086,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_doesNotReferenceColorFromColorPalette_fileContentIsNotCorrect() {
+  fun testFileContent_componentColors_includesNonPaletteColorReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
