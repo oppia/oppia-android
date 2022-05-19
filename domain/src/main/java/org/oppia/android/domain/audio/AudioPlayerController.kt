@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.CacheAssetsLocally
@@ -35,6 +36,7 @@ class AudioPlayerController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val exceptionsController: ExceptionsController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @CacheAssetsLocally private val cacheAssetsLocally: Boolean
 ) {
@@ -88,6 +90,7 @@ class AudioPlayerController @Inject constructor(
   private var isReleased = false
   private var duration = 0
   private var completed = false
+  private var currentContentId: String? = null
 
   private val SEEKBAR_UPDATE_FREQUENCY = TimeUnit.SECONDS.toMillis(1)
 
@@ -114,9 +117,10 @@ class AudioPlayerController @Inject constructor(
    * Changes audio source to specified.
    * Stops sending seek bar updates and put MediaPlayer in preparing state.
    */
-  fun changeDataSource(url: String) {
+  fun changeDataSource(url: String, contentId: String?) {
     audioLock.withLock {
       prepared = false
+      currentContentId = contentId
       stopUpdatingSeekBar()
       mediaPlayer.reset()
       prepareDataSource(url)
@@ -193,12 +197,21 @@ class AudioPlayerController @Inject constructor(
    * Puts MediaPlayer in started state and begins sending seek bar updates.
    * Controller must already have audio prepared.
    */
-  fun play() {
+  fun play(isPlayingFromAutoPlay: Boolean, reloadingMainContent: Boolean) {
     audioLock.withLock {
       check(prepared) { "Media Player not in a prepared state" }
       if (!mediaPlayer.isPlaying) {
         mediaPlayer.start()
         scheduleNextSeekBarUpdate()
+
+        // Log an auto play only if it's the one that initiates playing audio (since it more or less
+        // corresponds to manually clicking the 'play' button). Note this will not log any play
+        // events after the state completes (since there'll no longer be a state logger).
+        if (!isPlayingFromAutoPlay || !reloadingMainContent) {
+          val explorationLogger = learnerAnalyticsLogger.explorationAnalyticsLogger.value
+          val stateLogger = explorationLogger?.stateAnalyticsLogger?.value
+          stateLogger?.logPlayVoiceOver(currentContentId)
+        }
       }
     }
   }

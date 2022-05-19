@@ -11,15 +11,17 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsGeneralViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
+import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
@@ -29,7 +31,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  private val IntentFactoryShim: IntentFactoryShim
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -75,6 +77,10 @@ class AdministratorControlsViewModel @Inject constructor(
         loadProfileListListener
       )
     )
+    // TODO(#4345): Add tests to verify this behavior both for the study flag being on & off.
+    if (learnerStudyAnalytics.value) {
+      itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
+    }
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
         fragment,

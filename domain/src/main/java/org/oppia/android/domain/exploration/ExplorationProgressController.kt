@@ -5,16 +5,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.EVERYTHING_REVEALED
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.AnswerClassificationController
@@ -24,8 +31,11 @@ import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.SUBMIT
 import org.oppia.android.domain.exploration.ExplorationProgress.PlayStage.VIEWING_STATE
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.hintsandsolution.HintHandler
+import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -93,6 +103,9 @@ class ExplorationProgressController @Inject constructor(
   private val hintHandlerFactory: HintHandler.Factory,
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
+  private val loggingIdentifierController: LoggingIdentifierController,
+  private val profileManagementController: ProfileManagementController,
+  private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#179): Add support for parameters.
@@ -105,9 +118,9 @@ class ExplorationProgressController @Inject constructor(
   //  for getCurrentState).
   private lateinit var profileId: ProfileId
 
-  private var mostRecentSessionId: String? = null
+  private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
-    get() = mostRecentSessionId ?: DEFAULT_SESSION_ID
+    get() = mostRecentSessionId.value ?: DEFAULT_SESSION_ID
 
   private var mostRecentEphemeralStateFlow =
     createAsyncResultStateFlow<EphemeralState>(
@@ -129,11 +142,12 @@ class ExplorationProgressController @Inject constructor(
     storyId: String,
     explorationId: String,
     shouldSavePartialProgress: Boolean,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
+    isRestart: Boolean
   ): DataProvider<Any?> {
     val ephemeralStateFlow = createAsyncResultStateFlow<EphemeralState>()
     val sessionId = UUID.randomUUID().toString().also {
-      mostRecentSessionId = it
+      mostRecentSessionId.value = it
       mostRecentEphemeralStateFlow = ephemeralStateFlow
       mostRecentCommandQueue = createControllerCommandActor()
     }
@@ -146,6 +160,7 @@ class ExplorationProgressController @Inject constructor(
         explorationId,
         shouldSavePartialProgress,
         explorationCheckpoint,
+        isRestart,
         ephemeralStateFlow,
         sessionId,
         beginExplorationResultFlow
@@ -165,16 +180,27 @@ class ExplorationProgressController @Inject constructor(
    * [submitAnswer] with one additional caveat: this method does not actually need to be called when
    * a session is over. Calling it ensures all other [DataProvider]s reset to a correct
    * out-of-session state, but subsequent calls to [beginExplorationAsync] will reset the session.
+   *
+   * @param isCompletion whether this finish action indicates that the exploration was finished by
+   *     the user
    */
-  internal fun finishExplorationAsync(): DataProvider<Any?> {
+  internal fun finishExplorationAsync(isCompletion: Boolean): DataProvider<Any?> {
     val finishExplorationResultFlow = createAsyncResultStateFlow<Any?>()
-    val message = ControllerMessage.FinishExploration(activeSessionId, finishExplorationResultFlow)
+    val message =
+      ControllerMessage.FinishExploration(
+        isCompletion, activeSessionId, finishExplorationResultFlow
+      )
     sendCommandForOperation(message) {
       "Failed to schedule command for cleaning up after finishing the exploration."
     }
     return finishExplorationResultFlow.convertToSessionProvider(
       FINISH_EXPLORATION_RESULT_PROVIDER_ID
-    )
+    ).also {
+      // Reset state to ensure post-session events don't expect any particular state from the
+      // previous command queue.
+      mostRecentSessionId.value = null
+      mostRecentCommandQueue = null
+    }
   }
 
   /**
@@ -354,6 +380,7 @@ class ExplorationProgressController @Inject constructor(
 
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
+
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
     // the main thread or scheduling an extra coroutine.
     @Suppress("JoinDeclarationAndAssignment") // Warning is incorrect in this case.
@@ -366,11 +393,22 @@ class ExplorationProgressController @Inject constructor(
           @Suppress("UNUSED_VARIABLE") // A variable is used to create an exhaustive when statement.
           val unused = when (message) {
             is ControllerMessage.InitializeController -> {
+              // Synchronously fetch the learner & installation IDs (these may result in file I/O).
+              val learnerId = profileManagementController.fetchLearnerId(message.profileId)
+              val installationId = loggingIdentifierController.fetchInstallationId()
+
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
               controllerState =
                 ControllerState(
-                  ExplorationProgress(), message.sessionId, message.ephemeralStateFlow, commandQueue
+                  ExplorationProgress(),
+                  message.isRestart,
+                  message.sessionId,
+                  message.ephemeralStateFlow,
+                  commandQueue,
+                  installationId,
+                  learnerId,
+                  learnerAnalyticsLogger
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -387,7 +425,7 @@ class ExplorationProgressController @Inject constructor(
               try {
                 // Ensure finish is always executed even if the controller state isn't yet
                 // initialized.
-                controllerState.finishExplorationImpl(message.callbackFlow)
+                controllerState.finishExplorationImpl(message.callbackFlow, message.isCompletion)
               } finally {
                 // Ensure the actor ends since the session requires no further message processing.
                 break
@@ -404,6 +442,8 @@ class ExplorationProgressController @Inject constructor(
               controllerState.moveToPreviousStateImpl(message.callbackFlow)
             is ControllerMessage.MoveToNextState ->
               controllerState.moveToNextStateImpl(message.callbackFlow)
+            is ControllerMessage.LogUpdatedHelpIndex ->
+              controllerState.maybeLogUpdatedHelpIndex(message.helpIndex, activeSessionId)
             is ControllerMessage.ProcessSavedCheckpointResult -> {
               controllerState.processSaveCheckpointResult(
                 message.profileId,
@@ -479,7 +519,9 @@ class ExplorationProgressController @Inject constructor(
         this.explorationCheckpoint = explorationCheckpoint
       }
       hintHandler = hintHandlerFactory.create()
-      hintHandler.getCurrentHelpIndex().onEach {
+      hintHandler.getCurrentHelpIndex().onFirstAndEach {
+        commandQueue.send(ControllerMessage.LogUpdatedHelpIndex(it, sessionId))
+
         // Fire an event to save the latest progress state in a checkpoint to avoid cross-thread
         // synchronization being required (since the state of hints/solutions has changed).
         commandQueue.send(ControllerMessage.SaveCheckpoint(sessionId))
@@ -490,12 +532,19 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private suspend fun ControllerState?.finishExplorationImpl(
-    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>
+    finishExplorationResultFlow: MutableStateFlow<AsyncResult<Any?>>,
+    isCompletion: Boolean
   ) {
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
     }
+
+    // The only way to be sure of an exploration completion is if the user clicks the 'Return to
+    // Topic' button. All other cases (even if they reached the terminal state) will result in an
+    // exit action. This also matches the progress tracking for the lesson: it's only considered
+    // completed when 'Return to Topic' is clicked.
+    finishExplorationAndLog(isCompletion)
   }
 
   private suspend fun ControllerState.submitAnswerImpl(
@@ -531,11 +580,13 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.stateDeck.submitAnswer(
           userAnswer, answerOutcome.feedback, answerOutcome.labelledAsCorrectAnswer
         )
+        stateAnalyticsLogger?.logSubmitAnswer(answerOutcome.labelledAsCorrectAnswer)
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
         when {
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
+            endState()
             val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
             explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true)
             hintHandler.finishState(newState)
@@ -654,7 +705,20 @@ class ExplorationProgressController @Inject constructor(
         // Only mark checkpoint if current state is pending state. This ensures that checkpoints
         // will not be marked on any of the completed states.
         saveExplorationCheckpoint()
+
+        // Ensure the state has been started the first time it's reached.
+        maybeStartState(explorationProgress.stateDeck.getViewedStateCount())
       }
+    }
+  }
+
+  private fun ControllerState.maybeLogUpdatedHelpIndex(
+    helpIndex: HelpIndex,
+    activeSessionId: String
+  ) {
+    // Only log if the current session is active.
+    if (sessionId == activeSessionId) {
+      checkForChangedHintState(helpIndex)
     }
   }
 
@@ -735,19 +799,29 @@ class ExplorationProgressController @Inject constructor(
     // The exploration must be initialized first since other lazy fields depend on it being inited.
     progress.currentExploration = exploration
     progress.stateGraph.reset(exploration.statesMap)
+    initializeEventLogger(exploration)
 
     if (progress.explorationCheckpoint != ExplorationCheckpoint.getDefaultInstance()) {
       // Restore the StateDeck and the HintHandler if the exploration is being resumed.
-      progress.resumeStateDeckForSavedState(exploration)
+      progress.resumeStateDeckForSavedState()
       hintHandler.resumeHintsForSavedState(
         progress.explorationCheckpoint.pendingUserAnswersCount,
         progress.explorationCheckpoint.helpIndex,
         progress.stateDeck.getCurrentState()
       )
+      explorationAnalyticsLogger.logResumeExploration()
+      startState(logStartCard = false)
     } else {
       // If the exploration is not being resumed, reset the StateDeck and the HintHandler.
       progress.stateDeck.resetDeck(progress.stateGraph.getState(exploration.initStateName))
-      hintHandler.startWatchingForHintsInNewState(progress.stateDeck.getCurrentState())
+
+      if (isRestart) {
+        explorationAnalyticsLogger.logStartExplorationOver()
+      }
+
+      val state = progress.stateDeck.getCurrentState()
+      hintHandler.startWatchingForHintsInNewState(state)
+      startState(logStartCard = true)
     }
 
     // Advance the stage, but do not notify observers since the current state can be reported
@@ -953,15 +1027,121 @@ class ExplorationProgressController @Inject constructor(
    */
   private class ControllerState(
     val explorationProgress: ExplorationProgress,
+    val isRestart: Boolean,
     val sessionId: String,
     val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
-    val commandQueue: SendChannel<ControllerMessage<*>>
+    val commandQueue: SendChannel<ControllerMessage<*>>,
+    private val installationId: String?,
+    private val learnerId: String?,
+    private val learnerAnalyticsLogger: LearnerAnalyticsLogger
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
      * controller state.
      */
     lateinit var hintHandler: HintHandler
+
+    private var helpIndex = HelpIndex.getDefaultInstance()
+    private var availableCardCount: Int = -1
+
+    /**
+     * The [LearnerAnalyticsLogger.ExplorationAnalyticsLogger] to be used for logging
+     * exploration-specific events.
+     */
+    lateinit var explorationAnalyticsLogger: LearnerAnalyticsLogger.ExplorationAnalyticsLogger
+
+    /**
+     * The [LearnerAnalyticsLogger.StateAnalyticsLogger] to be used for logging state-specific
+     * events.
+     */
+    val stateAnalyticsLogger: LearnerAnalyticsLogger.StateAnalyticsLogger?
+      get() = explorationAnalyticsLogger.stateAnalyticsLogger.value
+
+    /**
+     * Initializes this state for event logging for the given [Exploration].
+     *
+     * This allows [startState] to be used.
+     */
+    fun initializeEventLogger(exploration: Exploration) {
+      explorationAnalyticsLogger = learnerAnalyticsLogger.beginExploration(
+        installationId,
+        learnerId,
+        exploration,
+        explorationProgress.currentTopicId,
+        explorationProgress.currentStoryId
+      )
+      availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
+    }
+
+    /**
+     * Indicates that a new state has started and to prepare for state-based logging, and logs the
+     * new card change.
+     */
+    fun startState(logStartCard: Boolean = true) {
+      explorationAnalyticsLogger.startCard(explorationProgress.stateDeck.getCurrentState()).also {
+        if (logStartCard) {
+          it.logStartCard()
+        }
+
+        // Force the card count to update.
+        availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
+      }
+    }
+
+    /**
+     * Indicates that a new state has started only if forward progress in the exploration has been
+     * made (i.e. that [availableCardCount] is larger than what was previously known).
+     */
+    fun maybeStartState(availableCardCount: Int) {
+      // Only start the state if it hasn't already been started.
+      if (this.availableCardCount < availableCardCount) {
+        startState()
+        this.availableCardCount = availableCardCount
+      }
+    }
+
+    /** Ends state-based logging for the current state and logs that the card has ended. */
+    fun endState() {
+      stateAnalyticsLogger?.logEndCard()
+      explorationAnalyticsLogger.endCard()
+    }
+
+    /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
+    fun checkForChangedHintState(newHelpIndex: HelpIndex) {
+      if (helpIndex != newHelpIndex) {
+        // If the index changed to the new HelpIndex, that implies that whatever is observed in the
+        // new HelpIndex indicates its previous state and therefore what changed.
+        when (newHelpIndex.indexTypeCase) {
+          NEXT_AVAILABLE_HINT_INDEX ->
+            stateAnalyticsLogger?.logHintOffered(newHelpIndex.nextAvailableHintIndex)
+          LATEST_REVEALED_HINT_INDEX ->
+            stateAnalyticsLogger?.logViewHint(newHelpIndex.latestRevealedHintIndex)
+          SHOW_SOLUTION -> stateAnalyticsLogger?.logSolutionOffered()
+          EVERYTHING_REVEALED -> when (helpIndex.indexTypeCase) {
+            SHOW_SOLUTION -> stateAnalyticsLogger?.logViewSolution()
+            NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
+              stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
+            // Nothing to do in these cases.
+            LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
+          }
+          INDEXTYPE_NOT_SET, null -> {} // Nothing to do here.
+        }
+        helpIndex = newHelpIndex
+      }
+    }
+
+    /**
+     * Finishes the current exploration and logs its ending, also disabling any exploration-based
+     * logging capabilities.
+     */
+    fun finishExplorationAndLog(isCompletion: Boolean) {
+      if (isCompletion) {
+        explorationAnalyticsLogger.logFinishExploration()
+      } else {
+        explorationAnalyticsLogger.logExitExploration()
+      }
+      learnerAnalyticsLogger.endExploration()
+    }
   }
 
   /**
@@ -993,6 +1173,7 @@ class ExplorationProgressController @Inject constructor(
       val explorationId: String,
       val shouldSavePartialProgress: Boolean,
       val explorationCheckpoint: ExplorationCheckpoint,
+      val isRestart: Boolean,
       val ephemeralStateFlow: MutableStateFlow<AsyncResult<EphemeralState>>,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
@@ -1000,6 +1181,7 @@ class ExplorationProgressController @Inject constructor(
 
     /** [ControllerMessage] for ending the current play session. */
     data class FinishExploration(
+      val isCompletion: Boolean,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
@@ -1054,6 +1236,19 @@ class ExplorationProgressController @Inject constructor(
     ) : ControllerMessage<Any?>()
 
     /**
+     * [ControllerMessage] to log cases when [HelpIndex] has updated for the current session.
+     *
+     * Specific measures are taken to ensure that the handler for this message does not log the
+     * change if the current active session has changed (since that's generally indicative of an
+     * error--hints can't continue to change after the session has ended).
+     */
+    data class LogUpdatedHelpIndex(
+      val helpIndex: HelpIndex,
+      override val sessionId: String,
+      override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
+    ) : ControllerMessage<Any?>()
+
+    /**
      * [ControllerMessage] to ensure a successfully saved checkpoint is reflected in other parts of
      * the app (e.g. that an exploration is considered 'in-progress' in such circumstances).
      */
@@ -1079,5 +1274,17 @@ class ExplorationProgressController @Inject constructor(
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>? = null
     ) : ControllerMessage<Any?>()
+  }
+
+  private companion object {
+    /**
+     * Returns a collectable [Flow] that notifies [collector] for this [StateFlow]s initial state,
+     * and every change after.
+     *
+     * It should guarantee that [collector] receives all values ever present in this flow.
+     */
+    private fun <T> StateFlow<T>.onFirstAndEach(
+      collector: suspend (T) -> Unit
+    ): Flow<T> = onStart { collector(value) }.onEach(collector)
   }
 }

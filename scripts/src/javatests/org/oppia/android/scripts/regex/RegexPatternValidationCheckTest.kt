@@ -131,6 +131,8 @@ class RegexPatternValidationCheckTest {
       " PR description. Note that parameterized tests should only be used in special" +
       " circumstances where a single behavior can be tested across multiple inputs, or for" +
       " especially large test suites that can be trivially reduced."
+  private val doNotUseClipboardManager =
+    "Don't use Android's ClipboardManager directly. Instead, use ClipboardController."
   private val doesNotHaveColorSuffixOrSnakeCasing =
     "All color declarations in component_color.xml and color_palette.xml should end with _color" +
       " suffix following snake_case naming convention."
@@ -1680,6 +1682,27 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $doNotUseProtoLibrary
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_clipboardManagerImport_fileContentIsNotCorrect() {
+    val prohibitedContent = "import android.content.ClipboardManager"
+    tempFolder.newFolder("testfiles", "domain", "src", "main")
+    val stringFilePath = "domain/src/main/SomeController.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doNotUseClipboardManager
         $wikiReferenceNote
         """.trimIndent()
       )
