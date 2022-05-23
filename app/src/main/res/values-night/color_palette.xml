@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="color_palette_primary_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_primary_toolbar_color">@color/color_def_forest_green</color>
   <color name="color_palette_primary_dark_color">@color/color_def_oppia_bangladesh_green</color>
   <color name="color_palette_accent_color">@color/color_def_oppia_metallic_blue</color>
   <color name="color_palette_primary_text_color">@color/color_def_oppia_silver</color>
+  <color name="color_palette_secondary_text_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_highlighted_text_color">@color/color_def_white</color>
   <color name="color_palette_background_color">@color/color_def_oppia_light_black</color>
+  <color name="color_palette_primary_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_dark_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_description_text_color">@color/color_def_oppia_silver</color>
+  <color name="color_palette_primary_description_text_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_text_input_background_color">@color/color_def_oppia_dark_grey</color>
   <color name="color_palette_dark_text_color">@color/color_def_white</color>
   <color name="color_palette_error_color">@color/color_def_oppia_pink</color>

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="color_palette_primary_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_primary_toolbar_color">@color/color_def_oppia_green</color>
   <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
   <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_secondary_text_color">@color/color_def_light_grey_2</color>
   <color name="color_palette_highlighted_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
+  <color name="color_palette_primary_background_color">@color/color_def_platinum</color>
   <color name="color_palette_dark_background_color">@color/color_def_mid_grey_30</color>
   <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
+  <color name="color_palette_primary_description_text_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_text_input_background_color">@color/color_def_white</color>
   <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
   <color name="color_palette_error_color">@color/color_def_oppia_red</color>

@@ -38,6 +38,9 @@
   <color name="color_def_green_shade_80">#CC44A85A</color>
   <color name="color_def_light_green">#D9F3E7</color>
   <color name="color_def_highlight_blue">#A5D3EC</color>
+  <color name="color_def_forest_green">#035D63</color>
+  <color name="color_def_platinum">#E5E5E5</color>
+  <color name="color_def_light_grey_2">#666666</color>
   <color name="color_def_oppia_silver">#C4C4C4</color>
   <color name="color_def_oppia_turquoise">#3bd1c4</color>
   <color name="color_def_oppia_bangladesh_green">#03635B</color>
