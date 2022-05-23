@@ -52,7 +52,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       viewModel = pinViewModel
     }
 
-    binding.pinPassordToolbar.setNavigationOnClickListener {
+    binding.pinPasswordToolbar.setNavigationOnClickListener {
       (activity as PinPasswordActivity).finish()
     }
 
