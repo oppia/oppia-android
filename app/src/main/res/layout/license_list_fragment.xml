@@ -25,7 +25,7 @@
       android:id="@+id/license_list_fragment_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/component_color_license_list_activity_items_background_color"
+      android:background="@color/component_color_license_list_activity_license_name_background_color"
       android:clipToPadding="false"
       android:nestedScrollingEnabled="false"
       app:list="@{viewModel.licenseItemList}" />

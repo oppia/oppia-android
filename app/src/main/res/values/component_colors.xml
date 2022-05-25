@@ -40,17 +40,15 @@
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Third Party Dependency List Activity -->
   <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_third_party_dependency_list_activity_options_background_color">@color/color_palette_container_background_color</color>
-  <color name="component_color_third_party_dependency_list_activity_items_background_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_third_party_dependency_list_activity_version_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_third_party_dependency_list_activity_dependency_name_text_view_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_third_party_dependency_list_activity_dependency_version_text_color">@color/color_palette_primary_text_color</color>
   <!-- License List Activity -->
   <color name="component_color_license_list_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_license_list_activity_items_background_color">@color/color_palette_container_background_color</color>
-  <!-- License List Text Viewer Activity -->
-  <color name="component_color_license_list_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_license_list_text_viewer_items_activity_background_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_license_list_text_viewer_activity_options_background_color">@color/color_palette_container_background_color</color>
-  <color name="component_color_license_list_text_viewer_activity_text_color">@color/color_palette_description_text_color</color>
+  <color name="component_color_license_list_activity_license_name_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_license_list_activity_license_name_text_view_color">@color/color_palette_dark_text_color</color>
+  <!-- License Text Viewer Activity -->
+  <color name="component_color_license_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_license_text_viewer_activity_text_color">@color/color_palette_description_text_color</color>
   <!-- Profile and Device ID Activity -->
   <color name="component_color_profile_and_device_id_activity_primary_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>

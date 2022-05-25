@@ -33,8 +33,8 @@
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
-        android:textColor="@color/component_color_third_party_dependency_list_activity_items_background_color"
-        android:text="@{viewModel.dependencyName}"/>
+        android:textColor="@color/component_color_third_party_dependency_list_activity_dependency_name_text_view_color"
+        android:text="@{viewModel.dependencyName}" />
 
       <TextView
         android:id="@+id/third_party_dependency_version_text_view"
@@ -46,8 +46,8 @@
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.dependencyVersion}"
-        android:textColor="@color/component_color_third_party_dependency_list_activity_version_text_color"
-        android:textSize="12sp"/>
+        android:textColor="@color/component_color_third_party_dependency_list_activity_dependency_version_text_color"
+        android:textSize="12sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
