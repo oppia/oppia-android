@@ -79,6 +79,7 @@
           android:layout_height="wrap_content"
           android:minHeight="140dp"
           android:padding="8dp"
+          android:background="@color/component_color_story_activity_container_background_color"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +96,7 @@
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:text="@{viewModel.computeChapterTitleText()}"
-            android:textColor="@color/oppia_primary_text"
+            android:textColor="@color/component_color_story_activity_text_color"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,6 +110,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:text="@{htmlContent}"
+            android:textColor="@color/component_color_story_activity_text_color"
             android:textColorLink="@color/oppia_primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -140,7 +142,7 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="28dp"
       android:layout_marginBottom="16dp"
-      android:background="@color/chapter_card_shadow"
+      android:background="@color/component_color_story_activity_container_background_color"
       android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}" />
   </FrameLayout>
 </layout>
