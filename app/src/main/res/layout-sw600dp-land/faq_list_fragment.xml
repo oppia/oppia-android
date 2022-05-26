@@ -12,14 +12,14 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_faq_activity_background_color">
+    android:background="@color/component_color_faq_list_activity_background_color">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/faq_fragment_recycler_view"
       android:layout_width="560dp"
       android:layout_height="match_parent"
       android:layout_gravity="center_horizontal"
-      android:background="@color/component_color_faq_activity_container_background_color"
+      android:background="@color/component_color_faq_list_activity_container_background_color"
       android:clipToPadding="false"
       android:overScrollMode="never"
       android:paddingBottom="@dimen/faq_list_padding_bottom"

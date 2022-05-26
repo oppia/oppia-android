@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@color/component_color_faq_activity_toolbar_color"
+        android:background="@color/component_color_faq_list_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
