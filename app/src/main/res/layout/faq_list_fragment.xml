@@ -16,10 +16,7 @@
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="@dimen/faq_list_scroll_padding_bottom"
-    android:scrollbars="none"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:scrollbars="none">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/faq_fragment_recycler_view"

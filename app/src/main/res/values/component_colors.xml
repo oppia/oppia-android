@@ -61,4 +61,26 @@
   <color name="component_color_option_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_option_activity_options_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_option_activity_options_background_color_cyan">@color/color_palette_highlighted_background_color</color>
+  <!-- Hints And Solution Fragment -->
+  <color name="component_color_hints_and_solutions_fragment_background_color">@color/color_palette_secondary_background_color</color>
+  <color name="component_color_hints_and_solutions_fragment_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_hints_and_solutions_fragment_description_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_hints_and_solutions_divider_color">@color/color_palette_divider_color</color>
+  <color name="component_color_hints_and_solutions_drawable_tint_color">@color/color_palette_icon_background_color</color>
+  <!-- Story Activity -->
+  <color name="component_color_story_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_story_activity_story_header_view_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_story_activity_container_background_color">@color/color_palette_primary_container_background_color</color>
+  <color name="component_color_story_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_story_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <!-- Resume Lesson Activity -->
+  <color name="component_color_resume_lesson_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_resume_lesson_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_resume_lesson_activity_description_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_resume_lesson_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_continue_button_border_color">@color/color_palette_button_border_color</color>
+  <color name="component_color_continue_button_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_start_over_button_text_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_start_over_button_stroke_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_start_over_button_drawable_tint_color">@color/color_palette_secondary_toolbar_color</color>
 </resources>
