@@ -1,8 +1,11 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
-    name = "cutting_new_release",
-    srcs = ["//scripts/src/java/org/oppia/android/scripts/release/CuttingNewRelease.kts"],
+    name = "cutting_new_release_lib",
+    srcs = ["CuttingNewReleaseBranch.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = ":cutting_new_release_library",
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/common:git_client",
+    ],
 )

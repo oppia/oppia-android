@@ -86,6 +86,14 @@ kt_jvm_binary(
 )
 
 kt_jvm_binary(
+    name = "create_new_release",
+    main_class = "org.oppia.android.scripts.release.CuttingNewReleaseBranchKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/release:cutting_new_release_lib",
+    ],
+)
+
+kt_jvm_binary(
     name = "xml_syntax_check",
     testonly = True,
     main_class = "org.oppia.android.scripts.xml.XmlSyntaxCheckKt",
