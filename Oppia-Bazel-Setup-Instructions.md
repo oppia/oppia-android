@@ -11,10 +11,15 @@ Instructions for setting up Bazel on Unix-based machines:
 
 1. Install Bazel from [here](https://docs.bazel.build/versions/master/install.html). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 4.0.0 and won't build on other versions).
 
-1. Oppia Android also requires OpenJDK 8. The Bazel installation instructions above include sections on installing OpenJDK on different platforms. For example, if you're using Ubuntu or another Debian-based system, you can run the following to install OpenJDK 8:
+1. Oppia Android also requires OpenJDK 8. The Bazel installation instructions above include [sections on installing OpenJDK](https://docs.bazel.build/versions/main/tutorial/java.html#install-the-jdk) on different platforms. 
+
+For example, if you're using Ubuntu or another Debian-based system, you can run the following to install OpenJDK 8:
      ```sh
      sudo apt install openjdk-8-jdk
      ```
+
+For MacOS M1, follow the instructions [here](https://installvirtual.com/install-openjdk-8-on-mac-using-brew-adoptopenjdk/). Note that, this requires installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html).
+
      You can confirm that this is set up using the command `java -version`, which should result in three lines being printed out with the first one showing "openjdk version "1.8.0_292".
 
 3. Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. To do this, find the path to the installed SDK using Android Studio’s SDK Manager (install SDK 28). Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:<br>
