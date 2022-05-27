@@ -42,7 +42,6 @@
   <color name="audio_component_background">@color/color_def_oppia_dark_blue</color>
   <!-- PROFILE COMPONENT -->
   <color name="avatar_border">#707070</color>
-  <color name="hints_and_solution_background">#E4F2F1</color>
   <color name="profile_chooser_background">#212121</color>
   <color name="profile_chooser_grey_text">#999999</color>
   <color name="profile_edit_background">#E5E5E5</color>
