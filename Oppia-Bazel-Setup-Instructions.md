@@ -17,6 +17,7 @@ Instructions for setting up Bazel on Unix-based machines:
      ```sh
      sudo apt install openjdk-8-jdk
      ``
+
    - For MacOS M1, follow the instructions [here](https://installvirtual.com/install-openjdk-8-on-mac-using-brew-adoptopenjdk/). Note that, this requires installation of brew as a pre-requisite, which can be done by following the instructions [here](https://mac.install.guide/homebrew/index.html).
    - You can confirm that this is set up using the command `java -version`, which should result in three lines being printed out with the first one showing "openjdk version "1.8.0_292".
 
