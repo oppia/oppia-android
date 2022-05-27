@@ -24,6 +24,7 @@
       android:orientation="vertical"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
+
       <TextView
         android:id="@+id/third_party_dependency_name_text_view"
         style="@style/Subtitle1ViewStart"
