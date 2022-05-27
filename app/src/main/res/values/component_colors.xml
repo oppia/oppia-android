@@ -52,4 +52,9 @@
   <color name="component_color_app_version_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_app_version_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_app_version_activity_description_text_color">@color/color_palette_secondary_text_color</color>
+  <!-- Profile Edit Activity -->
+  <color name="component_color_profile_edit_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_profile_edit_activity_profile_view_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_profile_edit_activity_profile_name_text_viewer_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_profile_edit_activity_profile_rename_background_color">@color/color_palette_container_background_color</color>
 </resources>
