@@ -502,4 +502,6 @@
   <dimen name="topic_fragment_tab_layout_margin_start">64dp</dimen>
   <dimen name="topic_fragment_tab_layout_margin_end">64dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <dimen name="topic_name_text_view_size">24sp</dimen>
 </resources>
