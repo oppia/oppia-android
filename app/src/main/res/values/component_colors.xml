@@ -14,6 +14,8 @@
   <color name="component_color_shared_input_interaction_edit_text_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_layout_background_color">@color/color_palette_text_input_background_color</color>
   <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
+  <color name="component_color_general_item_background_solid_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_general_item_background_stroke_color">@color/color_palette_dark_background_color</color>
   <!-- Admin Auth Activity -->
   <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
   <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
@@ -36,6 +38,21 @@
   <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
+  <!-- Help Activity -->
+  <color name="component_color_help_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_help_activity_container_color">@color/color_palette_container_background_color</color>
+  <!-- FAQ List Activity -->
+  <color name="component_color_faq_list_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_faq_list_activity_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_faq_list_activity_container_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_faq_list_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_faq_list_activity_divider_color">@color/color_palette_divider_color</color>
+  <!-- FAQ Single Activity -->
+  <color name="component_color_faq_single_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_faq_single_activity_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_faq_single_activity_container_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_faq_single_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_faq_single_activity_divider_color">@color/color_palette_divider_color</color>
   <!-- Profile and Device ID Activity -->
   <color name="component_color_profile_and_device_id_activity_primary_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>
@@ -46,6 +63,39 @@
   <color name="component_color_option_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_option_activity_options_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_option_activity_options_background_color_cyan">@color/color_palette_highlighted_background_color</color>
+  <!-- Hints And Solution Fragment -->
+  <color name="component_color_hints_and_solutions_fragment_background_color">@color/color_palette_secondary_background_color</color>
+  <color name="component_color_hints_and_solutions_fragment_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_hints_and_solutions_fragment_description_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_hints_and_solutions_divider_color">@color/color_palette_divider_color</color>
+  <color name="component_color_hints_and_solutions_drawable_tint_color">@color/color_palette_icon_background_color</color>
+  <!-- Story Activity -->
+  <color name="component_color_story_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_story_activity_story_header_view_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_story_activity_container_background_color">@color/color_palette_primary_container_background_color</color>
+  <color name="component_color_story_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_story_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <!-- Resume Lesson Activity -->
+  <color name="component_color_resume_lesson_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_resume_lesson_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_resume_lesson_activity_description_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_resume_lesson_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_continue_button_border_color">@color/color_palette_button_border_color</color>
+  <color name="component_color_continue_button_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_start_over_button_text_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_start_over_button_stroke_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_start_over_button_drawable_tint_color">@color/color_palette_secondary_toolbar_color</color>
+  <!-- Third Party Dependency List Activity -->
+  <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_third_party_dependency_list_activity_dependency_name_text_view_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_third_party_dependency_list_activity_dependency_version_text_color">@color/color_palette_primary_text_color</color>
+  <!-- License List Activity -->
+  <color name="component_color_license_list_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_license_list_activity_license_name_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_license_list_activity_license_name_text_view_color">@color/color_palette_dark_text_color</color>
+  <!-- License Text Viewer Activity -->
+  <color name="component_color_license_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_license_text_viewer_activity_text_color">@color/color_palette_description_text_color</color>
   <!-- Audio Fragment-->
   <color name="component_color_audio_fragment_background_color">@color/color_palette_accent_background_color</color>
   <color name="component_color_audio_fragment_icon_background_color">@color/color_palette_icon_background_color</color>

@@ -391,11 +391,25 @@
   <dimen name="ongoing_topic_list_fragment_padding_end">96dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_bottom">112dp</dimen>
 
+  <!-- Ongoing Topic Item -->
+  <dimen name="ongoing_topic_item_container_margin_start">24dp</dimen>
+  <dimen name="ongoing_topic_item_container_margin_top">36dp</dimen>
+  <dimen name="ongoing_topic_item_container_margin_end">24dp</dimen>
+  <dimen name="ongoing_topic_item_container_margin_bottom">0dp</dimen>
+  <dimen name="ongoing_topic_item_topic_name_text_view_margin_start">8dp</dimen>
+  <dimen name="ongoing_topic_item_topic_name_text_view_margin_end">8dp</dimen>
+
   <!-- TopicRevisionFragment -->
   <dimen name="topic_revision_fragment_padding_start">96dp</dimen>
   <dimen name="topic_revision_fragment_padding_top">8dp</dimen>
   <dimen name="topic_revision_fragment_padding_end">96dp</dimen>
   <dimen name="topic_revision_fragment_padding_bottom">112dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_start">24dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_top">24dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_end">24dp</dimen>
+  <dimen name="topic_revision_summary_view_container_margin_bottom">0dp</dimen>
+  <dimen name="topic_revision_summary_view_subtopic_title_text_view_padding_start">8dp</dimen>
+  <dimen name="topic_revision_summary_view_subtopic_title_text_view_padding_end">8dp</dimen>
 
   <!-- Solution Summary -->
   <dimen name="solution_summary_margin_top_linear_layout_first">0dp</dimen>
@@ -483,4 +497,9 @@
   <!-- OptionsStoryTextSize -->
   <dimen name="option_story_text_size_padding_start">16dp</dimen>
   <dimen name="option_story_text_size_padding_end">16dp</dimen>
+
+  <!-- TopicFragment -->
+  <dimen name="topic_fragment_tab_layout_margin_start">64dp</dimen>
+  <dimen name="topic_fragment_tab_layout_margin_end">64dp</dimen>
+  <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
 </resources>

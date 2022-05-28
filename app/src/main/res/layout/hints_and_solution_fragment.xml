@@ -39,7 +39,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/hints_and_solution_background"
+      android:background="@color/component_color_hints_and_solutions_fragment_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
