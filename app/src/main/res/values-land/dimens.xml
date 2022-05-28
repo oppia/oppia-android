@@ -539,5 +539,7 @@
 
   <!-- ProfileListFragment -->
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">108dp</dimen>
-  <dimen name="topic_name_text_view_size">24sp</dimen>
+
+  <!-- TopicInfoFragment -->
+  <dimen name="topic_info_fragment_topic_name_size">24sp</dimen>
 </resources>
