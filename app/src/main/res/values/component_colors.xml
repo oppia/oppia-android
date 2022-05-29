@@ -68,4 +68,14 @@
   <color name="component_color_start_over_button_text_color">@color/color_palette_secondary_toolbar_color</color>
   <color name="component_color_start_over_button_stroke_color">@color/color_palette_secondary_toolbar_color</color>
   <color name="component_color_start_over_button_drawable_tint_color">@color/color_palette_secondary_toolbar_color</color>
+  <!-- Exploration Activity -->
+  <color name="component_color_exploration_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_exploration_activity_background_color">@color/color_palette_exploration_background</color>
+  <color name="component_color_exploration_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_exploration_activity_content_background_stroke_color">@color/color_palette_content_background_stroke_color</color>
+  <color name="component_color_exploration_activity_content_background_solid_color">@color/color_palette_content_background_solid_color</color>
+  <!-- Question Player Activity -->
+  <color name="component_color_question_player_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_question_player_activity_background_color">@color/color_palette_exploration_background</color>
+  <color name="component_color_question_player_activity_text_color">@color/color_palette_highlighted_text_color</color>
 </resources>
