@@ -118,5 +118,9 @@
   <color name="component_color_drawer_fragment_text_color">@color/color_palette_menu_text_color</color>
   <color name="component_color_drawer_fragment_developer_options_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_drawer_fragment_admin_controls_text_color">@color/color_palette_dark_text_color</color>
-
+  <!-- Home Activity -->
+  <color name="component_color_home_activity_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_home_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_home_activity_underline_color">@color/color_palette_underline_view_color</color>
+  <color name="component_color_home_activity_container_color">@color/color_palette_secondary_container_background_color</color>
 </resources>

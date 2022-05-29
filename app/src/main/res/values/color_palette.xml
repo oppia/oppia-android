@@ -30,5 +30,7 @@
   <color name="color_palette_secondary_background_color_2">@color/color_def_oppia_light_green</color>
   <color name="color_palette_concept_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_brown_dark</color>
+  <color name="color_palette_underline_view_color">@color/color_def_oppia_light_brown</color>
   <color name="color_palette_menu_text_color">@color/color_def_black</color>
+  <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
 </resources>
