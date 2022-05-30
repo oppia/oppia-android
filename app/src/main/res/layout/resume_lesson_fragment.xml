@@ -14,7 +14,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white"
+    android:background="@color/component_color_resume_lesson_activity_background_color"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -47,7 +47,7 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.chapterSummary.name}"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_resume_lesson_activity_text_color"
         android:textDirection="locale"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -64,7 +64,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:ellipsize="end"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_resume_lesson_activity_description_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_title_text_view" />

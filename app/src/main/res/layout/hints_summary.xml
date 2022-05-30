@@ -37,7 +37,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -84,6 +84,7 @@
           android:layout_gravity="center_vertical"
           android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
           android:padding="8dp"
+          android:tint="@color/component_color_hints_and_solutions_drawable_tint_color"
           app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
           app:isRotationAnimationClockwise="@{isListExpanded}"
           app:rotationAnimationAngle="@{180f}" />
@@ -107,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
         android:textSize="16sp" />
     </LinearLayout>
   </LinearLayout>
