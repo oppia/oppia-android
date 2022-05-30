@@ -56,5 +56,10 @@
   <color name="component_color_profile_edit_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_profile_edit_activity_profile_view_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_profile_edit_activity_profile_name_text_viewer_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_profile_edit_activity_profile_rename_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_profile_edit_activity_profile_rename_button_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_profile_edit_activity_profile_rename_button_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_profile_edit_activity_profile_reset_pin_button_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_profile_edit_activity_profile_reset_pin_button_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_profile_edit_activity_profile_edit_allow_download_container">@color/color_palette_container_background_color</color>
+  <color name="component_color_profile_edit_activity_profile_edit_allow_download_heading_text_color">@color/color_palette_highlighted_text_color</color>
 </resources>
