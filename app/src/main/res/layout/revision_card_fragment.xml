@@ -12,7 +12,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_revision_card_activity_background_color"
+    android:background="@color/color_def_oppia_light_green"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -25,8 +25,6 @@
       <TextView
         android:id="@+id/revision_card_explanation_text"
         style="@style/Body"
-        android:textColor="@color/component_color_revision_card_activity_text_color"
-        android:textColorHighlight="@color/component_color_revision_card_activity_highlighted_text_color"
         android:layout_marginStart="@dimen/revision_card_fragment_layout_margin_start"
         android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top"
         android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end" />

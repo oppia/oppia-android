@@ -23,7 +23,7 @@
       android:layout_marginBottom="@dimen/all_topics_text_margin_bottom"
       android:fontFamily="sans-serif-medium"
       android:text="@string/all_topics"
-      android:textColor="@color/component_color_home_activity_text_color"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="18sp" />
   </FrameLayout>
 </layout>

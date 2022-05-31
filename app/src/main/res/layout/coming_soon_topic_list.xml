@@ -28,7 +28,7 @@
       android:gravity="center|start"
       android:minHeight="48dp"
       android:text="@string/coming_soon"
-      android:textColor="@color/component_color_home_activity_text_color"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="18sp"
       android:paddingStart="@dimen/coming_soon_text_padding_start"
       android:paddingEnd="@dimen/coming_soon_text_padding_end"
