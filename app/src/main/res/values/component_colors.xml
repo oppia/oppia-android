@@ -2,6 +2,10 @@
 <resources>
   <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
+  <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
@@ -87,14 +91,17 @@
   <color name="component_color_start_over_button_drawable_tint_color">@color/color_palette_secondary_toolbar_color</color>
   <!-- Exploration Activity -->
   <color name="component_color_exploration_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
-  <color name="component_color_exploration_activity_background_color">@color/color_palette_exploration_background</color>
+  <color name="component_color_exploration_activity_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_exploration_activity_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_exploration_activity_content_background_stroke_color">@color/color_palette_content_background_stroke_color</color>
   <color name="component_color_exploration_activity_content_background_solid_color">@color/color_palette_content_background_solid_color</color>
   <!-- Question Player Activity -->
   <color name="component_color_question_player_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
-  <color name="component_color_question_player_activity_background_color">@color/color_palette_exploration_background</color>
+  <color name="component_color_question_player_activity_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_question_player_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <!-- Revision Card Activity -->
+  <color name="component_color_revision_card_activity_background_color">@color/color_palette_revision_card_background_color</color>
+  <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
   <!-- Third Party Dependency List Activity -->
   <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_third_party_dependency_list_activity_dependency_name_text_view_color">@color/color_palette_dark_text_color</color>
