@@ -13,6 +13,7 @@ load(
     "generate_test_file_assets_list_from_text_protos",
     "generate_todo_assets_list_from_text_protos",
 )
+load("//:version.bzl", "increase_version_code")
 
 # Visibility for libraries that should be accessible to script tests.
 package_group(
@@ -92,6 +93,8 @@ kt_jvm_binary(
         "//scripts/src/java/org/oppia/android/scripts/release:cutting_new_release_lib",
     ],
 )
+
+increase_version_code()
 
 kt_jvm_binary(
     name = "xml_syntax_check",

@@ -1,4 +1,5 @@
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("//:version.bzl", "increase_major_version", "increase_minor_version", "increase_version_code")
 
 kt_jvm_library(
     name = "cutting_new_release_lib",

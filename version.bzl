@@ -14,6 +14,8 @@ OPPIA_DEV_VERSION_CODE = 15
 OPPIA_ALPHA_KITKAT_VERSION_CODE = 16
 OPPIA_ALPHA_VERSION_CODE = 17
 
+TOTAL_VERSIONS = 4
+
 def increase_minor_version():
     """Increases the release version by one."""
     MINOR_VERSION += 1
@@ -22,9 +24,9 @@ def increase_major_version():
     """Increases the major version by one."""
     MAJOR_VERSION += 1
 
-def increase_version_code(number_of_releases):
+def increase_version_code():
     """Each version code will be increaed by the number of versions that have been released."""
-    OPPIA_ALPHA_KITKAT_VERSION_CODE += number_of_releases
-    OPPIA_ALPHA_VERSION_CODE += number_of_releases
-    OPPIA_DEV_KITKAT_VERSION_CODE += number_of_releases
-    OPPIA_DEV_VERSION_CODE += number_of_releases
+    OPPIA_ALPHA_KITKAT_VERSION_CODE += TOTAL_VERSIONS
+    OPPIA_ALPHA_VERSION_CODE += TOTAL_VERSIONS
+    OPPIA_DEV_KITKAT_VERSION_CODE += TOTAL_VERSIONS
+    OPPIA_DEV_VERSION_CODE += TOTAL_VERSIONS
