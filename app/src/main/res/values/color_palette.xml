@@ -27,4 +27,6 @@
   <color name="color_palette_revision_card_background_color">@color/color_def_oppia_light_green</color>
   <color name="color_palette_content_background_solid_color">@color/color_def_oppia_solid_blue</color>
   <color name="color_palette_content_background_stroke_color">@color/color_def_oppia_stroke_blue</color>
+  <color name="color_palette_forgot_pin_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_show_color">@color/color_def_accessible_grey</color>
 </resources>

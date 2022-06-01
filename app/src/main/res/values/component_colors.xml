@@ -43,6 +43,11 @@
   <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
+  <color name="component_color_pin_password_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_pin_password_activity_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_pin_password_activity_sub_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
+  <color name="component_color_pin_password_activity_show_color">@color/color_palette_show_color</color>
   <!-- Help Activity -->
   <color name="component_color_help_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_help_activity_container_color">@color/color_palette_container_background_color</color>
