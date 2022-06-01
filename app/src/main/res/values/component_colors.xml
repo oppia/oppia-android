@@ -5,7 +5,7 @@
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
-  <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_previous_responses_header_item_container_text_color">@color/color_palette_highlighted_text_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
