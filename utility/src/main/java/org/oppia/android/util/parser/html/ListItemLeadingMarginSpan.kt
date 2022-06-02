@@ -82,14 +82,10 @@ class ListItemLeadingMarginSpan(
   }
 
   override fun getLeadingMargin(first: Boolean): Int {
-    when (tag) {
-      UL_TAG -> {
-        return 2 * bulletRadius + spacingBeforeText
-      }
-      OL_TAG -> {
-        return (2 * string.length) + spacingBeforeNumberedText
-      }
+    return when (tag) {
+      UL_TAG -> 2 * bulletRadius + spacingBeforeText
+      OL_TAG -> 2 * string.length + spacingBeforeNumberedText
+      else -> 0
     }
-    return 0
   }
 }

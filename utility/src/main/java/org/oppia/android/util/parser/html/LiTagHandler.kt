@@ -32,14 +32,9 @@ class LiTagHandler(
     tag: String,
   ) {
     when (tag) {
-      CUSTOM_LIST_UL_TAG ->
-        lists.push(Ul(context, tag))
-
-      CUSTOM_LIST_OL_TAG ->
-        lists.push(Ol(context, tag, displayLocale))
-
-      CUSTOM_LIST_LI_TAG ->
-        lists.peek().openItem(output)
+      CUSTOM_LIST_UL_TAG -> lists.push(Ul(context, tag))
+      CUSTOM_LIST_OL_TAG -> lists.push(Ol(context, tag, displayLocale))
+      CUSTOM_LIST_LI_TAG -> lists.peek().openItem(output)
     }
   }
 
