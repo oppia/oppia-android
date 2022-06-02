@@ -186,7 +186,7 @@ class CustomHtmlContentHandler private constructor(
      * This function will always be called before [handleClosingTag].
      *
      * @param output the destination [Editable] to which spans can be added
-     * @param indentation The zero-based indentation level of this item.
+     * @param indentation the zero-based indentation level of this item
      */
     fun handleClosingTag(output: Editable, indentation: Int, tag: String, lists: Stack<ListTag>) {}
   }
