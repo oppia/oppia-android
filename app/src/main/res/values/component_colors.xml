@@ -121,7 +121,6 @@
   <color name="component_color_onboarding_activity_divider_color">@color/color_palette_onboarding_divider_color</color>
   <color name="component_color_onboarding_activity_dots_color">@color/color_palette_dots_color</color>
   <color name="component_color_onboarding_activity_arrow_color">@color/color_palette_arrow_color</color>
-  <color name="component_color_onboarding_activity_download_sign_color">@color/color_palette_download_sign_color</color>
   <!-- Developer Options Activity -->
   <color name="component_color_developer_options_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_developer_options_activity_options_background_color">@color/color_palette_container_background_color</color>
