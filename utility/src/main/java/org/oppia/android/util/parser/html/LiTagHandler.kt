@@ -103,7 +103,7 @@ class LiTagHandler @Inject constructor(
           ListItemLeadingMarginSpan(
             context,
             indentation,
-            "${displayLocale.run {(mark.number).toHumanReadableString(mark.number)}}.",
+            "${displayLocale.run {mark.number.toHumanReadableString(mark.number)}}.",
             tag
           )
         )
