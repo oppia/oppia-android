@@ -20,7 +20,7 @@
         android:id="@+id/help_fragment_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/oppia_grey_background" />
+        android:background="@color/component_color_help_activity_background_color" />
 
       <View
         android:id="@+id/help_activity_toolbar_shadow_view"

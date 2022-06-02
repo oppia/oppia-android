@@ -16,6 +16,8 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/translation:app_language_locale_handler",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
@@ -34,6 +36,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 
@@ -51,6 +54,8 @@ oppia_android_test(
         "//domain",
         "//domain:test_resources",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
@@ -72,6 +77,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 
@@ -87,6 +93,8 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
@@ -107,6 +115,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 

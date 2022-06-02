@@ -91,8 +91,10 @@ ANNOTATIONS = [
 # keep sorted
 LISTENERS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/LoadLearnerAnalyticsListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/LoadProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToAppVersionListener.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/RouteToLearnerAnalyticsListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/RouteToProfileListListener.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/ShowLogoutDialogListener.kt",
     "src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt",
@@ -176,6 +178,10 @@ DATABINDING_LAYOUTS = ["src/main/res/layout*/**"]
 # keep sorted
 VIEW_MODELS_WITH_RESOURCE_IMPORTS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/appversion/AppVersionViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt",
     "src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt",
@@ -236,6 +242,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsDownloadPermissionsViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsGeneralViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileAndDeviceIdViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/administratorcontrolsitemviewmodel/AdministratorControlsProfileViewModel.kt",
     "src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsViewModel.kt",
     "src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt",
@@ -391,6 +398,7 @@ VIEWS_WITH_RESOURCE_IMPORTS = [
 
 # keep sorted
 VIEWS = [
+    "src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/CopyIdMaterialButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/MathExpressionInteractionsView.kt",
     "src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt",
@@ -663,6 +671,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
+        "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//third_party:androidx_core_core",
@@ -770,6 +779,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//third_party:androidx_databinding_databinding-adapters",
         "//third_party:androidx_databinding_databinding-common",

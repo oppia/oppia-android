@@ -50,7 +50,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_1"
       },
       "ImageClickInput": {
         "content": {
@@ -464,7 +465,8 @@
           }
         },
         "solicit_answer_details": false,
-        "next_content_id_index": -1
+        "next_content_id_index": -1,
+        "linked_skill_id": "test_skill_id_1"
       }
     },
     "objective": "learn how to arrange the sentence",
