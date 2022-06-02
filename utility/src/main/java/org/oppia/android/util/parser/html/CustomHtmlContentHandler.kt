@@ -11,8 +11,6 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-import java.util.Stack
-import kotlin.collections.ArrayDeque
 
 /**
  * A custom [ContentHandler] and [Html.TagHandler] for processing custom HTML tags. This class must
@@ -27,7 +25,6 @@ class CustomHtmlContentHandler private constructor(
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
-  private val lists = Stack<ListTag>()
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
@@ -101,7 +98,7 @@ class CustomHtmlContentHandler private constructor(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          customTagHandlers.getValue(tag).handleOpeningTag(output, tag, lists)
+          customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
         }
       }
       tag in customTagHandlers -> {
@@ -113,7 +110,7 @@ class CustomHtmlContentHandler private constructor(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
-        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag, lists)
+        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
@@ -177,7 +174,7 @@ class CustomHtmlContentHandler private constructor(
      *
      * @param output the destination [Editable] to which spans can be added
      */
-    fun handleOpeningTag(output: Editable, tag: String, lists: Stack<ListTag>) {}
+    fun handleOpeningTag(output: Editable, tag: String) {}
 
     /**
      * Called when the closing of a custom tag is encountered. This does not support processing
@@ -188,7 +185,7 @@ class CustomHtmlContentHandler private constructor(
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable, indentation: Int, tag: String, lists: Stack<ListTag>) {}
+    fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
   }
 
   /**

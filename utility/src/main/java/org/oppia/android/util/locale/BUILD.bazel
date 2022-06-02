@@ -74,7 +74,7 @@ kt_android_library(
     ],
     deps = [
         ":dagger",
-        "//utility/src/main/java/org/oppia/android/util/locale:android_locale_profile",
+        ":android_locale_profile",
     ],
 )
 

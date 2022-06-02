@@ -6,7 +6,6 @@ import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Stack
-import javax.inject.Inject
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -21,16 +20,16 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  * A custom tag handler for properly formatting bullet items in HTML parsed with
  * [CustomHtmlContentHandler].
  */
-class LiTagHandler @Inject constructor(
+class LiTagHandler(
   private val context: Context,
   private val displayLocale: OppiaLocale.DisplayLocale
 ) :
   CustomHtmlContentHandler.CustomTagHandler {
+  var lists: Stack<CustomHtmlContentHandler.ListTag> = Stack<CustomHtmlContentHandler.ListTag>()
 
   override fun handleOpeningTag(
     output: Editable,
     tag: String,
-    lists: Stack<CustomHtmlContentHandler.ListTag>
   ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG ->
@@ -47,8 +46,7 @@ class LiTagHandler @Inject constructor(
   override fun handleClosingTag(
     output: Editable,
     indentation: Int,
-    tag: String,
-    lists: Stack<CustomHtmlContentHandler.ListTag>
+    tag: String
   ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG ->
@@ -62,9 +60,7 @@ class LiTagHandler @Inject constructor(
     }
   }
 
-  /**
-   * Subclass of [ListTag] for unordered lists.
-   */
+  /** Subclass of [ListTag] for unordered lists.*/
   private class Ul(private val context: Context, private val tag: String) :
     CustomHtmlContentHandler.ListTag {
 
@@ -82,9 +78,7 @@ class LiTagHandler @Inject constructor(
     }
   }
 
-  /**
-   * Subclass of [ListTag] for ordered lists.
-   */
+  /** Subclass of [ListTag] for ordered lists.*/
   private class Ol(
     private val context: Context,
     private val tag: String,
@@ -108,7 +102,7 @@ class LiTagHandler @Inject constructor(
           ListItemLeadingMarginSpan(
             context,
             indentation,
-            "${displayLocale.run {(mark.number).toHumanReadableString(mark.number)}}.",
+            "${displayLocale.run { (mark.number).toHumanReadableString(mark.number) }}.",
             tag
           )
         )
