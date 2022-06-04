@@ -49,6 +49,8 @@
   <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
   <color name="component_color_pin_password_activity_show_hide_text_color">@color/color_palette_show_text_color</color>
   <color name="component_color_pin_password_activity_error_text_color">@color/color_palette_error_text_color</color>
+  <color name="component_color_pin_password_activity_show_eye_icon_color">@color/color_palette_show_eye_icon_color</color>
+  <color name="component_color_pin_password_activity_hide_eye_icon_color">@color/color_palette_hide_eye_icon_color</color>
   <!-- Help Activity -->
   <color name="component_color_help_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_help_activity_container_color">@color/color_palette_container_background_color</color>
