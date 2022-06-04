@@ -80,7 +80,7 @@ class MathTagHandlerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock private var mockImageRetriever: FakeImageRetriever? = null
+  @Mock lateinit var mockImageRetriever: FakeImageRetriever
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
   @Captor lateinit var retrieverTypeCaptor: ArgumentCaptor<ImageRetriever.Type>
   @Captor lateinit var floatCaptor: ArgumentCaptor<Float>
