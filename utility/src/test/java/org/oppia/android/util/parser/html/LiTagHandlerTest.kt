@@ -33,7 +33,6 @@ import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
-import org.xml.sax.helpers.AttributesImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -111,22 +110,35 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
       .hasLength(2)
   }
+  @Test
+  fun testCustomListElement_betweenNestedParagraphs_parsesCorrectlyIntoNumberedListSpan() {
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val htmlString = "<p>You should know the following before going on:<br></p>" +
+      "<oppia-ol><oppia-li>The counting numbers (1, 2, 3, 4, 5 ….)</oppia-li>" +
+      "<oppia-li>How to tell whether one counting number is bigger or " +
+      "smaller than another <oppia-ol><oppia-li>Item 1</oppia-li> <oppia-li>Item 2" +
+      "</oppia-li></oppia-ol></oppia-li></oppia-ol>"
+
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale)
+        )
+      )
+
+    assertThat(parsedHtml.toString()).isNotEmpty()
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+      .hasLength(4)
+  }
 
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
     DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
-
-  private fun AttributesImpl.addAttribute(name: String, value: String) {
-    addAttribute(
-      /* uri= */ null,
-      /* localName= */ null,
-      /* qName= */ name,
-      /* type= */ "string",
-      value
-    )
-  }
 
   private fun setUpTestApplicationComponent() {
     DaggerLiTagHandlerTest_TestApplicationComponent.builder()

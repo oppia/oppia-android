@@ -65,7 +65,7 @@ class ListItemLeadingMarginSpan(
       when (tag) {
         UL_TAG -> {
           val style = paint.style
-          if (trueX == spacingBeforeBullet) {
+          if (indentation == 0) {
             paint.style = Paint.Style.FILL
           } else {
             paint.style = Paint.Style.STROKE

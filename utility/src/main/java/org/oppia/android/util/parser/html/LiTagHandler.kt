@@ -23,13 +23,11 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
 class LiTagHandler(
   private val context: Context,
   private val displayLocale: OppiaLocale.DisplayLocale
-) :
-  CustomHtmlContentHandler.CustomTagHandler {
-  var lists: Stack<CustomHtmlContentHandler.ListTag> = Stack<CustomHtmlContentHandler.ListTag>()
-
+) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleOpeningTag(
     output: Editable,
     tag: String,
+    lists: Stack<CustomHtmlContentHandler.ListTag>
   ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> lists.push(Ul(context, tag))
@@ -41,17 +39,13 @@ class LiTagHandler(
   override fun handleClosingTag(
     output: Editable,
     indentation: Int,
-    tag: String
+    tag: String,
+    lists: Stack<CustomHtmlContentHandler.ListTag>
   ) {
     when (tag) {
-      CUSTOM_LIST_UL_TAG ->
-        lists.pop()
-
-      CUSTOM_LIST_OL_TAG ->
-        lists.pop()
-
-      CUSTOM_LIST_LI_TAG ->
-        lists.peek().closeItem(output, indentation = lists.size - 1)
+      CUSTOM_LIST_UL_TAG -> lists.pop()
+      CUSTOM_LIST_OL_TAG -> lists.pop()
+      CUSTOM_LIST_LI_TAG -> lists.peek().closeItem(output, indentation = lists.size - 1)
     }
   }
 
