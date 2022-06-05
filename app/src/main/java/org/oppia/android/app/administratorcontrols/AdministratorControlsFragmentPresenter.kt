@@ -183,9 +183,8 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private fun getSelectedFragmentIndex(selectedFragment: String): Int {
     return when (selectedFragment) {
       PROFILE_LIST_FRAGMENT -> 1
-      PROFILE_EDIT_FRAGMENT -> 2
-      APP_VERSION_FRAGMENT -> 3
-      PROFILE_AND_DEVICE_ID_FRAGMENT -> 4
+      PROFILE_AND_DEVICE_ID_FRAGMENT -> 2
+      APP_VERSION_FRAGMENT -> 4
       else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
     }
   }

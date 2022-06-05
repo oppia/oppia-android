@@ -116,7 +116,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
 
   private fun showDeletionDialog(internalProfileId: Int) {
     if (isMultipane == true) {
-      (activity as ProfileEditDeletionDialogListener).loadBooleanProfileEditDeletionDialog(true)
+      (activity as ProfileEditDeletionDialogListener).loadProfileDeletionDialog(true)
     }
     val dialogFragment = ProfileEditDeletionDialogFragment
       .newInstance(internalProfileId)

@@ -103,7 +103,7 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
   }
 
-  override fun loadBooleanProfileEditDeletionDialog(isProfileDeletionDialogVisible: Boolean) {
+  override fun loadProfileDeletionDialog(isProfileDeletionDialogVisible: Boolean) {
     this.isProfileDeletionDialogVisible = isProfileDeletionDialogVisible
     administratorControlsActivityPresenter.loadProfileDeletionDialog(isProfileDeletionDialogVisible)
   }
@@ -128,10 +128,10 @@ class AdministratorControlsActivity :
         R.id.administrator_controls_fragment_multipane_placeholder
       )
     /*
-      * If the current fragment is ProfileListFragment then the activity should end on back press.
-      * If it's instead ProfileEditFragment then profileListFragment should be inflated via
-      * handleOnBackPressed.
-      */
+     * If the current fragment is ProfileListFragment then the activity should end on back press.
+     * If it's instead ProfileEditFragment then profileListFragment should be inflated via
+     * handleOnBackPressed.
+     */
     if (fragment is ProfileEditFragment) {
       administratorControlsActivityPresenter.handleOnBackPressed()
     } else {
