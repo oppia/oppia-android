@@ -7,6 +7,15 @@
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
+  <color name="component_color_shared_submitted_answer_item_background_color">@color/color_palette_submitted_answer_item_background_color</color>
+  <color name="component_color_shared_submitted_answer_item_border_color">@color/color_palette_submitted_answer_item_border_color</color>
+  <color name="component_color_shared_submitted_answer_item_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_edit_text_hint_color">@color/color_palette_hint_text_color</color>
+  <color name="component_color_shared_input_interaction_edit_text_border_color">@color/color_palette_input_interaction_edit_text_border_color</color>
+  <color name="component_color_shared_arrow_down_grey_color">@color/color_palette_arrow_down_grey_color</color>
+  <color name="component_color_shared_arrow_right_grey_color">@color/color_palette_arrow_right_grey_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
