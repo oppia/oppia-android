@@ -2,7 +2,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
   <corners android:radius="@dimen/state_previous_next_button_radius" />
+  <solid android:color="@color/color_def_white" />
   <stroke
     android:width="2dp"
-    android:color="@color/oppia_primary" />
+    android:color="@color/component_color_start_over_button_stroke_color" />
 </shape>
