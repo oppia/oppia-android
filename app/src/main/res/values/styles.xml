@@ -121,7 +121,7 @@
   </style>
   <!-- STATE BUTTON INACTIVE STYLE -->
   <style name="StateButtonInactive" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">160dp</item>
+    <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:padding">8dp</item>
     <item name="android:textAllCaps">true</item>
@@ -415,7 +415,7 @@
   </style>
   <!-- Continue Lesson Button -->
   <style name="ContinueLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">160dp</item>
+    <item name="android:layout_width">144dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:drawablePadding">4dp</item>
     <item name="android:paddingEnd">12dp</item>
@@ -427,7 +427,7 @@
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:textColor">@color/color_def_white</item>
-    <item name="android:textSize">12sp</item>
+    <item name="android:textSize">14sp</item>
   </style>
 
   <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
