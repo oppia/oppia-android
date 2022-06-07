@@ -37,6 +37,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val loadProfileListListener = activity as LoadProfileListListener
   private val showLogoutDialogListener = activity as ShowLogoutDialogListener
   private lateinit var userProfileId: ProfileId
+
+  /** Sets the index for the currently selected fragment. */
   val selectedFragmentIndex = ObservableField<Int>(1)
 
   private val deviceSettingsLiveData: LiveData<DeviceSettings> by lazy {
@@ -46,6 +48,7 @@ class AdministratorControlsViewModel @Inject constructor(
     )
   }
 
+  /** This temporarily stores the list of the controls in the [AdministratorControlsFragment]. */
   val administratorControlsLiveData: LiveData<List<AdministratorControlsItemViewModel>> by lazy {
     Transformations.map(deviceSettingsLiveData, ::processAdministratorControlsList)
   }
@@ -100,6 +103,7 @@ class AdministratorControlsViewModel @Inject constructor(
     return itemViewModelList
   }
 
+  /** Sets the user profile id. */
   fun setProfileId(profileId: ProfileId) {
     userProfileId = profileId
   }
