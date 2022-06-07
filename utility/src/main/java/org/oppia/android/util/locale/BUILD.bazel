@@ -73,8 +73,8 @@ kt_android_library(
         "//utility:utility_testing_visibility",
     ],
     deps = [
-        ":dagger",
         ":android_locale_profile",
+        ":dagger",
     ],
 )
 
