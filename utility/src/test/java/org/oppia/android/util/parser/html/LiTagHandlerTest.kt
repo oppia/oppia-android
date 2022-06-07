@@ -199,6 +199,5 @@ class LiTagHandlerTest {
         }.build()
       }.build()
     }.build()
-
   }
 }

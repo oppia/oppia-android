@@ -241,8 +241,10 @@ class CustomHtmlContentHandler private constructor(
       // uses a positive lookahead to match the closing tag since multiple of these tags can be
       // consecutive.
       val lineAdjustedHtml =
-        html.replace("([^\n])<(p|ol|ul|li|oppia-ul|oppia-ol|oppia-li|div)(?=>)".toRegex(),
-          "$1\n<$2")
+        html.replace(
+          "([^\n])<(p|ol|ul|li|oppia-ul|oppia-ol|oppia-li|div)(?=>)".toRegex(),
+          "$1\n<$2"
+        )
       return HtmlCompat.fromHtml(
         "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,

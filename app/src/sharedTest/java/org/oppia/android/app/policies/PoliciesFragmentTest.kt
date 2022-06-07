@@ -202,17 +202,17 @@ class PoliciesFragmentTest {
         val expectingIntent = allOf(
           IntentMatchers.hasAction(Intent.ACTION_VIEW),
           IntentMatchers.hasData(link)
-        );
+        )
 
         // mocking intent to prevent actual navigation during test
-        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null));
+        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
 
         // performing action
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
 
         // asserting our expected intent was recorded
-        Intents.intended(expectingIntent);
+        Intents.intended(expectingIntent)
       }
     }
   }
