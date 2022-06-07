@@ -35,6 +35,7 @@
       android:id="@+id/fraction_input_error"
       style="@style/InputInteractionErrorTextView"
       android:text="@{viewModel.errorMessage}"
+      android:textColor="@color/component_color_shared_input_error_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/fraction_input_interaction_view"

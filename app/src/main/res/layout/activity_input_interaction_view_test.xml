@@ -73,7 +73,7 @@
         android:fontFamily="sans-serif"
         android:minHeight="32dp"
         android:text="@{fractionInteractionViewModel.errorMessage}"
-        android:textColor="@color/component_color_shared_text_input_layout_error_color"
+        android:textColor="@color/component_color_shared_input_error_color"
         android:textSize="12sp"
         android:visibility="@{fractionInteractionViewModel.errorMessage.length() > 0 ? View.VISIBLE : View.INVISIBLE}" />
 
