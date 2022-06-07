@@ -7,14 +7,13 @@ option java_multiple_files = true;
 
 // Structure for an oppia metric log.
 message OppiaMetricLog {
-  // The timestamp of the event.
-  // unit: long/millis, timezone: UTC
+  // The UTC timestamp of the event in long/millis.
   int64 timestamp_millis = 1;
 
   // The priority of the event.
   Priority priority = 2;
 
-  // Indicates whether the application is in foreground.
+  // Indicates whether the application is in the foreground.
   bool is_app_in_foreground = 3;
 
   // The memory tier of the current device.
@@ -26,45 +25,51 @@ message OppiaMetricLog {
   // The current network type of the device.
   NetworkType network_type = 6;
 
-  // The current activity where the event is getting logged.
-  CurrentActivity current_activity = 7;
+  // The current screen where the event is getting logged.
+  CurrentScreen current_screen = 7;
 
-  // Structure of the apk size package.
+  message MetricLogType {
+    
+  }
+
+  // Structure of the apk size metric.
   message ApkSize {
-    // Size of the android package file of the app on the device in bytes.
+    // Size of the app's installed APK file, in bytes.
     int64 apk_size_bytes = 1;
   }
 
-  // Structure of the storage usage package.
+  // Structure of the storage usage metric.
   message StorageUsage {
     // Amount of storage usage by the app on user's device in bytes.
     int64 storage_usage_bytes = 1;
   }
 
-  // Structure of the startup latency package.
+  // Structure of the startup latency metric.
   message StartupLatency {
-    // Amount of latency on application startup in millis.
+    // Number of milliseconds required to start up the application from a cold start.
     int64 startup_latency_millis = 1;
   }
 
-  // Structure of the memory usage package.
+  // Structure of the memory usage metric.
   message MemoryUsage {
     // Amount of memory used by the application on the device in bytes.
     int64 total_pss_bytes = 1;
   }
 
-  // Structure of the network usage package.
-  message NetworkUsage{
-    // Number of bytes received by the application on the device during the bucket's time interval.
+  // Structure of the network usage metric.
+  message NetworkUsage {
+    // Usage data is collected in discrete bins of time called 'Buckets'. This fields denotes the
+    // number of bytes received by the application on the device during this bucket's time interval.
     int64 bytes_received = 1;
 
-    // Number of bytes transmitted by the application from the device during the bucket's time
+    // Usage data is collected in discrete bins of time called 'Buckets'. This fields denotes the
+    // number of bytes transmitted by the application on the device during this bucket's time
     // interval.
     int64 bytes_transmitted = 2;
   }
 
-  // Structure of the cpu usage package.
-  message CpuUsage{
+  // Structure of the cpu usage metric.
+  message CpuUsage {
     // Amount of cpu used by the application.
     int64 cpu_usage = 1;
   }
@@ -87,14 +92,14 @@ message OppiaMetricLog {
     HIGH_PRIORITY = 3;
   }
 
-  // Supported activities for indicating the current activity where the event logging is occuring.
-  enum CurrentActivity {
-    // The undefined current activity of an event.
-    ACTIVITY_UNSPECIFIED = 0;
+  // Supported screens for indicating the current screen where the event logging is occurring.
+  enum CurrentScreen {
+    // The undefined current screen of an event.
+    SCREEN_UNSPECIFIED = 0;
 
-    // The metric log was taken when home activity was opened.
-    HOME_ACTIVITY = 1;
-    // TODO(#4340): Add support for all activities which are going to be used for metric logging.
+    // The metric log was taken when home screen was opened.
+    HOME_SCREEN = 1;
+    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
   }
 
   // Supported memory tiers for indicating the total memory of user's device.
