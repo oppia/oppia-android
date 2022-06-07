@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
+import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import org.oppia.android.R
@@ -136,7 +137,21 @@ class ClickableAreasImage(
           }
         }
         it.addView(newView)
-        newView.requestLayout()
+      }
+
+      // Ensure that the children views are properly computed. The specific flow below is
+      // recommended by https://stackoverflow.com/a/42430695/3689782 where it's also explained in
+      // great detail. The 'post' seems necessary since, from observation, requesting layout &
+      // invalidation doesn't always work (perhaps since this method can be called during a layout
+      // step), so posting ensures that the views are eventually computed. It's not obvious why
+      // Android sometimes doesn't compute the region view dimensions, but it results in the
+      // interaction being non-interactive (though it's recoverable with back & forward navigation
+      // or rotation, this isn't likely to be obvious to learners and it's a generally poor user
+      // experience).
+      it.post {
+        it.children.forEach(View::forceLayout)
+        it.invalidate()
+        it.requestLayout()
       }
     }
   }

@@ -37,7 +37,7 @@ class ProfileEditActivityPresenter @Inject constructor(
     if (getProfileEditFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.profile_edit_fragment_placeholder,
-        ProfileEditFragment.newInstance(profileId)
+        ProfileEditFragment.newInstance(profileId, isMultipane)
       ).commitNow()
     }
   }

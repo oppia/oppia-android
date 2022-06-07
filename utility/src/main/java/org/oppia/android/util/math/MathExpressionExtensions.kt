@@ -54,6 +54,35 @@ fun MathExpression.toComparableOperation(): ComparableOperation = convertToCompa
  */
 fun MathExpression.toPolynomial(): Polynomial? = reduceToPolynomial()
 
+// TODO(#4345): Add tests for this method.
+/**
+ * Returns a new version of this [MathExpression] with single-term redundant parentheses removed
+ * (i.e. the expression representing '(2)+(1*(3))' would instead be simplified to the same
+ * expression as needed to represent '2+(1*3)').
+ */
+fun MathExpression.stripRedundantGroups(): MathExpression {
+  return when (expressionTypeCase) {
+    BINARY_OPERATION -> toBuilder().apply {
+      binaryOperation = binaryOperation.toBuilder().apply {
+        leftOperand = leftOperand.stripRedundantGroups()
+        rightOperand = rightOperand.stripRedundantGroups()
+      }.build()
+    }.build()
+    UNARY_OPERATION -> toBuilder().apply {
+      unaryOperation = unaryOperation.toBuilder().apply {
+        operand = operand.stripRedundantGroups()
+      }.build()
+    }.build()
+    FUNCTION_CALL -> toBuilder().apply {
+      functionCall = functionCall.toBuilder().apply {
+        argument = argument.stripRedundantGroups()
+      }.build()
+    }.build()
+    GROUP -> if (group.isSingleTerm()) group.stripRedundantGroups() else this
+    CONSTANT, VARIABLE, EXPRESSIONTYPE_NOT_SET, null -> this
+  }
+}
+
 /**
  * Returns whether this [MathExpression] approximately equals another, that is, that it fully
  * matches in its AST representation but all constants are compared using
@@ -80,5 +109,12 @@ fun MathExpression.isApproximatelyEqualTo(other: MathExpression): Boolean {
     }
     GROUP -> group.isApproximatelyEqualTo(other.group)
     EXPRESSIONTYPE_NOT_SET, null -> true
+  }
+}
+
+private fun MathExpression.isSingleTerm(): Boolean {
+  return when (expressionTypeCase) {
+    CONSTANT, VARIABLE, FUNCTION_CALL, GROUP -> true
+    BINARY_OPERATION, UNARY_OPERATION, EXPRESSIONTYPE_NOT_SET, null -> false
   }
 }

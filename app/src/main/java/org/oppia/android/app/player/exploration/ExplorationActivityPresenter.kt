@@ -214,12 +214,12 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Deletes the saved progress for the current exploration and then stops the exploration. */
-  fun deleteCurrentProgressAndStopExploration() {
+  fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
     explorationDataController.deleteExplorationProgressById(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       explorationId
     )
-    stopExploration()
+    stopExploration(isCompletion)
   }
 
   /** Deletes the oldest saved checkpoint and then stops the exploration. */
@@ -233,12 +233,12 @@ class ExplorationActivityPresenter @Inject constructor(
         oldestCheckpointExplorationId
       )
     }
-    stopExploration()
+    stopExploration(isCompletion = false)
   }
 
-  fun stopExploration() {
+  fun stopExploration(isCompletion: Boolean) {
     fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
-    explorationDataController.stopPlayingExploration().toLiveData()
+    explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
         Observer<AsyncResult<Any?>> {
@@ -373,7 +373,7 @@ class ExplorationActivityPresenter @Inject constructor(
       !::oldestCheckpointExplorationId.isInitialized ||
       !::oldestCheckpointExplorationTitle.isInitialized
     ) {
-      stopExploration()
+      stopExploration(isCompletion = false)
       return
     }
 
@@ -454,7 +454,7 @@ class ExplorationActivityPresenter @Inject constructor(
     } else {
       when (checkpointState) {
         CheckpointState.CHECKPOINT_SAVED_DATABASE_NOT_EXCEEDED_LIMIT -> {
-          stopExploration()
+          stopExploration(isCompletion = false)
         }
         CheckpointState.CHECKPOINT_SAVED_DATABASE_EXCEEDED_LIMIT -> {
           showProgressDatabaseFullDialogFragment()

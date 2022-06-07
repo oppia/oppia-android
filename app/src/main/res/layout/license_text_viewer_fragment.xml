@@ -11,15 +11,17 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_license_text_viewer_activity_background_color">
 
     <TextView
       android:id="@+id/copyright_license_text_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@drawable/general_item_background_border_black"
       android:layout_gravity="center_horizontal"
       android:autoLink="web"
       android:padding="32dp"
+      android:textColor="@color/component_color_license_text_viewer_activity_text_color"
       android:text="@{viewModel.licenseText}" />
   </ScrollView>
 </layout>
