@@ -34,6 +34,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionDebugModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -48,6 +50,7 @@ import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -99,9 +102,10 @@ import javax.inject.Singleton
     LocaleProdModule::class, ActivityRecreatorProdModule::class,
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
+    LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
-    NetworkConnectionDebugUtilModule::class
+    NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class, SyncStatusModule::class
   ]
 )
 interface ApplicationComponent : ApplicationInjector {

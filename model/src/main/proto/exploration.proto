@@ -69,6 +69,9 @@ message State {
   // from the learner about why they picked a particular answer while
   // playing the exploration.
   bool solicit_answer_details = 8;
+
+  // Corresponds to the global skill ID being taught/evaluated by the interaction of this state.
+  string linked_skill_id = 9;
 }
 
 // Structure for customization args for ParamChange objects.
@@ -252,6 +255,9 @@ message EphemeralState {
 
   // The current context that should be used for selecting written translations.
   WrittenTranslationContext written_translation_context = 8;
+
+  // The identifier of the current session that'd be used for analytics logging.
+  string session_id = 9;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.

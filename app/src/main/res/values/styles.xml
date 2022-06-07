@@ -408,9 +408,9 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="drawableStartCompat">@drawable/ic_start_over_24dp</item>
     <item name="android:drawablePadding">4dp</item>
-    <item name="drawableTint">@color/oppia_primary</item>
+    <item name="drawableTint">@color/component_color_start_over_button_drawable_tint_color</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/oppia_primary</item>
+    <item name="android:textColor">@color/component_color_start_over_button_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
   <!-- Continue Lesson Button -->
@@ -429,6 +429,8 @@
     <item name="android:textColor">@color/color_def_white</item>
     <item name="android:textSize">14sp</item>
   </style>
+
+  <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
 
   <style name="MarqueeToolbarTitleTextView" parent="TextView.Common1">
     <item name="android:ellipsize">marquee</item>

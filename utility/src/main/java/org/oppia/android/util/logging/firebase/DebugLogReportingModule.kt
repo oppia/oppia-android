@@ -10,13 +10,12 @@ import javax.inject.Singleton
 /** Provides debug log reporting dependencies. */
 @Module
 class DebugLogReportingModule {
-  @Singleton
   @Provides
-  fun provideExceptionLogger(): ExceptionLogger {
-    return FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
-  }
+  @Singleton
+  fun provideExceptionLogger(): ExceptionLogger =
+    FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
 
-  @Singleton
   @Provides
+  @Singleton
   fun provideDebugEventLogger(debugEventLogger: DebugEventLogger): EventLogger = debugEventLogger
 }

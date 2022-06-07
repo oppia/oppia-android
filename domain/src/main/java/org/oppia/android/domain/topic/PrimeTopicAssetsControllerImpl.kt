@@ -279,7 +279,8 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
   }
 
   private fun loadTopics(topicIds: Collection<String>): Collection<Topic> {
-    return topicIds.map(topicController::retrieveTopic)
+    // Ignore topics no longer on the device.
+    return topicIds.mapNotNull(topicController::retrieveTopic)
   }
 
   private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {

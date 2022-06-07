@@ -128,20 +128,20 @@ const val PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT
  * performance metrics that are to be recorded more frequently.
  */
 @Qualifier
-annotation class PerformanceMetricsCollectionMoreFrequentRecordTimeIntervalInMinutes
+annotation class PerformanceMetricsCollectionHighFrequentRecordTimeIntervalInMinutes
 
 /**
  * Name of the platform parameter that controls the time interval in minutes of recording
  * performance metrics that are to be recorded more frequently.
  */
-const val PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES =
-  "performance_metrics_collection_frequent_record_time_interval_in_minutes"
+const val PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES =
+  "performance_metrics_collection_high_frequent_record_time_interval_in_minutes"
 
 /**
  * Default value of the time interval in minutes of recording performance metrics that are to be
  * recorded more frequently.
  */
-const val PERFORMANCE_METRICS_COLLECTION_MORE_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
+const val PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
   15
 
 /**
