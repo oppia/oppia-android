@@ -222,6 +222,28 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testHtmlContent_withNoImageSupport_handleImage_notParsed() {
+    val htmlParser = htmlParserFactory.create()
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>",
+        textView,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      )
+      return@runWithActivity textView to htmlResult
+    }
+
+    // Verify that the image span is 0 as image support is not enabled.
+    val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(0)
+    // The two strings aren't equal because this html parser does not support Oppia image tags.
+    assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
+    onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
+  }
+
+  @Test
   fun testHtmlContent_withImageSupport_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,

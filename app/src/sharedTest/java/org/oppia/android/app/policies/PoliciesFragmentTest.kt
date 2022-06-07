@@ -2,6 +2,7 @@ package org.oppia.android.app.policies
 
 import android.app.Activity
 import android.app.Application
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -9,11 +10,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
-import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -21,6 +24,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -130,7 +134,7 @@ class PoliciesFragmentTest {
   var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> =
     ActivityScenarioRule(
       Intent(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PoliciesFragmentTestActivity::class.java
       )
     )
@@ -143,13 +147,15 @@ class PoliciesFragmentTest {
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
-
     testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    Intents.release()
+
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
@@ -164,7 +170,7 @@ class PoliciesFragmentTest {
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
       PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
@@ -177,7 +183,7 @@ class PoliciesFragmentTest {
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_isDisplayed() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
@@ -191,8 +197,22 @@ class PoliciesFragmentTest {
             "Please visit [this page] for the latest version of" +
               " this privacy policy."
           )
+        // preparing
+        val link = "https://www.oppia.org/privacy-policy"
+        val expectingIntent = allOf(
+          IntentMatchers.hasAction(Intent.ACTION_VIEW),
+          IntentMatchers.hasData(link)
+        );
+
+        // mocking intent to prevent actual navigation during test
+        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null));
+
+        // performing action
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
+
+        // asserting our expected intent was recorded
+        Intents.intended(expectingIntent);
       }
     }
   }
@@ -201,7 +221,7 @@ class PoliciesFragmentTest {
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_opensTheLink() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
@@ -220,7 +240,7 @@ class PoliciesFragmentTest {
   fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
       PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
@@ -233,7 +253,7 @@ class PoliciesFragmentTest {
   fun testPoliciesFragment_checkTermsOfServiceWebLink_isDisplayed() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
@@ -254,7 +274,7 @@ class PoliciesFragmentTest {
   fun testPoliciesFragment_checkTermsOfServiceWebLink_opensTheLink() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
-        ApplicationProvider.getApplicationContext(),
+        getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
@@ -270,11 +290,11 @@ class PoliciesFragmentTest {
   }
 
   private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
+    return getApplicationContext<Context>().resources
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    getApplicationContext<TestApplication>().inject(this)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(

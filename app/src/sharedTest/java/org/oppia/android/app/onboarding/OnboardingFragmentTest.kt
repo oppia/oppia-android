@@ -1,14 +1,10 @@
 package org.oppia.android.app.onboarding
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
-import androidx.annotation.DimenRes
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -42,9 +38,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -703,30 +696,6 @@ class OnboardingFragmentTest {
     }
   }
 
-  private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
-    @DimenRes dimenResId: Int
-  ): Int {
-    return runWithActivity { it.resources.getDimensionPixelSize(dimenResId) }
-  }
-
-  private inline fun <A : Activity, reified V : View> ActivityScenario<A>.findViewById(
-    @IdRes viewResId: Int
-  ): V {
-    return runWithActivity { it.findViewById(viewResId) }
-  }
-
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -781,7 +750,4 @@ class OnboardingFragmentTest {
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
-  private interface Consumer<T> {
-    fun consume(value: T)
-  }
 }
