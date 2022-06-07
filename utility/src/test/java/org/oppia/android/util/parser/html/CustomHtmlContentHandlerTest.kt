@@ -39,7 +39,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
-import java.util.Stack
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -428,6 +428,5 @@ class CustomHtmlContentHandlerTest {
         }.build()
       }.build()
     }.build()
-
   }
 }

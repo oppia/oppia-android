@@ -749,5 +749,4 @@ class OnboardingFragmentTest {
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
-
 }
