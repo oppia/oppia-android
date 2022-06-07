@@ -8,7 +8,9 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
 
 /** Activity to display all profiles to admin. */
-class ProfileListActivity : InjectableAppCompatActivity() {
+class ProfileListActivity :
+  InjectableAppCompatActivity(),
+  RouteToProfileEditListener {
   @Inject
   lateinit var profileListActivityPresenter: ProfileListActivityPresenter
 
@@ -21,6 +23,16 @@ class ProfileListActivity : InjectableAppCompatActivity() {
   override fun onSupportNavigateUp(): Boolean {
     finish()
     return false
+  }
+
+  override fun routeToProfileEditActivity(profileId: Int) {
+    startActivity(
+      ProfileEditActivity.createProfileEditActivity(
+        context = this,
+        profileId = profileId,
+        isMultipane = false
+      )
+    )
   }
 
   companion object {
