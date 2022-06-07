@@ -25,11 +25,33 @@ message OppiaMetricLog {
   // The current network type of the device.
   NetworkType network_type = 6;
 
-  // The current screen where the event is getting logged.
-  CurrentScreen current_screen = 7;
+  // The metric log of the event.
+  MetricLog metric_log = 7;
 
-  message MetricLogType {
-    
+  // The current screen where the event is getting logged.
+  CurrentScreen current_screen = 8;
+
+  // Structure of a metric log.
+  message MetricLog {
+    oneof metric_log_type {
+      // The metric being logged is related to the apk size of the application.
+      ApkSize apk_size = 1;
+
+      // The metric being logged is related to the storage usage of the application.
+      StorageUsage storage_usage = 2;
+
+      // The metric being logged is related to the startup latency of the application.
+      StartupLatency startup_latency = 3;
+
+      // The metric being logged is related to the memory usage of the application.
+      MemoryUsage memory_usage = 4;
+
+      // The metric being logged is related to the network usage of the application.
+      NetworkUsage network_usage = 5;
+
+      // The metric being logged is related to the cpu usage of the application.
+      CpuUsage cpu_usage = 6;
+    }
   }
 
   // Structure of the apk size metric.
