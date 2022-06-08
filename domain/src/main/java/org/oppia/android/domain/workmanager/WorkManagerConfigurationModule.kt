@@ -4,10 +4,10 @@ import androidx.work.Configuration
 import androidx.work.DelegatingWorkerFactory
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.domain.oppialogger.loggenerator.LogGenerationWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.loggenerator.LogGenerationWorkerFactory
 
 /** Provides [Configuration] for the work manager. */
 @Module

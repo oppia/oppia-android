@@ -9,7 +9,10 @@ interface LogGenerator {
    * Enqueues a [workRequest] using the [workManager] for generating metric logs of periodic
    * metrics like network and cpu usage.
    */
-  fun enqueueWorkRequestForPeriodicMetrics(workManager: WorkManager, workRequest: PeriodicWorkRequest)
+  fun enqueueWorkRequestForPeriodicMetrics(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  )
 
   /**
    * Enqueues a [workRequest] using the [workManager] for generating metric logs for getting to

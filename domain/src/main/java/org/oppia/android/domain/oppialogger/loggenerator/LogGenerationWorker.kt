@@ -5,12 +5,12 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 /**
  * Worker class that generates metric log reports regarding the performance of the application
@@ -20,7 +20,7 @@ class LogGenerationWorker private constructor(
   context: Context,
   params: WorkerParameters,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-): ListenableWorker(context, params) {
+) : ListenableWorker(context, params) {
 
   companion object {
     const val WORKER_CASE_KEY = "worker_case_key"
@@ -33,7 +33,7 @@ class LogGenerationWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
-      when(inputData.getStringFromData(WORKER_CASE_KEY)) {
+      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
         PERIODIC_METRIC_WORKER -> generatePeriodicMetricLog()
         STORAGE_USAGE_WORKER -> generateStorageUsageMetricLog()
         MEMORY_USAGE_WORKER -> generateMemoryUsageMetricLog()
