@@ -16,6 +16,8 @@ class AdministratorControlsFragment : InjectableFragment() {
 
   companion object {
     private const val IS_MULTIPANE_ARGUMENT_KEY = "AdministratorControlsFragment.is_multipane"
+
+    /** Creates a new instance of [AdministratorControlsFragment]. */
     fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
       val args = Bundle()
       args.putBoolean(IS_MULTIPANE_ARGUMENT_KEY, isMultipane)
@@ -44,6 +46,7 @@ class AdministratorControlsFragment : InjectableFragment() {
       .handleCreateView(inflater, container, isMultipane)
   }
 
+  /** Manually sets the backstack string to a specific fragment. */
   fun setSelectedFragment(selectedFragment: String) {
     administratorControlsFragmentPresenter.setSelectedFragment(selectedFragment)
   }
