@@ -55,7 +55,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
-        android:text="Ratio and Proportional Reasoning"
+        android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppia_primary_text"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/topic_thumbnail_image_view"
