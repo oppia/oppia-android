@@ -147,10 +147,10 @@ message OppiaMetricLog {
     // The storage tier where the amount of storage is less than or equal to 5GB.
     LOW_STORAGE = 1; // =<5GB
 
-    // The storage tier where the amount of storage is less than or equal to 2GB and more than 1GB.
+    // The storage tier where the amount of storage is less than or equal to 20GB and more than 5GB.
     MEDIUM_STORAGE = 2; // =<20GB && >5GB
 
-    // The storage tier where the amount of storage is greater than 2GB.
+    // The storage tier where the amount of storage is greater than 20GB.
     HIGH_STORAGE = 3; // >20GB
   }
 
