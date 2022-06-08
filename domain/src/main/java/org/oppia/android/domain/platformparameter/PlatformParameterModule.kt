@@ -13,14 +13,14 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
-import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequentRecordTimeIntervalInMinutes
-import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -106,26 +106,26 @@ class PlatformParameterModule {
   }
 
   @Provides
-  @PerformanceMetricsCollectionHighFrequentRecordTimeIntervalInMinutes
-  fun providePerformanceMetricsCollectionHighFrequentRecordTimeIntervalInMinutes(
+  @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
     return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
     )
   }
 
   @Provides
-  @PerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes
-  fun providePerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes(
+  @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
     return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_LESS_FREQUENT_RECORD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
     )
   }
 }
