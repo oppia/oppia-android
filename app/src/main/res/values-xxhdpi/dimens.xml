@@ -6,6 +6,4 @@
   <dimen name="profile_chooser_profile_view_view_margin_top">60dp</dimen>
   <dimen name="profile_chooser_add_view_margin_top_profile_not_added">60dp</dimen>
 
-  <!-- TopicInfoFragment -->
-  <dimen name="topic_info_fragment_topic_name_size">21sp</dimen>
 </resources>
