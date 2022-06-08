@@ -62,7 +62,8 @@ message OppiaMetricLog {
 
   // Structure of the storage usage metric.
   message StorageUsage {
-    // Amount of storage usage by the app on user's device in bytes.
+    // Amount of storage usage by the app on user's device in bytes. This storage size is the cumulative
+    // size of app-specific files which include the application cache but not the apk size.
     int64 storage_usage_bytes = 1;
   }
 
