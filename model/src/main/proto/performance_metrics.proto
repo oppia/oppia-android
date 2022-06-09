@@ -93,7 +93,7 @@ message OppiaMetricLog {
     //  this bucket's time interval.
     int64 bytes_received = 1;
 
-    // This field denotes the number of bytes transmitted by the application on the device during
+    // This field denotes the number of bytes sent by the application on the device during
     // this bucket's time interval.
     int64 bytes_transmitted = 2;
   }
