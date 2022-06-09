@@ -30,8 +30,8 @@ class LiTagHandler(
     lists: Stack<CustomHtmlContentHandler.ListTag>
   ) {
     when (tag) {
-      CUSTOM_LIST_UL_TAG -> lists.push(Ul(context, tag))
-      CUSTOM_LIST_OL_TAG -> lists.push(Ol(context, tag, displayLocale))
+      CUSTOM_LIST_UL_TAG -> lists.push(Ul(context))
+      CUSTOM_LIST_OL_TAG -> lists.push(Ol(context, displayLocale))
       CUSTOM_LIST_LI_TAG -> lists.peek().openItem(output)
     }
   }
@@ -50,7 +50,7 @@ class LiTagHandler(
   }
 
   /** Subclass of [ListTag] for unordered lists.*/
-  private class Ul(private val context: Context, private val tag: String) :
+  private class Ul(private val context: Context) :
     CustomHtmlContentHandler.ListTag {
 
     override fun openItem(text: Editable) {
@@ -62,7 +62,7 @@ class LiTagHandler(
       appendNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, ListItemLeadingMarginSpan(context, indentation, "•", tag))
+        setSpanFromMark(text, mark, ListItemLeadingMarginSpan.UlSpan(context, indentation))
       }
     }
   }
@@ -70,7 +70,6 @@ class LiTagHandler(
   /** Subclass of [ListTag] for ordered lists.*/
   private class Ol(
     private val context: Context,
-    private val tag: String,
     private val displayLocale: OppiaLocale.DisplayLocale
   ) : CustomHtmlContentHandler.ListTag {
 
@@ -88,11 +87,10 @@ class LiTagHandler(
       getLast<NumberListItem>(text)?.let { mark ->
         setSpanFromMark(
           text, mark,
-          ListItemLeadingMarginSpan(
+          ListItemLeadingMarginSpan.OlSpan(
             context,
             indentation,
-            "${displayLocale.run { (mark.number).toHumanReadableString(mark.number) }}.",
-            tag
+            "${displayLocale.run { (mark.number).toHumanReadableString(mark.number) }}."
           )
         )
       }

@@ -22,70 +22,104 @@ private const val OL_TAG = "oppia-ol"
  * @param tag shows the custom tag.
  * Reference: https://medium.com/swlh/making-nested-lists-with-android-spannables-in-kotlin-4ad00052912c
  */
-class ListItemLeadingMarginSpan(
-  private val context: Context,
-  private val indentation: Int,
-  private val string: String,
-  private val tag: String,
-) : LeadingMarginSpan {
-  private val resources = context.resources
-  private val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
-  private val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
-  /** The space between the start of the line and the bullet. */
-  private val spacingBeforeBullet = resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
+  class UlSpan(
+    context: Context,
+    private val indentation: Int,
+  ) : LeadingMarginSpan {
+    private val resources = context.resources
+    private val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
+    private val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
 
-  /** The space between the bullet and the text. */
-  private val spacingBeforeText =
-    resources.getDimensionPixelSize(R.dimen.spacing_before_text)
-  private val spacingBeforeNumberedText =
-    resources.getDimensionPixelSize(R.dimen.spacing_before_numbered_text)
+    /** The space between the start of the line and the bullet. */
+    private val spacingBeforeBullet =
+      resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
 
-  override fun drawLeadingMargin(
-    canvas: Canvas,
-    paint: Paint,
-    x: Int,
-    dir: Int,
-    top: Int,
-    baseline: Int,
-    bottom: Int,
-    text: CharSequence,
-    start: Int,
-    end: Int,
-    first: Boolean,
-    layout: Layout
-  ) {
-    val startCharOfSpan = (text as Spanned).getSpanStart(this)
-    val isFirstCharacter = startCharOfSpan == start
+    /** The space between the bullet and the text. */
+    private val spacingBeforeText =
+      resources.getDimensionPixelSize(R.dimen.spacing_before_text)
 
-    if (isFirstCharacter) {
-      val trueX = gapWidth * indentation + spacingBeforeBullet
+    override fun drawLeadingMargin(
+      canvas: Canvas,
+      paint: Paint,
+      x: Int,
+      dir: Int,
+      top: Int,
+      baseline: Int,
+      bottom: Int,
+      text: CharSequence,
+      start: Int,
+      end: Int,
+      first: Boolean,
+      layout: Layout
+    ) {
+      val startCharOfSpan = (text as Spanned).getSpanStart(this)
+      val isFirstCharacter = startCharOfSpan == start
 
-      val yPosition = (top + bottom) / 2f
-      when (tag) {
-        UL_TAG -> {
-          val style = paint.style
-          if (indentation == 0) {
-            paint.style = Paint.Style.FILL
-          } else {
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 2f
-          }
-          canvas.drawCircle(trueX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
-          paint.style = style
+      if (isFirstCharacter) {
+        val trueX = gapWidth * indentation + spacingBeforeBullet
+
+        val yPosition = (top + bottom) / 2f
+        val style = paint.style
+        if (indentation == 0) {
+          paint.style = Paint.Style.FILL
+        } else {
+          paint.style = Paint.Style.STROKE
+          paint.strokeWidth = 2f
         }
-        OL_TAG -> {
-          canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
-        }
+        canvas.drawCircle(trueX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
+        paint.style = style
       }
+    }
+
+    override fun getLeadingMargin(first: Boolean): Int {
+      return 2 * bulletRadius + spacingBeforeText
     }
   }
 
-  override fun getLeadingMargin(first: Boolean): Int {
-    return when (tag) {
-      UL_TAG -> 2 * bulletRadius + spacingBeforeText
-      OL_TAG -> 2 * string.length + spacingBeforeNumberedText
-      else -> 0
+  class OlSpan(
+    context: Context,
+    private val indentation: Int,
+    private val string: String
+  ) : LeadingMarginSpan {
+    private val resources = context.resources
+    private val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
+
+    /** The space between the start of the line and the bullet. */
+    private val spacingBeforeBullet =
+      resources.getDimensionPixelSize(R.dimen.spacing_before_bullet)
+
+    private val spacingBeforeNumberedText =
+      resources.getDimensionPixelSize(R.dimen.spacing_before_numbered_text)
+
+    override fun drawLeadingMargin(
+      canvas: Canvas,
+      paint: Paint,
+      x: Int,
+      dir: Int,
+      top: Int,
+      baseline: Int,
+      bottom: Int,
+      text: CharSequence,
+      start: Int,
+      end: Int,
+      first: Boolean,
+      layout: Layout
+    ) {
+      val startCharOfSpan = (text as Spanned).getSpanStart(this)
+      val isFirstCharacter = startCharOfSpan == start
+
+      if (isFirstCharacter) {
+        val trueX = gapWidth * indentation + spacingBeforeBullet
+
+        canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
+
+      }
+    }
+
+    override fun getLeadingMargin(first: Boolean): Int {
+      return 2 * string.length + spacingBeforeNumberedText
     }
   }
 }

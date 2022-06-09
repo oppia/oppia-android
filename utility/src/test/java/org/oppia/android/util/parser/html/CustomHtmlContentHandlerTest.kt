@@ -208,7 +208,7 @@ class CustomHtmlContentHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
       .hasLength(1)
   }
 
@@ -230,7 +230,7 @@ class CustomHtmlContentHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(1)
   }
 
