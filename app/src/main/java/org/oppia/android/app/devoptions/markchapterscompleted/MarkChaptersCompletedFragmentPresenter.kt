@@ -72,7 +72,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
               chapterSelected(
-                viewModel.chapterIndex, viewModel.nextStoryIndex,
+                viewModel.chapterIndex,
+                viewModel.nextStoryIndex,
                 viewModel.chapterSummary.explorationId
               )
           }
