@@ -114,7 +114,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
         val trueX = gapWidth * indentation + spacingBeforeBullet
 
         canvas.drawText(string, trueX.toFloat(), baseline.toFloat(), paint)
-
       }
     }
 
