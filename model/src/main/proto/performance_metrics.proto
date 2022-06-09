@@ -35,46 +35,46 @@ message OppiaMetricLog {
   message MetricLog {
     oneof metric_log_type {
       // The metric being logged is related to the apk size of the application.
-      ApkSize apk_size = 1;
+      ApkSizeMetric apk_size_metric = 1;
 
       // The metric being logged is related to the storage usage of the application.
-      StorageUsage storage_usage = 2;
+      StorageUsageMetric storage_usage_metric = 2;
 
       // The metric being logged is related to the startup latency of the application.
-      StartupLatency startup_latency = 3;
+      StartupLatencyMetric startup_latency_metric = 3;
 
       // The metric being logged is related to the memory usage of the application.
-      MemoryUsage memory_usage = 4;
+      MemoryUsageMetric memory_usage_metric = 4;
 
       // The metric being logged is related to the network usage of the application.
-      NetworkUsage network_usage = 5;
+      NetworkUsageMetric network_usage_metric = 5;
 
       // The metric being logged is related to the cpu usage of the application.
-      CpuUsage cpu_usage = 6;
+      CpuUsageMetric cpu_usage_metric = 6;
     }
   }
 
   // Structure of the apk size metric.
-  message ApkSize {
+  message ApkSizeMetric {
     // Size of the app's installed APK file, in bytes.
     int64 apk_size_bytes = 1;
   }
 
   // Structure of the storage usage metric.
-  message StorageUsage {
+  message StorageUsageMetric {
     // Amount of storage usage by the app on user's device in bytes. This storage size is the cumulative
     // size of app-specific files which include the application cache but not the apk size.
     int64 storage_usage_bytes = 1;
   }
 
   // Structure of the startup latency metric.
-  message StartupLatency {
+  message StartupLatencyMetric {
     // Number of milliseconds required to start up the application from a cold start.
     int64 startup_latency_millis = 1;
   }
 
   // Structure of the memory usage metric.
-  message MemoryUsage {
+  message MemoryUsageMetric {
     // Amount of memory used by the application on the device in bytes.
     // Here, PSS refers to Proportional Set Size which is the number of non-shared pages used by the
     // app. It is majorly useful when we want to know how much memory is used by all processes since
@@ -84,7 +84,7 @@ message OppiaMetricLog {
   }
 
   // Structure of the network usage metric.
-  message NetworkUsage {
+  message NetworkUsageMetric {
     // Usage data is collected in discrete bins of time called 'Buckets'. The time interval of this
     // bucket is customizable and depends on the query that we are making. This data is logged after
     // the bucket's timeframe.
@@ -99,9 +99,9 @@ message OppiaMetricLog {
   }
 
   // Structure of the cpu usage metric.
-  message CpuUsage {
+  message CpuUsageMetric {
     // Amount of cpu used by the application.
-    int64 cpu_usage = 1;
+    int64 cpu_usage_metric = 1;
   }
 
   // Supported priority of events for performance metric logging.
