@@ -26,14 +26,14 @@ message OppiaMetricLog {
   NetworkType network_type = 6;
 
   // The metric log of the event.
-  MetricLog metric_log = 7;
+  LoggableMetric loggable_metric = 7;
 
   // The current screen where the event is getting logged.
   CurrentScreen current_screen = 8;
 
-  // Structure of a metric log.
-  message MetricLog {
-    oneof metric_log_type {
+  // Structure of a loggable metric.
+  message LoggableMetric {
+    oneof loggable_metric_type {
       // The metric being logged is related to the apk size of the application.
       ApkSizeMetric apk_size_metric = 1;
 
