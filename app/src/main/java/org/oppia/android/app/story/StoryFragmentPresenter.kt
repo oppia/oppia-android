@@ -1,6 +1,8 @@
 package org.oppia.android.app.story
 
 import android.content.res.Resources
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -85,6 +87,15 @@ class StoryFragmentPresenter @Inject constructor(
     binding.storyToolbarTitle.setOnClickListener {
       binding.storyToolbarTitle.isSelected = true
     }
+
+    Handler(Looper.getMainLooper()).postDelayed(
+      {
+        if (binding.storyToolbarTitle.isSelected) {
+          binding.storyToolbarTitle.isSelected = false
+        } 
+      },
+      25000
+    )
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     linearSmoothScroller = createSmoothScroller()
