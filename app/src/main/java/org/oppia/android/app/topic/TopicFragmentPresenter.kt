@@ -1,5 +1,7 @@
 package org.oppia.android.app.topic
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +62,15 @@ class TopicFragmentPresenter @Inject constructor(
     binding.topicToolbar.setOnClickListener {
       binding.topicToolbarTitle.isSelected = true
     }
+
+    Handler(Looper.getMainLooper()).postDelayed(
+      {
+        if (binding.topicToolbarTitle.isSelected) {
+          binding.topicToolbarTitle.isSelected = false
+        } 
+      },
+      25000
+    )
 
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
