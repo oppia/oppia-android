@@ -15,15 +15,16 @@ private const val OL_TAG = "oppia-ol"
 
 /**
  * A version of [LeadingMarginSpan] that shows text inside the margin.
- *
- * @param context the activity context.
- * @param indentation The zero-based indentation level of this item.
- * @param string String to show inside the margin.
- * @param tag shows the custom tag.
  * Reference: https://medium.com/swlh/making-nested-lists-with-android-spannables-in-kotlin-4ad00052912c
  */
 sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
+  /**
+   * A subclass of [LeadingMarginSpan] that shows nested list span for <ul> tags.
+   *
+   * @param context the activity context.
+   * @param indentation The zero-based indentation level of this item
+   */
   class UlSpan(
     context: Context,
     private val indentation: Int,
@@ -78,6 +79,12 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     }
   }
 
+  /**
+   * A subclass of [LeadingMarginSpan] that shows nested list span for <ol> tags.
+   *
+   * @param context the activity context.
+   * @param indentation The zero-based indentation level of this item
+   */
   class OlSpan(
     context: Context,
     private val indentation: Int,
