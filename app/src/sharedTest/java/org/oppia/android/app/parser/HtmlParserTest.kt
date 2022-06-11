@@ -225,7 +225,7 @@ class HtmlParserTest {
   fun testHtmlContent_withNoImageSupport_handleImage_notParsed() {
     val htmlParser = htmlParserFactory.create(
       policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)

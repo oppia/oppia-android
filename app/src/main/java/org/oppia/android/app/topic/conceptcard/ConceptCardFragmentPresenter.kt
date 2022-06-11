@@ -72,8 +72,13 @@ class ConceptCardFragmentPresenter @Inject constructor(
             ephemeralConceptCard.writtenTranslationContext
           )
         view.text = htmlParserFactory
-          .create(resourceBucketName, entityType, skillId, imageCenterAlign = true,
-            displayLocale = appLanguageResourceHandler.getDisplayLocale())
+          .create(
+            resourceBucketName,
+            entityType,
+            skillId,
+            imageCenterAlign = true,
+            displayLocale = appLanguageResourceHandler.getDisplayLocale()
+          )
           .parseOppiaHtml(
             explanationHtml, view
           )
