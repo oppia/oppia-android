@@ -68,10 +68,10 @@ class RevisionCardFragmentPresenter @Inject constructor(
           )
         view.text = htmlParserFactory.create(
           resourceBucketName, entityType, topicId, imageCenterAlign = true,
-          customOppiaTagActionListener = this
-        ).parseOppiaHtml(
-          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true,
+          customOppiaTagActionListener = this,
           displayLocale = appLanguageResourceHandler.getDisplayLocale()
+        ).parseOppiaHtml(
+          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
         )
       }
     )

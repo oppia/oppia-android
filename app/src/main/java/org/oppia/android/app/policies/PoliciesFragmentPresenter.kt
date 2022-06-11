@@ -57,25 +57,27 @@ class PoliciesFragmentPresenter @Inject constructor(
       entityType = "",
       entityId = "",
       imageCenterAlign = false,
+      customOppiaTagActionListener = null,
+      resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       policyDescription,
       binding.policyDescriptionTextView,
       supportsLinks = true,
-      supportsConceptCards = false,
-      resourceHandler.getDisplayLocale()
+      supportsConceptCards = false
     )
 
     binding.policyWebLinkTextView.text = htmlParserFactory.create(
       gcsResourceName = "",
       entityType = "",
       entityId = "",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      customOppiaTagActionListener = null,
+      resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       policyWebLink,
       binding.policyWebLinkTextView,
       supportsLinks = true,
-      supportsConceptCards = false,
-      displayLocale = resourceHandler.getDisplayLocale()
+      supportsConceptCards = false
     )
   }
 }

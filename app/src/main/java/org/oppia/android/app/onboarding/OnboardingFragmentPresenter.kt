@@ -135,13 +135,13 @@ class OnboardingFragmentPresenter @Inject constructor(
         resourceHandler.getStringInLocale(R.string.app_name)
       )
     binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = htmlParserFactory.create(
-      policyOppiaTagActionListener = this
+      policyOppiaTagActionListener = this,
+      displayLocale = resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       completeString,
       binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView,
       supportsLinks = true,
-      supportsConceptCards = false,
-      displayLocale = resourceHandler.getDisplayLocale()
+      supportsConceptCards = false
     )
   }
 

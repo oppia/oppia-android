@@ -123,11 +123,11 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       resourceBucketName,
       resumeLessonViewModel.entityType,
       explorationId,
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageResourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       resumeLessonViewModel.chapterSummary.get()!!.summary,
-      binding.resumeLessonChapterDescriptionTextView,
-      displayLocale = appLanguageResourceHandler.getDisplayLocale()
+      binding.resumeLessonChapterDescriptionTextView
     )
   }
 

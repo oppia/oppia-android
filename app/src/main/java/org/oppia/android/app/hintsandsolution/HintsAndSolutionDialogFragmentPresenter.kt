@@ -230,11 +230,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         resourceBucketName,
         entityType,
         hintsViewModel.explorationId.get()!!,
-        /* imageCenterAlign= */ true
+        /* imageCenterAlign= */ true,
+        displayLocale = resourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
         hintsViewModel.hintsAndSolutionSummary.get()!!,
-        binding.hintsAndSolutionSummary,
-        displayLocale = resourceHandler.getDisplayLocale()
+        binding.hintsAndSolutionSummary
       )
 
     if (hintsViewModel.hintCanBeRevealed.get()!!) {
@@ -322,10 +322,10 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
     }
     binding.solutionSummary.text = htmlParserFactory.create(
-      resourceBucketName, entityType, viewModel.explorationId.get()!!, /* imageCenterAlign= */ true
-    ).parseOppiaHtml(
-      solutionViewModel.solutionSummary.get()!!, binding.solutionSummary,
+      resourceBucketName, entityType, viewModel.explorationId.get()!!, /* imageCenterAlign= */ true,
       displayLocale = resourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
     )
 
     if (solutionViewModel.solutionCanBeRevealed.get()!!) {

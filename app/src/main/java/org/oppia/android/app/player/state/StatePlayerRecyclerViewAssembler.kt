@@ -937,13 +937,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
               entityType,
               contentViewModel.gcsEntityId,
               imageCenterAlign = true,
-              customOppiaTagActionListener = customTagListener
+              customOppiaTagActionListener = customTagListener,
+              displayLocale = resourceHandler.getDisplayLocale()
             ).parseOppiaHtml(
               contentViewModel.htmlContent.toString(),
               binding.contentTextView,
               supportsLinks = true,
-              supportsConceptCards = contentViewModel.supportsConceptCards,
-              displayLocale = resourceHandler.getDisplayLocale()
+              supportsConceptCards = contentViewModel.supportsConceptCards
             )
         }
       )
@@ -972,13 +972,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
               entityType,
               feedbackViewModel.gcsEntityId,
               imageCenterAlign = true,
-              customOppiaTagActionListener = customTagListener
+              customOppiaTagActionListener = customTagListener,
+              displayLocale = resourceHandler.getDisplayLocale()
             ).parseOppiaHtml(
               feedbackViewModel.htmlContent.toString(),
               binding.feedbackTextView,
               supportsLinks = true,
-              supportsConceptCards = feedbackViewModel.supportsConceptCards,
-              displayLocale = resourceHandler.getDisplayLocale()
+              supportsConceptCards = feedbackViewModel.supportsConceptCards
             )
         }
       )
@@ -1081,14 +1081,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 entityType,
                 submittedAnswerViewModel.gcsEntityId,
                 imageCenterAlign = false,
-                customOppiaTagActionListener = customTagListener
+                customOppiaTagActionListener = customTagListener,
+                displayLocale = resourceHandler.getDisplayLocale()
               )
               submittedAnswerViewModel.setSubmittedAnswer(
                 htmlParser.parseOppiaHtml(
                   userAnswer.htmlAnswer,
                   binding.submittedAnswerTextView,
-                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards,
-                  displayLocale = resourceHandler.getDisplayLocale()
+                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
                 ),
                 accessibleAnswer
               )
@@ -1157,12 +1157,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 entityType,
                 gcsEntityId,
                 imageCenterAlign = false,
-                customOppiaTagActionListener = customTagListener
+                customOppiaTagActionListener = customTagListener,
+                displayLocale = resourceHandler.getDisplayLocale()
               ).parseOppiaHtml(
                 viewModel,
                 binding.submittedAnswerContentTextView,
-                supportsConceptCards = supportsConceptCards,
-                displayLocale = resourceHandler.getDisplayLocale()
+                supportsConceptCards = supportsConceptCards
               )
           }
         )

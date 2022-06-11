@@ -162,7 +162,8 @@ class ListItemLeadingMarginSpanTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
@@ -171,8 +172,7 @@ class ListItemLeadingMarginSpanTest {
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another</li></ul>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
     }
 
@@ -206,7 +206,8 @@ class ListItemLeadingMarginSpanTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
@@ -228,8 +229,7 @@ class ListItemLeadingMarginSpanTest {
           "          </ul>" +
           "        </li>" +
           "      </ul>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
     }
 
@@ -263,7 +263,8 @@ class ListItemLeadingMarginSpanTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
@@ -285,8 +286,7 @@ class ListItemLeadingMarginSpanTest {
           "          </ol>" +
           "        </li>" +
           "        </ol>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
     }
 
@@ -320,7 +320,8 @@ class ListItemLeadingMarginSpanTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
@@ -329,8 +330,7 @@ class ListItemLeadingMarginSpanTest {
           "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another</li></ol>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
     }
 

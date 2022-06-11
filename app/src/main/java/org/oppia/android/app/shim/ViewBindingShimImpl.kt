@@ -105,11 +105,11 @@ class ViewBindingShimImpl @Inject constructor(
         resourceBucketName,
         entityType,
         entityId,
-        false
+        false,
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
-        binding.itemSelectionContentsTextView,
-        displayLocale = appLanguageResourceHandler.getDisplayLocale()
+        binding.itemSelectionContentsTextView
       )
     binding.viewModel = viewModel
   }
@@ -139,11 +139,11 @@ class ViewBindingShimImpl @Inject constructor(
       DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
     binding.htmlContent =
       htmlParserFactory.create(
-        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false
+        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false,
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
-        binding.multipleChoiceContentTextView,
-        displayLocale = appLanguageResourceHandler.getDisplayLocale()
+        binding.multipleChoiceContentTextView
       )
     binding.viewModel = viewModel
   }
@@ -226,10 +226,10 @@ class ViewBindingShimImpl @Inject constructor(
       resourceBucketName,
       entityType,
       entityId,
-      /* imageCenterAlign= */ false
-    ).parseOppiaHtml(
-      viewModel, dragDropSingleItemBinding.dragDropContentTextView,
+      /* imageCenterAlign= */ false,
       displayLocale = appLanguageResourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      viewModel, dragDropSingleItemBinding.dragDropContentTextView
     )
   }
 

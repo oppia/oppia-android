@@ -171,12 +171,13 @@ class FAQSingleActivityTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      customOppiaTagActionListener = null,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.faq_answer_1),
-      answerTextView,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      answerTextView
     )
     assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
   }

@@ -33,17 +33,17 @@ class ImageTagHandler(
         append('\uFFFC')
         return@run startIndex to length
       }
-      checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
-      val drawable =
-        imageRetriever.loadDrawable(
-          source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
-        )
-      output.setSpan(
-        ImageSpan(drawable, source),
-        startIndex,
-        endIndex,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
+        imageRetriever?.let {
+          val drawable =  imageRetriever.loadDrawable(
+            source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
+          )
+          output.setSpan(
+            ImageSpan(drawable, source),
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+          )
+        }
     } else consoleLogger.e("ImageTagHandler", "Failed to parse image tag")
   }
 }

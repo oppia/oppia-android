@@ -27,9 +27,9 @@ class HtmlParser private constructor(
   private val consoleLogger: ConsoleLogger,
   private val cacheLatexRendering: Boolean,
   customOppiaTagActionListener: CustomOppiaTagActionListener?,
-  policyOppiaTagActionListener: PolicyOppiaTagActionListener?
+  policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
+  displayLocale: OppiaLocale.DisplayLocale
 ) {
-  private lateinit var displayLocale: OppiaLocale.DisplayLocale
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
       object : ConceptCardTagHandler.ConceptCardLinkClickListener {
@@ -68,10 +68,8 @@ class HtmlParser private constructor(
     rawString: String,
     htmlContentTextView: TextView,
     supportsLinks: Boolean = false,
-    supportsConceptCards: Boolean = false,
-    displayLocale: OppiaLocale.DisplayLocale
+    supportsConceptCards: Boolean = false
   ): Spannable {
-    this.displayLocale = displayLocale
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
     when (getLayoutDirection(htmlContentTextView)) {
@@ -202,7 +200,8 @@ class HtmlParser private constructor(
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
+      displayLocale: OppiaLocale.DisplayLocale
     ): HtmlParser {
       return HtmlParser(
         context,
@@ -214,7 +213,8 @@ class HtmlParser private constructor(
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
         customOppiaTagActionListener,
-        null
+        null,
+        displayLocale
       )
     }
 
@@ -225,7 +225,8 @@ class HtmlParser private constructor(
      * needed).
      */
     fun create(
-      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null
+      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null,
+      displayLocale: OppiaLocale.DisplayLocale
     ): HtmlParser {
       return HtmlParser(
         context = context,
@@ -237,7 +238,8 @@ class HtmlParser private constructor(
         consoleLogger = consoleLogger,
         cacheLatexRendering = false,
         customOppiaTagActionListener = null,
-        policyOppiaTagActionListener = policyOppiaTagActionListener
+        policyOppiaTagActionListener = policyOppiaTagActionListener,
+        displayLocale = displayLocale
       )
     }
   }

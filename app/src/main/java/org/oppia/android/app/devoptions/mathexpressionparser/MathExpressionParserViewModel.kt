@@ -36,7 +36,8 @@ class MathExpressionParserViewModel @Inject constructor(
       gcsResourceName = "",
       entityType = "",
       entityId = "",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      displayLocale = appLanguageResourceHandler.getDisplayLocale()
     )
   }
   private lateinit var parseResultTextView: TextView
@@ -91,8 +92,7 @@ class MathExpressionParserViewModel @Inject constructor(
     parseResultTextView.text = if ("oppia-noninteractive-math" in newText) {
       htmlParser.parseOppiaHtml(
         newText.replace("\n", "<br />"),
-        parseResultTextView,
-        displayLocale = appLanguageResourceHandler.getDisplayLocale()
+        parseResultTextView
       )
     } else newText
   }

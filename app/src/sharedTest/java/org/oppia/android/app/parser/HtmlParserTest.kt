@@ -187,7 +187,8 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_withNoImageSupport_handleCustomPolicyTag_parsedHtmlDisplaysStyledText() {
     val htmlParser = htmlParserFactory.create(
-      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView =
@@ -199,8 +200,7 @@ class HtmlParserTest {
           "link=\"privacy\">Privacy Policy </oppia-noninteractive-policy>.",
         textView,
         supportsLinks = true,
-        supportsConceptCards = false,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = false
       )
       textView.text = htmlResult
 
@@ -224,15 +224,15 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_withNoImageSupport_handleImage_notParsed() {
     val htmlParser = htmlParserFactory.create(
-      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
           "</oppia-noninteractive-image>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
       return@runWithActivity textView to htmlResult
     }
@@ -240,7 +240,7 @@ class HtmlParserTest {
     // Verify that the image span is 0 as image support is not enabled.
     val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(0)
-    // The two strings aren't equal because this html parser does not support Oppia image tags.
+//    // The two strings aren't equal because this html parser does not support Oppia image tags.
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
@@ -251,7 +251,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -265,8 +266,7 @@ class HtmlParserTest {
           "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp" +
           "\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
           "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -284,7 +284,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -298,8 +299,7 @@ class HtmlParserTest {
           "oppia-noninteractive-image\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp" +
           "\u003e\u003cstrong\u003eQuestion 6\u003c/strong\u003e: What " +
           "fraction of the cake has big red cherries in the pineapple slices?\u003c/p\u003e",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -317,7 +317,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -331,8 +332,7 @@ class HtmlParserTest {
           "\u003e\u003cp\u003e\u00a0\u003c/p\u003e\u003cp\u003e\u003cstrongQuestion 6" +
           "\u003c/strong\u003e: What fraction of the cake has big " +
           "red cherries in the pineapple slices?\u003c/p\u003e",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
       return@runWithActivity textView to htmlResult
     }
@@ -347,15 +347,15 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       val htmlResult = htmlParser.parseOppiaHtml(
         "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li><li>How to tell whether one" +
           " counting number is bigger or smaller than another.</li></ul>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -372,15 +372,15 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
           "</oppia-noninteractive-image>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
     }
 
@@ -399,7 +399,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
@@ -414,7 +415,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
@@ -429,7 +431,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     arrangeTextViewWithLayoutDirection(htmlParser, View.LAYOUT_DIRECTION_RTL)
     val textView = arrangeTextViewWithLayoutDirection(
@@ -445,15 +448,15 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
       return@runWithActivity htmlParser.parseOppiaHtml(
         "A<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
           "</oppia-noninteractive-image>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
     }
 
@@ -473,6 +476,7 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -481,8 +485,7 @@ class HtmlParserTest {
           "</oppia-noninteractive-image>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
     }
@@ -499,6 +502,7 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -507,8 +511,7 @@ class HtmlParserTest {
           "</oppia-noninteractive-image>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
     }
@@ -524,7 +527,8 @@ class HtmlParserTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -532,8 +536,7 @@ class HtmlParserTest {
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
-        supportsConceptCards = false,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = false
       )
     }
 
@@ -550,7 +553,8 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      customOppiaTagActionListener = mockCustomOppiaTagActionListener
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -558,8 +562,7 @@ class HtmlParserTest {
         "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
     }
 
@@ -572,7 +575,8 @@ class HtmlParserTest {
   @Test
   fun testHtmlContent_withUrl_hasClickableSpanAndCorrectText() {
     val htmlParser = htmlParserFactory.create(
-      gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false
+      gcsResourceName = "", entityType = "", entityId = "", imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -581,7 +585,6 @@ class HtmlParserTest {
           "<a href=\"https://creativecommons.org/licenses/by-sa/4.0/legalcode\"> here</a>",
         textView,
         supportsLinks = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
@@ -602,7 +605,8 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      customOppiaTagActionListener = mockCustomOppiaTagActionListener
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -611,8 +615,7 @@ class HtmlParserTest {
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
         supportsLinks = false,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
     }
@@ -631,7 +634,8 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      customOppiaTagActionListener = mockCustomOppiaTagActionListener
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val textView = activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -640,8 +644,7 @@ class HtmlParserTest {
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
 
@@ -673,6 +676,7 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -681,8 +685,7 @@ class HtmlParserTest {
           "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
     }
@@ -699,6 +702,7 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -708,8 +712,7 @@ class HtmlParserTest {
           "</oppia-noninteractive-math>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
     }
@@ -728,6 +731,7 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -738,7 +742,6 @@ class HtmlParserTest {
         textView,
         supportsLinks = true,
         supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
       )
       textView.text = htmlResult
     }
@@ -757,6 +760,7 @@ class HtmlParserTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
@@ -767,8 +771,7 @@ class HtmlParserTest {
           "</oppia-noninteractive-math>",
         textView,
         supportsLinks = true,
-        supportsConceptCards = true,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        supportsConceptCards = true
       )
       textView.text = htmlResult
     }
@@ -790,8 +793,7 @@ class HtmlParserTest {
           "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)<br></li>" +
           "<li>How to tell whether one counting number is bigger or " +
           "smaller than another<br></li></ul>",
-        textView,
-        displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        textView
       )
       return@runWithActivity textView
     }
