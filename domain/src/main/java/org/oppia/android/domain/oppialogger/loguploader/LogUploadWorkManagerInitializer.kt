@@ -17,6 +17,8 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
 
 /** Enqueues unique periodic work requests for uploading events and exceptions to the remote service on application creation. */
 @Singleton
@@ -24,9 +26,9 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   private val context: Context,
   private val logUploader: LogUploader,
   private val logGenerator: LogGenerator,
-  @PerformanceMetricsCollectionHighFrequentRecordTimeIntervalInMinutes
+  @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   performanceMetricsCollectionHighFrequencyTimeInterval: PlatformParameterValue<Int>,
-  @PerformanceMetricsCollectionLessFrequentRecordTimeIntervalInMinutes
+  @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
   performanceMetricCollectionLowFrequencyTimeInterval: PlatformParameterValue<Int>
 ) : ApplicationStartupListener {
 

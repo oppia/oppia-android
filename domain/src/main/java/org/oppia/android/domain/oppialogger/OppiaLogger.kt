@@ -306,7 +306,7 @@ class OppiaLogger @Inject constructor(
     return OppiaMetricLog.LoggableMetric.newBuilder()
       .setNetworkUsageMetric(
         OppiaMetricLog.NetworkUsageMetric.newBuilder()
-          .setBytesTransmitted(totalBytesSent)
+          .setBytesSent(totalBytesSent)
           .setBytesReceived(totalBytesReceived)
           .build()
       ).build()
