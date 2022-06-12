@@ -1945,7 +1945,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testFileContent_componentColors_doesNotstartWithComponentColors_fileContentIsNotCorrect() {
+  fun testFileContent_componentColors_doesNotStartWithComponentColors_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
         <color name="shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
