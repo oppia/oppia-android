@@ -95,7 +95,7 @@ message OppiaMetricLog {
 
     // This field denotes the number of bytes sent by the application on the device during
     // this bucket's time interval.
-    int64 bytes_transmitted = 2;
+    int64 bytes_sent = 2;
   }
 
   // Structure of the cpu usage metric.
