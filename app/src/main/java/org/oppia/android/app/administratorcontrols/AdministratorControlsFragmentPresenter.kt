@@ -41,6 +41,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   @Inject
   lateinit var administratorControlsViewModel: AdministratorControlsViewModel
 
+  /** Initializes and creates the views for the [AdministratorControlsFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -73,6 +74,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /** Returns the recycler view adapter for the controls panel in  administrator controls fragment. */
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<AdministratorControlsItemViewModel> {
       return BindableAdapter.MultiTypeBuilder
@@ -145,6 +147,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
         .build()
     }
 
+  /** Binds the profile list to the view. */
   private fun bindProfileList(
     binding: AdministratorControlsProfileViewBinding,
     model: AdministratorControlsProfileViewModel
@@ -153,6 +156,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
+  /** Binds the app version to the view. */
   private fun bindAppVersion(
     binding: AdministratorControlsAppInformationViewBinding,
     model: AdministratorControlsAppInformationViewModel
@@ -169,6 +173,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
     binding.viewModel = model
   }
 
+  /** Sets the selected fragment Argument as the selected fragment in the view model. */
   fun setSelectedFragment(selectedFragment: String) {
     administratorControlsViewModel.selectedFragmentIndex.set(
       getSelectedFragmentIndex(selectedFragment)
