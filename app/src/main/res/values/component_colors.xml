@@ -7,6 +7,13 @@
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_rounded_rect_background_color">@color/color_palette_rounded_rect_background_color</color>
+  <color name="component_color_shared_multiple_choice_interaction_color">@color/color_palette_multiple_choice_color</color>
+  <color name="component_color_shared_multiple_choice_interaction_text_color">@color/color_palette_multiple_choice_text_color</color>
+  <color name="component_color_shared_multiple_choice_interaction_selected_color">@color/color_palette_multiple_choice_selected_color</color>
+  <color name="component_color_shared_multiple_choice_interaction_selected_text_color">@color/color_palette_multiple_choice_selected_text_color</color>
+  <color name="component_color_shared_item_selection_interaction_color">@color/color_palette_item_selection_color</color>
+  <color name="component_color_shared_item_selection_interaction_text_color">@color/color_palette_item_selection_text_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
