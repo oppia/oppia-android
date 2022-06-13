@@ -1,5 +1,6 @@
 package org.oppia.android.app.resumelesson
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -126,6 +127,9 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       resumeLessonViewModel.chapterSummary.get()!!.summary,
       binding.resumeLessonChapterDescriptionTextView
     )
+    if(binding.resumeLessonChapterDescriptionTextView.text.toString().isBlank()) {
+      binding.resumeLessonChapterDescriptionTextView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+    }
   }
 
   private fun getResumeLessonViewModel(): ResumeLessonViewModel {
