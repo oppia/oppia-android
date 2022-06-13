@@ -84,7 +84,7 @@ class LiTagHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
       .hasLength(2)
   }
 
@@ -107,7 +107,7 @@ class LiTagHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(2)
   }
   @Test
@@ -130,7 +130,7 @@ class LiTagHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan::class))
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(4)
   }
 
