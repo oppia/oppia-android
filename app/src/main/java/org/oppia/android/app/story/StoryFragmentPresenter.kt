@@ -1,8 +1,6 @@
 package org.oppia.android.app.story
 
 import android.content.res.Resources
-import android.os.Handler
-import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -30,6 +28,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
@@ -51,6 +50,7 @@ class StoryFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -88,14 +88,11 @@ class StoryFragmentPresenter @Inject constructor(
       binding.storyToolbarTitle.isSelected = true
     }
 
-    Handler(Looper.getMainLooper()).postDelayed(
-      {
-        if (binding.storyToolbarTitle.isSelected) {
-          binding.storyToolbarTitle.isSelected = false
-        } 
-      },
-      25000
-    )
+    lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
+      if (binding.storyToolbarTitle.isSelected) {
+        binding.storyToolbarTitle.isSelected = false
+      }
+    }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     linearSmoothScroller = createSmoothScroller()

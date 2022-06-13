@@ -1,7 +1,5 @@
 package org.oppia.android.app.topic
 
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -26,6 +25,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicViewModel>,
   private val oppiaLogger: OppiaLogger,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -63,14 +63,11 @@ class TopicFragmentPresenter @Inject constructor(
       binding.topicToolbarTitle.isSelected = true
     }
 
-    Handler(Looper.getMainLooper()).postDelayed(
-      {
-        if (binding.topicToolbarTitle.isSelected) {
-          binding.topicToolbarTitle.isSelected = false
-        } 
-      },
-      25000
-    )
+    lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
+      if (binding.topicToolbarTitle.isSelected) {
+        binding.topicToolbarTitle.isSelected = false
+      }
+    }
 
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
