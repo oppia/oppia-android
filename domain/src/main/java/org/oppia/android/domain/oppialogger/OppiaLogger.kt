@@ -3,10 +3,10 @@ package org.oppia.android.domain.oppialogger
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.oppialogger.analytics.AppHealthMetricController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.domain.oppialogger.analytics.AppHealthMetricController
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(

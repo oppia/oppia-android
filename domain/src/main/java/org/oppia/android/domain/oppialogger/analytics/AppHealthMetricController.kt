@@ -1,7 +1,5 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import java.lang.IllegalStateException
-import javax.inject.Inject
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
 import org.oppia.android.app.model.OppiaMetricLogs
@@ -15,6 +13,8 @@ import org.oppia.android.util.metriccollection.AppHealthMetricUtils
 import org.oppia.android.util.metriccollection.AppStartupMetrics
 import org.oppia.android.util.metriccollection.UiSpecificMetrics
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import java.lang.IllegalStateException
+import javax.inject.Inject
 
 /**
  * Controller for handling performance metrics event logging.
@@ -153,7 +153,9 @@ class AppHealthMetricController @Inject constructor(
         } else {
           // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
           val exception =
-            IllegalStateException("Least Recent Event index absent -- MetricLogStorageCacheSize is 0")
+            IllegalStateException(
+              "Least Recent Event index absent -- MetricLogStorageCacheSize is 0"
+            )
           consoleLogger.e(
             "AppHealthMetricController",
             "Failure while caching metric log.",
