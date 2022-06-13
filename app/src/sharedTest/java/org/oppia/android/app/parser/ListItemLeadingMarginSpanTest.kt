@@ -181,11 +181,11 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan0).isNotNull()
 
     val expectedMargin = 2 * bulletRadius + spacingBeforeText
@@ -193,7 +193,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
-    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan1).isNotNull()
 
     val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
@@ -238,19 +238,19 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(5)
 
     val expectedMargin = 2 * bulletRadius + spacingBeforeText
 
-    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan0).isNotNull()
 
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
-    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan1).isNotNull()
 
     val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
@@ -295,11 +295,11 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(5)
 
-    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan0).isNotNull()
     val leadingText = "1."
     val expectedMargin = 2 * leadingText.length + spacingBeforeNumberedText
@@ -307,7 +307,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
-    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan1).isNotNull()
 
     val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
@@ -339,11 +339,11 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
-    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan0).isNotNull()
 
     val leadingText = "1."
@@ -352,7 +352,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
     assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
-    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan1).isNotNull()
   }
 
