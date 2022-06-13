@@ -10,6 +10,9 @@ annotation class EventLogStorageCacheSize
 @Qualifier
 annotation class ExceptionLogStorageCacheSize
 
+@Qualifier
+annotation class MetricLogStorageCacheSize
+
 /** Provider to return any constants required during the storage of log reports. */
 @Module
 class LogStorageModule {
@@ -33,4 +36,14 @@ class LogStorageModule {
   @Provides
   @ExceptionLogStorageCacheSize
   fun provideExceptionLogStorageCacheSize(): Int = 25
+
+  /**
+   * Provides the maximum number of performance metrics logs that can be cached on disk.
+   *
+   * At a configured cache size of 25k records & estimating 121 bytes per record, it's expected that
+   * no more than 3.02MB will be required for cache disk space.
+   */
+  @Provides
+  @MetricLogStorageCacheSize
+  fun provideMetricLogStorageCacheSize(): Int = 25_000
 }

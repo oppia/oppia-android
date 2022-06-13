@@ -6,16 +6,63 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.domain.oppialogger.analytics.AppHealthMetricController
 
 /** Logger that handles general-purpose logging throughout the domain & UI layers. */
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val appHealthMetricController: AppHealthMetricController
 ) {
   /** Logs high-priority events. See [AnalyticsController.logImportantEvent] for more context. */
   fun logImportantEvent(eventContext: EventLog.Context) {
     analyticsController.logImportantEvent(oppiaClock.getCurrentTimeMs(), eventContext)
+  }
+
+  /**
+   * Logs high-priority performance metrics. See [AppHealthMetricController.logHighPriorityMetricEvent]
+   * for more context.
+   */
+  fun logHighPriorityPerformanceMetric(
+    currentScreen: OppiaMetricLog.CurrentScreen,
+    loggableMetric: OppiaMetricLog.LoggableMetric
+  ) {
+    appHealthMetricController.logHighPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
+      currentScreen,
+      loggableMetric
+    )
+  }
+
+  /**
+   * Logs medium-priority performance metrics. See [AppHealthMetricController.logMediumPriorityMetricEvent]
+   * for more context.
+   */
+  fun logMediumPriorityPerformanceMetric(
+    currentScreen: OppiaMetricLog.CurrentScreen,
+    loggableMetric: OppiaMetricLog.LoggableMetric
+  ) {
+    appHealthMetricController.logMediumPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
+      currentScreen,
+      loggableMetric
+    )
+  }
+
+  /**
+   * Logs low-priority performance metrics. See [AppHealthMetricController.logLowPriorityMetricEvent] for
+   * more context.
+   */
+  fun logLowPriorityPerformanceMetric(
+    currentScreen: OppiaMetricLog.CurrentScreen,
+    loggableMetric: OppiaMetricLog.LoggableMetric
+  ) {
+    appHealthMetricController.logLowPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
+      currentScreen,
+      loggableMetric
+    )
   }
 
   /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */

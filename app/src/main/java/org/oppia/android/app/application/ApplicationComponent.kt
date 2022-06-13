@@ -53,6 +53,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.MetricLogGeneratorModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -103,6 +104,7 @@ import javax.inject.Singleton
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+    MetricLogGeneratorModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class, SyncStatusModule::class
