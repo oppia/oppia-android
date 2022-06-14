@@ -55,5 +55,8 @@
   <color name="color_def_oppia_grey_border">#DDDDDD</color>
   <color name="color_def_dark_silver">#707070</color>
   <color name="color_def_input_error_color">#923026</color>
+  <color name="color_def_yellow_ivory">#FFFFF0</color>
+  <color name="color_def_chooser_grey">#999999</color>
+  <color name="color_def_green">#02655c</color>
   <color name="color_def_error_text_color">#923026</color>
 </resources>
