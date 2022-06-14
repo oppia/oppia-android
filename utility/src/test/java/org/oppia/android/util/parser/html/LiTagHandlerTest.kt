@@ -110,6 +110,7 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(2)
   }
+
   @Test
   fun testCustomListElement_betweenNestedParagraphs_parsesCorrectlyIntoNumberedListSpan() {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)

@@ -191,28 +191,11 @@ class PoliciesFragmentTest {
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
-        onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
+        onView(withId(R.id.policy_web_link_text_view)).check(matches(isDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo(
-            "Please visit [this page] for the latest version of" +
-              " this privacy policy."
+            "Please visit [this page] for the latest version of this privacy policy."
           )
-        // preparing
-        val link = "https://www.oppia.org/privacy-policy"
-        val expectingIntent = allOf(
-          IntentMatchers.hasAction(Intent.ACTION_VIEW),
-          IntentMatchers.hasData(link)
-        )
-
-        // mocking intent to prevent actual navigation during test
-        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
-
-        // performing action
-        onView(withId(R.id.policy_web_link_text_view))
-          .perform(openLinkWithText("this page"))
-
-        // asserting our expected intent was recorded
-        Intents.intended(expectingIntent)
       }
     }
   }
@@ -230,8 +213,19 @@ class PoliciesFragmentTest {
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
+        assertThat(textView.text.toString())
+          .isEqualTo(
+            "Please visit [this page] for the latest version of this privacy policy."
+          )
+        val link = "https://www.oppia.org/privacy-policy"
+        val expectingIntent = allOf(
+          IntentMatchers.hasAction(Intent.ACTION_VIEW),
+          IntentMatchers.hasData(link)
+        )
+        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
+        Intents.intended(expectingIntent)
       }
     }
   }
@@ -264,8 +258,6 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo("Please visit [this page] for the latest version of these terms.")
-        onView(withId(R.id.policy_web_link_text_view))
-          .perform(openLinkWithText("this page"))
       }
     }
   }
@@ -283,8 +275,17 @@ class PoliciesFragmentTest {
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
+        assertThat(textView.text.toString())
+          .isEqualTo("Please visit [this page] for the latest version of these terms.")
+        val link = "https://www.oppia.org/terms"
+        val expectingIntent = allOf(
+          IntentMatchers.hasAction(Intent.ACTION_VIEW),
+          IntentMatchers.hasData(link)
+        )
+        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
+        Intents.intended(expectingIntent)
       }
     }
   }

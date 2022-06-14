@@ -2,6 +2,7 @@ package org.oppia.android.app.parser
 
 import android.app.Activity
 import android.app.Application
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.text.Spannable
@@ -20,6 +21,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -27,6 +29,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -240,7 +243,7 @@ class HtmlParserTest {
     // Verify that the image span is 0 as image support is not enabled.
     val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(0)
-//    // The two strings aren't equal because this html parser does not support Oppia image tags.
+    // The two strings aren't equal because this html parser does not support Oppia image tags.
     assertThat(textView.text.toString()).isNotEqualTo(htmlResult.toString())
     onView(withId(R.id.test_html_content_text_view)).check(matches(not(textView.text.toString())))
   }
@@ -594,8 +597,16 @@ class HtmlParserTest {
       .check(matches(isDisplayed()))
     onView(withId(R.id.test_html_content_text_view))
       .check(matches(withText(textView.text.toString())))
+
+    val link = "https://creativecommons.org/licenses/by-sa/4.0/legalcode"
+    val expectingIntent = CoreMatchers.allOf(
+      IntentMatchers.hasAction(Intent.ACTION_VIEW),
+      IntentMatchers.hasData(link)
+    )
+    Intents.intending(expectingIntent).respondWith(Instrumentation.ActivityResult(0, null))
     onView(withId(R.id.test_html_content_text_view))
       .perform(openLinkWithText("here"))
+    Intents.intended(expectingIntent)
   }
 
   @Test
