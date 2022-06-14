@@ -12,7 +12,7 @@
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/color_palette_primary_color</item>
     <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
-    <item name="colorAccent">@color/color_palette_accent_color</item>
+    <item name="colorAccent">@color/component_color_shared_edit_text_cursor_color</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>

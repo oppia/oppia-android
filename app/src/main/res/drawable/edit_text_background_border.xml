@@ -5,5 +5,5 @@
   <solid android:color="@color/component_color_shared_text_input_layout_background_color" />
   <stroke
     android:width="1dp"
-    android:color="@color/oppia_grey_border_dark" />
+    android:color="@color/component_color_shared_input_interaction_edit_text_not_selected_border_color" />
 </shape>
