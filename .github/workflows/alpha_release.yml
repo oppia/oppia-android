@@ -1,5 +1,6 @@
 name: Alpha Release
 on:
+  push: android-release-automation
   schedule:
     - cron: "0 3 * * *"
 
@@ -13,3 +14,7 @@ jobs:
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
+
+    steps:
+      - name: Install Build
+        if: github.

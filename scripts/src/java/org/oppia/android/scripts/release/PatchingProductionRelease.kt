@@ -1,4 +1,4 @@
-package production
+package org.oppia.android.scripts.release
 
 import java.io.File
 import org.oppia.android.scripts.common.CommandExecutor
