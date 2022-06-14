@@ -72,7 +72,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
               chapterSelected(
-                viewModel.chapterIndex, viewModel.nextStoryIndex,
+                viewModel.chapterIndex,
+                viewModel.nextStoryIndex,
                 viewModel.chapterSummary.explorationId
               )
           }
@@ -82,7 +83,10 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
         getMarkChaptersCompletedViewModel().getItemList().forEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
-              chapterUnselected(viewModel.chapterIndex, viewModel.nextStoryIndex)
+              chapterUnselected(
+                viewModel.chapterIndex,
+                viewModel.nextStoryIndex
+              )
           }
         }
       }
