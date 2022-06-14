@@ -27,6 +27,7 @@
       android:hint="@string/numeric_input_hint"
       android:inputType="numberDecimal"
       android:text="@={viewModel.answerText}"
+      android:textColorHint="@color/component_color_shared_edit_text_hint_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
