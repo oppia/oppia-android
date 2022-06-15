@@ -36,18 +36,28 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
-import java.util.Stack
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+
+private const val UL_TAG_MARKUP_1 =
+  "<p>Paragraph 1</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>" +
+    "<p>Paragraph 2.</p>"
+
+private const val OL_TAG_MARKUP_1 =
+  "<p>Paragraph 1</p><oppia-ol><oppia-li>Item</oppia-li></oppia-ol>" +
+    "<p>Paragraph 2.</p>"
 
 /** Tests for [CustomHtmlContentHandler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CustomHtmlContentHandlerTest {
+  private lateinit var tagHandlersWithListTagSupport: Map<String, CustomTagHandler>
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -70,6 +80,12 @@ class CustomHtmlContentHandlerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    tagHandlersWithListTagSupport = mapOf(
+      CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale),
+      CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale),
+      CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale)
+    )
   }
 
   @Test
@@ -192,19 +208,11 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
-
-    val htmlString = "<p>Paragraph 1</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>" +
-      "<p>Paragraph 2.</p>"
-
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = htmlString,
+        html = UL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
-          CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale)
-        )
+        customTagHandlers = tagHandlersWithListTagSupport
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -214,22 +222,15 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoNumberedListSpan() {
-    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
-
-    val htmlString = "<p>Paragraph 1</p><oppia-ol><oppia-li>Item</oppia-li></oppia-ol>" +
-      "<p>Paragraph 2.</p>"
-
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = htmlString,
+        html = OL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
-          CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale)
-        )
+        customTagHandlers = tagHandlersWithListTagSupport
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
+    System.out.println("result=" + parsedHtml.toString())
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(1)
   }
@@ -337,8 +338,7 @@ class CustomHtmlContentHandlerTest {
 
     override fun handleOpeningTag(
       output: Editable,
-      tag: String,
-      lists: Stack<CustomHtmlContentHandler.ListTag>
+      tag: String
     ) {
       handleOpeningTagCalled = true
       handleOpeningTagCallIndex = methodCallCount++
@@ -347,8 +347,7 @@ class CustomHtmlContentHandlerTest {
     override fun handleClosingTag(
       output: Editable,
       indentation: Int,
-      tag: String,
-      lists: Stack<CustomHtmlContentHandler.ListTag>
+      tag: String
     ) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++

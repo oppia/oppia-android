@@ -5,7 +5,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.Stack
+import java.util.*
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -24,10 +24,10 @@ class LiTagHandler(
   private val context: Context,
   private val displayLocale: OppiaLocale.DisplayLocale
 ) : CustomHtmlContentHandler.CustomTagHandler {
+
   override fun handleOpeningTag(
     output: Editable,
-    tag: String,
-    lists: Stack<CustomHtmlContentHandler.ListTag>
+    tag: String
   ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> lists.push(Ul(context))
@@ -39,8 +39,7 @@ class LiTagHandler(
   override fun handleClosingTag(
     output: Editable,
     indentation: Int,
-    tag: String,
-    lists: Stack<CustomHtmlContentHandler.ListTag>
+    tag: String
   ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> lists.pop()
@@ -102,6 +101,8 @@ class LiTagHandler(
    * https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java
    */
   companion object {
+    private val lists = Stack<CustomHtmlContentHandler.ListTag>()
+
     /**
      * Appends a new line to [text] if it doesn't already end in a new line.
      * We want the first line of list item to start on a separate line, and other content that comes
