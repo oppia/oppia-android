@@ -86,11 +86,9 @@ class StoryFragmentPresenter @Inject constructor(
 
     binding.storyToolbarTitle.setOnClickListener {
       binding.storyToolbarTitle.isSelected = true
-    }
 
-    lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
-      if (binding.storyToolbarTitle.isSelected) {
-        binding.storyToolbarTitle.isSelected = false
+      lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
+          binding.storyToolbarTitle.isSelected = false
       }
     }
 

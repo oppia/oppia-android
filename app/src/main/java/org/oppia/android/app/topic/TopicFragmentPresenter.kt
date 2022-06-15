@@ -61,11 +61,9 @@ class TopicFragmentPresenter @Inject constructor(
 
     binding.topicToolbar.setOnClickListener {
       binding.topicToolbarTitle.isSelected = true
-    }
 
-    lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
-      if (binding.topicToolbarTitle.isSelected) {
-        binding.topicToolbarTitle.isSelected = false
+      lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
+          binding.topicToolbarTitle.isSelected = false
       }
     }
 
