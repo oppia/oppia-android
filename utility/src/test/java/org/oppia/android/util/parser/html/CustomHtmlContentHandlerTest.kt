@@ -230,7 +230,6 @@ class CustomHtmlContentHandlerTest {
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    System.out.println("result=" + parsedHtml.toString())
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(1)
   }
