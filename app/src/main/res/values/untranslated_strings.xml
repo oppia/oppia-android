@@ -79,4 +79,7 @@
   <string name="learner_analytics_sync_status_network_error" translatable="false">Please connect to a WiFi or Cellular network in order to upload profile data.</string>
   <string name="learner_analytics_device_id_clipboard_label_description" translatable="false">%s installation ID</string>
   <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
+  <!-- Temporary learner strings. -->
+  <string name="temporary_translate_to_swahili" translatable="false">Switch lesson to Swahili</string>
+  <string name="temporary_translate_to_english" translatable="false">Switch lesson to English</string>
 </resources>
