@@ -34,6 +34,10 @@
       android:label="@string/administrator_controls_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.testing.AdministratorControlsFragmentTestActivity"
+      android:label="@string/administrator_controls_fragment_test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
       android:label="@string/app_version_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -78,8 +82,8 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
-      android:screenOrientation="portrait"
       android:label="@string/my_downloads_activity_title"
+      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -178,7 +182,7 @@
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
-    <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity"/>
+    <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.ExplorationInjectionActivity" />
     <activity android:name=".app.testing.ExplorationTestActivity" />
     <activity
@@ -197,9 +201,13 @@
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.testing.ProfileEditFragmentTestActivity"
+      android:label="@string/profile_edit_fragment_test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.StateAssemblerMarginBindingAdaptersTestActivity" />
     <activity android:name=".app.testing.StateAssemblerPaddingBindingAdaptersTestActivity" />
-    <activity android:name=".app.testing.TextViewBindingAdaptersTestActivity"/>
+    <activity android:name=".app.testing.TextViewBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.TopicTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

@@ -23,8 +23,10 @@
   <color name="color_def_white_light">#F9F9F9</color>
   <color name="color_def_accessible_grey">#333333</color>
   <color name="color_def_accessible_light_grey">#555555</color>
+  <color name="color_def_accessible_light_grey_2">#666666</color>
   <color name="color_def_grey">#CCCCCC</color>
   <color name="color_def_light_grey">#61000000</color>
+  <color name="color_def_spanish_grey">#969696</color>
   <color name="color_def_mid_grey">#ff333333</color>
   <color name="color_def_mid_grey_05">#0D000000</color>
   <color name="color_def_mid_grey_03">#03000000</color>
@@ -49,7 +51,13 @@
   <color name="color_def_oppia_dark_grey">#4D4D4D</color>
   <color name="color_def_oppia_pink">#FF938F</color>
   <color name="color_def_oppia_grayish_black">#32363B</color>
+  <color name="color_def_dark_blue">#395FD0</color>
+  <color name="color_def_oppia_grey_border">#DDDDDD</color>
   <color name="color_def_dark_silver">#707070</color>
+  <color name="color_def_yellow_ivory">#FFFFF0</color>
+  <color name="color_def_chooser_grey">#999999</color>
+  <color name="color_def_green">#02655c</color>
+  <color name="color_def_error_text_color">#923026</color>
   <color name="color_def_platinum">#E5E5E5</color>
   <color name="color_def_light_grey_2">#666666</color>
 </resources>
