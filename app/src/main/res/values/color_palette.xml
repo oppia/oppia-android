@@ -8,7 +8,7 @@
   <color name="color_palette_secondary_text_color">@color/color_def_light_grey_2</color>
   <color name="color_palette_highlighted_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
-  <color name="color_palette_primary_background_color">@color/color_def_platinum</color>
+  <color name="color_palette_activity_background_color">@color/color_def_platinum</color>
   <color name="color_palette_dark_background_color">@color/color_def_mid_grey_30</color>
   <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_primary_description_text_color">@color/color_def_accessible_light_grey</color>
