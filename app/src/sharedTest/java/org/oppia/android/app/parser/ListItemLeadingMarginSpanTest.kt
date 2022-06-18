@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.text.Spannable
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -90,6 +92,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.html.ListItemLeadingMarginSpan
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -354,6 +357,45 @@ class ListItemLeadingMarginSpanTest {
 
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan1).isNotNull()
+  }
+
+  @Test
+  fun testDrawText_shouldRecordTextHistoryEvents() {
+    val canvas = Canvas()
+    val paint = Paint()
+    canvas.drawText("1.", 10f, 0f, paint)
+    canvas.drawText("2.", 10f, 0f, paint)
+
+    val shadowCanvas = shadowOf(canvas)
+    assertThat(shadowCanvas.textHistoryCount).isEqualTo(2)
+    assertThat("1.").isEqualTo(shadowCanvas.getDrawnTextEvent(0).text)
+    assertThat("2.").isEqualTo( shadowCanvas.getDrawnTextEvent(1).text)
+  }
+
+  @Test
+  @Throws(java.lang.Exception::class)
+  fun testDrawCircle_shouldRecordCirclePaintHistoryEvents() {
+
+    val canvas = Canvas()
+    val paint0 = Paint()
+    val paint1 = Paint()
+
+    paint0.style = Paint.Style.FILL
+
+    paint1.style = Paint.Style.STROKE
+    paint1.strokeWidth = 2f
+
+    canvas.drawCircle(1f, 2f, 3f, paint0)
+    canvas.drawCircle(4f, 5f, 6f, paint1)
+    val shadowCanvas = shadowOf(canvas)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(1.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isEqualTo(2.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).radius).isEqualTo(3.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).paint).isSameInstanceAs(paint0)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isEqualTo(4.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isEqualTo(5.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).radius).isEqualTo(6.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).paint).isSameInstanceAs(paint1)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
