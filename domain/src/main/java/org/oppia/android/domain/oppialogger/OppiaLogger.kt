@@ -3,7 +3,7 @@ package org.oppia.android.domain.oppialogger
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.android.domain.oppialogger.analytics.AppHealthMetricController
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
@@ -13,55 +13,24 @@ class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,
   private val oppiaClock: OppiaClock,
-  private val appHealthMetricController: AppHealthMetricController
+  private val performanceMetricsController: PerformanceMetricsController
 ) {
   /** Logs high-priority events. See [AnalyticsController.logImportantEvent] for more context. */
   fun logImportantEvent(eventContext: EventLog.Context) {
     analyticsController.logImportantEvent(oppiaClock.getCurrentTimeMs(), eventContext)
   }
 
-  /**
-   * Logs high-priority performance metrics. See [AppHealthMetricController.logHighPriorityMetricEvent]
-   * for more context.
-   */
-  fun logHighPriorityPerformanceMetric(
+  /** Logs performance metrics logs. See [PerformanceMetricsController.logMetricEvent] for more context. */
+  fun logPerformanceMetrics(
     currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric
+    loggableMetric: OppiaMetricLog.LoggableMetric,
+    priority: OppiaMetricLog.Priority
   ) {
-    appHealthMetricController.logHighPriorityMetricEvent(
+    performanceMetricsController.logMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
-      loggableMetric
-    )
-  }
-
-  /**
-   * Logs medium-priority performance metrics. See [AppHealthMetricController.logMediumPriorityMetricEvent]
-   * for more context.
-   */
-  fun logMediumPriorityPerformanceMetric(
-    currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric
-  ) {
-    appHealthMetricController.logMediumPriorityMetricEvent(
-      oppiaClock.getCurrentTimeMs(),
-      currentScreen,
-      loggableMetric
-    )
-  }
-
-  /**
-   * Logs low-priority performance metrics. See [AppHealthMetricController.logLowPriorityMetricEvent] for
-   * more context.
-   */
-  fun logLowPriorityPerformanceMetric(
-    currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric
-  ) {
-    appHealthMetricController.logLowPriorityMetricEvent(
-      oppiaClock.getCurrentTimeMs(),
-      currentScreen,
-      loggableMetric
+      loggableMetric,
+      priority
     )
   }
 
@@ -265,97 +234,5 @@ class OppiaLogger @Inject constructor(
           .build()
       )
       .build()
-  }
-
-  /**
-   * Returns the loggable metric of the performance metric event log indicating the size of the
-   * apk file of the application.
-   */
-  fun createApkSizeLoggableMetric(
-    apkSize: Long
-  ): OppiaMetricLog.LoggableMetric {
-    return OppiaMetricLog.LoggableMetric.newBuilder()
-      .setApkSizeMetric(
-        OppiaMetricLog.ApkSizeMetric.newBuilder()
-          .setApkSizeBytes(apkSize)
-          .build()
-      ).build()
-  }
-
-  /**
-   * Returns the loggable metric of the performance metric event log indicating the amount of
-   * storage space used by the application on user's device.
-   */
-  fun createStorageUsageLoggableMetric(
-    storageUsage: Long
-  ): OppiaMetricLog.LoggableMetric {
-    return OppiaMetricLog.LoggableMetric.newBuilder()
-      .setStorageUsageMetric(
-        OppiaMetricLog.StorageUsageMetric.newBuilder()
-          .setStorageUsageBytes(storageUsage)
-          .build()
-      ).build()
-  }
-
-  /**
-   * Returns the loggable metric of the performance metric event log indicating the number of
-   * milliseconds required to start up the application from a cold start.
-   */
-  fun createStartupLatencyLoggableMetric(
-    startupLatency: Long
-  ): OppiaMetricLog.LoggableMetric {
-    return OppiaMetricLog.LoggableMetric.newBuilder()
-      .setStartupLatencyMetric(
-        OppiaMetricLog.StartupLatencyMetric.newBuilder()
-          .setStartupLatencyMillis(startupLatency)
-          .build()
-      ).build()
-  }
-
-  /**
-   * Returns the loggable metric of the performance metric event log indicating the the amount of
-   * memory used by the application on user's device.
-   */
-  fun createMemoryUsageLoggableMetric(
-    totalPssBytes: Long
-  ): OppiaMetricLog.LoggableMetric {
-    return OppiaMetricLog.LoggableMetric.newBuilder()
-      .setMemoryUsageMetric(
-        OppiaMetricLog.MemoryUsageMetric.newBuilder()
-          .setTotalPssBytes(totalPssBytes)
-          .build()
-      ).build()
-  }
-
-  /**
-   * Returns the loggable metric of the performance metric event log indicating the the amount of
-   * CPU used by the application on user's device.
-   */
-  fun createCpuUsageLoggableMetric(
-    cpuUsage: Long
-  ): OppiaMetricLog.LoggableMetric {
-    return OppiaMetricLog.LoggableMetric.newBuilder()
-      .setCpuUsageMetric(
-        OppiaMetricLog.CpuUsageMetric.newBuilder()
-          .setCpuUsageMetric(cpuUsage)
-          .build()
-      ).build()
-  }
-
-  /**
-   * Returns the loggable metric of the performance metric event log indicating the the amount of
-   * network used by the application on user's device.
-   */
-  fun createNetworkUsageLoggableMetric(
-    totalBytesReceived: Long,
-    totalBytesSent: Long
-  ): OppiaMetricLog.LoggableMetric {
-    return OppiaMetricLog.LoggableMetric.newBuilder()
-      .setNetworkUsageMetric(
-        OppiaMetricLog.NetworkUsageMetric.newBuilder()
-          .setBytesSent(totalBytesSent)
-          .setBytesReceived(totalBytesReceived)
-          .build()
-      ).build()
   }
 }

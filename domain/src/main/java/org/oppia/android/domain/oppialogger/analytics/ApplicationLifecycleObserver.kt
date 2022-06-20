@@ -32,6 +32,10 @@ class ApplicationLifecycleObserver @Inject constructor(
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
   }
 
+  // Keep the default value as false as the app is considered to be in the background until it comes
+  // to foreground.
+  private var isAppInForeground: Boolean = false
+
   // Use a large Long value such that the time difference based on any timestamp will be negative
   // and thus ignored until the app goes into the background at least once.
   private var firstTimestamp: Long = Long.MAX_VALUE
@@ -39,6 +43,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
+    isAppInForeground = true
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
@@ -49,6 +54,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
+    isAppInForeground = false
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
   }
@@ -68,4 +74,7 @@ class ApplicationLifecycleObserver @Inject constructor(
       }
     }
   }
+
+  /** Returns a boolean value indicating whether the application is in foreground or not. */
+  fun isAppInForeground(): Boolean = isAppInForeground
 }

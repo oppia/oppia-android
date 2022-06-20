@@ -9,12 +9,10 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricLogger
-import org.oppia.android.util.metriccollection.AppHealthMetricUtils
-import org.oppia.android.util.metriccollection.AppStartupMetrics
-import org.oppia.android.util.metriccollection.UiSpecificMetrics
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 
 /**
  * Controller for handling performance metrics event logging.
@@ -22,15 +20,14 @@ import javax.inject.Inject
  * Callers should not use this class directly; instead, they should use ``OppiaLogger`` which
  * provides convenience log methods.
  */
-class AppHealthMetricController @Inject constructor(
-  private val appStartupMetrics: AppStartupMetrics,
-  private val appHealthMetricUtils: AppHealthMetricUtils,
-  private val uiSpecificMetrics: UiSpecificMetrics,
+class PerformanceMetricsController @Inject constructor(
+  private val performanceMetricsUtils: PerformanceMetricsUtils,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
   private val performanceMetricLogger: PerformanceMetricLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
+  private val applicationLifecycleObserver: ApplicationLifecycleObserver,
   @MetricLogStorageCacheSize private val metricLogStorageCacheSize: Int
 ) {
 
@@ -38,91 +35,19 @@ class AppHealthMetricController @Inject constructor(
     cacheStoreFactory.create("metric_logs", OppiaMetricLogs.getDefaultInstance())
 
   /**
-   * Logs a high priority performance metric occurring at [currentScreen] defined by [loggableMetric]
-   * corresponding to time [timestamp].
+   * Logs a performance metric occurring at [currentScreen] defined by [loggableMetric]
+   * corresponding to a time [timestamp].
    *
    * This will schedule a background upload of the event if there's internet connectivity, otherwise
    * it will cache the event for a later upload.
-   *
-   * This method should only be used for logging periodic metrics like network and cpu usage of the
-   * application. These metrics are important to log and should be prioritized over metrics logged
-   * via [logMediumPriorityMetricEvent] and [logLowPriorityMetricEvent].
    */
-  fun logHighPriorityMetricEvent(
+  fun logMetricEvent(
     timestamp: Long,
     currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric
+    loggableMetric: OppiaMetricLog.LoggableMetric,
+    priority: Priority
   ) {
-    uploadOrCacheLog(
-      createMetricLog(
-        timestamp,
-        Priority.HIGH_PRIORITY,
-        currentScreen,
-        loggableMetric
-      )
-    )
-  }
-
-  /**
-   * Logs a medium priority performance metric occurring at [currentScreen] defined by [loggableMetric]
-   * corresponding to time [timestamp].
-   *
-   * This will schedule a background upload of the event if there's internet connectivity, otherwise
-   * it will cache the event for a later upload.
-   *
-   * Medium priority metrics may be removed from the event cache if device space is limited, and
-   * there's no connectivity for immediately sending events. These metrics will however be
-   * prioritised over Low priority metrics.
-   *
-   * This method should only be used for logging ui-specific metrics like memory usage of the
-   * application. These metrics are important to log (but not as important as high priority metrics)
-   * and should be prioritized over metrics logged via [logLowPriorityMetricEvent].
-   */
-  fun logMediumPriorityMetricEvent(
-    timestamp: Long,
-    currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric
-  ) {
-    uploadOrCacheLog(
-      createMetricLog(
-        timestamp,
-        Priority.MEDIUM_PRIORITY,
-        currentScreen,
-        loggableMetric
-      )
-    )
-  }
-
-  /**
-   * Logs a low priority performance metric occurring at [currentScreen] defined by [loggableMetric]
-   * corresponding to time [timestamp].
-   *
-   * This will schedule a background upload of the event if there's internet connectivity, otherwise
-   * it will cache the event for a later upload.
-   *
-   * Low priority metrics may be removed from the event cache if device space is limited, and
-   * there's no connectivity for immediately sending events.
-   *
-   * This method should only be used for logging metrics that are to be logged at the beginning of
-   * the application like apk size and storage usage.
-   *
-   * Callers should use this for events that are nice to have, but okay to miss occasionally (as
-   * it's unexpected for events to actually be dropped since the app is configured to support a
-   * large number of cached events at one time).
-   */
-  fun logLowPriorityMetricEvent(
-    timestamp: Long,
-    currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric
-  ) {
-    uploadOrCacheLog(
-      createMetricLog(
-        timestamp,
-        Priority.LOW_PRIORITY,
-        currentScreen,
-        loggableMetric
-      )
-    )
+    uploadOrCacheLog(createMetricLog(timestamp, priority, currentScreen, loggableMetric))
   }
 
   /** Either uploads or caches [oppiaMetricLog] depending on current internet connectivity. */
@@ -173,7 +98,7 @@ class AppHealthMetricController @Inject constructor(
   /** Returns a metric log containing relevant data for metric log reporting. */
   private fun createMetricLog(
     timestamp: Long,
-    priority: OppiaMetricLog.Priority,
+    priority: Priority,
     currentScreen: OppiaMetricLog.CurrentScreen,
     loggableMetric: OppiaMetricLog.LoggableMetric
   ): OppiaMetricLog {
@@ -182,9 +107,9 @@ class AppHealthMetricController @Inject constructor(
       this.priority = priority
       this.currentScreen = currentScreen
       this.loggableMetric = loggableMetric
-      this.isAppInForeground = appHealthMetricUtils.isAppInForeground()
-      this.storageTier = appStartupMetrics.getDeviceStorageTier()
-      this.memoryTier = uiSpecificMetrics.getDeviceMemoryTier()
+      this.isAppInForeground = applicationLifecycleObserver.isAppInForeground()
+      this.storageTier = performanceMetricsUtils.getDeviceStorageTier()
+      this.memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     }.build()
   }
 
