@@ -5,10 +5,10 @@ import android.app.Application
 import android.content.Context
 import android.net.TrafficStats
 import android.os.Environment
-import java.io.File
-import javax.inject.Inject
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.ConsoleLogger
+import java.io.File
+import javax.inject.Inject
 
 class PerformanceMetricsUtils @Inject constructor(
   private val context: Application,
@@ -60,7 +60,7 @@ class PerformanceMetricsUtils @Inject constructor(
   fun getTotalPssUsed(): Long {
     val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     var totalPssUsed: Long = 0
-    if(activityManager.runningAppProcesses != null) {
+    if (activityManager.runningAppProcesses != null) {
       val pid = ActivityManager.RunningAppProcessInfo().pid
       val processMemoryInfo = activityManager.getProcessMemoryInfo(arrayOf(pid).toIntArray())
       for (element in processMemoryInfo) {

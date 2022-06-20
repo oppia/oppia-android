@@ -9,10 +9,10 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 
 /**
  * Controller for handling performance metrics event logging.

@@ -1,19 +1,19 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.system.OppiaClock
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class PerformanceMetricsLogger @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val performanceMetricsUtils: PerformanceMetricsUtils,
   private val oppiaClock: OppiaClock
-): ApplicationStartupListener {
+) : ApplicationStartupListener {
 
   /**
    * Use a large Long value such that the time difference based on any timestamp will be negative
@@ -41,7 +41,7 @@ class PerformanceMetricsLogger @Inject constructor(
 
   fun logStartupLatency() {
     val startupLatency = oppiaClock.getCurrentTimeMs() - firstTimestamp
-    if(startupLatency >= 0) {
+    if (startupLatency >= 0) {
       oppiaLogger.logLowPriorityMetricEvent(
         OppiaMetricLog.CurrentScreen.HOME_SCREEN,
         createStartupLatencyLoggableMetric(startupLatency)
