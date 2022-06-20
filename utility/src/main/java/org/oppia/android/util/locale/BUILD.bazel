@@ -22,8 +22,8 @@ kt_android_library(
         "OppiaBidiFormatter.kt",
     ],
     visibility = [
-        "//domain/src/main/java/org/oppia/android/domain/locale:__pkg__",
         "//utility:utility_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/locale:__pkg__",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__",
     ],
 )
@@ -49,8 +49,8 @@ kt_android_library(
         "OppiaBidiFormatterImpl.kt",
     ],
     visibility = [
-        "//domain/src/main/java/org/oppia/android/domain/locale:__pkg__",
         "//utility:utility_testing_visibility",
+        "//utility/src/main/java/org/oppia/android/util/locale:__pkg__",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:__pkg__",
     ],
     deps = [
