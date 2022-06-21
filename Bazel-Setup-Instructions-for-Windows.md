@@ -66,7 +66,7 @@ mkdir -p $HOME/Android/Sdk
 Second, navigate to https://developer.android.com/studio#command-tools in a web browser (in Windows) and select to download the latest **Linux** command tools (even though you're using Windows, the Linux commandline tools are needed--the Windows version will not work with these instructions). Once downloaded, copy the zip file to the new SDK location (note that the ``/mnt/c/...`` path is based on ``C:\Users\<Name>\Downloads`` being the default download location--this may not be the case on your system) with your Windows username filled in for ``<Name>``:
 
 ```sh
-cp /c/mnt/Users/<Name>/Downloads/commandlinetools*.zip $HOME/Android/Sdk
+cp /mnt/c/Users/<Name>/Downloads/commandlinetools*.zip $HOME/Android/Sdk
 ```
 
 After that, change to the directory, unzip the archive, and remove it:
