@@ -15,6 +15,7 @@ class PerformanceMetricsUtils @Inject constructor(
   private val consoleLogger: ConsoleLogger
 ) {
 
+  /** Returns the size of the app's installed APK file, in bytes. */
   fun getApkSize(): Long {
     var apkSize: Long = 0
     try {
@@ -31,6 +32,11 @@ class PerformanceMetricsUtils @Inject constructor(
     return apkSize
   }
 
+  /**
+   * Returns the amount of storage usage by the app on user's device in bytes.
+   * This storage size is the cumulative size of app-specific files which include the application
+   * cache but not the apk size.
+   */
   fun getUsedStorage(): Long {
     var storageUsage: Long = 0
     try {
@@ -46,17 +52,13 @@ class PerformanceMetricsUtils @Inject constructor(
     return storageUsage
   }
 
-  fun getDeviceStorageTier(): OppiaMetricLog.StorageTier =
-    when (Environment.getDataDirectory().totalSpace / (1024 * 1024 * 1024)) {
-      in 0..5 -> OppiaMetricLog.StorageTier.LOW_STORAGE
-      in 5..20 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-      else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
-    }
-
+  /** Returns the number of bytes sent by the application over a network since device reboot. */
   fun getTotalSentBytes(): Long = TrafficStats.getUidTxBytes(context.applicationInfo.uid)
 
+  /** Returns the number of bytes received by the application over a network since device reboot. */
   fun getTotalReceivedBytes(): Long = TrafficStats.getUidRxBytes(context.applicationInfo.uid)
 
+  /** Returns the amount of memory used by the application on the device in bytes. */
   fun getTotalPssUsed(): Long {
     val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     var totalPssUsed: Long = 0
@@ -70,6 +72,21 @@ class PerformanceMetricsUtils @Inject constructor(
     return totalPssUsed
   }
 
+  /**
+   * Returns the [OppiaMetricLog.StorageTier] of the device by analysing the total storage
+   * capacity of the device.
+   */
+  fun getDeviceStorageTier(): OppiaMetricLog.StorageTier =
+    when (Environment.getDataDirectory().totalSpace / (1024 * 1024 * 1024)) {
+      in 0..5 -> OppiaMetricLog.StorageTier.LOW_STORAGE
+      in 5..20 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+      else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
+    }
+
+  /**
+   * Returns the [OppiaMetricLog.MemoryTier] of the device by analysing the total memory
+   * capacity of the device.
+   */
   fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier {
     val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     val memoryInfo = ActivityManager.MemoryInfo()

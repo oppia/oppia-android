@@ -85,16 +85,14 @@ message OppiaMetricLog {
 
   // Structure of the network usage metric.
   message NetworkUsageMetric {
-    // Usage data is collected in discrete bins of time called 'Buckets'. The time interval of this
-    // bucket is customizable and depends on the query that we are making. This data is logged after
-    // the bucket's timeframe.
+    // Both metrics count the packets across all network interfaces, and always increases
+    // monotonically since device reboot. Statistics are measured at the network layer, so they
+    // include both TCP and UDP usage.
 
-    //  This field denotes the number of bytes received by the application on the device during
-    //  this bucket's time interval.
+    //  This field denotes the number of bytes received by the application since device reboot.
     int64 bytes_received = 1;
 
-    // This field denotes the number of bytes sent by the application on the device during
-    // this bucket's time interval.
+    // This field denotes the number of bytes sent by the application since device reboot.
     int64 bytes_sent = 2;
   }
 
