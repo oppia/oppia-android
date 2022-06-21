@@ -8,7 +8,7 @@ import org.oppia.android.domain.oppialogger.MetricLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricEventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
@@ -25,7 +25,7 @@ class PerformanceMetricsController @Inject constructor(
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
-  private val performanceMetricEventLogger: PerformanceMetricEventLogger,
+  private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val applicationLifecycleObserver: ApplicationLifecycleObserver,
   @MetricLogStorageCacheSize private val metricLogStorageCacheSize: Int
@@ -54,7 +54,7 @@ class PerformanceMetricsController @Inject constructor(
   private fun uploadOrCacheLog(oppiaMetricLog: OppiaMetricLog) {
     when (networkConnectionUtil.getCurrentConnectionStatus()) {
       NetworkConnectionUtil.ProdConnectionStatus.NONE -> cacheMetricLog(oppiaMetricLog)
-      else -> performanceMetricEventLogger.logPerformanceMetric(oppiaMetricLog)
+      else -> performanceMetricsEventLogger.logPerformanceMetric(oppiaMetricLog)
     }
   }
 

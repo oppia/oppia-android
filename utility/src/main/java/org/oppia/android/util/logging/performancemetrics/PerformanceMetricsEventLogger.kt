@@ -3,7 +3,7 @@ package org.oppia.android.util.logging.performancemetrics
 import org.oppia.android.app.model.OppiaMetricLog
 
 /** Logger for uploading performance metrics event logs to remote services. */
-interface PerformanceMetricEventLogger {
+interface PerformanceMetricsEventLogger {
   /**
    * Logs a performance metric to remote services.
    *
