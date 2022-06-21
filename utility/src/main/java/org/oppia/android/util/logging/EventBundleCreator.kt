@@ -107,7 +107,8 @@ class EventBundleCreator @Inject constructor(
     }?.metricName ?: "unknown_loggable_metric"
   }
 
-  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType(): PerformanceMetricsLoggableMetricType<*>? {
+  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType(
+  ): PerformanceMetricsLoggableMetricType<*>? {
     return when (loggableMetricTypeCase) {
       APK_SIZE_METRIC -> PerformanceMetricsLoggableMetricType.ApkSizeLoggableMetric(
         "apk_size_metric",
