@@ -3,8 +3,8 @@ package org.oppia.android.util.logging
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 
-/** Generator for generating metric log reports related to the performance of the application. */
-interface LogGenerator {
+/** Scheduler for scheduling metric log reports related to the performance of the application. */
+interface MetricLogScheduler {
   /**
    * Enqueues a [workRequest] using the [workManager] for generating metric logs of periodic
    * metrics like network and cpu usage.

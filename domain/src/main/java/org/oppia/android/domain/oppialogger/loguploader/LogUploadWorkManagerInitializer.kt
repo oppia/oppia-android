@@ -8,7 +8,7 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.loggenerator.LogGenerationWorker
-import org.oppia.android.util.logging.LogGenerator
+import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 class LogUploadWorkManagerInitializer @Inject constructor(
   private val context: Context,
   private val logUploader: LogUploader,
-  private val logGenerator: LogGenerator,
+  private val metricLogScheduler: MetricLogScheduler,
   @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   performanceMetricsCollectionHighFrequencyTimeInterval: PlatformParameterValue<Int>,
   @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
@@ -118,15 +118,15 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     val workManager = WorkManager.getInstance(context)
     logUploader.enqueueWorkRequestForEvents(workManager, workRequestForUploadingEvents)
     logUploader.enqueueWorkRequestForExceptions(workManager, workRequestForUploadingExceptions)
-    logGenerator.enqueueWorkRequestForPeriodicMetrics(
+    metricLogScheduler.enqueueWorkRequestForPeriodicMetrics(
       workManager,
       workRequestForGeneratingPeriodicMetricLogs
     )
-    logGenerator.enqueueWorkRequestForStorageUsage(
+    metricLogScheduler.enqueueWorkRequestForStorageUsage(
       workManager,
       workRequestForGeneratingStorageUsageMetricLogs
     )
-    logGenerator.enqueueWorkRequestForMemoryUsage(
+    metricLogScheduler.enqueueWorkRequestForMemoryUsage(
       workManager,
       workRequestForGeneratingMemoryUsageMetricLogs
     )
