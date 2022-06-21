@@ -49,4 +49,6 @@
   <color name="color_palette_error_text_color">@color/color_def_error_text_color</color>
   <color name="color_palette_show_eye_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_inactive_border_color">@color/color_def_dark_grey</color>
+  <color name="color_palette_profile_view_designation_color">@color/color_def_accessible_light_grey</color>
 </resources>

@@ -26,7 +26,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/general_item_background_border"
+        android:background="@drawable/general_item_background_border_grey"
         android:paddingBottom="@dimen/profile_rename_activity_constraint_layout"
         app:layout_constraintTop_toTopOf="parent">
 

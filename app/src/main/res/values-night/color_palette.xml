@@ -48,4 +48,6 @@
   <color name="color_palette_error_text_color">@color/color_def_oppia_pink</color>
   <color name="color_palette_show_eye_icon_color">@color/color_def_forest_green</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_forest_green</color>
+  <color name="color_palette_inactive_border_color">@color/color_def_bright_turquoise</color>
+  <color name="color_palette_profile_view_designation_color">@color/color_def_oppia_turquoise</color>
 </resources>
