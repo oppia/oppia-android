@@ -8,8 +8,8 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.loggenerator.LogGenerationWorker
-import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.LogUploader
+import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PlatformParameterValue
