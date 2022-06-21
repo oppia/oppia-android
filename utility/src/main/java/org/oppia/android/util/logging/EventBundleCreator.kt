@@ -107,36 +107,36 @@ class EventBundleCreator @Inject constructor(
     }?.metricName ?: "unknown_loggable_metric"
   }
 
-  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType(
-  ): PerformanceMetricsLoggableMetricType<*>? {
-    return when (loggableMetricTypeCase) {
-      APK_SIZE_METRIC -> PerformanceMetricsLoggableMetricType.ApkSizeLoggableMetric(
-        "apk_size_metric",
-        apkSizeMetric
-      )
-      STORAGE_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric(
-        "storage_usage_metric",
-        storageUsageMetric
-      )
-      STARTUP_LATENCY_METRIC -> PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric(
-        "startup_latency_metric",
-        startupLatencyMetric
-      )
-      MEMORY_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.MemoryUsageLoggableMetric(
-        "memory_usage_metric",
-        memoryUsageMetric
-      )
-      NETWORK_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric(
-        "network_usage_metric",
-        networkUsageMetric
-      )
-      CPU_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.CpuUsageLoggableMetric(
-        "cpu_usage_metric",
-        cpuUsageMetric
-      )
-      LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType():
+    PerformanceMetricsLoggableMetricType<*>? {
+      return when (loggableMetricTypeCase) {
+        APK_SIZE_METRIC -> PerformanceMetricsLoggableMetricType.ApkSizeLoggableMetric(
+          "apk_size_metric",
+          apkSizeMetric
+        )
+        STORAGE_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric(
+          "storage_usage_metric",
+          storageUsageMetric
+        )
+        STARTUP_LATENCY_METRIC -> PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric(
+          "startup_latency_metric",
+          startupLatencyMetric
+        )
+        MEMORY_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.MemoryUsageLoggableMetric(
+          "memory_usage_metric",
+          memoryUsageMetric
+        )
+        NETWORK_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric(
+          "network_usage_metric",
+          networkUsageMetric
+        )
+        CPU_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.CpuUsageLoggableMetric(
+          "cpu_usage_metric",
+          cpuUsageMetric
+        )
+        LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+      }
     }
-  }
 
   private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*>? {
     return when (activityContextCase) {
