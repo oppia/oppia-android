@@ -49,6 +49,13 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     )
     .build()
 
+  private val workerCaseForUploadingPerformanceMetrics: Data = Data.Builder()
+    .putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.PERFORMANCE_METRICS_WORKER
+    )
+    .build()
+
   private val workerCaseForCreatingPeriodicMetricLogs: Data = Data.Builder()
     .putString(
       LogGenerationWorker.WORKER_CASE_KEY,
@@ -79,6 +86,12 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   private val workRequestForUploadingExceptions: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
     .setInputData(workerCaseForUploadingExceptions)
+    .setConstraints(logReportWorkerConstraints)
+    .build()
+
+  private val workRequestForUploadingPerformanceMetrics: PeriodicWorkRequest = PeriodicWorkRequest
+    .Builder(LogUploadWorker::class.java, 6, TimeUnit.HOURS)
+    .setInputData(workerCaseForUploadingPerformanceMetrics)
     .setConstraints(logReportWorkerConstraints)
     .build()
 
@@ -118,6 +131,10 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     val workManager = WorkManager.getInstance(context)
     logUploader.enqueueWorkRequestForEvents(workManager, workRequestForUploadingEvents)
     logUploader.enqueueWorkRequestForExceptions(workManager, workRequestForUploadingExceptions)
+    logUploader.enqueueWorkRequestForPerformanceMetrics(
+      workManager,
+      workRequestForUploadingPerformanceMetrics
+    )
     logGenerator.enqueueWorkRequestForPeriodicMetrics(
       workManager,
       workRequestForGeneratingPeriodicMetricLogs

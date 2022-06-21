@@ -30,6 +30,14 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.CPU_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.LOGGABLEMETRICTYPE_NOT_SET
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
@@ -82,6 +90,51 @@ class EventBundleCreator @Inject constructor(
       // Only allow user IDs to be logged when the learner study feature is enabled.
       eventContext.storeValue(PropertyStore(bundle, allowUserIds = learnerStudyAnalytics.value))
     }?.activityName ?: "unknown_activity_context"
+  }
+
+  fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
+    bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
+    bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
+    bundle.putBoolean("is_app_in_foreground", oppiaMetricLog.isAppInForeground)
+    bundle.putString("memory_tier", oppiaMetricLog.memoryTier.toAnalyticsName())
+    bundle.putString("storage_tier", oppiaMetricLog.storageTier.toAnalyticsName())
+    bundle.putString("network_type", oppiaMetricLog.networkType.toAnalyticsName())
+    bundle.putString("current_screen", oppiaMetricLog.currentScreen.toAnalyticsName())
+    return oppiaMetricLog.loggableMetric.convertToLoggableMetricType()?.also { loggableMetric ->
+      // No allowance for user IDs to be logged since learner study feature is disabled for
+      // performance metrics logging as of now.
+      loggableMetric.storeValue(PropertyStore(bundle, allowUserIds = false))
+    }?.metricName ?: "unknown_loggable_metric"
+  }
+
+  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType(): PerformanceMetricsLoggableMetricType<*>? {
+    return when (loggableMetricTypeCase) {
+      APK_SIZE_METRIC -> PerformanceMetricsLoggableMetricType.ApkSizeLoggableMetric(
+        "apk_size_metric",
+        apkSizeMetric
+      )
+      STORAGE_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric(
+        "storage_usage_metric",
+        storageUsageMetric
+      )
+      STARTUP_LATENCY_METRIC -> PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric(
+        "startup_latency_metric",
+        startupLatencyMetric
+      )
+      MEMORY_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.MemoryUsageLoggableMetric(
+        "memory_usage_metric",
+        memoryUsageMetric
+      )
+      NETWORK_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric(
+        "network_usage_metric",
+        networkUsageMetric
+      )
+      CPU_USAGE_METRIC -> PerformanceMetricsLoggableMetricType.CpuUsageLoggableMetric(
+        "cpu_usage_metric",
+        cpuUsageMetric
+      )
+      LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+    }
   }
 
   private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*>? {
@@ -191,6 +244,100 @@ class EventBundleCreator @Inject constructor(
 
     private fun abbreviateNamespace(namespace: String): String =
       namespace.split('_').map(String::first).joinToString(separator = "")
+  }
+
+  private sealed class PerformanceMetricsLoggableMetricType<T>(
+    val metricName: String,
+    private val value: T
+  ) {
+    /**
+     * Stores the value of this context (i.e. its constituent properties which may correspond to
+     * other [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase]s).
+     */
+    fun storeValue(store: PropertyStore) = value.storeValue(store)
+
+    /** Method that should be overridden by base classes to satisfy the contract of [storeValue]. */
+    protected abstract fun T.storeValue(store: PropertyStore)
+
+    /**
+     * The [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase] corresponding to
+     * [OppiaMetricLog.ApkSizeMetric].
+     */
+    class ApkSizeLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.ApkSizeMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.ApkSizeMetric>(metricName, value) {
+      override fun OppiaMetricLog.ApkSizeMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("apk_size_bytes", apkSizeBytes)
+      }
+    }
+
+    /**
+     * The [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase] corresponding to
+     * [OppiaMetricLog.StorageUsageMetric].
+     */
+    class StorageUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.StorageUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.StorageUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.StorageUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("storage_usage_bytes", storageUsageBytes)
+      }
+    }
+
+    /**
+     * The [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase] corresponding to
+     * [OppiaMetricLog.StartupLatencyMetric].
+     */
+    class StartupLatencyLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.StartupLatencyMetric
+    ) :
+      PerformanceMetricsLoggableMetricType<OppiaMetricLog.StartupLatencyMetric>(metricName, value) {
+      override fun OppiaMetricLog.StartupLatencyMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("startup_latency_millis", startupLatencyMillis)
+      }
+    }
+
+    /**
+     * The [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase] corresponding to
+     * [OppiaMetricLog.MemoryUsageMetric].
+     */
+    class MemoryUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.MemoryUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.MemoryUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.MemoryUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("total_pss_bytes", totalPssBytes)
+      }
+    }
+
+    /**
+     * The [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase] corresponding to
+     * [OppiaMetricLog.NetworkUsageMetric].
+     */
+    class NetworkUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.NetworkUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.NetworkUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.NetworkUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("bytes_received", bytesReceived)
+        store.putNonSensitiveValue("bytes_sent", bytesSent)
+      }
+    }
+
+    /**
+     * The [OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase] corresponding to
+     * [OppiaMetricLog.CpuUsageMetric].
+     */
+    class CpuUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.CpuUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.CpuUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.CpuUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("cpu_usage", cpuUsageMetric)
+      }
+    }
   }
 
   /**
@@ -374,5 +521,44 @@ class EventBundleCreator @Inject constructor(
     EventLog.Priority.ESSENTIAL -> "essential"
     EventLog.Priority.OPTIONAL -> "optional"
     EventLog.Priority.UNRECOGNIZED -> "unknown_priority"
+  }
+
+  private fun OppiaMetricLog.Priority.toAnalyticsName() = when (this) {
+    OppiaMetricLog.Priority.PRIORITY_UNSPECIFIED -> "unspecified_priority"
+    OppiaMetricLog.Priority.LOW_PRIORITY -> "low_priority"
+    OppiaMetricLog.Priority.MEDIUM_PRIORITY -> "medium_priority"
+    OppiaMetricLog.Priority.HIGH_PRIORITY -> "high_priority"
+    OppiaMetricLog.Priority.UNRECOGNIZED -> "unknown_priority"
+  }
+
+  private fun OppiaMetricLog.MemoryTier.toAnalyticsName() = when (this) {
+    OppiaMetricLog.MemoryTier.MEMORY_TIER_UNSPECIFIED -> "unspecified_memory_tier"
+    OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER -> "low_memory"
+    OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER -> "medium_memory"
+    OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER -> "high_memory"
+    OppiaMetricLog.MemoryTier.UNRECOGNIZED -> "unknown_memory_tier"
+  }
+
+  private fun OppiaMetricLog.StorageTier.toAnalyticsName() = when (this) {
+    OppiaMetricLog.StorageTier.STORAGE_TIER_UNSPECIFIED -> "unspecified_storage_tier"
+    OppiaMetricLog.StorageTier.LOW_STORAGE -> "low_storage"
+    OppiaMetricLog.StorageTier.MEDIUM_STORAGE -> "medium_storage"
+    OppiaMetricLog.StorageTier.HIGH_STORAGE -> "high_storage"
+    OppiaMetricLog.StorageTier.UNRECOGNIZED -> "unknown_storage_tier"
+  }
+
+  private fun OppiaMetricLog.NetworkType.toAnalyticsName() = when (this) {
+    OppiaMetricLog.NetworkType.NETWORK_UNSPECIFIED -> "unspecified_network_type"
+    OppiaMetricLog.NetworkType.WIFI -> "wifi"
+    OppiaMetricLog.NetworkType.CELLULAR -> "cellular"
+    OppiaMetricLog.NetworkType.NONE -> "none"
+    OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
+  }
+
+  private fun OppiaMetricLog.CurrentScreen.toAnalyticsName() = when (this) {
+    OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED -> "unspecified_current_screen"
+    OppiaMetricLog.CurrentScreen.HOME_SCREEN -> "home_screen"
+    OppiaMetricLog.CurrentScreen.UNRECOGNIZED -> "unknown_screen_name"
+    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
   }
 }
