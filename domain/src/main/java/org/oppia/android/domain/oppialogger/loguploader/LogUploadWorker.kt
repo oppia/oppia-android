@@ -103,14 +103,13 @@ class LogUploadWorker private constructor(
     }
   }
 
+  /** Extracts performance metric logs from the cache store and logs them to the remote service. */
   private suspend fun uploadPerformanceMetrics(): Result {
     return try {
       val performanceMetricsLogs = performanceMetricsController.getMetricLogStoreList()
-      performanceMetricsLogs.let {
-        for (performanceMetricsLog in it) {
-          performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
-          performanceMetricsController.removeFirstMetricLogFromStore()
-        }
+      performanceMetricsLogs.forEach { performanceMetricsLog ->
+        performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
+        performanceMetricsController.removeFirstMetricLogFromStore()
       }
       Result.success()
     } catch (e: Exception) {

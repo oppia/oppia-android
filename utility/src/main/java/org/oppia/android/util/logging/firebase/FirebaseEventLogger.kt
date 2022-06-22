@@ -77,10 +77,19 @@ class FirebaseEventLogger private constructor(
      * Returns a new [FirebaseEventLogger] for the current application context.
      *
      * Generally, only one of these needs to be created per application.
+     *
+     * This [FirebaseEventLogger] implements the [EventLogger] for facilitating analytics log
+     * reporting.
      */
-    fun create(): EventLogger =
+    fun create(): EventLogger=
       FirebaseEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
 
+    /**
+     * Returns a new [FirebaseEventLogger] for the current application context.
+     *
+     * This [FirebaseEventLogger] implements the [PerformanceMetricsEventLogger] for facilitating
+     * performance metrics log reporting.
+     */
     fun createPerformanceMetricEventLogger(): PerformanceMetricsEventLogger =
       FirebaseEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
   }

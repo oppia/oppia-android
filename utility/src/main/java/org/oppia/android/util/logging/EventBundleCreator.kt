@@ -105,6 +105,11 @@ class EventBundleCreator @Inject constructor(
     }?.activityName ?: "unknown_activity_context"
   }
 
+  /**
+   * Fills the specified [bundle] with a logging-ready representation of [oppiaMetricLog] and
+   * returns a string representation of the high-level type of event logged (per
+   * [OppiaMetricLog.LoggableMetric.getLoggableMetricTypeCase]).
+   */
   fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
     bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
     bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
@@ -114,33 +119,10 @@ class EventBundleCreator @Inject constructor(
     bundle.putString("network_type", oppiaMetricLog.networkType.toAnalyticsName())
     bundle.putString("current_screen", oppiaMetricLog.currentScreen.toAnalyticsName())
     return oppiaMetricLog.loggableMetric.convertToLoggableMetricType()?.also { loggableMetric ->
-      // No allowance for user IDs to be logged since learner study feature is disabled for
-      // performance metrics logging as of now.
+      // No performance metrics need to be tied to user IDs.
       loggableMetric.storeValue(PropertyStore(bundle, allowUserIds = false))
     }?.metricName ?: "unknown_loggable_metric"
   }
-
-  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType():
-    PerformanceMetricsLoggableMetricType<*>? {
-      return when (loggableMetricTypeCase) {
-        APK_SIZE_METRIC -> ApkSizeLoggableMetric("apk_size_metric", apkSizeMetric)
-        STORAGE_USAGE_METRIC -> StorageUsageLoggableMetric(
-          "storage_usage_metric",
-          storageUsageMetric
-        )
-        STARTUP_LATENCY_METRIC -> StartupLatencyLoggableMetric(
-          "startup_latency_metric",
-          startupLatencyMetric
-        )
-        MEMORY_USAGE_METRIC -> MemoryUsageLoggableMetric("memory_usage_metric", memoryUsageMetric)
-        NETWORK_USAGE_METRIC -> NetworkUsageLoggableMetric(
-          "network_usage_metric",
-          networkUsageMetric
-        )
-        CPU_USAGE_METRIC -> CpuUsageLoggableMetric("cpu_usage_metric", cpuUsageMetric)
-        LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
-      }
-    }
 
   private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*>? {
     return when (activityContextCase) {
@@ -184,6 +166,28 @@ class EventBundleCreator @Inject constructor(
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext("failed_analytics_log", installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> null // No context to create here.
+    }
+  }
+
+  private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType():
+    PerformanceMetricsLoggableMetricType<*>? {
+    return when (loggableMetricTypeCase) {
+      APK_SIZE_METRIC -> ApkSizeLoggableMetric("apk_size_metric", apkSizeMetric)
+      STORAGE_USAGE_METRIC -> StorageUsageLoggableMetric(
+        "storage_usage_metric",
+        storageUsageMetric
+      )
+      STARTUP_LATENCY_METRIC -> StartupLatencyLoggableMetric(
+        "startup_latency_metric",
+        startupLatencyMetric
+      )
+      MEMORY_USAGE_METRIC -> MemoryUsageLoggableMetric("memory_usage_metric", memoryUsageMetric)
+      NETWORK_USAGE_METRIC -> NetworkUsageLoggableMetric(
+        "network_usage_metric",
+        networkUsageMetric
+      )
+      CPU_USAGE_METRIC -> CpuUsageLoggableMetric("cpu_usage_metric", cpuUsageMetric)
+      LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
     }
   }
 
@@ -249,83 +253,6 @@ class EventBundleCreator @Inject constructor(
 
     private fun abbreviateNamespace(namespace: String): String =
       namespace.split('_').map(String::first).joinToString(separator = "")
-  }
-
-  /*** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]).*/
-  private sealed class PerformanceMetricsLoggableMetricType<T>(
-    val metricName: String,
-    private val value: T
-  ) {
-    /**
-     * Stores the value of this context (i.e. its constituent properties which may correspond to
-     * other [LoggableMetricTypeCase]s).
-     */
-    fun storeValue(store: PropertyStore) = value.storeValue(store)
-
-    /** Method that should be overridden by base classes to satisfy the contract of [storeValue]. */
-    protected abstract fun T.storeValue(store: PropertyStore)
-
-    /** The [LoggableMetricTypeCase] corresponding to [ApkSizePerformanceLoggableMetric]. */
-    class ApkSizeLoggableMetric(
-      metricName: String,
-      value: OppiaMetricLog.ApkSizeMetric
-    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.ApkSizeMetric>(metricName, value) {
-      override fun OppiaMetricLog.ApkSizeMetric.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("apk_size_bytes", apkSizeBytes)
-      }
-    }
-
-    /** The [LoggableMetricTypeCase] corresponding to [StorageUsagePerformanceLoggableMetric]. */
-    class StorageUsageLoggableMetric(
-      metricName: String,
-      value: OppiaMetricLog.StorageUsageMetric
-    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.StorageUsageMetric>(metricName, value) {
-      override fun OppiaMetricLog.StorageUsageMetric.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("storage_usage_bytes", storageUsageBytes)
-      }
-    }
-
-    /** The [LoggableMetricTypeCase] corresponding to [StartupLatencyPerformanceLoggableMetric]. */
-    class StartupLatencyLoggableMetric(
-      metricName: String,
-      value: OppiaMetricLog.StartupLatencyMetric
-    ) :
-      PerformanceMetricsLoggableMetricType<OppiaMetricLog.StartupLatencyMetric>(metricName, value) {
-      override fun OppiaMetricLog.StartupLatencyMetric.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("startup_latency_millis", startupLatencyMillis)
-      }
-    }
-
-    /** The [LoggableMetricTypeCase] corresponding to [MemoryUsagePerformanceLoggableMetric]. */
-    class MemoryUsageLoggableMetric(
-      metricName: String,
-      value: OppiaMetricLog.MemoryUsageMetric
-    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.MemoryUsageMetric>(metricName, value) {
-      override fun OppiaMetricLog.MemoryUsageMetric.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("total_pss_bytes", totalPssBytes)
-      }
-    }
-
-    /** The [LoggableMetricTypeCase] corresponding to [NetworkUsagePerformanceLoggableMetric]. */
-    class NetworkUsageLoggableMetric(
-      metricName: String,
-      value: OppiaMetricLog.NetworkUsageMetric
-    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.NetworkUsageMetric>(metricName, value) {
-      override fun OppiaMetricLog.NetworkUsageMetric.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("bytes_received", bytesReceived)
-        store.putNonSensitiveValue("bytes_sent", bytesSent)
-      }
-    }
-
-    /** The [LoggableMetricTypeCase] corresponding to [CpuUsagePerformanceLoggableMetric]. */
-    class CpuUsageLoggableMetric(
-      metricName: String,
-      value: OppiaMetricLog.CpuUsageMetric
-    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.CpuUsageMetric>(metricName, value) {
-      override fun OppiaMetricLog.CpuUsageMetric.storeValue(store: PropertyStore) {
-        store.putNonSensitiveValue("cpu_usage", cpuUsageMetric)
-      }
-    }
   }
 
   /**
@@ -501,6 +428,84 @@ class EventBundleCreator @Inject constructor(
     /** [EventActivityContext] corresponding to events with no constituent properties. */
     class EmptyContext(activityName: String) : EventActivityContext<Unit>(activityName, Unit) {
       override fun Unit.storeValue(store: PropertyStore) {}
+    }
+  }
+
+
+  /*** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]).*/
+  private sealed class PerformanceMetricsLoggableMetricType<T>(
+    val metricName: String,
+    private val value: T
+  ) {
+    /**
+     * Stores the value of this context (i.e. its constituent properties which may correspond to
+     * other [LoggableMetricTypeCase]s).
+     */
+    fun storeValue(store: PropertyStore) = value.storeValue(store)
+
+    /** Method that should be overridden by base classes to satisfy the contract of [storeValue]. */
+    protected abstract fun T.storeValue(store: PropertyStore)
+
+    /** The [LoggableMetricTypeCase] corresponding to [ApkSizePerformanceLoggableMetric]. */
+    class ApkSizeLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.ApkSizeMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.ApkSizeMetric>(metricName, value) {
+      override fun OppiaMetricLog.ApkSizeMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("apk_size_bytes", apkSizeBytes)
+      }
+    }
+
+    /** The [LoggableMetricTypeCase] corresponding to [StorageUsagePerformanceLoggableMetric]. */
+    class StorageUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.StorageUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.StorageUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.StorageUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("storage_usage_bytes", storageUsageBytes)
+      }
+    }
+
+    /** The [LoggableMetricTypeCase] corresponding to [StartupLatencyPerformanceLoggableMetric]. */
+    class StartupLatencyLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.StartupLatencyMetric
+    ) :
+      PerformanceMetricsLoggableMetricType<OppiaMetricLog.StartupLatencyMetric>(metricName, value) {
+      override fun OppiaMetricLog.StartupLatencyMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("startup_latency_millis", startupLatencyMillis)
+      }
+    }
+
+    /** The [LoggableMetricTypeCase] corresponding to [MemoryUsagePerformanceLoggableMetric]. */
+    class MemoryUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.MemoryUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.MemoryUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.MemoryUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("total_pss_bytes", totalPssBytes)
+      }
+    }
+
+    /** The [LoggableMetricTypeCase] corresponding to [NetworkUsagePerformanceLoggableMetric]. */
+    class NetworkUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.NetworkUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.NetworkUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.NetworkUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("bytes_received", bytesReceived)
+        store.putNonSensitiveValue("bytes_sent", bytesSent)
+      }
+    }
+
+    /** The [LoggableMetricTypeCase] corresponding to [CpuUsagePerformanceLoggableMetric]. */
+    class CpuUsageLoggableMetric(
+      metricName: String,
+      value: OppiaMetricLog.CpuUsageMetric
+    ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.CpuUsageMetric>(metricName, value) {
+      override fun OppiaMetricLog.CpuUsageMetric.storeValue(store: PropertyStore) {
+        store.putNonSensitiveValue("cpu_usage", cpuUsageMetric)
+      }
     }
   }
 
