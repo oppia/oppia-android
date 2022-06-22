@@ -171,25 +171,25 @@ class EventBundleCreator @Inject constructor(
 
   private fun OppiaMetricLog.LoggableMetric.convertToLoggableMetricType():
     PerformanceMetricsLoggableMetricType<*>? {
-    return when (loggableMetricTypeCase) {
-      APK_SIZE_METRIC -> ApkSizeLoggableMetric("apk_size_metric", apkSizeMetric)
-      STORAGE_USAGE_METRIC -> StorageUsageLoggableMetric(
-        "storage_usage_metric",
-        storageUsageMetric
-      )
-      STARTUP_LATENCY_METRIC -> StartupLatencyLoggableMetric(
-        "startup_latency_metric",
-        startupLatencyMetric
-      )
-      MEMORY_USAGE_METRIC -> MemoryUsageLoggableMetric("memory_usage_metric", memoryUsageMetric)
-      NETWORK_USAGE_METRIC -> NetworkUsageLoggableMetric(
-        "network_usage_metric",
-        networkUsageMetric
-      )
-      CPU_USAGE_METRIC -> CpuUsageLoggableMetric("cpu_usage_metric", cpuUsageMetric)
-      LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+      return when (loggableMetricTypeCase) {
+        APK_SIZE_METRIC -> ApkSizeLoggableMetric("apk_size_metric", apkSizeMetric)
+        STORAGE_USAGE_METRIC -> StorageUsageLoggableMetric(
+          "storage_usage_metric",
+          storageUsageMetric
+        )
+        STARTUP_LATENCY_METRIC -> StartupLatencyLoggableMetric(
+          "startup_latency_metric",
+          startupLatencyMetric
+        )
+        MEMORY_USAGE_METRIC -> MemoryUsageLoggableMetric("memory_usage_metric", memoryUsageMetric)
+        NETWORK_USAGE_METRIC -> NetworkUsageLoggableMetric(
+          "network_usage_metric",
+          networkUsageMetric
+        )
+        CPU_USAGE_METRIC -> CpuUsageLoggableMetric("cpu_usage_metric", cpuUsageMetric)
+        LOGGABLEMETRICTYPE_NOT_SET, null -> null // No context to create here.
+      }
     }
-  }
 
   /**
    * Utility for storing properties within a [Bundle] (indicated by [bundle]), omitting those which
@@ -430,7 +430,6 @@ class EventBundleCreator @Inject constructor(
       override fun Unit.storeValue(store: PropertyStore) {}
     }
   }
-
 
   /*** Represents an [OppiaMetricLog] loggable metric (denoted by [LoggableMetricTypeCase]).*/
   private sealed class PerformanceMetricsLoggableMetricType<T>(

@@ -81,7 +81,7 @@ class FirebaseEventLogger private constructor(
      * This [FirebaseEventLogger] implements the [EventLogger] for facilitating analytics log
      * reporting.
      */
-    fun create(): EventLogger=
+    fun create(): EventLogger =
       FirebaseEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
 
     /**
