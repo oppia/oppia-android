@@ -4,7 +4,7 @@ import androidx.work.Configuration
 import androidx.work.DelegatingWorkerFactory
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.domain.oppialogger.loggenerator.LogGenerationWorkerFactory
+import org.oppia.android.domain.oppialogger.loggenerator.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
 import javax.inject.Singleton
@@ -18,12 +18,12 @@ class WorkManagerConfigurationModule {
   fun provideWorkManagerConfiguration(
     logUploadWorkerFactory: LogUploadWorkerFactory,
     platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory,
-    logGenerationWorkerFactory: LogGenerationWorkerFactory
+    metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
   ): Configuration {
     val delegatingWorkerFactory = DelegatingWorkerFactory()
     delegatingWorkerFactory.addFactory(logUploadWorkerFactory)
     delegatingWorkerFactory.addFactory(platformParameterSyncUpWorkerFactory)
-    delegatingWorkerFactory.addFactory(logGenerationWorkerFactory)
+    delegatingWorkerFactory.addFactory(metricLogSchedulingWorkerFactory)
     return Configuration.Builder().setWorkerFactory(delegatingWorkerFactory).build()
   }
 }

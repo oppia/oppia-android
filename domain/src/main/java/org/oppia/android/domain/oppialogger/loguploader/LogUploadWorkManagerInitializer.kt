@@ -7,7 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.domain.oppialogger.loggenerator.LogGenerationWorker
+import org.oppia.android.domain.oppialogger.loggenerator.MetricLogSchedulingWorker
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
@@ -51,22 +51,22 @@ class LogUploadWorkManagerInitializer @Inject constructor(
 
   private val workerCaseForCreatingPeriodicMetricLogs: Data = Data.Builder()
     .putString(
-      LogGenerationWorker.WORKER_CASE_KEY,
-      LogGenerationWorker.PERIODIC_METRIC_WORKER
+      MetricLogSchedulingWorker.WORKER_CASE_KEY,
+      MetricLogSchedulingWorker.PERIODIC_METRIC_WORKER
     )
     .build()
 
   private val workerCaseForCreatingStorageUsageMetricLogs: Data = Data.Builder()
     .putString(
-      LogGenerationWorker.WORKER_CASE_KEY,
-      LogGenerationWorker.STORAGE_USAGE_WORKER
+      MetricLogSchedulingWorker.WORKER_CASE_KEY,
+      MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
     )
     .build()
 
   private val workerCaseForCreatingMemoryUsageMetricLogs: Data = Data.Builder()
     .putString(
-      LogGenerationWorker.WORKER_CASE_KEY,
-      LogGenerationWorker.MEMORY_USAGE_WORKER
+      MetricLogSchedulingWorker.WORKER_CASE_KEY,
+      MetricLogSchedulingWorker.MEMORY_USAGE_WORKER
     )
     .build()
 
@@ -84,7 +84,7 @@ class LogUploadWorkManagerInitializer @Inject constructor(
 
   private val workRequestForGeneratingPeriodicMetricLogs: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(
-      LogGenerationWorker::class.java,
+      MetricLogSchedulingWorker::class.java,
       performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
       TimeUnit.MINUTES
     )
@@ -95,7 +95,7 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   private val workRequestForGeneratingStorageUsageMetricLogs: PeriodicWorkRequest =
     PeriodicWorkRequest
       .Builder(
-        LogGenerationWorker::class.java,
+        MetricLogSchedulingWorker::class.java,
         performanceMetricCollectionLowFrequencyTimeInterval.value.toLong(),
         TimeUnit.MINUTES
       )
@@ -106,7 +106,7 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   private val workRequestForGeneratingMemoryUsageMetricLogs: PeriodicWorkRequest =
     PeriodicWorkRequest
       .Builder(
-        LogGenerationWorker::class.java,
+        MetricLogSchedulingWorker::class.java,
         performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
         TimeUnit.MINUTES
       )
