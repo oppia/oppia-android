@@ -68,4 +68,6 @@
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
   <color name="color_def_dark_purple">#441530</color>
+  <color name="color_def_error_text">#923026</color>
+  <color name="color_def_black_grey">#33999999</color>
 </resources>
