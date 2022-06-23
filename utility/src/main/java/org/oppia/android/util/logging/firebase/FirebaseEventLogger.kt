@@ -5,13 +5,13 @@ import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.util.Locale
 import javax.inject.Inject
-import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 
 private const val NETWORK_USER_PROPERTY = "NETWORK"
 private const val COUNTRY_USER_PROPERTY = "COUNTRY"

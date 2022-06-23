@@ -3,8 +3,8 @@ package org.oppia.android.util.logging.performancemetrics
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import javax.inject.Inject
 import org.oppia.android.util.logging.MetricLogScheduler
+import javax.inject.Inject
 
 private const val OPPIA_PERIODIC_METRIC_WORK = "OPPIA_PERIODIC_METRIC_WORK"
 private const val OPPIA_STORAGE_USAGE_WORK = "OPPIA_STORAGE_USAGE_WORK"

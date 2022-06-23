@@ -5,8 +5,8 @@ import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
-import javax.inject.Singleton
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import javax.inject.Singleton
 
 /** Provides Firebase-specific logging implementations. */
 @Module

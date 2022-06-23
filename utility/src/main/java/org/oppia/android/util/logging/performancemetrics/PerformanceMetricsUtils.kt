@@ -16,7 +16,7 @@ import javax.inject.Inject
 class PerformanceMetricsUtils @Inject constructor(
   private val context: Application,
   private val consoleLogger: ConsoleLogger
-): LifecycleObserver {
+) : LifecycleObserver {
 
   // Keep the default value as false as the app is considered to be in the background until it comes
   // to foreground.
