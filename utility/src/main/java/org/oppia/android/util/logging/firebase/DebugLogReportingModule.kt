@@ -6,6 +6,7 @@ import dagger.Provides
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 
 /** Provides debug log reporting dependencies. */
 @Module
@@ -18,4 +19,11 @@ class DebugLogReportingModule {
   @Provides
   @Singleton
   fun provideDebugEventLogger(debugEventLogger: DebugEventLogger): EventLogger = debugEventLogger
+
+  @Provides
+  @Singleton
+  fun providePerformanceMetricsEventLogger(
+    factory: FirebaseEventLogger.Factory
+  ): PerformanceMetricsEventLogger =
+    factory.createPerformanceMetricEventLogger()
 }
