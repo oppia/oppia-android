@@ -373,7 +373,6 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  @Throws(java.lang.Exception::class)
   fun testDrawCircle_shouldRecordCirclePaintHistoryEvents() {
 
     val canvas = Canvas()

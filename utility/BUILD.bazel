@@ -59,7 +59,6 @@ kt_android_library(
     name = "utility",
     srcs = glob(
         ["src/main/java/org/oppia/android/util/**/*.kt"],
-        exclude = MIGRATED_PROD_FILES + ["src/main/java/org/oppia/android/util/testing/**/*.kt"],
     ),
     visibility = ["//visibility:public"],
     deps = [
@@ -138,6 +137,8 @@ MIGRATED_TESTS = [
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModuleTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
+    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
+    "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",
 ]
 
 [utility_test(
