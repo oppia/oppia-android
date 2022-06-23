@@ -59,6 +59,7 @@ kt_android_library(
     name = "utility",
     srcs = glob(
         ["src/main/java/org/oppia/android/util/**/*.kt"],
+        exclude = MIGRATED_PROD_FILES,
     ),
     visibility = ["//visibility:public"],
     deps = [
