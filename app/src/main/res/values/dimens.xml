@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Default screen margins, per the Android Design guidelines. -->
+  <dimen name="arrow_height">57dp</dimen>
+  <dimen name="arrow_width">21dp</dimen>
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="answer_tick_size">24dp</dimen>

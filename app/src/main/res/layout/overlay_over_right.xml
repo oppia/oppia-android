@@ -35,7 +35,7 @@
       android:textColor="@android:color/white"
       android:textSize="24dp"
       android:textStyle="bold"
-      app:layout_constraintStart_toStartOf="@+id/arrow"
+      app:layout_constraintEnd_toEndOf="@+id/arrow"
       app:layout_constraintTop_toBottomOf="@id/arrow" />
 
     <TextView
