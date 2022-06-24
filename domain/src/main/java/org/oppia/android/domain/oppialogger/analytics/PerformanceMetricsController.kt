@@ -40,7 +40,7 @@ class PerformanceMetricsController @Inject constructor(
    * This will schedule a background upload of the event if there's internet connectivity, otherwise
    * it will cache the event for a later upload.
    */
-  fun logMetricEvent(
+  fun logPerformanceMetricsEvent(
     timestamp: Long,
     currentScreen: OppiaMetricLog.CurrentScreen,
     loggableMetric: OppiaMetricLog.LoggableMetric,

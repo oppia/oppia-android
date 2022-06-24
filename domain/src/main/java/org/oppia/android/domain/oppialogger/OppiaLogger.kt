@@ -12,26 +12,11 @@ import javax.inject.Inject
 class OppiaLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val consoleLogger: ConsoleLogger,
-  private val oppiaClock: OppiaClock,
-  private val performanceMetricsController: PerformanceMetricsController
+  private val oppiaClock: OppiaClock
 ) {
   /** Logs high-priority events. See [AnalyticsController.logImportantEvent] for more context. */
   fun logImportantEvent(eventContext: EventLog.Context) {
     analyticsController.logImportantEvent(oppiaClock.getCurrentTimeMs(), eventContext)
-  }
-
-  /** Logs performance metrics logs. See [PerformanceMetricsController.logMetricEvent] for more context. */
-  fun logPerformanceMetrics(
-    currentScreen: OppiaMetricLog.CurrentScreen,
-    loggableMetric: OppiaMetricLog.LoggableMetric,
-    priority: OppiaMetricLog.Priority
-  ) {
-    performanceMetricsController.logMetricEvent(
-      oppiaClock.getCurrentTimeMs(),
-      currentScreen,
-      loggableMetric,
-      priority
-    )
   }
 
   /** Logs a verbose message with the specified tag. See [ConsoleLogger.v] for more context */

@@ -2,7 +2,6 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
@@ -10,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class PerformanceMetricsLogger @Inject constructor(
-  private val oppiaLogger: OppiaLogger,
+  private val performanceMetricsController: PerformanceMetricsController,
   private val performanceMetricsUtils: PerformanceMetricsUtils,
   private val oppiaClock: OppiaClock
 ) : ApplicationStartupListener {
@@ -26,14 +25,16 @@ class PerformanceMetricsLogger @Inject constructor(
   }
 
   fun logApkSize() {
-    oppiaLogger.logLowPriorityMetricEvent(
+    performanceMetricsController.logLowPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
       OppiaMetricLog.CurrentScreen.HOME_SCREEN,
       createApkSizeLoggableMetric(performanceMetricsUtils.getApkSize())
     )
   }
 
   fun logStorageUsage() {
-    oppiaLogger.logLowPriorityMetricEvent(
+    performanceMetricsController.logLowPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
       OppiaMetricLog.CurrentScreen.HOME_SCREEN,
       createStorageUsageLoggableMetric(performanceMetricsUtils.getUsedStorage())
     )
@@ -42,7 +43,8 @@ class PerformanceMetricsLogger @Inject constructor(
   fun logStartupLatency() {
     val startupLatency = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (startupLatency >= 0) {
-      oppiaLogger.logLowPriorityMetricEvent(
+      performanceMetricsController.logLowPriorityMetricEvent(
+        oppiaClock.getCurrentTimeMs(),
         OppiaMetricLog.CurrentScreen.HOME_SCREEN,
         createStartupLatencyLoggableMetric(startupLatency)
       )
@@ -50,14 +52,16 @@ class PerformanceMetricsLogger @Inject constructor(
   }
 
   fun logMemoryUsage() {
-    oppiaLogger.logMediumPriorityMetricEvent(
+    performanceMetricsController.logMediumPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
       OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
       createMemoryUsageLoggableMetric(performanceMetricsUtils.getTotalPssUsed())
     )
   }
 
   fun logNetworkUsage() {
-    oppiaLogger.logHighPriorityMetricEvent(
+    performanceMetricsController.logHighPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
       OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
       createNetworkUsageLoggableMetric(
         performanceMetricsUtils.getTotalReceivedBytes(),
@@ -67,7 +71,8 @@ class PerformanceMetricsLogger @Inject constructor(
   }
 
   fun logCpuUsage(cpuUsage: Long) {
-    oppiaLogger.logHighPriorityMetricEvent(
+    performanceMetricsController.logHighPriorityMetricEvent(
+      oppiaClock.getCurrentTimeMs(),
       OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
       createCpuUsageLoggableMetric(cpuUsage)
     )
@@ -84,11 +89,13 @@ class PerformanceMetricsLogger @Inject constructor(
      * application. These metrics are important to log and should be prioritized over metrics logged
      * via [logMediumPriorityMetricEvent] and [logLowPriorityMetricEvent].
      */
-    internal fun OppiaLogger.logHighPriorityMetricEvent(
+    internal fun PerformanceMetricsController.logHighPriorityMetricEvent(
+      timestamp: Long,
       currentScreen: OppiaMetricLog.CurrentScreen,
       loggableMetric: OppiaMetricLog.LoggableMetric
     ) {
-      logPerformanceMetrics(
+      logPerformanceMetricsEvent(
+        timestamp,
         currentScreen,
         loggableMetric,
         OppiaMetricLog.Priority.HIGH_PRIORITY
@@ -109,11 +116,13 @@ class PerformanceMetricsLogger @Inject constructor(
      * application. These metrics are important to log (but not as important as high priority metrics)
      * and should be prioritized over metrics logged via [logLowPriorityMetricEvent].
      */
-    internal fun OppiaLogger.logMediumPriorityMetricEvent(
+    internal fun PerformanceMetricsController.logMediumPriorityMetricEvent(
+      timestamp: Long,
       currentScreen: OppiaMetricLog.CurrentScreen,
       loggableMetric: OppiaMetricLog.LoggableMetric
     ) {
-      logPerformanceMetrics(
+      logPerformanceMetricsEvent(
+        timestamp,
         currentScreen,
         loggableMetric,
         OppiaMetricLog.Priority.MEDIUM_PRIORITY
@@ -137,11 +146,13 @@ class PerformanceMetricsLogger @Inject constructor(
      * it's unexpected for events to actually be dropped since the app is configured to support a
      * large number of cached events at one time).
      */
-    internal fun OppiaLogger.logLowPriorityMetricEvent(
+    internal fun PerformanceMetricsController.logLowPriorityMetricEvent(
+      timestamp: Long,
       currentScreen: OppiaMetricLog.CurrentScreen,
       loggableMetric: OppiaMetricLog.LoggableMetric
     ) {
-      logPerformanceMetrics(
+      logPerformanceMetricsEvent(
+        timestamp,
         currentScreen,
         loggableMetric,
         OppiaMetricLog.Priority.LOW_PRIORITY
