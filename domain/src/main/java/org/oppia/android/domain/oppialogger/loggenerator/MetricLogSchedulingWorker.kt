@@ -8,7 +8,9 @@ import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -16,9 +18,11 @@ import javax.inject.Inject
  * Worker class that generates metric log reports regarding the performance of the application
  * and then stores it in in device cache.
  */
-class LogGenerationWorker private constructor(
+class MetricLogSchedulingWorker private constructor(
   context: Context,
   params: WorkerParameters,
+  private val consoleLogger: ConsoleLogger,
+  private val performanceMetricsLogger: PerformanceMetricsLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ListenableWorker(context, params) {
 
@@ -34,9 +38,9 @@ class LogGenerationWorker private constructor(
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
       when (inputData.getStringFromData(WORKER_CASE_KEY)) {
-        PERIODIC_METRIC_WORKER -> generatePeriodicMetricLog()
-        STORAGE_USAGE_WORKER -> generateStorageUsageMetricLog()
-        MEMORY_USAGE_WORKER -> generateMemoryUsageMetricLog()
+        PERIODIC_METRIC_WORKER -> schedulePeriodicMetricLogging()
+        STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
+        MEMORY_USAGE_WORKER -> scheduleMemoryUsageMetricLogging()
         else -> Result.failure()
       }
     }
@@ -53,27 +57,51 @@ class LogGenerationWorker private constructor(
     return future
   }
 
-  private fun generatePeriodicMetricLog(): Result {
-    // TODO(#4334): Add functionality to generate metric log reports for periodic events.
-    return Result.failure()
+  private fun schedulePeriodicMetricLogging(): Result {
+    return try {
+      performanceMetricsLogger.logNetworkUsage()
+      // TODO(#4334): Add functionality to log cpu usage performance metric.
+      Result.success()
+    } catch (e: Exception) {
+      consoleLogger.e(TAG, e.toString(), e)
+      return Result.failure()
+    }
   }
 
-  private fun generateStorageUsageMetricLog(): Result {
-    // TODO(#4334): Add functionality to generate metric log reports for storage usage.
-    return Result.failure()
+  private fun scheduleStorageUsageMetricLogging(): Result {
+    return try {
+      performanceMetricsLogger.logStorageUsage()
+      Result.success()
+    } catch (e: Exception) {
+      consoleLogger.e(TAG, e.toString(), e)
+      return Result.failure()
+    }
   }
 
-  private fun generateMemoryUsageMetricLog(): Result {
-    // TODO(#4334): Add functionality to generate metric log reports for memory usage.
-    return Result.failure()
+  private fun scheduleMemoryUsageMetricLogging(): Result {
+    return try {
+      performanceMetricsLogger.logMemoryUsage()
+      Result.success()
+    } catch (e: Exception) {
+      consoleLogger.e(TAG, e.toString(), e)
+      return Result.failure()
+    }
   }
 
-  /** Creates an instance of [LogGenerationWorker] by properly injecting dependencies. */
+  /** Creates an instance of [MetricLogSchedulingWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
+    private val consoleLogger: ConsoleLogger,
+    private val performanceMetricsLogger: PerformanceMetricsLogger,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
     fun create(context: Context, params: WorkerParameters): ListenableWorker {
-      return LogGenerationWorker(context, params, backgroundDispatcher)
+      return MetricLogSchedulingWorker(
+        context,
+        params,
+        consoleLogger,
+        performanceMetricsLogger,
+        backgroundDispatcher
+      )
     }
   }
 }

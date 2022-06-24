@@ -6,12 +6,12 @@ import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import javax.inject.Inject
 
-/** Custom [WorkerFactory] for the [LogGenerationWorker]. */
-class LogGenerationWorkerFactory @Inject constructor(
-  private val workerFactory: LogGenerationWorker.Factory
+/** Custom [WorkerFactory] for the [MetricLogSchedulingWorker]. */
+class MetricLogSchedulingWorkerFactory @Inject constructor(
+  private val workerFactory: MetricLogSchedulingWorker.Factory
 ) : WorkerFactory() {
 
-  /** Returns a new [LogGenerationWorker] for the given context and parameters. */
+  /** Returns a new [MetricLogSchedulingWorker] for the given context and parameters. */
   override fun createWorker(
     appContext: Context,
     workerClassName: String,

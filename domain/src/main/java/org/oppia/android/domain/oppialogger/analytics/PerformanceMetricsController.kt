@@ -27,7 +27,6 @@ class PerformanceMetricsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  private val applicationLifecycleObserver: ApplicationLifecycleObserver,
   @MetricLogStorageCacheSize private val metricLogStorageCacheSize: Int
 ) {
 
@@ -107,7 +106,7 @@ class PerformanceMetricsController @Inject constructor(
       this.priority = priority
       this.currentScreen = currentScreen
       this.loggableMetric = loggableMetric
-      this.isAppInForeground = applicationLifecycleObserver.isAppInForeground()
+      this.isAppInForeground = performanceMetricsUtils.isAppInForeground()
       this.storageTier = performanceMetricsUtils.getDeviceStorageTier()
       this.memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     }.build()
