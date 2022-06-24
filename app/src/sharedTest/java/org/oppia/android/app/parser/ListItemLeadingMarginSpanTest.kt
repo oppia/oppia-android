@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -97,7 +98,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -118,13 +118,25 @@ class ListItemLeadingMarginSpanTest {
 
   val bulletRadius =
     context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.bullet_radius)
-
-  val spacingBeforeText = context.resources.getDimensionPixelSize(
+  private val spacingBeforeBullet =
+    context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_bullet)
+  private val gapWidth = context.resources.getDimensionPixelSize(
+    org.oppia.android.util.R.dimen.bullet_gap_width
+  )
+  private val spacingBeforeText = context.resources.getDimensionPixelSize(
     org.oppia.android.util.R.dimen.spacing_before_text
   )
-  val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
+  private val spacingBeforeNumberedText = context.resources.getDimensionPixelSize(
     org.oppia.android.util.R.dimen.spacing_before_numbered_text
   )
+
+  private val canvas = Canvas()
+  private val paint = Paint()
+  private val x = 10
+  private val dir = 15
+  private val top = 0
+  private val bottom = 0
+  private val baseline = 0
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
@@ -345,7 +357,6 @@ class ListItemLeadingMarginSpanTest {
         ListItemLeadingMarginSpan.OlSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
-
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan0).isNotNull()
 
@@ -360,41 +371,74 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testDrawText_shouldRecordTextHistoryEvents() {
-    val canvas = Canvas()
-    val paint = Paint()
-    canvas.drawText("1.", 10f, 0f, paint)
-    canvas.drawText("2.", 10f, 0f, paint)
+  fun testDrawLeadingMargin_forBulletItems_isdrawnCorrectly() {
+    val indentation = 0
+    val text = SpannableString(
+      "<p>You should know the following before going on:<br></p>" +
+        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+        "<li>How to tell whether one counting number is bigger or " +
+        "smaller than another</li></ul>"
+    )
+    // Given a span that is set on a text
+    val span = ListItemLeadingMarginSpan.UlSpan(context, indentation)
+    text.setSpan(span, 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    // When the leading margin is drawn
+    span.drawLeadingMargin(
+      canvas, paint, x, dir, top, 0, bottom,
+      text, 0, 0, true, null
+    )
+
+    val xCoordinate = gapWidth * indentation + spacingBeforeBullet
+    val yCoord = (top + bottom) / 2f
+
+    canvas.drawCircle(xCoordinate.toFloat(), yCoord, bulletRadius.toFloat(), paint)
 
     val shadowCanvas = shadowOf(canvas)
-    assertThat(shadowCanvas.textHistoryCount).isEqualTo(2)
-    assertThat("1.").isEqualTo(shadowCanvas.getDrawnTextEvent(0).text)
-    assertThat("2.").isEqualTo(shadowCanvas.getDrawnTextEvent(1).text)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).radius).isEqualTo(bulletRadius)
+    assertThat(shadowCanvas.getDrawnCircle(0).paint).isSameInstanceAs(paint)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isEqualTo(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).radius).isEqualTo(bulletRadius)
+    assertThat(shadowCanvas.getDrawnCircle(1).paint).isSameInstanceAs(paint)
   }
 
   @Test
-  fun testDrawCircle_shouldRecordCirclePaintHistoryEvents() {
+  fun testDrawText_shouldRecordTextHistoryEvents() {
+    val indentation = 0
+    val text = SpannableString(
+      "<p>You should know the following before going on:<br></p>" +
+        "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+        "<li>How to tell whether one counting number is bigger or " +
+        "smaller than another</li></ol>"
+    )
+    // Given a span that is set on a text
+    var span = ListItemLeadingMarginSpan.OlSpan(context, indentation, "1")
+    text.setSpan(span, 48, 88, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    // When the leading margin is drawn
+    span.drawLeadingMargin(
+      canvas, paint, x, dir, top, 0, bottom,
+      text, 0, 0, true, null
+    )
+    span = ListItemLeadingMarginSpan.OlSpan(context, indentation, "2")
+    text.setSpan(span, 88, 160, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    // When the leading margin is drawn
+    span.drawLeadingMargin(
+      canvas, paint, x, dir, top, 0, bottom,
+      text, 0, 0, true, null
+    )
 
-    val canvas = Canvas()
-    val paint0 = Paint()
-    val paint1 = Paint()
+    val trueX = gapWidth * indentation + spacingBeforeBullet
 
-    paint0.style = Paint.Style.FILL
+    canvas.drawText("1", trueX.toFloat(), baseline.toFloat(), paint)
 
-    paint1.style = Paint.Style.STROKE
-    paint1.strokeWidth = 2f
+    canvas.drawText("2", trueX.toFloat(), baseline.toFloat(), paint)
 
-    canvas.drawCircle(1f, 2f, 3f, paint0)
-    canvas.drawCircle(4f, 5f, 6f, paint1)
     val shadowCanvas = shadowOf(canvas)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(1.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isEqualTo(2.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).radius).isEqualTo(3.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).paint).isSameInstanceAs(paint0)
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isEqualTo(4.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isEqualTo(5.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).radius).isEqualTo(6.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).paint).isSameInstanceAs(paint1)
+    assertThat(shadowCanvas.textHistoryCount).isEqualTo(2)
+    assertThat("1").isEqualTo(shadowCanvas.getDrawnTextEvent(0).text)
+    assertThat("2").isEqualTo(shadowCanvas.getDrawnTextEvent(1).text)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
@@ -408,9 +452,6 @@ class ListItemLeadingMarginSpanTest {
     Mockito.verify(fakeMock).consume(valueCaptor.capture())
     return valueCaptor.value
   }
-
-  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
-    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
