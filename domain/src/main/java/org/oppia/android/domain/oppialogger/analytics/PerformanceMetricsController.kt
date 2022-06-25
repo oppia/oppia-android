@@ -166,7 +166,13 @@ class PerformanceMetricsController @Inject constructor(
     metricLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeOppiaMetricLog(0).build()
     }.invokeOnCompletion {
-      it?.let { consoleLogger.e("PerformanceMetricsController", "Failed to remove metric log.", it) }
+      it?.let {
+        consoleLogger.e(
+          "PerformanceMetricsController",
+          "Failed to remove metric log.",
+          it
+        )
+      }
     }
   }
 }

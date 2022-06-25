@@ -12,18 +12,18 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
+import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
-import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 
 /** Tests for [FakePerformanceMetricsEventLoggerTest]. */
 // FunctionName: test names are conventionally named with underscores.

@@ -1,10 +1,10 @@
 package org.oppia.android.testing
 
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 
 /**  A test specific fake for the event logger. */
 @Singleton
