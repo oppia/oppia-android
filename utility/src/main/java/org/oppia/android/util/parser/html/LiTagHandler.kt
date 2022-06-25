@@ -5,7 +5,8 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.Stack
+import org.oppia.android.util.parser.html.LiTagHandler.Companion.setSpanFromMark
+import java.util.*
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -24,6 +25,7 @@ class LiTagHandler(
   private val context: Context,
   private val displayLocale: OppiaLocale.DisplayLocale
 ) : CustomHtmlContentHandler.CustomTagHandler {
+  private val lists = Stack<CustomHtmlContentHandler.ListTag>()
 
   override fun handleOpeningTag(
     output: Editable,
@@ -51,7 +53,6 @@ class LiTagHandler(
   /** Subclass of [ListTag] for unordered lists.*/
   private class Ul(private val context: Context) :
     CustomHtmlContentHandler.ListTag {
-
     override fun openItem(text: Editable) {
       appendNewLine(text)
       start(text, BulletListItem())
@@ -101,7 +102,6 @@ class LiTagHandler(
    * https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java
    */
   companion object {
-    private val lists = Stack<CustomHtmlContentHandler.ListTag>()
 
     /**
      * Appends a new line to [text] if it doesn't already end in a new line.

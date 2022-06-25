@@ -81,10 +81,11 @@ class CustomHtmlContentHandlerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val liTaghandler = LiTagHandler(context, displayLocale)
     tagHandlersWithListTagSupport = mapOf(
-      CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale),
-      CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale),
-      CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale)
+      CUSTOM_LIST_OL_TAG to liTaghandler,
+      CUSTOM_LIST_UL_TAG to liTaghandler,
+      CUSTOM_LIST_LI_TAG to liTaghandler
     )
   }
 
