@@ -36,7 +36,7 @@
       android:textSize="24dp"
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="@+id/arrow"
-      app:layout_constraintTop_toBottomOf="@id/arrow" />
+      app:layout_constraintBottom_toTopOf="@id/arrow" />
 
     <TextView
       android:id="@+id/close_target"
