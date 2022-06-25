@@ -475,4 +475,9 @@
     <item name="cornerSize">50%</item>
     <item name="cornerFamily">rounded</item>
   </style>
+
+  <style name="EditText" parent="@android:style/Widget.Holo.Light.EditText">
+    <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+  </style>
+
 </resources>

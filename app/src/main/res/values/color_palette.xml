@@ -52,4 +52,5 @@
   <color name="color_palette_show_eye_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_input_interaction_edit_text_not_selected_border_color">@color/color_def_oppia_dark_grey_border</color>
+  <color name="color_palette_cursor_color">@color/color_def_oppia_dark_blue</color>
 </resources>
