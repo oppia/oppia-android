@@ -140,7 +140,6 @@ MIGRATED_TESTS = [
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModuleTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
-    "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
 ]
 
 [utility_test(
