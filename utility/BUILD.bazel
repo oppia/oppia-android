@@ -18,6 +18,7 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/datetime/*.kt",
     "src/main/java/org/oppia/android/util/extensions/*.kt",
     "src/main/java/org/oppia/android/util/gcsresource/*.kt",
+    "src/main/java/org/oppia/android/util/locale/*.kt",
     "src/main/java/org/oppia/android/util/logging/*.kt",
     "src/main/java/org/oppia/android/util/math/**/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
@@ -134,12 +135,12 @@ TEST_DEPS = [
 # shouldn't be defined as module-level tests.
 # keep sorted
 MIGRATED_TESTS = [
+    "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModuleTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdModuleTest.kt",
-    "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",
 ]
 
 [utility_test(
