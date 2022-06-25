@@ -1,9 +1,7 @@
 package org.oppia.android.domain.oppialogger
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject

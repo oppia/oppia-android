@@ -4,7 +4,7 @@ import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
 import org.oppia.android.app.model.OppiaMetricLogs
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.domain.oppialogger.MetricLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
@@ -27,7 +27,7 @@ class PerformanceMetricsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  @MetricLogStorageCacheSize private val metricLogStorageCacheSize: Int
+  @PerformanceMetricsLogStorageCacheSize private val metricLogStorageCacheSize: Int
 ) {
 
   private val metricLogStore =
@@ -81,7 +81,7 @@ class PerformanceMetricsController @Inject constructor(
               "Least Recent Event index absent -- MetricLogStorageCacheSize is 0"
             )
           consoleLogger.e(
-            "AppHealthMetricController",
+            "PerformanceMetricsController",
             "Failure while caching metric log.",
             exception
           )
@@ -90,7 +90,7 @@ class PerformanceMetricsController @Inject constructor(
       }
       return@storeDataAsync oppiaMetricLogs.toBuilder().addOppiaMetricLog(oppiaMetricLog).build()
     }.invokeOnCompletion {
-      it?.let { consoleLogger.e("AppHealthMetricController", "Failed to store metric log.", it) }
+      it?.let { consoleLogger.e("PerformanceMetricsController", "Failed to store metric log.", it) }
     }
   }
 
@@ -166,7 +166,7 @@ class PerformanceMetricsController @Inject constructor(
     metricLogStore.storeDataAsync(updateInMemoryCache = true) { oppiaEventLogs ->
       return@storeDataAsync oppiaEventLogs.toBuilder().removeOppiaMetricLog(0).build()
     }.invokeOnCompletion {
-      it?.let { consoleLogger.e("AppHealthMetricController", "Failed to remove metric log.", it) }
+      it?.let { consoleLogger.e("PerformanceMetricsController", "Failed to remove metric log.", it) }
     }
   }
 }
