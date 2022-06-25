@@ -60,4 +60,6 @@
   <color name="color_def_green">#02655c</color>
   <color name="color_def_error_text_color">#923026</color>
   <color name="color_def_oppia_dark_grey_border">#666666</color>
+  <color name="color_def_error_text">#923026</color>
+  <color name="color_def_black_grey">#33999999</color>
 </resources>
