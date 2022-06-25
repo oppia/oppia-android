@@ -62,6 +62,7 @@ private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
 private const val TEST_NETWORK_USAGE = Long.MAX_VALUE
 private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
 
+/** Tests for [PerformanceMetricsControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
