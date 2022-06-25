@@ -543,10 +543,6 @@ class ListItemLeadingMarginSpanTest {
     canvas.drawText("2.", trueX.toFloat(), baseline.toFloat(), paint)
 
     val shadowCanvas = shadowOf(canvas)
-    System.out.println("0" + shadowCanvas.getDrawnTextEvent(0).text)
-    System.out.println("1" + shadowCanvas.getDrawnTextEvent(1).text)
-    System.out.println("2" + shadowCanvas.getDrawnTextEvent(2).text)
-    System.out.println("3" + shadowCanvas.getDrawnTextEvent(3).text)
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
     assertThat("1.").isEqualTo(shadowCanvas.getDrawnTextEvent(0).text)
