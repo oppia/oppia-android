@@ -35,7 +35,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
 
-  private lateinit var anchor: View
+  private lateinit var itemToSpotlight: View
 
   private var targetList = ArrayList<Target>()
 
@@ -56,27 +56,33 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   }
 
   private fun initialiseAnchor(itemToSpotlight: View) {
-    anchor = itemToSpotlight
+    this.itemToSpotlight = itemToSpotlight
   }
 
   private fun getAnchorLeft(): Float {
-    return anchor.x
+    val location = IntArray(2)
+    itemToSpotlight.getLocationOnScreen(location)
+    val x = location[0]
+    return x.toFloat()
   }
 
   private fun getAnchorTop(): Float {
-    return anchor.y
+    val location = IntArray(2)
+    itemToSpotlight.getLocationOnScreen(location)
+    val y = location[1]
+    return y.toFloat()
   }
 
   private fun getAnchorBottom(): Float {
-    return anchor.bottom.dp.toFloat()
+    return itemToSpotlight.bottom.dp.toFloat()
   }
 
   private fun getAnchorHeight(): Int {
-    return anchor.height
+    return itemToSpotlight.height
   }
 
   private fun getAnchorWidth(): Int {
-    return anchor.width
+    return itemToSpotlight.width
   }
 
   private fun getAnchorCentreX(): Float {
@@ -90,7 +96,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   }
 
   private fun getScreenCentreX(): Int {
-    Log.d("overlay screenCentre X", (screenHeight / 2).toString())
+    Log.d("overlay screenCentre X", (screenWidth / 2).toString())
     return screenWidth / 2
   }
 
@@ -237,7 +243,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   private fun getShape(shape: SpotlightShape): Shape {
     return when (shape) {
       SpotlightShape.RoundedRectangle -> {
-        RoundedRectangle(anchor.height.toFloat(), anchor.width.toFloat(), 24f)
+        RoundedRectangle(itemToSpotlight.height.toFloat(), itemToSpotlight.width.toFloat(), 24f)
       }
       SpotlightShape.Circle -> {
         return if (getAnchorHeight() > getAnchorWidth()) {

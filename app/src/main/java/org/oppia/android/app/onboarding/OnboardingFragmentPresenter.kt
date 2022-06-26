@@ -34,6 +34,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
 import java.util.*
 import javax.inject.Inject
+import org.oppia.android.app.spotlight.OverlayPositionAutomator
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -101,14 +102,14 @@ class OnboardingFragmentPresenter @Inject constructor(
       it.presenter = this
       it.viewModel = getOnboardingViewModel()
     }
-    overlayBinding = OverlayBinding.inflate(inflater, container, false)
-    overlayBinding.let {
-      it.lifecycleOwner = fragment
-      it.presenter = this
-    }
+//    overlayBinding = OverlayBinding.inflate(inflater, container, false)
+//    overlayBinding.let {
+//      it.lifecycleOwner = fragment
+//      it.presenter = this
+//    }
     setUpViewPager()
     addDots()
-    computeLastSpotlightCheckpoint()
+
     return binding.root
   }
 
@@ -287,8 +288,9 @@ class OnboardingFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun computeLastSpotlightCheckpoint() {
-    val targets = ArrayList<Target>()
+  fun computeLastSpotlightCheckpoint() {
+
+//      val targets = ArrayList<Target>()
 
     val profileId = ProfileId.newBuilder()
       .setInternalId(123)
@@ -311,14 +313,15 @@ class OnboardingFragmentPresenter @Inject constructor(
               val lastScreenViewed = (it.value as OnboardingSpotlightCheckpoint).lastScreenViewed
               when (lastScreenViewed) {
                 OnboardingSpotlightCheckpoint.LastScreenViewed.NEXT_BUTTON_SPOTLIGHT -> {
-                  targets.add(secondTarget)
-                  startSpotlight(targets)
+//                  targets.add(secondTarget)
+//                  startSpotlight(targets)
                 }
               }
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
-              targets.add(firstTarget)
-              targets.add(secondTarget)
-              startSpotlight(targets)
+              val overlayPositionAutomator = OverlayPositionAutomator(activity, fragment)
+              overlayPositionAutomator.createTarget(binding.onboardingFragmentNextImageView, OverlayPositionAutomator.Companion.SpotlightShape.Circle)
+              overlayPositionAutomator.createTarget(binding.skipTextView, OverlayPositionAutomator.Companion.SpotlightShape.Circle)
+              overlayPositionAutomator.startSpotlight()
             }
           }
         }
