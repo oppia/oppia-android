@@ -73,10 +73,6 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
     return y.toFloat()
   }
 
-  private fun getAnchorBottom(): Float {
-    return itemToSpotlight.bottom.dp.toFloat()
-  }
-
   private fun getAnchorHeight(): Int {
     return itemToSpotlight.height
   }
@@ -191,7 +187,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
       (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt(),
-      getAnchorBottom().toInt(),
+      (getAnchorTop() + getAnchorHeight()).toInt(),
       10.dp,
       10.dp
     )
@@ -211,7 +207,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
       getAnchorLeft().toInt(),
-      getAnchorBottom().toInt(),
+      (getAnchorTop() + getAnchorHeight()).toInt(),
       10.dp,
       10.dp
     )
