@@ -20,6 +20,7 @@
     <ImageView
       android:id="@+id/arrow"
       android:layout_height="@dimen/arrow_height"
+      android:rotationY="180"
       android:layout_width="@dimen/arrow_width"
       android:src="@drawable/ic_rounded_arrow_up_right"
       app:layout_constraintStart_toStartOf="parent"

@@ -1,25 +1,16 @@
 package org.oppia.android.app.topic
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.takusemba.spotlight.OnSpotlightListener
-import com.takusemba.spotlight.OnTargetListener
-import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
-import com.takusemba.spotlight.shape.Circle
-import com.takusemba.spotlight.shape.RoundedRectangle
 import java.util.*
 import javax.inject.Inject
 import org.oppia.android.R
@@ -27,16 +18,9 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.app.model.TopicSpotlightCheckpoint
-import org.oppia.android.app.onboarding.SpotlightNavigationListener
 import org.oppia.android.app.spotlight.OverlayPositionAutomator
-import org.oppia.android.app.spotlight.SpotlightOverlayPositionAutomator
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
-import org.oppia.android.databinding.OverlayBinding
-import org.oppia.android.databinding.OverlayOverLeftBinding
-import org.oppia.android.databinding.OverlayOverRightBinding
-import org.oppia.android.databinding.OverlayUnderLeftBinding
-import org.oppia.android.databinding.OverlayUnderRightBinding
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.spotlight.SpotlightActivity
@@ -59,7 +43,7 @@ class TopicFragmentPresenter @Inject constructor(
   @EnableSpotlightUi val enableSpotlightUi: PlatformParameterValue<Boolean>,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
-)  {
+) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
@@ -67,95 +51,7 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var viewPager: ViewPager2
   private lateinit var overlayBinding: Any
   private lateinit var binding: TopicFragmentBinding
-
-  private lateinit var anchor: View
   private lateinit var spotlightOverlayPositionAutomator: OverlayPositionAutomator
-
-
-  private val infoTabSpotlightTarget by lazy {
-    anchor = getTab(TopicTab.INFO)
-
-    Target.Builder()
-      .setAnchor(anchor)
-      .setShape(RoundedRectangle(anchor.height.toFloat(), anchor.width.toFloat(), 24f))
-      .setOverlay(spotlightOverlayPositionAutomator.getSpotlightOverlay(anchor)!!)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-          // any additional behaviour
-
-//          setConstraints()
-
-        }
-
-        override fun onEnded() {
-//          getTopicViewModel().recordSpotlightCheckpoint(
-//            TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT,
-//          )
-        }
-      })
-      .build()
-  }
-
-  private val lessonsTabSpotlightTarget by lazy {
-    val anchor = getTab(TopicTab.LESSONS)
-
-    Target.Builder()
-      .setAnchor(getTab(TopicTab.LESSONS))
-      .setShape(RoundedRectangle(anchor.height.toFloat(), anchor.width.toFloat(), 24f))
-      .setOverlay(spotlightOverlayPositionAutomator.getSpotlightOverlay(anchor)!!)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-
-        }
-
-        override fun onEnded() {
-//          getTopicViewModel().recordSpotlightCheckpoint(
-//            TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT,
-//          )
-        }
-      })
-      .build()
-  }
-
-  private val practiceTabSpotlightTarget by lazy {
-    val anchor = getTab(TopicTab.PRACTICE)
-
-    Target.Builder()
-      .setAnchor(getTab(TopicTab.PRACTICE))
-      .setShape(RoundedRectangle(anchor.height.toFloat(), anchor.width.toFloat(), 24f))
-      .setOverlay(spotlightOverlayPositionAutomator.getSpotlightOverlay(anchor)!!)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-        }
-
-        override fun onEnded() {
-//          getTopicViewModel().recordSpotlightCheckpoint(
-//            TopicSpotlightCheckpoint.LastScreenViewed.PRACTICE_TAB_SPOTLIGHT,
-//          )
-        }
-      })
-      .build()
-  }
-
-  private val revisionTabSpotlightTarget by lazy {
-    val anchor = getTab(TopicTab.REVISION)
-
-    Target.Builder()
-      .setAnchor(getTab(TopicTab.REVISION))
-      .setShape(RoundedRectangle(anchor.height.toFloat(), anchor.width.toFloat(), 24f))
-      .setOverlay(spotlightOverlayPositionAutomator.getSpotlightOverlay(anchor)!!)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-        }
-
-        override fun onEnded() {
-//          getTopicViewModel().recordSpotlightCheckpoint(
-//            TopicSpotlightCheckpoint.LastScreenViewed.REVISION_TAB_SPOTLIGHT,
-//          )
-        }
-      })
-      .build()
-  }
 
   private fun getTab(tab: TopicTab): View {
     return tabLayout.getTabAt(tab.ordinal)!!.view
@@ -263,7 +159,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   fun retrieveCheckpointAndInitializeSpotlight() {
-    val targets = ArrayList<Target>()
+//    val targets = ArrayList<Target>()
 
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
@@ -288,35 +184,44 @@ class TopicFragmentPresenter @Inject constructor(
               val lastScreenViewed = (it.value as TopicSpotlightCheckpoint).lastScreenViewed
               when (lastScreenViewed) {
                 TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT -> {
-                  targets.add(lessonsTabSpotlightTarget)
-                  targets.add(practiceTabSpotlightTarget)
-                  targets.add(revisionTabSpotlightTarget)
-                  spotlightOverlayPositionAutomator.startSpotlight(targets)
+//                  targets.add(lessonsTabSpotlightTarget)
+//                  targets.add(practiceTabSpotlightTarget)
+//                  targets.add(revisionTabSpotlightTarget)
+//                  spotlightOverlayPositionAutomator.startSpotlight(targets)
                 }
                 TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT -> {
-                  targets.add(practiceTabSpotlightTarget)
-                  targets.add(revisionTabSpotlightTarget)
-                  spotlightOverlayPositionAutomator.startSpotlight(targets)
+//                  targets.add(practiceTabSpotlightTarget)
+//                  targets.add(revisionTabSpotlightTarget)
+//                  spotlightOverlayPositionAutomator.startSpotlight(targets)
                 }
                 TopicSpotlightCheckpoint.LastScreenViewed.PRACTICE_TAB_SPOTLIGHT -> {
-                  targets.add(revisionTabSpotlightTarget)
-                  spotlightOverlayPositionAutomator.startSpotlight(targets)
+//                  targets.add(revisionTabSpotlightTarget)
+//                  spotlightOverlayPositionAutomator.startSpotlight(targets)
                 }
               }
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
-              targets.add(infoTabSpotlightTarget)
-              targets.add(lessonsTabSpotlightTarget)
-              targets.add(practiceTabSpotlightTarget)
-              targets.add(revisionTabSpotlightTarget)
-              spotlightOverlayPositionAutomator.startSpotlight(targets)
+              spotlightOverlayPositionAutomator.createTarget(
+                getTab(TopicTab.INFO),
+                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+              )
+              spotlightOverlayPositionAutomator.createTarget(
+                getTab(TopicTab.LESSONS),
+                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+              )
+              spotlightOverlayPositionAutomator.createTarget(
+                getTab(TopicTab.PRACTICE),
+                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+              )
+              spotlightOverlayPositionAutomator.createTarget(
+                getTab(TopicTab.REVISION),
+                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+              )
+              spotlightOverlayPositionAutomator.startSpotlight()
             }
           }
         }
       }
     )
   }
-
-
-
 
 }

@@ -5,15 +5,25 @@ import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.fragment.app.Fragment
 import com.takusemba.spotlight.OnSpotlightListener
+import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
+import com.takusemba.spotlight.shape.Circle
+import com.takusemba.spotlight.shape.RoundedRectangle
+import com.takusemba.spotlight.shape.Shape
 import java.util.*
 import org.oppia.android.R
 import org.oppia.android.app.onboarding.SpotlightNavigationListener
-import org.oppia.android.databinding.OverlayBinding
+import org.oppia.android.databinding.OverlayOverLeftBinding
+import org.oppia.android.databinding.OverlayOverRightBinding
+import org.oppia.android.databinding.OverlayUnderLeftBinding
+import org.oppia.android.databinding.OverlayUnderRightBinding
+
+//todo: check bottom wale
 
 class OverlayPositionAutomator(private val activity: Activity, private val fragment: Fragment) :
   SpotlightNavigationListener {
@@ -23,8 +33,11 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   private val overlay = "overlay"
 
   private lateinit var anchorPosition: AnchorPosition
-  private lateinit var overlayBinding: OverlayBinding
+  private lateinit var overlayBinding: Any
+
   private lateinit var anchor: View
+
+  private var targetList = ArrayList<Target>()
 
   init {
     val displayMetrics = DisplayMetrics()
@@ -77,12 +90,12 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   }
 
   private fun getScreenCentreX(): Int {
-    Log.d("overlay screenCentre X" , (screenHeight / 2).toString())
+    Log.d("overlay screenCentre X", (screenHeight / 2).toString())
     return screenWidth / 2
   }
 
   private fun getScreenCentreY(): Int {
-    Log.d("overlay screenCentre Y" , (screenHeight / 2).toString())
+    Log.d("overlay screenCentre Y", (screenHeight / 2).toString())
     return screenHeight / 2
   }
 
@@ -102,54 +115,143 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
     Log.d(overlay, anchorPosition.toString())
   }
 
-  private fun setOverlayPosition() {
+  private fun setOverlayPosition(): View {
     calculateAnchorPosition()
 
-    when (anchorPosition) {
+    return when (anchorPosition) {
       AnchorPosition.TopLeft -> {
-        overlayBinding.arrow.x = getAnchorLeft()
-        overlayBinding.arrow.y = getAnchorBottom()
-        overlayBinding.customText.x = getAnchorLeft()
-        overlayBinding.customText.y =
-          getAnchorBottom() + getArrowHeight()
+        configureTopLeftOverlay()
       }
       AnchorPosition.TopRight -> {
-        overlayBinding.arrow.x = getAnchorLeft() + getAnchorWidth() - getArrowWidth()
-        overlayBinding.arrow.y = getAnchorBottom()
-        overlayBinding.customText.right = (getAnchorLeft() + getAnchorWidth()).toInt()
-        overlayBinding.customText.y =
-          getAnchorBottom() + getArrowHeight()
+        configureTopRightOverlay()
       }
-      else -> {
-
+      AnchorPosition.BottomRight -> {
+        configureBottomRightOverlay()
+      }
+      AnchorPosition.BottomLeft -> {
+        configureBottomLeftOverlay()
       }
     }
   }
 
-  fun getSpotlightOverlay(anchor: View): View {
-    initialiseAnchor(anchor)
-
-    overlayBinding = OverlayBinding.inflate(fragment.layoutInflater)
-    overlayBinding.let {
+  private fun configureBottomLeftOverlay(): View {
+    overlayBinding = OverlayOverLeftBinding.inflate(fragment.layoutInflater)
+    (overlayBinding as OverlayOverLeftBinding).let {
       it.lifecycleOwner = fragment
       it.presenter = this
     }
 
-    setOverlayPosition()
+    val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
+      as ViewGroup.MarginLayoutParams
+    arrowParams.setMargins(
+      getAnchorLeft().toInt(),
+      (getAnchorTop().toInt() - getArrowHeight()).toInt(),
+      10.dp,
+      10.dp
+    )
+    (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams = arrowParams
 
-    return overlayBinding.root
+    return (overlayBinding as OverlayOverLeftBinding).root
   }
 
-  sealed class AnchorPosition {
-    object TopLeft : AnchorPosition()
-    object TopRight : AnchorPosition()
-    object BottomLeft : AnchorPosition()
-    object BottomRight : AnchorPosition()
+  private fun configureBottomRightOverlay(): View {
+    overlayBinding = OverlayOverRightBinding.inflate(fragment.layoutInflater)
+    (overlayBinding as OverlayOverRightBinding).let {
+      it.lifecycleOwner = fragment
+      it.presenter = this
+    }
+
+    val arrowParams = (overlayBinding as OverlayOverRightBinding).arrow.layoutParams
+      as ViewGroup.MarginLayoutParams
+    arrowParams.setMargins(
+      (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt(),
+      (getAnchorTop().toInt() - getArrowHeight()).toInt(),
+      10.dp,
+      10.dp
+    )
+    (overlayBinding as OverlayOverRightBinding).arrow.layoutParams = arrowParams
+
+    return (overlayBinding as OverlayOverRightBinding).root
   }
 
-  fun startSpotlight(targets: ArrayList<Target>) {
+  private fun configureTopRightOverlay(): View {
+    overlayBinding = OverlayUnderRightBinding.inflate(fragment.layoutInflater)
+    (overlayBinding as OverlayUnderRightBinding).let {
+      it.lifecycleOwner = fragment
+      it.presenter = this
+    }
+
+    val arrowParams = (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams
+      as ViewGroup.MarginLayoutParams
+    arrowParams.setMargins(
+      (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt(),
+      getAnchorBottom().toInt(),
+      10.dp,
+      10.dp
+    )
+    (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams = arrowParams
+
+    return (overlayBinding as OverlayUnderRightBinding).root
+  }
+
+  private fun configureTopLeftOverlay(): View {
+    overlayBinding = OverlayUnderLeftBinding.inflate(fragment.layoutInflater)
+    (overlayBinding as OverlayUnderLeftBinding).let {
+      it.lifecycleOwner = fragment
+      it.presenter = this
+    }
+
+    val arrowParams = (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams
+      as ViewGroup.MarginLayoutParams
+    arrowParams.setMargins(
+      getAnchorLeft().toInt(),
+      getAnchorBottom().toInt(),
+      10.dp,
+      10.dp
+    )
+    (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams = arrowParams
+
+    return (overlayBinding as OverlayUnderLeftBinding).root
+  }
+
+  fun createTarget(anchor: View, shape: SpotlightShape) {
+    initialiseAnchor(anchor)
+
+    val target = Target.Builder()
+      .setAnchor(anchor)
+      .setShape(getShape(shape))
+      .setOverlay(setOverlayPosition())
+      .setOnTargetListener(object : OnTargetListener {
+        override fun onStarted() {
+        }
+
+        override fun onEnded() {
+
+        }
+      })
+      .build()
+
+    targetList.add(target)
+  }
+
+  private fun getShape(shape: SpotlightShape): Shape {
+    return when (shape) {
+      SpotlightShape.RoundedRectangle -> {
+        RoundedRectangle(anchor.height.toFloat(), anchor.width.toFloat(), 24f)
+      }
+      SpotlightShape.Circle -> {
+        return if (getAnchorHeight() > getAnchorWidth()) {
+          Circle((getAnchorHeight() / 2).toFloat())
+        } else {
+          Circle((getAnchorWidth() / 2).toFloat())
+        }
+      }
+    }
+  }
+
+  fun startSpotlight() {
     spotlight = Spotlight.Builder(activity)
-      .setTargets(targets)
+      .setTargets(targetList)
       .setBackgroundColorRes(R.color.spotlightBackground)
       .setDuration(1000L)
       .setAnimation(DecelerateInterpolator(2f))
@@ -173,7 +275,20 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
     spotlight.next()
   }
 
-  val Int.dp: Int
+  private val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
+  sealed class AnchorPosition {
+    object TopLeft : AnchorPosition()
+    object TopRight : AnchorPosition()
+    object BottomLeft : AnchorPosition()
+    object BottomRight : AnchorPosition()
+  }
+
+  companion object {
+    sealed class SpotlightShape {
+      object RoundedRectangle : SpotlightShape()
+      object Circle : SpotlightShape()
+    }
+  }
 }
