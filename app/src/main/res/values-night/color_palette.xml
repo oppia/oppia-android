@@ -46,4 +46,18 @@
   <color name="color_palette_show_eye_icon_color">@color/color_def_forest_green</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_forest_green</color>
   <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
+  <color name="color_palette_back_arrow_button_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_replay_button_color">@color/color_def_dark_pink</color>
+  <color name="color_palette_progress_bar_stroke_color">@color/color_def_light_turquoise</color>
+  <color name="color_palette_progress_bar_solid_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_correct_text_stroke_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_correct_text_solid_color">@color/color_def_oppia_grayish_black</color>
+  <color name="color_palette_correct_text_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_submit_button_inactive_solid_color">@color/color_def_black_grey</color>
+  <color name="color_palette_submit_button_inactive_stroke_color">@color/color_def_bright_turquoise</color>
+  <color name="color_palette_submit_text_inactive_color">@color/color_def_light_grey</color>
+  <color name="color_palette_previous_next_state_image_view_background_color">@color/color_def_oppia_grayish_black</color>
+  <color name="color_palette_progress_bar_gradient_start">@color/color_def_dark_mode_question_player_progress_bar_gradient_start</color>
+  <color name="color_palette_progress_bar_gradient_center">@color/color_def_dark_mode_question_player_progress_bar_gradient_center</color>
+  <color name="color_palette_progress_bar_gradient_end">@color/color_def_dark_mode_question_player_progress_bar_gradient_end</color>
 </resources>
