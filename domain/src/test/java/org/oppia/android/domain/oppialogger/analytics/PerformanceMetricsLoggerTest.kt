@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +47,8 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Long.MAX_VALUE
@@ -197,7 +197,6 @@ class PerformanceMetricsLoggerTest {
     assertThat(loggedEvent.memoryTier).isEqualTo(memoryTier)
     assertThat(loggedEvent.storageTier).isEqualTo(storageTier)
     assertThat(loggedEvent.isAppInForeground).isEqualTo(isAppInForeground)
-
   }
 
   private fun setUpTestApplicationComponent() {

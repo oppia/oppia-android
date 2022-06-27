@@ -2,10 +2,10 @@ package org.oppia.android.domain.testing.oppialogger.logscheduler
 
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import org.oppia.android.util.logging.MetricLogScheduler
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.MetricLogScheduler
 
 /** A test specific fake for the log uploader. */
 @Singleton
