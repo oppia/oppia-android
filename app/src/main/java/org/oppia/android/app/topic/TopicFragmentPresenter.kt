@@ -202,18 +202,22 @@ class TopicFragmentPresenter @Inject constructor(
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
               spotlightOverlayPositionAutomator.createTarget(
                 getTab(TopicTab.INFO),
+                "INFO tab...",
                 OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
               )
               spotlightOverlayPositionAutomator.createTarget(
                 getTab(TopicTab.LESSONS),
+                "LESSONS tab...",
                 OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
               )
               spotlightOverlayPositionAutomator.createTarget(
                 getTab(TopicTab.PRACTICE),
+                "PRACTICE tab...",
                 OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
               )
               spotlightOverlayPositionAutomator.createTarget(
                 getTab(TopicTab.REVISION),
+                "REVISION tab...",
                 OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
               )
               spotlightOverlayPositionAutomator.startSpotlight()

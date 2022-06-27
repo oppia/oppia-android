@@ -40,6 +40,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   private var targetList = ArrayList<Target>()
 
   private var isRTL = false
+  private var hintText = ""
 
   init {
     val displayMetrics = DisplayMetrics()
@@ -67,6 +68,10 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
 
   private fun initialiseAnchor(itemToSpotlight: View) {
     this.itemToSpotlight = itemToSpotlight
+  }
+
+  private fun initialiseHintText(hintText: String) {
+    this.hintText = hintText
   }
 
   private fun getAnchorLeft(): Float {
@@ -132,9 +137,9 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
 
     return when (anchorPosition) {
       AnchorPosition.TopLeft -> {
-        if (isRTL){
+        if (isRTL) {
           configureTopRightOverlay()
-        }else{
+        } else {
           configureTopLeftOverlay()
         }
       }
@@ -156,6 +161,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       it.lifecycleOwner = fragment
       it.presenter = this
     }
+
+    (overlayBinding as OverlayOverLeftBinding).customText.text = hintText
 
     val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -179,6 +186,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       it.presenter = this
     }
 
+    (overlayBinding as OverlayOverRightBinding).customText.text = hintText
+
     val arrowParams = (overlayBinding as OverlayOverRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
@@ -200,6 +209,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       it.lifecycleOwner = fragment
       it.presenter = this
     }
+
+    (overlayBinding as OverlayUnderRightBinding).customText.text = hintText
 
     val arrowParams = (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -223,6 +234,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       it.presenter = this
     }
 
+    (overlayBinding as OverlayUnderLeftBinding).customText.text = hintText
+
     val arrowParams = (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
@@ -238,8 +251,13 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
     return (overlayBinding as OverlayUnderLeftBinding).root
   }
 
-  fun createTarget(anchor: View, shape: SpotlightShape) {
+  fun createTarget(
+    anchor: View,
+    hintText: String = "",
+    shape: SpotlightShape = SpotlightShape.RoundedRectangle
+  ) {
     initialiseAnchor(anchor)
+    initialiseHintText(hintText)
 
     val target = Target.Builder()
       .setAnchor(anchor)

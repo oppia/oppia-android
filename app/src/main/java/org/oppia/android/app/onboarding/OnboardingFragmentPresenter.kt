@@ -319,8 +319,8 @@ class OnboardingFragmentPresenter @Inject constructor(
               }
             } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
               val overlayPositionAutomator = OverlayPositionAutomator(activity, fragment)
-              overlayPositionAutomator.createTarget(binding.onboardingFragmentNextImageView, OverlayPositionAutomator.Companion.SpotlightShape.Circle)
-              overlayPositionAutomator.createTarget(binding.skipTextView, OverlayPositionAutomator.Companion.SpotlightShape.Circle)
+              overlayPositionAutomator.createTarget(binding.onboardingFragmentNextImageView, "Next", OverlayPositionAutomator.Companion.SpotlightShape.Circle)
+              overlayPositionAutomator.createTarget(binding.skipTextView, "Skip", OverlayPositionAutomator.Companion.SpotlightShape.Circle)
               overlayPositionAutomator.startSpotlight()
             }
           }
