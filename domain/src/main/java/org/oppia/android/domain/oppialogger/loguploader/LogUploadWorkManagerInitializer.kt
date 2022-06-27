@@ -95,7 +95,6 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     .setConstraints(logReportWorkerConstraints)
     .build()
 
-
   private val workRequestForSchedulingPeriodicMetricLogs: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(
       MetricLogSchedulingWorker::class.java,
