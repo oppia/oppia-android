@@ -289,9 +289,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   fun computeLastSpotlightCheckpoint() {
-
-//      val targets = ArrayList<Target>()
-
     val profileId = ProfileId.newBuilder()
       .setInternalId(123)
       .build()
@@ -299,6 +296,16 @@ class OnboardingFragmentPresenter @Inject constructor(
       profileId,
       SpotlightActivity.ONBOARDING_ACTIVITY
     ).toLiveData()
+
+    val nextButtonSpotlightCheckpointLiveData = spotlightStateController.retrieveSpotlightCheckpoint(
+      profileId,
+      SpotlightActivity.ONBOARDING_NEXT_BUTTON
+    ).toLiveData()
+
+    nextButtonSpotlightCheckpointLiveData.observe(
+      fragment,
+      object : Observer<AsyncResult<OnboardingNe>>
+    )
 
     checkpointLiveData.observe(
       fragment,
@@ -327,22 +334,5 @@ class OnboardingFragmentPresenter @Inject constructor(
         }
       }
     )
-  }
-  private fun startSpotlight(targets: ArrayList<Target>) {
-    spotlight = Spotlight.Builder(activity)
-      .setTargets(targets)
-      .setBackgroundColorRes(R.color.spotlightBackground)
-      .setDuration(1000L)
-      .setAnimation(DecelerateInterpolator(2f))
-      .setOnSpotlightListener(object : OnSpotlightListener {
-        override fun onStarted() {
-        }
-
-        override fun onEnded() {
-        }
-      })
-      .build()
-
-    spotlight.start()
   }
 }

@@ -254,7 +254,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   fun createTarget(
     anchor: View,
     hintText: String = "",
-    shape: SpotlightShape = SpotlightShape.RoundedRectangle
+    shape: SpotlightShape = SpotlightShape.RoundedRectangle,
   ) {
     initialiseAnchor(anchor)
     initialiseHintText(hintText)
@@ -294,7 +294,7 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
   fun startSpotlight() {
     spotlight = Spotlight.Builder(activity)
       .setTargets(targetList)
-      .setBackgroundColorRes(R.color.spotlightBackground)
+//      .setBackgroundColorRes(R.color.spotlightBackground)
       .setDuration(1000L)
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {

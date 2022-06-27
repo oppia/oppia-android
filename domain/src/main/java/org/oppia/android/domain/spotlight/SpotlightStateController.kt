@@ -166,5 +166,6 @@ class SpotlightStateController @Inject constructor(
 enum class SpotlightActivity {
   ONBOARDING_ACTIVITY,
   PROFILE_ACTIVITY,
-  TOPIC_ACTIVITY
+  TOPIC_ACTIVITY,
+  ONBOARDING_NEXT_BUTTON
 }
