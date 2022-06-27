@@ -4,7 +4,7 @@ import androidx.work.Configuration
 import androidx.work.DelegatingWorkerFactory
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.domain.oppialogger.loggenerator.MetricLogSchedulingWorkerFactory
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
 import javax.inject.Singleton

@@ -1,4 +1,4 @@
-package org.oppia.android.domain.oppialogger.loggenerator
+package org.oppia.android.domain.oppialogger.logscheduler
 
 import android.content.Context
 import androidx.work.ListenableWorker

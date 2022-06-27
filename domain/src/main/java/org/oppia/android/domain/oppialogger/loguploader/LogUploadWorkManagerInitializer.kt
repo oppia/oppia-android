@@ -7,7 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.domain.oppialogger.loggenerator.MetricLogSchedulingWorker
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
@@ -56,21 +56,21 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     )
     .build()
 
-  private val workerCaseForCreatingPeriodicMetricLogs: Data = Data.Builder()
+  private val workerCaseForSchedulingPeriodicMetricLogs: Data = Data.Builder()
     .putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
       MetricLogSchedulingWorker.PERIODIC_METRIC_WORKER
     )
     .build()
 
-  private val workerCaseForCreatingStorageUsageMetricLogs: Data = Data.Builder()
+  private val workerCaseForSchedulingStorageUsageMetricLogs: Data = Data.Builder()
     .putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
       MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
     )
     .build()
 
-  private val workerCaseForCreatingMemoryUsageMetricLogs: Data = Data.Builder()
+  private val workerCaseForSchedulingMemoryUsageMetricLogs: Data = Data.Builder()
     .putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
       MetricLogSchedulingWorker.MEMORY_USAGE_WORKER
@@ -95,35 +95,36 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     .setConstraints(logReportWorkerConstraints)
     .build()
 
-  private val workRequestForGeneratingPeriodicMetricLogs: PeriodicWorkRequest = PeriodicWorkRequest
+
+  private val workRequestForSchedulingPeriodicMetricLogs: PeriodicWorkRequest = PeriodicWorkRequest
     .Builder(
       MetricLogSchedulingWorker::class.java,
       performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
       TimeUnit.MINUTES
     )
-    .setInputData(workerCaseForCreatingPeriodicMetricLogs)
+    .setInputData(workerCaseForSchedulingPeriodicMetricLogs)
     .setConstraints(logReportWorkerConstraints)
     .build()
 
-  private val workRequestForGeneratingStorageUsageMetricLogs: PeriodicWorkRequest =
+  private val workRequestForSchedulingStorageUsageMetricLogs: PeriodicWorkRequest =
     PeriodicWorkRequest
       .Builder(
         MetricLogSchedulingWorker::class.java,
         performanceMetricCollectionLowFrequencyTimeInterval.value.toLong(),
         TimeUnit.MINUTES
       )
-      .setInputData(workerCaseForCreatingStorageUsageMetricLogs)
+      .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
 
-  private val workRequestForGeneratingMemoryUsageMetricLogs: PeriodicWorkRequest =
+  private val workRequestForSchedulingMemoryUsageMetricLogs: PeriodicWorkRequest =
     PeriodicWorkRequest
       .Builder(
         MetricLogSchedulingWorker::class.java,
         performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
         TimeUnit.MINUTES
       )
-      .setInputData(workerCaseForCreatingMemoryUsageMetricLogs)
+      .setInputData(workerCaseForSchedulingMemoryUsageMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
 
@@ -137,15 +138,15 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     )
     metricLogScheduler.enqueueWorkRequestForPeriodicMetrics(
       workManager,
-      workRequestForGeneratingPeriodicMetricLogs
+      workRequestForSchedulingPeriodicMetricLogs
     )
     metricLogScheduler.enqueueWorkRequestForStorageUsage(
       workManager,
-      workRequestForGeneratingStorageUsageMetricLogs
+      workRequestForSchedulingStorageUsageMetricLogs
     )
     metricLogScheduler.enqueueWorkRequestForMemoryUsage(
       workManager,
-      workRequestForGeneratingMemoryUsageMetricLogs
+      workRequestForSchedulingMemoryUsageMetricLogs
     )
   }
 
@@ -158,9 +159,51 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   /** Returns the [UUID] of the work request that is enqueued for uploading exception logs. */
   fun getWorkRequestForExceptionsId(): UUID = workRequestForUploadingExceptions.id
 
+  /**
+   * Returns the [UUID] of the work request that is enqueued for scheduling memory usage
+   * performance metrics collection.
+   */
+  fun getWorkRequestForSchedulingMemoryUsageMetricLogsId(): UUID =
+    workRequestForSchedulingMemoryUsageMetricLogs.id
+
+  /**
+   * Returns the [UUID] of the work request that is enqueued for scheduling storage usage
+   * performance metrics collection.
+   */
+  fun getWorkRequestForSchedulingStorageUsageMetricLogsId(): UUID =
+    workRequestForSchedulingStorageUsageMetricLogs.id
+
+  /**
+   * Returns the [UUID] of the work request that is enqueued for scheduling periodic performance
+   * metrics collection.
+   */
+  fun getWorkRequestForSchedulingPeriodicPerformanceMetricLogsId(): UUID =
+    workRequestForSchedulingPeriodicMetricLogs.id
+
   /** Returns the [Data] that goes into the work request that is enqueued for uploading event logs. */
   fun getWorkRequestDataForEvents(): Data = workerCaseForUploadingEvents
 
   /** Returns the [Data] that goes into the work request that is enqueued for uploading exception logs. */
   fun getWorkRequestDataForExceptions(): Data = workerCaseForUploadingExceptions
+
+  /**
+   * Returns the [Data] that goes into the work request that is enqueued for scheduling storage
+   * usage performance metrics collection.
+   */
+  fun getWorkRequestDataForSchedulingStorageUsageMetricLogs(): Data =
+    workerCaseForSchedulingStorageUsageMetricLogs
+
+  /**
+   * Returns the [Data] that goes into the work request that is enqueued for scheduling memory
+   * usage performance metrics collection.
+   */
+  fun getWorkRequestDataForSchedulingMemoryUsageMetricLogs(): Data =
+    workerCaseForSchedulingMemoryUsageMetricLogs
+
+  /**
+   * Returns the [Data] that goes into the work request that is enqueued for scheduling periodic
+   * performance metrics collection.
+   */
+  fun getWorkRequestDataForSchedulingPeriodicPerformanceMetricLogs(): Data =
+    workerCaseForSchedulingPeriodicMetricLogs
 }

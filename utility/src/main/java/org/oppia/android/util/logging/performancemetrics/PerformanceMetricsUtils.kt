@@ -72,8 +72,10 @@ class PerformanceMetricsUtils @Inject constructor(
     if (activityManager.runningAppProcesses != null) {
       val pid = ActivityManager.RunningAppProcessInfo().pid
       val processMemoryInfo = activityManager.getProcessMemoryInfo(arrayOf(pid).toIntArray())
-      for (element in processMemoryInfo) {
-        totalPssUsed += element.totalPss
+      if (processMemoryInfo != null) {
+        for (element in processMemoryInfo) {
+          totalPssUsed += element.totalPss
+        }
       }
     }
     return totalPssUsed
