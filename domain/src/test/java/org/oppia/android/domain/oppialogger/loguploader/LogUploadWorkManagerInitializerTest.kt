@@ -122,6 +122,8 @@ class LogUploadWorkManagerInitializerTest {
     val enqueuedEventWorkRequestId = logUploadWorkManagerInitializer.getWorkRequestForEventsId()
     val enqueuedExceptionWorkRequestId =
       logUploadWorkManagerInitializer.getWorkRequestForExceptionsId()
+    val enqueuedPerformanceMetricsWorkRequestId =
+      logUploadWorkManagerInitializer.getWorkRequestForPerformanceMetricsId()
     val enqueuedSchedulingStorageUsageMetricWorkRequestId =
       logUploadWorkManagerInitializer.getWorkRequestForSchedulingStorageUsageMetricLogsId()
     val enqueuedSchedulingMemoryUsageMetricWorkRequestId =
@@ -132,6 +134,9 @@ class LogUploadWorkManagerInitializerTest {
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
       enqueuedExceptionWorkRequestId
+    )
+    assertThat(fakeLogUploader.getMostRecentPerformanceMetricsRequestId()).isEqualTo(
+      enqueuedPerformanceMetricsWorkRequestId
     )
     assertThat(fakeLogScheduler.getMostRecentStorageUsageMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingStorageUsageMetricWorkRequestId
@@ -182,6 +187,20 @@ class LogUploadWorkManagerInitializerTest {
 
     assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForExceptions()).isEqualTo(
       workerCaseForUploadingExceptions
+    )
+  }
+
+  @Test
+  fun testWorkRequest_verifyWorkRequestDataForPerformanceMetrics() {
+    val workerCaseForUploadingPerformanceMetrics: Data = Data.Builder()
+      .putString(
+        LogUploadWorker.WORKER_CASE_KEY,
+        LogUploadWorker.PERFORMANCE_METRICS_WORKER
+      )
+      .build()
+
+    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
+      workerCaseForUploadingPerformanceMetrics
     )
   }
 

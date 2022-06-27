@@ -158,6 +158,9 @@ class LogUploadWorkManagerInitializer @Inject constructor(
   /** Returns the [UUID] of the work request that is enqueued for uploading exception logs. */
   fun getWorkRequestForExceptionsId(): UUID = workRequestForUploadingExceptions.id
 
+  /** Returns the [UUID] of the work request that is enqueued for uploading performance metrics logs. */
+  fun getWorkRequestForPerformanceMetricsId(): UUID = workRequestForUploadingPerformanceMetrics.id
+
   /**
    * Returns the [UUID] of the work request that is enqueued for scheduling memory usage
    * performance metrics collection.
@@ -184,6 +187,9 @@ class LogUploadWorkManagerInitializer @Inject constructor(
 
   /** Returns the [Data] that goes into the work request that is enqueued for uploading exception logs. */
   fun getWorkRequestDataForExceptions(): Data = workerCaseForUploadingExceptions
+
+  /** Returns the [Data] that goes into the work request that is enqueued for uploading performance metric logs. */
+  fun getWorkRequestDataForPerformanceMetrics(): Data = workerCaseForUploadingPerformanceMetrics
 
   /**
    * Returns the [Data] that goes into the work request that is enqueued for scheduling storage
