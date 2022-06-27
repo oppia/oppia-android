@@ -39,12 +39,22 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
 
   private var targetList = ArrayList<Target>()
 
+  private var isRTL = false
+
   init {
     val displayMetrics = DisplayMetrics()
     activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
 
     screenHeight = displayMetrics.heightPixels
     screenWidth = displayMetrics.widthPixels
+
+    isRTL = checkIsRTL()
+  }
+
+  private fun checkIsRTL(): Boolean {
+    val locale = Locale.getDefault()
+    val directionality: Byte = Character.getDirectionality(locale.displayName[0].toInt())
+    return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
   }
 
   private fun getArrowHeight(): Float {
@@ -122,7 +132,11 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
 
     return when (anchorPosition) {
       AnchorPosition.TopLeft -> {
-        configureTopLeftOverlay()
+        if (isRTL){
+          configureTopRightOverlay()
+        }else{
+          configureTopLeftOverlay()
+        }
       }
       AnchorPosition.TopRight -> {
         configureTopRightOverlay()
@@ -151,6 +165,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       10.dp,
       10.dp
     )
+//    arrowParams.marginStart = getAnchorLeft().toInt()
+//    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverLeftBinding).root
@@ -171,6 +187,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       10.dp,
       10.dp
     )
+//    arrowParams.marginStart = (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt()
+//    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayOverRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverRightBinding).root
@@ -191,6 +209,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       10.dp,
       10.dp
     )
+//    arrowParams.marginStart = (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt()
+//    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderRightBinding).root
@@ -211,6 +231,8 @@ class OverlayPositionAutomator(private val activity: Activity, private val fragm
       10.dp,
       10.dp
     )
+//    arrowParams.marginStart = getAnchorLeft().toInt()
+//    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderLeftBinding).root
