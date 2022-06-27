@@ -113,7 +113,7 @@ class EventBundleCreator @Inject constructor(
   fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
     bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
     bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
-    bundle.putBoolean("is_app_in_foreground", oppiaMetricLog.isAppInForeground)
+    bundle.putString("is_app_in_foreground", oppiaMetricLog.isAppInForeground.toString())
     bundle.putString("memory_tier", oppiaMetricLog.memoryTier.toAnalyticsName())
     bundle.putString("storage_tier", oppiaMetricLog.storageTier.toAnalyticsName())
     bundle.putString("network_type", oppiaMetricLog.networkType.toAnalyticsName())
