@@ -6,7 +6,6 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Topic
-import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -65,17 +64,4 @@ class TopicViewModel @Inject constructor(
     }
   }
 
-  fun recordSpotlightCheckpoint(
-    lastScreenViewed: TopicSpotlightCheckpoint.LastScreenViewed
-  ) {
-    val checkpoint = TopicSpotlightCheckpoint.newBuilder()
-      .setLastScreenViewed(lastScreenViewed)
-      .setSpotlightState(spotlightStateController.computeSpotlightState(lastScreenViewed))
-      .build()
-
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
-    spotlightStateController.recordSpotlightCheckpoint(profileId, checkpoint)
-  }
 }

@@ -44,7 +44,7 @@ class TopicFragment : InjectableFragment() {
     super.onViewCreated(view, savedInstanceState)
 
     if (topicFragmentPresenter.enableSpotlightUi.value) {
-      topicFragmentPresenter.retrieveCheckpointAndInitializeSpotlight()
+//      topicFragmentPresenter.retrieveCheckpointAndInitializeSpotlight()
     }
   }
 }

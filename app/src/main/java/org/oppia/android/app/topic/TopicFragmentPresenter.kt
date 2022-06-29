@@ -14,18 +14,13 @@ import java.util.*
 import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.SpotlightState
-import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.app.spotlight.OverlayPositionAutomator
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.domain.spotlight.SpotlightActivity
 import org.oppia.android.domain.spotlight.SpotlightStateController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
@@ -157,74 +152,74 @@ class TopicFragmentPresenter @Inject constructor(
     )
   }
 
-  fun retrieveCheckpointAndInitializeSpotlight() {
-//    val targets = ArrayList<Target>()
-
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
-    val checkpointLiveData = spotlightStateController.retrieveSpotlightViewState(
-      profileId,
-      SpotlightActivity.TOPIC_ACTIVITY
-    ).toLiveData()
-
-    checkpointLiveData.observe(
-      fragment,
-      object : Observer<AsyncResult<Any>> {
-        override fun onChanged(it: AsyncResult<Any>?) {
-          if (it is AsyncResult.Success) {
-            checkpointLiveData.removeObserver(this)
-            val spotlightState = (it.value as TopicSpotlightCheckpoint).spotlightState
-            if (spotlightState == SpotlightState.SPOTLIGHT_STATE_COMPLETED ||
-              spotlightState == SpotlightState.SPOTLIGHT_STATE_DISMISSED
-            ) {
-              return
-            } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_PARTIAL) {
-              val lastScreenViewed = (it.value as TopicSpotlightCheckpoint).lastScreenViewed
-              when (lastScreenViewed) {
-                TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT -> {
-//                  targets.add(lessonsTabSpotlightTarget)
-//                  targets.add(practiceTabSpotlightTarget)
-//                  targets.add(revisionTabSpotlightTarget)
-//                  spotlightOverlayPositionAutomator.startSpotlight(targets)
-                }
-                TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT -> {
-//                  targets.add(practiceTabSpotlightTarget)
-//                  targets.add(revisionTabSpotlightTarget)
-//                  spotlightOverlayPositionAutomator.startSpotlight(targets)
-                }
-                TopicSpotlightCheckpoint.LastScreenViewed.PRACTICE_TAB_SPOTLIGHT -> {
-//                  targets.add(revisionTabSpotlightTarget)
-//                  spotlightOverlayPositionAutomator.startSpotlight(targets)
-                }
-              }
-            } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
-              spotlightOverlayPositionAutomator.createTarget(
-                getTab(TopicTab.INFO),
-                "INFO tab...",
-                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
-              )
-              spotlightOverlayPositionAutomator.createTarget(
-                getTab(TopicTab.LESSONS),
-                "LESSONS tab...",
-                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
-              )
-              spotlightOverlayPositionAutomator.createTarget(
-                getTab(TopicTab.PRACTICE),
-                "PRACTICE tab...",
-                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
-              )
-              spotlightOverlayPositionAutomator.createTarget(
-                getTab(TopicTab.REVISION),
-                "REVISION tab...",
-                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
-              )
-              spotlightOverlayPositionAutomator.startSpotlight()
-            }
-          }
-        }
-      }
-    )
-  }
+//  fun retrieveCheckpointAndInitializeSpotlight() {
+////    val targets = ArrayList<Target>()
+//
+//    val profileId = ProfileId.newBuilder()
+//      .setInternalId(internalProfileId)
+//      .build()
+//    val checkpointLiveData = spotlightStateController.retrieveSpotlightViewState(
+//      profileId,
+//      SpotlightActivity.TOPIC_ACTIVITY
+//    ).toLiveData()
+//
+//    checkpointLiveData.observe(
+//      fragment,
+//      object : Observer<AsyncResult<Any>> {
+//        override fun onChanged(it: AsyncResult<Any>?) {
+//          if (it is AsyncResult.Success) {
+//            checkpointLiveData.removeObserver(this)
+//            val spotlightState = (it.value as TopicSpotlightCheckpoint).spotlightState
+//            if (spotlightState == SpotlightState.SPOTLIGHT_STATE_COMPLETED ||
+//              spotlightState == SpotlightState.SPOTLIGHT_STATE_DISMISSED
+//            ) {
+//              return
+//            } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_PARTIAL) {
+//              val lastScreenViewed = (it.value as TopicSpotlightCheckpoint).lastScreenViewed
+//              when (lastScreenViewed) {
+//                TopicSpotlightCheckpoint.LastScreenViewed.INFO_TAB_SPOTLIGHT -> {
+////                  targets.add(lessonsTabSpotlightTarget)
+////                  targets.add(practiceTabSpotlightTarget)
+////                  targets.add(revisionTabSpotlightTarget)
+////                  spotlightOverlayPositionAutomator.startSpotlight(targets)
+//                }
+//                TopicSpotlightCheckpoint.LastScreenViewed.LESSONS_TAB_SPOTLIGHT -> {
+////                  targets.add(practiceTabSpotlightTarget)
+////                  targets.add(revisionTabSpotlightTarget)
+////                  spotlightOverlayPositionAutomator.startSpotlight(targets)
+//                }
+//                TopicSpotlightCheckpoint.LastScreenViewed.PRACTICE_TAB_SPOTLIGHT -> {
+////                  targets.add(revisionTabSpotlightTarget)
+////                  spotlightOverlayPositionAutomator.startSpotlight(targets)
+//                }
+//              }
+//            } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
+//              spotlightOverlayPositionAutomator.createTarget(
+//                getTab(TopicTab.INFO),
+//                "INFO tab...",
+//                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+//              )
+//              spotlightOverlayPositionAutomator.createTarget(
+//                getTab(TopicTab.LESSONS),
+//                "LESSONS tab...",
+//                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+//              )
+//              spotlightOverlayPositionAutomator.createTarget(
+//                getTab(TopicTab.PRACTICE),
+//                "PRACTICE tab...",
+//                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+//              )
+//              spotlightOverlayPositionAutomator.createTarget(
+//                getTab(TopicTab.REVISION),
+//                "REVISION tab...",
+//                OverlayPositionAutomator.Companion.SpotlightShape.RoundedRectangle
+//              )
+//              spotlightOverlayPositionAutomator.startSpotlight()
+//            }
+//          }
+//        }
+//      }
+//    )
+//  }
 
 }

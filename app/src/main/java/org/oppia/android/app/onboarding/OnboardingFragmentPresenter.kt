@@ -9,30 +9,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
-import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
-import com.takusemba.spotlight.Target
-import com.takusemba.spotlight.shape.Circle
+import java.util.*
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.SpotlightState
+import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.spotlight.OverlayPositionAutomator
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
 import org.oppia.android.databinding.OverlayBinding
-import org.oppia.android.domain.spotlight.SpotlightActivity
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.statusbar.StatusBarColor
-import java.util.*
-import javax.inject.Inject
-import org.oppia.android.app.spotlight.OverlayPositionAutomator
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -48,44 +43,6 @@ class OnboardingFragmentPresenter @Inject constructor(
   private lateinit var binding: OnboardingFragmentBinding
   private lateinit var overlayBinding: OverlayBinding
   private lateinit var spotlight: Spotlight
-
-  private val firstTarget by lazy {
-    Target.Builder()
-      .setAnchor(binding.onboardingFragmentNextImageView)
-      .setShape(Circle(60f))
-      .setOverlay(overlayBinding.root)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-        }
-
-        override fun onEnded() {
-          getOnboardingViewModel().recordSpotlightCheckpoint(
-            OnboardingSpotlightCheckpoint.LastScreenViewed.NEXT_BUTTON_SPOTLIGHT,
-            SpotlightState.SPOTLIGHT_STATE_PARTIAL
-          )
-        }
-      })
-      .build()
-  }
-
-  private val secondTarget by lazy {
-    Target.Builder()
-      .setAnchor(binding.skipTextView)
-      .setShape(Circle(60f))
-      .setOverlay(overlayBinding.root)
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-        }
-
-        override fun onEnded() {
-          getOnboardingViewModel().recordSpotlightCheckpoint(
-            OnboardingSpotlightCheckpoint.LastScreenViewed.SKIP_BUTTON_SPOTLIGHT,
-            SpotlightState.SPOTLIGHT_STATE_COMPLETED
-          )
-        }
-      })
-      .build()
-  }
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     binding = OnboardingFragmentBinding.inflate(
@@ -290,42 +247,32 @@ class OnboardingFragmentPresenter @Inject constructor(
     val profileId = ProfileId.newBuilder()
       .setInternalId(123)
       .build()
-    val checkpointLiveData = spotlightStateController.retrieveSpotlightViewState(
-      profileId,
-      SpotlightActivity.ONBOARDING_ACTIVITY
-    ).toLiveData()
+    val onboardingButtonSpotlightViewStateLiveData =
+      spotlightStateController.retrieveSpotlightViewState(
+        profileId,
+        org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
+      ).toLiveData()
 
-    val nextButtonSpotlightCheckpointLiveData = spotlightStateController.retrieveSpotlightViewState(
-      profileId,
-      SpotlightActivity.ONBOARDING_NEXT_BUTTON
-    ).toLiveData()
-
-    nextButtonSpotlightCheckpointLiveData.observe(
-      fragment,
-      object : Observer<AsyncResult<OnboardingNe>>
-    )
-
-    checkpointLiveData.observe(
+    onboardingButtonSpotlightViewStateLiveData.observe(
       fragment,
       object : Observer<AsyncResult<Any>> {
         override fun onChanged(it: AsyncResult<Any>?) {
           if (it is AsyncResult.Success) {
-            checkpointLiveData.removeObserver(this)
-            val spotlightState = (it.value as OnboardingSpotlightCheckpoint).spotlightState
-            if (spotlightState == SpotlightState.SPOTLIGHT_STATE_COMPLETED || spotlightState == SpotlightState.SPOTLIGHT_STATE_DISMISSED) {
+            onboardingButtonSpotlightViewStateLiveData.removeObserver(this)
+            val viewState = (it.value as SpotlightViewState)
+            if (viewState == SpotlightViewState.SPOTLIGHT_SEEN) {
               return
-            } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_PARTIAL) {
-              val lastScreenViewed = (it.value as OnboardingSpotlightCheckpoint).lastScreenViewed
-              when (lastScreenViewed) {
-                OnboardingSpotlightCheckpoint.LastScreenViewed.NEXT_BUTTON_SPOTLIGHT -> {
-//                  targets.add(secondTarget)
-//                  startSpotlight(targets)
-                }
-              }
-            } else if (spotlightState == SpotlightState.SPOTLIGHT_STATE_UNKNOWN) {
+            } else if (viewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED || viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
               val overlayPositionAutomator = OverlayPositionAutomator(activity, fragment)
-              overlayPositionAutomator.createTarget(binding.onboardingFragmentNextImageView, "Next", OverlayPositionAutomator.Companion.SpotlightShape.Circle)
-              overlayPositionAutomator.createTarget(binding.skipTextView, "Skip", OverlayPositionAutomator.Companion.SpotlightShape.Circle)
+              overlayPositionAutomator.createTarget(
+                binding.onboardingFragmentNextImageView,
+                "Next",
+                OverlayPositionAutomator.Companion.SpotlightShape.Circle
+              )
+              spotlightStateController.recordSpotlightCheckpoint(
+                profileId, org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON,
+                SpotlightViewState.SPOTLIGHT_SEEN
+              )
               overlayPositionAutomator.startSpotlight()
             }
           }

@@ -3,9 +3,6 @@ package org.oppia.android.app.onboarding
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.SpotlightState
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.spotlight.SpotlightStateController
@@ -38,18 +35,5 @@ class OnboardingViewModel @Inject constructor(
     )
   }
 
-  fun recordSpotlightCheckpoint(
-    lastScreenViewed: OnboardingSpotlightCheckpoint.LastScreenViewed,
-    spotlightState: SpotlightState
-  ) {
-    val checkpoint = OnboardingSpotlightCheckpoint.newBuilder()
-      .setLastScreenViewed(lastScreenViewed)
-      .setSpotlightState(spotlightState)
-      .build()
 
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(123)
-      .build()
-    spotlightStateController.recordSpotlightCheckpoint(profileId, checkpoint)
-  }
 }
