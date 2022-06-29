@@ -5,90 +5,11 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-message SpotlightCheckpointDatabase{
-  OnboardingSpotlightCheckpoint onboarding_spotlight_checkpoint = 1 ;
-  ProfileSpotlightCheckpoint profile_spotlight_checkpoint = 2 ;
-  TopicSpotlightCheckpoint topic_spotlight_checkpoint = 3 ;
-  HomeSpotlightCheckpoint home_spotlight_checkpoint = 4;
-  ExplorationSpotlightCheckpoint exploration_spotlight_checkpoint = 5 ;
-
-  OnboardingNextButton onboarding_next_button = 6 ;
-  OnboardingSkipButton onboarding_skip_button = 7 ;
-  HomePromotedStories home_promoted_stories = 8 ;
-  TopicLessonsTab topic_lessons_tab = 9 ;
-  TopicRevisionsTab topic_revisions_tab = 10 ;
-}
-
-message OnboardingNextButton{
-  SpotlightState spotlight_state = 1 ;
-}
-
-message OnboardingSkipButton{
-  SpotlightState spotlight_state = 1 ;
-}
-
-message HomePromotedStories{
-  SpotlightState spotlight_state = 1 ;
-}
-
-message TopicLessonsTab{
-  SpotlightState spotlight_state = 1 ;
-}
-
-message TopicRevisionsTab{
-  SpotlightState spotlight_state = 1 ;
-}
-
-message OnboardingSpotlightCheckpoint{
-  SpotlightState spotlight_state = 1 ;
-  enum LastScreenViewed {
-    NEXT_BUTTON_SPOTLIGHT = 0;
-    SKIP_BUTTON_SPOTLIGHT = 1;
-  }
-  LastScreenViewed last_screen_viewed = 2;
-}
-
-message ProfileSpotlightCheckpoint{
-  SpotlightState spotlight_state = 1 ;
-  enum LastScreenViewed {
-    NEW_PROFILE_BUTTON_SPOTLIGHT = 0;
-    ENTER_NAME_SPOTLIGHT = 1;
-    ADD_PIN_SPOTLIGHT = 2;
-  }
-  LastScreenViewed last_screen_viewed = 2;
-}
-
-message TopicSpotlightCheckpoint{
-  SpotlightState spotlight_state = 1 ;
-  enum LastScreenViewed {
-    INFO_TAB_SPOTLIGHT = 0;
-    LESSONS_TAB_SPOTLIGHT = 1;
-    PRACTICE_TAB_SPOTLIGHT = 2;
-    REVISION_TAB_SPOTLIGHT = 3;
-  }
-  LastScreenViewed last_screen_viewed = 2;
-}
-
-message HomeSpotlightCheckpoint{
-
-}
-
-message ExplorationSpotlightCheckpoint{
-
-}
-
-enum SpotlightState{
-  SPOTLIGHT_STATE_UNKNOWN = 0 ;
-  SPOTLIGHT_STATE_PARTIAL = 1 ;
-  SPOTLIGHT_STATE_DISMISSED = 2 ;
-  SPOTLIGHT_STATE_COMPLETED = 3 ;
-}
-
-
 message Spotlight {
   oneof feature {
     SpotlightViewState onboarding_next_button = 1;
     SpotlightViewState topic_lesson_tab = 2;
+    SpotlightViewState topic_revision_tab = 3;
   }
 }
 
@@ -101,5 +22,10 @@ enum SpotlightViewState {
 message SpotlightStateDatabase {
   SpotlightViewState onboarding_next_button = 1;
   SpotlightViewState topic_lesson_tab = 2;
+  SpotlightViewState topic_revision_tab = 3;
 }
+
+
+
+
 

@@ -3,14 +3,12 @@ package org.oppia.android.app.onboarding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
-import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
@@ -292,12 +290,12 @@ class OnboardingFragmentPresenter @Inject constructor(
     val profileId = ProfileId.newBuilder()
       .setInternalId(123)
       .build()
-    val checkpointLiveData = spotlightStateController.retrieveSpotlightCheckpoint(
+    val checkpointLiveData = spotlightStateController.retrieveSpotlightViewState(
       profileId,
       SpotlightActivity.ONBOARDING_ACTIVITY
     ).toLiveData()
 
-    val nextButtonSpotlightCheckpointLiveData = spotlightStateController.retrieveSpotlightCheckpoint(
+    val nextButtonSpotlightCheckpointLiveData = spotlightStateController.retrieveSpotlightViewState(
       profileId,
       SpotlightActivity.ONBOARDING_NEXT_BUTTON
     ).toLiveData()

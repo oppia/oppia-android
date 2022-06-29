@@ -1,12 +1,7 @@
 package org.oppia.android.domain.spotlight
 
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.OnboardingSpotlightCheckpoint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileSpotlightCheckpoint
-import org.oppia.android.app.model.SpotlightCheckpointDatabase
-import org.oppia.android.app.model.SpotlightState
-import org.oppia.android.app.model.TopicSpotlightCheckpoint
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -15,6 +10,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.SpotlightStateDatabase
+import org.oppia.android.app.model.SpotlightViewState
 
 private const val SPOTLIGHT_STATE_DATA_PROVIDER_ID = "spotlight_state_data_provider_id"
 private const val CACHE_NAME = "spotlight_checkpoint_database"
@@ -31,46 +29,46 @@ class SpotlightStateController @Inject constructor(
 ) {
 
   class SpotlightStateNotFoundException(message: String) : Exception(message)
-  class SpotlightActivityUnrecognizedException(message: String) : Exception(message)
+  class SpotlightFeatureUnrecognizedException(message: String) : Exception(message)
 
   private val cacheStoreMap =
-    mutableMapOf<ProfileId, PersistentCacheStore<SpotlightCheckpointDatabase>>()
+    mutableMapOf<ProfileId, PersistentCacheStore<SpotlightStateDatabase>>()
 
   private fun recordSpotlightStateAsync(
     profileId: ProfileId,
-    checkpoint: Any,
+    feature: Spotlight.FeatureCase,
+    viewState: SpotlightViewState
   ): Deferred<Any> {
     return retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      val spotlightCheckpointDatabaseBuilder = it.toBuilder()
+      val spotlightStateDatabaseBuilder = it.toBuilder()
 
-      val newCheckpoint: Any = when (checkpoint) {
-        is OnboardingSpotlightCheckpoint -> {
-          spotlightCheckpointDatabaseBuilder.setOnboardingSpotlightCheckpoint(checkpoint)
+      val spotlight = when (feature) {
+        Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON -> {
+          spotlightStateDatabaseBuilder.setOnboardingNextButton(viewState)
         }
-        is ProfileSpotlightCheckpoint -> {
-          spotlightCheckpointDatabaseBuilder.setProfileSpotlightCheckpoint(checkpoint)
-        }
-        is TopicSpotlightCheckpoint -> {
-          spotlightCheckpointDatabaseBuilder.setTopicSpotlightCheckpoint(checkpoint)
+        Spotlight.FeatureCase.TOPIC_LESSON_TAB -> {
+          spotlightStateDatabaseBuilder.setTopicLessonTab(viewState)
         }
         else -> {
-          throw SpotlightActivityUnrecognizedException("spotlight activity is not one of the recognized types")
+          throw SpotlightFeatureUnrecognizedException("spotlight feature is not one of the recognized types")
         }
       }
-      val spotlightCheckpointDatabase = spotlightCheckpointDatabaseBuilder.build()
-      Pair(spotlightCheckpointDatabase, newCheckpoint)
+      val spotlightStateDatabase = spotlightStateDatabaseBuilder.build()
+      Pair(spotlightStateDatabase, spotlight)
     }
   }
 
   fun recordSpotlightCheckpoint(
     profileId: ProfileId,
-    checkpoint: Any,
+    feature: Spotlight.FeatureCase,
+    viewState: SpotlightViewState
   ): DataProvider<Any?> {
     val deferred = recordSpotlightStateAsync(
       profileId,
-      checkpoint
+      feature,
+      viewState
     )
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
@@ -79,32 +77,29 @@ class SpotlightStateController @Inject constructor(
     }
   }
 
-  fun retrieveSpotlightCheckpoint(
+  fun retrieveSpotlightViewState(
     profileId: ProfileId,
-    spotlightActivity: SpotlightActivity,
+    feature: Spotlight.FeatureCase,
   ): DataProvider<Any> {
     return retrieveCacheStore(profileId)
       .transformAsync(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
       ) {
 
-        val checkpoint = when (spotlightActivity) {
-          SpotlightActivity.ONBOARDING_ACTIVITY -> {
-            it.onboardingSpotlightCheckpoint
+        val viewState = when (feature) {
+          Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON -> {
+            it.onboardingNextButton
           }
-          SpotlightActivity.PROFILE_ACTIVITY -> {
-            it.profileSpotlightCheckpoint
-          }
-          SpotlightActivity.TOPIC_ACTIVITY -> {
-            it.topicSpotlightCheckpoint
+          Spotlight.FeatureCase.TOPIC_LESSON_TAB -> {
+            it.topicLessonTab
           }
           else -> {
-            throw SpotlightActivityUnrecognizedException("spotlight activity is not one of the recognized types")
+            throw SpotlightFeatureUnrecognizedException("spotlight activity is not one of the recognized types")
           }
         }
 
-        if (checkpoint != null) {
-          AsyncResult.Success(checkpoint)
+        if (viewState != null) {
+          AsyncResult.Success(viewState)
         } else {
           AsyncResult.Failure(SpotlightStateNotFoundException("State not found "))
         }
@@ -113,14 +108,14 @@ class SpotlightStateController @Inject constructor(
 
   private fun retrieveCacheStore(
     profileId: ProfileId
-  ): PersistentCacheStore<SpotlightCheckpointDatabase> {
+  ): PersistentCacheStore<SpotlightStateDatabase> {
     val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
     } else {
       val cacheStore =
         cacheStoreFactory.createPerProfile(
           CACHE_NAME,
-          SpotlightCheckpointDatabase.getDefaultInstance(),
+          SpotlightStateDatabase.getDefaultInstance(),
           profileId
         )
       cacheStoreMap[profileId] = cacheStore
@@ -138,34 +133,4 @@ class SpotlightStateController @Inject constructor(
     }
     return cacheStore
   }
-
-  fun computeSpotlightState(lastScreenViewed: Any): SpotlightState {
-    return when (lastScreenViewed) {
-      is OnboardingSpotlightCheckpoint.LastScreenViewed -> {
-        if (lastScreenViewed.ordinal == OnboardingSpotlightCheckpoint.LastScreenViewed.values().size - 1)
-          SpotlightState.SPOTLIGHT_STATE_COMPLETED
-        else SpotlightState.SPOTLIGHT_STATE_PARTIAL
-      }
-      is ProfileSpotlightCheckpoint.LastScreenViewed -> {
-        if (lastScreenViewed.ordinal == ProfileSpotlightCheckpoint.LastScreenViewed.values().size - 1)
-          SpotlightState.SPOTLIGHT_STATE_COMPLETED
-        else SpotlightState.SPOTLIGHT_STATE_PARTIAL
-      }
-      is TopicSpotlightCheckpoint.LastScreenViewed -> {
-        if (lastScreenViewed.ordinal == TopicSpotlightCheckpoint.LastScreenViewed.values().size - 1)
-          SpotlightState.SPOTLIGHT_STATE_COMPLETED
-        else SpotlightState.SPOTLIGHT_STATE_PARTIAL
-      }
-      else -> {
-        throw SpotlightStateNotFoundException("couldn't find spotlight state")
-      }
-    }
-  }
-}
-
-enum class SpotlightActivity {
-  ONBOARDING_ACTIVITY,
-  PROFILE_ACTIVITY,
-  TOPIC_ACTIVITY,
-  ONBOARDING_NEXT_BUTTON
 }

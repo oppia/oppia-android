@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.takusemba.spotlight.Target
 import java.util.*
 import javax.inject.Inject
 import org.oppia.android.R
@@ -164,7 +163,7 @@ class TopicFragmentPresenter @Inject constructor(
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
-    val checkpointLiveData = spotlightStateController.retrieveSpotlightCheckpoint(
+    val checkpointLiveData = spotlightStateController.retrieveSpotlightViewState(
       profileId,
       SpotlightActivity.TOPIC_ACTIVITY
     ).toLiveData()
