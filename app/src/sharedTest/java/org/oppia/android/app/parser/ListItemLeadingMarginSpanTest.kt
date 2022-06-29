@@ -6,8 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.text.SpannableString
-import android.text.Spanned
+import android.text.Spannable
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -110,19 +109,13 @@ class ListItemLeadingMarginSpanTest {
 
   private var context: Context = ApplicationProvider.getApplicationContext<TestApplication>()
 
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
 
-  @Inject
-  lateinit var testGlideImageLoader: TestGlideImageLoader
+  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
-  val bulletRadius =
+  private val bulletRadius =
     context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.bullet_radius)
-  private val spacingBeforeBullet =
-    context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_bullet)
-  private val gapWidth = context.resources.getDimensionPixelSize(
-    org.oppia.android.util.R.dimen.bullet_gap_width
-  )
+
   private val spacingBeforeText = context.resources.getDimensionPixelSize(
     org.oppia.android.util.R.dimen.spacing_before_text
   )
@@ -136,7 +129,6 @@ class ListItemLeadingMarginSpanTest {
   private val dir = 15
   private val top = 0
   private val bottom = 0
-  private val baseline = 0
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
@@ -216,7 +208,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testListLeadingMarginSpan_nestedBulletLeadingMargin_isComputedToProperlyIndentText() {
+  fun testListLeadingMarginSpan_nestedBulletLeadingMargin_hasCorrectLeadingMargin() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -273,7 +265,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testListLeadingMarginSpan_nestedNumberedItemsLeadingMargin_isComputedToProperlyIndentText() {
+  fun testListLeadingMarginSpan_nestedNumberedItemsLeadingMargin_hasCorrectLeadingMargin() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -330,7 +322,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testListLeadingMarginSpan_forNumberedItemsLeadingMargin_isComputedToProperlyIndentText() {
+  fun testListLeadingMarginSpan_forNumberedItemsLeadingMargin_hasCorrectLeadingMargin() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -371,8 +363,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testDrawLeadingMargin_forNestedBulletItems_isdrawnCorrectly() {
-    var indentation = 0
+  fun testDrawLeadingMargin_forNestedBulletItems_isdrawnCorrectlyWithIndentation() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -405,50 +396,52 @@ class ListItemLeadingMarginSpanTest {
         ListItemLeadingMarginSpan.UlSpan::class.java
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
-
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan0).isNotNull()
-
-    bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+    htmlResult.setSpan(
+      bulletSpan0,
+      0,
+      3,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
-    var xCoordinate = gapWidth * indentation + spacingBeforeBullet
-    val yCoord = (top + bottom) / 2f
-    canvas.drawCircle(xCoordinate.toFloat(), yCoord, bulletRadius.toFloat(), paint)
-
-    indentation = 1
+    bulletSpan0.drawLeadingMargin(
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan0),
+      htmlResult.getSpanEnd(bulletSpan0),
+      true,
+      null
+    )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan1).isNotNull()
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan1),
+      htmlResult.getSpanEnd(bulletSpan1),
+      true,
+      null
     )
-    xCoordinate = gapWidth * indentation + spacingBeforeBullet
-    canvas.drawCircle(xCoordinate.toFloat(), yCoord, bulletRadius.toFloat(), paint)
 
-    indentation = 1
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan2),
+      htmlResult.getSpanEnd(bulletSpan2),
+      true,
+      null
     )
-    xCoordinate = gapWidth * indentation + spacingBeforeBullet
-    canvas.drawCircle(xCoordinate.toFloat(), yCoord, bulletRadius.toFloat(), paint)
-
-    indentation = 0
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan3),
+      htmlResult.getSpanEnd(bulletSpan3),
+      true,
+      null
     )
-    xCoordinate = gapWidth * indentation + spacingBeforeBullet
-    canvas.drawCircle(xCoordinate.toFloat(), yCoord, bulletRadius.toFloat(), paint)
 
     val shadowCanvas = shadowOf(canvas)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(72.0f)
     assertThat(shadowCanvas.getDrawnCircle(0).centerY).isEqualTo(0.0f)
 
     assertThat(shadowCanvas.getDrawnCircle(1).centerX).isEqualTo(72.0f)
@@ -457,14 +450,12 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.getDrawnCircle(2).centerX).isEqualTo(24.0f)
     assertThat(shadowCanvas.getDrawnCircle(2).centerY).isEqualTo(0.0f)
 
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isEqualTo(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isEqualTo(24.0f)
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isEqualTo(0.0f)
   }
 
   @Test
-  fun testDrawLeadingMargin_forNestedNumberedListItems_isdrawnCorrectly() {
-    var indentation = 0
-    var trueX: Int
+  fun testDrawLeadingMargin_forNestedNumberedListItems_isdrawnCorrectlyWithIndentation() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -502,124 +493,55 @@ class ListItemLeadingMarginSpanTest {
 
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan0).isNotNull()
-
+    htmlResult.setSpan(
+      bulletSpan0,
+      0,
+      3,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan0),
+      htmlResult.getSpanEnd(bulletSpan0),
+      true,
+      null
     )
-    val startCharOfSpan0 = (htmlResult as Spanned).getSpanStart(this)
-    val isFirstCharacter0 = startCharOfSpan0 == 0
-
-    if (isFirstCharacter0) {
-      trueX = gapWidth * indentation + spacingBeforeBullet
-      canvas.drawText("1.", trueX.toFloat(), baseline.toFloat(), paint)
-    }
-
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
+    assertThat(bulletSpan1).isNotNull()
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan1),
+      htmlResult.getSpanEnd(bulletSpan1),
+      true,
+      null
     )
-    indentation = 1
-    trueX = gapWidth * indentation + spacingBeforeBullet
-    canvas.drawText("1.", trueX.toFloat(), baseline.toFloat(), paint)
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
+    assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan2),
+      htmlResult.getSpanEnd(bulletSpan2),
+      true,
+      null
     )
-    indentation = 1
-    trueX = gapWidth * indentation + spacingBeforeBullet
-    canvas.drawText("2.", trueX.toFloat(), baseline.toFloat(), paint)
-
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
+    assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      htmlResult, 0, 0, true, null
+      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan3),
+      htmlResult.getSpanEnd(bulletSpan3),
+      true,
+      null
     )
-    indentation = 0
-    trueX = gapWidth * indentation + spacingBeforeBullet
-    canvas.drawText("2.", trueX.toFloat(), baseline.toFloat(), paint)
 
     val shadowCanvas = shadowOf(canvas)
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
     assertThat("1.").isEqualTo(shadowCanvas.getDrawnTextEvent(0).text)
-    assertThat("1.").isEqualTo(shadowCanvas.getDrawnTextEvent(1).text)
-    assertThat("2.").isEqualTo(shadowCanvas.getDrawnTextEvent(2).text)
+    assertThat("2.").isEqualTo(shadowCanvas.getDrawnTextEvent(1).text)
+    assertThat("1.").isEqualTo(shadowCanvas.getDrawnTextEvent(2).text)
     assertThat("2.").isEqualTo(shadowCanvas.getDrawnTextEvent(3).text)
-  }
-
-  @Test
-  fun testDrawLeadingMargin_forBulletItems_isdrawnCorrectly() {
-    val indentation = 0
-    val text = SpannableString(
-      "<p>You should know the following before going on:<br></p>" +
-        "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
-        "<li>How to tell whether one counting number is bigger or " +
-        "smaller than another</li></ul>"
-    )
-    // Given a span that is set on a text
-    val span = ListItemLeadingMarginSpan.UlSpan(context, indentation)
-    text.setSpan(span, 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-    // When the leading margin is drawn
-    span.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      text, 0, 0, true, null
-    )
-
-    val xCoordinate = gapWidth * indentation + spacingBeforeBullet
-    val yCoord = (top + bottom) / 2f
-
-    canvas.drawCircle(xCoordinate.toFloat(), yCoord, bulletRadius.toFloat(), paint)
-
-    val shadowCanvas = shadowOf(canvas)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isEqualTo(0.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).radius).isEqualTo(bulletRadius)
-    assertThat(shadowCanvas.getDrawnCircle(0).paint).isSameInstanceAs(paint)
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isEqualTo(0.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).radius).isEqualTo(bulletRadius)
-    assertThat(shadowCanvas.getDrawnCircle(1).paint).isSameInstanceAs(paint)
-  }
-
-  @Test
-  fun testDrawText_shouldRecordTextHistoryEvents() {
-    val indentation = 0
-    val text = SpannableString(
-      "<p>You should know the following before going on:<br></p>" +
-        "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
-        "<li>How to tell whether one counting number is bigger or " +
-        "smaller than another</li></ol>"
-    )
-    // Given a span that is set on a text
-    var span = ListItemLeadingMarginSpan.OlSpan(context, indentation, "1")
-    text.setSpan(span, 48, 88, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-    // When the leading margin is drawn
-    span.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      text, 0, 0, true, null
-    )
-    span = ListItemLeadingMarginSpan.OlSpan(context, indentation, "2")
-    text.setSpan(span, 88, 160, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-    // When the leading margin is drawn
-    span.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom,
-      text, 0, 0, true, null
-    )
-
-    val trueX = gapWidth * indentation + spacingBeforeBullet
-
-    canvas.drawText("1", trueX.toFloat(), baseline.toFloat(), paint)
-
-    canvas.drawText("2", trueX.toFloat(), baseline.toFloat(), paint)
-
-    val shadowCanvas = shadowOf(canvas)
-    assertThat(shadowCanvas.textHistoryCount).isEqualTo(2)
-    assertThat("1").isEqualTo(shadowCanvas.getDrawnTextEvent(0).text)
-    assertThat("2").isEqualTo(shadowCanvas.getDrawnTextEvent(1).text)
   }
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
