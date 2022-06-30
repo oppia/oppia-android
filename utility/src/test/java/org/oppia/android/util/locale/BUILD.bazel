@@ -71,6 +71,7 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//model/src/main/proto:languages_java_proto_lite",
+        "//testing",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_extensions_truth-liteproto-extension",
