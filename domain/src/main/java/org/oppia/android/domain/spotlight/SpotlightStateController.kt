@@ -34,32 +34,6 @@ class SpotlightStateController @Inject constructor(
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<SpotlightStateDatabase>>()
 
-  private fun recordSpotlightStateAsync(
-    profileId: ProfileId,
-    feature: Spotlight.FeatureCase,
-    viewState: SpotlightViewState
-  ): Deferred<Any> {
-    return retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
-      val spotlightStateDatabaseBuilder = it.toBuilder()
-
-      val spotlight = when (feature) {
-        Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON -> {
-          spotlightStateDatabaseBuilder.setOnboardingNextButton(viewState)
-        }
-        Spotlight.FeatureCase.TOPIC_LESSON_TAB -> {
-          spotlightStateDatabaseBuilder.setTopicLessonTab(viewState)
-        }
-        else -> {
-          throw SpotlightFeatureUnrecognizedException("spotlight feature is not one of the recognized types")
-        }
-      }
-      val spotlightStateDatabase = spotlightStateDatabaseBuilder.build()
-      Pair(spotlightStateDatabase, spotlight)
-    }
-  }
-
   fun recordSpotlightCheckpoint(
     profileId: ProfileId,
     feature: Spotlight.FeatureCase,
@@ -104,6 +78,32 @@ class SpotlightStateController @Inject constructor(
           AsyncResult.Failure(SpotlightStateNotFoundException("State not found "))
         }
       }
+  }
+
+  private fun recordSpotlightStateAsync(
+    profileId: ProfileId,
+    feature: Spotlight.FeatureCase,
+    viewState: SpotlightViewState
+  ): Deferred<Any> {
+    return retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val spotlightStateDatabaseBuilder = it.toBuilder()
+
+      val spotlight = when (feature) {
+        Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON -> {
+          spotlightStateDatabaseBuilder.setOnboardingNextButton(viewState)
+        }
+        Spotlight.FeatureCase.TOPIC_LESSON_TAB -> {
+          spotlightStateDatabaseBuilder.setTopicLessonTab(viewState)
+        }
+        else -> {
+          throw SpotlightFeatureUnrecognizedException("spotlight feature is not one of the recognized types")
+        }
+      }
+      val spotlightStateDatabase = spotlightStateDatabaseBuilder.build()
+      Pair(spotlightStateDatabase, spotlight)
+    }
   }
 
   private fun retrieveCacheStore(
