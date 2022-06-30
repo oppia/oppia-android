@@ -74,10 +74,10 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:prod_module",
         "//utility/src/main/java/org/oppia/android/util/threading:prod_module",
-        "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator"
     ],
 )
 
