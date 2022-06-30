@@ -17,7 +17,9 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.spotlight.OverlayPositionAutomator
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
@@ -37,7 +39,8 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val spotlightFragment: SpotlightFragment
 ) : OnboardingNavigationListener, SpotlightNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
@@ -244,40 +247,21 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
   fun computeLastSpotlightCheckpoint() {
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(123)
-      .build()
-    val onboardingButtonSpotlightViewStateLiveData =
-      spotlightStateController.retrieveSpotlightViewState(
-        profileId,
-        org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
-      ).toLiveData()
 
-    onboardingButtonSpotlightViewStateLiveData.observe(
-      fragment,
-      object : Observer<AsyncResult<Any>> {
-        override fun onChanged(it: AsyncResult<Any>?) {
-          if (it is AsyncResult.Success) {
-            onboardingButtonSpotlightViewStateLiveData.removeObserver(this)
-            val viewState = (it.value as SpotlightViewState)
-            if (viewState == SpotlightViewState.SPOTLIGHT_SEEN) {
-              return
-            } else if (viewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED || viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
-              val overlayPositionAutomator = OverlayPositionAutomator(activity, fragment)
-              overlayPositionAutomator.createTarget(
-                binding.onboardingFragmentNextImageView,
-                "Next",
-                OverlayPositionAutomator.Companion.SpotlightShape.Circle
-              )
-              spotlightStateController.recordSpotlightCheckpoint(
-                profileId, org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON,
-                SpotlightViewState.SPOTLIGHT_SEEN
-              )
-              overlayPositionAutomator.startSpotlight()
-            }
-          }
-        }
-      }
+    val onboardingButtonSpotlight = SpotlightTarget(
+      binding.onboardingFragmentNextImageView,
+      "Next",
+      SpotlightShape.Circle,
+      org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
     )
+
+    val targetList = ArrayList<SpotlightTarget>()
+    targetList.add(onboardingButtonSpotlight)
+    spotlightFragment.spotlightTargetList = targetList
+
+    activity.supportFragmentManager.beginTransaction()
+      .add(R.id.onboarding_fragment_placeholder, spotlightFragment)
+      .commit()
+    
   }
 }
