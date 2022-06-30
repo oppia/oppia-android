@@ -103,6 +103,7 @@ filegroup(
 TEST_DEPS = [
     ":dagger",
     ":utility",
+    ":test_resources",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//model/src/main/proto:test_models",
