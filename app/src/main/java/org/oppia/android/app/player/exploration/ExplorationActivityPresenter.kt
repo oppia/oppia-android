@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
-import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -16,6 +15,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
@@ -49,22 +49,17 @@ class ExplorationActivityPresenter @Inject constructor(
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
   private lateinit var context: Context
-  private var backflowScreen: Int? = null
+  private lateinit var parentScreen: ExplorationActivityParams.ParentScreen
 
   private var isCheckpointingEnabled: Boolean = false
 
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
-
-  enum class ParentActivityForExploration(val value: Int) {
-    BACKFLOW_SCREEN_LESSONS(0),
-    BACKFLOW_SCREEN_STORY(1);
-  }
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
@@ -72,11 +67,11 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun handleOnCreate(
     context: Context,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
     val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
@@ -105,28 +100,21 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     updateToolbarTitle(explorationId)
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
     this.context = context
-    this.backflowScreen = backflowScreen
+    this.parentScreen = parentScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
 
     // Retrieve oldest saved checkpoint details.
     subscribeToOldestSavedExplorationDetails()
 
     if (getExplorationManagerFragment() == null) {
-      val explorationManagerFragment = ExplorationManagerFragment()
-      val args = Bundle()
-      args.putInt(
-        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-        internalProfileId
-      )
-      explorationManagerFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
-        explorationManagerFragment,
+        ExplorationManagerFragment.createNewInstance(profileId),
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
     }
@@ -137,11 +125,7 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
-          topicId = topicId,
-          internalProfileId = internalProfileId,
-          storyId = storyId,
-          readingTextSize = readingTextSize.name,
-          explorationId = explorationId
+          profileId, topicId, storyId, explorationId, readingTextSize
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
@@ -162,19 +146,19 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_preferences -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          internalProfileId,
+          profileId.internalId,
           /* isFromNavigationDrawer= */ false
         )
-        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
         context.startActivity(intent)
         true
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, internalProfileId,
+          activity, profileId.internalId,
           /* isFromNavigationDrawer= */false
         )
-        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+        fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
         context.startActivity(intent)
         true
       }
@@ -215,10 +199,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Deletes the saved progress for the current exploration and then stops the exploration. */
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
-    explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      explorationId
-    )
+    explorationDataController.deleteExplorationProgressById(profileId, explorationId)
     stopExploration(isCompletion)
   }
 
@@ -229,15 +210,14 @@ class ExplorationActivityPresenter @Inject constructor(
     // without deleting the any checkpoints.
     oldestCheckpointExplorationId.let {
       explorationDataController.deleteExplorationProgressById(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        oldestCheckpointExplorationId
+        profileId, oldestCheckpointExplorationId
       )
     }
     stopExploration(isCompletion = false)
   }
 
   fun stopExploration(isCompletion: Boolean) {
-    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+    fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
     explorationDataController.stopPlayingExploration(isCompletion).toLiveData()
       .observe(
         activity,
@@ -248,7 +228,7 @@ class ExplorationActivityPresenter @Inject constructor(
               oppiaLogger.e("ExplorationActivity", "Failed to stop exploration", it.error)
             is AsyncResult.Success -> {
               oppiaLogger.d("ExplorationActivity", "Successfully stopped exploration")
-              backPressActivitySelector(backflowScreen)
+              backPressActivitySelector()
               (activity as ExplorationActivity).finish()
             }
           }
@@ -329,17 +309,17 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  private fun backPressActivitySelector(backflowScreen: Int?) {
-    when (backflowScreen) {
-      ParentActivityForExploration.BACKFLOW_SCREEN_STORY.value -> activity.finish()
-      ParentActivityForExploration.BACKFLOW_SCREEN_LESSONS.value -> activity.finish()
-      else -> activity.startActivity(
-        TopicActivity.createTopicActivityIntent(
-          context,
-          internalProfileId,
-          topicId
+  private fun backPressActivitySelector() {
+    when (parentScreen) {
+      ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
+      ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()
+      ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
+      ExplorationActivityParams.ParentScreen.UNRECOGNIZED -> {
+        // Default to the topic activity.
+        activity.startActivity(
+          TopicActivity.createTopicActivityIntent(context, profileId.internalId, topicId)
         )
-      )
+      }
     }
   }
 
@@ -415,7 +395,7 @@ class ExplorationActivityPresenter @Inject constructor(
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      profileId
     ).toLiveData().observe(
       activity,
       Observer {

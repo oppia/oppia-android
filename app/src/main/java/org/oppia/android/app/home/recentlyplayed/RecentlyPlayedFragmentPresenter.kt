@@ -14,6 +14,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
@@ -234,6 +235,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
+    val profileId = ProfileId.newBuilder().apply {
+      internalId = internalProfileId
+    }.build()
     val canHavePartialProgressSaved =
       when (promotedStory.chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -245,10 +249,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build(),
-          promotedStory.explorationId
+          profileId, promotedStory.explorationId
         ).toLiveData()
 
       explorationCheckpointLiveData.observe(
@@ -258,11 +259,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
-                internalProfileId,
+                profileId,
                 promotedStory.topicId,
                 promotedStory.storyId,
                 promotedStory.explorationId,
-                backflowScreen = null,
+                parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
                 explorationCheckpoint = it.value
               )
             } else if (it is AsyncResult.Failure) {
@@ -317,11 +318,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            internalProfileId,
+            ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
             topicId,
             storyId,
             explorationId,
-            backflowScreen = null,
+            parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
             isCheckpointingEnabled = canHavePartialProgressSaved
           )
           activity.finish()

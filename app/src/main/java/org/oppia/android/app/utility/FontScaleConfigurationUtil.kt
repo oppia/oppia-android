@@ -9,11 +9,12 @@ import javax.inject.Inject
 
 /** Utility to change the scale of font for the entire app. */
 class FontScaleConfigurationUtil @Inject constructor() {
-  /** This method updates font scale. */
-  fun adjustFontScale(
-    context: Context,
-    readingTextSize: String
-  ) {
+  // TODO: Improve tests?
+  /**
+   * Updates the specified [context]'s current configuration to scale text size according to the
+   * provided [readingTextSize].
+   */
+  fun adjustFontScale(context: Context, readingTextSize: ReadingTextSize) {
     val configuration = context.resources.configuration
     configuration.fontScale = getReadingTextSizeConfigurationUtil(readingTextSize)
     val metrics: DisplayMetrics = context.resources.displayMetrics
@@ -24,13 +25,12 @@ class FontScaleConfigurationUtil @Inject constructor() {
     context.resources.displayMetrics.setTo(metrics)
   }
 
-  /** This method returns font scale by reading text size. */
-  private fun getReadingTextSizeConfigurationUtil(readingTextSize: String): Float {
+  private fun getReadingTextSizeConfigurationUtil(readingTextSize: ReadingTextSize): Float {
     return when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE.name -> .8f
-      ReadingTextSize.MEDIUM_TEXT_SIZE.name -> 1.0f
-      ReadingTextSize.LARGE_TEXT_SIZE.name -> 1.2f
-      ReadingTextSize.EXTRA_LARGE_TEXT_SIZE.name -> 1.4f
+      ReadingTextSize.SMALL_TEXT_SIZE -> .8f
+      ReadingTextSize.MEDIUM_TEXT_SIZE -> 1.0f
+      ReadingTextSize.LARGE_TEXT_SIZE -> 1.2f
+      ReadingTextSize.EXTRA_LARGE_TEXT_SIZE -> 1.4f
       else -> 1.0f
     }
   }

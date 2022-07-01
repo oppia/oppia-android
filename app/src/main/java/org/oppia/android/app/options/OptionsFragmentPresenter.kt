@@ -26,7 +26,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
-const val READING_TEXT_SIZE = "READING_TEXT_SIZE"
 const val APP_LANGUAGE = "APP_LANGUAGE"
 const val AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
@@ -52,7 +51,6 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
   private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
   private var audioLanguage = AudioLanguage.NO_AUDIO
   private val viewModel = getOptionControlsItemViewModel()
@@ -185,86 +183,20 @@ class OptionsFragmentPresenter @Inject constructor(
     VIEW_TYPE_AUDIO_LANGUAGE
   }
 
-  fun updateReadingTextSize(textSize: String) {
-    when (textSize) {
-      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.SMALL_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(
-          profileId,
-          ReadingTextSize.SMALL_TEXT_SIZE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> readingTextSize = ReadingTextSize.SMALL_TEXT_SIZE
-              is AsyncResult.Failure -> {
-                oppiaLogger.e(
-                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: small text size", it.error
-                )
-              }
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
+  fun updateReadingTextSize(textSize: ReadingTextSize) {
+    profileManagementController.updateReadingTextSize(profileId, textSize).toLiveData().observe(
+      fragment,
+      {
+        when (it) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: updating to $textSize", it.error
+            )
           }
-        )
+          else -> {} // Nothing needs to be done unless the update failed.
+        }
       }
-      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.MEDIUM_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(
-          profileId,
-          ReadingTextSize.MEDIUM_TEXT_SIZE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-              is AsyncResult.Failure -> {
-                oppiaLogger.e(
-                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: medium text size", it.error
-                )
-              }
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getReadingTextSize(ReadingTextSize.LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(
-          profileId,
-          ReadingTextSize.LARGE_TEXT_SIZE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> readingTextSize = ReadingTextSize.LARGE_TEXT_SIZE
-              is AsyncResult.Failure -> {
-                oppiaLogger.e(
-                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: large text size", it.error
-                )
-              }
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel()
-        .getReadingTextSize(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE) -> {
-        profileManagementController.updateReadingTextSize(
-          profileId,
-          ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> readingTextSize = ReadingTextSize.EXTRA_LARGE_TEXT_SIZE
-              is AsyncResult.Failure -> {
-                oppiaLogger.e(
-                  READING_TEXT_SIZE_TAG, "$READING_TEXT_SIZE_ERROR: extra large text size", it.error
-                )
-              }
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-    }
+    )
     recyclerViewAdapter.notifyItemChanged(0)
   }
 

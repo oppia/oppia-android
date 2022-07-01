@@ -27,7 +27,9 @@ oppia_proto_library(
     name = "arguments_proto",
     srcs = ["arguments.proto"],
     deps = [
+        ":exploration_checkpoint_proto",
         ":exploration_proto",
+        ":profile_proto",
         ":translation_proto",
     ],
 )

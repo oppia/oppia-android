@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
@@ -224,6 +225,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
+    val profileId = ProfileId.newBuilder().apply {
+      internalId = internalProfileId
+    }.build()
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -237,10 +241,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ChapterPlayState.IN_PROGRESS_SAVED -> {
         val explorationCheckpointLiveData =
           explorationCheckpointController.retrieveExplorationCheckpoint(
-            ProfileId.newBuilder().apply {
-              internalId = internalProfileId
-            }.build(),
-            explorationId
+            profileId, explorationId
           ).toLiveData()
         explorationCheckpointLiveData.observe(
           fragment,
@@ -249,17 +250,17 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               if (it is AsyncResult.Success) {
                 explorationCheckpointLiveData.removeObserver(this)
                 routeToResumeLessonListener.routeToResumeLesson(
-                  internalProfileId,
+                  profileId,
                   topicId,
                   storyId,
                   explorationId,
-                  backflowScreen = 0,
+                  parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
                   explorationCheckpoint = it.value
                 )
               } else if (it is AsyncResult.Failure) {
                 explorationCheckpointLiveData.removeObserver(this)
                 playExploration(
-                  internalProfileId,
+                  profileId,
                   topicId,
                   storyId,
                   explorationId,
@@ -273,7 +274,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       }
       ChapterPlayState.IN_PROGRESS_NOT_SAVED -> {
         playExploration(
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           explorationId,
@@ -283,7 +284,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       }
       else -> {
         playExploration(
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           explorationId,
@@ -295,7 +296,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -332,11 +333,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            internalProfileId,
+            profileId,
             topicId,
             storyId,
             explorationId,
-            backflowScreen = 0,
+            parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
             isCheckpointingEnabled = canHavePartialProgressSaved
           )
         }
