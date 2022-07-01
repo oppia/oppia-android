@@ -23,6 +23,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.AutomaticallyUpdateTopic
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -31,7 +32,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @AutomaticallyUpdateTopic private val automaticallyUpdateTopic: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -90,7 +92,8 @@ class AdministratorControlsViewModel @Inject constructor(
         oppiaLogger,
         profileManagementController,
         userProfileId,
-        deviceSettings
+        deviceSettings,
+        automaticallyUpdateTopic.value
       )
     )
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))

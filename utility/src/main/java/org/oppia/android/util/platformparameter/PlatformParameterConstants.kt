@@ -11,6 +11,25 @@ import javax.inject.Qualifier
  */
 
 /**
+ * Qualifier for the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+@Qualifier
+annotation class AutomaticallyUpdateTopic
+
+/**
+ * Name of the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+const val AUTOMATICALLY_UPDATE_TOPIC = "automatically_update_topic"
+
+/**
+ * Default value of the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+const val AUTOMATICALLY_UPDATE_TOPIC_VALUE = false
+
+/**
  * Qualifier for the platform parameter that controls the visibility of splash screen welcome
  * message toast in the [SplashTestActivity].
  */

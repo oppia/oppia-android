@@ -2,13 +2,18 @@ package org.oppia.android.app.administratorcontrols.administratorcontrolsitemvie
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import javax.inject.Provider
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.AutomaticallyUpdateTopic
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsDownloadPermissionsViewModel(
@@ -16,8 +21,12 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
-  deviceSettings: DeviceSettings
+  deviceSettings: DeviceSettings,
+  automaticallyUpdateTopic: Boolean,
 ) : AdministratorControlsItemViewModel() {
+
+  val visibility: LiveData<Boolean> get() = _visibility
+  private var _visibility = MutableLiveData(automaticallyUpdateTopic)
 
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
