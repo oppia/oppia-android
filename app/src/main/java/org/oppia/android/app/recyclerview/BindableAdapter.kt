@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.recyclerview.BindableAdapter.MultiTypeBuilder.Companion.newBuilder
-import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder.Companion.newBuilder
-import java.lang.ref.WeakReference
+import javax.inject.Inject
 import kotlin.reflect.KClass
 
 /** A function that returns the integer-based type of view that can bind the specified object. */
@@ -96,62 +94,14 @@ class BindableAdapter<T : Any> internal constructor(
   }
 
   /**
-   * The base builder for [BindableAdapter]. This class should not be used directly--use either
-   * [SingleTypeBuilder] or [MultiTypeBuilder] instead.
-   */
-  abstract class BaseBuilder<BuilderType : Any> {
-    /**
-     * A [WeakReference] to a [LifecycleOwner] for databinding inflation. See [setLifecycleOwner].
-     * Note that this needs to be a weak reference so that long-held references to the adapter do
-     * not potentially leak lifecycle owners (such as fragments and activities).
-     */
-    private var lifecycleOwnerRef: WeakReference<LifecycleOwner>? = null
-
-    /**
-     * Sets the [LifecycleOwner] corresponding to this adapter. This will automatically be used as
-     * the lifecycle owner for all databinding classes created during view inflation. Note that the
-     * adapter holds a weak reference to the owner to ensure long-lived references to the adapter
-     * class itself does not result in leaks, however it's up to the caller's responsibility to make
-     * sure that the adapter itself is not actually used after the lifecycle owner has expired
-     * (otherwise the app may crash).
-     *
-     * @return this
-     */
-    fun setLifecycleOwner(lifecycleOwner: LifecycleOwner): BuilderType {
-      check(lifecycleOwnerRef == null) {
-        "A lifecycle owner has already been bound to this adapter."
-      }
-      lifecycleOwnerRef = WeakReference(lifecycleOwner)
-
-      // This cast is not, strictly speaking, safe, but child classes are expected to inherit from
-      // the builder & pass their own type in.
-      @Suppress("UNCHECKED_CAST") return this as BuilderType
-    }
-
-    /**
-     * Returns the [LifecycleOwner] bound to this adapter, or null if there isn't one. This method
-     * will throw if there was a lifecycle owner bound but is now expired.
-     */
-    protected fun getLifecycleOwner(): LifecycleOwner? {
-      // Crash if the lifecycle owner has been cleaned up since it's not valid to use the adapter
-      // with an old lifecycle owner, and silently ignoring this may result in part of the layout
-      // not responding to events.
-      return lifecycleOwnerRef?.let { ref ->
-        checkNotNull(ref.get()) {
-          "Attempted to inflate data binding with expired lifecycle owner"
-        }
-      }
-    }
-  }
-
-  /**
    * Constructs a new [BindableAdapter] that for a single view type.
    *
    * Instances of [SingleTypeBuilder] should be instantiated using [newBuilder].
    */
   class SingleTypeBuilder<T : Any>(
-    private val dataClassType: KClass<T>
-  ) : BaseBuilder<SingleTypeBuilder<T>>() {
+    private val dataClassType: KClass<T>,
+    private val fragment: Fragment
+  ) {
     private lateinit var viewHolderFactory: ViewHolderFactory<T>
 
     /**
@@ -222,7 +172,7 @@ class BindableAdapter<T : Any> internal constructor(
           viewGroup,
           /* attachToRoot= */ false
         )
-        binding.lifecycleOwner = getLifecycleOwner()
+        binding.lifecycleOwner = fragment
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, data)
@@ -242,10 +192,11 @@ class BindableAdapter<T : Any> internal constructor(
       )
     }
 
-    companion object {
-      /** Returns a new [SingleTypeBuilder]. */
-      inline fun <reified T : Any> newBuilder(): SingleTypeBuilder<T> {
-        return SingleTypeBuilder(T::class)
+    class Factory @Inject constructor(
+      val fragment: Fragment
+    ) {
+      inline fun <reified T : Any> create(): SingleTypeBuilder<T> {
+        return SingleTypeBuilder(T::class, fragment)
       }
     }
   }
@@ -258,8 +209,9 @@ class BindableAdapter<T : Any> internal constructor(
    */
   class MultiTypeBuilder<T : Any, E : Enum<E>>(
     private val dataClassType: KClass<T>,
-    private val computeViewType: ComputeViewType<T, E>
-  ) : BaseBuilder<MultiTypeBuilder<T, E>>() {
+    private val computeViewType: ComputeViewType<T, E>,
+    private val fragment: Fragment
+  ) {
     private var viewHolderFactoryMap: MutableMap<E, ViewHolderFactory<T>> = HashMap()
 
     /**
@@ -343,7 +295,8 @@ class BindableAdapter<T : Any> internal constructor(
           viewGroup,
           /* attachToRoot= */ false
         )
-        binding.lifecycleOwner = getLifecycleOwner()
+
+        binding.lifecycleOwner = fragment
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, transformViewModel(data))
@@ -371,15 +324,13 @@ class BindableAdapter<T : Any> internal constructor(
       )
     }
 
-    companion object {
-      /**
-       * Returns a new [MultiTypeBuilder] with the specified function that returns the enum type of
-       * view a specific data item corresponds to.
-       */
-      inline fun <reified T : Any, reified E : Enum<E>> newBuilder(
+    class Factory @Inject constructor(
+      val fragment: Fragment
+    ) {
+      inline fun <reified T : Any, reified E : Enum<E>> create(
         noinline computeViewType: ComputeViewType<T, E>
       ): MultiTypeBuilder<T, E> {
-        return MultiTypeBuilder(T::class, computeViewType)
+        return MultiTypeBuilder(T::class, computeViewType, fragment)
       }
     }
   }

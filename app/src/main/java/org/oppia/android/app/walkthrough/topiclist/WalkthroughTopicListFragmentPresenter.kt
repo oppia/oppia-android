@@ -74,7 +74,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC

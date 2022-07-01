@@ -51,7 +51,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ThirdPartyDependencyItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<ThirdPartyDependencyItemViewModel>()
+      .Factory(fragment).create<ThirdPartyDependencyItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ThirdPartyDependencyItemBinding::inflate,
         setViewModel = ThirdPartyDependencyItemBinding::setViewModel

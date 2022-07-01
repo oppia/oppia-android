@@ -136,7 +136,7 @@ class StoryFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER

@@ -53,6 +53,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var viewBindingShim: ViewBindingShim
 
+  @Inject
+  lateinit var fragment: Fragment
+
   private lateinit var entityId: String
   private lateinit var onDragEnd: OnDragEndedListener
   private lateinit var onItemDrag: OnItemDragListener
@@ -84,7 +87,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<DragDropInteractionContentViewModel>()
+      .Factory(fragment).create<DragDropInteractionContentViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           viewBindingShim.provideDragDropSortInteractionInflatedView(
@@ -112,7 +115,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   private fun createNestedAdapter(): BindableAdapter<String> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
+      .Factory(fragment).create<String>()
       .registerViewBinder(
         inflateView = { parent ->
           viewBindingShim.provideDragDropSingleItemInflatedView(

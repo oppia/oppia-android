@@ -32,6 +32,9 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var fragment: Fragment
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
@@ -69,7 +72,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   }
 
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
-    return BindableAdapter.SingleTypeBuilder.newBuilder<ComingSoonTopicsViewModel>()
+    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<ComingSoonTopicsViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.provideComingSoonTopicViewInflatedView(

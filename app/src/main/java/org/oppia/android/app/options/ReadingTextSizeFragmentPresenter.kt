@@ -49,8 +49,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TextSizeItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TextSizeItemViewModel>()
-      .setLifecycleOwner(fragment)
+      .Factory(fragment).create<TextSizeItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TextSizeItemsBinding::inflate,
         setViewModel = TextSizeItemsBinding::setViewModel

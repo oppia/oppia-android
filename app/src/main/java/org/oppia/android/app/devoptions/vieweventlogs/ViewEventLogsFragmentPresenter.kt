@@ -57,7 +57,7 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<EventLogItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<EventLogItemViewModel>()
+      .Factory(fragment).create<EventLogItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ViewEventLogsEventLogItemViewBinding::inflate,
         setViewModel = ViewEventLogsEventLogItemViewBinding::setViewModel

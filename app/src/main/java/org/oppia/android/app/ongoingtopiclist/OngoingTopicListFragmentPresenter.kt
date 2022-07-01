@@ -57,7 +57,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<OngoingTopicItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<OngoingTopicItemViewModel>()
+      .Factory(fragment).create<OngoingTopicItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = OngoingTopicItemBinding::inflate,
         setViewModel = OngoingTopicItemBinding::setViewModel

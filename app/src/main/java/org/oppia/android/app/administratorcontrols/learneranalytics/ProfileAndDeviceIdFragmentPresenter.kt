@@ -39,7 +39,7 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileListItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ProfileListItemViewModel, ProfileListItemViewType> { viewModel ->
+      .Factory(fragment).create<ProfileListItemViewModel, ProfileListItemViewType> { viewModel ->
         when (viewModel) {
           is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
           is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
@@ -47,7 +47,6 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
           else -> error("Encountered unexpected view model: $viewModel")
         }
       }
-      .setLifecycleOwner(fragment)
       .registerViewDataBinder(
         viewType = ProfileListItemViewType.DEVICE_ID,
         inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,

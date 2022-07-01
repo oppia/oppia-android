@@ -168,7 +168,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HintsAndSolutionItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
           is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM

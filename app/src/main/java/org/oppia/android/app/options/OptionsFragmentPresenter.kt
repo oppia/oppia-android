@@ -95,7 +95,7 @@ class OptionsFragmentPresenter @Inject constructor(
     isMultipane: Boolean
   ): BindableAdapter<OptionsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
           is OptionsReadingTextSizeViewModel -> {

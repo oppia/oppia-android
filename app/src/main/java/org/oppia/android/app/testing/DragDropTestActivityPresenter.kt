@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -24,7 +25,7 @@ class DragDropTestActivityPresenter @Inject constructor(private val activity: Ap
 
   private fun createBindableAdapter(): BindableAdapter<String> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<String>()
+      .Factory(Fragment()).create<String>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
         bindView = this::bindTextViewForStringWithoutDataBinding

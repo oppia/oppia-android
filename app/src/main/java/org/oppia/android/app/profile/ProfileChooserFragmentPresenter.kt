@@ -149,7 +149,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(
+      .Factory(fragment).create<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(
         ProfileChooserUiModel::getModelTypeCase
       )
       .registerViewDataBinderWithSameModelType(

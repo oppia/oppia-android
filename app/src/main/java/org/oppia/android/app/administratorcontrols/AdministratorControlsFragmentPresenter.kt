@@ -78,7 +78,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<AdministratorControlsItemViewModel> {
       return BindableAdapter.MultiTypeBuilder
-        .newBuilder<AdministratorControlsItemViewModel, ViewType> { viewModel ->
+        .Factory(fragment).create<AdministratorControlsItemViewModel, ViewType> { viewModel ->
           viewModel.isMultipane.set(isMultipane)
           when (viewModel) {
             is AdministratorControlsGeneralViewModel -> {

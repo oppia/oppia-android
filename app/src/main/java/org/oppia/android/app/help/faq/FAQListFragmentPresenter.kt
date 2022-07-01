@@ -49,7 +49,7 @@ class FAQListFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<FAQItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<FAQItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<FAQItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is FAQHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is FAQContentViewModel -> ViewType.VIEW_TYPE_CONTENT

@@ -889,9 +889,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController
   ) {
-    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
-      StateItemViewModel::viewType
-    )
+    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.Factory(fragment)
+      .create<StateItemViewModel, StateItemViewModel.ViewType> {
+        it.viewType
+      }
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1117,7 +1118,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
       return BindableAdapter.SingleTypeBuilder
-        .newBuilder<StringList>()
+        .Factory(fragment).create<StringList>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedAnswerListItemBinding.inflate(
@@ -1139,7 +1140,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
       return BindableAdapter.SingleTypeBuilder
-        .newBuilder<String>()
+        .Factory(fragment).create<String>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedHtmlAnswerItemBinding.inflate(

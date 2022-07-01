@@ -52,7 +52,7 @@ class LicenseListFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LicenseItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<LicenseItemViewModel>()
+      .Factory(fragment).create<LicenseItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LicenseItemBinding::inflate,
         setViewModel = LicenseItemBinding::setViewModel

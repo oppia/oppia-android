@@ -60,7 +60,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<DeveloperOptionsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is DeveloperOptionsModifyLessonProgressViewModel -> {
             viewModel.itemIndex.set(0)

@@ -95,7 +95,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<MarkChaptersCompletedItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<MarkChaptersCompletedItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<MarkChaptersCompletedItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY
           is ChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER

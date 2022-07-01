@@ -61,7 +61,7 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<NetworkTypeItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<NetworkTypeItemViewModel>()
+      .Factory(fragment).create<NetworkTypeItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ForceNetworkTypeNetworkItemViewBinding::inflate,
         setViewModel = this::bindNetworkItemView

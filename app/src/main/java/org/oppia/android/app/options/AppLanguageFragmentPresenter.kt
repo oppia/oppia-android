@@ -42,8 +42,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<LanguageItemViewModel>()
-      .setLifecycleOwner(fragment)
+      .Factory(fragment).create<LanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
         setViewModel = LanguageItemsBinding::setViewModel

@@ -105,7 +105,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicLessonsItemViewModel> {
     return BindableAdapter.MultiTypeBuilder
-      .newBuilder<TopicLessonsItemViewModel, ViewType> { viewModel ->
+      .Factory(fragment).create<TopicLessonsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY_ITEM
           is TopicLessonsTitleViewModel -> ViewType.VIEW_TYPE_TITLE_TEXT
@@ -208,7 +208,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<ChapterSummaryViewModel>()
+      .Factory(fragment).create<ChapterSummaryViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LessonsChapterViewBinding::inflate,
         setViewModel = LessonsChapterViewBinding::setViewModel

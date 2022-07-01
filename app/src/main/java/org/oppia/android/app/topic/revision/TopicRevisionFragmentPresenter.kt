@@ -71,7 +71,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicRevisionItemViewModel>()
+      .Factory(fragment).create<TopicRevisionItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
         setViewModel = TopicRevisionSummaryViewBinding::setViewModel

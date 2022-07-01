@@ -2,6 +2,7 @@ package org.oppia.android.app.home.promotedlist
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -32,27 +33,51 @@ class PromotedStoryListView @JvmOverloads constructor(
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
+  @Inject
+  lateinit var fragment: Fragment
+
+  lateinit var promotedDataList: List<PromotedStoryViewModel>
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
-    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
+    try {
+      super.onAttachedToWindow()
 
-    // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
-    // the item is completely visible in [HomeFragment] as soon as learner lifts the finger
-    // after scrolling.
-    val snapHelper = StartSnapHelper()
-    onFlingListener = null
-    snapHelper.attachToRecyclerView(this)
+      val viewComponentFactory =
+        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+
+      // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
+      // the item is completely visible in [HomeFragment] as soon as learner lifts the finger
+      // after scrolling.
+      val snapHelper = StartSnapHelper()
+      onFlingListener = null
+      snapHelper.attachToRecyclerView(this)
+
+      checkIfComponentsInitialized()
+    } catch (e: IllegalStateException) {
+      if (::oppiaLogger.isInitialized)
+        oppiaLogger.e(
+          "LessonThumbnailImageView",
+          "Throws exception on attach to window",
+          e
+        )
+    }
   }
 
-  /**
-   * Sets the list of promoted stories that this view shows to the learner.
-   *
-   * @param newDataList the new list of stories to present
-   */
-  fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
+  private fun checkIfComponentsInitialized() {
+    if (::fragment.isInitialized &&
+      ::oppiaLogger.isInitialized
+    ) {
+      bindDataToAdapter()
+    } else {
+      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "One of components not initialized")
+    }
+  }
+
+  private fun bindDataToAdapter() {
     // To reliably bind data only after the adapter is created, we manually set the data so we can first
     // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
     // way to check that the adapter is created.
@@ -61,15 +86,33 @@ class PromotedStoryListView @JvmOverloads constructor(
     if (adapter == null) {
       adapter = createAdapter()
     }
-    if (newDataList == null) {
-      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
+    if (::promotedDataList.isInitialized) {
+      (adapter as BindableAdapter<*>).setDataUnchecked(promotedDataList)
     } else {
-      (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
+      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new story list data")
+    }
+  }
+
+  /**
+   * Sets the list of promoted stories that this view shows to the learner.
+   *
+   * @param newDataList the new list of stories to present
+   */
+  fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
+    if (newDataList != null) {
+      promotedDataList = newDataList
+      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, promotedDataList.size.toString())
+    } else {
+      if (::oppiaLogger.isInitialized) {
+        oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "new story list data empty")
+      } else {
+        Log.e(PROMOTED_STORY_LIST_VIEW_TAG, "new story list data empty")
+      }
     }
   }
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
-    return BindableAdapter.SingleTypeBuilder.newBuilder<PromotedStoryViewModel>()
+    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<PromotedStoryViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.providePromotedStoryCardInflatedView(

@@ -92,7 +92,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StorySummaryViewModel> {
     return BindableAdapter.SingleTypeBuilder
-      .newBuilder<StorySummaryViewModel>()
+      .Factory(fragment).create<StorySummaryViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = MarkStoriesCompletedStorySummaryViewBinding::inflate,
         setViewModel = this::bindStorySummaryView
