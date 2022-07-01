@@ -102,6 +102,7 @@ filegroup(
 # keep sorted
 TEST_DEPS = [
     ":dagger",
+    ":test_resources",
     ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
