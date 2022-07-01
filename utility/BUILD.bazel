@@ -48,7 +48,7 @@ android_library(
     testonly = True,
     custom_package = "org.oppia.android.util",
     manifest = ":test_manifest",
-    resource_files = glob(["src/test/res/**/*.xml"]),
+    resource_files = glob(["src/test/res/values/*.xml"]),
     visibility = [
         ":utility_testing_visibility",
         "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
