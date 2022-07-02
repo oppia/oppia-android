@@ -133,6 +133,27 @@ class RegexPatternValidationCheckTest {
       " especially large test suites that can be trivially reduced."
   private val doNotUseClipboardManager =
     "Don't use Android's ClipboardManager directly. Instead, use ClipboardController."
+  private val doesNotHaveColorSuffixOrSnakeCasing =
+    "All color declarations in component_color.xml and color_palette.xml should end with _color" +
+      " suffix following snake_case naming convention."
+  private val hasColorKeywordOrNoSnakeCasing =
+    "All color declarations in color_defs.xml should be named using snake_case convention and" +
+      " not contain color keyword."
+  private val hasHexColorValue =
+    "Hex color declarations should only be in color_defs.xml and not in component_colors.xml" +
+      " or color_palette.xml"
+  private val doesNotHaveRawColorDeclaration =
+    "color_defs.xml should only have raw hex color declarations."
+  private val doesNotStartWithComponentColor =
+    "All colors in component_colors.xml must start with 'component_color_'."
+  private val doesNotStartWithColorPalette =
+    "All colors in color_palette.xml must start with 'color_palette_'."
+  private val doesNotStartWithColorDefs =
+    "All colors in color_defs.xml must start with 'color_def_'."
+  private val doesNotReferenceColorFromColorPalette =
+    "Only colors from color_palette.xml may be used in component_colors.xml."
+  private val doesNotReferenceColorFromColorDefs =
+    "Only colors from color_defs.xml may be used in color_palette.xml."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -1708,6 +1729,434 @@ class RegexPatternValidationCheckTest {
       $wikiReferenceNote
       """.trimIndent()
     )
+  }
+
+  @Test
+  fun testFileContent_colorPalette_doesNotHaveColorSuffixOrSnakeCasing_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
+      <color name="color_palette_darkBackgroundColor">@color/color_def_mid_grey_30</color>
+      <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
+      <color name="color_palette_text_input_background">@color/color_def_white</color>
+      <color name="color_palette_DarkText">@color/color_def_black_87</color>
+      <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+      <color name="color_palette_CONTAINER_BACKGROUND_COLOR">@color/color_def_white</color>
+      <color name="color_palette_toolbar">@color/color_def_oppia_green</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotHaveColorSuffixOrSnakeCasing
+        $stringFilePath:4: $doesNotHaveColorSuffixOrSnakeCasing
+        $stringFilePath:5: $doesNotHaveColorSuffixOrSnakeCasing
+        $stringFilePath:7: $doesNotHaveColorSuffixOrSnakeCasing
+        $stringFilePath:8: $doesNotHaveColorSuffixOrSnakeCasing
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_colorPalette_hasColorSuffixAndSnakeCasing_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_palette_toolbar_color">@color/color_def_oppia_green</color>
+        <color name="color_palette_status_bar_color">@color/color_def_dark_green</color>
+        <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_colorDefs_hasColorKeywordOrNoSnakeCasing_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      <color name="color_def_oppia_metallic_blue_color">#2B5F73</color>
+      <color name="color_def_oppia_light_black_color">#24282B</color>
+      <color name="color_def_oppiaDarkGrey">#4D4D4D</color>
+      <color name="color_def_oppia_pink">#FF938F</color>
+      <color name="color_def_oppia_grayish_black_color">#32363B</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $hasColorKeywordOrNoSnakeCasing
+        $stringFilePath:2: $hasColorKeywordOrNoSnakeCasing
+        $stringFilePath:3: $hasColorKeywordOrNoSnakeCasing
+        $stringFilePath:5: $hasColorKeywordOrNoSnakeCasing
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_colorDefs_doesNotHaveColorKeywordHasSnakeCasing_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_def_oppia_dark_grey">#4D4D4D</color>
+        <color name="color_def_oppia_pink">#FF938F</color>
+        <color name="color_def_oppia_grayish_black">#32363B</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_componentColors_hasHexColorValue_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="component_color_admin_controls_options_highlighted_background_color">@color/color_palette_highlighted_background_color</color>
+        <color name="component_color_admin_controls_sub_heading_color">#6B0086FB</color>
+        <color name="component_color_admin_controls_switch_description_color">#FFFFFF</color>
+        <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $hasHexColorValue
+        $stringFilePath:3: $hasHexColorValue
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_componentColors_doesNotHaveHexColorValue_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
+        <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
+        <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_colorDefs_doesNotHaveRawColorDeclaration_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+       <color name="color_def_oppia_metallic_blue">@color/color_name</color>
+       <color name="color_def_oppia_light_black">#24282B</color>
+       <color name="color_def_oppia_dark_grey">#4D4D4D</color>
+       <color name="color_def_oppia_pink">@color/another_color_name</color>
+       <color name="color_def_oppia_grayish_black">#32363B</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotHaveRawColorDeclaration
+        $stringFilePath:4: $doesNotHaveRawColorDeclaration
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_colorDefs_hasRawColorDeclaration_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_def_oppia_silver">#C4C4C4</color>
+        <color name="color_def_oppia_turquoise">#3bd1c4</color>
+        <color name="color_def_oppia_bangladesh_green">#03635B</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_componentColors_startsWithComponentColors_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+        <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+        <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+        <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_componentColors_doesNotStartWithComponentColors_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+        <color name="shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+        <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+        <color name="shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotStartWithComponentColor
+        $stringFilePath:2: $doesNotStartWithComponentColor
+        $stringFilePath:4: $doesNotStartWithComponentColor
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_colorPalette_startsWithColorPalette_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_palette_primary_color">@color/color_def_oppia_green</color>
+        <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
+        <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
+        <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_colorPalette_doesNotStartWithColorPalette_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="primary_color">@color/color_def_oppia_green</color>
+        <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
+        <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
+        <color name="primary_text_color">@color/color_def_accessible_grey</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotStartWithColorPalette
+        $stringFilePath:4: $doesNotStartWithColorPalette
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_colorDefs_startsWithColorDefs_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_def_oppia_green">#00645C</color>
+        <color name="color_def_dark_green">#003933</color>
+        <color name="color_def_oppia_light_green">#F0FFFF</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_colorDefs_doesNotStartWithColorDef_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_def_oppia_green">#00645C</color>
+        <color name="color_def_dark_green">#003933</color>
+        <color name="oppia_dark_blue">#2D4A9D</color>
+        <color name="color_def_oppia_light_green">#F0FFFF</color>
+        <color name="oppia_light_yellow">#FFFFF0</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_defs.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:3: $doesNotStartWithColorDefs
+        $stringFilePath:5: $doesNotStartWithColorDefs
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_componentColors_referencesColorFromColorPalette_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
+        <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
+        <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_componentColors_includesNonPaletteColorReferences_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
+        <color name="component_color_admin_auth_layout_background_color">@color/color_defs_background_color</color>
+        <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/component_colors.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotReferenceColorFromColorPalette
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_colorPalette_referencesColorFromColorDefs_fileContentIsCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_palette_text_input_background_color">@color/color_def_white</color>
+        <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
+        <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+        <color name="color_palette_container_background_color">@color/color_def_white</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_colorPalette_doesNotReferenceColorFromColorDefs_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
+        <color name="color_palette_text_input_background_color">@color/blue</color>
+        <color name="color_palette_dark_text_color">@color/component_color_black_87</color>
+        <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
+    val stringFilePath = "app/src/main/res/values/color_palette.xml"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:2: $doesNotReferenceColorFromColorDefs
+        $stringFilePath:3: $doesNotReferenceColorFromColorDefs
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   /** Runs the regex_pattern_validation_check. */
