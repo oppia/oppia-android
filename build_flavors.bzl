@@ -47,9 +47,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
         ],
         "version_code": OPPIA_DEV_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "dev_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -60,9 +61,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
         ],
         "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -72,9 +74,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
+        "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
     "alpha_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -85,9 +88,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
         "production_release": True,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
         ],
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
+        "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
 }
 
@@ -99,6 +103,7 @@ def _transform_android_manifest_impl(ctx):
     major_version = ctx.attr.major_version
     minor_version = ctx.attr.minor_version
     version_code = ctx.attr.version_code
+    application_relative_qualified_class = ctx.attr.application_relative_qualified_class
 
     # See corresponding transformation script for details on the passed arguments.
     arguments = [
@@ -109,6 +114,7 @@ def _transform_android_manifest_impl(ctx):
         "%s" % major_version,
         "%s" % minor_version,
         "%s" % version_code,
+        "%s" % application_relative_qualified_class,
         "origin/develop",  # The base branch for computing the version name.
     ]
 
@@ -144,6 +150,7 @@ _transform_android_manifest = rule(
         "major_version": attr.int(mandatory = True),
         "minor_version": attr.int(mandatory = True),
         "version_code": attr.int(mandatory = True),
+        "application_relative_qualified_class": attr.string(mandatory = True),
         "_transform_android_manifest_tool": attr.label(
             executable = True,
             cfg = "host",
@@ -160,7 +167,8 @@ def transform_android_manifest(
         build_flavor,
         major_version,
         minor_version,
-        version_code):
+        version_code,
+        application_relative_qualified_class):
     """
     Generates a new transformation of the specified AndroidManifest.xml.
 
@@ -177,6 +185,8 @@ def transform_android_manifest(
         major_version: int. The major version of the app.
         minor_version: int. The minor version of the app.
         version_code: int. The version code of this flavor of the app.
+        application_relative_qualified_class: String. The relatively qualified main application
+            class of the app for this build flavor.
     """
     _transform_android_manifest(
         name = name,
@@ -187,6 +197,7 @@ def transform_android_manifest(
         major_version = major_version,
         minor_version = minor_version,
         version_code = version_code,
+        application_relative_qualified_class = application_relative_qualified_class,
     )
 
 def define_oppia_aab_binary_flavor(flavor):
@@ -206,6 +217,7 @@ def define_oppia_aab_binary_flavor(flavor):
     """
     transform_android_manifest(
         name = "oppia_%s_transformed_manifest" % flavor,
+        application_relative_qualified_class = _FLAVOR_METADATA[flavor]["application_class"],
         input_file = _FLAVOR_METADATA[flavor]["manifest"],
         output_file = "AndroidManifest_transformed_%s.xml" % flavor,
         build_flavor = flavor,
