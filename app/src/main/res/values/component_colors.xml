@@ -160,4 +160,11 @@
   <color name="component_color_math_expression_parser_activity_radio_buttons_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_edit_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_hint_text_color">@color/color_palette_hint_text_color</color>
+  <!-- Audio Language Activity -->
+  <color name="component_color_audio_language_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_language_items_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_language_items_heading_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_reading_text_size_activity_background_color">@color/color_palette_dark_background_color</color>
+  <color name="component_color_reading_text_size_items_heading_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_app_language_activity_background_color">@color/color_palette_dark_background_color</color>
 </resources>
