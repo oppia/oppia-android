@@ -64,10 +64,10 @@
           <TextView
             android:id="@+id/concept_card_explanation_text"
             style="@style/Body"
-            android:textColor="@color/component_color_concept_card_fragment_text_color"
             android:layout_marginStart="@dimen/concept_card_explanation_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_explanation_text_margin_top"
-            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end" />
+            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end"
+            android:textColor="@color/component_color_concept_card_fragment_text_color" />
         </LinearLayout>
         <!-- TODO(#352): Show worked examples in Concept Card. -->
       </ScrollView>
