@@ -1,8 +1,6 @@
 package org.oppia.android.app.profile
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
@@ -12,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -166,36 +165,56 @@ class PinPasswordActivityPresenter @Inject constructor(
   private fun showAdminForgotPin() {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
+    val resetDataButtonText =
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.admin_forgot_pin_reset_app_data_button_text, appName
+      )
     alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
       .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_forgot_message, appName)
+        resourceHandler.getStringInLocaleWithWrapping(R.string.admin_forgot_pin_message, appName)
       )
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
-        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
-        try {
-          activity.startActivity(
-            Intent(
-              Intent.ACTION_VIEW,
-              Uri.parse("market://details?id=" + activity.packageName)
-            )
-          )
-        } catch (e: ActivityNotFoundException) {
-          activity.startActivity(
-            Intent(
-              Intent.ACTION_VIEW,
-              Uri.parse(
-                "https://play.google.com/store/apps/details?id=" + activity.packageName
-              )
-            )
-          )
-        }
+      .setPositiveButton(resetDataButtonText) { dialog, _ ->
+        // Show a confirmation dialog since this is a permanent action.
         dialog.dismiss()
+        showConfirmAppResetDialog()
       }.create()
+    alertDialog.setCanceledOnTouchOutside(false)
+    alertDialog.show()
+  }
+
+  private fun showConfirmAppResetDialog() {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setTitle(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.admin_confirm_app_wipe_title, appName
+        )
+      )
+      .setMessage(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.admin_confirm_app_wipe_message, appName
+        )
+      )
+      .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
+        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
+        dialog.dismiss()
+      }
+      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { dialog, _ ->
+        profileManagementController.deleteAllProfiles().toLiveData().observe(
+          activity,
+          {
+            // Regardless of the result of the operation, always restart the app.
+            activity.startActivity(Intent(activity, SplashActivity::class.java))
+            activity.finish()
+          }
+        )
+      }.create()
+    alertDialog.setCanceledOnTouchOutside(false)
     alertDialog.show()
   }
 
