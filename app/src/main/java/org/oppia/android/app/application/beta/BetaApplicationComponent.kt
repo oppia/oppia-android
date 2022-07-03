@@ -1,4 +1,4 @@
-package org.oppia.android.app.application.alpha
+package org.oppia.android.app.application.beta
 
 import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
@@ -60,7 +60,7 @@ import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
 
 /**
- * Root Dagger component for alpha versions of the application.
+ * Root Dagger component for beta versions of the application.
  *
  * All application-scoped modules should be included in this component.
  */
@@ -89,16 +89,16 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, AlphaBuildFlavorModule::class
+    HintsAndSolutionProdModule::class, BetaBuildFlavorModule::class
   ]
 )
-interface AlphaApplicationComponent : ApplicationComponent {
+interface BetaApplicationComponent : ApplicationComponent {
   /**
    * The [ApplicationComponent.Builder] for this component. Dagger will generate an implementation
    * of this builder for use.
    */
   @Component.Builder
   interface Builder : ApplicationComponent.Builder {
-    override fun build(): AlphaApplicationComponent
+    override fun build(): BetaApplicationComponent
   }
 }

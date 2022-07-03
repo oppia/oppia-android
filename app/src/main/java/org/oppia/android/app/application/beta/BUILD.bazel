@@ -1,16 +1,16 @@
 """
-This package contains the root application definitions for alpha builds of the app.
+This package contains the root application definitions for beta builds of the app.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "alpha_application",
+    name = "beta_application",
     srcs = [
-        "AlphaApplicationComponent.kt",
-        "AlphaBuildFlavorModule.kt",
-        "AlphaOppiaApplication.kt",
+        "BetaApplicationComponent.kt",
+        "BetaBuildFlavorModule.kt",
+        "BetaOppiaApplication.kt",
     ],
     visibility = ["//:oppia_binary_visibility"],
     deps = [

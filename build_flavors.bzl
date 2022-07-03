@@ -3,7 +3,7 @@ Macros & definitions corresponding to Oppia binary build flavors.
 """
 
 load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
@@ -13,6 +13,8 @@ AVAILABLE_FLAVORS = [
     "dev_kitkat",
     "alpha",
     "alpha_kitkat",
+    "beta",
+    "ga",
 ]
 
 # This file contains the list of classes that must be in the main dex list for the legacy multidex
@@ -92,6 +94,32 @@ _FLAVOR_METADATA = {
         ],
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
+    },
+    "beta": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 30,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+        ],
+        "version_code": OPPIA_BETA_VERSION_CODE,
+        "application_class": ".app.application.beta.BetaOppiaApplication",
+    },
+    "ga": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 30,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+        ],
+        "version_code": OPPIA_GA_VERSION_CODE,
+        "application_class": ".app.application.ga.GaOppiaApplication",
     },
 }
 

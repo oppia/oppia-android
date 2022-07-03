@@ -13,6 +13,7 @@ kt_android_library(
     name = "developer_application",
     srcs = [
         "DeveloperApplicationComponent.kt",
+        "DeveloperBuildFlavorModule.kt",
         "DeveloperOppiaApplication.kt",
     ],
     visibility = ["//:oppia_binary_visibility"],

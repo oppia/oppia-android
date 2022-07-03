@@ -90,7 +90,8 @@ import javax.inject.Singleton
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-    NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class, SyncStatusModule::class
+    NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
+    SyncStatusModule::class, DeveloperBuildFlavorModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

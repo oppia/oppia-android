@@ -23,7 +23,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/
 exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/deprecation/AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsFragment.kt"
