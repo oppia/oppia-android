@@ -79,6 +79,7 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility",
         "//utility:test_resources",
         "//utility/src/main/java/org/oppia/android/util/locale:impl",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
