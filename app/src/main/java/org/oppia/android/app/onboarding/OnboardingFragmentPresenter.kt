@@ -257,7 +257,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
     val targetList = ArrayList<SpotlightTarget>()
     targetList.add(onboardingButtonSpotlight)
-    spotlightFragment.spotlightTargetList = targetList
+    spotlightFragment.initialiseTargetList(targetList)
 
     activity.supportFragmentManager.beginTransaction()
       .add(R.id.onboarding_fragment_placeholder, spotlightFragment)

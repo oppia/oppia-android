@@ -14,13 +14,13 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.SpotlightStateDatabase
 import org.oppia.android.app.model.SpotlightViewState
 
-private const val SPOTLIGHT_STATE_DATA_PROVIDER_ID = "spotlight_state_data_provider_id"
 private const val CACHE_NAME = "spotlight_checkpoint_database"
 private const val RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
   "record_spotlight_checkpoint_provider_id"
 private const val RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
   "retrieve_spotlight_checkpoint_provider_id"
 
+/** Handles saving and retrieving spotlight view states */
 @Singleton
 class SpotlightStateController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
@@ -34,6 +34,16 @@ class SpotlightStateController @Inject constructor(
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<SpotlightStateDatabase>>()
 
+  /**
+   * Records SpotlightViewState of a Spotlight feature on a per profile basis
+   *
+   * @param profileId profileId of the current user
+   * @param feature the spotlight feature who's view state is to be recorded
+   * @param viewState SpotlightViewState of this spotlight feature
+   *
+   * @return AsyncResult
+   * @throws SpotlightFeatureUnrecognizedException
+  **/
   fun recordSpotlightCheckpoint(
     profileId: ProfileId,
     feature: Spotlight.FeatureCase,
@@ -54,7 +64,7 @@ class SpotlightStateController @Inject constructor(
   fun retrieveSpotlightViewState(
     profileId: ProfileId,
     feature: Spotlight.FeatureCase,
-  ): DataProvider<Any> {
+  ): DataProvider<SpotlightViewState> {
     return retrieveCacheStore(profileId)
       .transformAsync(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID

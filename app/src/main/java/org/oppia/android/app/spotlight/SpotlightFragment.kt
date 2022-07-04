@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
 import java.util.*
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
@@ -38,9 +40,9 @@ class SpotlightFragment @Inject constructor(
   val activity: AppCompatActivity,
   val spotlightStateController: SpotlightStateController
 ) : Fragment(), SpotlightNavigationListener {
-  var targetList = ArrayList<com.takusemba.spotlight.Target>()
+  private var targetList = ArrayList<com.takusemba.spotlight.Target>()
 
-  var spotlightTargetList = ArrayList<SpotlightTarget>()
+  private var spotlightTargetList = ArrayList<SpotlightTarget>()
 
   private lateinit var spotlight: Spotlight
   private val overlay = "overlay"
@@ -64,17 +66,36 @@ class SpotlightFragment @Inject constructor(
     isRTL = checkIsRTL()
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-
-    lifecycleScope.launch {
-      for (i in spotlightTargetList) {
-        checkSpotlightViewState(i)
-      }
-      startSpotlight()
-    }
-    super.onViewCreated(view, savedInstanceState)
+  fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>){
+    spotlightTargetList = spotlightTargets
   }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    Log.d("overlay" , "inside on view created")
+
+//    viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+//        for (i in spotlightTargetList) {
+//          lifecycleScope.launchWhenCreated {
+            checkSpotlightViewState(spotlightTargetList[0])
+//          }
+//        }
+
+//    }
+
+
+
+  }
+
+//  override fun onCreateView(
+//    inflater: LayoutInflater,
+//    container: ViewGroup?,
+//    savedInstanceState: Bundle?
+//  ): View? {
+//    val binding: OverlayOverLeftBinding = OverlayOverLeftBinding.inflate(inflater)
+//    return binding.root
+//  }
 
 
 
@@ -92,16 +113,21 @@ class SpotlightFragment @Inject constructor(
 
     featureViewStateLiveData.observe(
       viewLifecycleOwner,
-      object : Observer<AsyncResult<Any>> {
-        override fun onChanged(it: AsyncResult<Any>?) {
+      object : Observer<AsyncResult<SpotlightViewState>> {
+        override fun onChanged(it: AsyncResult<SpotlightViewState>?) {
           if (it is AsyncResult.Success) {
-            featureViewStateLiveData.removeObserver(this)
-            val viewState = (it.value as SpotlightViewState)
+
+            val viewState = (it.value)
             if (viewState == SpotlightViewState.SPOTLIGHT_SEEN) {
               return
             } else if (viewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED || viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
 
+              Log.d("overlay",viewState.toString())
+              Log.d("overlay", "adding target ")
               createTarget(spotlightTarget)
+              startSpotlight()
+
+              featureViewStateLiveData.removeObserver(this)
             }
           }
         }
@@ -126,14 +152,14 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
-          val profileId = ProfileId.newBuilder()
-            .setInternalId(123)
-            .build()
-          spotlightStateController.recordSpotlightCheckpoint(
-            profileId,
-            spotlightTarget.feature,
-            SpotlightViewState.SPOTLIGHT_SEEN
-          )
+//          val profileId = ProfileId.newBuilder()
+//            .setInternalId(123)
+//            .build()
+//          spotlightStateController.recordSpotlightCheckpoint(
+//            profileId,
+//            spotlightTarget.feature,
+//            SpotlightViewState.SPOTLIGHT_SEEN
+//          )
         }
       })
       .build()
@@ -391,10 +417,3 @@ class SpotlightFragment @Inject constructor(
   private val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 }
-
-data class SpotlightTarget(
-  val anchor: View,
-  val hint: String = "",
-  val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
-  val feature: org.oppia.android.app.model.Spotlight.FeatureCase
-)
