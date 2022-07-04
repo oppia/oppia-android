@@ -28,12 +28,12 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/threading/*.kt",
 ])
 
-android_library(
-    name = "resources",
-    custom_package = "org.oppia.android.util",
-    manifest = "src/main/AndroidManifest.xml",
-    resource_files = glob(["src/main/res/**/*.xml"]),
-)
+#android_library(
+#    name = "resources",
+#    custom_package = "org.oppia.android.util",
+#    manifest = "src/main/AndroidManifest.xml",
+#    resource_files = glob(["src/main/res/**/*.xml"]),
+#)
 
 # Visibility for migrated utility tests.
 package_group(
@@ -48,7 +48,7 @@ android_library(
     testonly = True,
     custom_package = "org.oppia.android.util",
     manifest = ":test_manifest",
-    resource_files = glob(["src/test/res/values/*.xml"]),
+    resource_files = glob(["src/test/res/**/*.xml"]),
     visibility = [
         ":utility_testing_visibility",
         "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
