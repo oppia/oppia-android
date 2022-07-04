@@ -468,6 +468,24 @@
   <dimen name="hints_and_solution_recycler_view_padding_top">4dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">112dp</dimen>
 
+  <!-- Hints summary  -->
+  <dimen name="hints_summary_constraint_layout_layout_margin_start">176dp</dimen>
+  <dimen name="hints_summary_constraint_layout_layout_margin_end">176dp</dimen>
+  <dimen name="hints_summary_constraint_layout_layout_margin_bottom">4dp</dimen>
+
+  <dimen name="hint_list_container_layout_margin_start">176dp</dimen>
+  <dimen name="hint_list_container_layout_margin_top">8dp</dimen>
+  <dimen name="hint_list_container_layout_margin_end">176dp</dimen>
+  <dimen name="hint_list_container_layout_margin_bottom">32dp</dimen>
+
+  <dimen name="hint_title_margin_top">44dp</dimen>
+  <dimen name="hint_title_padding_bottom">28dp</dimen>
+
+  <dimen name="reveal_hint_btn_margin_bottom">28dp</dimen>
+
+  <dimen name="expand_list_icon_margin_top">32dp</dimen>
+  <dimen name="expand_list_icon_margin_bottom">16dp</dimen>
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
