@@ -20,6 +20,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/application:abstract_application",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
+        "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/networking:prod_module",
     ],
