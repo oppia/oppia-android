@@ -1,61 +1,27 @@
 package org.oppia.android.app.testing
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
-import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject
 
 /** The presenter for [DragDropTestActivity] */
 class DragDropTestActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
 
-  var dataList = mutableListOf("Item 1", "Item 2", "Item 3", "Item 4")
-
   fun handleOnCreate() {
     activity.setContentView(R.layout.drag_drop_test_activity)
-    activity.findViewById<RecyclerView>(R.id.drag_drop_recycler_view).apply {
-      adapter = createBindableAdapter()
-      (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
+    if (getDragDropTestFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.drag_drop_test_fragment_placeholder,
+        DragDropTestFragment.newInstance()
+      ).commitNow()
     }
   }
 
-  private fun createBindableAdapter(): BindableAdapter<String> {
-    return BindableAdapter.SingleTypeBuilder
-      .Factory(Fragment()).create<String>()
-      .registerViewBinder(
-        inflateView = this::inflateTextViewForStringWithoutDataBinding,
-        bindView = this::bindTextViewForStringWithoutDataBinding
-      )
-      .build()
-  }
-
-  private fun bindTextViewForStringWithoutDataBinding(textView: TextView, data: String) {
-    textView.text = data
-  }
-
-  private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
-    val inflater = LayoutInflater.from(activity)
-    return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
-    ) as TextView
-  }
-
-  fun onItemDragged(
-    indexFrom: Int,
-    indexTo: Int,
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
-  ) {
-    val item = dataList[indexFrom]
-    dataList.removeAt(indexFrom)
-    dataList.add(indexTo, item)
-    adapter.notifyItemMoved(indexFrom, indexTo)
-  }
-
-  fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
-    (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
+  private fun getDragDropTestFragment(): DragDropTestFragment? {
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.drag_drop_test_fragment_placeholder
+      ) as DragDropTestFragment?
   }
 }
