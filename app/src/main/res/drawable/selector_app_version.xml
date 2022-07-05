@@ -4,7 +4,7 @@
     <layer-list>
       <item android:left="1dp" android:top="3dp">
         <shape>
-          <solid android:color="@color/component_color_app_version_activity_container_background_color" />
+          <solid android:color="@color/component_color_selector_app_version_solid_color" />
         </shape>
       </item>
     </layer-list>
@@ -18,7 +18,7 @@
       </item>
       <item android:bottom="1dp" android:right="0dp">
         <shape>
-          <solid android:color="@color/component_color_app_version_activity_container_background_color" />
+          <solid android:color="@color/component_color_selector_app_version_solid_color" />
         </shape>
       </item>
     </layer-list>
