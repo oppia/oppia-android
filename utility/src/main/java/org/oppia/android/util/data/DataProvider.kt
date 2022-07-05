@@ -23,6 +23,9 @@ abstract class DataProvider<T>(val context: Context) {
    * (ie, they should not perform logic corresponding to a particular subscription since this can be
    * highly error-prone when considering that subscribers may be bound to Android UI component
    * lifecycles).
+   *
+   * @param originNotificationId the originating ID that triggered a re-retrieval of data due to a
+   *     notification, or null if this is being called without notification
    */
-  abstract suspend fun retrieveData(): AsyncResult<T>
+  abstract suspend fun retrieveData(originNotificationId: Any?): AsyncResult<T>
 }

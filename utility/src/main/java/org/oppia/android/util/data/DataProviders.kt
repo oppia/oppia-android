@@ -49,9 +49,9 @@ class DataProviders @Inject constructor(
       return object : DataProvider<O>(context) {
         override fun getId(): Any = newId
 
-        override suspend fun retrieveData(): AsyncResult<O> {
+        override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
           return try {
-            this@transform.retrieveData().transform(function)
+            this@transform.retrieveData(originNotificationId).transform(function)
           } catch (e: Exception) {
             dataProviders.exceptionLogger.logException(e)
             AsyncResult.Failure(e)
@@ -73,8 +73,8 @@ class DataProviders @Inject constructor(
       return object : DataProvider<O>(context) {
         override fun getId(): Any = newId
 
-        override suspend fun retrieveData(): AsyncResult<O> {
-          return this@transformAsync.retrieveData().transformAsync(function)
+        override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
+          return this@transformAsync.retrieveData(originNotificationId).transformAsync(function)
         }
       }
     }
@@ -92,6 +92,61 @@ class DataProviders @Inject constructor(
       return NestedTransformedDataProvider.createNestedTransformedDataProvider(
         context, newId, this, function, getDataProviders().asyncDataSubscriptionManager
       )
+    }
+
+    // TODO: Add tests.
+    // TODO: turn into docs
+    // 3 cases:
+    // 1. notify outer -> full reset (follow (2))
+    // 2. notify base -> notify subs of outer & compute a new dynamic provider
+    // 3. notify dynamic -> notify subs of outer, but don't recompute base (just fetch it)
+    fun <I, O> DataProvider<I>.transformDynamic(
+      newId: Any,
+      function: (I) -> DataProvider<O>
+    ): DataProvider<O> {
+      val dataProviders = getDataProviders()
+      val baseId = getId()
+      dataProviders.asyncDataSubscriptionManager.associateIds(newId, baseId)
+      // TODO: make thread-safe
+      var currentProviderResult: AsyncResult<DataProvider<O>>? = null
+      return object : DataProvider<O>(context) {
+
+        override fun getId(): Any = newId
+
+        override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
+          return fetchLatestDynamicProvider(originNotificationId).transformAsync { dynProvider ->
+            // If there's a dynamic provider available, determine if it needs to be reset.
+            val dynamicProviderId = dynProvider.getId()
+            val maybeNewProviderResult = if (originNotificationId != dynamicProviderId) {
+              // If the notification originated from somewhere else, create a new provider.
+              dataProviders.asyncDataSubscriptionManager.dissociateIds(newId, dynamicProviderId)
+              createNewDynamicProvider(originNotificationId)
+            } else AsyncResult.Success(dynProvider)
+
+            return@transformAsync maybeNewProviderResult.transformAsync {
+              it.retrieveData(originNotificationId)
+            }
+          }
+        }
+
+        private suspend fun fetchLatestDynamicProvider(
+          originNotificationId: Any?
+        ): AsyncResult<DataProvider<O>> {
+          return currentProviderResult ?: createNewDynamicProvider(originNotificationId)
+        }
+
+        private suspend fun createNewDynamicProvider(
+          originNotificationId: Any?
+        ): AsyncResult<DataProvider<O>> {
+          val computedProviderResult = this@transformDynamic.retrieveData(originNotificationId)
+          return computedProviderResult.transform(function).transform {
+            // Make sure that the new provider, if available, is properly connected to the outer
+            // provider.
+            dataProviders.asyncDataSubscriptionManager.associateIds(newId, it.getId())
+            it
+          }.also { currentProviderResult = it }
+        }
+      }
     }
 
     /**
@@ -118,9 +173,11 @@ class DataProviders @Inject constructor(
           return newId
         }
 
-        override suspend fun retrieveData(): AsyncResult<O> {
+        override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
           return try {
-            this@combineWith.retrieveData().combineWith(dataProvider.retrieveData(), function)
+            this@combineWith.retrieveData(originNotificationId).combineWith(
+              dataProvider.retrieveData(originNotificationId), function
+            )
           } catch (e: Exception) {
             dataProviders.exceptionLogger.logException(e)
             AsyncResult.Failure(e)
@@ -146,9 +203,9 @@ class DataProviders @Inject constructor(
           return newId
         }
 
-        override suspend fun retrieveData(): AsyncResult<O> {
-          return this@combineWithAsync.retrieveData().combineWithAsync(
-            dataProvider.retrieveData(), function
+        override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
+          return this@combineWithAsync.retrieveData(originNotificationId).combineWithAsync(
+            dataProvider.retrieveData(originNotificationId), function
           )
         }
       }
@@ -189,7 +246,7 @@ class DataProviders @Inject constructor(
         return id
       }
 
-      override suspend fun retrieveData(): AsyncResult<T> {
+      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<T> {
         return try {
           AsyncResult.Success(loadFromMemory())
         } catch (e: Exception) {
@@ -213,7 +270,7 @@ class DataProviders @Inject constructor(
         return id
       }
 
-      override suspend fun retrieveData(): AsyncResult<T> {
+      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<T> {
         return loadFromMemoryAsync()
       }
     }
@@ -281,7 +338,7 @@ class DataProviders @Inject constructor(
     private val id: Any,
     private var baseId: Any,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-    private var retrieveTransformedData: suspend () -> AsyncResult<O>
+    private var retrieveTransformedData: suspend (Any?) -> AsyncResult<O>
   ) : DataProvider<O>(context) {
     init {
       initializeTransformer()
@@ -289,8 +346,8 @@ class DataProviders @Inject constructor(
 
     override fun getId(): Any = id
 
-    override suspend fun retrieveData(): AsyncResult<O> {
-      return retrieveTransformedData()
+    override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
+      return retrieveTransformedData(originNotificationId)
     }
 
     /**
@@ -306,7 +363,9 @@ class DataProviders @Inject constructor(
     ) {
       asyncDataSubscriptionManager.dissociateIds(id, baseId)
       baseId = dataProvider.getId()
-      retrieveTransformedData = { dataProvider.retrieveData().transformAsync(transform) }
+      retrieveTransformedData = { originNotificationId ->
+        dataProvider.retrieveData(originNotificationId).transformAsync(transform)
+      }
       initializeTransformer()
 
       // Notify subscribers that the base provider has changed.
@@ -328,8 +387,8 @@ class DataProviders @Inject constructor(
       ): NestedTransformedDataProvider<O> {
         return NestedTransformedDataProvider(
           context, id, baseDataProvider.getId(), asyncDataSubscriptionManager
-        ) {
-          baseDataProvider.retrieveData().transformAsync(transform)
+        ) { originNotificationId ->
+          baseDataProvider.retrieveData(originNotificationId).transformAsync(transform)
         }
       }
     }
@@ -365,7 +424,7 @@ class DataProviders @Inject constructor(
       // so that new observers can receive the most up-to-date value.
       if (runningJob.get() == null) {
         val job = CoroutineScope(dispatcher).launch {
-          handleDataProviderUpdate()
+          handleDataProviderUpdate(originatingId = null)
         }
         // Note that this can race against handleDataProviderUpdate() clearing the job, but in
         // either outcome the behavior should still be correct (eventual consistency).
@@ -400,7 +459,7 @@ class DataProviders @Inject constructor(
       }
     }
 
-    private suspend fun handleDataProviderUpdate() {
+    private suspend fun handleDataProviderUpdate(originatingId: Any?) {
       // This doesn't guarantee that retrieveData() is only called when the live data is active
       // (e.g. it can become inactive right after the value is posted & before it's dispatched), but
       // it does guarantee that it won't be called when the live data is currently inactive. This
@@ -408,19 +467,19 @@ class DataProviders @Inject constructor(
       // mechanism which in turn always calls setValue(), even if there are no active observers. See
       // the override of setValue() above for the adjusted semantics this class requires to ensure
       // its own cache remains up-to-date.
-      retrieveFromDataProvider()?.let {
+      retrieveFromDataProvider(originatingId)?.let {
         super.postValue(it)
         runningJob.set(null)
       }
     }
 
-    private suspend fun retrieveFromDataProvider(): AsyncResult<T>? {
+    private suspend fun retrieveFromDataProvider(originatingId: Any?): AsyncResult<T>? {
       return if (isActive.get()) {
         // Although it's possible for the live data to become inactive after this point, this
         // follows the expected contract of the data provider (it may have its data retrieved and
         // not delivered), and it guarantees eventual consistency since the class still caches the
         // results in case a new observer is added later.
-        dataProvider.retrieveData()
+        dataProvider.retrieveData(originatingId)
       } else null
     }
   }

@@ -21,12 +21,12 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.util.data.DataProviders.Companion.transformDynamic
 
 private const val SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID = "system_language_locale"
 private const val APP_LANGUAGE_DATA_PROVIDER_ID = "app_language"
@@ -78,8 +78,8 @@ class TranslationController @Inject constructor(
    * current user-selected system language.
    */
   fun getSystemLanguageLocale(): DataProvider<OppiaLocale.DisplayLocale> {
-    return getSystemLanguage().transformAsync(SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID) { language ->
-      localeController.retrieveAppStringDisplayLocale(language).retrieveData()
+    return getSystemLanguage().transformDynamic(SYSTEM_LANGUAGE_LOCALE_DATA_PROVIDER_ID) { lang ->
+      localeController.retrieveAppStringDisplayLocale(lang)
     }
   }
 
@@ -101,9 +101,9 @@ class TranslationController @Inject constructor(
    */
   fun getAppLanguageLocale(profileId: ProfileId): DataProvider<OppiaLocale.DisplayLocale> {
     val providerId = APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID
-    return getSystemLanguage().transformAsync(providerId) { systemLanguage ->
+    return getSystemLanguage().transformDynamic(providerId) { systemLanguage ->
       val language = computeAppLanguage(profileId, systemLanguage)
-      return@transformAsync localeController.retrieveAppStringDisplayLocale(language).retrieveData()
+      localeController.retrieveAppStringDisplayLocale(language)
     }
   }
 
@@ -147,10 +147,9 @@ class TranslationController @Inject constructor(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
     val providerId = WRITTEN_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
-    return getSystemLanguage().transformAsync(providerId) { systemLanguage ->
+    return getSystemLanguage().transformDynamic(providerId) { systemLanguage ->
       val language = computeWrittenTranslationContentLanguage(profileId, systemLanguage)
-      val writtenTranslationLocale = localeController.retrieveWrittenTranslationsLocale(language)
-      return@transformAsync writtenTranslationLocale.retrieveData()
+      localeController.retrieveWrittenTranslationsLocale(language)
     }
   }
 
@@ -198,10 +197,9 @@ class TranslationController @Inject constructor(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
     val providerId = AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
-    return getSystemLanguage().transformAsync(providerId) { systemLanguage ->
+    return getSystemLanguage().transformDynamic(providerId) { systemLanguage ->
       val language = computeAudioTranslationContentLanguage(profileId, systemLanguage)
-      val audioTranslationLocale = localeController.retrieveAudioTranslationsLocale(language)
-      return@transformAsync audioTranslationLocale.retrieveData()
+      localeController.retrieveAudioTranslationsLocale(language)
     }
   }
 
