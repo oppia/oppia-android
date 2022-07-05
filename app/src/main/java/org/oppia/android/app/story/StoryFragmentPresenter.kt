@@ -49,7 +49,8 @@ class StoryFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val multiTypeAdapterFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -135,8 +136,7 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<StoryItemViewModel, ViewType> { viewModel ->
+    return multiTypeAdapterFactory.create<StoryItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER

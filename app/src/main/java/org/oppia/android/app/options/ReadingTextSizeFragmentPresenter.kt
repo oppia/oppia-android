@@ -15,7 +15,8 @@ import javax.inject.Inject
 class ReadingTextSizeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel,
-  resourceHandler: AppLanguageResourceHandler
+  resourceHandler: AppLanguageResourceHandler,
+  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private var fontSize: String = resourceHandler.getStringInLocale(
     R.string.reading_text_size_medium
@@ -48,8 +49,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TextSizeItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .Factory(fragment).create<TextSizeItemViewModel>()
+    return singleTypeBuilderFactory.create<TextSizeItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TextSizeItemsBinding::inflate,
         setViewModel = TextSizeItemsBinding::setViewModel

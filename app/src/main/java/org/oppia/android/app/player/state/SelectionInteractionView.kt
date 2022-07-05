@@ -48,6 +48,9 @@ class SelectionInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var fragment: Fragment
 
+  @Inject
+  lateinit var singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+
   private lateinit var entityId: String
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -86,8 +89,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
     return when (selectionItemInputType) {
       SelectionItemInputType.CHECKBOXES ->
-        BindableAdapter.SingleTypeBuilder
-          .Factory(fragment).create<SelectionInteractionContentViewModel>()
+        singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
               bindingInterface.provideSelectionInteractionViewInflatedView(

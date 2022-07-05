@@ -35,6 +35,9 @@ class PromotedStoryListView @JvmOverloads constructor(
   @Inject
   lateinit var fragment: Fragment
 
+  @Inject
+  lateinit var singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
@@ -72,7 +75,7 @@ class PromotedStoryListView @JvmOverloads constructor(
   }
 
   private fun createAdapter(): BindableAdapter<PromotedStoryViewModel> {
-    return BindableAdapter.SingleTypeBuilder.Factory(fragment).create<PromotedStoryViewModel>()
+    return singleTypeBuilderFactory.create<PromotedStoryViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.providePromotedStoryCardInflatedView(

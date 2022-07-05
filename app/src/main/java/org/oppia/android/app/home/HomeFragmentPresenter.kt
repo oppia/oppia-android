@@ -41,7 +41,8 @@ class HomeFragmentPresenter @Inject constructor(
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val dateTimeUtil: DateTimeUtil
+  private val dateTimeUtil: DateTimeUtil,
+  private val multiTypeAdapterFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private val routeToTopicListener = activity as RouteToTopicListener
   private lateinit var binding: HomeFragmentBinding
@@ -93,8 +94,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<HomeItemViewModel, ViewType> { viewModel ->
+    return multiTypeAdapterFactory.create<HomeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
           is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST

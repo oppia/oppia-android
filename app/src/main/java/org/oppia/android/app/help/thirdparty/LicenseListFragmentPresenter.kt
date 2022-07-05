@@ -18,7 +18,8 @@ import javax.inject.Inject
 class LicenseListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: LicenseListFragmentBinding
 
@@ -51,8 +52,7 @@ class LicenseListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LicenseItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .Factory(fragment).create<LicenseItemViewModel>()
+    return singleTypeBuilderFactory.create<LicenseItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LicenseItemBinding::inflate,
         setViewModel = LicenseItemBinding::setViewModel

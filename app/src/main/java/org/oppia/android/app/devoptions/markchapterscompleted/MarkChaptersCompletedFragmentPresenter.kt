@@ -23,7 +23,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<MarkChaptersCompletedViewModel>,
-  private val modifyLessonProgressController: ModifyLessonProgressController
+  private val modifyLessonProgressController: ModifyLessonProgressController,
+  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) : ChapterSelector {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -94,8 +95,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<MarkChaptersCompletedItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<MarkChaptersCompletedItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<MarkChaptersCompletedItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY
           is ChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER

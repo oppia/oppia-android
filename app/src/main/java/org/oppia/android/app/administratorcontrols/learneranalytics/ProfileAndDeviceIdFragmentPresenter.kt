@@ -16,7 +16,8 @@ import javax.inject.Inject
 /** Presenter for arranging [ProfileAndDeviceIdFragment]'s UI. */
 class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val profileListViewModelFactory: ProfileListViewModel.Factory
+  private val profileListViewModelFactory: ProfileListViewModel.Factory,
+  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: ProfileAndDeviceIdFragmentBinding
 
@@ -38,8 +39,7 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileListItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<ProfileListItemViewModel, ProfileListItemViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<ProfileListItemViewModel, ProfileListItemViewType> { viewModel ->
         when (viewModel) {
           is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
           is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID

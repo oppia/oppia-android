@@ -27,7 +27,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
+  private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>,
+  private val multiTypeAdapterFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) : SubtopicSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -73,8 +74,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<TopicPracticeItemViewModel, ViewType> { viewModel ->
+    return multiTypeAdapterFactory.create<TopicPracticeItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL

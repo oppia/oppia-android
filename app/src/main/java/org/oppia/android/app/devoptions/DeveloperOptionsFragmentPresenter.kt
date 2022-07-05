@@ -24,7 +24,9 @@ import javax.inject.Inject
 @FragmentScope
 class DeveloperOptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
+
 ) {
 
   private lateinit var binding: DeveloperOptionsFragmentBinding
@@ -59,8 +61,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<DeveloperOptionsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is DeveloperOptionsModifyLessonProgressViewModel -> {
             viewModel.itemIndex.set(0)

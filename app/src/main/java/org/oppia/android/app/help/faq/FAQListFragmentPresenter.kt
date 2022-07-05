@@ -22,7 +22,8 @@ import javax.inject.Inject
 class FAQListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<FAQListViewModel>
+  private val viewModelProvider: ViewModelProvider<FAQListViewModel>,
+  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: FaqListFragmentBinding
 
@@ -48,8 +49,7 @@ class FAQListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<FAQItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<FAQItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<FAQItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is FAQHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is FAQContentViewModel -> ViewType.VIEW_TYPE_CONTENT

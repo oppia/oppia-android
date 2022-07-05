@@ -34,7 +34,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
-  private val explorationCheckpointController: ExplorationCheckpointController
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val multiTypeAdapterFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -104,8 +105,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicLessonsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<TopicLessonsItemViewModel, ViewType> { viewModel ->
+    return multiTypeAdapterFactory.create<TopicLessonsItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY_ITEM
           is TopicLessonsTitleViewModel -> ViewType.VIEW_TYPE_TITLE_TEXT

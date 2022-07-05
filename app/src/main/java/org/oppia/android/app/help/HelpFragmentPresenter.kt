@@ -18,7 +18,8 @@ import javax.inject.Inject
 class HelpFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<HelpListViewModel>
+  private val viewModelProvider: ViewModelProvider<HelpListViewModel>,
+  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: HelpFragmentBinding
 
@@ -48,8 +49,7 @@ class HelpFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HelpItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .Factory(fragment).create<HelpItemViewModel>()
+    return singleTypeBuilderFactory.create<HelpItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = HelpItemBinding::inflate,
         setViewModel = HelpItemBinding::setViewModel

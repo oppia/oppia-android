@@ -12,7 +12,8 @@ import javax.inject.Inject
 /** The presenter for [AudioLanguageFragment]. */
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val languageSelectionViewModel: LanguageSelectionViewModel
+  private val languageSelectionViewModel: LanguageSelectionViewModel,
+  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var prefSummaryValue: String
   fun handleOnCreateView(
@@ -41,8 +42,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .Factory(fragment).create<LanguageItemViewModel>()
+    return singleTypeBuilderFactory.create<LanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LanguageItemsBinding::inflate,
         setViewModel = LanguageItemsBinding::setViewModel

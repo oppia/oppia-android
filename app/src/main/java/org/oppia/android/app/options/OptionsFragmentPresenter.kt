@@ -46,7 +46,8 @@ class OptionsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -94,8 +95,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(
     isMultipane: Boolean
   ): BindableAdapter<OptionsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<OptionsItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<OptionsItemViewModel, ViewType> { viewModel ->
         viewModel.isMultipane.set(isMultipane)
         when (viewModel) {
           is OptionsReadingTextSizeViewModel -> {

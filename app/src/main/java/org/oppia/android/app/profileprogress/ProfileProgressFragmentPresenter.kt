@@ -26,6 +26,9 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   @Inject
   lateinit var viewModel: ProfileProgressViewModel
 
+  @Inject
+  lateinit var multiTypeAdapterBuilder:BindableAdapter.MultiTypeBuilder.Factory
+
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -70,8 +73,7 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileProgressItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .Factory(fragment).create<ProfileProgressItemViewModel, ViewType> { viewModel ->
+    return multiTypeAdapterBuilder.create<ProfileProgressItemViewModel, ViewType> { viewModel ->
         when (viewModel) {
           is ProfileProgressHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
           is RecentlyPlayedStorySummaryViewModel -> ViewType.VIEW_TYPE_RECENTLY_PLAYED_STORY
