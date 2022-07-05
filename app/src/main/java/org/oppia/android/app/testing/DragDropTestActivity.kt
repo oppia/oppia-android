@@ -1,13 +1,18 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
+import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.recyclerview.OnDragEndedListener
+import org.oppia.android.app.recyclerview.OnItemDragListener
 import javax.inject.Inject
 
 /** Test Activity used for testing [DragAndDropItemFacilitator] functionality */
 class DragDropTestActivity :
-  InjectableAppCompatActivity() {
+  InjectableAppCompatActivity(),
+  OnItemDragListener,
+  OnDragEndedListener {
 
   @Inject
   lateinit var dragDropTestActivityPresenter: DragDropTestActivityPresenter
@@ -16,5 +21,17 @@ class DragDropTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     dragDropTestActivityPresenter.handleOnCreate()
+  }
+
+  override fun onItemDragged(
+    indexFrom: Int,
+    indexTo: Int,
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+  ) {
+    dragDropTestActivityPresenter.onItemDragged(indexFrom, indexTo, adapter)
+  }
+
+  override fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    dragDropTestActivityPresenter.onDragEnded(adapter)
   }
 }
