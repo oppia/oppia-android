@@ -46,9 +46,10 @@
   <color name="color_palette_multiple_choice_selected_text_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_forgot_pin_color">@color/color_def_oppia_green</color>
   <color name="color_palette_show_text_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_error_text_color">@color/color_def_error_text_color</color>
+  <color name="color_palette_error_text_color">@color/color_def_error_text</color>
   <color name="color_palette_show_eye_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_inactive_border_color">@color/color_def_dark_grey</color>
   <color name="color_palette_profile_view_designation_color">@color/color_def_accessible_light_grey</color>
+  <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
 </resources>

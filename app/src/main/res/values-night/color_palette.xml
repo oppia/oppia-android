@@ -22,8 +22,9 @@
   <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
   <color name="color_palette_highlighted_background_color">@color/color_def_highlight_blue</color>
   <color name="color_palette_light_description_text_color">@color/color_def_white</color>
-  <color name="color_palette_secondary_background_color">@color/color_def_oppia_light_black</color>
+  <color name="color_palette_primary_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_hint_text_color">@color/color_def_accessible_light_grey</color>
+  <color name="color_palette_secondary_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_primary_container_background_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_icon_background_color">@color/color_def_white</color>
   <color name="color_palette_button_border_color">@color/color_def_bright_turquoise</color>
@@ -48,6 +49,7 @@
   <color name="color_palette_error_text_color">@color/color_def_oppia_pink</color>
   <color name="color_palette_show_eye_icon_color">@color/color_def_forest_green</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_forest_green</color>
+  <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
   <color name="color_palette_inactive_border_color">@color/color_def_bright_turquoise</color>
   <color name="color_palette_profile_view_designation_color">@color/color_def_oppia_turquoise</color>
 </resources>

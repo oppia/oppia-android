@@ -58,6 +58,7 @@
   <color name="color_def_chooser_grey">#999999</color>
   <color name="color_def_green">#02655c</color>
   <color name="color_def_error_text_color">#923026</color>
+  <color name="color_def_black_grey">#33999999</color>
   <color name="color_def_platinum">#E5E5E5</color>
   <color name="color_def_light_grey_2">#666666</color>
   <color name="color_def_dark_grey">#33999999</color>
