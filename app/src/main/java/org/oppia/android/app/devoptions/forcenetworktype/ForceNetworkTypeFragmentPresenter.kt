@@ -22,7 +22,7 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val networkConnectionUtil: Optional<NetworkConnectionDebugUtil>,
   private val viewModelProvider: ViewModelProvider<ForceNetworkTypeViewModel>,
-  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: ForceNetworkTypeFragmentBinding

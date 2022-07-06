@@ -17,7 +17,7 @@ import javax.inject.Inject
 class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileListViewModelFactory: ProfileListViewModel.Factory,
-  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: ProfileAndDeviceIdFragmentBinding
 
@@ -39,14 +39,15 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileListItemViewModel> {
-    return multiTypeBuilderFactory.create<ProfileListItemViewModel, ProfileListItemViewType> { viewModel ->
-        when (viewModel) {
-          is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
-          is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
-          is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
-          else -> error("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<ProfileListItemViewModel,
+      ProfileListItemViewType> { viewModel ->
+      when (viewModel) {
+        is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
+        is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
+        is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
+        else -> error("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ProfileListItemViewType.DEVICE_ID,
         inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,

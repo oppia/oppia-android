@@ -50,7 +50,7 @@ class StoryFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val multiTypeAdapterFactory:BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeAdapterFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -137,12 +137,12 @@ class StoryFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
     return multiTypeAdapterFactory.create<StoryItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+      when (viewModel) {
+        is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = StoryHeaderViewBinding::inflate,

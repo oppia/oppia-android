@@ -19,7 +19,7 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<ViewEventLogsViewModel>,
-  private val singleTypeAdapterFactory:BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: ViewEventLogsFragmentBinding

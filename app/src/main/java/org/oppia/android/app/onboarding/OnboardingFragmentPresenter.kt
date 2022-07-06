@@ -27,7 +27,7 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) : OnboardingNavigationListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
@@ -97,12 +97,12 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun createViewPagerAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
     return multiTypeBuilderFactory.create<OnboardingViewPagerViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is OnboardingSlideViewModel -> ViewType.ONBOARDING_MIDDLE_SLIDE
-          is OnboardingSlideFinalViewModel -> ViewType.ONBOARDING_FINAL_SLIDE
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+      when (viewModel) {
+        is OnboardingSlideViewModel -> ViewType.ONBOARDING_MIDDLE_SLIDE
+        is OnboardingSlideFinalViewModel -> ViewType.ONBOARDING_FINAL_SLIDE
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.ONBOARDING_MIDDLE_SLIDE,
         inflateDataBinding = OnboardingSlideBinding::inflate,

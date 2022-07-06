@@ -18,7 +18,7 @@ class OngoingTopicListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<OngoingTopicListViewModel>,
-  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: OngoingTopicListFragmentBinding

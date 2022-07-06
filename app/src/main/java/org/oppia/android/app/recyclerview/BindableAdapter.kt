@@ -1,6 +1,5 @@
 package org.oppia.android.app.recyclerview
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

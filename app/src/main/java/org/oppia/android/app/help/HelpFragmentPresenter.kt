@@ -19,7 +19,7 @@ class HelpFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<HelpListViewModel>,
-  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: HelpFragmentBinding
 

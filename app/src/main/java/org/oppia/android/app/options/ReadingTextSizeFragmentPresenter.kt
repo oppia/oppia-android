@@ -16,7 +16,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel,
   resourceHandler: AppLanguageResourceHandler,
-  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private var fontSize: String = resourceHandler.getStringInLocale(
     R.string.reading_text_size_medium

@@ -36,7 +36,7 @@ class PromotedStoryListView @JvmOverloads constructor(
   lateinit var fragment: Fragment
 
   @Inject
-  lateinit var singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

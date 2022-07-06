@@ -36,7 +36,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   lateinit var fragment: Fragment
 
   @Inject
-  lateinit var singleTypeAdapterFactory:BindableAdapter.SingleTypeBuilder.Factory
+  lateinit var singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()

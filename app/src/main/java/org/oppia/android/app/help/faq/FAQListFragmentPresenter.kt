@@ -23,7 +23,7 @@ class FAQListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<FAQListViewModel>,
-  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: FaqListFragmentBinding
 
@@ -50,12 +50,12 @@ class FAQListFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<FAQItemViewModel> {
     return multiTypeBuilderFactory.create<FAQItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is FAQHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is FAQContentViewModel -> ViewType.VIEW_TYPE_CONTENT
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+      when (viewModel) {
+        is FAQHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is FAQContentViewModel -> ViewType.VIEW_TYPE_CONTENT
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = FaqItemHeaderBinding::inflate,

@@ -25,7 +25,7 @@ import javax.inject.Inject
 class DeveloperOptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val multiTypeBuilderFactory:BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 
 ) {
 
@@ -62,26 +62,26 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
 
   private fun createRecyclerViewAdapter(): BindableAdapter<DeveloperOptionsItemViewModel> {
     return multiTypeBuilderFactory.create<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is DeveloperOptionsModifyLessonProgressViewModel -> {
-            viewModel.itemIndex.set(0)
-            ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
-          }
-          is DeveloperOptionsViewLogsViewModel -> {
-            viewModel.itemIndex.set(1)
-            ViewType.VIEW_TYPE_VIEW_LOGS
-          }
-          is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
-            viewModel.itemIndex.set(2)
-            ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
-          }
-          is DeveloperOptionsTestParsersViewModel -> {
-            viewModel.itemIndex.set(3)
-            ViewType.VIEW_TYPE_TEST_PARSERS
-          }
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+      when (viewModel) {
+        is DeveloperOptionsModifyLessonProgressViewModel -> {
+          viewModel.itemIndex.set(0)
+          ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
         }
+        is DeveloperOptionsViewLogsViewModel -> {
+          viewModel.itemIndex.set(1)
+          ViewType.VIEW_TYPE_VIEW_LOGS
+        }
+        is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
+          viewModel.itemIndex.set(2)
+          ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
+        }
+        is DeveloperOptionsTestParsersViewModel -> {
+          viewModel.itemIndex.set(3)
+          ViewType.VIEW_TYPE_TEST_PARSERS
+        }
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS,
         inflateDataBinding = DeveloperOptionsModifyLessonProgressViewBinding::inflate,

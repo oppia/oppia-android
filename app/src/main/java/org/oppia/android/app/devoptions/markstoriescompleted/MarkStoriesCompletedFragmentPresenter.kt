@@ -22,7 +22,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<MarkStoriesCompletedViewModel>,
   private val modifyLessonProgressController: ModifyLessonProgressController,
-  private val singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : StorySelector {
   private lateinit var binding: MarkStoriesCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager

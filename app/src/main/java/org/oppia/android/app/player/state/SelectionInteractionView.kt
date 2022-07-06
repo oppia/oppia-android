@@ -49,7 +49,7 @@ class SelectionInteractionView @JvmOverloads constructor(
   lateinit var fragment: Fragment
 
   @Inject
-  lateinit var singleTypeBuilderFactory:BindableAdapter.SingleTypeBuilder.Factory
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var entityId: String
   private lateinit var writtenTranslationContext: WrittenTranslationContext

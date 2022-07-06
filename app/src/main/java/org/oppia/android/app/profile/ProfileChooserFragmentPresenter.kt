@@ -66,7 +66,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ProfileChooserViewModel>,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
-  private val multiTypeAdapterBuilder:BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeAdapterBuilder: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -149,9 +149,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileChooserUiModel> {
-    return multiTypeAdapterBuilder.create<ProfileChooserUiModel, ProfileChooserUiModel.ModelTypeCase>(
-        ProfileChooserUiModel::getModelTypeCase
-      )
+    return multiTypeAdapterBuilder.create<ProfileChooserUiModel,
+      ProfileChooserUiModel.ModelTypeCase>(
+      ProfileChooserUiModel::getModelTypeCase
+    )
       .registerViewDataBinderWithSameModelType(
         viewType = ProfileChooserUiModel.ModelTypeCase.PROFILE,
         inflateDataBinding = ProfileChooserProfileViewBinding::inflate,

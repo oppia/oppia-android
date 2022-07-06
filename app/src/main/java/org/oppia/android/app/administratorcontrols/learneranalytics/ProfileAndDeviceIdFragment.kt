@@ -18,7 +18,6 @@ class ProfileAndDeviceIdFragment : InjectableFragment() {
   @Inject
   lateinit var profileAndDeviceIdFragmentPresenter: ProfileAndDeviceIdFragmentPresenter
 
-
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
