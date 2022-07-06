@@ -748,7 +748,4 @@
 
   <!-- ProfileListFragment -->
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">40dp</dimen>
-
-  <!-- TopicInfoFragment -->
-  <dimen name="topic_info_fragment_topic_name_size">24sp</dimen>
 </resources>

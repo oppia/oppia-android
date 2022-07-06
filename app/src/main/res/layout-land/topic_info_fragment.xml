@@ -35,7 +35,7 @@
         android:fontFamily="sans-serif"
         android:text="@{viewModel.topic.name}"
         android:textColor="@color/oppia_primary_text"
-        android:textSize="@dimen/topic_info_fragment_topic_name_size"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
