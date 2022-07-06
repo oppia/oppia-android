@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -340,6 +341,33 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   @Test
+  fun testMarkTopicsCompletedFragment_unSelectAllTopics_unSelectsAllTopics() {
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
+      scrollToPosition(position = 0)
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 2)
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
+      scrollToPosition(position = 3)
+      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
+      onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
+      scrollToPosition(position = 0)
+      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 0)
+      scrollToPosition(position = 1)
+      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 2)
+      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 2)
+      scrollToPosition(position = 3)
+      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 3)
+    }
+  }
+
+  @Test
   fun testMarkTopicsCompletedFragment_selectAllTopics_configChange_allCheckBoxIsChecked() {
     launch<MarkTopicsCompletedTestActivity>(
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
@@ -503,6 +531,16 @@ class MarkTopicsCompletedFragmentTest {
         targetViewId = R.id.mark_topics_completed_topic_check_box
       )
     ).check(matches(isChecked()))
+  }
+
+  private fun verifyItemUnCheckedOnTopicSummaryListItem(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_topics_completed_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_topics_completed_topic_check_box
+      )
+    ).check(matches(isNotChecked()))
   }
 
   private fun performItemCheckOnTopicSummaryListItem(itemPosition: Int) {

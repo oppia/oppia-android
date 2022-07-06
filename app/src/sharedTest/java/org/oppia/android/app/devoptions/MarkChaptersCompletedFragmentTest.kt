@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -419,6 +420,58 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
       scrollToPosition(position = 14)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedFragment_unSelectAll_unSelectsAllChapters() {
+    launch<MarkChaptersCompletedTestActivity>(
+      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
+      scrollToPosition(position = 2)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
+      scrollToPosition(position = 3)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
+      scrollToPosition(position = 5)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
+      scrollToPosition(position = 7)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
+      scrollToPosition(position = 8)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
+      scrollToPosition(position = 10)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+      scrollToPosition(position = 11)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
+      scrollToPosition(position = 13)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
+      scrollToPosition(position = 14)
+      verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      scrollToPosition(position = 1)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
+      scrollToPosition(position = 2)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
+      scrollToPosition(position = 3)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
+      scrollToPosition(position = 5)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
+      scrollToPosition(position = 7)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
+      scrollToPosition(position = 8)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
+      scrollToPosition(position = 10)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+      scrollToPosition(position = 11)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
+      scrollToPosition(position = 13)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
+      scrollToPosition(position = 14)
+      verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      println("asserts completed")
     }
   }
 
@@ -866,6 +919,16 @@ class MarkChaptersCompletedFragmentTest {
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
     ).check(matches(isChecked()))
+  }
+
+  private fun verifyItemUnCheckedOnRecyclerViewItemAtPosition(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_chapters_completed_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+      )
+    ).check(matches(isNotChecked()))
   }
 
   private fun markFractionsFirstChapterCompleted() {

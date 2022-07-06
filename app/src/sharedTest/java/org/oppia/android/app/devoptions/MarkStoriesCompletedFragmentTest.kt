@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -260,6 +261,37 @@ class MarkStoriesCompletedFragmentTest {
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
       scrollToPosition(position = 4)
       verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
+    }
+  }
+
+  @Test
+  fun testMarkStoriesCompletedFragment_unSelectAll_unSelectsAllStories() {
+    launch<MarkStoriesCompletedTestActivity>(
+      createMarkStoriesCompletedTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      scrollToPosition(position = 0)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
+      scrollToPosition(position = 1)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 2)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
+      scrollToPosition(position = 3)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
+      scrollToPosition(position = 4)
+      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
+      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      scrollToPosition(position = 0)
+      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 0)
+      scrollToPosition(position = 1)
+      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 1)
+      scrollToPosition(position = 2)
+      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 2)
+      scrollToPosition(position = 3)
+      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 3)
+      scrollToPosition(position = 4)
+      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 4)
     }
   }
 
@@ -533,6 +565,16 @@ class MarkStoriesCompletedFragmentTest {
         targetViewId = R.id.mark_stories_completed_story_check_box
       )
     ).check(matches(isChecked()))
+  }
+
+  private fun verifyItemUnCheckedOnStorySummaryListItem(itemPosition: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_stories_completed_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_stories_completed_story_check_box
+      )
+    ).check(matches(isNotChecked()))
   }
 
   private fun performItemCheckOnStorySummaryListItem(itemPosition: Int) {
