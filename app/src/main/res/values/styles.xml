@@ -366,6 +366,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:background">@drawable/edit_text_background</item>
+    <item name="android:textCursorDrawable">@drawable/color_cursor</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:imeOptions">actionDone</item>
     <item name="android:longClickable">false</item>
@@ -475,9 +476,4 @@
     <item name="cornerSize">50%</item>
     <item name="cornerFamily">rounded</item>
   </style>
-
-  <style name="EditText" parent="@android:style/Widget.Holo.Light.EditText">
-    <item name="android:textCursorDrawable">@drawable/color_cursor</item>
-  </style>
-
 </resources>
