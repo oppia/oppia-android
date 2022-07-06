@@ -27,9 +27,9 @@
   <color name="component_color_shared_submit_text_inactive_color">@color/color_palette_submit_text_inactive_color</color>
   <color name="component_color_shared_submit_text_active_color">@color/color_palette_submit_text_active_color</color>
   <color name="component_color_shared_previous_next_state_image_view_background_color">@color/color_palette_previous_next_state_image_view_background_color</color>
-  <color name="component_color_shared_question_player_progress_bar_gradient_start_color">@color/color_palette_progress_bar_gradient_start</color>
-  <color name="component_color_shared_question_player_progress_bar_gradient_center_color">@color/color_palette_progress_bar_gradient_center</color>
-  <color name="component_color_shared_question_player_progress_bar_gradient_end_color">@color/color_palette_progress_bar_gradient_end</color>
+  <color name="component_color_shared_question_player_progress_bar_gradient_start_color">@color/color_palette_progress_bar_gradient_start_color</color>
+  <color name="component_color_shared_question_player_progress_bar_gradient_center_color">@color/color_palette_progress_bar_gradient_center_color</color>
+  <color name="component_color_shared_question_player_progress_bar_gradient_end_color">@color/color_palette_progress_bar_gradient_end_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
