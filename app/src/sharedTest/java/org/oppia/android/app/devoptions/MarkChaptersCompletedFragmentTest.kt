@@ -428,7 +428,7 @@ class MarkChaptersCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkChaptersCompletedFragment_unSelectAll_unSelectsAllChapters() {
+  fun testMarkChaptersCompletedFragment_deselectAllChapters_deselectsAllChapters() {
     launch<MarkChaptersCompletedTestActivity>(
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {

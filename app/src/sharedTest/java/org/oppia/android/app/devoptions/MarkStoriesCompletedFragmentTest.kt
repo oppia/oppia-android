@@ -269,7 +269,7 @@ class MarkStoriesCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkStoriesCompletedFragment_unSelectAll_unSelectsAllStories() {
+  fun testMarkStoriesCompletedFragment_deselectAllStories_deselectsAllStories() {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use {

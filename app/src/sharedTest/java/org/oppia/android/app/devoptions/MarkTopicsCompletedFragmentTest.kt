@@ -341,7 +341,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   @Test
-  fun testMarkTopicsCompletedFragment_unSelectAllTopics_unSelectsAllTopics() {
+  fun testMarkTopicsCompletedFragment_deselectAllTopics_deselectsAllTopics() {
     launch<MarkTopicsCompletedTestActivity>(
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
