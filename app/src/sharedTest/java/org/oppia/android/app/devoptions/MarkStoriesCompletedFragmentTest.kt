@@ -249,19 +249,23 @@ class MarkStoriesCompletedFragmentTest {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
+      testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTests()
     }
+  }
+
+  fun testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTests() {
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+    scrollToPosition(position = 0)
+    verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
+    scrollToPosition(position = 1)
+    verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
+    scrollToPosition(position = 2)
+    verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
+    scrollToPosition(position = 3)
+    verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
+    scrollToPosition(position = 4)
+    verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
   }
 
   @Test
@@ -269,29 +273,17 @@ class MarkStoriesCompletedFragmentTest {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTests()
       scrollToPosition(position = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
+      verifyItemUncheckedOnStorySummaryListItem(itemPosition = 0)
       scrollToPosition(position = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
+      verifyItemUncheckedOnStorySummaryListItem(itemPosition = 1)
       scrollToPosition(position = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
+      verifyItemUncheckedOnStorySummaryListItem(itemPosition = 2)
       scrollToPosition(position = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
+      verifyItemUncheckedOnStorySummaryListItem(itemPosition = 3)
       scrollToPosition(position = 4)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
-      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
-      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
-      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
-      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
-      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 4)
-      verifyItemUnCheckedOnStorySummaryListItem(itemPosition = 4)
+      verifyItemUncheckedOnStorySummaryListItem(itemPosition = 4)
     }
   }
 
@@ -567,7 +559,7 @@ class MarkStoriesCompletedFragmentTest {
     ).check(matches(isChecked()))
   }
 
-  private fun verifyItemUnCheckedOnStorySummaryListItem(itemPosition: Int) {
+  private fun verifyItemUncheckedOnStorySummaryListItem(itemPosition: Int) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_stories_completed_recycler_view,
