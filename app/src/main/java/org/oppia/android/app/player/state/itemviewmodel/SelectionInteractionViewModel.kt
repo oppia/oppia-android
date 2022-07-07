@@ -127,7 +127,7 @@ class SelectionInteractionViewModel private constructor(
       isCurrentlySelected -> {
         selectedItems -= itemIndex
         selectedItemsCount.set(selectedItems.size)
-         when(selectedItemsCount.get()){
+        when (selectedItemsCount.get()) {
           1 -> selectedItemText.set("You may select more choices")
           2 -> selectedItemText.set("No more than 4 choices may be selected.")
           else -> selectedItemText.set("Please select one or more choices")
