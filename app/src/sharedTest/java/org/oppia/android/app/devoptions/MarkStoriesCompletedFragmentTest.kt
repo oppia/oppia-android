@@ -249,11 +249,11 @@ class MarkStoriesCompletedFragmentTest {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use {
-      testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTests()
+      testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTest()
     }
   }
 
-  fun testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTests() {
+  private fun testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTest() {
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
     scrollToPosition(position = 0)
@@ -273,7 +273,8 @@ class MarkStoriesCompletedFragmentTest {
     launch<MarkStoriesCompletedTestActivity>(
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use {
-      testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTests()
+      testMarkStoriesCompletedFragment_selectAll_selectsAllStoriesTest()
+      onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
       scrollToPosition(position = 0)
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 0)
       scrollToPosition(position = 1)
