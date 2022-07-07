@@ -179,8 +179,8 @@
   <color name="component_color_concept_card_fragment_text_color">@color/color_palette_highlighted_text_color</color>
   <!-- Audio Fragment -->
   <color name="component_color_audio_fragment_background_color">@color/color_palette_accent_background_color</color>
-  <color name="component_color_audio_fragment_icon_color">@color/color_palette_icon_background_color_2</color>
-  <color name="component_color_audio_fragment_thumb_background_color">@color/color_palette_icon_background_color_2</color>
-  <color name="component_color_audio_fragment_seekbar_progress_color">@color/color_palette_icon_background_color_2</color>
+  <color name="component_color_audio_fragment_icon_color">@color/color_palette_icon_background_secondary_color</color>
+  <color name="component_color_audio_fragment_thumb_background_color">@color/color_palette_icon_background_secondary_color</color>
+  <color name="component_color_audio_fragment_seekbar_progress_color">@color/color_palette_icon_background_secondary_color</color>
   <color name="component_color_audio_fragment_seekbar_color">@color/color_palette_seekbar_progress_background_color</color>
 </resources>
