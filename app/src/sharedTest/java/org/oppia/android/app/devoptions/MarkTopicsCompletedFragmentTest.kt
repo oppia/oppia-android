@@ -158,22 +158,18 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Test Topic"
       )
-      scrollToPosition(position = 1)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Second Test Topic"
       )
-      scrollToPosition(position = 2)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Fractions"
       )
-      scrollToPosition(position = 3)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios and Proportional Reasoning"
@@ -188,22 +184,18 @@ class MarkTopicsCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Test Topic"
       )
-      scrollToPosition(position = 1)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Second Test Topic"
       )
-      scrollToPosition(position = 2)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Fractions"
       )
-      scrollToPosition(position = 3)
       verifyTopicNameOnTopicSummaryListItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Ratios and Proportional Reasoning"
@@ -241,13 +233,9 @@ class MarkTopicsCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
     }
   }
@@ -260,13 +248,9 @@ class MarkTopicsCompletedFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
     }
   }
@@ -277,21 +261,13 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 0)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
     }
   }
@@ -302,22 +278,14 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
     }
   }
@@ -328,13 +296,9 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
       onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
     }
@@ -347,22 +311,14 @@ class MarkTopicsCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 0)
       verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 3)
     }
   }
@@ -373,13 +329,9 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(isChecked()))
@@ -392,15 +344,10 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
       onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(not(isChecked())))
     }
@@ -412,15 +359,10 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       performItemCheckOnTopicSummaryListItem(itemPosition = 0)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnTopicSummaryListItem(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnTopicSummaryListItem(itemPosition = 3)
-      scrollToPosition(position = 1)
       performItemCheckOnTopicSummaryListItem(itemPosition = 1)
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(not(isChecked())))
@@ -514,6 +456,7 @@ class MarkTopicsCompletedFragmentTest {
     itemPosition: Int,
     stringToMatch: String
   ) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_topics_completed_recycler_view,
@@ -524,6 +467,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   private fun verifyItemCheckedOnTopicSummaryListItem(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_topics_completed_recycler_view,
@@ -534,6 +478,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   private fun verifyItemUnCheckedOnTopicSummaryListItem(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_topics_completed_recycler_view,
@@ -544,6 +489,7 @@ class MarkTopicsCompletedFragmentTest {
   }
 
   private fun performItemCheckOnTopicSummaryListItem(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_topics_completed_recycler_view,
