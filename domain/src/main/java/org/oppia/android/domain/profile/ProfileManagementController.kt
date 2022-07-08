@@ -232,6 +232,7 @@ class ProfileManagementController @Inject constructor(
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
         appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        numberOfLogins = 0
 
         if (learnerStudyAnalytics.value) {
           // Only set a learner ID if there's an ongoing user study.
