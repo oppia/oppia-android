@@ -63,6 +63,16 @@ annotation class EnableLanguageSelectionUi
 const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
 
 /**
+ * Qualifier for the feature flag corresponding to enabling the extra topic tabs - Practice tab
+ * and info tab.
+ */
+@Qualifier
+annotation class EnableExtraTopicTabsUi
+
+/** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
+const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
+
+/**
  * Qualifier for the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
  * and working of learner study related analytics logging.
  */
