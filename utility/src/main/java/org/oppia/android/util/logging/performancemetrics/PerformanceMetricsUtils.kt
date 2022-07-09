@@ -4,7 +4,6 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.net.TrafficStats
-import android.os.Environment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -29,7 +28,7 @@ class PerformanceMetricsUtils @Inject constructor(
       val apkPath =
         context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo.sourceDir
       val apkFile = File(apkPath)
-      apkSize = ((apkFile.length() / 1024).toString()).toLong()
+      apkSize = ((apkFile.length() / 1024))
     } catch (e: Exception) {
       consoleLogger.e(
         "PerformanceMetricsUtils",
@@ -85,12 +84,15 @@ class PerformanceMetricsUtils @Inject constructor(
    * Returns the [OppiaMetricLog.StorageTier] of the device by analysing the total storage
    * capacity of the device.
    */
-  fun getDeviceStorageTier(): OppiaMetricLog.StorageTier =
-    when (Environment.getDataDirectory().totalSpace / (1024 * 1024 * 1024)) {
-      in 0..5 -> OppiaMetricLog.StorageTier.LOW_STORAGE
-      in 5..20 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+  fun getDeviceStorageTier(): OppiaMetricLog.StorageTier {
+    return when (
+      (context.filesDir.totalSpace + context.cacheDir.totalSpace).toDouble() / (1024 * 1024 * 1024)
+    ) {
+      in 0.00..5.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
+      in 5.00..20.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
+  }
 
   /**
    * Returns the [OppiaMetricLog.MemoryTier] of the device by analysing the total memory
@@ -100,9 +102,9 @@ class PerformanceMetricsUtils @Inject constructor(
     val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     val memoryInfo = ActivityManager.MemoryInfo()
     activityManager.getMemoryInfo(memoryInfo)
-    return when (memoryInfo.totalMem / (1024 * 1024 * 1024)) {
-      in 0..1 -> OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
-      in 1..2 -> OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+    return when (memoryInfo.totalMem.toDouble() / (1024 * 1024 * 1024)) {
+      in 0.00..1.00 -> OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
+      in 1.00..2.00 -> OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
       else -> OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
     }
   }

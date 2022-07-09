@@ -20,7 +20,7 @@ import javax.inject.Singleton
 
 /** Enqueues unique periodic work requests for uploading events and exceptions to the remote service on application creation. */
 @Singleton
-class LogUploadWorkManagerInitializer @Inject constructor(
+class LogReportWorkManagerInitializer @Inject constructor(
   private val context: Context,
   private val logUploader: LogUploader,
   private val metricLogScheduler: MetricLogScheduler,
@@ -149,8 +149,8 @@ class LogUploadWorkManagerInitializer @Inject constructor(
     )
   }
 
-  /** Returns the worker constraints set for the log uploading work requests. */
-  fun getLogUploadWorkerConstraints(): Constraints = logReportWorkerConstraints
+  /** Returns the worker constraints set for the log reporting work requests. */
+  fun getLogReportWorkerConstraints(): Constraints = logReportWorkerConstraints
 
   /** Returns the [UUID] of the work request that is enqueued for uploading event logs. */
   fun getWorkRequestForEventsId(): UUID = workRequestForUploadingEvents.id

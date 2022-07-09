@@ -58,7 +58,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class LogUploadWorkManagerInitializerTest {
+class LogReportWorkManagerInitializerTest {
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -67,7 +67,7 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
 
   @Inject
-  lateinit var logUploadWorkManagerInitializer: LogUploadWorkManagerInitializer
+  lateinit var logReportWorkManagerInitializer: LogReportWorkManagerInitializer
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -116,20 +116,20 @@ class LogUploadWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logUploadWorkManagerInitializer.onCreate()
+    logReportWorkManagerInitializer.onCreate()
     testCoroutineDispatchers.runCurrent()
 
-    val enqueuedEventWorkRequestId = logUploadWorkManagerInitializer.getWorkRequestForEventsId()
+    val enqueuedEventWorkRequestId = logReportWorkManagerInitializer.getWorkRequestForEventsId()
     val enqueuedExceptionWorkRequestId =
-      logUploadWorkManagerInitializer.getWorkRequestForExceptionsId()
+      logReportWorkManagerInitializer.getWorkRequestForExceptionsId()
     val enqueuedPerformanceMetricsWorkRequestId =
-      logUploadWorkManagerInitializer.getWorkRequestForPerformanceMetricsId()
+      logReportWorkManagerInitializer.getWorkRequestForPerformanceMetricsId()
     val enqueuedSchedulingStorageUsageMetricWorkRequestId =
-      logUploadWorkManagerInitializer.getWorkRequestForSchedulingStorageUsageMetricLogsId()
+      logReportWorkManagerInitializer.getWorkRequestForSchedulingStorageUsageMetricLogsId()
     val enqueuedSchedulingMemoryUsageMetricWorkRequestId =
-      logUploadWorkManagerInitializer.getWorkRequestForSchedulingMemoryUsageMetricLogsId()
+      logReportWorkManagerInitializer.getWorkRequestForSchedulingMemoryUsageMetricLogsId()
     val enqueuedSchedulingPeriodicPerformanceMetricWorkRequestId =
-      logUploadWorkManagerInitializer.getWorkRequestForSchedulingPeriodicPerformanceMetricLogsId()
+      logReportWorkManagerInitializer.getWorkRequestForSchedulingPeriodicPerformanceMetricLogsId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
@@ -157,7 +157,7 @@ class LogUploadWorkManagerInitializerTest {
       .build()
 
     val logUploadingWorkRequestConstraints =
-      logUploadWorkManagerInitializer.getLogUploadWorkerConstraints()
+      logReportWorkManagerInitializer.getLogReportWorkerConstraints()
 
     assertThat(logUploadingWorkRequestConstraints).isEqualTo(workerConstraints)
   }
@@ -171,7 +171,7 @@ class LogUploadWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
+    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
       workerCaseForUploadingEvents
     )
   }
@@ -185,7 +185,7 @@ class LogUploadWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForExceptions()).isEqualTo(
+    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForExceptions()).isEqualTo(
       workerCaseForUploadingExceptions
     )
   }
@@ -199,7 +199,7 @@ class LogUploadWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
+    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
       workerCaseForUploadingPerformanceMetrics
     )
   }
@@ -214,7 +214,7 @@ class LogUploadWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logUploadWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
     ).isEqualTo(
       workerCaseForSchedulingStorageUsageMetricLogs
     )
@@ -230,7 +230,7 @@ class LogUploadWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logUploadWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicPerformanceMetricLogs()
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicPerformanceMetricLogs()
     ).isEqualTo(
       workerCaseForSchedulingPeriodicPerformanceMetricLogs
     )
@@ -246,7 +246,7 @@ class LogUploadWorkManagerInitializerTest {
       .build()
 
     assertThat(
-      logUploadWorkManagerInitializer.getWorkRequestDataForSchedulingMemoryUsageMetricLogs()
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingMemoryUsageMetricLogs()
     ).isEqualTo(
       workerCaseForSchedulingMemoryUsageMetricLogs
     )
@@ -301,7 +301,7 @@ class LogUploadWorkManagerInitializerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
-      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
+      LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
@@ -316,6 +316,6 @@ class LogUploadWorkManagerInitializerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(logUploadWorkRequestTest: LogUploadWorkManagerInitializerTest)
+    fun inject(logUploadWorkRequestTest: LogReportWorkManagerInitializerTest)
   }
 }
