@@ -6,6 +6,7 @@ import android.content.res.Resources
 import androidx.core.view.ViewCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
@@ -22,7 +23,7 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.R
+import org.oppia.android.util.test.R
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
 import org.robolectric.annotation.Config
@@ -49,12 +50,12 @@ class DisplayLocaleImplTest {
   @Inject
   lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
 
-  @Inject
   lateinit var context: Context
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    context = InstrumentationRegistry.getInstrumentation().targetContext
   }
 
   @Test

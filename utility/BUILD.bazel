@@ -46,7 +46,7 @@ package_group(
 android_library(
     name = "test_resources",
     testonly = True,
-    custom_package = "org.oppia.android.util.locale",
+    custom_package = "org.oppia.android.util",
     manifest = ":test_manifest",
     resource_files = glob(["src/test/res/**/*.xml"]),
     visibility = [
