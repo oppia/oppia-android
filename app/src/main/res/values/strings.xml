@@ -544,4 +544,5 @@
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
+  <string name="select_a_topic_to_start">Select a topic to start:</string>
 </resources>
