@@ -177,7 +177,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillMetricsBundle_eventWithDefaultLoggableMetric_fillsDetailsAndRetsUnknownContext() {
+  fun testFillMetricsBundle_eventWithDefaultLoggableMetric_fillsDetailsAndRetsUnknownLog() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
     val performanceMetricLog = createPerformanceMetricLog(

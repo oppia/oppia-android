@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -58,12 +58,12 @@ class LogReportingModuleTest {
 
   @Test
   fun testModule_injectsProductionImplementationOfEventLogger() {
-    Truth.assertThat(eventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(eventLogger).isInstanceOf(FirebaseEventLogger::class.java)
   }
 
   @Test
   fun testModule_injectsProductionImplementationOfPerformanceMetricsEventLogger() {
-    Truth.assertThat(performanceMetricsEventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(performanceMetricsEventLogger).isInstanceOf(FirebaseEventLogger::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
