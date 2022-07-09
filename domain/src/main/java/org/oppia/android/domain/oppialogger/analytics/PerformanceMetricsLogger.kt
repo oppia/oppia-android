@@ -24,6 +24,7 @@ class PerformanceMetricsLogger @Inject constructor(
     firstTimestamp = oppiaClock.getCurrentTimeMs()
   }
 
+  /** Logs the apk size of the application as a performance metric. */
   fun logApkSize() {
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
@@ -32,6 +33,7 @@ class PerformanceMetricsLogger @Inject constructor(
     )
   }
 
+  /** Logs the storage usage of the application as a performance metric. */
   fun logStorageUsage() {
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
@@ -40,6 +42,7 @@ class PerformanceMetricsLogger @Inject constructor(
     )
   }
 
+  /** Logs the startup latency of the application as a performance metric. */
   fun logStartupLatency() {
     val startupLatency = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (startupLatency >= 0) {
@@ -51,6 +54,7 @@ class PerformanceMetricsLogger @Inject constructor(
     }
   }
 
+  /** Logs the memrory usage of the application as a performance metric. */
   fun logMemoryUsage() {
     performanceMetricsController.logMediumPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
@@ -59,6 +63,7 @@ class PerformanceMetricsLogger @Inject constructor(
     )
   }
 
+  /** Logs the network usage of the application as a performance metric. */
   fun logNetworkUsage() {
     performanceMetricsController.logHighPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
@@ -70,6 +75,7 @@ class PerformanceMetricsLogger @Inject constructor(
     )
   }
 
+  /** Logs the cpu usage of the application as a performance metric. */
   fun logCpuUsage(cpuUsage: Long) {
     performanceMetricsController.logHighPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),

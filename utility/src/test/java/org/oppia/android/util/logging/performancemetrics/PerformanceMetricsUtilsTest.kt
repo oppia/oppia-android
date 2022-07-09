@@ -8,7 +8,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.net.TrafficStats
 import androidx.test.core.app.ApplicationProvider
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -81,7 +81,7 @@ class PerformanceMetricsUtilsTest {
     memoryInfo.totalMem = (1.5 * 1024 * 1024 * 1024).toLong()
     shadowActivityManager.setMemoryInfo(memoryInfo)
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
-    Truth.assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER)
+    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER)
   }
 
   @Test
@@ -90,7 +90,7 @@ class PerformanceMetricsUtilsTest {
     val cacheStorageUsage = context.cacheDir.totalSpace - context.cacheDir.freeSpace
     val expectedStorageValue = permanentStorageUsage + cacheStorageUsage
 
-    Truth.assertThat(performanceMetricsUtils.getUsedStorage()).isEqualTo(expectedStorageValue)
+    assertThat(performanceMetricsUtils.getUsedStorage()).isEqualTo(expectedStorageValue)
   }
 
   @Test
@@ -105,7 +105,7 @@ class PerformanceMetricsUtilsTest {
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
 
-    Truth.assertThat(performanceMetricsUtils.getDeviceStorageTier())
+    assertThat(performanceMetricsUtils.getDeviceStorageTier())
       .isEqualTo(expectedStorageTierValue)
   }
 
@@ -113,7 +113,7 @@ class PerformanceMetricsUtilsTest {
   fun testPerformanceMetricsUtils_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
     val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(context.applicationInfo.uid)
 
-    Truth.assertThat(performanceMetricsUtils.getTotalSentBytes())
+    assertThat(performanceMetricsUtils.getTotalSentBytes())
       .isEqualTo(expectedNetworkBytesSent)
   }
 
@@ -121,7 +121,7 @@ class PerformanceMetricsUtilsTest {
   fun testPerformanceMetricsUtils_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
     val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(context.applicationInfo.uid)
 
-    Truth.assertThat(performanceMetricsUtils.getTotalReceivedBytes())
+    assertThat(performanceMetricsUtils.getTotalReceivedBytes())
       .isEqualTo(expectedNetworkBytesReceived)
   }
 
@@ -146,7 +146,7 @@ class PerformanceMetricsUtilsTest {
         totalPssUsedTest += element.totalPss
       }
     }
-    Truth.assertThat(performanceMetricsUtils.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
+    assertThat(performanceMetricsUtils.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
   }
 
   @Test
@@ -171,21 +171,21 @@ class PerformanceMetricsUtilsTest {
     )
 
     val apkSize = performanceMetricsUtils.getApkSize()
-    Truth.assertThat(apkSize).isEqualTo(testApkSize)
+    assertThat(apkSize).isEqualTo(testApkSize)
   }
 
   @Test
   fun testPerformanceMetricsUtils_putAppInForeground_verifyIsAppInForegroundReturnsCorrectValue() {
     performanceMetricsUtils.onAppInForeground()
 
-    Truth.assertThat(performanceMetricsUtils.isAppInForeground()).isTrue()
+    assertThat(performanceMetricsUtils.isAppInForeground()).isTrue()
   }
 
   @Test
   fun testPerformanceMetricsUtils_putAppInBackground_verifyIsAppInForegroundReturnsCorrectValue() {
     performanceMetricsUtils.onAppInBackground()
 
-    Truth.assertThat(performanceMetricsUtils.isAppInForeground()).isFalse()
+    assertThat(performanceMetricsUtils.isAppInForeground()).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {

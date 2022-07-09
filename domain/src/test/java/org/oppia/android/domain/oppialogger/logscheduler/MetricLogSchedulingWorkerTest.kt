@@ -13,7 +13,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -32,7 +32,7 @@ import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSiz
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
@@ -124,8 +124,8 @@ class MetricLogSchedulingWorkerTest {
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
 
-    Truth.assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    Truth.assertThat(
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(
       fakePerformanceMetricsEventLogger
         .getMostRecentPerformanceMetricsEvent()
         .loggableMetric
@@ -150,8 +150,8 @@ class MetricLogSchedulingWorkerTest {
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
 
-    Truth.assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    Truth.assertThat(
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(
       fakePerformanceMetricsEventLogger
         .getMostRecentPerformanceMetricsEvent()
         .loggableMetric
@@ -176,8 +176,8 @@ class MetricLogSchedulingWorkerTest {
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
 
-    Truth.assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    Truth.assertThat(
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(
       fakePerformanceMetricsEventLogger
         .getMostRecentPerformanceMetricsEvent()
         .loggableMetric
@@ -203,8 +203,8 @@ class MetricLogSchedulingWorkerTest {
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
 
-    Truth.assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    Truth.assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -290,7 +290,7 @@ class MetricLogSchedulingWorkerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, LogUploadWorkerModule::class,
+      TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
