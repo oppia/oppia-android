@@ -87,7 +87,7 @@ class TopicFragmentPresenter @Inject constructor(
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
-      setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      setCurrentTab(TopicTab.LESSONS)
     }
   }
 

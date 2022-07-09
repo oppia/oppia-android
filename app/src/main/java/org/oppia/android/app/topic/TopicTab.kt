@@ -20,7 +20,7 @@ enum class TopicTab(
     tabIconResId = R.drawable.ic_info_icon_24dp
   ),
   LESSONS(
-    positionWithTwoTabs = 1,
+    positionWithTwoTabs = 0,
     positionWithFourTabs = 1,
     positionWithThreeTabs = 1,
     tabLabelResId = R.string.lessons,
@@ -34,7 +34,7 @@ enum class TopicTab(
     tabIconResId = R.drawable.ic_practice_icon_24dp
   ),
   REVISION(
-    positionWithTwoTabs = 2,
+    positionWithTwoTabs = 1,
     positionWithFourTabs = 3,
     positionWithThreeTabs = 2,
     tabLabelResId = R.string.revision,
@@ -56,6 +56,6 @@ enum class TopicTab(
 
     /** Returns the number of active tabs considering [enableExtraTopicTabsUi] */
     fun getTabCount(enableExtraTopicTabsUi: Boolean) =
-      if (enableExtraTopicTabsUi) values().size else values().size - 1
+      if (enableExtraTopicTabsUi) values().size else values().size - 2
   }
 }
