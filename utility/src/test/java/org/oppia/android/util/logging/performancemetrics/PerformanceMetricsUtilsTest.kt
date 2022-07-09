@@ -13,9 +13,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,6 +44,9 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowActivityManager
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_PACKAGE_NAME = "TEST_PACKAGE_NAME"
 private const val TEST_PACKAGE_LABEL = "TEST_PACKAGE_LABEL"

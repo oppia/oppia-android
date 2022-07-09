@@ -7,10 +7,10 @@ import android.net.TrafficStats
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import java.io.File
-import javax.inject.Inject
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.ConsoleLogger
+import java.io.File
+import javax.inject.Inject
 
 class PerformanceMetricsUtils @Inject constructor(
   private val context: Application,
@@ -84,12 +84,15 @@ class PerformanceMetricsUtils @Inject constructor(
    * Returns the [OppiaMetricLog.StorageTier] of the device by analysing the total storage
    * capacity of the device.
    */
-  fun getDeviceStorageTier(): OppiaMetricLog.StorageTier =
-    when ((context.filesDir.totalSpace + context.cacheDir.totalSpace).toDouble() / (1024 * 1024 * 1024)) {
+  fun getDeviceStorageTier(): OppiaMetricLog.StorageTier {
+    return when (
+      (context.filesDir.totalSpace + context.cacheDir.totalSpace).toDouble() / (1024 * 1024 * 1024)
+    ) {
       in 0.00..5.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
       in 5.00..20.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
+  }
 
   /**
    * Returns the [OppiaMetricLog.MemoryTier] of the device by analysing the total memory
