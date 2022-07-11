@@ -685,28 +685,24 @@
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
 
-  <!-- Hints summary  -->
+  <!-- Hints Summary Fragment -->
   <dimen name="hints_summary_linear_layout_margin_top">32dp</dimen>
   <dimen name="hints_summary_constraint_layout_layout_margin_start">28dp</dimen>
   <dimen name="hints_summary_constraint_layout_layout_margin_end">28dp</dimen>
   <dimen name="hints_summary_constraint_layout_layout_margin_bottom">20dp</dimen>
-
-  <dimen name="hint_list_container_layout_margin_start">40dp</dimen>
-  <dimen name="hint_list_container_layout_margin_top">8dp</dimen>
-  <dimen name="hint_list_container_layout_margin_end">40dp</dimen>
-  <dimen name="hint_list_container_layout_margin_bottom">32dp</dimen>
-
-  <dimen name="hint_title_margin_top">12dp</dimen>
-  <dimen name="hint_title_margin_bottom">12dp</dimen>
-  <dimen name="hint_title_padding_bottom">0dp</dimen>
-  
-  <dimen name="reveal_hint_btn_margin_top">16dp</dimen>
-  <dimen name="reveal_hint_btn_margin_bottom">32dp</dimen>
-
-  <dimen name="expand_list_icon_margin_top">0dp</dimen>
-  <dimen name="expand_list_icon_margin_start">8dp</dimen>
-  <dimen name="expand_list_icon_margin_end">8dp</dimen>
-  <dimen name="expand_list_icon_margin_bottom">8dp</dimen>
+  <dimen name="hints_summary_hint_list_container_layout_margin_start">40dp</dimen>
+  <dimen name="hints_summary_hint_list_container_layout_margin_top">8dp</dimen>
+  <dimen name="hints_summary_hint_list_container_layout_margin_end">40dp</dimen>
+  <dimen name="hints_summary_hint_list_container_layout_margin_bottom">32dp</dimen>
+  <dimen name="hints_summary_hint_title_margin_top">12dp</dimen>
+  <dimen name="hints_summary_hint_title_margin_bottom">12dp</dimen>
+  <dimen name="hints_summary_hint_title_padding_bottom">0dp</dimen>
+  <dimen name="hints_summary_reveal_hint_button_margin_top">16dp</dimen>
+  <dimen name="hints_summary_reveal_hint_button_margin_bottom">32dp</dimen>
+  <dimen name="hints_summary_expand_list_icon_margin_top">0dp</dimen>
+  <dimen name="hints_summary_expand_list_icon_margin_start">8dp</dimen>
+  <dimen name="hints_summary_expand_list_icon_margin_end">8dp</dimen>
+  <dimen name="hints_summary_expand_list_icon_margin_bottom">8dp</dimen>
 
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>

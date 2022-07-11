@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/hint_title_margin_top"
         android:layout_marginBottom="@dimen/hint_title_margin_bottom"
+        android:paddingBottom="@dimen/hint_title_padding_bottom"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
         android:textSize="20sp"
