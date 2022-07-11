@@ -92,9 +92,9 @@
   <item>
     <shape>
       <stroke android:width="3dp"
-        android:color="@color/color_def_green_shade_80"/>
+        android:color="@color/component_color_shared_correct_text_stroke_color"/>
       <corners android:radius="4dp" />
-      <solid android:color="@color/color_def_light_green" />
+      <solid android:color="@color/component_color_shared_correct_text_solid_color" />
     </shape>
   </item>
 </layer-list>
