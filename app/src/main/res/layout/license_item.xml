@@ -14,19 +14,20 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_def_white">
+    android:background="@drawable/general_item_background_border_black">
 
     <TextView
       android:id="@+id/license_name_text_view"
       style="@style/Subtitle2ViewStart"
       android:layout_width="match_parent"
-      android:background="@drawable/general_item_background_border"
+      android:background="@drawable/general_item_background_border_black"
       android:fontFamily="sans-serif-smallcaps"
       android:onClick="@{() -> viewModel.clickOnLicenseItem()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
+      android:textColor="@color/component_color_license_list_activity_license_name_text_view_color"
       android:text="@{viewModel.licenseName}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

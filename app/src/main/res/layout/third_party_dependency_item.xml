@@ -19,7 +19,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/general_item_background_border"
+      android:background="@drawable/general_item_background_border_black"
       android:onClick="@{(v) -> viewModel.clickOnThirdPartyDependencyItem()}"
       android:orientation="vertical"
       app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +34,7 @@
         android:paddingTop="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
+        android:textColor="@color/component_color_third_party_dependency_list_activity_dependency_name_text_view_color"
         android:text="@{viewModel.dependencyName}" />
 
       <TextView
@@ -45,8 +46,8 @@
         android:paddingTop="4dp"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
-        android:textColor="@color/color_def_accessible_grey"
         android:text="@{viewModel.dependencyVersion}"
+        android:textColor="@color/component_color_third_party_dependency_list_activity_dependency_version_text_color"
         android:textSize="12sp" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
