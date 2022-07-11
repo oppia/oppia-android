@@ -22,6 +22,18 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -110,6 +122,54 @@ class TestPlatformParameterModule {
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
+  }
+
+  @Provides
+  @EnablePerformanceMetricsCollection
+  fun provideEnablePerformanceMetricCollection(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(
+      ENABLE_PERFORMANCE_METRICS_COLLECTION
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @PerformanceMetricsCollectionUploadTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionUploadTimeIntervalInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+    )
+  }
+
+  @Provides
+  @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+    )
+  }
+
+  @Provides
+  @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
+  fun providePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Int> {
+    return platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    ) ?: PlatformParameterValue.createDefaultParameter(
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+    )
   }
 
   companion object {
