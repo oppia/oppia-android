@@ -14,17 +14,13 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
-import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import org.hamcrest.Matchers.not
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -148,10 +144,10 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_updateName_checkNewNameDisplayed() {
+  fun testProfileEditActivity_hasCorrectActivityLabel() {
     profileManagementController.updateName(
       ProfileId.newBuilder().setInternalId(1).build(),
-      newName = "Akshay"
+      newName = "Yash"
     )
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -160,92 +156,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Akshay"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Akshay")))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 0
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 0
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_sub)).perform(scrollTo())
-        .check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).perform(scrollTo())
-        .check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches(isDisplayed()))
-      onView(withId(R.id.profile_delete_button))
-        .perform(scrollTo())
-        .check(
-          matches(
-            (
-              isDisplayed()
-              )
-          )
-        )
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Yash"))))
     }
   }
 
@@ -304,67 +215,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog())
-        .check(
-          matches(
-            isDisplayed()
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog())
-        .check(
-          matches(
-            isDisplayed()
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context,
-        profileId = 1
-      )
-    ).use {
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog())
-        .check(
-          matches(
-            isCompletelyDisplayed()
-          )
-        )
-    }
-  }
-
-  @Test
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
@@ -408,136 +258,25 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
+  fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 4
+        profileId = 1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
     }
   }
 
   @Test
-  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 4
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_clickAllowDownloadContainer_checkChanged() {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 4
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
-      onView(withId(R.id.profile_edit_allow_download_container)).perform(click())
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isChecked())))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchIsNotClickable() {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 4
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isClickable())))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsFocusable() {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 4
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(isFocusable()))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsDisplayed() {
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 4
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchContainerIsNotDisplayed() {
+  fun testProfileEdit_configChange_startWithAdminProfile_checkAdminInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -545,7 +284,70 @@ class ProfileEditActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_configChange_startWithUserProfile_checkUserInfoIsDisplayed() {
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_edit_allow_download_sub))
+        .perform(scrollTo()).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch))
+        .perform(scrollTo()).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithAdminProfile_checkAdminInfoIsDisplayed() {
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Admin"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_updateName_checkNewNameDisplayed() {
+    profileManagementController.updateName(
+      ProfileId.newBuilder().setInternalId(1).build(),
+      newName = "Akshay"
+    )
+    launch<ProfileEditActivity>(
+      ProfileEditActivity.createProfileEditActivity(
+        context = context,
+        profileId = 1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Akshay"))))
+      onView(withId(R.id.profile_edit_name)).check(matches(withText("Akshay")))
     }
   }
 

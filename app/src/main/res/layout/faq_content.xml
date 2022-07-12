@@ -14,7 +14,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_faq_list_activity_container_background_color">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -35,7 +35,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:text="@{viewModel.question}"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_faq_list_activity_text_color"
         android:textSize="14sp" />
 
       <View
@@ -44,7 +44,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/faq_content_margin_start"
         android:layout_marginEnd="@dimen/faq_content_margin_end"
-        android:background="@color/oppia_faq_divider" />
+        android:background="@color/component_color_faq_list_activity_divider_color" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
