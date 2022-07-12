@@ -47,7 +47,7 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
         is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
         else -> error("Encountered unexpected view model: $viewModel")
       }
-    }
+    }.setLifecycleOwner(fragment)
       .registerViewDataBinder(
         viewType = ProfileListItemViewType.DEVICE_ID,
         inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,
