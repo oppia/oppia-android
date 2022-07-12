@@ -521,7 +521,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testLoginToProfile_addProfiles_loginToProfile_checkGetProfileIdAndLoginTimestampAndNumberOfLoginsIsCorrect() {
+  fun testLoginProfile_addProfiles_loginProfile_checkProfileId_Timestamp_NumberOfLogins_Correct() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
