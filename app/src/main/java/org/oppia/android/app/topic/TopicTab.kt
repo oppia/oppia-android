@@ -49,7 +49,9 @@ enum class TopicTab(
     fun getTabForPosition(position: Int, enableExtraTopicTabsUi: Boolean): TopicTab {
       return checkNotNull(
         values().find {
-          position == if (enableExtraTopicTabsUi) it.positionWithFourTabs else it.positionWithTwoTabs
+          position == if (enableExtraTopicTabsUi) {
+            it.positionWithFourTabs
+          } else it.positionWithTwoTabs
         }
       ) { "No tab corresponding to position: $position" }
     }
