@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.ProfileEditFragmentBinding
@@ -33,11 +34,14 @@ class ProfileEditFragmentPresenter @Inject constructor(
   @Inject
   lateinit var profileEditViewModel: ProfileEditViewModel
 
+  private var isMultipane: Boolean? = null
+
   /** This handles OnCreateView() of [ProfileEditFragment]. */
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
+    internalProfileId: Int,
+    isMultipane: Boolean
   ): View? {
     val binding = ProfileEditFragmentBinding.inflate(
       inflater,
@@ -48,7 +52,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       viewModel = profileEditViewModel
       lifecycleOwner = fragment
     }
-
+    this.isMultipane = isMultipane
     profileEditViewModel.setProfileId(internalProfileId)
 
     binding.profileRenameButton.setOnClickListener {
@@ -77,7 +81,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileEditViewModel.profile.observe(
       fragment,
       Observer {
-        activity.title = it.name
+        if (activity is ProfileEditActivity) {
+          activity.title = it.name
+        }
       }
     )
 
@@ -109,6 +115,9 @@ class ProfileEditFragmentPresenter @Inject constructor(
   }
 
   private fun showDeletionDialog(internalProfileId: Int) {
+    if (isMultipane == true) {
+      (activity as ProfileEditDeletionDialogListener).loadProfileDeletionDialog(true)
+    }
     val dialogFragment = ProfileEditDeletionDialogFragment
       .newInstance(internalProfileId)
     dialogFragment.showNow(fragment.childFragmentManager, TAG_PROFILE_DELETION_DIALOG)
@@ -139,5 +148,10 @@ class ProfileEditFragmentPresenter @Inject constructor(
           }
         }
       )
+  }
+
+  /** This loads the dialog whenever requested by the listener in [AdministratorControlsActivity]. */
+  fun handleLoadProfileDeletionDialog(internalProfileId: Int) {
+    showDeletionDialog(internalProfileId)
   }
 }
