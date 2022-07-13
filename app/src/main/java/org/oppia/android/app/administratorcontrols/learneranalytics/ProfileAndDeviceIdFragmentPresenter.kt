@@ -19,6 +19,7 @@ class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
   private val profileListViewModelFactory: ProfileListViewModel.Factory,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
+
   private lateinit var binding: ProfileAndDeviceIdFragmentBinding
 
   /** Handles [ProfileAndDeviceIdFragment]'s creation flow. */
