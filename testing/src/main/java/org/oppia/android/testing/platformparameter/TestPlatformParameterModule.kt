@@ -13,9 +13,6 @@ import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLE
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -33,6 +30,8 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import javax.inject.Singleton
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
@@ -108,11 +107,8 @@ class TestPlatformParameterModule {
 
   @Provides
   @LearnerStudyAnalytics
-  fun provideLearnerStudyAnalytics(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
-      ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
+  fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableLearnerStudyAnalytics)
   }
 
   @Provides
@@ -175,6 +171,7 @@ class TestPlatformParameterModule {
   companion object {
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+    private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -186,6 +183,12 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableEditAccountsOptionsUi(value: Boolean) {
       enableEditAccountsOptionsUi = value
+    }
+
+    /** Enables forcing [EnableLearnerStudyAnalytics] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableLearnerStudyAnalytics(value: Boolean) {
+      enableLearnerStudyAnalytics = value
     }
   }
 }

@@ -153,10 +153,11 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
 
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
