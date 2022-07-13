@@ -156,6 +156,7 @@ class ProfileAndDeviceIdFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
 
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
