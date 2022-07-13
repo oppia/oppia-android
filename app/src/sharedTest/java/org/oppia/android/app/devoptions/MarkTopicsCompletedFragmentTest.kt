@@ -311,10 +311,6 @@ class MarkTopicsCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 0)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 1)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 2)
-      verifyItemCheckedOnTopicSummaryListItem(itemPosition = 3)
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
       verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 0)
       verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 1)

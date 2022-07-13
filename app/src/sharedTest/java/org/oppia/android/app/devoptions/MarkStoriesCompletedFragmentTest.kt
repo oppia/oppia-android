@@ -256,11 +256,6 @@ class MarkStoriesCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 0)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 1)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 2)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 3)
-      verifyItemCheckedOnStorySummaryListItem(itemPosition = 4)
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 0)
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 1)
