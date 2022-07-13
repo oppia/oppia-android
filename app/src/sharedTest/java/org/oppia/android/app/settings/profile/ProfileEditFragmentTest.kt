@@ -99,6 +99,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.data.DataProviderTestMonitor
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -119,6 +120,9 @@ class ProfileEditFragmentTest {
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var dataProviderTestMonitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -210,14 +214,15 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
-    profileManagementController.addProfile(
+    val addProfileProvider = profileManagementController.addProfile(
       name = "James",
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
+    dataProviderTestMonitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,
