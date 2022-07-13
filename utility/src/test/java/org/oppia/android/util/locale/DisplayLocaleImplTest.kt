@@ -23,7 +23,6 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.R
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
 import org.robolectric.annotation.Config
