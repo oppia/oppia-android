@@ -347,7 +347,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testDrawLeadingMargin_forNestedBulletItems_isdrawnCorrectlyWithIndentation() {
+  fun testDrawLeadingMargin_forNestedBulletItems_isDrawnCorrectlyWithIndentation() {
     val canvas = Canvas()
     val paint = Paint()
     val x = 10
@@ -447,7 +447,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testDrawLeadingMargin_forNestedNumberedListItems_isdrawnCorrectlyWithIndentation() {
+  fun testDrawLeadingMargin_forNestedNumberedListItems_isDrawnCorrectlyWithIndentation() {
     val canvas = Canvas()
     val paint = Paint()
     val x = 10
