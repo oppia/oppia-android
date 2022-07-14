@@ -33,8 +33,10 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class FakePerformanceMetricsEventLoggerTest {
 
-  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
+  @Inject
+  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject
+  lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
 
   private val metricLog1 = OppiaMetricLog.newBuilder().setPriority(HIGH_PRIORITY).build()
   private val metricLog2 = OppiaMetricLog.newBuilder().setPriority(MEDIUM_PRIORITY).build()
@@ -86,7 +88,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-   assertThrows(NoSuchElementException::class) {
+    assertThrows(NoSuchElementException::class) {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     }
   }
