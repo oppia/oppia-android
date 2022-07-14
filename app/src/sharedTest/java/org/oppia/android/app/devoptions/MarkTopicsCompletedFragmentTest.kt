@@ -310,12 +310,14 @@ class MarkTopicsCompletedFragmentTest {
       createMarkTopicsCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
+      // Click one to select all topics.
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
+      // Click a second time to unselect all topics.
       onView(withId(R.id.mark_topics_completed_all_check_box_container)).perform(click())
-      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 0)
-      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 1)
-      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 2)
-      verifyItemUnCheckedOnTopicSummaryListItem(itemPosition = 3)
+      verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 0)
+      verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 1)
+      verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 2)
+      verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 3)
     }
   }
 
@@ -473,7 +475,7 @@ class MarkTopicsCompletedFragmentTest {
     ).check(matches(isChecked()))
   }
 
-  private fun verifyItemUnCheckedOnTopicSummaryListItem(itemPosition: Int) {
+  private fun verifyItemUncheckedOnTopicSummaryListItem(itemPosition: Int) {
     scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(

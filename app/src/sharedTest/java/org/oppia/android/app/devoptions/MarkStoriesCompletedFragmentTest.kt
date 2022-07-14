@@ -255,7 +255,9 @@ class MarkStoriesCompletedFragmentTest {
       createMarkStoriesCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
+      // Click one to select all stories.
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
+      // Click a second time to unselect all stories.
       onView(withId(R.id.mark_stories_completed_all_check_box_container)).perform(click())
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 0)
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 1)

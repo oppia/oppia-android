@@ -389,7 +389,9 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
+      // Click one to select all chapters.
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      // Click a second time to unselect all chapters.
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
