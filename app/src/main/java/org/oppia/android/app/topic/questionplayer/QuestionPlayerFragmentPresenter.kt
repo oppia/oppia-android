@@ -25,6 +25,7 @@ import org.oppia.android.app.player.state.StatePlayerRecyclerViewAssembler
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -47,7 +48,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
-  private val splitScreenManager: SplitScreenManager
+  private val splitScreenManager: SplitScreenManager,
+  private val multiTypeAdapterFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   // TODO(#503): Add tests for the question player.
 
@@ -330,6 +332,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     //  controller & possibly the ephemeral question data model.
     // TODO(#502): Add support for surfacing skills that need to be reviewed by the learner.
     return builder
+      .addAdapterBuilderFactory(multiTypeAdapterFactory)
       .hasConversationView(hasConversationView)
       .addContentSupport()
       .addFeedbackSupport()
