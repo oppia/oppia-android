@@ -12,6 +12,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import java.io.File
 import javax.inject.Inject
 
+/** Utility to extract performance metrics from the underlying android system. */
 class PerformanceMetricsUtils @Inject constructor(
   private val context: Application,
   private val consoleLogger: ConsoleLogger

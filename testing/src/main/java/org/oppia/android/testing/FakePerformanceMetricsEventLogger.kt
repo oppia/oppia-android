@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**  A test specific fake for the event logger. */
+/** A test specific fake for the event logger. */
 @Singleton
 class FakePerformanceMetricsEventLogger @Inject constructor() : PerformanceMetricsEventLogger {
   private val performanceMetricsEventList = CopyOnWriteArrayList<OppiaMetricLog>()

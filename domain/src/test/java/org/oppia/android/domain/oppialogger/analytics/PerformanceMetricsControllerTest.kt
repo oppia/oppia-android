@@ -62,7 +62,7 @@ private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
 private const val TEST_NETWORK_USAGE = Long.MAX_VALUE
 private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
 
-/** Tests for [PerformanceMetricsControllerTest]. */
+/** Tests for [PerformanceMetricsController]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -75,9 +75,6 @@ class PerformanceMetricsControllerTest {
 
   @Inject
   lateinit var oppiaLogger: OppiaLogger
-
-  @Inject
-  lateinit var performanceMetricsLogger: PerformanceMetricsLogger
 
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil

@@ -17,8 +17,8 @@ import javax.inject.Inject
 /**
  * Controller for handling performance metrics event logging.
  *
- * Callers should not use this class directly; instead, they should use ``OppiaLogger`` which
- * provides convenience log methods.
+ * Callers should not use this class directly; instead, they should use ``PerformanceMetricsLogger``
+ * which provides convenience log methods.
  */
 class PerformanceMetricsController @Inject constructor(
   private val performanceMetricsUtils: PerformanceMetricsUtils,
@@ -124,9 +124,8 @@ class PerformanceMetricsController @Inject constructor(
   private fun getLeastRecentMetricLogIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
     oppiaMetricLogs.oppiaMetricLogList.withIndex()
       .filter { it.value.priority == Priority.LOW_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index ?: getLeastRecentMediumPriorityEventIndex(
-      oppiaMetricLogs
-    )
+      .minByOrNull { it.value.timestampMillis }?.index
+      ?: getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs)
 
   /**
    * Returns the index of the least recent event from the existing store on the basis of recency and
@@ -139,9 +138,8 @@ class PerformanceMetricsController @Inject constructor(
   private fun getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
     oppiaMetricLogs.oppiaMetricLogList.withIndex()
       .filter { it.value.priority == Priority.MEDIUM_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index ?: getLeastRecentGeneralEventIndex(
-      oppiaMetricLogs
-    )
+      .minByOrNull { it.value.timestampMillis }?.index
+      ?: getLeastRecentGeneralEventIndex(oppiaMetricLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */
   private fun getLeastRecentGeneralEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
@@ -157,7 +155,7 @@ class PerformanceMetricsController @Inject constructor(
    * As we are using the await call on the deferred output of readDataAsync, the failure case would
    * be caught and it'll throw an error.
    */
-  suspend fun getMetricLogStoreList(): MutableList<OppiaMetricLog> {
+  suspend fun getMetricLogStoreList(): List<OppiaMetricLog> {
     return metricLogStore.readDataAsync().await().oppiaMetricLogList
   }
 
