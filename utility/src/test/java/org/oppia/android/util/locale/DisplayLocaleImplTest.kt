@@ -6,7 +6,6 @@ import android.content.res.Resources
 import androidx.core.view.ViewCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
@@ -49,12 +48,11 @@ class DisplayLocaleImplTest {
   @Inject
   lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
 
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    context = InstrumentationRegistry.getInstrumentation().targetContext
   }
 
   @Test
