@@ -363,7 +363,7 @@ class ListItemLeadingMarginSpanTest {
   }
 
   @Test
-  fun testDrawLeadingMargin_forNestedBulletItems_isdrawnCorrectlyWithIndentation() {
+  fun testDrawLeadingMargin_forNestedBulletItems_isDrawnCorrectlyWithIndentation() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
