@@ -78,9 +78,7 @@ class AdministratorControlsViewModel @Inject constructor(
     val itemViewModelList = mutableListOf<AdministratorControlsItemViewModel>()
 
     if (enableEditAccountsOptionsUi.value) {
-      itemViewModelList.add(
-        AdministratorControlsGeneralViewModel()
-      )
+      itemViewModelList.add(AdministratorControlsGeneralViewModel())
     }
 
     itemViewModelList.add(
