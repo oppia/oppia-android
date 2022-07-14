@@ -31,6 +31,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -68,7 +69,8 @@ class StateFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val multiTypeAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -116,7 +118,8 @@ class StateFragmentPresenter @Inject constructor(
       assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
-      binding.fullScreenConfettiView
+      binding.fullScreenConfettiView,
+      multiTypeAdapterBuilderFactory
     )
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
@@ -217,10 +220,12 @@ class StateFragmentPresenter @Inject constructor(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
     congratulationsTextConfettiView: KonfettiView,
-    fullScreenConfettiView: KonfettiView
+    fullScreenConfettiView: KonfettiView,
+    multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
   ): StatePlayerRecyclerViewAssembler {
     val isTablet = context.resources.getBoolean(R.bool.isTablet)
     return builder
+      .addAdapterBuilderFactory(multiTypeBuilderFactory)
       .hasConversationView(hasConversationView)
       .addContentSupport()
       .addFeedbackSupport()

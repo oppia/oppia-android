@@ -889,10 +889,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController
   ) {
-    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.Factory(fragment)
-      .create<StateItemViewModel, StateItemViewModel.ViewType> {
-        it.viewType
-      }
+
+    private lateinit var adapterBuilder:
+      BindableAdapter.MultiTypeBuilder<StateItemViewModel, StateItemViewModel.ViewType>
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1182,6 +1181,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
           binding.submittedAnswerTextView.visibility = View.GONE
         }
       }
+    }
+
+    /**
+     * Add AdapterBuilderFactory passed through injection from [StateFragmentPresenter]
+     */
+    fun addAdapterBuilderFactory
+    (multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory): Builder {
+      adapterBuilder = multiTypeBuilderFactory.create {
+        it.viewType
+      }
+      return this
     }
 
     /**
