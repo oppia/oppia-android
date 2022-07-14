@@ -85,7 +85,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
   class OlSpan(
     context: Context,
     private val indentation: Int,
-    private val bulletNumbers: String
+    private val numberedItemPrefix: String
   ) : LeadingMarginSpan {
     private val resources = context.resources
     private val gapWidth = resources.getDimensionPixelSize(R.dimen.bullet_gap_width)
@@ -117,12 +117,12 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       if (isFirstCharacter) {
         val trueX = gapWidth * indentation + spacingBeforeBullet
 
-        canvas.drawText(bulletNumbers, trueX.toFloat(), baseline.toFloat(), paint)
+        canvas.drawText(numberedItemPrefix, trueX.toFloat(), baseline.toFloat(), paint)
       }
     }
 
     override fun getLeadingMargin(first: Boolean): Int {
-      return 2 * bulletNumbers.length + spacingBeforeNumberedText
+      return 2 * numberedItemPrefix.length + spacingBeforeNumberedText
     }
   }
 }
