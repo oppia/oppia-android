@@ -535,13 +535,24 @@ class ListItemLeadingMarginSpanTest {
     val shadowCanvas = shadowOf(canvas)
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
+    // The below assertion verifies the 1st item of inner level list
     assertThat(shadowCanvas.getDrawnTextEvent(0).x).isEqualTo(72.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isEqualTo(72.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isEqualTo(24.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).y).isEqualTo(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(0).text).isEqualTo("1.")
+
+    // The below assertion verifies the 2nd item of inner level list
+    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isEqualTo(72.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).y).isEqualTo(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(1).text).isEqualTo("2.")
+
+    // The below assertion verifies the 1st item of outer level list
+    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isEqualTo(24.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).y).isEqualTo(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(2).text).isEqualTo("1.")
+
+    // The below assertion verifies the 2nd item of outer level list
+    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isEqualTo(24.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).y).isEqualTo(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("2.")
   }
 
