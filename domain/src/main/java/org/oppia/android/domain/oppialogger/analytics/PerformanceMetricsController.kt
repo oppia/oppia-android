@@ -30,6 +30,8 @@ class PerformanceMetricsController @Inject constructor(
   @PerformanceMetricsLogStorageCacheSize private val metricLogStorageCacheSize: Int
 ) {
 
+  private var isAppInForeground: Boolean = false
+
   private val metricLogStore =
     cacheStoreFactory.create("metric_logs", OppiaMetricLogs.getDefaultInstance())
 
@@ -106,7 +108,7 @@ class PerformanceMetricsController @Inject constructor(
       this.priority = priority
       this.currentScreen = currentScreen
       this.loggableMetric = loggableMetric
-      this.isAppInForeground = performanceMetricsUtils.isAppInForeground()
+      this.isAppInForeground = isAppInForeground
       this.storageTier = performanceMetricsUtils.getDeviceStorageTier()
       this.memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     }.build()
@@ -173,4 +175,17 @@ class PerformanceMetricsController @Inject constructor(
       }
     }
   }
+
+  /** Sets [isAppInForeground] to true when application is in or returns to foreground. */
+  fun setAppInForeground() {
+    isAppInForeground = true
+  }
+
+  /** Sets [isAppInForeground] to false when application goes to background. */
+  fun setAppInBackground() {
+    isAppInForeground = false
+  }
+
+  /** Returns a boolean value indicating whether the application is currently in foreground or not. */
+  fun getIsAppInForeground() = isAppInForeground
 }

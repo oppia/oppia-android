@@ -70,8 +70,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logNetworkUsage()
-      // TODO(#4334): Add functionality to log cpu usage performance metric.
+      // TODO(#4340): Add functionality to log cpu and network usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -81,7 +80,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleStorageUsageMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logStorageUsage()
+      // TODO(#4340): Add functionality to storage usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -91,7 +90,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleMemoryUsageMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logMemoryUsage()
+      // TODO(#4340): Add functionality to log memory usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)

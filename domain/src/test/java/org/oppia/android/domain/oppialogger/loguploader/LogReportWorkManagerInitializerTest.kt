@@ -228,7 +228,7 @@ class LogReportWorkManagerInitializerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLogUploadWorkManagerInitializerTest_TestApplicationComponent.builder()
+    DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
