@@ -80,7 +80,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleStorageUsageMetricLogging(): Result {
     return try {
-      // TODO(#4340): Add functionality to storage usage performance metrics.
+      // TODO(#4340): Add functionality to log storage usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
