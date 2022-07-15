@@ -88,10 +88,40 @@
   <string name="fractions_default_hint_text_no_integer">Insira uma fração no formato x/x.</string>
   <string name="numeric_input_hint">Digite um número.</string>
   <string name="number_with_units_input_hint_text">Escreva números com unidades aqui.</string>
+  <string name="numeric_expression_default_hint_text">Digite uma expressão aqui, usando apenas números.</string>
+  <string name="algebraic_expression_default_hint_text">Digite uma expressão aqui.</string>
   <string name="math_equation_default_hint_text">Digite uma equação aqui.</string>
   <string name="math_expression_error_spaces_in_numerical_input">Por favor, remova os espaços entre os números em sua resposta.</string>
+  <string name="math_expression_error_unbalanced_parentheses">Feche ou remova os parênteses.</string>
+  <string name="math_expression_error_single_redundant_parentheses">Por favor, remova os parênteses ao redor da resposta inteira: \'%s\'.</string>
+  <string name="math_expression_error_multiple_redundant_parentheses">Remova parênteses extras ao redor de \'(%1$s)\', por exemplo: \'%1$s\'.</string>
+  <string name="math_expression_error_redundant_parentheses_individual_term">Remova parênteses extras ao redor de \'(%1$s)\', por exemplo: \'%1$s\'.</string>
+  <string name="math_expression_error_unnecessary_symbols">Há um \'%s\' inválido na resposta. Por favor, remova-o.</string>
+  <string name="math_expression_error_number_after_var_term">Reorganize a ordem de %1$s e %2$s. Por exemplo: %2$s%1$s.</string>
+  <string name="math_expression_error_consecutive_binary_operators">%1$s e %2$s devem ser separados por um número ou uma variável.</string>
   <string name="math_expression_error_consecutive_unary_operators">Por favor, remova os símbolos extras em sua resposta.</string>
+  <string name="math_expression_error_missing_lhs_for_addition_operator">Está faltando um número ou variável antes ou depois do símbolo de adição \'%1$s\'? Caso não esteja, remova o \'%1$s\' extra.</string>
+  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Está faltando um número ou variável antes ou depois do símbolo de multiplicação \'%1$s\'? Caso não esteja, remova o \'%1$s\' extra.</string>
+  <string name="math_expression_error_missing_lhs_for_division_operator">Está faltando um número ou variável antes ou depois do símbolo de divisão \'%1$s\'? Caso não esteja, remova o \'%1$s\' extra.</string>
+  <string name="math_expression_error_missing_lhs_for_exponentiation_operator">Está faltando um número ou variável antes ou depois do símbolo de exponenciação \'%1$s\'? Caso não esteja, remova o \'%1$s\' extra.</string>
+  <string name="math_expression_error_missing_rhs_for_addition_operator">Parece haver um número ou uma variável faltando após o símbolo de adição \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_subtraction_operator">Parece haver um número ou uma variável faltando após o símbolo de subtração \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_multiplication_operator">Parece haver um número ou uma variável faltando após o símbolo de multiplicação \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_division_operator">Parece haver um número ou uma variável faltando após o símbolo de divisão \'%s\'.</string>
+  <string name="math_expression_error_missing_rhs_for_exponentiation_operator">Parece haver um número ou uma variável faltando após o símbolo de exponenciação \'%s\'.</string>
+  <string name="math_expression_error_exponent_has_variable">Desculpe, variáveis ​​em expoentes não são suportadas pelo aplicativo. Por favor, revise sua resposta.</string>
   <string name="math_expression_error_exponent_too_large">Desculpe, potências maiores do que 5 não são suportadas pelo serviço. Por favor, revise sua resposta.</string>
+  <string name="math_expression_error_nested_exponent">Desculpe, potências/expoentes repetidos não são suportados pelo aplicativo. Por favor, limite sua resposta a uma potência.</string>
+  <string name="math_expression_error_hanging_square_root">Está faltando entrada para raiz quadrada.</string>
+  <string name="math_expression_error_term_divided_by_zero">Dividir por zero é inválido. Por favor, revise sua resposta.</string>
+  <string name="math_expression_error_variable_in_numeric_expression">Parece que você inseriu algumas variáveis. Certifique-se de que sua resposta contém apenas números e remova quaisquer variáveis ​​de sua resposta.</string>
+  <string name="math_expression_error_invalid_variable">Por favor, use as variáveis ​​especificadas na pergunta e não %s.</string>
+  <string name="math_expression_error_missing_equals">Sua equação está faltando um sinal \'=\'.</string>
+  <string name="math_expression_error_more_than_one_equals">Sua equação contém muitos sinais de \'=\'. Deveria conter apenas um.</string>
+  <string name="math_expression_error_hanging_equals">Um dos lados do \'=\' em sua equação está vazio.</string>
+  <string name="math_expression_error_unsupported_function">A função \'%s\' não é suportada. Por favor, revise sua resposta.</string>
+  <string name="math_expression_error_incomplete_function_name">Será que queria dizer sqrt? Se não, por favor, separe as variáveis ​​com símbolos de multiplicação.</string>
+  <string name="math_expression_error_generic">Desculpe, não conseguimos entender sua resposta. Por favor, verifique se não há erros.</string>
   <string name="enable_audio_playback_content_description">Habilitar narração de áudio para esta lição.</string>
   <string name="recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="last_played_stories">Últimas Histórias Reproduzidas</string>
@@ -107,7 +137,7 @@
   <string name="topic_downloaded">Tópico Baixado</string>
   <string name="downloaded">Baixado</string>
   <string name="question_player_title">Modo de Prática</string>
-  <string name="question_training_session_progress" fuzzy="true">Pergunta %s de %s</string>
+  <string name="question_training_session_progress">Questão %s de %s</string>
   <string name="question_training_session_progress_finished">Concluído</string>
   <string name="question_training_session_finished_header">Concluído</string>
   <string name="question_training_session_finished_message">Você concluiu todas as perguntas! Você pode escolher reproduzir outro conjunto de perguntas ou retornar ao tópico.</string>
@@ -132,8 +162,8 @@
   <string name="ratio_error_invalid_size">O número de termos não é igual ao exigido.</string>
   <string name="ratio_error_includes_zero">Proporções não podem ter 0 como elemento.</string>
   <string name="unknown_size">Tamanho desconhecido</string>
-  <string name="size_bytes" fuzzy="true">%s Bytes</string>
-  <string name="size_kb" fuzzy="true">%s KB</string>
+  <string name="size_bytes">%s Bytes</string>
+  <string name="size_kb">%s KB</string>
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>
@@ -160,7 +190,7 @@
     <item quantity="zero">%s Histórias Concluídas\n    </item>
     <item quantity="other">\n      %s Histórias Concluídas\n    </item>
   </plurals>
-  <plurals name="ongoing_topic_count" fuzzy="true">
+  <plurals name="ongoing_topic_count">
     <item quantity="one">1 Tópico em Andamento\n    </item>
     <item quantity="zero">%s Tópicos em Andamento\n    </item>
     <item quantity="other">\n      %s Tópicos em Andamento\n    </item>
@@ -331,6 +361,7 @@
   <string name="story_completed">História Concluída</string>
   <string name="options_activity_title">Opções</string>
   <string name="completed_story_list_activity_title">Histórias Concluídas</string>
+  <string name="walkthrough_activity_title">Passo a passo do Aplicativo</string>
   <string name="walkthrough_welcome_description">Aprenda novas habilidades matemáticas com histórias que mostram como usá-las no seu dia a dia</string>
   <string name="welcome">\"Bem-vindo %s!\"</string>
   <string name="what_do_you_want_to_learn">O que você quer aprender?</string>
@@ -341,6 +372,7 @@
   <string name="pick_a_different_topic">Escolha um\ntópico diferente.</string>
   <string name="are_you_interested">Você está interessado em:\n%s?</string>
   <string name="new_hint_available">Nova dica disponível</string>
+  <string name="no_new_hint_available">Nova dica disponível</string>
   <string name="show_hints_and_solution">Mostrar dicas e solução</string>
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
@@ -352,19 +384,20 @@
   <string name="this_will_reveal_the_solution">Isso revelará a solução. Tem certeza?</string>
   <string name="reveal">Revelar</string>
   <string name="just_now">Agora</string>
+  <string name="last_logged_in_recently">recentemente</string>
   <string name="time_ago">%s atrás</string>
   <string name="yesterday">ontem</string>
   <string name="return_to_topic">Voltar ao tópico</string>
   <string name="explanation">Explicação:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">Se dois itens forem iguais, junte-os.</string>
-  <string name="link_to_item_below" fuzzy="true">Vincular para o item %s</string>
+  <string name="link_to_item_below">Link para o item %s</string>
   <string name="unlink_items">Desvincular itens em %s</string>
   <string name="move_item_down_content_description">Mover o item para baixo para %s</string>
   <string name="move_item_up_content_description">Mover o item para cima para %s</string>
   <string name="up_button_disabled">Para cima</string>
   <string name="down_button_disabled">Para baixo</string>
   <string name="profile_last_visited">%s %s</string>
-  <plurals name="minutes" fuzzy="true">
+  <plurals name="minutes">
     <item quantity="one">um minuto</item>
     <item quantity="other">%s minutos</item>
   </plurals>
@@ -376,6 +409,8 @@
     <item quantity="one">um dia</item>
     <item quantity="other">%s dias</item>
   </plurals>
+  <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
+  <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Por favor, selecione pelo menos uma opção.</string>
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
@@ -428,4 +463,6 @@
   <string name="faq_answer_7">&lt;p&gt;Se o seu áudio não estiver tocando&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique se o aplicativo está atualizado:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Acesse a Play Store e certifique-se de que o aplicativo esteja atualizado com a versão mais recente &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Verifique sua conexão com a internet:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Se sua conexão com a Internet estiver lenta, tente se reconectar à rede Wi-Fi ou conectar-se a uma rede diferente. A Internet lenta pode fazer com que o áudio carregue irregularmente, dificultando a reprodução. &lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Peça ao administrador para verificar o dispositivo e a conexão com a Internet:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Peça ao administrador para solucionar o problema usando as etapas acima&lt;/li&gt; &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Informe-nos se você ainda tiver problemas com o carregamento:&lt;/p&gt;&lt;p&gt; &lt;li&gt; Relate um problema entrando em contato conosco em admin@oppia.org. &lt;/li&gt;&lt;/p&gt;</string>
   <string name="faq_answer_8">&lt;p&gt;Para baixar uma Exploração&lt;/p&gt;&lt;p&gt;1. Na página inicial, toque em um Tópico ou Exploração.&lt;/p&gt;&lt;p&gt;2. Na Página do Tópico, toque em &lt;strong&gt;Info&lt;/strong&gt; aba.&lt;/p&gt;&lt;p&gt;3. Toque em &lt;strong&gt;Baixar Tópico&lt;/strong&gt;. &lt;/p&gt;&lt;p&gt;4. Dependendo das configurações do aplicativo, você pode precisar da aprovação do Administrador ou de uma conexão Wifi estável para concluir o download. Se necessário, uma vez que esses requisitos sejam satisfeitos, o Tópico foi baixado para o dispositivo e pode ser usado offline por todos os perfis. &lt;p&gt;</string>
   <string name="faq_answer_9">&lt;p&gt;Se você não consegue encontrar sua pergunta ou gostaria de relatar um problema, entre em contato conosco em admin@oppia.org.&lt;/p&gt;</string>
+  <string name="profile_edit_fragment_test_activity_label">Atividade de Teste de Fragmento de Edição de Perfil</string>
+  <string name="administrator_controls_fragment_test_activity_label">Controle Administrativo da Atividade de Teste de Fragmento</string>
 </resources>
