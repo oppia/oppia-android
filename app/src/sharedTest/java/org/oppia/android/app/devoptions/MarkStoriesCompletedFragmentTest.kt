@@ -264,6 +264,7 @@ class MarkStoriesCompletedFragmentTest {
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 2)
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 3)
       verifyItemUncheckedOnStorySummaryListItem(itemPosition = 4)
+      onView(withId(R.id.mark_stories_completed_all_check_box)).check(matches(not(isChecked())))
     }
   }
 

@@ -403,6 +403,7 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
       verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
     }
   }
 

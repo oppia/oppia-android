@@ -318,6 +318,7 @@ class MarkTopicsCompletedFragmentTest {
       verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 1)
       verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 2)
       verifyItemUncheckedOnTopicSummaryListItem(itemPosition = 3)
+      onView(withId(R.id.mark_topics_completed_all_check_box)).check(matches(not(isChecked())))
     }
   }
 
