@@ -219,7 +219,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # End-to-end test utilities and modules.
-/instrumentation/src/java/**/*.kt @BenHenning
+/instrumentation/**/*.kt @BenHenning
 
 #####################################################################################
 #                                global overrides                                   #
