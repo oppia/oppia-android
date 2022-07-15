@@ -37,11 +37,13 @@ class PerformanceMetricsLogger @Inject constructor(
    * Logs the apk size of the application as a performance metric for the current state of the app.
    * It must be noted that the value of this metric won't change across calls during the same
    * session.
+   *
+   * @param [currentScreen] denotes the application screen at which this metric has been logged.
    */
-  fun logApkSize() {
+  fun logApkSize(currentScreen: OppiaMetricLog.CurrentScreen) {
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
-      OppiaMetricLog.CurrentScreen.HOME_SCREEN,
+      currentScreen,
       createApkSizeLoggableMetric(performanceMetricsUtils.getApkSize())
     )
   }
@@ -50,11 +52,13 @@ class PerformanceMetricsLogger @Inject constructor(
    * Logs the storage usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
    * session.
+   *
+   * @param [currentScreen] denotes the application screen at which this metric has been logged.
    */
-  fun logStorageUsage() {
+  fun logStorageUsage(currentScreen: OppiaMetricLog.CurrentScreen) {
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
-      OppiaMetricLog.CurrentScreen.HOME_SCREEN,
+      currentScreen,
       createStorageUsageLoggableMetric(performanceMetricsUtils.getUsedStorage())
     )
   }
@@ -62,13 +66,15 @@ class PerformanceMetricsLogger @Inject constructor(
   /**
    * Logs the startup latency of the application as a performance metric for the current state of
    * the app. This metric should only be logged when the application starts.
+   *
+   * @param [currentScreen] denotes the application screen at which this metric has been logged.
    */
-  fun logStartupLatency() {
+  fun logStartupLatency(currentScreen: OppiaMetricLog.CurrentScreen) {
     val startupLatency = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (startupLatency >= 0) {
       performanceMetricsController.logLowPriorityMetricEvent(
         oppiaClock.getCurrentTimeMs(),
-        OppiaMetricLog.CurrentScreen.HOME_SCREEN,
+        currentScreen,
         createStartupLatencyLoggableMetric(startupLatency)
       )
     }
@@ -78,11 +84,13 @@ class PerformanceMetricsLogger @Inject constructor(
    * Logs the memory usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
    * session.
+   *
+   * @param [currentScreen] denotes the application screen at which this metric has been logged.
    */
-  fun logMemoryUsage() {
+  fun logMemoryUsage(currentScreen: OppiaMetricLog.CurrentScreen) {
     performanceMetricsController.logMediumPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
+      currentScreen,
       createMemoryUsageLoggableMetric(performanceMetricsUtils.getTotalPssUsed())
     )
   }
@@ -91,11 +99,13 @@ class PerformanceMetricsLogger @Inject constructor(
    * Logs the network usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
    * session.
+   *
+   * @param [currentScreen] denotes the application screen at which this metric has been logged.
    */
-  fun logNetworkUsage() {
+  fun logNetworkUsage(currentScreen: OppiaMetricLog.CurrentScreen) {
     performanceMetricsController.logHighPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
+      currentScreen,
       createNetworkUsageLoggableMetric(
         performanceMetricsUtils.getTotalReceivedBytes(),
         performanceMetricsUtils.getTotalSentBytes()
@@ -107,11 +117,13 @@ class PerformanceMetricsLogger @Inject constructor(
    * Logs the cpu usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
    * session.
+   *
+   * @param [currentScreen] denotes the application screen at which this metric has been logged.
    */
-  fun logCpuUsage(cpuUsage: Long) {
+  fun logCpuUsage(cpuUsage: Long, currentScreen: OppiaMetricLog.CurrentScreen) {
     performanceMetricsController.logHighPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
+      currentScreen,
       createCpuUsageLoggableMetric(cpuUsage)
     )
   }

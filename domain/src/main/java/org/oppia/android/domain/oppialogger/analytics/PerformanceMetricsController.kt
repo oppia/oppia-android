@@ -131,7 +131,7 @@ class PerformanceMetricsController @Inject constructor(
    * Returns the index of the least recent event from the existing store on the basis of recency and
    * priority.
    *
-   * At first, it checks the index of the least recent event which has LOW priority. If that
+   * At first, it checks the index of the least recent event which has MEDIUM priority. If that
    * returns null, then it checks the index of the least recent event regardless of the
    * priority is returned.
    */

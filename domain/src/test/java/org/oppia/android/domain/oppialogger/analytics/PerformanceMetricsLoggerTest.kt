@@ -86,7 +86,7 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsUtils.isAppInForeground()
-    performanceMetricsLogger.logApkSize()
+    performanceMetricsLogger.logApkSize(HOME_SCREEN)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -105,7 +105,7 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsUtils.isAppInForeground()
-    performanceMetricsLogger.logStorageUsage()
+    performanceMetricsLogger.logStorageUsage(HOME_SCREEN)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -126,7 +126,7 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsUtils.isAppInForeground()
-    performanceMetricsLogger.logMemoryUsage()
+    performanceMetricsLogger.logMemoryUsage(SCREEN_UNSPECIFIED)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -144,7 +144,7 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsUtils.isAppInForeground()
-    performanceMetricsLogger.logStartupLatency()
+    performanceMetricsLogger.logStartupLatency(HOME_SCREEN)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -165,7 +165,7 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsUtils.isAppInForeground()
-    performanceMetricsLogger.logCpuUsage(TEST_CPU_USAGE)
+    performanceMetricsLogger.logCpuUsage(TEST_CPU_USAGE, SCREEN_UNSPECIFIED)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -185,7 +185,7 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsUtils.isAppInForeground()
-    performanceMetricsLogger.logNetworkUsage()
+    performanceMetricsLogger.logNetworkUsage(SCREEN_UNSPECIFIED)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
