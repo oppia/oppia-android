@@ -423,7 +423,7 @@ class PerformanceMetricsControllerTest {
   }
 
   @Test
-  fun testController_setAppInBackground_getIsAppInForeground_returnsCorrectValue(){
+  fun testController_setAppInBackground_getIsAppInForeground_returnsCorrectValue() {
     performanceMetricsController.setAppInBackground()
 
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -432,7 +432,7 @@ class PerformanceMetricsControllerTest {
   }
 
   @Test
-  fun testController_setAppInForeground_getIsAppInForeground_returnsCorrectValue(){
+  fun testController_setAppInForeground_getIsAppInForeground_returnsCorrectValue() {
     performanceMetricsController.setAppInForeground()
 
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
