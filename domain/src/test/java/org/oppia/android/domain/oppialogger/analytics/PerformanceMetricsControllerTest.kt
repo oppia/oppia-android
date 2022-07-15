@@ -378,6 +378,68 @@ class PerformanceMetricsControllerTest {
     assertThat(secondMetricLog.timestampMillis).isEqualTo(1556094110000)
   }
 
+  @Test
+  fun testController_setAppInForeground_logMetric_logsMetricWithAppInForeground() {
+    performanceMetricsController.setAppInForeground()
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val performanceMetricsLog =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
+    assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
+      APK_SIZE_METRIC
+    )
+    assertThat(performanceMetricsLog.isAppInForeground).isTrue()
+  }
+
+  @Test
+  fun testController_setAppInBackground_logMetric_logsMetricWithAppInBackground() {
+    performanceMetricsController.setAppInBackground()
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val performanceMetricsLog =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
+    assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
+      APK_SIZE_METRIC
+    )
+    assertThat(performanceMetricsLog.isAppInForeground).isFalse()
+  }
+
+  @Test
+  fun testController_setAppInBackground_getIsAppInForeground_returnsCorrectValue(){
+    performanceMetricsController.setAppInBackground()
+
+    val isAppInForeground = performanceMetricsController.getIsAppInForeground()
+
+    assertThat(isAppInForeground).isFalse()
+  }
+
+  @Test
+  fun testController_setAppInForeground_getIsAppInForeground_returnsCorrectValue(){
+    performanceMetricsController.setAppInForeground()
+
+    val isAppInForeground = performanceMetricsController.getIsAppInForeground()
+
+    assertThat(isAppInForeground).isTrue()
+  }
+
   private fun logMultiplePerformanceMetrics() {
     performanceMetricsController.logPerformanceMetricsEvent(
       1556094120000,

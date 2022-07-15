@@ -108,7 +108,7 @@ class PerformanceMetricsController @Inject constructor(
       this.priority = priority
       this.currentScreen = currentScreen
       this.loggableMetric = loggableMetric
-      this.isAppInForeground = isAppInForeground
+      this.isAppInForeground = this@PerformanceMetricsController.isAppInForeground
       this.storageTier = performanceMetricsUtils.getDeviceStorageTier()
       this.memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     }.build()
