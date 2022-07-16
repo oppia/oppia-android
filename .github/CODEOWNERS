@@ -50,9 +50,6 @@ gradlew.bat @BenHenning
 # Devbots configurations.
 /.devbots/ @BenHenning
 
-# All tests.
-*Test.kt @anandwana001
-
 # All resource files.
 /app/src/main/res/**/*.xml @rt4914
 /utility/src/main/res/**/*.xml @rt4914
@@ -72,7 +69,7 @@ gradlew.bat @BenHenning
 *Manifest.xml @BenHenning
 
 # Linter configuration.
-buf.yaml @anandwana001
+buf.yaml @BenHenning
 
 # Third-party dependencies.
 /third_party/ @BenHenning
@@ -144,7 +141,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 /app/src/*/java/org/oppia/android/app/viewmodel/ @BenHenning
 
 # App testing infrastructure.
-/app/src/*/java/org/oppia/android/app/testing/ @anandwana001
+/app/src/*/java/org/oppia/android/app/testing/ @BenHenning
 
 #####################################################################################
 #                                  domain module                                    #
@@ -164,7 +161,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global testing module code ownership.
-/testing/**/*.kt @anandwana001 @BenHenning
+/testing/**/*.kt @BenHenning
 
 #####################################################################################
 #                                    data module                                    #
@@ -200,9 +197,6 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Global scripts code ownership.
 /scripts/ @BenHenning
 
-# Shell file ownership.
-/scripts/**/*.sh @anandwana001 @BenHenning
-
 # Script proto ownership.
 /scripts/**/*.proto @BenHenning
 
@@ -225,7 +219,7 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # End-to-end test utilities and modules.
-/instrumentation/src/java/**/*.kt @anandwana001 @BenHenning
+/instrumentation/**/*.kt @BenHenning
 
 #####################################################################################
 #                                global overrides                                   #
