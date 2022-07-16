@@ -432,18 +432,18 @@ class ListItemLeadingMarginSpanTest {
 
     val shadowCanvas = shadowOf(canvas)
     // The below assertion verifies the 1st item of inner level list
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isEqualTo(72.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(0.0f)
     // The below assertion verifies the 2nd item of inner level list
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isEqualTo(72.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(0.0f)
 
     // The below assertion verifies the 1st item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnCircle(2).centerY).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(0.0f)
     // The below assertion verifies the 2nd item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnCircle(3).centerY).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(0.0f)
   }
 
   @Test
@@ -536,23 +536,23 @@ class ListItemLeadingMarginSpanTest {
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
     // The below assertion verifies the 1st item of inner level list
-    assertThat(shadowCanvas.getDrawnTextEvent(0).x).isEqualTo(72.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(0).y).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).x).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).y).isWithin(1e-5f).of(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(0).text).isEqualTo("1.")
 
     // The below assertion verifies the 2nd item of inner level list
-    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isEqualTo(72.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(1).y).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).y).isWithin(1e-5f).of(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(1).text).isEqualTo("2.")
 
     // The below assertion verifies the 1st item of outer level list
-    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(2).y).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).y).isWithin(1e-5f).of(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(2).text).isEqualTo("1.")
 
     // The below assertion verifies the 2nd item of outer level list
-    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isEqualTo(24.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(3).y).isEqualTo(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).y).isWithin(1e-5f).of(0.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("2.")
   }
 
