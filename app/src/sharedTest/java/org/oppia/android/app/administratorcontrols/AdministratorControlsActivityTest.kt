@@ -197,7 +197,6 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
-
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
