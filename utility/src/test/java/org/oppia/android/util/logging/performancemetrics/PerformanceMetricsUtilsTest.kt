@@ -174,20 +174,6 @@ class PerformanceMetricsUtilsTest {
     assertThat(apkSize).isEqualTo(testApkSize)
   }
 
-  @Test
-  fun testPerformanceMetricsUtils_putAppInForeground_verifyIsAppInForegroundReturnsCorrectValue() {
-    performanceMetricsUtils.onAppInForeground()
-
-    assertThat(performanceMetricsUtils.isAppInForeground()).isTrue()
-  }
-
-  @Test
-  fun testPerformanceMetricsUtils_putAppInBackground_verifyIsAppInForegroundReturnsCorrectValue() {
-    performanceMetricsUtils.onAppInBackground()
-
-    assertThat(performanceMetricsUtils.isAppInForeground()).isFalse()
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
