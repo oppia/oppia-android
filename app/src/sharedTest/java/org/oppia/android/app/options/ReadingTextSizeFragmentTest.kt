@@ -97,6 +97,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 // TODO(#1815): Remove these duplicate values once Screenshot tests are implemented.
 private const val SMALL_TEXT_SIZE_SCALE = 0.8f
@@ -314,7 +315,7 @@ class ReadingTextSizeFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

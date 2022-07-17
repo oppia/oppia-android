@@ -110,6 +110,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
 private const val TOPIC_NAME = "Fractions"
@@ -490,7 +491,7 @@ class TopicInfoFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

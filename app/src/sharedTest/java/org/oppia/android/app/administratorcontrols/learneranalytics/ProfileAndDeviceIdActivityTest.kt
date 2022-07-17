@@ -93,6 +93,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 /** Tests for [ProfileAndDeviceIdActivity]. */
 // Function name: test names are conventionally named with underscores.
@@ -198,7 +199,7 @@ class ProfileAndDeviceIdActivityTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       SyncStatusModule::class, SplitScreenInteractionModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class
+      MathEquationInputModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

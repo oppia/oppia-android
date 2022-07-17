@@ -111,6 +111,7 @@ import retrofit2.mock.MockRetrofit
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 /** Tests to verify the working of Platform Parameter Architecture. */
 @RunWith(AndroidJUnit4::class)
@@ -360,7 +361,7 @@ class PlatformParameterIntegrationTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

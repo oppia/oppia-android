@@ -112,6 +112,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 // TODO(#277): Add tests for UrlImageParser.
 /** Tests for [HtmlParser]. */
@@ -710,7 +711,7 @@ class HtmlParserTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

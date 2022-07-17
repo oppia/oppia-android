@@ -88,6 +88,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 @RunWith(AndroidJUnit4::class)
 @Config(
@@ -197,7 +198,7 @@ class AdministratorControlsFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

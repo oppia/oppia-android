@@ -122,6 +122,20 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -632,6 +646,54 @@ class ProfileAndDeviceIdFragmentTest {
     @CacheLatexRendering
     fun provideCacheLatexRendering(): PlatformParameterValue<Boolean> =
       PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
+
+    @Provides
+    @EnablePerformanceMetricsCollection
+    fun provideEnablePerformanceMetricCollection(
+      platformParameterSingleton: PlatformParameterSingleton
+    ): PlatformParameterValue<Boolean> {
+      return platformParameterSingleton.getBooleanPlatformParameter(
+        ENABLE_PERFORMANCE_METRICS_COLLECTION
+      ) ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @PerformanceMetricsCollectionUploadTimeIntervalInMinutes
+    fun providePerformanceMetricsCollectionUploadTimeIntervalInMinutes(
+      platformParameterSingleton: PlatformParameterSingleton
+    ): PlatformParameterValue<Int> {
+      return platformParameterSingleton.getIntegerPlatformParameter(
+        PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+      ) ?: PlatformParameterValue.createDefaultParameter(
+        PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      )
+    }
+
+    @Provides
+    @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
+    fun providePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(
+      platformParameterSingleton: PlatformParameterSingleton
+    ): PlatformParameterValue<Int> {
+      return platformParameterSingleton.getIntegerPlatformParameter(
+        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+      ) ?: PlatformParameterValue.createDefaultParameter(
+        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      )
+    }
+
+    @Provides
+    @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
+    fun providePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(
+      platformParameterSingleton: PlatformParameterSingleton
+    ): PlatformParameterValue<Int> {
+      return platformParameterSingleton.getIntegerPlatformParameter(
+        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+      ) ?: PlatformParameterValue.createDefaultParameter(
+        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      )
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -658,7 +720,7 @@ class ProfileAndDeviceIdFragmentTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       SyncStatusModule::class, SplitScreenInteractionModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class
+      MathEquationInputModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

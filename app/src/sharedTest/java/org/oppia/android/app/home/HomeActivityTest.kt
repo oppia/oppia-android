@@ -138,6 +138,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -1752,7 +1753,7 @@ class HomeActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
