@@ -150,7 +150,7 @@ class PerformanceMetricsUtilsTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnssCorrectApkSize() {
+  fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
     val applicationInfo = ApplicationInfo()
     val testApkSize = (File(TEST_APP_PATH).length() / 1024)
     applicationInfo.apply {
