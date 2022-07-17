@@ -20,6 +20,7 @@
   <color name="color_palette_light_description_text_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_primary_background_color">@color/color_def_white</color>
   <color name="color_palette_hint_text_color">@color/color_def_spanish_grey</color>
+  <color name="color_palette_hint_text_input_interaction_color">@color/color_def_spanish_grey</color>
   <color name="color_palette_secondary_background_color">@color/color_def_bright_grey</color>
   <color name="color_palette_primary_container_background_color">@color/color_def_white</color>
   <color name="color_palette_icon_background_color">@color/color_def_black</color>

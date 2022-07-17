@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
   <corners android:radius="4dp" />
-  <solid android:color="@color/component_color_shared_text_input_layout_background_color" />
+  <solid android:color="@color/component_color_shared_input_interaction_edit_text_background_color" />
   <stroke
     android:width="1dp"
     android:color="@color/component_color_shared_input_interaction_edit_text_not_selected_border_color" />
