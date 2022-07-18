@@ -13,7 +13,7 @@ import javax.inject.Provider
 class ViewModelBridgeFactory<V : ViewModel> @Inject constructor(
   private val viewModelProvider: Provider<V>
 ) : ViewModelProvider.Factory {
-  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+  override fun <T : ViewModel> create(modelClass: Class<T>): T {
     val viewModel = viewModelProvider.get()
     // Check whether the user accidentally switched the types during provider retrieval. ViewModelProvider is meant to
     // guard against this from happening by ensuring the two types remain the same.

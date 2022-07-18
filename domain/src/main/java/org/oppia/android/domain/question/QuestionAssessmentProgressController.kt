@@ -437,7 +437,7 @@ class QuestionAssessmentProgressController @Inject constructor(
       when {
         commandQueue == null ->
           AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
-        !commandQueue.offer(message) ->
+        !commandQueue.trySend(message).isSuccess ->
           AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
         // Ensure that the result is first reset since there will be a delay before the message is
         // processed (if there's a flow).
