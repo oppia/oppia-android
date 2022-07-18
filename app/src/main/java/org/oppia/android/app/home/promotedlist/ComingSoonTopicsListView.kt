@@ -33,9 +33,6 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   lateinit var oppiaLogger: OppiaLogger
 
   @Inject
-  lateinit var fragment: Fragment
-
-  @Inject
   lateinit var singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   override fun onAttachedToWindow() {

@@ -35,7 +35,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController,
-  private val multiTypeAdapterFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeAdapterFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -207,8 +208,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .Factory(fragment).create<ChapterSummaryViewModel>()
+    return singleTypeBuilderFactory.create<ChapterSummaryViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = LessonsChapterViewBinding::inflate,
         setViewModel = LessonsChapterViewBinding::setViewModel

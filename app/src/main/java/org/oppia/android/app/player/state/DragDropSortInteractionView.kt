@@ -54,9 +54,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   lateinit var viewBindingShim: ViewBindingShim
 
   @Inject
-  lateinit var fragment: Fragment
-
-  @Inject
   lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var entityId: String

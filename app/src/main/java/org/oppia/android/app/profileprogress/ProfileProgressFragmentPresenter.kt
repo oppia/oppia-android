@@ -20,14 +20,10 @@ private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val viewModel: ProfileProgressViewModel,
+  private val multiTypeAdapterBuilder: BindableAdapter.MultiTypeBuilder.Factory
 ) {
-
-  @Inject
-  lateinit var viewModel: ProfileProgressViewModel
-
-  @Inject
-  lateinit var multiTypeAdapterBuilder: BindableAdapter.MultiTypeBuilder.Factory
 
   fun handleCreateView(
     inflater: LayoutInflater,

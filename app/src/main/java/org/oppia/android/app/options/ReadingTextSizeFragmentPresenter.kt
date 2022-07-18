@@ -53,7 +53,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TextSizeItemsBinding::inflate,
         setViewModel = TextSizeItemsBinding::setViewModel
-      ).setLifecycleOwner(fragment)
+      )
       .build()
   }
 

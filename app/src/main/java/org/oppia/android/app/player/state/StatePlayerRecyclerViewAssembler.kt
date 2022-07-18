@@ -887,11 +887,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val interactionViewModelFactoryMap: Map<String, InteractionItemFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val resourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController
+    private val translationController: TranslationController,
+    private val adapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+    private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
   ) {
 
-    private lateinit var adapterBuilder:
-      BindableAdapter.MultiTypeBuilder<StateItemViewModel, StateItemViewModel.ViewType>
+    private var adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
+      StateItemViewModel.ViewType> = adapterBuilderFactory.create { it.viewType }
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1116,8 +1118,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
-      return BindableAdapter.SingleTypeBuilder
-        .Factory(fragment).create<StringList>()
+      return singleAdapterFactory.create<StringList>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedAnswerListItemBinding.inflate(
@@ -1138,8 +1139,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
-      return BindableAdapter.SingleTypeBuilder
-        .Factory(fragment).create<String>()
+      return singleAdapterFactory.create<String>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedHtmlAnswerItemBinding.inflate(
@@ -1181,17 +1181,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           binding.submittedAnswerTextView.visibility = View.GONE
         }
       }
-    }
-
-    /**
-     * Add AdapterBuilderFactory passed through injection from [StateFragmentPresenter]
-     */
-    fun addAdapterBuilderFactory
-    (multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory): Builder {
-      adapterBuilder = multiTypeBuilderFactory.create {
-        it.viewType
-      }
-      return this
     }
 
     /**
@@ -1400,7 +1389,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         String, @JvmSuppressWildcards InteractionItemFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
       private val resourceHandler: AppLanguageResourceHandler,
-      private val translationController: TranslationController
+      private val translationController: TranslationController,
+      private val multiAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1418,7 +1409,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interactionViewModelFactoryMap,
           backgroundCoroutineDispatcher,
           resourceHandler,
-          translationController
+          translationController,
+          multiAdapterBuilderFactory,
+          singleAdapterFactory
         )
       }
     }

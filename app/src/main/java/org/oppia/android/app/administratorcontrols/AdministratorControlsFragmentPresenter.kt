@@ -31,7 +31,8 @@ import javax.inject.Inject
 @FragmentScope
 class AdministratorControlsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val multiTypeBuilder: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -77,8 +78,8 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
   /** Returns the recycler view adapter for the controls panel in  administrator controls fragment. */
   private fun createRecyclerViewAdapter(isMultipane: Boolean):
     BindableAdapter<AdministratorControlsItemViewModel> {
-      return BindableAdapter.MultiTypeBuilder
-        .Factory(fragment).create<AdministratorControlsItemViewModel, ViewType> { viewModel ->
+      return multiTypeBuilder
+        .create<AdministratorControlsItemViewModel, ViewType> { viewModel ->
           viewModel.isMultipane.set(isMultipane)
           when (viewModel) {
             is AdministratorControlsGeneralViewModel -> {
