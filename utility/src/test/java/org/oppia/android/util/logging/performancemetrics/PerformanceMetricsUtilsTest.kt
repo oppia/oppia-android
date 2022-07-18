@@ -150,7 +150,7 @@ class PerformanceMetricsUtilsTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnssCorrectApkSize() {
+  fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
     val applicationInfo = ApplicationInfo()
     val testApkSize = (File(TEST_APP_PATH).length() / 1024)
     applicationInfo.apply {
@@ -172,20 +172,6 @@ class PerformanceMetricsUtilsTest {
 
     val apkSize = performanceMetricsUtils.getApkSize()
     assertThat(apkSize).isEqualTo(testApkSize)
-  }
-
-  @Test
-  fun testPerformanceMetricsUtils_putAppInForeground_verifyIsAppInForegroundReturnsCorrectValue() {
-    performanceMetricsUtils.onAppInForeground()
-
-    assertThat(performanceMetricsUtils.isAppInForeground()).isTrue()
-  }
-
-  @Test
-  fun testPerformanceMetricsUtils_putAppInBackground_verifyIsAppInForegroundReturnsCorrectValue() {
-    performanceMetricsUtils.onAppInBackground()
-
-    assertThat(performanceMetricsUtils.isAppInForeground()).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {

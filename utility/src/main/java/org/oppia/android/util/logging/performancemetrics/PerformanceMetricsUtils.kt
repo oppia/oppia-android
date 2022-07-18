@@ -4,18 +4,16 @@ import android.app.ActivityManager
 import android.app.Application
 import android.content.Context
 import android.net.TrafficStats
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.ConsoleLogger
 import java.io.File
 import javax.inject.Inject
 
+/** Utility to extract performance metrics from the underlying android system. */
 class PerformanceMetricsUtils @Inject constructor(
   private val context: Application,
   private val consoleLogger: ConsoleLogger
-) : LifecycleObserver {
+) {
 
   // Keep the default value as false as the app is considered to be in the background until it comes
   // to foreground.
@@ -108,19 +106,4 @@ class PerformanceMetricsUtils @Inject constructor(
       else -> OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
     }
   }
-
-  /** Occurs when application comes to foreground. */
-  @OnLifecycleEvent(Lifecycle.Event.ON_START)
-  fun onAppInForeground() {
-    isAppInForeground = true
-  }
-
-  /** Occurs when application goes to background. */
-  @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-  fun onAppInBackground() {
-    isAppInForeground = false
-  }
-
-  /** Returns a boolean value indicating whether the application is in foreground or not. */
-  fun isAppInForeground(): Boolean = isAppInForeground
 }

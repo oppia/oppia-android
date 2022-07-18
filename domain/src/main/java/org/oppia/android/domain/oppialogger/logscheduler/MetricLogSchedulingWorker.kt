@@ -27,8 +27,19 @@ class MetricLogSchedulingWorker private constructor(
 ) : ListenableWorker(context, params) {
 
   companion object {
-    const val WORKER_CASE_KEY = "worker_case_key"
-    const val TAG = "LogGenerationWorker.tag"
+    private const val TAG = "MetricLogSchedulingWorker"
+    /**
+     * Input data for the worker consists of a key-value pair on the basis of which work is done.
+     *
+     * [WORKER_CASE_KEY] is the key for that data.
+     * When [PERIODIC_METRIC_WORKER] is the value, the worker schedules logging of periodic
+     * performance metrics.
+     * When [STORAGE_USAGE_WORKER] is the value, the worker schedules logging of storage usage
+     * performance metrics.
+     * When [MEMORY_USAGE_WORKER] is the value, the worker schedules logging of memory usage
+     * performance metrics.
+     */
+    const val WORKER_CASE_KEY = "metric_log_scheduling_worker_case_key"
     const val PERIODIC_METRIC_WORKER = "periodic_metric_worker"
     const val STORAGE_USAGE_WORKER = "storage_usage_worker"
     const val MEMORY_USAGE_WORKER = "memory_usage_worker"
@@ -59,8 +70,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logNetworkUsage()
-      // TODO(#4334): Add functionality to log cpu usage performance metric.
+      // TODO(#4340): Add functionality to log cpu and network usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -70,7 +80,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleStorageUsageMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logStorageUsage()
+      // TODO(#4340): Add functionality to log storage usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -80,7 +90,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleMemoryUsageMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logMemoryUsage()
+      // TODO(#4340): Add functionality to log memory usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)

@@ -25,7 +25,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FakePerformanceMetricsEventLoggerTest]. */
+/** Tests for [FakePerformanceMetricsEventLogger]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -33,8 +33,10 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class FakePerformanceMetricsEventLoggerTest {
 
-  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
+  @Inject
+  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject
+  lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
 
   private val metricLog1 = OppiaMetricLog.newBuilder().setPriority(HIGH_PRIORITY).build()
   private val metricLog2 = OppiaMetricLog.newBuilder().setPriority(MEDIUM_PRIORITY).build()
@@ -86,11 +88,9 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-    val eventException = assertThrows(NoSuchElementException::class) {
+    assertThrows(NoSuchElementException::class) {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     }
-
-    assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
   }
 
   @Test

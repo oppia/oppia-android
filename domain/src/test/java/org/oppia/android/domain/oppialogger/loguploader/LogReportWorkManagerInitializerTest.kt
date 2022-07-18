@@ -185,9 +185,9 @@ class LogReportWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForExceptions()).isEqualTo(
-      workerCaseForUploadingExceptions
-    )
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForExceptions()
+    ).isEqualTo(workerCaseForUploadingExceptions)
   }
 
   @Test
@@ -215,9 +215,7 @@ class LogReportWorkManagerInitializerTest {
 
     assertThat(
       logReportWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
-    ).isEqualTo(
-      workerCaseForSchedulingStorageUsageMetricLogs
-    )
+    ).isEqualTo(workerCaseForSchedulingStorageUsageMetricLogs)
   }
 
   @Test
@@ -231,9 +229,7 @@ class LogReportWorkManagerInitializerTest {
 
     assertThat(
       logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicPerformanceMetricLogs()
-    ).isEqualTo(
-      workerCaseForSchedulingPeriodicPerformanceMetricLogs
-    )
+    ).isEqualTo(workerCaseForSchedulingPeriodicPerformanceMetricLogs)
   }
 
   @Test
@@ -247,13 +243,11 @@ class LogReportWorkManagerInitializerTest {
 
     assertThat(
       logReportWorkManagerInitializer.getWorkRequestDataForSchedulingMemoryUsageMetricLogs()
-    ).isEqualTo(
-      workerCaseForSchedulingMemoryUsageMetricLogs
-    )
+    ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLogUploadWorkManagerInitializerTest_TestApplicationComponent.builder()
+    DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

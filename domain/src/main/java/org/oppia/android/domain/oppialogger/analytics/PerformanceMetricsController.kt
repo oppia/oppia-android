@@ -17,8 +17,8 @@ import javax.inject.Inject
 /**
  * Controller for handling performance metrics event logging.
  *
- * Callers should not use this class directly; instead, they should use ``OppiaLogger`` which
- * provides convenience log methods.
+ * Callers should not use this class directly; instead, they should use ``PerformanceMetricsLogger``
+ * which provides convenience log methods.
  */
 class PerformanceMetricsController @Inject constructor(
   private val performanceMetricsUtils: PerformanceMetricsUtils,
@@ -29,6 +29,8 @@ class PerformanceMetricsController @Inject constructor(
   cacheStoreFactory: PersistentCacheStore.Factory,
   @PerformanceMetricsLogStorageCacheSize private val metricLogStorageCacheSize: Int
 ) {
+
+  private var isAppInForeground: Boolean = false
 
   private val metricLogStore =
     cacheStoreFactory.create("metric_logs", OppiaMetricLogs.getDefaultInstance())
@@ -106,7 +108,7 @@ class PerformanceMetricsController @Inject constructor(
       this.priority = priority
       this.currentScreen = currentScreen
       this.loggableMetric = loggableMetric
-      this.isAppInForeground = performanceMetricsUtils.isAppInForeground()
+      this.isAppInForeground = this@PerformanceMetricsController.isAppInForeground
       this.storageTier = performanceMetricsUtils.getDeviceStorageTier()
       this.memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     }.build()
@@ -124,24 +126,22 @@ class PerformanceMetricsController @Inject constructor(
   private fun getLeastRecentMetricLogIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
     oppiaMetricLogs.oppiaMetricLogList.withIndex()
       .filter { it.value.priority == Priority.LOW_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index ?: getLeastRecentMediumPriorityEventIndex(
-      oppiaMetricLogs
-    )
+      .minByOrNull { it.value.timestampMillis }?.index
+      ?: getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs)
 
   /**
    * Returns the index of the least recent event from the existing store on the basis of recency and
    * priority.
    *
-   * At first, it checks the index of the least recent event which has LOW priority. If that
+   * At first, it checks the index of the least recent event which has MEDIUM priority. If that
    * returns null, then it checks the index of the least recent event regardless of the
    * priority is returned.
    */
   private fun getLeastRecentMediumPriorityEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
     oppiaMetricLogs.oppiaMetricLogList.withIndex()
       .filter { it.value.priority == Priority.MEDIUM_PRIORITY }
-      .minByOrNull { it.value.timestampMillis }?.index ?: getLeastRecentGeneralEventIndex(
-      oppiaMetricLogs
-    )
+      .minByOrNull { it.value.timestampMillis }?.index
+      ?: getLeastRecentGeneralEventIndex(oppiaMetricLogs)
 
   /** Returns the index of the least recent event regardless of their priority. */
   private fun getLeastRecentGeneralEventIndex(oppiaMetricLogs: OppiaMetricLogs): Int? =
@@ -157,7 +157,7 @@ class PerformanceMetricsController @Inject constructor(
    * As we are using the await call on the deferred output of readDataAsync, the failure case would
    * be caught and it'll throw an error.
    */
-  suspend fun getMetricLogStoreList(): MutableList<OppiaMetricLog> {
+  suspend fun getMetricLogStoreList(): List<OppiaMetricLog> {
     return metricLogStore.readDataAsync().await().oppiaMetricLogList
   }
 
@@ -175,4 +175,17 @@ class PerformanceMetricsController @Inject constructor(
       }
     }
   }
+
+  /** Sets [isAppInForeground] to true when application is in or returns to foreground. */
+  fun setAppInForeground() {
+    isAppInForeground = true
+  }
+
+  /** Sets [isAppInForeground] to false when application goes to background. */
+  fun setAppInBackground() {
+    isAppInForeground = false
+  }
+
+  /** Returns a boolean value indicating whether the application is currently in foreground or not. */
+  fun getIsAppInForeground() = isAppInForeground
 }
