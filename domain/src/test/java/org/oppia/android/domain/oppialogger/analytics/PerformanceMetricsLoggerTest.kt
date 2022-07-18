@@ -3,7 +3,6 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -12,6 +11,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.HOME_SCREEN
 import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
@@ -45,6 +46,8 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -56,7 +59,7 @@ private const val TEST_CPU_USAGE = Long.MAX_VALUE
 /** Tests for [PerformanceMetricsLoggerTest]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsLoggerTest.TestApplication::class)
 class PerformanceMetricsLoggerTest {
@@ -76,8 +79,12 @@ class PerformanceMetricsLoggerTest {
   @Inject
   lateinit var performanceMetricsUtils: PerformanceMetricsUtils
 
+  @Mock
+  lateinit var context: Context
+
   @Before
   fun setUp() {
+    MockitoAnnotations.initMocks(this)
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
@@ -104,7 +111,7 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logStorageUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    val storageUsage = performanceMetricsUtils.getUsedStorage()
+    val storageUsage = getStorageUsage()
     val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
     val storageTier = performanceMetricsUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -204,6 +211,14 @@ class PerformanceMetricsLoggerTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun getStorageUsage(): Long {
+    val persistentUsage =
+      RuntimeEnvironment.application.filesDir.totalSpace - RuntimeEnvironment.application.filesDir.freeSpace
+    val cacheUsage =
+      RuntimeEnvironment.application.cacheDir.totalSpace - RuntimeEnvironment.application.cacheDir.freeSpace
+    return persistentUsage + cacheUsage
   }
 
   // TODO(#89): Move this to a common test application component.
