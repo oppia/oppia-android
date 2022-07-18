@@ -216,7 +216,7 @@ class PerformanceMetricsLoggerTest {
   private fun getStorageUsage(): Long {
     val application = RuntimeEnvironment.application
     val persistentUsage =
-      application.filesDir.totalSpace- application.filesDir.freeSpace
+      application.filesDir.totalSpace - application.filesDir.freeSpace
     val cacheUsage =
       application.cacheDir.totalSpace - application.cacheDir.freeSpace
     return persistentUsage + cacheUsage
