@@ -1,7 +1,6 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 
-load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
+load("//:build_flavors.bzl", "AVAILABLE_APK_FLAVORS", "AVAILABLE_BUNDLE_FLAVORS", "define_oppia_aab_binary_flavor", "define_oppia_apk_binary_flavor")
 
 # This is exported here since config/ isn't a Bazel package.
 exports_files(["config/kitkat_main_dex_class_list.txt"])
@@ -71,61 +70,10 @@ package_group(
     ],
 )
 
-# TODO(#1640): Move binary manifest to top-level package post-Gradle.
+# TODO: Add docs.
 [
-    transform_android_manifest(
-        name = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
-        build_flavor = apk_flavor_metadata["flavor"],
-        input_file = "//app:src/main/AndroidManifest.xml",
-        major_version = MAJOR_VERSION,
-        minor_version = MINOR_VERSION,
-        output_file = "AndroidManifest_transformed_%s.xml" % apk_flavor_metadata["flavor"],
-        version_code = apk_flavor_metadata["version_code"],
-    )
-    for apk_flavor_metadata in [
-        {
-            "flavor": "oppia",
-            "version_code": OPPIA_DEV_VERSION_CODE,
-        },
-        {
-            "flavor": "oppia_kitkat",
-            "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
-        },
-    ]
-]
-
-[
-    android_binary(
-        name = apk_flavor_metadata["flavor"],
-        custom_package = "org.oppia.android",
-        enable_data_binding = True,
-        main_dex_list = apk_flavor_metadata.get("main_dex_list"),
-        manifest = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
-        manifest_values = {
-            "applicationId": "org.oppia.android",
-            "minSdkVersion": "%d" % apk_flavor_metadata["min_sdk_version"],
-            "targetSdkVersion": "%d" % apk_flavor_metadata["target_sdk_version"],
-        },
-        multidex = apk_flavor_metadata["multidex"],
-        deps = [
-            "//app",
-        ],
-    )
-    for apk_flavor_metadata in [
-        {
-            "flavor": "oppia",
-            "min_sdk_version": 21,
-            "multidex": "native",
-            "target_sdk_version": 30,
-        },
-        {
-            "flavor": "oppia_kitkat",
-            "main_dex_list": "//:config/kitkat_main_dex_class_list.txt",
-            "min_sdk_version": 19,
-            "multidex": "manual_main_dex",
-            "target_sdk_version": 30,
-        },
-    ]
+    define_oppia_apk_binary_flavor(flavor = flavor)
+    for flavor in AVAILABLE_APK_FLAVORS
 ]
 
 # Define all binary flavors that can be built. Note that these are AABs, not APKs, and can be
@@ -133,5 +81,5 @@ package_group(
 #  bazel run //:install_oppia_dev
 [
     define_oppia_aab_binary_flavor(flavor = flavor)
-    for flavor in AVAILABLE_FLAVORS
+    for flavor in AVAILABLE_BUNDLE_FLAVORS
 ]
