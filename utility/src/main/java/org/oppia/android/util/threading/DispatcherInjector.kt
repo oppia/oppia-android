@@ -6,7 +6,4 @@ import kotlinx.coroutines.CoroutineDispatcher
 interface DispatcherInjector {
   /** Returns the [BackgroundDispatcher] [CoroutineDispatcher]. */
   @BackgroundDispatcher fun getBackgroundDispatcher(): CoroutineDispatcher
-
-  /** Returns the [BlockingDispatcher] [CoroutineDispatcher]. */
-  @BlockingDispatcher fun getBlockingDispatcher(): CoroutineDispatcher
 }

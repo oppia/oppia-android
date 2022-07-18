@@ -2,27 +2,28 @@ package org.oppia.android.util.logging
 
 import android.content.Context
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.threading.BlockingDispatcher
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.actor
+import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.threading.BackgroundDispatcher
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton
 class ConsoleLogger @Inject constructor(
-  context: Context,
-  @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
+  private val context: Context,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   @EnableConsoleLog private val enableConsoleLog: Boolean,
   @EnableFileLog private val enableFileLog: Boolean,
   @GlobalLogLevel private val globalLogLevel: LogLevel,
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
-  private val blockingScope = CoroutineScope(blockingDispatcher)
-  private val logDirectory = File(context.filesDir, "oppia_app.log")
+  private val fileLoggerCommandQueue by lazy { createBackgroundLoggingActor() }
 
   /** Logs a verbose message with the specified tag.*/
   fun v(tag: String, msg: String) {
@@ -94,17 +95,27 @@ class ConsoleLogger @Inject constructor(
       Log.println(logLevel.logLevel, tag, fullLog)
     }
     if (enableFileLog) {
-      logToFileInBackground(
+      val enqueuedWriteToFile = fileLoggerCommandQueue.trySend(
         "${machineLocale.computeCurrentTimeString()}\t${logLevel.name}/$tag: $fullLog"
-      )
+      ).isSuccess
+      if (!enqueuedWriteToFile) {
+        Log.println(Log.ERROR, "ConsoleLogger", "Failed to write previous line to file.")
+      }
     }
   }
 
   /**
-   * Writes the specified text line to file in a background thread to ensure that saving messages don't block the main
-   * thread. A blocking dispatcher is used to ensure messages are written in order.
+   * Writes the specified text line to file in a background thread to ensure that saving messages
+   * don't block the main thread.
+   *
+   * A synchronized [SendChannel] is used to ensure messages are written in order.
    */
-  private fun logToFileInBackground(text: String) {
-    blockingScope.launch { logDirectory.printWriter().use { out -> out.println(text) } }
+  private fun createBackgroundLoggingActor(): SendChannel<String> {
+    val logDirectory = File(context.filesDir, "oppia_app.log")
+    return CoroutineScope(backgroundDispatcher).actor(capacity = Channel.UNLIMITED) {
+      for (loggedMessage in channel) {
+        logDirectory.printWriter().use { out -> out.println(loggedMessage) }
+      }
+    }
   }
 }

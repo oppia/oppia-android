@@ -208,8 +208,7 @@ class InMemoryBlockingCacheTest {
 
     val exception =
       assertThrows(IllegalStateException::class) { awaitCompletion(deferredRead) }
-    assertThat(exception).hasMessageThat()
-      .contains("Expected to read the cache only after it's been created")
+    assertThat(exception).hasMessageThat().contains("Expected cache value to be set")
   }
 
   @Test
@@ -303,8 +302,7 @@ class InMemoryBlockingCacheTest {
     // The operation should fail since the method expects the cache to be initialized.
     val exception =
       assertThrows(IllegalStateException::class) { awaitCompletion(deferredUpdate) }
-    assertThat(exception).hasMessageThat()
-      .contains("Expected to update the cache only after it's been created")
+    assertThat(exception).hasMessageThat().contains("Expected cache value to be set")
   }
 
   @Test
@@ -423,8 +421,7 @@ class InMemoryBlockingCacheTest {
     // Deleting the cache should result in readIfPresent()'s expectations to fail.
     val exception =
       assertThrows(IllegalStateException::class) { awaitCompletion(deferredRead) }
-    assertThat(exception).hasMessageThat()
-      .contains("Expected to read the cache only after it's been created")
+    assertThat(exception).hasMessageThat().contains("Expected cache value to be set")
   }
 
   @Test
@@ -457,8 +454,7 @@ class InMemoryBlockingCacheTest {
     // The operation should fail since the method expects the cache to be initialized.
     val exception =
       assertThrows(IllegalStateException::class) { awaitCompletion(deferredUpdate) }
-    assertThat(exception).hasMessageThat()
-      .contains("Expected to update the cache only after it's been created")
+    assertThat(exception).hasMessageThat().contains("Expected cache value to be set")
   }
 
   @Test

@@ -56,12 +56,6 @@ class MathBitmapModelLoader private constructor(
     injector.getBackgroundDispatcher()
   }
 
-  private val blockingDispatcher by lazy {
-    val injectorProvider = applicationContext.applicationContext as DispatcherInjectorProvider
-    val injector = injectorProvider.getDispatcherInjector()
-    injector.getBlockingDispatcher()
-  }
-
   private val consoleLogger by lazy {
     val injectorProvider = applicationContext as ConsoleLoggerInjectorProvider
     val injector = injectorProvider.getConsoleLoggerInjector()
@@ -82,7 +76,6 @@ class MathBitmapModelLoader private constructor(
         width,
         height,
         backgroundDispatcher,
-        blockingDispatcher,
         consoleLogger
       )
     )
@@ -96,18 +89,18 @@ class MathBitmapModelLoader private constructor(
     private val targetWidth: Int,
     private val targetHeight: Int,
     private val backgroundDispatcher: CoroutineDispatcher,
-    private val blockingDispatcher: CoroutineDispatcher,
     private val consoleLogger: ConsoleLogger
   ) : DataFetcher<ByteBuffer> {
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
       // Defer execution to the app's dispatchers since synchronization is needed (and more
       // performant and easier to achieve with coroutines).
       CoroutineScope(backgroundDispatcher).launch {
+        // TODO: Fix this now that blocking dispatcher is no longer a thing.
         // KotliTeX drawable initialization loads shared static state that's susceptible to race
         // conditions. This synchronizes span creation so that the race condition can't happen,
         // though it will likely slow down LaTeX loading a bit. Fortunately, rendering & PNG
         // creation can still happen in parallel, and those are the more expensive steps.
-        val span = withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
+        val span = withContext(CoroutineScope(backgroundDispatcher).coroutineContext) {
           MathExpressionSpan(
             model.rawLatex, model.lineHeight, applicationContext.assets, !model.useInlineRendering
           ).also { it.ensureDrawable() }

@@ -15,7 +15,6 @@ import javax.inject.Inject
  */
 class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
-  @BlockingTestDispatcher private val blockingTestDispatcher: TestCoroutineDispatcher,
   private val fakeSystemClock: FakeSystemClock
 ) : TestCoroutineDispatchers {
   private val uiTaskCoordinator = RobolectricUiTaskCoordinator()
@@ -85,9 +84,6 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
     if (backgroundTestDispatcher.hasPendingCompletableTasks()) {
       backgroundTestDispatcher.runCurrent()
     }
-    if (blockingTestDispatcher.hasPendingCompletableTasks()) {
-      blockingTestDispatcher.runCurrent()
-    }
     if (!uiTaskCoordinator.isIdle()) {
       uiTaskCoordinator.idle()
     }
@@ -96,14 +92,12 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   /** Returns whether any of the dispatchers have any tasks to run, including in the future. */
   private fun hasPendingTasks(): Boolean {
     return backgroundTestDispatcher.hasPendingTasks() ||
-      blockingTestDispatcher.hasPendingTasks() ||
       getNextUiThreadFutureTaskTimeMillis(fakeSystemClock.getTimeMillis()) != null
   }
 
   /** Returns whether any of the dispatchers have tasks that can be run now. */
   private fun hasPendingCompletableTasks(): Boolean {
     return backgroundTestDispatcher.hasPendingCompletableTasks() ||
-      blockingTestDispatcher.hasPendingCompletableTasks() ||
       !uiTaskCoordinator.isIdle()
   }
 

@@ -13,13 +13,10 @@ import javax.inject.Inject
  * to monitor background coroutines being run as part of the application.
  */
 class TestCoroutineDispatchersEspressoImpl @Inject constructor(
-  @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
-  @BlockingTestDispatcher private val blockingTestDispatcher: TestCoroutineDispatcher
+  @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher
 ) : TestCoroutineDispatchers {
   private val idlingResource by lazy { TestCoroutineDispatcherIdlingResource() }
-  private val dispatcherIdlenessTracker = DispatcherIdlenessTracker(
-    arrayOf(backgroundTestDispatcher, blockingTestDispatcher)
-  )
+  private val dispatcherIdlenessTracker = DispatcherIdlenessTracker(backgroundTestDispatcher)
 
   override fun registerIdlingResource() {
     IdlingRegistry.getInstance().register(idlingResource)
@@ -46,10 +43,8 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
   }
 
   /** Returns whether any of the dispatchers have tasks that can be run now. */
-  private fun hasPendingCompletableTasks(): Boolean {
-    return backgroundTestDispatcher.hasPendingCompletableTasks() ||
-      blockingTestDispatcher.hasPendingCompletableTasks()
-  }
+  private fun hasPendingCompletableTasks(): Boolean =
+    backgroundTestDispatcher.hasPendingCompletableTasks()
 
   private inner class TestCoroutineDispatcherIdlingResource : IdlingResource {
     private var resourceCallback: IdlingResource.ResourceCallback? = null
@@ -72,7 +67,7 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
   }
 
   private inner class DispatcherIdlenessTracker(
-    private val dispatchers: Array<TestCoroutineDispatcher>
+    private vararg val dispatchers: TestCoroutineDispatcher
   ) {
     private val dispatcherRunningStates = Array(dispatchers.size) { false }
 

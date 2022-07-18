@@ -29,7 +29,8 @@ class DataProviders @Inject constructor(
   private val context: Context,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val exceptionLogger: ExceptionLogger
+  private val exceptionLogger: ExceptionLogger,
+  private val dynamicallyTransformedDataProviderFactory: DynamicallyTransformedDataProvider.Factory
 ) {
   companion object {
     /**
@@ -104,49 +105,9 @@ class DataProviders @Inject constructor(
       newId: Any,
       function: (I) -> DataProvider<O>
     ): DataProvider<O> {
-      val dataProviders = getDataProviders()
-      val baseId = getId()
-      dataProviders.asyncDataSubscriptionManager.associateIds(newId, baseId)
-      // TODO: make thread-safe
-      var currentProviderResult: AsyncResult<DataProvider<O>>? = null
-      return object : DataProvider<O>(context) {
-
-        override fun getId(): Any = newId
-
-        override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
-          return fetchLatestDynamicProvider(originNotificationId).transformAsync { dynProvider ->
-            // If there's a dynamic provider available, determine if it needs to be reset.
-            val dynamicProviderId = dynProvider.getId()
-            val maybeNewProviderResult = if (originNotificationId != dynamicProviderId) {
-              // If the notification originated from somewhere else, create a new provider.
-              dataProviders.asyncDataSubscriptionManager.dissociateIds(newId, dynamicProviderId)
-              createNewDynamicProvider(originNotificationId)
-            } else AsyncResult.Success(dynProvider)
-
-            return@transformAsync maybeNewProviderResult.transformAsync {
-              it.retrieveData(originNotificationId)
-            }
-          }
-        }
-
-        private suspend fun fetchLatestDynamicProvider(
-          originNotificationId: Any?
-        ): AsyncResult<DataProvider<O>> {
-          return currentProviderResult ?: createNewDynamicProvider(originNotificationId)
-        }
-
-        private suspend fun createNewDynamicProvider(
-          originNotificationId: Any?
-        ): AsyncResult<DataProvider<O>> {
-          val computedProviderResult = this@transformDynamic.retrieveData(originNotificationId)
-          return computedProviderResult.transform(function).transform {
-            // Make sure that the new provider, if available, is properly connected to the outer
-            // provider.
-            dataProviders.asyncDataSubscriptionManager.associateIds(newId, it.getId())
-            it
-          }.also { currentProviderResult = it }
-        }
-      }
+      return getDataProviders().dynamicallyTransformedDataProviderFactory.create(
+        newId, baseProvider = this, function
+      )
     }
 
     /**
@@ -390,6 +351,73 @@ class DataProviders @Inject constructor(
         ) { originNotificationId ->
           baseDataProvider.retrieveData(originNotificationId).transformAsync(transform)
         }
+      }
+    }
+  }
+
+  // TODO: Add docs.
+  class DynamicallyTransformedDataProvider<I, O> private constructor(
+    context: Context,
+    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+    private val inMemoryBlockingCacheFactory: InMemoryBlockingCache.Factory,
+    private val id: Any,
+    private val baseProvider: DataProvider<I>,
+    private val transform: (I) -> DataProvider<O>
+  ): DataProvider<O>(context) {
+    private val currentProviderResult: InMemoryBlockingCache<AsyncResult<DataProvider<O>>> by lazy {
+      inMemoryBlockingCacheFactory.create()
+    }
+
+    override fun getId(): Any = id
+
+    override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<O> {
+      return currentProviderResult.createIfAbsentAsync {
+        asyncDataSubscriptionManager.associateIds(id, baseProvider.getId())
+        createNewDynamicProvider(originNotificationId)
+      }.await().transformAsync { dynamicProvider ->
+        // If there's a dynamic provider available, determine if it needs to be reset.
+        val dynamicProviderId = dynamicProvider.getId()
+        val maybeNewProviderResult = if (originNotificationId != dynamicProviderId) {
+          // If the notification originated from somewhere else, create a new provider.
+          asyncDataSubscriptionManager.dissociateIds(id, dynamicProviderId)
+          currentProviderResult.updateAsync {
+            createNewDynamicProvider(originNotificationId)
+          }.await()
+        } else AsyncResult.Success(dynamicProvider)
+
+        return@transformAsync maybeNewProviderResult.transformAsync {
+          it.retrieveData(originNotificationId)
+        }
+      }
+    }
+
+    private suspend fun createNewDynamicProvider(
+      originNotificationId: Any?
+    ): AsyncResult<DataProvider<O>> {
+      return baseProvider.retrieveData(originNotificationId).transform(transform).transform {
+        // Make sure that the new provider, if available, is properly connected to the outer
+        // provider.
+        asyncDataSubscriptionManager.associateIds(id, it.getId())
+        it
+      }
+    }
+
+    class Factory @Inject constructor(
+      private val context: Context,
+      private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+      private val inMemoryBlockingCacheFactory: InMemoryBlockingCache.Factory
+    ) {
+      fun <I, O> create(
+        id: Any, baseProvider: DataProvider<I>, transform: (I) -> DataProvider<O>
+      ): DynamicallyTransformedDataProvider<I, O> {
+        return DynamicallyTransformedDataProvider(
+          context,
+          asyncDataSubscriptionManager,
+          inMemoryBlockingCacheFactory,
+          id,
+          baseProvider,
+          transform
+        )
       }
     }
   }

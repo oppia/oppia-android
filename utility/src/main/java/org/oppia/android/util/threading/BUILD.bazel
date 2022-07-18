@@ -9,7 +9,6 @@ kt_android_library(
     name = "annotations",
     srcs = [
         "BackgroundDispatcher.kt",
-        "BlockingDispatcher.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [

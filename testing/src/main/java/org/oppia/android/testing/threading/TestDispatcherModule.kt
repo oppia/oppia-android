@@ -8,14 +8,13 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.threading.BackgroundDispatcher
-import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.concurrent.Executors
 import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * Dagger [Module] that provides [CoroutineDispatcher]s that bind to [BackgroundDispatcher] and
- * [BlockingDispatcher] qualifiers.
+ * Dagger [Module] that provides [CoroutineDispatcher]s that binds test-specific
+ * [TestCoroutineDispatcher] replacements for production-used coroutine dispatchers.
  */
 @Module
 class TestDispatcherModule {
@@ -25,19 +24,7 @@ class TestDispatcherModule {
   @BackgroundDispatcher
   fun provideBackgroundDispatcher(
     @BackgroundTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
-  ): CoroutineDispatcher {
-    return testCoroutineDispatcher
-  }
-
-  @Provides
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
-  @BlockingDispatcher
-  fun provideBlockingDispatcher(
-    @BlockingTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
-  ): CoroutineDispatcher {
-    return testCoroutineDispatcher
-  }
+  ): CoroutineDispatcher = testCoroutineDispatcher
 
   @Provides
   @BackgroundTestDispatcher
@@ -50,17 +37,6 @@ class TestDispatcherModule {
     return factory.createDispatcher(
       Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
     )
-  }
-
-  @Provides
-  @BlockingTestDispatcher
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
-  @Singleton
-  fun provideBlockingTestDispatcher(
-    factory: TestCoroutineDispatcher.Factory
-  ): TestCoroutineDispatcher {
-    return factory.createDispatcher(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
   }
 
   @Provides

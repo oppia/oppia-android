@@ -19,11 +19,4 @@ class DispatcherModule {
   fun provideBackgroundDispatcher(): CoroutineDispatcher {
     return Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
   }
-
-  @Provides
-  @BlockingDispatcher
-  @Singleton
-  fun provideBlockingDispatcher(): CoroutineDispatcher {
-    return Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-  }
 }
