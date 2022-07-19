@@ -1,12 +1,15 @@
 package org.oppia.android.app.settings.profile
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
@@ -17,7 +20,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
+import org.oppia.android.util.extensions.toast
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
@@ -101,15 +104,16 @@ class ProfileEditFragmentPresenter @Inject constructor(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         binding.profileEditAllowDownloadSwitch.isChecked
       ).toLiveData().observe(
-        activity,
-        Observer {
-          if (it is AsyncResult.Failure) {
-            oppiaLogger.e(
-              "ProfileEditActivityPresenter", "Failed to updated allow download access", it.error
-            )
-          }
+        activity
+      ) {
+        if (it is AsyncResult.Failure) {
+          oppiaLogger.e(
+            "ProfileEditActivityPresenter",
+            "Failed to updated allow download access",
+            it.error
+          )
         }
-      )
+      }
     }
     return binding.root
   }
@@ -132,22 +136,22 @@ class ProfileEditFragmentPresenter @Inject constructor(
     profileManagementController
       .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
       .observe(
-        fragment,
-        Observer {
-          if (it is AsyncResult.Success) {
-            if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-              val intent =
-                Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            } else {
-              val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            }
+        fragment
+      ) {
+        if (it is AsyncResult.Success) {
+          fragment.requireContext().toast(fragment.requireContext().getString(R.string.profile_edit_delete_successful_message), Toast.LENGTH_SHORT)
+          if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+            val intent =
+              Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            fragment.startActivity(intent)
+          } else {
+            val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            fragment.startActivity(intent)
           }
         }
-      )
+      }
   }
 
   /** This loads the dialog whenever requested by the listener in [AdministratorControlsActivity]. */

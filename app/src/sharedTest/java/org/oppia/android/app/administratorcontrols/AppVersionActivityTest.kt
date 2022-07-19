@@ -44,8 +44,8 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.android.app.utility.getLastUpdateTime
-import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.extensions.getLastUpdateTime
+import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule

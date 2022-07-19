@@ -1,6 +1,7 @@
-package org.oppia.android.app.utility
+package org.oppia.android.util.extensions
 
 import android.content.Context
+import android.widget.Toast
 
 // Extension functions for Context that act as getters for PackageManager.
 
@@ -18,3 +19,9 @@ fun Context.getVersionCode(): Int {
 fun Context.getLastUpdateTime(): Long {
   return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).lastUpdateTime
 }
+
+/**
+ * Extension method to show toast for Context.
+ */
+fun Context?.toast(text: CharSequence, duration: Int = Toast.LENGTH_SHORT) =
+  this?.let { Toast.makeText(it, text, duration).show() }

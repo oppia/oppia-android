@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.getLastUpdateTime
-import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.app.viewmodel.ObservableViewModel
+import org.oppia.android.util.extensions.getLastUpdateTime
+import org.oppia.android.util.extensions.getVersionName
 import javax.inject.Inject
 
 /** [ViewModel] for [AppVersionFragment]*/
@@ -25,7 +25,8 @@ class AppVersionViewModel @Inject constructor(
 
   fun computeLastUpdatedDateText(): String =
     resourceHandler.getStringInLocaleWithWrapping(
-      R.string.app_last_update_date, getDateTime(lastUpdateDateTime)
+      R.string.app_last_update_date,
+      getDateTime(lastUpdateDateTime)
     )
 
   private fun getDateTime(lastUpdateTime: Long): String =

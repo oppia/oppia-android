@@ -4,8 +4,8 @@ import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import org.oppia.android.app.utility.getVersionCode
-import org.oppia.android.app.utility.getVersionName
+import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.extensions.getVersionName
 import java.io.IOException
 import javax.inject.Inject
 
