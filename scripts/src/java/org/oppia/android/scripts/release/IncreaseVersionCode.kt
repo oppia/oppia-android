@@ -7,11 +7,15 @@ fun main(vararg args: String) {
 
 }
 
+/**
+ * This class contains utilliy functions for version increase process.
+ */
 class IncreaseVersionCode {
   lateinit var versionCodeFlavours: ArrayList<String>
   lateinit var versionCodes: ArrayList<Int>
   private val commandExecutor by lazy { CommandExecutorImpl() }
 
+  /** increase the flavour versions of the app by +1. */
   fun increaseVersionCode() {
     versionCodeFlavours = arrayListOf("version_code")
     versionCodes = arrayListOf(1)
