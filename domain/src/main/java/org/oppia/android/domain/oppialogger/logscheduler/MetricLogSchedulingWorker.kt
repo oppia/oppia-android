@@ -30,18 +30,23 @@ class MetricLogSchedulingWorker private constructor(
     private const val TAG = "MetricLogSchedulingWorker"
     /**
      * Input data for the worker consists of a key-value pair on the basis of which work is done.
-     *
      * [WORKER_CASE_KEY] is the key for that data.
-     * When [PERIODIC_METRIC_WORKER] is the value, the worker schedules logging of periodic
-     * performance metrics.
-     * When [STORAGE_USAGE_WORKER] is the value, the worker schedules logging of storage usage
-     * performance metrics.
-     * When [MEMORY_USAGE_WORKER] is the value, the worker schedules logging of memory usage
-     * performance metrics.
      */
     const val WORKER_CASE_KEY = "metric_log_scheduling_worker_case_key"
+    /**
+     * When [PERIODIC_METRIC_WORKER] is the value of the worker's key-value pair, the worker
+     * schedules logging of periodic performance metrics.
+     */
     const val PERIODIC_METRIC_WORKER = "periodic_metric_worker"
+    /**
+     * When [STORAGE_USAGE_WORKER] is the value of the worker's key-value pair, the worker schedules
+     * logging of storage usage performance metrics.
+     */
     const val STORAGE_USAGE_WORKER = "storage_usage_worker"
+    /**
+     * When [MEMORY_USAGE_WORKER] is the value of the worker's key-value pair, the worker schedules
+     * logging of memory usage performance metrics.
+     */
     const val MEMORY_USAGE_WORKER = "memory_usage_worker"
   }
 
@@ -104,6 +109,12 @@ class MetricLogSchedulingWorker private constructor(
     private val performanceMetricsLogger: PerformanceMetricsLogger,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
+    /**
+     * Returns a new [MetricLogSchedulingWorker].
+     *
+     * This [MetricLogSchedulingWorker] implements the [ListenableWorker] for facilitating metric
+     * log scheduling.
+     */
     fun create(context: Context, params: WorkerParameters): ListenableWorker {
       return MetricLogSchedulingWorker(
         context,
