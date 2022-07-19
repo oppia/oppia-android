@@ -71,7 +71,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     explorationId: String,
     canExplorationBeResumed: Boolean,
     canHavePartialProgressSaved: Boolean,
-    backflowScreen: Int?,
+    backflowId: Int?,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     storyFragmentPresenter.handleSelectExploration(
@@ -81,7 +81,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       explorationId,
       canExplorationBeResumed,
       canHavePartialProgressSaved,
-      backflowScreen,
+      backflowId,
       explorationCheckpoint
     )
   }

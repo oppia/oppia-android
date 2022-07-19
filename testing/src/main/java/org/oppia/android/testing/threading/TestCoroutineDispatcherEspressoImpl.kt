@@ -4,7 +4,6 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.async
 import java.util.concurrent.ConcurrentHashMap
@@ -12,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with Delay.delay().
 
 /**
@@ -23,8 +23,7 @@ import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with
  * idling resources (though it's up to the caller of this class to actually hook up an idling
  * resource for this purpose).
  */
-@InternalCoroutinesApi
-@ExperimentalCoroutinesApi
+@OptIn(InternalCoroutinesApi::class)
 class TestCoroutineDispatcherEspressoImpl private constructor(
   private val realCoroutineDispatcher: CoroutineDispatcher
 ) : TestCoroutineDispatcher(), Delay {
@@ -61,6 +60,7 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     val taskId = totalTaskCount.incrementAndGet()
     taskCompletionTimes[taskId] = System.currentTimeMillis() + timeMillis
     val block: CancellableContinuation<Unit>.() -> Unit = {
+      @OptIn(ExperimentalCoroutinesApi::class)
       realCoroutineDispatcher.resumeUndispatched(Unit)
     }
 

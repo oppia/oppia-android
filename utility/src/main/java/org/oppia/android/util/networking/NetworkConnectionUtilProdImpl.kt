@@ -21,6 +21,7 @@ class NetworkConnectionUtilProdImpl @Inject constructor(
     // TODO(#3616): Update to use correct methods according to the SDK version. We can use the
     //  older (current) method for SDK versions < 28 and the newer method for SDK versions >= 29 and
     //  use an if-statement to choose.
+    @Suppress("DEPRECATION")
     return connectivityManager.activeNetworkInfo?.let { activeNetwork ->
       val isConnected = activeNetwork.isConnected
       val isLocal = activeNetwork.type ==

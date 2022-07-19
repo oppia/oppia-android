@@ -10,8 +10,6 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-private const val APP_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY =
-  "AppLanguageFragment.app_language_preference_title"
 private const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY =
   "AppLanguageFragment.app_language_preference_summary_value"
 private const val SELECTED_LANGUAGE_SAVED_KEY = "AppLanguageFragment.selected_language"
@@ -25,10 +23,9 @@ class AppLanguageFragment :
   lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
 
   companion object {
-    fun newInstance(prefsKey: String, prefsSummaryValue: String): AppLanguageFragment {
+    fun newInstance(prefsSummaryValue: String): AppLanguageFragment {
       val fragment = AppLanguageFragment()
       val args = Bundle()
-      args.putString(APP_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY, prefsKey)
       args.putString(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY, prefsSummaryValue)
       fragment.arguments = args
       return fragment
@@ -47,7 +44,6 @@ class AppLanguageFragment :
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to AppLanguageFragment" }
-    val prefsKey = args.getStringFromBundle(APP_LANGUAGE_PREFERENCE_TITLE_ARGUMENT_KEY)
     val prefsSummaryValue = if (savedInstanceState == null) {
       args.getStringFromBundle(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_ARGUMENT_KEY)
     } else {
@@ -56,7 +52,6 @@ class AppLanguageFragment :
     return appLanguageFragmentPresenter.handleOnCreateView(
       inflater,
       container,
-      prefsKey!!,
       prefsSummaryValue!!
     )
   }

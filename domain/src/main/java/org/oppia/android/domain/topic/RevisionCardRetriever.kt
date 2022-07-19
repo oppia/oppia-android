@@ -43,8 +43,8 @@ class RevisionCardRetriever @Inject constructor(
     val subtopicJsonObject =
       jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
         ?: return RevisionCard.getDefaultInstance()
-    val subtopicData = subtopicJsonObject.getJSONObject("page_contents")!!
-    val subtopicTitle = subtopicJsonObject.getStringFromObject("subtopic_title")!!
+    val subtopicData = subtopicJsonObject.getJSONObject("page_contents")
+    val subtopicTitle = subtopicJsonObject.getStringFromObject("subtopic_title")
     return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(

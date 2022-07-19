@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-  ext.kotlin_version = '1.4.20'
+  ext.kotlin_version = '1.6.21'
   ext.fragment_version = '1.2.0-rc01'
   repositories {
     google()
@@ -23,6 +23,9 @@ allprojects {
     google()
     mavenCentral()
     maven { url 'https://jitpack.io' }
+  }
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.allWarningsAsErrors = true
   }
 }
 

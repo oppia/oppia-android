@@ -606,8 +606,6 @@ abstract class TestCoroutineDispatcherTestBase(
     }
   }
 
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   protected inline fun <reified T : TestCoroutineDispatcher> verifyDispatcherImplementation() {
     // Sanity check to ensure the correct implementation is being tested.
     assertThat(backgroundTestDispatcher).isInstanceOf(T::class.java)

@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,7 +19,6 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
-import org.mockito.Mockito.verifyZeroInteractions
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.time.FakeSystemClock
@@ -37,6 +34,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [TestCoroutineDispatcherRobolectricImpl]. */
+// Function name: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -54,8 +53,6 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   lateinit var fakeSystemClock: FakeSystemClock
 
   @Before
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   override fun setUp() {
     setUpTestApplicationComponent()
     verifyDispatcherImplementation<TestCoroutineDispatcherRobolectricImpl>()
@@ -116,7 +113,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
 
     scheduleImmediateTask(mockRunnable1)
 
-    verifyZeroInteractions(mockTaskIdleListener)
+    verifyNoMoreInteractions(mockTaskIdleListener)
   }
 
   // This test is excluded from the Espresso pseudo-environment because it relies specifically on
@@ -129,7 +126,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
 
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
 
-    verifyZeroInteractions(mockTaskIdleListener)
+    verifyNoMoreInteractions(mockTaskIdleListener)
   }
 
   @Test

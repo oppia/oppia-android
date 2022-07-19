@@ -66,8 +66,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundTestDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -77,8 +75,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundTestDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 
@@ -88,8 +84,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -99,8 +93,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 
@@ -111,8 +103,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -123,8 +113,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 
@@ -135,8 +123,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingTestDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -147,8 +133,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingTestDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 

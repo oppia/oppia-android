@@ -61,7 +61,7 @@ class RemoteAuthNetworkInterceptorTest {
 
   private val testVersionName = "1.0"
 
-  private val testVersionCode = 1
+  private val testVersionCode = 1L
 
   private val topicName = "Topic1"
 
@@ -136,7 +136,7 @@ class RemoteAuthNetworkInterceptorTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = testVersionName
-    packageInfo.versionCode = testVersionCode
+    packageInfo.longVersionCode = testVersionCode
     packageManager.installPackage(packageInfo)
   }
 

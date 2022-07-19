@@ -2,7 +2,7 @@
 Constructs for setting up fragments for injection in the Dagger graph.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 # TODO(#59): Define these exported files as separate libraries from top-level targets.
 exports_files([

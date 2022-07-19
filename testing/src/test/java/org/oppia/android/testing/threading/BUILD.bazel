@@ -4,7 +4,7 @@ Tests for threading-specific test utilities.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 kt_android_library(

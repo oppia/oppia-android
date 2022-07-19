@@ -37,7 +37,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.R
@@ -490,7 +490,7 @@ class HtmlParserTest {
     onView(withId(R.id.test_html_content_text_view)).perform(click())
 
     // Verify the tag listener is not called since link support is disabled.
-    verifyZeroInteractions(mockCustomOppiaTagActionListener)
+    verifyNoMoreInteractions(mockCustomOppiaTagActionListener)
   }
 
   @Test

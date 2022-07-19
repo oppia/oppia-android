@@ -160,10 +160,10 @@ class MavenDependenciesRetriever(
     // the license links for each of these dependencies.
     return mavenDependenciesList.filter { dependency ->
       dependency.licenseList.isEmpty() ||
-        dependency.licenseList.filter { license ->
+        dependency.licenseList.any { license ->
           license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
             license.isOriginalLinkInvalid
-        }.isNotEmpty()
+        }
     }.toSet()
   }
 
@@ -209,7 +209,7 @@ class MavenDependenciesRetriever(
   fun retrieveDependencyListFromPom(
     finalDependenciesList: List<MavenListDependency>
   ): MavenDependencyList {
-    val mavenDependencyList = finalDependenciesList.map { it ->
+    val mavenDependencyList = finalDependenciesList.map {
       // Remove ".jar" or ".aar" or any other extension from the specified url.
       val pomFileUrl = "${it.url?.substringBeforeLast('.')}.pom"
       val artifactName = it.coord
@@ -217,7 +217,7 @@ class MavenDependenciesRetriever(
       val pomFile = licenseFetcher.scrapeText(pomFileUrl)
       val mavenDependency = MavenDependency.newBuilder().apply {
         this.artifactName = it.coord
-        this.artifactVersion = artifactVersion.toString()
+        this.artifactVersion = artifactVersion
         this.addAllLicense(extractLicenseLinksFromPom(pomFile))
       }
       mavenDependency.build()
@@ -276,8 +276,8 @@ class MavenDependenciesRetriever(
     val doc = docBuilder.parse(InputSource(pomText.byteInputStream()))
 
     val licenses = doc.getElementsByTagName("license")
-    for (i in 0 until licenses.getLength()) {
-      if (licenses.item(0).getNodeType() == Node.ELEMENT_NODE) {
+    for (i in 0 until licenses.length) {
+      if (licenses.item(0).nodeType == Node.ELEMENT_NODE) {
         val element = licenses.item(i) as Element
         val licenseName = getNodeValue("name", element)
         val licenseLink = replaceHttpWithHttps(getNodeValue("url", element))
@@ -306,10 +306,10 @@ class MavenDependenciesRetriever(
     val node = nodeList.item(0)
     if (node != null) {
       if (node.hasChildNodes()) {
-        val child = node.getFirstChild()
+        val child = node.firstChild
         while (child != null) {
-          if (child.getNodeType() === Node.TEXT_NODE) {
-            return child.getNodeValue()
+          if (child.nodeType == Node.TEXT_NODE) {
+            return child.nodeValue
           }
         }
       }

@@ -104,6 +104,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -115,6 +117,10 @@ import javax.inject.Singleton
 class ImageRegionSelectionInteractionViewTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var context: Context
@@ -131,7 +137,6 @@ class ImageRegionSelectionInteractionViewTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    MockitoAnnotations.initMocks(this)
   }
 
   private fun setUpTestApplicationComponent() {

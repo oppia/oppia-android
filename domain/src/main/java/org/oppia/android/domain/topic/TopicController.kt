@@ -509,15 +509,15 @@ class TopicController @Inject constructor(
     for (i in 0 until subtopicJsonArray!!.length()) {
       val skillIdList = ArrayList<String>()
 
-      val currentSubtopicJsonObject = subtopicJsonArray.optJSONObject(i)
-      val skillJsonArray = currentSubtopicJsonObject.optJSONArray("skill_ids")
+      val currentSubtopicJsonObject = subtopicJsonArray.getJSONObject(i)
+      val skillJsonArray = currentSubtopicJsonObject.getJSONArray("skill_ids")
 
       for (j in 0 until skillJsonArray.length()) {
-        skillIdList.add(skillJsonArray.optString(j))
+        skillIdList.add(skillJsonArray.getString(j))
       }
       val subtopic = Subtopic.newBuilder()
-        .setSubtopicId(currentSubtopicJsonObject.optInt("id"))
-        .setTitle(currentSubtopicJsonObject.optString("title"))
+        .setSubtopicId(currentSubtopicJsonObject.getInt("id"))
+        .setTitle(currentSubtopicJsonObject.getStringFromObject("title"))
         .setSubtopicThumbnail(
           createSubtopicThumbnail(currentSubtopicJsonObject)
         )
@@ -562,28 +562,25 @@ class TopicController @Inject constructor(
     assetFileNameList.add("skills.json")
     assetFileNameList.add("$topicId.json")
 
-    val topicJsonObject = jsonAssetRetriever
-      .loadJsonFromAsset("$topicId.json")!!
-    val storySummaryJsonArray = topicJsonObject
-      .optJSONArray("canonical_story_dicts")
+    val topicJsonObject = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
+    val storySummaryJsonArray = topicJsonObject.getJSONArray("canonical_story_dicts")
     for (i in 0 until storySummaryJsonArray.length()) {
-      val storySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
-      val storyId = storySummaryJsonObject.optString("id")
+      val storySummaryJsonObject = storySummaryJsonArray.getJSONObject(i)
+      val storyId = storySummaryJsonObject.getStringFromObject("id")
       assetFileNameList.add("$storyId.json")
 
-      val storyJsonObject = jsonAssetRetriever
-        .loadJsonFromAsset("$storyId.json")!!
-      val storyNodeJsonArray = storyJsonObject.optJSONArray("story_nodes")
+      val storyJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")!!
+      val storyNodeJsonArray = storyJsonObject.getJSONArray("story_nodes")
       for (j in 0 until storyNodeJsonArray.length()) {
-        val storyNodeJsonObject = storyNodeJsonArray.optJSONObject(j)
-        val explorationId = storyNodeJsonObject.optString("exploration_id")
+        val storyNodeJsonObject = storyNodeJsonArray.getJSONObject(j)
+        val explorationId = storyNodeJsonObject.getStringFromObject("exploration_id")
         assetFileNameList.add("$explorationId.json")
       }
     }
-    val subtopicJsonArray = topicJsonObject.optJSONArray("subtopics")
+    val subtopicJsonArray = topicJsonObject.getJSONArray("subtopics")
     for (i in 0 until subtopicJsonArray.length()) {
-      val subtopicJsonObject = subtopicJsonArray.optJSONObject(i)
-      val subtopicId = subtopicJsonObject.optInt("id")
+      val subtopicJsonObject = subtopicJsonArray.getJSONObject(i)
+      val subtopicId = subtopicJsonObject.getInt("id")
       assetFileNameList.add(topicId + "_" + subtopicId + ".json")
     }
     return assetFileNameList
@@ -612,16 +609,12 @@ class TopicController @Inject constructor(
    * story in json.
    */
   private fun createStorySummaryFromJson(topicId: String, storyId: String): StorySummary {
-    val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
+    val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")!!
     return StorySummary.newBuilder()
       .setStoryId(storyId)
-      .setStoryName(storyDataJsonObject?.optString("story_title"))
+      .setStoryName(storyDataJsonObject.getStringFromObject("story_title"))
       .setStoryThumbnail(createStoryThumbnail(topicId, storyId))
-      .addAllChapter(
-        createChaptersFromJson(
-          storyDataJsonObject!!.optJSONArray("story_nodes")
-        )
-      )
+      .addAllChapter(createChaptersFromJson(storyDataJsonObject.getJSONArray("story_nodes")))
       .build()
   }
 

@@ -56,18 +56,18 @@ class ConceptCardRetriever @Inject constructor(
       val recordedVoiceoverMapping = hashMapOf<String, VoiceoverMapping>()
       recordedVoiceoverMapping["explanation"] = createRecordedVoiceoversFromJson(
         skillContents
-          .optJSONObject("recorded_voiceovers")
-          .optJSONObject("voiceovers_mapping")
-          .optJSONObject(
-            skillContents.optJSONObject("explanation").optString("content_id")
-          )!!
+          .getJSONObject("recorded_voiceovers")
+          .getJSONObject("voiceovers_mapping")
+          .getJSONObject(
+            skillContents.getJSONObject("explanation").getStringFromObject("content_id")
+          )
       )
       for (workedExample in workedExamplesList) {
         recordedVoiceoverMapping[workedExample.contentId] = createRecordedVoiceoversFromJson(
           skillContents
-            .optJSONObject("recorded_voiceovers")
-            .optJSONObject("voiceovers_mapping")
-            .optJSONObject(workedExample.contentId)
+            .getJSONObject("recorded_voiceovers")
+            .getJSONObject("voiceovers_mapping")
+            .getJSONObject(workedExample.contentId)
         )
       }
 
@@ -86,7 +86,7 @@ class ConceptCardRetriever @Inject constructor(
         .addAllWorkedExample(workedExamplesList)
         .putAllWrittenTranslation(
           createWrittenTranslationMappingsFromJson(
-            skillContents.optJSONObject("written_translations")
+            skillContents.getJSONObject("written_translations")
           )
         )
         .putAllRecordedVoiceover(recordedVoiceoverMapping)
@@ -136,10 +136,10 @@ class ConceptCardRetriever @Inject constructor(
     val languages = translationMappingJsonObject.keys()
     while (languages.hasNext()) {
       val language = languages.next()
-      val translationJson = translationMappingJsonObject.optJSONObject(language)
+      val translationJson = translationMappingJsonObject.getJSONObject(language)
       val translation = Translation.newBuilder()
-        .setHtml(translationJson.optString("translation"))
-        .setNeedsUpdate(translationJson.optBoolean("needs_update"))
+        .setHtml(translationJson.getStringFromObject("translation"))
+        .setNeedsUpdate(translationJson.getBoolean("needs_update"))
         .build()
       translationMappingBuilder.putTranslationMapping(language, translation)
     }
@@ -156,11 +156,11 @@ class ConceptCardRetriever @Inject constructor(
     val languages = voiceoverMappingJsonObject.keys()
     while (languages.hasNext()) {
       val language = languages.next()
-      val voiceoverJson = voiceoverMappingJsonObject.optJSONObject(language)
+      val voiceoverJson = voiceoverMappingJsonObject.getJSONObject(language)
       val voiceover = Voiceover.newBuilder()
-        .setFileName(voiceoverJson.optString("filename"))
-        .setNeedsUpdate(voiceoverJson.optBoolean("needs_update"))
-        .setFileSizeBytes(voiceoverJson.optLong("file_size_bytes"))
+        .setFileName(voiceoverJson.getStringFromObject("filename"))
+        .setNeedsUpdate(voiceoverJson.getBoolean("needs_update"))
+        .setFileSizeBytes(voiceoverJson.getLong("file_size_bytes"))
         .build()
       voiceoverMappingBuilder.putVoiceoverMapping(language, voiceover)
     }

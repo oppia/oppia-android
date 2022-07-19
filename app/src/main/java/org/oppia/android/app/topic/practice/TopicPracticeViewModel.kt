@@ -65,15 +65,8 @@ class TopicPracticeViewModel @Inject constructor(
   private fun processTopicPracticeSkillList(topic: Topic): List<TopicPracticeItemViewModel> {
     itemViewModelList.clear()
     itemViewModelList.add(TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel)
-
-    itemViewModelList.addAll(
-      topic.subtopicList.map { subtopic ->
-        TopicPracticeSubtopicViewModel(subtopic) as TopicPracticeItemViewModel
-      }
-    )
-
+    itemViewModelList.addAll(topic.subtopicList.map(::TopicPracticeSubtopicViewModel))
     itemViewModelList.add(TopicPracticeFooterViewModel() as TopicPracticeItemViewModel)
-
     return itemViewModelList
   }
 }

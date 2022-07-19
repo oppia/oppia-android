@@ -6,7 +6,6 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.TimeoutCancellationException
@@ -24,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import kotlin.concurrent.withLock
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 // TODO(#89): Audit & adjust the thread safety of this class, and determine if there's a way to move
 //  off of the internal coroutine API.
@@ -39,8 +39,7 @@ import kotlin.coroutines.CoroutineContext
  * and other functionality is delegated to [TestCoroutineDispatchers] to ensure proper thread
  * safety.
  */
-@InternalCoroutinesApi
-@ExperimentalCoroutinesApi
+@OptIn(InternalCoroutinesApi::class)
 class TestCoroutineDispatcherRobolectricImpl private constructor(
   private val fakeSystemClock: FakeSystemClock,
   private val realCoroutineDispatcher: CoroutineDispatcher
@@ -315,6 +314,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       incrementExecutingTaskCount()
       try {
         cancellableContinuation.apply {
+          @OptIn(ExperimentalCoroutinesApi::class)
           testDispatcher.resumeUndispatched(Unit)
         }
       } finally {

@@ -170,12 +170,12 @@ class ExplorationActivity :
   }
 
   override fun routeToHintsAndSolution(
-    explorationId: String,
+    id: String,
     helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
-        explorationId,
+        id,
         state,
         helpIndex,
         writtenTranslationContext

@@ -99,7 +99,9 @@ class FakeSystemClock @Inject constructor(@IsOnRobolectric private val isOnRobol
       private fun loadForegroundScheduler(): Any {
         val retrieveSchedulerMethod =
           robolectricClass.getDeclaredMethod("getForegroundThreadScheduler")
-        return retrieveSchedulerMethod.invoke(/* obj= */ null)
+        return checkNotNull(retrieveSchedulerMethod.invoke(/* obj= */ null)) {
+          "Failed to retrieve scheduler."
+        }
       }
 
       private fun loadRetrieveCurrentTimeMethod(): Method {

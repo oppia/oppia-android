@@ -92,7 +92,7 @@ class ExceptionsController @Inject constructor(
     this.cause?.let {
       exceptionLogBuilder.cause = it.toExceptionLog(timestampInMillis, exceptionType)
     }
-    this.stackTrace?.let {
+    this.stackTrace.let {
       exceptionLogBuilder.addAllStacktraceElement(
         it.map(this@ExceptionsController::convertStackTraceElementToLog)
       )

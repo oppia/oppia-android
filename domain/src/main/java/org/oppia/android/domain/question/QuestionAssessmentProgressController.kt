@@ -35,6 +35,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.begin_session_result"
@@ -359,6 +360,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     return scoresResultFlow.convertToSessionProvider(CALCULATE_SCORES_PROVIDER_ID)
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking

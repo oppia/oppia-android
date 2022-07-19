@@ -4,7 +4,7 @@ Library for providing top-level HTTP networking support for Oppia's App Engine b
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "network_interceptors",

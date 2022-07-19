@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Listener for being notified when [CoroutineExecutorService] has arranged state and is immediately
@@ -167,7 +168,7 @@ class CoroutineExecutorService(
         // timeout due to cooperation.
         val timeoutMillis = unit?.toMillis(timeout) ?: 0
         if (timeoutMillis > 0) {
-          @Suppress("EXPERIMENTAL_API_USAGE")
+          @OptIn(ExperimentalCoroutinesApi::class)
           onTimeout(timeoutMillis) { throw TimeoutException("Timed out after $timeoutMillis") }
         }
         resultChannel.onReceive { it }

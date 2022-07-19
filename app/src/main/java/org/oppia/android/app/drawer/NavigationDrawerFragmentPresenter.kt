@@ -435,7 +435,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           )
         }
       }
-      drawerLayout.setDrawerListener(drawerToggle)
+      drawerLayout.addDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
     } else {
@@ -472,7 +472,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
           )
         }
       }
-      drawerLayout.setDrawerListener(drawerToggle)
+      drawerLayout.addDrawerListener(drawerToggle)
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
       if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal && previousMenuItemId != -1) {

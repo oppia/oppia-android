@@ -4,7 +4,7 @@ This library contains fake objects used for testing as well as tests for these o
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//testing:testing_test.bzl", "testing_test")
 
 # Source files that have been migrated to their own package-based libraries. Files added to this

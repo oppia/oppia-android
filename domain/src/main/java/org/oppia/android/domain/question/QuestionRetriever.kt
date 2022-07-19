@@ -32,7 +32,7 @@ class QuestionRetriever @Inject constructor(
       for (i in 0 until questionJsonArray.length()) {
         val questionJsonObject = questionJsonArray.getJSONObject(i)
         val questionLinkedSkillsJsonArray =
-          questionJsonObject.optJSONArray("linked_skill_ids")
+          questionJsonObject.getJSONArray("linked_skill_ids")
         val linkedSkillIdList = mutableListOf<String>()
         for (j in 0 until questionLinkedSkillsJsonArray.length()) {
           linkedSkillIdList.add(questionLinkedSkillsJsonArray.getStringFromArray(j))

@@ -372,7 +372,7 @@ class StoryProgressController @Inject constructor(
     }
 
     cacheStore.primeInMemoryCacheAsync().invokeOnCompletion {
-      it?.let { it ->
+      it?.let {
         oppiaLogger.e(
           "StoryProgressController",
           "Failed to prime cache ahead of data retrieval for StoryProgressController.",

@@ -21,12 +21,9 @@ fun main(vararg args: String) {
   // Path of the repo to be analyzed.
   val repoPath = "${args[0]}/"
 
-  val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
-
   // A list of all the files to be exempted for this check.
   // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-  val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-    .getExemptedFilePathList()
+  val testFileExemptionList = loadTestFileExemptionsProto().exemptedFilePathList
 
   // A list of all kotlin files in the repo to be analyzed.
   val searchFiles = RepositoryFile.collectSearchFiles(
@@ -48,7 +45,7 @@ fun main(vararg args: String) {
     }
   }
 
-  logFailures(matchedFiles, testFileExemptiontextProto)
+  logFailures(matchedFiles)
 
   if (matchedFiles.isNotEmpty()) {
     println(
@@ -78,9 +75,8 @@ private fun computeExpectedTestFileName(prodFile: File): String {
  * Logs the file names of all the prod files that do not have a test file.
  *
  * @param matchedFiles list of all the files missing a test file
- * @param testFileExemptiontextProto the location of the test file exemption textproto file
  */
-private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: String) {
+private fun logFailures(matchedFiles: List<File>) {
   if (matchedFiles.isNotEmpty()) {
     matchedFiles.sorted().forEach { file ->
       println("File $file does not have a corresponding test file.")
@@ -92,11 +88,10 @@ private fun logFailures(matchedFiles: List<File>, testFileExemptiontextProto: St
 /**
  * Loads the test file exemptions list to proto.
  *
- * @param testFileExemptiontextProto the location of the test file exemption textproto file
  * @return proto class from the parsed textproto file
  */
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  val protoBinaryFile = File("$testFileExemptiontextProto.pb")
+private fun loadTestFileExemptionsProto(): TestFileExemptions {
+  val protoBinaryFile = File("scripts/assets/test_file_exemptions.pb")
   val builder = TestFileExemptions.getDefaultInstance().newBuilderForType()
 
   // This cast is type-safe since proto guarantees type consistency from mergeFrom(),

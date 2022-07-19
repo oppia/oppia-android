@@ -76,7 +76,7 @@ class PersistentCacheStoreTest {
   // TODO(#59): Create a test-only proto for this test rather than needing to reuse a
   //  production-facing proto.
   @Test
-  @ExperimentalCoroutinesApi
+  @OptIn(ExperimentalCoroutinesApi::class)
   fun testCache_initialState_isPending() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 

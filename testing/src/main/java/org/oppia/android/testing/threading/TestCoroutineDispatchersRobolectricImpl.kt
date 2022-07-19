@@ -156,7 +156,9 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
 
     private fun loadMainShadowLooper(): Any {
       val shadowMainLooperMethod = shadowLooperClass.getDeclaredMethod("shadowMainLooper")
-      return shadowMainLooperMethod.invoke(/* obj= */ null)
+      return checkNotNull(shadowMainLooperMethod.invoke(/* obj= */ null)) {
+        "Failed to retrieve shadow main looper."
+      }
     }
 
     private fun loadIsIdleMethod(): Method {

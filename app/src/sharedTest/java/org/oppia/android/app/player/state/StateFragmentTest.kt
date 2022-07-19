@@ -520,7 +520,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
 
@@ -3629,7 +3629,7 @@ class StateFragmentTest {
       dataSourceClass.getDeclaredMethod(
         "toDataSource", String::class.java, Map::class.java
       )
-    return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)
+    return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)!!
   }
 
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {

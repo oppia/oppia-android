@@ -23,6 +23,7 @@ import org.oppia.android.util.data.AsyncResult.ChainedFailureException
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Tests for [AsyncResult]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -960,7 +961,7 @@ class AsyncResultTest {
       .inject(this)
   }
 
-  @Suppress("EXPERIMENTAL_API_USAGE")
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T, O> AsyncResult<T>.blockingTransformAsync(
     transformFunction: suspend (T) -> AsyncResult<O>
   ): AsyncResult<O> {
@@ -969,7 +970,7 @@ class AsyncResultTest {
     return deferred.getCompleted()
   }
 
-  @Suppress("EXPERIMENTAL_API_USAGE")
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T1, T2, O> AsyncResult<T1>.blockingCombineWithAsync(
     otherResult: AsyncResult<T2>,
     combineFunction: suspend (T1, T2) -> AsyncResult<O>

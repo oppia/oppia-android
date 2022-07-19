@@ -132,6 +132,7 @@ class InputInteractionViewTestActivity :
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
   }
 
+  @Suppress("UNUSED_PARAMETER") // 'v' is kept for a more convenient databinding.
   fun getPendingAnswerErrorOnSubmitClick(v: View) {
     fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
     numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)

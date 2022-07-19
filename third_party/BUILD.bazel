@@ -12,7 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_import")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_import")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")

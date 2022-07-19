@@ -48,8 +48,6 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   longTaskDelayDeltaCheckMillis = 1000L
 ) {
   @Before
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   override fun setUp() {
     setUpTestApplicationComponent()
     verifyDispatcherImplementation<TestCoroutineDispatcherEspressoImpl>()

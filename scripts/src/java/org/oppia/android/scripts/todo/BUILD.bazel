@@ -3,7 +3,7 @@ Libraries corresponding to todo-related checks to ensure all TODOs are correctly
 and correspond to open issues on GitHub
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "todo_collector",

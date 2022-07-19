@@ -47,6 +47,8 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -378,6 +380,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
 
@@ -856,6 +859,7 @@ class ExplorationProgressController @Inject constructor(
    * Note that while this is changing internal ephemeral state, it does not notify of changes (it
    * instead expects callers to do this when it's best to notify frontend observers of the changes).
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun ControllerState.saveExplorationCheckpoint() {
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.

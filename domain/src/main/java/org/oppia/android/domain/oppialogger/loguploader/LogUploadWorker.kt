@@ -7,7 +7,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
@@ -19,8 +18,10 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
+@OptIn(ExperimentalCoroutinesApi::class)
 class LogUploadWorker private constructor(
   context: Context,
   params: WorkerParameters,
@@ -40,7 +41,6 @@ class LogUploadWorker private constructor(
     const val EXCEPTION_WORKER = "exception_worker"
   }
 
-  @ExperimentalCoroutinesApi
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {

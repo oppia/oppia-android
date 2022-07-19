@@ -143,8 +143,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "4.1",
     },
     "rules_kotlin": {
-        "sha": "12d22a3d9cbcf00f2e2d8f0683ba87d3823cb8c7f6837568dd7e48846e023307",
-        "version": "v1.5.0",
+        "sha": "946747acdbeae799b085d12b240ec346f775ac65236dfcf18aa0cd7300f6de78",
+        "version": "v1.7.0-RC-2",
     },
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
