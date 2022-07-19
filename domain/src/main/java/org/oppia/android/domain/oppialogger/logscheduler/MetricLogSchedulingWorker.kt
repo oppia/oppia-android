@@ -13,6 +13,7 @@ import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.model.OppiaMetricLog
 
 /**
  * Worker class that generates metric log reports regarding the performance of the application
@@ -70,6 +71,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicMetricLogging(): Result {
     return try {
+      performanceMetricsLogger.logNetworkUsage(OppiaMetricLog.CurrentScreen.BACKGROUND_SCREEN)
       // TODO(#4340): Add functionality to log cpu and network usage performance metrics.
       Result.success()
     } catch (e: Exception) {
@@ -80,7 +82,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleStorageUsageMetricLogging(): Result {
     return try {
-      // TODO(#4340): Add functionality to log storage usage performance metrics.
+      performanceMetricsLogger.logStorageUsage(OppiaMetricLog.CurrentScreen.BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -90,7 +92,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleMemoryUsageMetricLogging(): Result {
     return try {
-      // TODO(#4340): Add functionality to log memory usage performance metrics.
+      performanceMetricsLogger.logMemoryUsage(OppiaMetricLog.CurrentScreen.BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)

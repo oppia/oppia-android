@@ -550,6 +550,8 @@ class EventBundleCreator @Inject constructor(
   private fun OppiaMetricLog.CurrentScreen.toAnalyticsName() = when (this) {
     OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED -> "unspecified_current_screen"
     OppiaMetricLog.CurrentScreen.HOME_SCREEN -> "home_screen"
+    OppiaMetricLog.CurrentScreen.BACKGROUND_SCREEN -> "background_screen"
+    OppiaMetricLog.CurrentScreen.APP_STARTUP_SCREEN -> "app_startup_screen"
     OppiaMetricLog.CurrentScreen.UNRECOGNIZED -> "unknown_screen_name"
     // TODO(#4340): Add support for all screens which are going to be used for metric logging.
   }

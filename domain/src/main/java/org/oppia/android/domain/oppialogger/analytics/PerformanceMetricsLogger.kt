@@ -1,6 +1,7 @@
 package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.APP_STARTUP_SCREEN
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.system.OppiaClock
@@ -31,6 +32,8 @@ class PerformanceMetricsLogger @Inject constructor(
 
   override fun onCreate() {
     firstTimestamp = oppiaClock.getCurrentTimeMs()
+    logApkSize(APP_STARTUP_SCREEN)
+    logStorageUsage(APP_STARTUP_SCREEN)
   }
 
   /**
