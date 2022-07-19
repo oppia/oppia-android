@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -94,6 +96,34 @@ class BindableAdapter<T : Any> internal constructor(
   }
 
   /**
+   * The base builder for [BindableAdapter]. This class should not be used directly--use either
+   * [SingleTypeBuilder] or [MultiTypeBuilder] instead.
+   */
+  abstract class BaseBuilder(fragment: Fragment) {
+    /**
+     * A [WeakReference] to a [LifecycleOwner] for databinding inflation.
+     * Note that this needs to be a weak reference so that long-held references to the adapter do
+     * not potentially leak lifecycle owners (such as fragments and activities).
+     */
+    private var lifecycleOwnerRef: WeakReference<LifecycleOwner> = WeakReference(fragment)
+
+    /**
+     * Returns the [LifecycleOwner] bound to this adapter, or null if there isn't one. This method
+     * will throw if there was a lifecycle owner bound but is now expired.
+     */
+    protected fun getLifecycleOwner(): LifecycleOwner? {
+      // Crash if the lifecycle owner has been cleaned up since it's not valid to use the adapter
+      // with an old lifecycle owner, and silently ignoring this may result in part of the layout
+      // not responding to events.
+      return lifecycleOwnerRef?.let { ref ->
+        checkNotNull(ref.get()) {
+          "Attempted to inflate data binding with expired lifecycle owner"
+        }
+      }
+    }
+  }
+
+  /**
    * Constructs a new [BindableAdapter] that for a single view type.
    *
    * Instances of [SingleTypeBuilder] should be instantiated using [newBuilder].
@@ -101,7 +131,7 @@ class BindableAdapter<T : Any> internal constructor(
   class SingleTypeBuilder<T : Any>(
     private val dataClassType: KClass<T>,
     private val fragment: Fragment
-  ) {
+  ) : BaseBuilder(fragment) {
     private lateinit var viewHolderFactory: ViewHolderFactory<T>
 
     /**
@@ -173,10 +203,10 @@ class BindableAdapter<T : Any> internal constructor(
           /* attachToRoot= */ false
         )
 
-        binding.lifecycleOwner = fragment.viewLifecycleOwner
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, data)
+            binding.lifecycleOwner = getLifecycleOwner()
           }
         }
       }
@@ -216,7 +246,7 @@ class BindableAdapter<T : Any> internal constructor(
     private val dataClassType: KClass<T>,
     private val computeViewType: ComputeViewType<T, E>,
     private val fragment: Fragment
-  ) {
+  ) : BaseBuilder(fragment) {
     private var viewHolderFactoryMap: MutableMap<E, ViewHolderFactory<T>> = HashMap()
 
     /**
@@ -301,10 +331,10 @@ class BindableAdapter<T : Any> internal constructor(
           /* attachToRoot= */ false
         )
 
-        binding.lifecycleOwner = fragment.viewLifecycleOwner
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, transformViewModel(data))
+            binding.lifecycleOwner = getLifecycleOwner()
           }
         }
       }

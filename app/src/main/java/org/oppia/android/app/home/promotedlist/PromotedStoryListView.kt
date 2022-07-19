@@ -41,18 +41,30 @@ class PromotedStoryListView @JvmOverloads constructor(
   lateinit var promotedDataList: List<PromotedStoryViewModel>
 
   override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    val viewComponentFactory =
-      FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
+    try {
+      super.onAttachedToWindow()
+      val viewComponentFactory =
+        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
 
-    // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
-    // the item is completely visible in [HomeFragment] as soon as learner lifts the finger
-    // after scrolling.
-    val snapHelper = StartSnapHelper()
-    onFlingListener = null
-    snapHelper.attachToRecyclerView(this)
+      // The StartSnapHelper is used to snap between items rather than smooth scrolling, so that
+      // the item is completely visible in [HomeFragment] as soon as learner lifts the finger
+      // after scrolling.
+      val snapHelper = StartSnapHelper()
+      onFlingListener = null
+      snapHelper.attachToRecyclerView(this)
+
+      checkIfComponentsInitialized()
+    } catch (e: IllegalStateException) {
+      if (::oppiaLogger.isInitialized) {
+        oppiaLogger.e(
+          "PromotedStoryListView",
+          "Throws exception on attach to window",
+          e
+        )
+      }
+    }
   }
 
   private fun checkIfComponentsInitialized() {
