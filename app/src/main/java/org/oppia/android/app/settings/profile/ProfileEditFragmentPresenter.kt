@@ -1,6 +1,5 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -139,7 +138,10 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment
       ) {
         if (it is AsyncResult.Success) {
-          fragment.requireContext().toast(fragment.requireContext().getString(R.string.profile_edit_delete_successful_message), Toast.LENGTH_SHORT)
+          fragment.requireContext().toast(
+            fragment.requireContext().getString(R.string.profile_edit_delete_successful_message),
+            Toast.LENGTH_SHORT
+          )
           if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
             val intent =
               Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)

@@ -6,23 +6,21 @@ import androidx.work.WorkerParameters
 import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
-import javax.inject.Inject
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(
