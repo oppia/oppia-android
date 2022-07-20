@@ -6,7 +6,6 @@ import androidx.work.WorkerParameters
 import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,6 +20,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.threading.BackgroundDispatcher
 import retrofit2.Response
+import javax.inject.Inject
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 class PlatformParameterSyncUpWorker private constructor(

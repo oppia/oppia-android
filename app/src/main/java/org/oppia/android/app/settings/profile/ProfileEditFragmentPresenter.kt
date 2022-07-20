@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
@@ -20,6 +19,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.toast
+import javax.inject.Inject
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
 const val TAG_PROFILE_DELETION_DIALOG = "PROFILE_DELETION_DIALOG"
