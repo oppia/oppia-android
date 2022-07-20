@@ -107,6 +107,11 @@ For now, you generally won't need to do this, until the Android app supports on-
   ```
   By using this command git will detect the file as a renamed file.
 
+* The team is currently using two build systems for the project: Gradle and Bazel. Please note that:
+  * It's currently recommended that all team members use **Gradle** for their active development in Android Studio.
+  * You may still need to use Bazel for debugging Bazel-specific tests or failures. To do this, you should follow the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) to set up the ability to build with Bazel on your local command line. Most team members just use the console within Android Studio to run their Bazel commands.
+  * Bazel & Gradle sometimes don't play nicely with one another, so it's recommended that when you're verifying Bazel-specific things to do so in one go, and then delete the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
+  * As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
 
 ## Finding something to do
 **Starter projects for new contributors**
