@@ -76,14 +76,14 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 ## Important: Ongoing Bazel migration
 
-The team is currently using two build systems for the project: Gradle and Bazel as we're actively migrating to Bazel.
+The team is currently using two build systems for the project: Gradle and Bazel. We're in the process of actively migrating to Bazel.
 
 Please note that:
-* It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), day-to-day Bazel development currently suffers from:
-  * Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros this can result in a Kernel panic when memory is fully exhausted.
+* It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), we make this recommendation because day-to-day Bazel development currently suffers from:
+  * Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros, this can result in a Kernel panic when memory is fully exhausted.
   * Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
-* When submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
-* Bazel & Gradle sometimes don't play nicely with one another, so it's recommended that when you're verifying Bazel-specific things to do so in one go, and then delete the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
+* That said, when submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
+* Bazel & Gradle sometimes don't play nicely with one another. So, when you're verifying Bazel-specific things, we recommend doing so in one go, and then deleting the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
 * As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
 
 ## Installing the Oppia web app
