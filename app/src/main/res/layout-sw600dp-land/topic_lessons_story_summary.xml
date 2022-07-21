@@ -26,6 +26,7 @@
       android:layout_gravity="center"
       android:layout_marginTop="12dp"
       android:layout_marginBottom="12dp"
+      android:importantForAccessibility="no"
       app:cardBackgroundColor="@color/color_def_white"
       app:cardCornerRadius="4dp"
       app:cardElevation="4dp"
@@ -49,13 +50,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:gravity="center"
+            android:contentDescription="@{viewModel.computeProgressContainerContentDescription()}"
             android:orientation="vertical">
 
             <FrameLayout
               android:id="@+id/story_progress_container"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:contentDescription="@{viewModel.storyProgressPercentageText}">
+              android:layout_height="wrap_content">
 
               <org.oppia.android.app.customview.SegmentedCircularProgressView
                 android:id="@+id/story_progress_view"
@@ -98,6 +99,7 @@
               android:layout_height="wrap_content"
               android:layout_marginStart="@dimen/topic_lessons_summary_story_name_chapter_count_container_margin_start"
               android:layout_weight="1"
+              android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
               android:contentDescription="@{viewModel.computeStoryNameChapterCountContainerContentDescription()}"
               android:gravity="center_vertical"
               android:orientation="vertical">
@@ -108,7 +110,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
                 android:paddingTop="24dp"
                 android:paddingBottom="4dp"
                 android:text="@{viewModel.storySummary.storyName}"
