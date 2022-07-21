@@ -13,6 +13,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Controller for handling performance metrics event logging.
@@ -20,6 +21,7 @@ import javax.inject.Inject
  * Callers should not use this class directly; instead, they should use ``PerformanceMetricsLogger``
  * which provides convenience log methods.
  */
+@Singleton
 class PerformanceMetricsController @Inject constructor(
   private val performanceMetricsUtils: PerformanceMetricsUtils,
   private val consoleLogger: ConsoleLogger,
@@ -178,14 +180,14 @@ class PerformanceMetricsController @Inject constructor(
 
   /** Sets [isAppInForeground] to true when application is in or returns to foreground. */
   fun setAppInForeground() {
-    isAppInForeground = true
+    this.isAppInForeground = true
   }
 
   /** Sets [isAppInForeground] to false when application goes to background. */
   fun setAppInBackground() {
-    isAppInForeground = false
+    this.isAppInForeground = false
   }
 
   /** Returns a boolean value indicating whether the application is currently in foreground or not. */
-  fun getIsAppInForeground() = isAppInForeground
+  fun getIsAppInForeground() = this.isAppInForeground
 }

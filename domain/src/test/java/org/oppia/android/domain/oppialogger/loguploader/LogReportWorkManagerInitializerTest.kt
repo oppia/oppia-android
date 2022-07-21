@@ -124,10 +124,11 @@ class LogReportWorkManagerInitializerTest {
       logReportWorkManagerInitializer.getWorkRequestForExceptionsId()
     val enqueuedSchedulingStorageUsageMetricWorkRequestId =
       logReportWorkManagerInitializer.getWorkRequestForSchedulingStorageUsageMetricLogsId()
-    val enqueuedSchedulingMemoryUsageMetricWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForSchedulingMemoryUsageMetricLogsId()
-    val enqueuedSchedulingPeriodicPerformanceMetricWorkRequestId =
-      logReportWorkManagerInitializer.getWorkRequestForSchedulingPeriodicPerformanceMetricLogsId()
+    val enqueuedSchedulingPeriodicUiMetricWorkRequestId =
+      logReportWorkManagerInitializer.getWorkRequestForSchedulingPeriodicUiMetricLogsId()
+    val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
+      logReportWorkManagerInitializer
+        .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
@@ -137,10 +138,10 @@ class LogReportWorkManagerInitializerTest {
       enqueuedSchedulingStorageUsageMetricWorkRequestId
     )
     assertThat(fakeLogScheduler.getMostRecentMemoryUsageMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingMemoryUsageMetricWorkRequestId
+      enqueuedSchedulingPeriodicUiMetricWorkRequestId
     )
     assertThat(fakeLogScheduler.getMostRecentPeriodicPerformanceMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingPeriodicPerformanceMetricWorkRequestId
+      enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
     )
   }
 
@@ -200,30 +201,31 @@ class LogReportWorkManagerInitializerTest {
   }
 
   @Test
-  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicPerformanceMetricLogs() {
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicBackgroundPerformanceMetricLogs() {
     val workerCaseForSchedulingPeriodicPerformanceMetricLogs: Data = Data.Builder()
       .putString(
         MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.PERIODIC_METRIC_WORKER
+        MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
       )
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicPerformanceMetricLogs()
+      logReportWorkManagerInitializer
+        .getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs()
     ).isEqualTo(workerCaseForSchedulingPeriodicPerformanceMetricLogs)
   }
 
   @Test
-  fun testWorkRequest_verifyWorkRequestData_forSchedulingMemoryUsageMetricLogs() {
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicUiMetricLogs() {
     val workerCaseForSchedulingMemoryUsageMetricLogs: Data = Data.Builder()
       .putString(
         MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.MEMORY_USAGE_WORKER
+        MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
       )
       .build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingMemoryUsageMetricLogs()
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicUiMetricLogs()
     ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 

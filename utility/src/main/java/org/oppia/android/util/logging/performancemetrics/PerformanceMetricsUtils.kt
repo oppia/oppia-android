@@ -9,15 +9,11 @@ import org.oppia.android.util.logging.ConsoleLogger
 import java.io.File
 import javax.inject.Inject
 
-/** Utility to extract performance metrics from the underlying android system. */
+/** Utility to extract performance metrics from the underlying Android system. */
 class PerformanceMetricsUtils @Inject constructor(
   private val context: Application,
   private val consoleLogger: ConsoleLogger
 ) {
-
-  // Keep the default value as false as the app is considered to be in the background until it comes
-  // to foreground.
-  private var isAppInForeground: Boolean = false
 
   /** Returns the size of the app's installed APK file, in bytes. */
   fun getApkSize(): Long {

@@ -14,7 +14,7 @@ class FakeLogScheduler @Inject constructor() : MetricLogScheduler {
   private val schedulingMemoryUsageMetricLoggingRequestIdList = mutableListOf<UUID>()
   private val schedulingPeriodicPerformanceMetricLoggingRequestIdList = mutableListOf<UUID>()
 
-  override fun enqueueWorkRequestForPeriodicMetrics(
+  override fun enqueueWorkRequestForPeriodicBackgroundMetrics(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   ) {
@@ -28,7 +28,7 @@ class FakeLogScheduler @Inject constructor() : MetricLogScheduler {
     schedulingStorageUsageMetricLoggingRequestIdList.add(workRequest.id)
   }
 
-  override fun enqueueWorkRequestForMemoryUsage(
+  override fun enqueueWorkRequestForPeriodicUiMetrics(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   ) {

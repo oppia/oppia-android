@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -12,7 +13,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.HOME_SCREEN
 import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
@@ -46,7 +46,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -59,7 +58,7 @@ private const val TEST_CPU_USAGE = Long.MAX_VALUE
 /** Tests for [PerformanceMetricsLoggerTest]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsLoggerTest.TestApplication::class)
 class PerformanceMetricsLoggerTest {
@@ -84,7 +83,6 @@ class PerformanceMetricsLoggerTest {
 
   @Before
   fun setUp() {
-    MockitoAnnotations.initMocks(this)
     setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
@@ -214,7 +212,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   private fun getStorageUsage(): Long {
-    val application = RuntimeEnvironment.application
+    val application: Application = ApplicationProvider.getApplicationContext()
     val persistentUsage =
       application.filesDir.totalSpace - application.filesDir.freeSpace
     val cacheUsage =

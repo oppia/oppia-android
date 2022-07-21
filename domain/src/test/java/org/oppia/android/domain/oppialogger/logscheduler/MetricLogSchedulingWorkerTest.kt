@@ -129,12 +129,12 @@ class MetricLogSchedulingWorkerTest {
   }
 
   @Test
-  fun testWorker_enqueueRequest_verifyPeriodicPerformanceMetricsLogging() {
+  fun testWorker_enqueueRequest_verifyPeriodicBackgroundPerformanceMetricsLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
     val inputData = Data.Builder().putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_METRIC_WORKER
+      MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
     ).build()
 
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
@@ -150,12 +150,12 @@ class MetricLogSchedulingWorkerTest {
   }
 
   @Test
-  fun testWorker_enqueueRequest_verifyMemoryUsagePerformanceMetricsLogging() {
+  fun testWorker_enqueueRequest_verifyPeriodicUiPerformanceMetricsLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
     val inputData = Data.Builder().putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.MEMORY_USAGE_WORKER
+      MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
     ).build()
 
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()

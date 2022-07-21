@@ -75,7 +75,8 @@ class PerformanceMetricsUtilsTest {
   @Test
   fun testPerformanceMetricsUtils_setTotalMemory_returnsCorrectMemoryTier() {
     val activityManager: ActivityManager =
-      RuntimeEnvironment.application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+      ApplicationProvider.getApplicationContext<Application>()
+        .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = (1.5 * 1024 * 1024 * 1024).toLong()
@@ -137,7 +138,8 @@ class PerformanceMetricsUtilsTest {
     }
     var totalPssUsedTest = 0
     val activityManager: ActivityManager =
-      RuntimeEnvironment.application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+      ApplicationProvider.getApplicationContext<Application>()
+        .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
     shadowActivityManager.setProcesses(listOf(process1, process2))
     val processMemoryInfo = activityManager.getProcessMemoryInfo(arrayOf(TEST_PID).toIntArray())
@@ -151,6 +153,7 @@ class PerformanceMetricsUtilsTest {
 
   @Test
   fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
+    val application: Application = ApplicationProvider.getApplicationContext()
     val applicationInfo = ApplicationInfo()
     val testApkSize = (File(TEST_APP_PATH).length() / 1024)
     applicationInfo.apply {
@@ -159,10 +162,10 @@ class PerformanceMetricsUtilsTest {
       this.name = TEST_PACKAGE_LABEL
       this.flags = 0
     }
-    val packageManager = RuntimeEnvironment.application.packageManager
+    val packageManager = application.packageManager
     val shadowPackageManager = shadowOf(packageManager)
 
-    shadowPackageManager.removePackage(RuntimeEnvironment.application.packageName)
+    shadowPackageManager.removePackage(application.packageName)
     shadowPackageManager.installPackage(
       PackageInfo().apply {
         this.packageName = TEST_PACKAGE_NAME
