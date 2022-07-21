@@ -6,6 +6,7 @@ Thanks for your interest in contributing to the Oppia Android project, and makin
 * [Onboarding instructions](#onboarding-instructions)
 * [Install oppia-android](#install-oppia-android)
 * [Run the app from Android Studio](#run-the-app-from-android-studio)
+* [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
 * [Notes](#notes)
 * [Developing skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
 * [Finding something to do](#finding-something-to-do)
@@ -73,6 +74,17 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 3. Finally, click the "Run" button.
 
+## Important: Ongoing Bazel migration
+
+The team is currently using two build systems for the project: Gradle and Bazel as we're actively migrating to Bazel.
+
+Please note that:
+* It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), day-to-day Bazel development currently suffers from:
+  * Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros this can result in a Kernel panic when memory is fully exhausted.
+  * Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
+* When submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
+* Bazel & Gradle sometimes don't play nicely with one another, so it's recommended that when you're verifying Bazel-specific things to do so in one go, and then delete the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
+* As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
 
 ## Installing the Oppia web app
 
@@ -106,12 +118,6 @@ For now, you generally won't need to do this, until the Android app supports on-
   git mv old_file_path new_file_path
   ```
   By using this command git will detect the file as a renamed file.
-
-* The team is currently using two build systems for the project: Gradle and Bazel. Please note that:
-  * It's currently recommended that all team members use **Gradle** for their active development in Android Studio.
-  * You may still need to use Bazel for debugging Bazel-specific tests or failures. To do this, you should follow the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) to set up the ability to build with Bazel on your local command line. Most team members just use the console within Android Studio to run their Bazel commands.
-  * Bazel & Gradle sometimes don't play nicely with one another, so it's recommended that when you're verifying Bazel-specific things to do so in one go, and then delete the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
-  * As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
 
 ## Finding something to do
 **Starter projects for new contributors**
