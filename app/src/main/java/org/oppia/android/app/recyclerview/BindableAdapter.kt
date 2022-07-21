@@ -99,13 +99,13 @@ class BindableAdapter<T : Any> internal constructor(
    * The base builder for [BindableAdapter]. This class should not be used directly--use either
    * [SingleTypeBuilder] or [MultiTypeBuilder] instead.
    */
-  abstract class BaseBuilder(fragment: Fragment) {
+  abstract class BaseBuilder(private val fragment: Fragment) {
     /**
      * A [WeakReference] to a [LifecycleOwner] for databinding inflation.
      * Note that this needs to be a weak reference so that long-held references to the adapter do
      * not potentially leak lifecycle owners (such as fragments and activities).
      */
-    private var lifecycleOwnerRef: WeakReference<LifecycleOwner> = WeakReference(fragment)
+    private val lifecycleOwnerRef: WeakReference<LifecycleOwner> = WeakReference(fragment)
 
     /**
      * Returns the [LifecycleOwner] bound to this adapter, or null if there isn't one. This method
@@ -206,6 +206,8 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, data)
+            // Attach lifecycleOwner after viewModel has been attached to the view.
+            // Attaching lifecycleOwner before will cause a null pointer exception crash on [HomeFragment]
             binding.lifecycleOwner = getLifecycleOwner()
           }
         }
@@ -223,13 +225,11 @@ class BindableAdapter<T : Any> internal constructor(
       )
     }
 
-    /** Fragment injectable factory to create new [SingleTypeBuilder] */
+    /** Fragment injectable factory to create new [SingleTypeBuilder]. */
     class Factory @Inject constructor(
       val fragment: Fragment
     ) {
-      /**
-       * Returns a new [SingleTypeBuilder] for the specified Data class type.
-       */
+      /**Returns a new [SingleTypeBuilder] for the specified Data class type.*/
       inline fun <reified T : Any> create(): SingleTypeBuilder<T> {
         return SingleTypeBuilder(T::class, fragment)
       }
@@ -334,6 +334,8 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, transformViewModel(data))
+            // Attach lifecycleOwner after viewModel has been attached to the view.
+            // Attaching lifecycleOwner before will cause a null pointer exception crash on [HomeFragment]
             binding.lifecycleOwner = getLifecycleOwner()
           }
         }
@@ -359,14 +361,12 @@ class BindableAdapter<T : Any> internal constructor(
       )
     }
 
-    /** Fragment injectable factory to create new [MultiTypeBuilder] */
+    /** Fragment injectable factory to create new [MultiTypeBuilder]. */
     class Factory @Inject constructor(
       val fragment: Fragment
     ) {
 
-      /**
-       * Returns a new [MultiTypeBuilder] for the specified data class type.
-       */
+      /*** Returns a new [MultiTypeBuilder] for the specified data class type.*/
       inline fun <reified T : Any, reified E : Enum<E>> create(
         noinline computeViewType: ComputeViewType<T, E>
       ): MultiTypeBuilder<T, E> {

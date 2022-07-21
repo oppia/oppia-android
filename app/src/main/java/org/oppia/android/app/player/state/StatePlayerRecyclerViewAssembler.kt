@@ -892,7 +892,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
   ) {
 
-    private var adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
+    private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
       StateItemViewModel.ViewType> = adapterBuilderFactory.create { it.viewType }
 
     /**
