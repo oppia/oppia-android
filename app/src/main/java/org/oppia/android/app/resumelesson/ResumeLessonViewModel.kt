@@ -22,4 +22,8 @@ class ResumeLessonViewModel @Inject constructor(
 
   /** The [ExplorationCheckpoint] that may be used to resume the exploration. */
   val explorationCheckpoint = ObservableField(ExplorationCheckpoint.getDefaultInstance())
+
+  fun isChapterSummaryEmpty(): Boolean {
+    return chapterSummary.get().toString().isEmpty()
+  }
 }
