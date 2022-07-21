@@ -160,10 +160,11 @@ class DragDropTestActivityTest {
 
   @Test
   fun testDragDropTestActivity_dragItem3ToPosition2() {
-    launch(DragDropTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        attachDragDropToActivity(activity)
-      }
+    launch(DragDropTestActivity::class.java).use {
+      // scenario ->
+      // scenario.onActivity { activity ->
+      //  attachDragDropToActivity(activity)
+      // }
       onView(withId(R.id.drag_drop_recycler_view))
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
