@@ -32,7 +32,7 @@
         android:id="@+id/mark_chapters_completed_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/oppia_primary"
+        android:background="@color/component_color_mark_chapters_completed_primary_toolbar_color"
         android:textSize="20sp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
@@ -44,7 +44,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/oppia_primary">
+        android:background="@color/component_color_mark_chapters_completed_secondary_toolbar_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/mark_chapters_completed_all_check_box_container"
@@ -112,7 +112,7 @@
         android:id="@+id/mark_chapters_completed_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/profile_edit_background"
+        android:background="@color/component_color_mark_chapters_completed_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="40dp"
