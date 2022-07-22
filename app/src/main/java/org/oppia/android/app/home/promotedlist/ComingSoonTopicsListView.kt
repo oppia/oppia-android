@@ -35,6 +35,8 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   @Inject
   lateinit var singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
 
+  lateinit var comingSoonDataList: List<ComingSoonTopicsViewModel>
+
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
 
@@ -48,6 +50,18 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     val snapHelper = StartSnapHelper()
     onFlingListener = null
     snapHelper.attachToRecyclerView(this)
+    maybeInitializeAdapter()
+  }
+
+  private fun maybeInitializeAdapter() {
+    if (::bindingInterface.isInitialized &&
+      ::bindingInterface.isInitialized &&
+      ::oppiaLogger.isInitialized &&
+      ::singleTypeAdapterFactory.isInitialized &&
+      ::comingSoonDataList.isInitialized
+    ) {
+      bindDataToAdapter()
+    }
   }
 
   /**
@@ -61,14 +75,23 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     // way to check that the adapter is created.
     // This ensures that the adapter will only be created once and correctly rebinds the data.
     // For more context:  https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
+    if (newDataList != null) {
+      comingSoonDataList = newDataList
+      maybeInitializeAdapter()
+    }
+  }
+
+  private fun bindDataToAdapter() {
+    // To reliably bind data only after the adapter is created, we manually set the data so we can first
+    // check for the adapter; when using an existing [RecyclerViewBindingAdapter] there is no reliable
+    // way to check that the adapter is created.
+    // This ensures that the adapter will only be created once and correctly rebinds the data.
+    // For more context: https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
     if (adapter == null) {
       adapter = createAdapter()
     }
-    if (newDataList == null) {
-      oppiaLogger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve upcoming topic list data")
-    } else {
-      (adapter as BindableAdapter<*>).setDataUnchecked(newDataList)
-    }
+
+    (adapter as BindableAdapter<*>).setDataUnchecked(comingSoonDataList)
   }
 
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
