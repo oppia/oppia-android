@@ -46,7 +46,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject

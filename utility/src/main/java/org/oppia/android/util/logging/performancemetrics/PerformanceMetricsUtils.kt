@@ -1,7 +1,6 @@
 package org.oppia.android.util.logging.performancemetrics
 
 import android.app.ActivityManager
-import android.app.Application
 import android.content.Context
 import android.net.TrafficStats
 import org.oppia.android.app.model.OppiaMetricLog
@@ -11,7 +10,7 @@ import javax.inject.Inject
 
 /** Utility to extract performance metrics from the underlying Android system. */
 class PerformanceMetricsUtils @Inject constructor(
-  private val context: Application,
+  private val context: Context,
   private val consoleLogger: ConsoleLogger
 ) {
 

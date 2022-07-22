@@ -83,34 +83,32 @@ class LogReportWorkManagerInitializer @Inject constructor(
     .setConstraints(logReportWorkerConstraints)
     .build()
 
-  private val workRequestForSchedulingPeriodicBackgroundMetricLogs: PeriodicWorkRequest = PeriodicWorkRequest
-    .Builder(
+  private val workRequestForSchedulingPeriodicBackgroundMetricLogs: PeriodicWorkRequest =
+    PeriodicWorkRequest.Builder(
       MetricLogSchedulingWorker::class.java,
       performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
       TimeUnit.MINUTES
     )
-    .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
-    .setConstraints(logReportWorkerConstraints)
-    .build()
+      .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
+      .setConstraints(logReportWorkerConstraints)
+      .build()
 
   private val workRequestForSchedulingStorageUsageMetricLogs: PeriodicWorkRequest =
-    PeriodicWorkRequest
-      .Builder(
-        MetricLogSchedulingWorker::class.java,
-        performanceMetricCollectionLowFrequencyTimeInterval.value.toLong(),
-        TimeUnit.MINUTES
-      )
+    PeriodicWorkRequest.Builder(
+      MetricLogSchedulingWorker::class.java,
+      performanceMetricCollectionLowFrequencyTimeInterval.value.toLong(),
+      TimeUnit.MINUTES
+    )
       .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
 
   private val workRequestForSchedulingPeriodicUiMetricLogs: PeriodicWorkRequest =
-    PeriodicWorkRequest
-      .Builder(
-        MetricLogSchedulingWorker::class.java,
-        performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
-        TimeUnit.MINUTES
-      )
+    PeriodicWorkRequest.Builder(
+      MetricLogSchedulingWorker::class.java,
+      performanceMetricsCollectionHighFrequencyTimeInterval.value.toLong(),
+      TimeUnit.MINUTES
+    )
       .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
       .setConstraints(logReportWorkerConstraints)
       .build()
