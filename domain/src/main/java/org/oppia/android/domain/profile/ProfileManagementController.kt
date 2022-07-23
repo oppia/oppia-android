@@ -642,20 +642,20 @@ class ProfileManagementController @Inject constructor(
 
   private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
     Deferred<ProfileActionStatus> {
-    return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId]
-        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-      val updatedProfile = profile.toBuilder()
-        .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
-        .setNumberOfLogins(profile.numberOfLogins + 1)
-        .build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val profile = it.profilesMap[profileId.internalId]
+          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+        val updatedProfile = profile.toBuilder()
+          .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
+          .setNumberOfLogins(profile.numberOfLogins + 1)
+          .build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      }
     }
-  }
 
   /**
    * Deletes an existing profile.
