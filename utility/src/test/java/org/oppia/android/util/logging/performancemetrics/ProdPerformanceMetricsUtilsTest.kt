@@ -309,7 +309,7 @@ class ProdPerformanceMetricsUtilsTest {
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsUtilsTest_TestApplicationComponent.builder()
+      DaggerProdPerformanceMetricsUtilsTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
