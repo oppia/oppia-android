@@ -80,6 +80,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 
 /** Tests for [ThirdPartyDependencyListActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -158,7 +159,7 @@ class ThirdPartyDependencyListActivityTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class
     ]
   )
 

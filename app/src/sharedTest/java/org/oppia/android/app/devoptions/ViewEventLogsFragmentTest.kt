@@ -94,6 +94,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 
 private const val TEST_TIMESTAMP = 1624902815000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -574,7 +575,8 @@ class ViewEventLogsFragmentTest {
       PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
+      TestingBuildFlavorModule::class
     ]
   )
 

@@ -143,7 +143,7 @@ class AppStartupStateController @Inject constructor(
 
   private fun computeBuildNoticeMode(onboardingState: OnboardingState): BuildFlavorNoticeMode {
     return when (currentBuildFlavor) {
-      BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED ->
+      BuildFlavor.TESTING, BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED ->
         BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED
       // No notice is shown for developer & alpha builds.
       BuildFlavor.DEVELOPER, BuildFlavor.ALPHA -> BuildFlavorNoticeMode.NO_NOTICE
@@ -161,8 +161,8 @@ class AppStartupStateController @Inject constructor(
           } else BuildFlavorNoticeMode.NO_NOTICE // The user doesn't want to see the notice again.
         }
         // A brand new install should result in no notice, or an update from a developer build.
-        BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED, BuildFlavor.DEVELOPER,
-        BuildFlavor.GENERAL_AVAILABILITY -> BuildFlavorNoticeMode.NO_NOTICE
+        BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED, BuildFlavor.TESTING,
+        BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY -> BuildFlavorNoticeMode.NO_NOTICE
       }
     }
   }

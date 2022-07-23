@@ -822,6 +822,7 @@ TEST_DEPS = [
     "//app/src/main/java/org/oppia/android/app/application:application_injector",
     "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
     "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
+    "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
     "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
     "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
