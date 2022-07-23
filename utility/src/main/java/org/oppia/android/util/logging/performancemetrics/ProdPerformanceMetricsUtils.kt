@@ -12,7 +12,7 @@ import javax.inject.Inject
 class ProdPerformanceMetricsUtils @Inject constructor(
   private val context: Context,
   private val consoleLogger: ConsoleLogger
-): PerformanceMetricsUtils {
+) : PerformanceMetricsUtils {
 
   override fun getApkSize(): Long {
     var apkSize: Long = 0

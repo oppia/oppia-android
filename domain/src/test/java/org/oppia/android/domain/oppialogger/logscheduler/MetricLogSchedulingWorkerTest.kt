@@ -22,8 +22,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -54,14 +52,13 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtilsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtilsModule
 
 /** Tests for [MetricLogSchedulingWorker]. */
 // FunctionName: test names are conventionally named with underscores.

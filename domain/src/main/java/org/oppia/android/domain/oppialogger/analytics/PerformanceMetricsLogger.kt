@@ -2,10 +2,10 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 
 /**
  * Convenience logger for performance metrics related analytics events.
