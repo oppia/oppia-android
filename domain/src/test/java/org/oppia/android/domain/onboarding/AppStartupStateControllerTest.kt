@@ -14,6 +14,7 @@ import dagger.Module
 import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
@@ -48,7 +49,6 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.
