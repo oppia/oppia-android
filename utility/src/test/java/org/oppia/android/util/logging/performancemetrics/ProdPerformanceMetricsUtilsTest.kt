@@ -58,16 +58,16 @@ private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_PID = 1
 private const val TEST_UID = 1
 
-/** Tests for [PerformanceMetricsUtils]. */
+/** Tests for [ProdPerformanceMetricsUtils]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PerformanceMetricsUtilsTest.TestApplication::class)
-class PerformanceMetricsUtilsTest {
+@Config(application = ProdPerformanceMetricsUtilsTest.TestApplication::class)
+class ProdPerformanceMetricsUtilsTest {
 
   @Inject
-  lateinit var performanceMetricsUtils: PerformanceMetricsUtils
+  lateinit var prodPerformanceMetricsUtils: ProdPerformanceMetricsUtils
 
   @field:[Inject MockContext]
   lateinit var mockContext: Context
@@ -89,7 +89,7 @@ class PerformanceMetricsUtilsTest {
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = (1.5 * 1024 * 1024 * 1024).toLong()
     shadowActivityManager.setMemoryInfo(memoryInfo)
-    val memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
+    val memoryTier = prodPerformanceMetricsUtils.getDeviceMemoryTier()
 
     assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER)
   }
@@ -107,7 +107,7 @@ class PerformanceMetricsUtilsTest {
     val cacheStorageUsage = cacheFile.totalSpace - cacheFile.freeSpace
     val expectedStorageValue = permanentStorageUsage + cacheStorageUsage
 
-    assertThat(performanceMetricsUtils.getUsedStorage()).isEqualTo(expectedStorageValue)
+    assertThat(prodPerformanceMetricsUtils.getUsedStorage()).isEqualTo(expectedStorageValue)
   }
 
   @Test
@@ -129,7 +129,7 @@ class PerformanceMetricsUtilsTest {
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
 
-    assertThat(performanceMetricsUtils.getDeviceStorageTier())
+    assertThat(prodPerformanceMetricsUtils.getDeviceStorageTier())
       .isEqualTo(expectedStorageTierValue)
   }
 
@@ -141,7 +141,7 @@ class PerformanceMetricsUtilsTest {
     `when`(mockContext.applicationInfo).thenReturn(applicationInfo)
     val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(mockContext.applicationInfo.uid)
 
-    assertThat(performanceMetricsUtils.getTotalSentBytes())
+    assertThat(prodPerformanceMetricsUtils.getTotalSentBytes())
       .isEqualTo(expectedNetworkBytesSent)
   }
 
@@ -153,7 +153,7 @@ class PerformanceMetricsUtilsTest {
     `when`(mockContext.applicationInfo).thenReturn(applicationInfo)
     val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(mockContext.applicationInfo.uid)
 
-    assertThat(performanceMetricsUtils.getTotalReceivedBytes())
+    assertThat(prodPerformanceMetricsUtils.getTotalReceivedBytes())
       .isEqualTo(expectedNetworkBytesReceived)
   }
 
@@ -182,7 +182,7 @@ class PerformanceMetricsUtilsTest {
       }
     }
 
-    assertThat(performanceMetricsUtils.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
+    assertThat(prodPerformanceMetricsUtils.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
   }
 
   @Test
@@ -207,7 +207,7 @@ class PerformanceMetricsUtilsTest {
       }
     )
 
-    val apkSize = performanceMetricsUtils.getApkSize()
+    val apkSize = prodPerformanceMetricsUtils.getApkSize()
     assertThat(apkSize).isEqualTo(testApkSize)
   }
 
@@ -292,7 +292,8 @@ class PerformanceMetricsUtilsTest {
       TestModule::class, TestLogReportingModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, SyncStatusModule::class
+      TestPlatformParameterModule::class, SyncStatusModule::class,
+      PerformanceMetricsUtilsModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -303,7 +304,7 @@ class PerformanceMetricsUtilsTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(performanceMetricsUtilsTest: PerformanceMetricsUtilsTest)
+    fun inject(performanceMetricsUtilsTest: ProdPerformanceMetricsUtilsTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
@@ -313,7 +314,7 @@ class PerformanceMetricsUtilsTest {
         .build()
     }
 
-    fun inject(performanceMetricsUtilsTest: PerformanceMetricsUtilsTest) {
+    fun inject(performanceMetricsUtilsTest: ProdPerformanceMetricsUtilsTest) {
       component.inject(performanceMetricsUtilsTest)
     }
 
