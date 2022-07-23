@@ -521,7 +521,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testLoginProfile_addProfiles_loginProfile_checkProfileId_Timestamp_NumberOfLoginsCorrect() {
+  fun testLoginProfile_addedProfile_profileIdTimestampAndNumberOfLoginsCorrectlyDefaulted() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
@@ -532,7 +532,7 @@ class ProfileManagementControllerTest {
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
-    assertThat(profile.numberOfLogins).isNotEqualTo(0)
+    assertThat(profile.numberOfLogins).isEqualTo(1)
   }
 
   @Test
