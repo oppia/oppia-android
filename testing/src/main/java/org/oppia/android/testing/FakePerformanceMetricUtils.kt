@@ -1,13 +1,13 @@
 package org.oppia.android.testing
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** A test specific fake for performance metric utils. */
 @Singleton
-class FakePerformanceMetricUtils @Inject constructor(): PerformanceMetricsUtils {
+class FakePerformanceMetricUtils @Inject constructor() : PerformanceMetricsUtils {
   internal var testApkSize = 0L
   internal var testStorageUsage = 0L
   internal var testTotalPss = 0L
