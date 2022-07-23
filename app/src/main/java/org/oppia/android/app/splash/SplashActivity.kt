@@ -29,15 +29,11 @@ class SplashActivity :
   @Inject
   lateinit var splashActivityPresenter: SplashActivityPresenter
 
-  @Inject
-  lateinit var performanceMetricsLogger: PerformanceMetricsLogger
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val componentFactory = applicationContext as ActivityComponentFactory
     activityComponent = componentFactory.createActivityComponent(this)
     (activityComponent as ActivityComponentImpl).inject(this)
-    performanceMetricsLogger.logStartupLatency(OppiaMetricLog.CurrentScreen.APP_STARTUP_SCREEN)
     splashActivityPresenter.handleOnCreate()
   }
 
