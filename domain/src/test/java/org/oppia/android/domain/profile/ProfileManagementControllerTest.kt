@@ -536,27 +536,20 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testLoginToProfile_addProfile_loginToProfile_logoutProfile_checkNumberOfLoginsIsCorrect() {
+  fun testLoginToProfile_addProfile_loginToProfileTwice_checkNumberOfLoginsIsTwo() {
     setUpTestApplicationComponent()
     addTestProfiles()
-
-    var profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    var profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.numberOfLogins).isEqualTo(0)
-
     var loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.numberOfLogins).isEqualTo(1)
 
+    // log out of profile 2
     loginProvider = profileManagementController.loginToProfile(PROFILE_ID_3)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
 
     loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.numberOfLogins).isEqualTo(2)
   }
 
