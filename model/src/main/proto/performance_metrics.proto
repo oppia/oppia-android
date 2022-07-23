@@ -134,8 +134,6 @@ message OppiaMetricLog {
     // The metric log was taken on application startup.
     APP_STARTUP_SCREEN = 3;
 
-    // The metric log was taken when the splash screen was opened.
-    SPLASH_SCREEN = 4;
     // TODO(#4340): Add support for all screens which are going to be used for metric logging.
   }
 

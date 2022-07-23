@@ -11,8 +11,6 @@ import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import javax.inject.Inject
-import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to
