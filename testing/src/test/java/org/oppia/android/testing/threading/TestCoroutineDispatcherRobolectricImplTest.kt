@@ -36,7 +36,16 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TestCoroutineDispatcherRobolectricImpl]. */
+/**
+ * Tests for the test-only coroutine dispatcher that's managed by [TestCoroutineDispatchers] in
+ * Robolectric environments.
+ *
+ * This isn't actually testing custom dispatcher code but, rather, the behavior of a coroutine
+ * dispatcher that uses a test-only backing executor service that must behave correctly to ensure
+ * that other tests can safely rely on this functionality.
+ */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -58,7 +67,9 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   @ExperimentalCoroutinesApi
   override fun setUp() {
     setUpTestApplicationComponent()
-    verifyDispatcherImplementation<TestCoroutineDispatcherRobolectricImpl>()
+
+    // Robolectric tests use a blocking executor which require manual running.
+    verifyExecutorImpl<BlockingScheduledExecutorService>()
   }
 
   override fun getCurrentTimeMillis(): Long = fakeSystemClock.getTimeMillis()
@@ -73,7 +84,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   }
 
   override fun ensureFutureTasksAreScheduled() {
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
   }
 
   /*
@@ -111,7 +122,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleImmediateTask_noCallbacks() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     reset(mockTaskIdleListener)
 
     scheduleImmediateTask(mockRunnable1)
@@ -124,7 +135,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   // environment.
   @Test
   fun testDispatcher_taskIdleListener_scheduleFutureTask_noCallbacks() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     reset(mockTaskIdleListener)
 
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
@@ -134,93 +145,93 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleImmediateFutureTask_runBothTogether_calledOnce() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
     scheduleImmediateTask(mockRunnable2)
     reset(mockTaskIdleListener)
 
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // The callbacks should be called once for both tasks. Note that order can't be reliably checked
     // here due to multiple tasks being executed in the same time quantum.
-    verify(mockTaskIdleListener, atLeastOnce()).onDispatcherRunning()
-    verify(mockTaskIdleListener, atLeastOnce()).onDispatcherIdle()
+    verify(mockTaskIdleListener, atLeastOnce()).onCoordinatorRunning()
+    verify(mockTaskIdleListener, atLeastOnce()).onCoordinatorIdle()
     verifyNoMoreInteractions(mockTaskIdleListener)
   }
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleImmediateFutureTask_runCurrent_runningIdleCalled() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
     scheduleImmediateTask(mockRunnable2)
     reset(mockTaskIdleListener)
 
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // The callbacks should be called for the first task. Note that order can't be reliably checked
     // here due to multiple tasks being executed in the same time quantum
-    verify(mockTaskIdleListener, atLeastOnce()).onDispatcherRunning()
-    verify(mockTaskIdleListener, atLeastOnce()).onDispatcherIdle()
+    verify(mockTaskIdleListener, atLeastOnce()).onCoordinatorRunning()
+    verify(mockTaskIdleListener, atLeastOnce()).onCoordinatorIdle()
     verifyNoMoreInteractions(mockTaskIdleListener)
   }
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleImmediateFutureTask_runBothSeparately_calledTwice() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
     scheduleImmediateTask(mockRunnable2)
     reset(mockTaskIdleListener)
 
     // Run the tasks in 2 phases.
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // The callbacks should be called multiple times. The number of times is implementation
     // dependent.
-    verify(mockTaskIdleListener, atLeast(2)).onDispatcherIdle()
-    verify(mockTaskIdleListener, atLeast(2)).onDispatcherRunning()
+    verify(mockTaskIdleListener, atLeast(2)).onCoordinatorIdle()
+    verify(mockTaskIdleListener, atLeast(2)).onCoordinatorRunning()
   }
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleImmediateTask_runCurrent_isRunningThenIdle() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     reset(mockTaskIdleListener)
 
     scheduleImmediateTask(mockRunnable1)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // The listener should have entered a running state, then become idle immediately after the task
     // was completed.
     val inOrder = inOrder(mockTaskIdleListener)
-    inOrder.verify(mockTaskIdleListener).onDispatcherRunning()
-    inOrder.verify(mockTaskIdleListener).onDispatcherIdle()
+    inOrder.verify(mockTaskIdleListener).onCoordinatorRunning()
+    inOrder.verify(mockTaskIdleListener).onCoordinatorIdle()
     inOrder.verifyNoMoreInteractions()
   }
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleImmediateTask_runCurrentTwice_callbacksCalledOnce() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     reset(mockTaskIdleListener)
 
     scheduleImmediateTask(mockRunnable1)
     // Intentionally call runCurrent twice.
-    backgroundTestDispatcher.runCurrent()
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // The callbacks shouldn't be called again.
     val inOrder = inOrder(mockTaskIdleListener)
-    inOrder.verify(mockTaskIdleListener).onDispatcherRunning()
-    inOrder.verify(mockTaskIdleListener).onDispatcherIdle()
+    inOrder.verify(mockTaskIdleListener).onCoordinatorRunning()
+    inOrder.verify(mockTaskIdleListener).onCoordinatorIdle()
     inOrder.verifyNoMoreInteractions()
   }
 
@@ -228,7 +239,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   fun testDispatcher_hasPendingTasks_oneImmediateTask_returnsTrue() {
     scheduleImmediateTask(mockRunnable1)
 
-    val hasPendingTasks = backgroundTestDispatcher.hasPendingTasks()
+    val hasPendingTasks = backgroundMonitoredTaskCoordinator.hasPendingTasks()
 
     assertThat(hasPendingTasks).isTrue()
   }
@@ -237,7 +248,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   fun testDispatcher_hasPendingCompletableTasks_oneImmediateTask_returnsTrue() {
     scheduleImmediateTask(mockRunnable1)
 
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // An immediate task is completable now.
     assertThat(hasCompletableTasks).isTrue()
@@ -248,7 +259,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
 
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // Future tasks aren't yet completable.
     assertThat(hasCompletableTasks).isFalse()
@@ -263,7 +274,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis - 1)
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // The clock hasn't yet advanced far enough for the task to be completable.
     assertThat(hasCompletableTasks).isFalse()
@@ -275,7 +286,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     ensureFutureTasksAreScheduled()
     scheduleImmediateTask(mockRunnable2)
 
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // The immediate task is completable now.
     assertThat(hasCompletableTasks).isTrue()
@@ -287,10 +298,10 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     ensureFutureTasksAreScheduled()
     scheduleImmediateTask(mockRunnable2)
 
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
     advanceTimeBy(shortTaskDelayMillis)
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // Advancing time after completing the immediate task should yield completable tasks.
     assertThat(hasCompletableTasks).isTrue()
@@ -306,9 +317,9 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     advanceTimeBy(shortTaskDelayMillis)
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // Finishing the first task and stepping to the second results in the second now being
     // completable.
@@ -321,7 +332,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis)
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // The scheduled task is now completable.
     assertThat(hasCompletableTasks).isTrue()
@@ -333,7 +344,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis + 1)
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // The scheduled task has been completable.
     assertThat(hasCompletableTasks).isTrue()

@@ -34,6 +34,8 @@ file_content_checks {
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/threading/BlockingScheduledExecutorService.kt"
+  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/threading/RealTimeScheduledExecutorService.kt"
 }
 file_content_checks {
   file_path_regex: ".+?\\.xml"

@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,12 +28,19 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
 /**
- * Tests for [TestCoroutineDispatcherEspressoImpl].
+ * Tests for the test-only coroutine dispatcher that's managed by [TestCoroutineDispatchers] in
+ * Espresso environments.
  *
- * Note that this is testing the Espresso implementation of the test coroutine dispatcher using
- * Robolectric which means certain time constructs need to be used to try and control threading
- * since the tests can't rely on synchronization barriers (like the dispatcher itself).
+ * This isn't actually testing custom dispatcher code but, rather, the behavior of a coroutine
+ * dispatcher that uses a test-only backing executor service that must behave correctly to ensure
+ * that other tests can safely rely on this functionality.
+ *
+ * Note that this is testing the Espresso implementation of the test coroutine dispatcher's executor
+ * using Robolectric which means certain time constructs need to be used to try and control
+ * threading since the tests can't rely on synchronization barriers (like the dispatcher itself).
  */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -48,11 +53,11 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   longTaskDelayDeltaCheckMillis = 1000L
 ) {
   @Before
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   override fun setUp() {
     setUpTestApplicationComponent()
-    verifyDispatcherImplementation<TestCoroutineDispatcherEspressoImpl>()
+
+    // Espresso utilizes a real-time executor service.
+    verifyExecutorImpl<RealTimeScheduledExecutorService>()
   }
 
   override fun getCurrentTimeMillis(): Long = System.currentTimeMillis()
@@ -69,7 +74,7 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
     // Spin the test thread until the dispatcher has finished. Note that '{}' is used instead of a
     // semicolon since ktlint may incorrectly remove semicolons in valid cases. See #3052 for
     // context.
-    while (backgroundTestDispatcher.hasPendingTasks()) {}
+    while (backgroundMonitoredTaskCoordinator.hasPendingTasks()) {}
   }
 
   override fun ensureFutureTasksAreScheduled() {
@@ -96,7 +101,7 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis - 1)
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // Any scheduled task is considered executing.
     assertThat(hasCompletableTasks).isTrue()
@@ -111,7 +116,7 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
     scheduleFutureTask(longTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
 
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // The immediate task is completable now.
     assertThat(hasCompletableTasks).isTrue()

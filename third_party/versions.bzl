@@ -68,9 +68,10 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar": "1.3.72",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
-    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
+    "org.jetbrains.kotlin:kotlin-stdlib-common": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk7": "1.3.72",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.5.1",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.5.1",
     "org.jetbrains:annotations:jar": "13.0",
 }
 
@@ -116,6 +117,11 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",
     },
+    "kotlinx-coroutines-core-jvm": {
+        "sha": "3ff82734ea5e9ba9ffd675c6abcc22a69f924be2486ecd79c280403fd4922e22",
+        "src-sha": "848f27731521dd703c165232d0a05115d0f2ecfab95a517a8d6023b0a14afb11",
+        "version": "1.5.1",
+    },
     "protobuf_tools": {
         "version": "3.11.0",
     },
@@ -136,6 +142,12 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
     },
 }
+
+MAVEN_REPOSITORIES = [
+    "https://maven.fabric.io/public",
+    "https://maven.google.com",
+    "https://repo1.maven.org/maven2",
+]
 
 def get_maven_dependencies():
     """

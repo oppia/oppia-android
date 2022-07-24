@@ -23,3 +23,10 @@
 -dontwarn sun.misc.SignalHandler
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+# TODO(#4120): Remove these once there's binary compatibility between kotlinx.coroutines and the
+# built Kotlin version.
+-dontwarn kotlin.time.jdk8.DurationConversionsJDK8Kt
+-dontwarn kotlinx.coroutines.DelayKt
+-dontwarn kotlinx.coroutines.flow.SharingStartedKt
+-dontwarn kotlin.time.Duration

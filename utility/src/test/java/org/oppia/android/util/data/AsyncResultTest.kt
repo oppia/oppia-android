@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.junit.Before
@@ -13,13 +14,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.BackgroundTestDispatcher
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.AsyncResult.ChainedFailureException
+import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,10 +38,10 @@ class AsyncResultTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  @field:BackgroundTestDispatcher
-  lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
+  @field:BackgroundDispatcher
+  lateinit var backgroundDispatcher: CoroutineDispatcher
 
-  private val backgroundTestDispatcherScope by lazy { CoroutineScope(backgroundTestDispatcher) }
+  private val backgroundDispatcherScope by lazy { CoroutineScope(backgroundDispatcher) }
 
   @Before
   fun setUp() {
@@ -964,7 +964,7 @@ class AsyncResultTest {
   private fun <T, O> AsyncResult<T>.blockingTransformAsync(
     transformFunction: suspend (T) -> AsyncResult<O>
   ): AsyncResult<O> {
-    val deferred = backgroundTestDispatcherScope.async { transformAsync(transformFunction) }
+    val deferred = backgroundDispatcherScope.async { transformAsync(transformFunction) }
     testCoroutineDispatchers.runCurrent()
     return deferred.getCompleted()
   }
@@ -974,7 +974,7 @@ class AsyncResultTest {
     otherResult: AsyncResult<T2>,
     combineFunction: suspend (T1, T2) -> AsyncResult<O>
   ): AsyncResult<O> {
-    val deferred = backgroundTestDispatcherScope.async {
+    val deferred = backgroundDispatcherScope.async {
       combineWithAsync(otherResult, combineFunction)
     }
     testCoroutineDispatchers.runCurrent()

@@ -12,6 +12,7 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_import")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
@@ -80,6 +81,41 @@ android_library(
     exports = [
         "@kotlitex//kotlitex",
     ],
+)
+
+kt_jvm_import(
+    name = "kotlinx-coroutines-core-jvm",
+    jar = "@kotlinx-coroutines-core-jvm//jar",
+    srcjar = "@kotlinx-coroutines-core-jvm-sources//jar",
+    visibility = ["@maven//:__subpackages__"],
+    deps = [
+        ":_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-common",
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk7",
+    ],
+)
+
+# This solution is based on https://github.com/Bencodes/bazel_issue_13553 for Bazel issue:
+# https://github.com/bazelbuild/bazel/issues/13553.
+genrule(
+    name = "_generate_stopgap_files_for_kotlinx_coroutines_desugar",
+    outs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    cmd = """
+    echo "package sun.misc; public final class Signal {}" > $(location sun/misc/Signal.java)
+    echo "package sun.misc; public interface SignalHandler {}" > $(location sun/misc/SignalHandler.java)
+    """,
+)
+
+java_library(
+    name = "_stopgap_lib_for_kotlinx_coroutines_desugar_do_not_depend",
+    srcs = [
+        "sun/misc/Signal.java",
+        "sun/misc/SignalHandler.java",
+    ],
+    neverlink = True,
 )
 
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
