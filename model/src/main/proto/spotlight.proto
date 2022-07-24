@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Superclass for all the SpotlightViewStates
+message Spotlight {
+  oneof feature {
+    // feature for onboarding screen next button
+    SpotlightViewState onboarding_next_button = 1;
+
+    // feature for topic fragment lessons tab
+    SpotlightViewState topic_lesson_tab = 2;
+
+    // feature for topic fragment revision tab
+    SpotlightViewState topic_revision_tab = 3;
+
+    // feature for first lesson under lessons tab
+    SpotlightViewState first_chapter = 4;
+
+    // feature for promoted stories
+    SpotlightViewState promoted_stories = 5;
+
+    // feature for back button in exploration screen
+    SpotlightViewState lessons_back_button = 6;
+
+    // feature for voice over icon in exploration screen
+    SpotlightViewState voiceover_play_icon = 7;
+
+    // feature for voice over language options in audio player
+    SpotlightViewState voiceover_language_icon = 8;
+  }
+}
+
+// Possible view States for a spotlight
+enum SpotlightViewState {
+  SPOTLIGHT_VIEW_STATE_UNSPECIFIED = 0;
+  SPOTLIGHT_SEEN = 1;
+  SPOTLIGHT_NOT_SEEN = 2;
+}
+
+// Top level proto for storing SpotlightsViewStates
+message SpotlightStateDatabase {
+  SpotlightViewState onboarding_next_button = 1;
+  SpotlightViewState topic_lesson_tab = 2;
+  SpotlightViewState topic_revision_tab = 3;
+  SpotlightViewState first_chapter = 4;
+  SpotlightViewState promoted_stories = 5;
+  SpotlightViewState lessons_back_button = 6;
+  SpotlightViewState voiceover_play_icon = 7;
+  SpotlightViewState voiceover_language_icon = 8;
+}
+
+
+
+
+
