@@ -59,7 +59,7 @@ class LogUploadWorker private constructor(
         future.set(result.getCompleted())
       }
     }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    // TODO(#4463): Add withTimeout() to avoid potential hanging.
     return future
   }
 

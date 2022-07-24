@@ -231,7 +231,7 @@ dependencies {
     exclude group: "org.robolectric"
   }
   androidTestUtil(
-      'androidx.test:orchestrator:1.2.0',
+      'androidx.test:orchestrator:1.4.1',
   )
   kapt(
       'com.google.dagger:dagger-compiler:2.24'

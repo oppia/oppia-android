@@ -18,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
+import org.oppia.android.testing.threading.BlockingScheduledExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -49,13 +49,13 @@ class InMemoryBlockingCacheTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var testCoroutineDispatcherFactory: TestCoroutineDispatcher.Factory
+  lateinit var blockingScheduledExecutorServiceFactory: BlockingScheduledExecutorService.FactoryImpl
 
-  private val blockingFunctionDispatcher by lazy {
-    testCoroutineDispatcherFactory.createDispatcher(
-      Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    )
+  private val blockingExecutor by lazy {
+    blockingScheduledExecutorServiceFactory.create(Executors.newSingleThreadScheduledExecutor())
   }
+
+  private val blockingFunctionDispatcher by lazy { blockingExecutor.asCoroutineDispatcher() }
 
   private val blockingFunctionDispatcherScope by lazy { CoroutineScope(blockingFunctionDispatcher) }
 
@@ -175,7 +175,7 @@ class InMemoryBlockingCacheTest {
     val createOperation = cache.createIfAbsentAsync { blockingOperation.await() }
     testCoroutineDispatchers.runCurrent()
 
-    blockingFunctionDispatcher.runCurrent()
+    blockingExecutor.runCurrent()
     testCoroutineDispatchers.runCurrent()
 
     // Completing the blocking operation should complete creation.
@@ -268,7 +268,7 @@ class InMemoryBlockingCacheTest {
     val updateOperation = cache.updateAsync { blockingOperation.await() }
     testCoroutineDispatchers.runCurrent()
 
-    blockingFunctionDispatcher.runCurrent()
+    blockingExecutor.runCurrent()
     testCoroutineDispatchers.runCurrent()
 
     // Completing the blocking operation should complete updating.
@@ -327,7 +327,7 @@ class InMemoryBlockingCacheTest {
     val updateOperation = cache.updateIfPresentAsync { blockingOperation.await() }
     testCoroutineDispatchers.runCurrent()
 
-    blockingFunctionDispatcher.runCurrent()
+    blockingExecutor.runCurrent()
     testCoroutineDispatchers.runCurrent()
 
     // Completing the blocking operation should complete updating.
@@ -551,7 +551,7 @@ class InMemoryBlockingCacheTest {
     val deleteOperation = cache.maybeDeleteAsync { blockingOperation.await() }
     testCoroutineDispatchers.runCurrent()
 
-    blockingFunctionDispatcher.runCurrent()
+    blockingExecutor.runCurrent()
     testCoroutineDispatchers.runCurrent()
 
     // Completing the blocking operation should complete deletion.
@@ -648,7 +648,7 @@ class InMemoryBlockingCacheTest {
     val deleteOperation = cache.maybeForceDeleteAsync { blockingOperation.await() }
     testCoroutineDispatchers.runCurrent()
 
-    blockingFunctionDispatcher.runCurrent()
+    blockingExecutor.runCurrent()
     testCoroutineDispatchers.runCurrent()
 
     // Completing the blocking operation should complete deletion.

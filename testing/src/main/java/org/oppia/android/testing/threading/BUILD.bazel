@@ -8,32 +8,99 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "annotations",
+    name = "glide_test_executor",
     testonly = True,
     srcs = [
-        "BackgroundTestDispatcher.kt",
-        "BlockingTestDispatcher.kt",
+        "GlideTestExecutor.kt",
     ],
-    visibility = ["//:oppia_testing_visibility"],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
 )
 
-# Note that this library has restricted visibility since tests should only use the dependency
-# directly in special circumstances. In general, you don't need this. Use TestCoroutineDispatchers
-# instead.
 kt_android_library(
-    name = "test_coroutine_dispatcher",
+    name = "monitored_task_coordinator",
     testonly = True,
     srcs = [
-        "TestCoroutineDispatcher.kt",
+        "MonitoredTaskCoordinator.kt",
+    ],
+    visibility = [
+        "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
+    ],
+)
+
+kt_android_library(
+    name = "monitored_scheduled_executor_service",
+    testonly = True,
+    srcs = [
+        "CoordinatedScheduledExecutorService.kt",
     ],
     visibility = [
         "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
     ],
     deps = [
+        ":monitored_scheduled_future",
+        ":monitored_task_coordinator",
+        "//third_party:com_google_guava_guava",
+    ],
+)
+
+kt_android_library(
+    name = "blocking_scheduled_executor_service",
+    testonly = True,
+    srcs = [
+        "BlockingScheduledExecutorService.kt",
+    ],
+    deps = [
+        ":monitored_scheduled_executor_service",
+        ":monitored_scheduled_future",
+        ":monitored_task_coordinator",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
+        "//third_party:com_google_guava_guava",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "real_time_scheduled_executor_service",
+    testonly = True,
+    srcs = [
+        "RealTimeScheduledExecutorService.kt",
+    ],
+    deps = [
+        ":monitored_scheduled_executor_service",
+        ":monitored_scheduled_future",
+        ":monitored_task_coordinator",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "monitored_robolectric_ui_task_coordinator",
+    testonly = True,
+    srcs = [
+        "MonitoredRobolectricUiTaskCoordinator.kt",
+    ],
+    deps = [
+        ":dagger",
+        ":monitored_task_coordinator",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
+)
+
+kt_android_library(
+    name = "monitored_scheduled_future",
+    testonly = True,
+    srcs = [
+        "MonitoredScheduledFuture.kt",
+    ],
+    deps = [
+        "//third_party:androidx_test_espresso_espresso-core",
+        "//third_party:com_google_guava_guava",
     ],
 )
 
@@ -50,12 +117,10 @@ kt_android_library(
     name = "robolectric_impl",
     testonly = True,
     srcs = [
-        "TestCoroutineDispatcherRobolectricImpl.kt",
         "TestCoroutineDispatchersRobolectricImpl.kt",
     ],
     deps = [
-        ":annotations",
-        ":test_coroutine_dispatcher",
+        ":monitored_task_coordinator",
         ":test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_system_clock",
@@ -67,32 +132,12 @@ kt_android_library(
     name = "espresso_impl",
     testonly = True,
     srcs = [
-        "TestCoroutineDispatcherEspressoImpl.kt",
         "TestCoroutineDispatchersEspressoImpl.kt",
     ],
     deps = [
-        ":annotations",
-        ":test_coroutine_dispatcher",
+        ":monitored_task_coordinator",
         ":test_coroutine_dispatchers",
         "//third_party:androidx_test_espresso_espresso-core",
-    ],
-)
-
-# This package should have limited visibility only to the utilities that need it to discourage broad
-# use.
-kt_android_library(
-    name = "coroutine_executor_service",
-    testonly = True,
-    srcs = [
-        "CoroutineExecutorService.kt",
-    ],
-    visibility = [
-        "//app:__subpackages__",
-        "//testing/src/test/java/org/oppia/android/testing/threading:__pkg__",
-    ],
-    deps = [
-        "//third_party:androidx_annotation_annotation",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 
@@ -104,11 +149,16 @@ kt_android_library(
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        ":annotations",
+        ":blocking_scheduled_executor_service",
         ":dagger",
         ":espresso_impl",
+        ":glide_test_executor",
+        ":monitored_robolectric_ui_task_coordinator",
+        ":real_time_scheduled_executor_service",
         ":robolectric_impl",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+        "//utility/src/main/java/org/oppia/android/util/threading:implementation_annotations",
     ],
 )
 

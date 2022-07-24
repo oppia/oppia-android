@@ -12,26 +12,27 @@ kt_android_library(
     testonly = True,
     srcs = ["TestCoroutineDispatcherTestBase.kt"],
     deps = [
-        "//testing/src/main/java/org/oppia/android/testing/threading:annotations",
-        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatcher",
+        "//testing/src/main/java/org/oppia/android/testing/threading:monitored_scheduled_executor_service",
+        "//testing/src/main/java/org/oppia/android/testing/threading:monitored_task_coordinator",
         "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//third_party:org_mockito_mockito-core",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )
 
 oppia_android_test(
-    name = "CoroutineExecutorServiceTest",
-    srcs = ["CoroutineExecutorServiceTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
-    test_class = "org.oppia.android.testing.threading.CoroutineExecutorServiceTest",
+    name = "MonitoredTaskCoordinatorTest",
+    srcs = ["MonitoredTaskCoordinatorTest.kt"],
+    custom_package = "org.oppia.android.testing.threading",
+    test_class = "org.oppia.android.testing.threading.MonitoredTaskCoordinatorTest",
     test_manifest = "//testing:test_manifest",
     deps = [
-        ":dagger",
-        "//testing",
-        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
-        "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
-        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_annotations",
+        "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
     ],
 )
@@ -39,7 +40,7 @@ oppia_android_test(
 oppia_android_test(
     name = "TestCoroutineDispatcherEspressoImplTest",
     srcs = ["TestCoroutineDispatcherEspressoImplTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
+    custom_package = "org.oppia.android.testing.threading",
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherEspressoImplTest",
     test_manifest = "//testing:test_manifest",
     deps = [
@@ -55,7 +56,7 @@ oppia_android_test(
 oppia_android_test(
     name = "TestCoroutineDispatcherRobolectricImplTest",
     srcs = ["TestCoroutineDispatcherRobolectricImplTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
+    custom_package = "org.oppia.android.testing.threading",
     test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherRobolectricImplTest",
     test_manifest = "//testing:test_manifest",
     deps = [
@@ -69,10 +70,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "TestCoroutineDispatcherTest",
-    srcs = ["TestCoroutineDispatcherTest.kt"],
-    custom_package = "org.oppia.android.data.testing",
-    test_class = "org.oppia.android.testing.threading.TestCoroutineDispatcherTest",
+    name = "TestDispatcherModuleTest",
+    srcs = ["TestDispatcherModuleTest.kt"],
+    custom_package = "org.oppia.android.testing.threading",
+    test_class = "org.oppia.android.testing.threading.TestDispatcherModuleTest",
     test_manifest = "//testing:test_manifest",
     deps = [
         ":dagger",

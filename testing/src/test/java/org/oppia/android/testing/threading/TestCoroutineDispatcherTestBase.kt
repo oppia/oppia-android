@@ -2,9 +2,9 @@ package org.oppia.android.testing.threading
 
 import com.google.common.truth.LongSubject
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.junit.Rule
@@ -18,6 +18,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import com.google.common.collect.Range as GuavaRange
 
@@ -30,6 +31,8 @@ import com.google.common.collect.Range as GuavaRange
  * since JUnit doesn't provide a way to compose the tests themselves, only behaviors around the
  * tests.
  */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 abstract class TestCoroutineDispatcherTestBase(
   /** Specifies how many millis should be used to separate future tasks. */
   protected val shortTaskDelayMillis: Long,
@@ -49,8 +52,8 @@ abstract class TestCoroutineDispatcherTestBase(
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
-  @field:BackgroundTestDispatcher
-  lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
+  @field:BackgroundDispatcher
+  lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Mock
   lateinit var mockRunnable1: Runnable
@@ -59,13 +62,21 @@ abstract class TestCoroutineDispatcherTestBase(
   lateinit var mockRunnable2: Runnable
 
   @Mock
-  lateinit var mockTaskIdleListener: TestCoroutineDispatcher.TaskIdleListener
+  lateinit var mockTaskIdleListener: MonitoredTaskCoordinator.TaskIdleListener
 
-  private val backgroundScope by lazy { CoroutineScope(backgroundTestDispatcher) }
+  protected val backgroundMonitoredTaskCoordinator by lazy {
+    backgroundExecutor as MonitoredTaskCoordinator
+  }
+
+  private val backgroundExecutor by lazy {
+    (backgroundDispatcher as ExecutorCoroutineDispatcher).executor
+  }
+
+  private val backgroundScope by lazy { CoroutineScope(backgroundDispatcher) }
 
   /**
    * Implementations should use this to set up the test application & verify that the dispatcher is
-   * correct. The latter can be done with a call to [verifyDispatcherImplementation].
+   * correct. The latter can be done with a call to [verifyExecutorImpl].
    */
   abstract fun setUp()
 
@@ -99,7 +110,7 @@ abstract class TestCoroutineDispatcherTestBase(
   fun testDispatcher_scheduleImmediateTask_runCurrent_runsTask() {
     scheduleImmediateTask(mockRunnable1)
 
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     verify(mockRunnable1).run()
@@ -110,8 +121,8 @@ abstract class TestCoroutineDispatcherTestBase(
     scheduleImmediateTask(mockRunnable1)
 
     // Call runCurrent twice.
-    backgroundTestDispatcher.runCurrent()
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // Verify that the task was only run once.
@@ -123,7 +134,7 @@ abstract class TestCoroutineDispatcherTestBase(
     scheduleImmediateTask(mockRunnable1)
     scheduleImmediateTask(mockRunnable2)
 
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     verify(mockRunnable1).run()
@@ -133,9 +144,9 @@ abstract class TestCoroutineDispatcherTestBase(
   @Test
   fun testDispatcher_scheduleImmediateTasks_runCurrentBetween_runsEachTask() {
     scheduleImmediateTask(mockRunnable1)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     scheduleImmediateTask(mockRunnable2)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     verify(mockRunnable1).run()
@@ -149,7 +160,7 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     // Calling runCurrent after the future task is scheduled does not result in the task running.
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     // Do not stabilize the dispatcher since this test is verifying a task does not run--doing so
     // could inadvertently run the task.
 
@@ -163,7 +174,7 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis / 2)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     // Don't stabilize since this test is ensuring tasks weren't run.
 
     // Time wasn't advanced far enough to run the task.
@@ -176,7 +187,7 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // Advancing time exactly to the threshold should run the task.
@@ -189,7 +200,7 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(shortTaskDelayMillis + shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // Advancing past the task should result in it being run.
@@ -203,7 +214,7 @@ abstract class TestCoroutineDispatcherTestBase(
     scheduleImmediateTask(mockRunnable2)
 
     advanceTimeBy(shortTaskDelayMillis + shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // Both immediate and future tasks should run, but the order isn't well defined since they're
@@ -224,7 +235,7 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(midTaskDelay)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     // Don't stabilize after running since we don't want to unintentionally execute the second task.
 
     // Advancing between the two tasks should run the first but not the second.
@@ -241,7 +252,7 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(taskDelayMs2 + shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // Both scheduled tasks should run, but the order isn't well defined since they're both
@@ -262,13 +273,13 @@ abstract class TestCoroutineDispatcherTestBase(
 
     // First step: run up to the first task.
     advanceTimeBy(taskStepMs - 1)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     // Second step: run the first task.
     advanceTimeBy(2)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     // Third step: run the second task.
     advanceTimeBy(taskStepMs)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // Both scheduled tasks should run, but the order isn't well defined since they're both
@@ -279,7 +290,7 @@ abstract class TestCoroutineDispatcherTestBase(
 
   @Test
   fun testDispatcher_hasPendingTasks_noTasks_returnsFalse() {
-    val hasPendingTasks = backgroundTestDispatcher.hasPendingTasks()
+    val hasPendingTasks = backgroundMonitoredTaskCoordinator.hasPendingTasks()
 
     // There should be no tasks initially.
     assertThat(hasPendingTasks).isFalse()
@@ -291,7 +302,7 @@ abstract class TestCoroutineDispatcherTestBase(
     scheduleFutureTask(longTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
 
-    val hasPendingTasks = backgroundTestDispatcher.hasPendingTasks()
+    val hasPendingTasks = backgroundMonitoredTaskCoordinator.hasPendingTasks()
 
     assertThat(hasPendingTasks).isTrue()
   }
@@ -300,7 +311,7 @@ abstract class TestCoroutineDispatcherTestBase(
   fun testDispatcher_getNextFutureTaskCompletionTimeMillis_timeNow_noTasks_returnsNull() {
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     assertThat(nextTaskCompletionTime).isNull()
   }
@@ -311,7 +322,7 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     // The function returns null because the next task that can be run is now, so it's considered
     // past.
@@ -325,12 +336,12 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     // The next task is in the future.
     val estimatedTaskStartTimeMillis = currentTimeMillis + longTaskDelayMillis
     assertThat(nextTaskCompletionTime).isNotNull()
-    assertThat(nextTaskCompletionTime).isWithinTimeDelta(estimatedTaskStartTimeMillis)
+    assertThat(nextTaskCompletionTime).isWithinTimeDeltaOf(estimatedTaskStartTimeMillis)
   }
 
   @Test
@@ -341,7 +352,7 @@ abstract class TestCoroutineDispatcherTestBase(
     val currentTimeMillis = getCurrentTimeMillis()
     val expectedRunTime = currentTimeMillis + longTaskDelayMillis
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(expectedRunTime)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(expectedRunTime)
 
     // The function returns null because the queried time is exactly at the time the task is
     // being run.
@@ -355,7 +366,9 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis + 100_000L)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(
+        currentTimeMillis + 100_000L
+      )
 
     // The queried time is past scheduled tasks, so none need to be run after that time.
     assertThat(nextTaskCompletionTime).isNull()
@@ -369,7 +382,9 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis + 100_000L)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(
+        currentTimeMillis + 100_000L
+      )
 
     // Since the next task to be run is now, there are no "next future tasks".
     assertThat(nextTaskCompletionTime).isNull()
@@ -383,12 +398,12 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     // The next future task to run relative to now is the scheduled task.
     val estimatedTaskStartTimeMillis = currentTimeMillis + longTaskDelayMillis
     assertThat(nextTaskCompletionTime).isNotNull()
-    assertThat(nextTaskCompletionTime).isWithinTimeDelta(estimatedTaskStartTimeMillis)
+    assertThat(nextTaskCompletionTime).isWithinTimeDeltaOf(estimatedTaskStartTimeMillis)
   }
 
   @Test
@@ -401,12 +416,12 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     // The next task to run is the first.
     val estimatedTaskStartTimeMillis = currentTimeMillis + taskDelayMs1
     assertThat(nextTaskCompletionTime).isNotNull()
-    assertThat(nextTaskCompletionTime).isWithinTimeDelta(estimatedTaskStartTimeMillis)
+    assertThat(nextTaskCompletionTime).isWithinTimeDeltaOf(estimatedTaskStartTimeMillis)
   }
 
   @Test
@@ -420,12 +435,12 @@ abstract class TestCoroutineDispatcherTestBase(
     val currentTimeMillis = getCurrentTimeMillis()
     val requestedTimeMills = currentTimeMillis + (taskDelayMs1 + taskDelayMs2) / 2
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(requestedTimeMills)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(requestedTimeMills)
 
     // The second task to run is the next to run relative to the requested time.
     val estimatedTaskStartTimeMillis = currentTimeMillis + taskDelayMs2
     assertThat(nextTaskCompletionTime).isNotNull()
-    assertThat(nextTaskCompletionTime).isWithinTimeDelta(estimatedTaskStartTimeMillis)
+    assertThat(nextTaskCompletionTime).isWithinTimeDeltaOf(estimatedTaskStartTimeMillis)
   }
 
   @Test
@@ -438,7 +453,9 @@ abstract class TestCoroutineDispatcherTestBase(
 
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis + 100_000L)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(
+        currentTimeMillis + 100_000L
+      )
 
     // There are no tasks left after the requested time.
     assertThat(nextTaskCompletionTime).isNull()
@@ -452,15 +469,15 @@ abstract class TestCoroutineDispatcherTestBase(
 
     // Note that stabilize isn't called here since for the Espresso implementation it will lead to
     // the scheduled task being completed.
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     // Since the immediate task was run, the next scheduled one is returned.
     val estimatedTaskStartTimeMillis = currentTimeMillis + longTaskDelayMillis
     assertThat(nextTaskCompletionTime).isNotNull()
-    assertThat(nextTaskCompletionTime).isWithinTimeDelta(estimatedTaskStartTimeMillis)
+    assertThat(nextTaskCompletionTime).isWithinTimeDeltaOf(estimatedTaskStartTimeMillis)
   }
 
   @Test
@@ -470,11 +487,11 @@ abstract class TestCoroutineDispatcherTestBase(
     scheduleImmediateTask(mockRunnable2)
 
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
     val currentTimeMillis = getCurrentTimeMillis()
     val nextTaskCompletionTime =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
+      backgroundMonitoredTaskCoordinator.getNextFutureTaskCompletionTimeMillis(currentTimeMillis)
 
     // Even though the previous time millis is being used to query, there are no tasks left to
     // return since both were executed.
@@ -487,7 +504,7 @@ abstract class TestCoroutineDispatcherTestBase(
 
   @Test
   fun testDispatcher_hasPendingCompletableTasks_noTasks_returnsFalse() {
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // There should be no completable tasks initially.
     assertThat(hasCompletableTasks).isFalse()
@@ -499,9 +516,9 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
     scheduleImmediateTask(mockRunnable2)
 
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // There is no longer a completable task (the immediate task was run, and it's not yet time to
     // run the scheduled one).
@@ -515,9 +532,9 @@ abstract class TestCoroutineDispatcherTestBase(
     scheduleImmediateTask(mockRunnable2)
 
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // Running all tasks results in none left being completable.
     assertThat(hasCompletableTasks).isFalse()
@@ -532,9 +549,9 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(taskDelayMs1)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // While there's a second task, it's not completable yet since time hasn't been advanced.
     assertThat(hasCompletableTasks).isFalse()
@@ -549,9 +566,9 @@ abstract class TestCoroutineDispatcherTestBase(
     ensureFutureTasksAreScheduled()
 
     advanceTimeBy(taskDelayMs2)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
-    val hasCompletableTasks = backgroundTestDispatcher.hasPendingCompletableTasks()
+    val hasCompletableTasks = backgroundMonitoredTaskCoordinator.hasPendingCompletableTasks()
 
     // Running both tasks results in no completable tasks.
     assertThat(hasCompletableTasks).isFalse()
@@ -559,32 +576,32 @@ abstract class TestCoroutineDispatcherTestBase(
 
   @Test
   fun testDispatcher_taskIdleListener_initialRegistration_isInitiallyIdle() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
 
-    verify(mockTaskIdleListener).onDispatcherIdle()
+    verify(mockTaskIdleListener).onCoordinatorIdle()
     verifyNoMoreInteractions(mockTaskIdleListener)
   }
 
   @Test
   fun testDispatcher_taskIdleListener_scheduleFutureTask_run_isRunningThenIdle() {
-    backgroundTestDispatcher.setTaskIdleListener(mockTaskIdleListener)
+    backgroundMonitoredTaskCoordinator.setTaskIdleListener(mockTaskIdleListener)
     reset(mockTaskIdleListener)
 
     scheduleFutureTask(shortTaskDelayMillis, mockRunnable1)
     ensureFutureTasksAreScheduled()
     advanceTimeBy(shortTaskDelayMillis)
-    backgroundTestDispatcher.runCurrent()
+    backgroundMonitoredTaskCoordinator.runCurrent()
     stabilizeAfterDispatcherFlush()
 
     // The listener should have entered a running state, then become idle immediately after the task
     // was completed.
     val inOrder = inOrder(mockTaskIdleListener)
-    inOrder.verify(mockTaskIdleListener, atLeastOnce()).onDispatcherRunning()
-    inOrder.verify(mockTaskIdleListener, atLeastOnce()).onDispatcherIdle()
+    inOrder.verify(mockTaskIdleListener, atLeastOnce()).onCoordinatorRunning()
+    inOrder.verify(mockTaskIdleListener, atLeastOnce()).onCoordinatorIdle()
     inOrder.verifyNoMoreInteractions()
   }
 
-  private fun LongSubject.isWithinTimeDelta(time: Long) =
+  private fun LongSubject.isWithinTimeDeltaOf(time: Long) =
     isWithin(time - longTaskDelayDeltaCheckMillis..time + longTaskDelayDeltaCheckMillis)
 
   private fun LongSubject.isWithin(range: LongRange) = isIn(range.toGuavaRange())
@@ -606,8 +623,8 @@ abstract class TestCoroutineDispatcherTestBase(
     }
   }
 
-  protected inline fun <reified T : TestCoroutineDispatcher> verifyDispatcherImplementation() {
+  protected inline fun <reified T : CoordinatedScheduledExecutorService> verifyExecutorImpl() {
     // Sanity check to ensure the correct implementation is being tested.
-    assertThat(backgroundTestDispatcher).isInstanceOf(T::class.java)
+    assertThat(backgroundMonitoredTaskCoordinator).isInstanceOf(T::class.java)
   }
 }

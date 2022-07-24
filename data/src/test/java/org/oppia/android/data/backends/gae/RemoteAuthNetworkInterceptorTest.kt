@@ -23,8 +23,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.TopicService
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.BackgroundTestDispatcher
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -33,6 +31,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,9 +46,6 @@ class RemoteAuthNetworkInterceptorTest {
 
   @Inject
   lateinit var context: Context
-
-  @field:[Inject BackgroundTestDispatcher]
-  lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
   private lateinit var retrofit: Retrofit
 
@@ -88,10 +84,7 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(serviceRequest.header("app_version_code")).isNull()
 
     call.execute()
-    val interceptedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
-    )
+    val interceptedRequest = mockWebServer.takeRequest(timeout = 10, unit = TimeUnit.SECONDS)
 
     verifyRequestHeaders(interceptedRequest?.headers)
   }
@@ -112,10 +105,7 @@ class RemoteAuthNetworkInterceptorTest {
 
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     client.newCall(request).execute()
-    val interceptedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
-    )
+    val interceptedRequest = mockWebServer.takeRequest(timeout = 10, unit = TimeUnit.SECONDS)
 
     verifyRequestHeaders(interceptedRequest?.headers)
   }
