@@ -3,8 +3,8 @@
   android:shape="rectangle">
   <gradient
     android:angle="270"
-    android:endColor="@color/question_player_progress_bar_gradient_end"
-    android:centerColor="@color/question_player_progress_bar_gradient_center"
-    android:startColor="@color/question_player_progress_bar_gradient_start"
+    android:endColor="@color/component_color_shared_question_player_progress_bar_gradient_end_color"
+    android:centerColor="@color/component_color_shared_question_player_progress_bar_gradient_center_color"
+    android:startColor="@color/component_color_shared_question_player_progress_bar_gradient_start_color"
     android:type="linear" />
 </shape>

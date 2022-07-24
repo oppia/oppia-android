@@ -103,6 +103,13 @@ const val CACHE_LATEX_RENDERING = "cache_latex_rendering"
 /** Default value for whether to cache LaTeX rendering using Glide. */
 const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
 
+/** Qualifier for the feature flag corresponding to enabling the edit accounts options. */
+@Qualifier
+annotation class EnableEditAccountsOptionsUi
+
+/** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
+const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = true
+
 /** Qualifier for the platform parameter that controls whether to record performance metrics. */
 @Qualifier
 annotation class EnablePerformanceMetricsCollection
