@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionName
@@ -22,7 +23,6 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 @OptIn(ExperimentalCoroutinesApi::class)

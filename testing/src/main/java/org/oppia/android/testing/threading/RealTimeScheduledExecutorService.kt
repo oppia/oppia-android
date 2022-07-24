@@ -33,7 +33,7 @@ class RealTimeScheduledExecutorService private constructor(
   override val backingListenableService: ListeningScheduledExecutorService by lazy {
     MoreExecutors.listeningDecorator(backingExecutorService)
   }
-  private val executingTasks = CopyOnWriteArrayList<Task>()
+  private val executingTasks = CopyOnWriteArrayList<Task<*>>()
   private val totalTaskCount = AtomicInteger(0)
   /** Map of task ID (based on [totalTaskCount]) to the time in millis when that task will run. */
   private val taskCompletionTimes = ConcurrentHashMap<Int, Long>()
@@ -185,7 +185,7 @@ class RealTimeScheduledExecutorService private constructor(
     }
   }
 
-  private data class Task(val block: Runnable, val taskFuture: ListenableScheduledFuture<*>)
+  private data class Task<T>(val block: Runnable, val taskFuture: ListenableScheduledFuture<out T>)
 
   /**
    * [CoordinatedScheduledExecutorService.Factory] for creating new

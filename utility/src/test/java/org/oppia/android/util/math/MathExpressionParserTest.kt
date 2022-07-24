@@ -13,7 +13,6 @@ import org.oppia.android.app.model.MathExpression
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.MathParsingErrorSubject.Companion.assertThat
@@ -45,16 +44,11 @@ import org.robolectric.annotation.LooperMode
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionParserTest {
-  @Parameter
-  lateinit var lhsOp: String
-  @Parameter
-  lateinit var rhsOp: String
-  @Parameter
-  lateinit var binOp: String
-  @Parameter
-  lateinit var subExp: String
-  @Parameter
-  lateinit var func: String
+  @Parameter lateinit var lhsOp: String
+  @Parameter lateinit var rhsOp: String
+  @Parameter lateinit var binOp: String
+  @Parameter lateinit var subExp: String
+  @Parameter lateinit var func: String
 
   @Test
   fun testParseNumExp_basicExpression_doesNotFail() {
@@ -541,36 +535,56 @@ class MathExpressionParserTest {
     }
   }
 
+  // Note that these parameters are intentionally set up to avoid double unary operators (such as
+  // -- or ++) since those result in different errors due to unary operations being higher
+  // precedence. In general, unary operators can't appear on the right since they'll be treated as
+  // such.
   @Test
-  @RunParameterized(
-    // Note that these parameters are intentionally set up to avoid double unary operators (such as
-    // -- or ++) since those result in different errors due to unary operations being higher
-    // precedence. In general, unary operators can't appear on the right since they'll be treated as
-    // such.
-    Iteration("**", "lhsOp=*", "rhsOp=*"), Iteration("×*", "lhsOp=×", "rhsOp=*"),
-    Iteration("/*", "lhsOp=/", "rhsOp=*"), Iteration("÷*", "lhsOp=÷", "rhsOp=*"),
-    Iteration("^*", "lhsOp=^", "rhsOp=*"), Iteration("+*", "lhsOp=+", "rhsOp=*"),
-    Iteration("-*", "lhsOp=-", "rhsOp=*"), Iteration("−*", "lhsOp=−", "rhsOp=*"),
-    Iteration("–*", "lhsOp=–", "rhsOp=*"), Iteration("*×", "lhsOp=*", "rhsOp=×"),
-    Iteration("××", "lhsOp=×", "rhsOp=×"), Iteration("/×", "lhsOp=/", "rhsOp=×"),
-    Iteration("÷×", "lhsOp=÷", "rhsOp=×"), Iteration("^×", "lhsOp=^", "rhsOp=×"),
-    Iteration("+×", "lhsOp=+", "rhsOp=×"), Iteration("-×", "lhsOp=-", "rhsOp=×"),
-    Iteration("−×", "lhsOp=−", "rhsOp=×"), Iteration("–×", "lhsOp=–", "rhsOp=×"),
-    Iteration("*/", "lhsOp=*", "rhsOp=/"), Iteration("×/", "lhsOp=×", "rhsOp=/"),
-    Iteration("//", "lhsOp=/", "rhsOp=/"), Iteration("÷/", "lhsOp=÷", "rhsOp=/"),
-    Iteration("^/", "lhsOp=^", "rhsOp=/"), Iteration("+/", "lhsOp=+", "rhsOp=/"),
-    Iteration("-/", "lhsOp=-", "rhsOp=/"), Iteration("−/", "lhsOp=−", "rhsOp=/"),
-    Iteration("–/", "lhsOp=–", "rhsOp=/"), Iteration("*÷", "lhsOp=*", "rhsOp=÷"),
-    Iteration("×÷", "lhsOp=×", "rhsOp=÷"), Iteration("/÷", "lhsOp=/", "rhsOp=÷"),
-    Iteration("÷÷", "lhsOp=÷", "rhsOp=÷"), Iteration("^÷", "lhsOp=^", "rhsOp=÷"),
-    Iteration("+÷", "lhsOp=+", "rhsOp=÷"), Iteration("-÷", "lhsOp=-", "rhsOp=÷"),
-    Iteration("−÷", "lhsOp=−", "rhsOp=÷"), Iteration("–÷", "lhsOp=–", "rhsOp=÷"),
-    Iteration("*^", "lhsOp=*", "rhsOp=^"), Iteration("×^", "lhsOp=×", "rhsOp=^"),
-    Iteration("/^", "lhsOp=/", "rhsOp=^"), Iteration("÷^", "lhsOp=÷", "rhsOp=^"),
-    Iteration("^^", "lhsOp=^", "rhsOp=^"), Iteration("+^", "lhsOp=+", "rhsOp=^"),
-    Iteration("-^", "lhsOp=-", "rhsOp=^"), Iteration("−^", "lhsOp=−", "rhsOp=^"),
-    Iteration("–^", "lhsOp=–", "rhsOp=^")
-  )
+  @Iteration("**", "lhsOp=*", "rhsOp=*")
+  @Iteration("×*", "lhsOp=×", "rhsOp=*")
+  @Iteration("/*", "lhsOp=/", "rhsOp=*")
+  @Iteration("÷*", "lhsOp=÷", "rhsOp=*")
+  @Iteration("^*", "lhsOp=^", "rhsOp=*")
+  @Iteration("+*", "lhsOp=+", "rhsOp=*")
+  @Iteration("-*", "lhsOp=-", "rhsOp=*")
+  @Iteration("−*", "lhsOp=−", "rhsOp=*")
+  @Iteration("–*", "lhsOp=–", "rhsOp=*")
+  @Iteration("*×", "lhsOp=*", "rhsOp=×")
+  @Iteration("××", "lhsOp=×", "rhsOp=×")
+  @Iteration("/×", "lhsOp=/", "rhsOp=×")
+  @Iteration("÷×", "lhsOp=÷", "rhsOp=×")
+  @Iteration("^×", "lhsOp=^", "rhsOp=×")
+  @Iteration("+×", "lhsOp=+", "rhsOp=×")
+  @Iteration("-×", "lhsOp=-", "rhsOp=×")
+  @Iteration("−×", "lhsOp=−", "rhsOp=×")
+  @Iteration("–×", "lhsOp=–", "rhsOp=×")
+  @Iteration("*/", "lhsOp=*", "rhsOp=/")
+  @Iteration("×/", "lhsOp=×", "rhsOp=/")
+  @Iteration("//", "lhsOp=/", "rhsOp=/")
+  @Iteration("÷/", "lhsOp=÷", "rhsOp=/")
+  @Iteration("^/", "lhsOp=^", "rhsOp=/")
+  @Iteration("+/", "lhsOp=+", "rhsOp=/")
+  @Iteration("-/", "lhsOp=-", "rhsOp=/")
+  @Iteration("−/", "lhsOp=−", "rhsOp=/")
+  @Iteration("–/", "lhsOp=–", "rhsOp=/")
+  @Iteration("*÷", "lhsOp=*", "rhsOp=÷")
+  @Iteration("×÷", "lhsOp=×", "rhsOp=÷")
+  @Iteration("/÷", "lhsOp=/", "rhsOp=÷")
+  @Iteration("÷÷", "lhsOp=÷", "rhsOp=÷")
+  @Iteration("^÷", "lhsOp=^", "rhsOp=÷")
+  @Iteration("+÷", "lhsOp=+", "rhsOp=÷")
+  @Iteration("-÷", "lhsOp=-", "rhsOp=÷")
+  @Iteration("−÷", "lhsOp=−", "rhsOp=÷")
+  @Iteration("–÷", "lhsOp=–", "rhsOp=÷")
+  @Iteration("*^", "lhsOp=*", "rhsOp=^")
+  @Iteration("×^", "lhsOp=×", "rhsOp=^")
+  @Iteration("/^", "lhsOp=/", "rhsOp=^")
+  @Iteration("÷^", "lhsOp=÷", "rhsOp=^")
+  @Iteration("^^", "lhsOp=^", "rhsOp=^")
+  @Iteration("+^", "lhsOp=+", "rhsOp=^")
+  @Iteration("-^", "lhsOp=-", "rhsOp=^")
+  @Iteration("−^", "lhsOp=−", "rhsOp=^")
+  @Iteration("–^", "lhsOp=–", "rhsOp=^")
   fun testParseNumExp_adjacentBinaryOps_returnsSubsequentBinaryOperatorsErrorWithDetails() {
     val expression = "1 $lhsOp$rhsOp 2"
 
@@ -632,15 +646,13 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    // Note that unary operators like '+' and '-' are excluded here since they may result in valid
-    // unary operations.
-    Iteration("nothing_times_something_asterisk", "binOp=*"),
-    Iteration("nothing_times_something", "binOp=×"),
-    Iteration("nothing_divides_something_slash", "binOp=/"),
-    Iteration("nothing_divides_something", "binOp=÷"),
-    Iteration("nothing_to_power_of_something", "binOp=^")
-  )
+  // Note that unary operators like '+' and '-' are excluded here since they may result in valid
+  // unary operations.
+  @Iteration("nothing_times_something_asterisk", "binOp=*")
+  @Iteration("nothing_times_something", "binOp=×")
+  @Iteration("nothing_divides_something_slash", "binOp=/")
+  @Iteration("nothing_divides_something", "binOp=÷")
+  @Iteration("nothing_to_power_of_something", "binOp=^")
   fun testParseNumExp_binOnlyOps_noLeftValue_returnsNoVarOrNumBeforeBinOperatorErrorWithDetails() {
     val expression = "$binOp 2"
     val operator = BINARY_SYMBOL_TO_OPERATOR_MAP.getValue(binOp)
@@ -672,16 +684,14 @@ class MathExpressionParserTest {
     expectSuccessWhenParsingNumericExpression("+2", errorCheckingMode = REQUIRED_ONLY)
   }
 
+  // Note that unary operators like '+' and '-' are excluded here since they may result in valid
+  // unary operations.
   @Test
-  @RunParameterized(
-    // Note that unary operators like '+' and '-' are excluded here since they may result in valid
-    // unary operations.
-    Iteration("nothing_times_something_asterisk", "binOp=*"),
-    Iteration("nothing_times_something", "binOp=×"),
-    Iteration("nothing_divides_something_slash", "binOp=/"),
-    Iteration("nothing_divides_something", "binOp=÷"),
-    Iteration("nothing_to_power_of_something", "binOp=^")
-  )
+  @Iteration("nothing_times_something_asterisk", "binOp=*")
+  @Iteration("nothing_times_something", "binOp=×")
+  @Iteration("nothing_divides_something_slash", "binOp=/")
+  @Iteration("nothing_divides_something", "binOp=÷")
+  @Iteration("nothing_to_power_of_something", "binOp=^")
   fun testParseAlgExp_binOnlyOps_noLeftValue_returnsNoVarOrNumBeforeBinOperatorErrorWithDetails() {
     val expression = "$binOp x"
     val operator = BINARY_SYMBOL_TO_OPERATOR_MAP.getValue(binOp)
@@ -696,17 +706,15 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("something_times_nothing_asterisk", "binOp=*"),
-    Iteration("something_times_nothing", "binOp=×"),
-    Iteration("something_divides_nothing_slash", "binOp=/"),
-    Iteration("something_divides_nothing", "binOp=÷"),
-    Iteration("something_to_power_of_nothing", "binOp=^"),
-    Iteration("something_adds_nothing", "binOp=+"),
-    Iteration("something_subtracts_nothing_hyphen", "binOp=-"),
-    Iteration("something_subtracts_nothing_en_dash", "binOp=–"),
-    Iteration("something_subtracts_nothing", "binOp=−")
-  )
+  @Iteration("something_times_nothing_asterisk", "binOp=*")
+  @Iteration("something_times_nothing", "binOp=×")
+  @Iteration("something_divides_nothing_slash", "binOp=/")
+  @Iteration("something_divides_nothing", "binOp=÷")
+  @Iteration("something_to_power_of_nothing", "binOp=^")
+  @Iteration("something_adds_nothing", "binOp=+")
+  @Iteration("something_subtracts_nothing_hyphen", "binOp=-")
+  @Iteration("something_subtracts_nothing_en_dash", "binOp=–")
+  @Iteration("something_subtracts_nothing", "binOp=−")
   fun testParseNumExp_binaryOps_noRightValue_returnsNoVarOrNumAfterBinOperatorErrorWithDetails() {
     val expression = "2 $binOp"
     val operator = BINARY_SYMBOL_TO_OPERATOR_MAP.getValue(binOp)
@@ -721,17 +729,15 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("something_times_nothing_asterisk", "binOp=*"),
-    Iteration("something_times_nothing", "binOp=×"),
-    Iteration("something_divides_nothing_slash", "binOp=/"),
-    Iteration("something_divides_nothing", "binOp=÷"),
-    Iteration("something_to_power_of_nothing", "binOp=^"),
-    Iteration("something_adds_nothing", "binOp=+"),
-    Iteration("something_subtracts_nothing_hyphen", "binOp=-"),
-    Iteration("something_subtracts_nothing_en_dash", "binOp=–"),
-    Iteration("something_subtracts_nothing", "binOp=−")
-  )
+  @Iteration("something_times_nothing_asterisk", "binOp=*")
+  @Iteration("something_times_nothing", "binOp=×")
+  @Iteration("something_divides_nothing_slash", "binOp=/")
+  @Iteration("something_divides_nothing", "binOp=÷")
+  @Iteration("something_to_power_of_nothing", "binOp=^")
+  @Iteration("something_adds_nothing", "binOp=+")
+  @Iteration("something_subtracts_nothing_hyphen", "binOp=-")
+  @Iteration("something_subtracts_nothing_en_dash", "binOp=–")
+  @Iteration("something_subtracts_nothing", "binOp=−")
   fun testParseAlgExp_binaryOps_noRightValue_returnsNoVarOrNumAfterBinOperatorErrorWithDetails() {
     val expression = "x $binOp"
     val operator = BINARY_SYMBOL_TO_OPERATOR_MAP.getValue(binOp)
@@ -746,13 +752,11 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("var_directly_in_exp", "subExp=x"),
-    Iteration("var_directly_in_sub_exp", "subExp=(1+x)"),
-    Iteration("var_directly_in_nested_exp", "subExp=3^x"),
-    Iteration("var_directly_in_sqrt", "subExp=sqrt(x)"),
-    Iteration("var_in_unary", "subExp=-x")
-  )
+  @Iteration("var_directly_in_exp", "subExp=x")
+  @Iteration("var_directly_in_sub_exp", "subExp=(1+x)")
+  @Iteration("var_directly_in_nested_exp", "subExp=3^x")
+  @Iteration("var_directly_in_sqrt", "subExp=sqrt(x)")
+  @Iteration("var_in_unary", "subExp=-x")
   fun testParseAlgExp_powersWithVariableExpressions_returnsExponentIsVariableExpressionError() {
     val expression = "2^$subExp"
 
@@ -965,13 +969,20 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("exp", "func=exp"), Iteration("log", "func=log"), Iteration("log10", "func=log10"),
-    Iteration("ln", "func=ln"), Iteration("sin", "func=sin"), Iteration("cos", "func=cos"),
-    Iteration("tan", "func=tan"), Iteration("cot", "func=cot"), Iteration("csc", "func=csc"),
-    Iteration("sec", "func=sec"), Iteration("atan", "func=atan"), Iteration("asin", "func=asin"),
-    Iteration("acos", "func=acos"), Iteration("abs", "func=abs")
-  )
+  @Iteration("exp", "func=exp")
+  @Iteration("log", "func=log")
+  @Iteration("log10", "func=log10")
+  @Iteration("ln", "func=ln")
+  @Iteration("sin", "func=sin")
+  @Iteration("cos", "func=cos")
+  @Iteration("tan", "func=tan")
+  @Iteration("cot", "func=cot")
+  @Iteration("csc", "func=csc")
+  @Iteration("sec", "func=sec")
+  @Iteration("atan", "func=atan")
+  @Iteration("asin", "func=asin")
+  @Iteration("acos", "func=acos")
+  @Iteration("abs", "func=abs")
   fun testParseNumExp_prohibitedFunctionInUse_returnsInvalidFunctionInUseErrorWithDetails() {
     val expression = "$func(0.5+1)"
 
@@ -993,15 +1004,23 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("ex", "func=ex"), Iteration("lo", "func=lo"), Iteration("log1", "func=log1"),
-    Iteration("si", "func=si"), Iteration("co", "func=co"), Iteration("ta", "func=ta"),
-    Iteration("cs", "func=cs"), Iteration("se", "func=se"), Iteration("at", "func=at"),
-    Iteration("ata", "func=ata"), Iteration("as", "func=as"), Iteration("asi", "func=asi"),
-    Iteration("ac", "func=ac"), Iteration("aco", "func=aco"), Iteration("ab", "func=ab"),
-    Iteration("sq", "func=sq"), Iteration("sqr", "func=sqr")
-
-  )
+  @Iteration("ex", "func=ex")
+  @Iteration("lo", "func=lo")
+  @Iteration("log1", "func=log1")
+  @Iteration("si", "func=si")
+  @Iteration("co", "func=co")
+  @Iteration("ta", "func=ta")
+  @Iteration("cs", "func=cs")
+  @Iteration("se", "func=se")
+  @Iteration("at", "func=at")
+  @Iteration("ata", "func=ata")
+  @Iteration("as", "func=as")
+  @Iteration("asi", "func=asi")
+  @Iteration("ac", "func=ac")
+  @Iteration("aco", "func=aco")
+  @Iteration("ab", "func=ab")
+  @Iteration("sq", "func=sq")
+  @Iteration("sqr", "func=sqr")
   fun testParseAlgExp_startOfKnownFunction_returnsFunctionNameIncompleteError() {
     val expression = "$func(0.5+1)"
     val error = expectFailureWhenParsingAlgebraicExpression(expression)
@@ -1011,10 +1030,12 @@ class MathExpressionParserTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("a", "func=a"), Iteration("c", "func=c"), Iteration("e", "func=e"),
-    Iteration("l", "func=l"), Iteration("s", "func=s"), Iteration("t", "func=t")
-  )
+  @Iteration("a", "func=a")
+  @Iteration("c", "func=c")
+  @Iteration("e", "func=e")
+  @Iteration("l", "func=l")
+  @Iteration("s", "func=s")
+  @Iteration("t", "func=t")
   fun testParseAlgExp_firstLetterOfKnownFunctions_areValidExpressions() {
     val expression = "$func(0.5+1)"
     val allowedVariables = LOWERCASE_LATIN_ALPHABET

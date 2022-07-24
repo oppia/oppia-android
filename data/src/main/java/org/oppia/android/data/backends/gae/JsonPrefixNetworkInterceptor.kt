@@ -2,10 +2,10 @@ package org.oppia.android.data.backends.gae
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
-import okhttp3.ResponseBody.Companion.toResponseBody
 
 /**
  * Interceptor on top of Retrofit to modify requests and response.

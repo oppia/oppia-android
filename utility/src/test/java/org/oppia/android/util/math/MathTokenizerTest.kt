@@ -6,7 +6,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.TokenSubject.Companion.assertThat
@@ -160,34 +159,58 @@ class MathTokenizerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("a", "variableName=a"), Iteration("A", "variableName=A"),
-    Iteration("b", "variableName=b"), Iteration("B", "variableName=B"),
-    Iteration("c", "variableName=c"), Iteration("C", "variableName=C"),
-    Iteration("d", "variableName=d"), Iteration("D", "variableName=D"),
-    Iteration("e", "variableName=e"), Iteration("E", "variableName=E"),
-    Iteration("f", "variableName=f"), Iteration("F", "variableName=F"),
-    Iteration("g", "variableName=g"), Iteration("G", "variableName=G"),
-    Iteration("h", "variableName=h"), Iteration("H", "variableName=H"),
-    Iteration("i", "variableName=i"), Iteration("I", "variableName=I"),
-    Iteration("j", "variableName=j"), Iteration("J", "variableName=J"),
-    Iteration("k", "variableName=k"), Iteration("K", "variableName=K"),
-    Iteration("l", "variableName=l"), Iteration("L", "variableName=L"),
-    Iteration("m", "variableName=m"), Iteration("M", "variableName=M"),
-    Iteration("n", "variableName=n"), Iteration("N", "variableName=N"),
-    Iteration("o", "variableName=o"), Iteration("O", "variableName=O"),
-    Iteration("p", "variableName=p"), Iteration("P", "variableName=P"),
-    Iteration("q", "variableName=q"), Iteration("Q", "variableName=Q"),
-    Iteration("r", "variableName=r"), Iteration("R", "variableName=R"),
-    Iteration("s", "variableName=s"), Iteration("S", "variableName=S"),
-    Iteration("t", "variableName=t"), Iteration("T", "variableName=T"),
-    Iteration("u", "variableName=u"), Iteration("U", "variableName=U"),
-    Iteration("v", "variableName=v"), Iteration("V", "variableName=V"),
-    Iteration("w", "variableName=w"), Iteration("W", "variableName=W"),
-    Iteration("x", "variableName=x"), Iteration("X", "variableName=X"),
-    Iteration("y", "variableName=y"), Iteration("Y", "variableName=Y"),
-    Iteration("z", "variableName=z"), Iteration("Z", "variableName=Z")
-  )
+  @Iteration("a", "variableName=a")
+  @Iteration("A", "variableName=A")
+  @Iteration("b", "variableName=b")
+  @Iteration("B", "variableName=B")
+  @Iteration("c", "variableName=c")
+  @Iteration("C", "variableName=C")
+  @Iteration("d", "variableName=d")
+  @Iteration("D", "variableName=D")
+  @Iteration("e", "variableName=e")
+  @Iteration("E", "variableName=E")
+  @Iteration("f", "variableName=f")
+  @Iteration("F", "variableName=F")
+  @Iteration("g", "variableName=g")
+  @Iteration("G", "variableName=G")
+  @Iteration("h", "variableName=h")
+  @Iteration("H", "variableName=H")
+  @Iteration("i", "variableName=i")
+  @Iteration("I", "variableName=I")
+  @Iteration("j", "variableName=j")
+  @Iteration("J", "variableName=J")
+  @Iteration("k", "variableName=k")
+  @Iteration("K", "variableName=K")
+  @Iteration("l", "variableName=l")
+  @Iteration("L", "variableName=L")
+  @Iteration("m", "variableName=m")
+  @Iteration("M", "variableName=M")
+  @Iteration("n", "variableName=n")
+  @Iteration("N", "variableName=N")
+  @Iteration("o", "variableName=o")
+  @Iteration("O", "variableName=O")
+  @Iteration("p", "variableName=p")
+  @Iteration("P", "variableName=P")
+  @Iteration("q", "variableName=q")
+  @Iteration("Q", "variableName=Q")
+  @Iteration("r", "variableName=r")
+  @Iteration("R", "variableName=R")
+  @Iteration("s", "variableName=s")
+  @Iteration("S", "variableName=S")
+  @Iteration("t", "variableName=t")
+  @Iteration("T", "variableName=T")
+  @Iteration("u", "variableName=u")
+  @Iteration("U", "variableName=U")
+  @Iteration("v", "variableName=v")
+  @Iteration("V", "variableName=V")
+  @Iteration("w", "variableName=w")
+  @Iteration("W", "variableName=W")
+  @Iteration("x", "variableName=x")
+  @Iteration("X", "variableName=X")
+  @Iteration("y", "variableName=y")
+  @Iteration("Y", "variableName=Y")
+  @Iteration("z", "variableName=z")
+  @Iteration("Z", "variableName=Z")
   fun testTokenize_variable_allLatinAlphabetCharactersAreValidVariables() {
     val tokens = MathTokenizer.tokenize(variableName).toList()
 
@@ -535,14 +558,24 @@ class MathTokenizerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("aa", "funcName=aa"), Iteration("ad", "funcName=ad"), Iteration("al", "funcName=al"),
-    Iteration("ca", "funcName=ca"), Iteration("ce", "funcName=ce"), Iteration("cr", "funcName=cr"),
-    Iteration("ea", "funcName=ea"), Iteration("ef", "funcName=ef"), Iteration("er", "funcName=er"),
-    Iteration("la", "funcName=la"), Iteration("lz", "funcName=lz"), Iteration("le", "funcName=le"),
-    Iteration("sa", "funcName=sa"), Iteration("sp", "funcName=sp"), Iteration("sz", "funcName=sz"),
-    Iteration("te", "funcName=te"), Iteration("to", "funcName=to"), Iteration("tr", "funcName=tr")
-  )
+  @Iteration("aa", "funcName=aa")
+  @Iteration("ad", "funcName=ad")
+  @Iteration("al", "funcName=al")
+  @Iteration("ca", "funcName=ca")
+  @Iteration("ce", "funcName=ce")
+  @Iteration("cr", "funcName=cr")
+  @Iteration("ea", "funcName=ea")
+  @Iteration("ef", "funcName=ef")
+  @Iteration("er", "funcName=er")
+  @Iteration("la", "funcName=la")
+  @Iteration("lz", "funcName=lz")
+  @Iteration("le", "funcName=le")
+  @Iteration("sa", "funcName=sa")
+  @Iteration("sp", "funcName=sp")
+  @Iteration("sz", "funcName=sz")
+  @Iteration("te", "funcName=te")
+  @Iteration("to", "funcName=to")
+  @Iteration("tr", "funcName=tr")
   fun testTokenize_twoVarsSharingOnlyFirstWithFunctionNames_shouldParseAsVariables() {
     val tokens = MathTokenizer.tokenize(funcName).toList()
 
@@ -554,16 +587,22 @@ class MathTokenizerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("ab", "funcName=ab"), Iteration("ac", "funcName=ac"),
-    Iteration("aco", "funcName=aco"), Iteration("as", "funcName=as"),
-    Iteration("asi", "funcName=asi"), Iteration("at", "funcName=at"),
-    Iteration("ata", "funcName=ata"), Iteration("co", "funcName=co"),
-    Iteration("cs", "funcName=cs"), Iteration("ex", "funcName=ex"),
-    Iteration("lo", "funcName=lo"), Iteration("log1", "funcName=log1"),
-    Iteration("se", "funcName=se"), Iteration("si", "funcName=si"),
-    Iteration("sq", "funcName=sq"), Iteration("ta", "funcName=ta")
-  )
+  @Iteration("ab", "funcName=ab")
+  @Iteration("ac", "funcName=ac")
+  @Iteration("aco", "funcName=aco")
+  @Iteration("as", "funcName=as")
+  @Iteration("asi", "funcName=asi")
+  @Iteration("at", "funcName=at")
+  @Iteration("ata", "funcName=ata")
+  @Iteration("co", "funcName=co")
+  @Iteration("cs", "funcName=cs")
+  @Iteration("ex", "funcName=ex")
+  @Iteration("lo", "funcName=lo")
+  @Iteration("log1", "funcName=log1")
+  @Iteration("se", "funcName=se")
+  @Iteration("si", "funcName=si")
+  @Iteration("sq", "funcName=sq")
+  @Iteration("ta", "funcName=ta")
   fun testTokenize_twoVarsSharedWithFunctionNames_shouldParseAsIncompleteFuncName() {
     val tokens = MathTokenizer.tokenize(funcName).toList()
 
@@ -616,33 +655,55 @@ class MathTokenizerTest {
   }
 
   @Test
-  @RunParameterized(
-    Iteration("α", "token=α"), Iteration("Α", "token=Α"),
-    Iteration("β", "token=β"), Iteration("Β", "token=Β"),
-    Iteration("γ", "token=γ"), Iteration("Γ", "token=Γ"),
-    Iteration("δ", "token=δ"), Iteration("Δ", "token=Δ"),
-    Iteration("ϵ", "token=ϵ"), Iteration("Ε", "token=Ε"),
-    Iteration("ζ", "token=ζ"), Iteration("Ζ", "token=Ζ"),
-    Iteration("η", "token=η"), Iteration("Η", "token=Η"),
-    Iteration("θ", "token=θ"), Iteration("Θ", "token=Θ"),
-    Iteration("ι", "token=ι"), Iteration("Ι", "token=Ι"),
-    Iteration("κ", "token=κ"), Iteration("Κ", "token=Κ"),
-    Iteration("λ", "token=λ"), Iteration("Λ", "token=Λ"),
-    Iteration("μ", "token=μ"), Iteration("Μ", "token=Μ"),
-    Iteration("ν", "token=ν"), Iteration("Ν", "token=Ν"),
-    Iteration("ξ", "token=ξ"), Iteration("Ξ", "token=Ξ"),
-    Iteration("ο", "token=ο"), Iteration("Ο", "token=Ο"),
-    Iteration("π", "token=π"), Iteration("Π", "token=Π"),
-    Iteration("ρ", "token=ρ"), Iteration("Ρ", "token=Ρ"),
-    Iteration("σ", "token=σ"), Iteration("Σ", "token=Σ"),
-    Iteration("τ", "token=τ"), Iteration("Τ", "token=Τ"),
-    Iteration("υ", "token=υ"), Iteration("Υ", "token=Υ"),
-    Iteration("ϕ", "token=ϕ"), Iteration("Φ", "token=Φ"),
-    Iteration("χ", "token=χ"), Iteration("Χ", "token=Χ"),
-    Iteration("ψ", "token=ψ"), Iteration("Ψ", "token=Ψ"),
-    Iteration("ω", "token=ω"), Iteration("Ω", "token=Ω"),
-    Iteration("ς", "token=ς")
-  )
+  @Iteration("α", "token=α")
+  @Iteration("Α", "token=Α")
+  @Iteration("β", "token=β")
+  @Iteration("Β", "token=Β")
+  @Iteration("γ", "token=γ")
+  @Iteration("Γ", "token=Γ")
+  @Iteration("δ", "token=δ")
+  @Iteration("Δ", "token=Δ")
+  @Iteration("ϵ", "token=ϵ")
+  @Iteration("Ε", "token=Ε")
+  @Iteration("ζ", "token=ζ")
+  @Iteration("Ζ", "token=Ζ")
+  @Iteration("η", "token=η")
+  @Iteration("Η", "token=Η")
+  @Iteration("θ", "token=θ")
+  @Iteration("Θ", "token=Θ")
+  @Iteration("ι", "token=ι")
+  @Iteration("Ι", "token=Ι")
+  @Iteration("κ", "token=κ")
+  @Iteration("Κ", "token=Κ")
+  @Iteration("λ", "token=λ")
+  @Iteration("Λ", "token=Λ")
+  @Iteration("μ", "token=μ")
+  @Iteration("Μ", "token=Μ")
+  @Iteration("ν", "token=ν")
+  @Iteration("Ν", "token=Ν")
+  @Iteration("ξ", "token=ξ")
+  @Iteration("Ξ", "token=Ξ")
+  @Iteration("ο", "token=ο")
+  @Iteration("Ο", "token=Ο")
+  @Iteration("π", "token=π")
+  @Iteration("Π", "token=Π")
+  @Iteration("ρ", "token=ρ")
+  @Iteration("Ρ", "token=Ρ")
+  @Iteration("σ", "token=σ")
+  @Iteration("Σ", "token=Σ")
+  @Iteration("τ", "token=τ")
+  @Iteration("Τ", "token=Τ")
+  @Iteration("υ", "token=υ")
+  @Iteration("Υ", "token=Υ")
+  @Iteration("ϕ", "token=ϕ")
+  @Iteration("Φ", "token=Φ")
+  @Iteration("χ", "token=χ")
+  @Iteration("Χ", "token=Χ")
+  @Iteration("ψ", "token=ψ")
+  @Iteration("Ψ", "token=Ψ")
+  @Iteration("ω", "token=ω")
+  @Iteration("Ω", "token=Ω")
+  @Iteration("ς", "token=ς")
   fun testTokenize_greekLetters_produceInvalidTokens() {
     val tokens = MathTokenizer.tokenize(token).toList()
 

@@ -27,7 +27,8 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -104,8 +105,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)

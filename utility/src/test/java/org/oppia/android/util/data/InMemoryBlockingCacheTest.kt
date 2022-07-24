@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import org.junit.Before
@@ -27,7 +28,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 private const val INITIALIZED_CACHE_VALUE = "inited cache value"
 private const val CREATED_CACHE_VALUE = "created cache value"

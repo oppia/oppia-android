@@ -28,6 +28,7 @@ import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
+import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -513,7 +514,7 @@ class TopicController @Inject constructor(
       val skillJsonArray = currentSubtopicJsonObject.getJSONArray("skill_ids")
 
       for (j in 0 until skillJsonArray.length()) {
-        skillIdList.add(skillJsonArray.getString(j))
+        skillIdList.add(skillJsonArray.getStringFromArray(j))
       }
       val subtopic = Subtopic.newBuilder()
         .setSubtopicId(currentSubtopicJsonObject.getInt("id"))
