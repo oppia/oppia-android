@@ -15,7 +15,7 @@ private const val OPPIA_MEMORY_USAGE_WORK = "OPPIA_MEMORY_USAGE_WORK"
  * the performance of the application.
  */
 class PerformanceMetricsLogScheduler @Inject constructor() : MetricLogScheduler {
-  override fun enqueueWorkRequestForPeriodicMetrics(
+  override fun enqueueWorkRequestForPeriodicBackgroundMetrics(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   ) {
@@ -37,7 +37,7 @@ class PerformanceMetricsLogScheduler @Inject constructor() : MetricLogScheduler 
     )
   }
 
-  override fun enqueueWorkRequestForMemoryUsage(
+  override fun enqueueWorkRequestForPeriodicUiMetrics(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   ) {

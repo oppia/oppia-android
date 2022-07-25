@@ -8,7 +8,6 @@ import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -22,36 +21,41 @@ class MetricLogSchedulingWorker private constructor(
   context: Context,
   params: WorkerParameters,
   private val consoleLogger: ConsoleLogger,
-  private val performanceMetricsLogger: PerformanceMetricsLogger,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ListenableWorker(context, params) {
 
   companion object {
     private const val TAG = "MetricLogSchedulingWorker"
     /**
-     * Input data for the worker consists of a key-value pair on the basis of which work is done.
-     *
-     * [WORKER_CASE_KEY] is the key for that data.
-     * When [PERIODIC_METRIC_WORKER] is the value, the worker schedules logging of periodic
-     * performance metrics.
-     * When [STORAGE_USAGE_WORKER] is the value, the worker schedules logging of storage usage
-     * performance metrics.
-     * When [MEMORY_USAGE_WORKER] is the value, the worker schedules logging of memory usage
-     * performance metrics.
+     * The key for an input key-value pair for [MetricLogSchedulingWorker] where one of
+     * [PERIODIC_BACKGROUND_METRIC_WORKER], [PERIODIC_UI_METRIC_WORKER] and [STORAGE_USAGE_WORKER] indicates what
+     * kind of work to perform.
      */
     const val WORKER_CASE_KEY = "metric_log_scheduling_worker_case_key"
-    const val PERIODIC_METRIC_WORKER = "periodic_metric_worker"
+    /**
+     * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for periodic
+     * performance metrics.
+     */
+    const val PERIODIC_BACKGROUND_METRIC_WORKER = "periodic_background_metric_worker"
+    /**
+     * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for storage usage
+     * performance metrics.
+     */
     const val STORAGE_USAGE_WORKER = "storage_usage_worker"
-    const val MEMORY_USAGE_WORKER = "memory_usage_worker"
+    /**
+     * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for ui-related
+     * memory usage performance metrics.
+     */
+    const val PERIODIC_UI_METRIC_WORKER = "periodic_ui_metric_worker"
   }
 
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
       when (inputData.getStringFromData(WORKER_CASE_KEY)) {
-        PERIODIC_METRIC_WORKER -> schedulePeriodicMetricLogging()
+        PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
         STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
-        MEMORY_USAGE_WORKER -> scheduleMemoryUsageMetricLogging()
+        PERIODIC_UI_METRIC_WORKER -> schedulePeriodicUiMetricLogging()
         else -> Result.failure()
       }
     }
@@ -68,7 +72,7 @@ class MetricLogSchedulingWorker private constructor(
     return future
   }
 
-  private fun schedulePeriodicMetricLogging(): Result {
+  private fun schedulePeriodicBackgroundMetricLogging(): Result {
     return try {
       // TODO(#4340): Add functionality to log cpu and network usage performance metrics.
       Result.success()
@@ -88,7 +92,7 @@ class MetricLogSchedulingWorker private constructor(
     }
   }
 
-  private fun scheduleMemoryUsageMetricLogging(): Result {
+  private fun schedulePeriodicUiMetricLogging(): Result {
     return try {
       // TODO(#4340): Add functionality to log memory usage performance metrics.
       Result.success()
@@ -101,15 +105,19 @@ class MetricLogSchedulingWorker private constructor(
   /** Creates an instance of [MetricLogSchedulingWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val consoleLogger: ConsoleLogger,
-    private val performanceMetricsLogger: PerformanceMetricsLogger,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
+    /**
+     * Returns a new [MetricLogSchedulingWorker].
+     *
+     * This [MetricLogSchedulingWorker] implements the [ListenableWorker] for facilitating metric
+     * log scheduling.
+     */
     fun create(context: Context, params: WorkerParameters): ListenableWorker {
       return MetricLogSchedulingWorker(
         context,
         params,
         consoleLogger,
-        performanceMetricsLogger,
         backgroundDispatcher
       )
     }
