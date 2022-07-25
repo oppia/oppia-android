@@ -49,6 +49,11 @@ class StorySummaryViewModel(
     )
   }
 
+  /*
+  * Returns content description of progress container based on story percentage.
+  *
+  * @return a [String] representing content description for progress container
+  */
   fun computeProgressContainerContentDescription(): String {
     return if (storyPercentage.get()!! < 100) {
       "${storyProgressPercentageText.get()} " +
