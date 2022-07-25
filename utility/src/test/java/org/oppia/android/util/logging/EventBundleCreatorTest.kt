@@ -29,9 +29,6 @@ import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.HOME_SCREEN
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
@@ -97,6 +94,7 @@ class EventBundleCreatorTest {
     private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
     private const val TEST_NETWORK_USAGE = Long.MAX_VALUE
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
+    private const val TEST_SCREEN_UNSPECIFIED = "test_screen_unspecified"
   }
 
   @Inject
@@ -137,7 +135,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("unspecified_memory_tier")
     assertThat(bundle).string("storage_tier").isEqualTo("unspecified_storage_tier")
     assertThat(bundle).string("network_type").isEqualTo("unspecified_network_type")
-    assertThat(bundle).string("current_screen").isEqualTo("unspecified_current_screen")
+    assertThat(bundle).string("current_screen").isEmpty()
   }
 
   @Test
@@ -183,7 +181,7 @@ class EventBundleCreatorTest {
     val performanceMetricLog = createPerformanceMetricLog(
       timestamp = TEST_TIMESTAMP_1,
       priority = HIGH_PRIORITY,
-      currentScreen = HOME_SCREEN,
+      currentScreen = TEST_SCREEN_UNSPECIFIED,
       memoryTier = HIGH_MEMORY_TIER,
       storageTier = HIGH_STORAGE,
       networkType = WIFI,
@@ -203,7 +201,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
   }
 
   @Test
@@ -258,11 +256,11 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
     val performanceMetricLog =
-      createPerformanceMetricLog(currentScreen = SCREEN_UNSPECIFIED)
+      createPerformanceMetricLog(currentScreen = TEST_SCREEN_UNSPECIFIED)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
-    assertThat(bundle).string("current_screen").isEqualTo("unspecified_current_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
   }
 
   @Test
@@ -380,7 +378,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
     assertThat(bundle).longInt("apk_size_bytes").isEqualTo(TEST_APK_SIZE)
   }
 
@@ -404,7 +402,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
     assertThat(bundle).longInt("storage_usage_bytes").isEqualTo(TEST_STORAGE_USAGE)
   }
 
@@ -428,7 +426,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
     assertThat(bundle).longInt("startup_latency_millis").isEqualTo(TEST_STARTUP_LATENCY)
   }
 
@@ -452,7 +450,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
     assertThat(bundle).longInt("total_pss_bytes").isEqualTo(TEST_MEMORY_USAGE)
   }
 
@@ -476,7 +474,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
     assertThat(bundle).longInt("bytes_received").isEqualTo(TEST_NETWORK_USAGE)
     assertThat(bundle).longInt("bytes_sent").isEqualTo(TEST_NETWORK_USAGE)
   }
@@ -501,7 +499,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
     assertThat(bundle).longInt("cpu_usage").isEqualTo(TEST_CPU_USAGE)
   }
 
@@ -1250,7 +1248,7 @@ class EventBundleCreatorTest {
   private fun createPerformanceMetricLog(
     timestamp: Long = TEST_TIMESTAMP_1,
     priority: Priority = HIGH_PRIORITY,
-    currentScreen: CurrentScreen = HOME_SCREEN,
+    currentScreen: String = TEST_SCREEN_UNSPECIFIED,
     memoryTier: MemoryTier = HIGH_MEMORY_TIER,
     storageTier: StorageTier = HIGH_STORAGE,
     isAppInForeground: Boolean = true,
