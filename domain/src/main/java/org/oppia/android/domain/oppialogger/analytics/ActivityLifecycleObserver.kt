@@ -48,7 +48,7 @@ class ActivityLifecycleObserver @Inject constructor(
   }
 
   override fun onActivityResumed(activity: Activity) {
-    currentScreen = activity.javaClass.simpleName
+      currentScreen = activity.javaClass.simpleName
     if (!isStartupLatencyLogged) {
       performanceMetricsLogger.logStartupLatency(
         initialTimestamp,
