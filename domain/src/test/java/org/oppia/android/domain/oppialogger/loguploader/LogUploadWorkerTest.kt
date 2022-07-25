@@ -63,6 +63,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtilsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -405,7 +406,8 @@ class LogUploadWorkerTest {
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, ApplicationLifecycleModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class,
+      PerformanceMetricsUtilsModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
