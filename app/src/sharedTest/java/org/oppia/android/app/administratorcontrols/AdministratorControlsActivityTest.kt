@@ -21,6 +21,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -97,6 +98,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -165,6 +167,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -191,6 +194,67 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view)).perform(click())
       intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_account
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
+
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 1,
+        targetView = R.id.profile_management_text_view
+      )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.edit_profiles_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
+      )
     }
   }
 
@@ -692,6 +756,19 @@ class AdministratorControlsActivityTest {
     ).check(matches(isDisplayed()))
   }
 
+  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(doesNotExist())
+  }
+
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -704,6 +781,19 @@ class AdministratorControlsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+    itemPosition: Int,
+    targetViewId: Int,
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
+      )
+    ).check(doesNotExist())
   }
 
   private fun scrollToPosition(position: Int) {
@@ -725,7 +815,7 @@ class AdministratorControlsActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

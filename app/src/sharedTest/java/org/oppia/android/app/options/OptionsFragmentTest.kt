@@ -25,8 +25,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -80,6 +78,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -154,7 +153,7 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestModule.forceEnableLanguageSelectionUi = true
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -365,7 +364,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    TestModule.forceEnableLanguageSelectionUi = true
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -379,7 +377,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestModule.forceEnableLanguageSelectionUi = false
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
+
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -653,104 +652,12 @@ class OptionsFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @Module
-  class TestModule {
-    companion object {
-      var forceEnableLanguageSelectionUi: Boolean = true
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
-    }
-
-    @Provides
-    @LearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Boolean> {
-      return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
-        ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @CacheLatexRendering
-    fun provideCacheLatexRendering(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Boolean> {
-      return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
-        ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @EnablePerformanceMetricsCollection
-    fun provideEnablePerformanceMetricCollection(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Boolean> {
-      return platformParameterSingleton.getBooleanPlatformParameter(
-        ENABLE_PERFORMANCE_METRICS_COLLECTION
-      ) ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @PerformanceMetricsCollectionUploadTimeIntervalInMinutes
-    fun providePerformanceMetricsCollectionUploadTimeIntervalInMinutes(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Int> {
-      return platformParameterSingleton.getIntegerPlatformParameter(
-        PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
-      ) ?: PlatformParameterValue.createDefaultParameter(
-        PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-      )
-    }
-
-    @Provides
-    @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
-    fun providePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Int> {
-      return platformParameterSingleton.getIntegerPlatformParameter(
-        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
-      ) ?: PlatformParameterValue.createDefaultParameter(
-        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-      )
-    }
-
-    @Provides
-    @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
-    fun providePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Int> {
-      return platformParameterSingleton.getIntegerPlatformParameter(
-        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
-      ) ?: PlatformParameterValue.createDefaultParameter(
-        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
-      )
-    }
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class,
+      RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
