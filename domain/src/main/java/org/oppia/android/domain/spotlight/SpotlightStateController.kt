@@ -60,7 +60,7 @@ class SpotlightStateController @Inject constructor(
    * Retrieves the current [SpotlightViewState] of a spotlit feature for a given profile.
    *
    * @param profileId the ID of the profile that will be viewing the spotlight
-   * @param the feature to be spotlit
+   * @param feature the spotlight feature to be spotlit
    *
    * @return DataProvider containing the current [SpotlightViewState] corresponding to the specified [feature]
    */
@@ -168,7 +168,7 @@ class SpotlightStateController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "SpotlightCheckpointController",
