@@ -379,6 +379,15 @@ class PerformanceMetricsControllerTest {
   }
 
   @Test
+  fun testController_setAppInForeground_getIsAppInForeground_returnsCorrectValue() {
+    performanceMetricsController.setAppInForeground()
+
+    val isAppInForeground = performanceMetricsController.getIsAppInForeground()
+
+    assertThat(isAppInForeground).isTrue()
+  }
+
+  @Test
   fun testController_setAppInForeground_logMetric_logsMetricWithAppInForeground() {
     performanceMetricsController.setAppInForeground()
     performanceMetricsController.logPerformanceMetricsEvent(
@@ -401,6 +410,15 @@ class PerformanceMetricsControllerTest {
   }
 
   @Test
+  fun testController_setAppInBackground_getIsAppInForeground_returnsCorrectValue() {
+    performanceMetricsController.setAppInBackground()
+
+    val isAppInForeground = performanceMetricsController.getIsAppInForeground()
+
+    assertThat(isAppInForeground).isFalse()
+  }
+
+  @Test
   fun testController_setAppInBackground_logMetric_logsMetricWithAppInBackground() {
     performanceMetricsController.setAppInBackground()
     performanceMetricsController.logPerformanceMetricsEvent(
@@ -420,24 +438,6 @@ class PerformanceMetricsControllerTest {
       APK_SIZE_METRIC
     )
     assertThat(performanceMetricsLog.isAppInForeground).isFalse()
-  }
-
-  @Test
-  fun testController_setAppInBackground_getIsAppInForeground_returnsCorrectValue() {
-    performanceMetricsController.setAppInBackground()
-
-    val isAppInForeground = performanceMetricsController.getIsAppInForeground()
-
-    assertThat(isAppInForeground).isFalse()
-  }
-
-  @Test
-  fun testController_setAppInForeground_getIsAppInForeground_returnsCorrectValue() {
-    performanceMetricsController.setAppInForeground()
-
-    val isAppInForeground = performanceMetricsController.getIsAppInForeground()
-
-    assertThat(isAppInForeground).isTrue()
   }
 
   private fun logMultiplePerformanceMetrics() {

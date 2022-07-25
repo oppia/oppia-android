@@ -6,23 +6,26 @@ import androidx.work.WorkManager
 /** Scheduler for scheduling metric log reports related to the performance of the application. */
 interface MetricLogScheduler {
   /**
-   * Enqueues a [workRequest] using the [workManager] for generating metric logs of periodic
+   * Enqueues a [workRequest] using the [workManager] for scheduling metric collection of periodic
    * metrics like network and cpu usage.
    */
-  fun enqueueWorkRequestForPeriodicMetrics(
+  fun enqueueWorkRequestForPeriodicBackgroundMetrics(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   )
 
   /**
-   * Enqueues a [workRequest] using the [workManager] for generating metric logs for getting to
-   * know the storage usage of the application on the current device.
+   * Enqueues a [workRequest] using the [workManager] for scheduling metric collection of storage
+   * usage of the application on the current device.
    */
   fun enqueueWorkRequestForStorageUsage(workManager: WorkManager, workRequest: PeriodicWorkRequest)
 
   /**
-   * Enqueues a [workRequest] using the [workManager] for generating metric logs for getting to
-   * know the memory usage of the application on the current device.
+   * Enqueues a [workRequest] using the [workManager] for scheduling metric collection of periodic
+   * ui metrics like memory usage.
    */
-  fun enqueueWorkRequestForMemoryUsage(workManager: WorkManager, workRequest: PeriodicWorkRequest)
+  fun enqueueWorkRequestForPeriodicUiMetrics(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  )
 }

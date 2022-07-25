@@ -22,7 +22,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
@@ -43,7 +42,6 @@ import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -58,12 +56,12 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtilsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 /** Tests for [MetricLogSchedulingWorker]. */
@@ -93,9 +91,6 @@ class MetricLogSchedulingWorkerTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @field:[Inject MockPerformanceMetricsEventLogger]
-  lateinit var mockPerformanceMetricsEventLogger: PerformanceMetricsEventLogger
 
   private lateinit var context: Context
 
@@ -133,12 +128,12 @@ class MetricLogSchedulingWorkerTest {
   }
 
   @Test
-  fun testWorker_enqueueRequest_verifyPeriodicPerformanceMetricsLogging() {
+  fun testWorker_enqueueRequest_verifyPeriodicBackgroundPerformanceMetricsLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
     val inputData = Data.Builder().putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_METRIC_WORKER
+      MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
     ).build()
 
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
@@ -156,12 +151,12 @@ class MetricLogSchedulingWorkerTest {
   }
 
   @Test
-  fun testWorker_enqueueRequest_verifyMemoryUsagePerformanceMetricsLogging() {
+  fun testWorker_enqueueRequest_verifyPeriodicUiPerformanceMetricsLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
     val inputData = Data.Builder().putString(
       MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.MEMORY_USAGE_WORKER
+      MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
     ).build()
 
     val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
@@ -199,33 +194,11 @@ class MetricLogSchedulingWorkerTest {
       .inject(this)
   }
 
-  @Qualifier
-  annotation class MockPerformanceMetricsEventLogger
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     fun provideContext(application: Application): Context = application
-
-    @Provides
-    @Singleton
-    @MockPerformanceMetricsEventLogger
-    fun bindMockPerformanceMetricsEventLogger(
-      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-    ): PerformanceMetricsEventLogger {
-      return Mockito.mock(PerformanceMetricsEventLogger::class.java).also {
-        Mockito.`when`(it.logPerformanceMetric(anyOrNull())).then { answer ->
-          fakePerformanceMetricsEventLogger.logPerformanceMetric(
-            answer.getArgument(
-              /* index= */ 0, /* clazz= */
-              OppiaMetricLog::class.java
-            )
-          )
-          return@then null
-        }
-      }
-    }
 
     @Provides
     fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger = fakeEventLogger
@@ -235,8 +208,8 @@ class MetricLogSchedulingWorkerTest {
 
     @Provides
     fun bindFakePerformanceMetricsEventLogger(
-      @MockPerformanceMetricsEventLogger delegate: PerformanceMetricsEventLogger
-    ): PerformanceMetricsEventLogger = delegate
+      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+    ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
   }
 
   @Module
@@ -271,7 +244,8 @@ class MetricLogSchedulingWorkerTest {
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, ApplicationLifecycleModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class,
+      PerformanceMetricsUtilsModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

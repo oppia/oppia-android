@@ -5,6 +5,7 @@ import dagger.Module
 import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
 
 /** Provides fake log reporting dependencies. */
 @Module
@@ -20,4 +21,9 @@ interface TestLogReportingModule {
   fun bindFakePerformanceMetricsEventLogger(
     fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   ): PerformanceMetricsEventLogger
+
+  @Binds
+  fun bindFakePerformanceMetricsUtils(
+    fakePerformanceMetricUtils: FakePerformanceMetricUtils
+  ): PerformanceMetricsUtils
 }
