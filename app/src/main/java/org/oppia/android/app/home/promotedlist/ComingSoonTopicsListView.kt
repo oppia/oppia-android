@@ -35,7 +35,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   @Inject
   lateinit var singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
 
-  lateinit var comingSoonDataList: List<ComingSoonTopicsViewModel>
+  private lateinit var comingSoonDataList: List<ComingSoonTopicsViewModel>
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -66,7 +66,6 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
 
   /**
    * Sets the list of coming soon topics that this view shows to the learner.
-   *
    * @param newDataList the new list of topics to present
    */
   fun setComingSoonTopicList(newDataList: List<ComingSoonTopicsViewModel>?) {

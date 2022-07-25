@@ -17,9 +17,10 @@ class DragDropTestFragmentPresenter @Inject constructor(
   private val singleTypeBuilder: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
-  var dataList = mutableListOf("Item 1", "Item 2", "Item 3", "Item 4")
+  private var dataList = mutableListOf("Item 1", "Item 2", "Item 3", "Item 4")
   private lateinit var binding: DragDropTestFragmentBinding
 
+  /** This handles OnCreateView() of [DragDropTestFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?
@@ -59,6 +60,7 @@ class DragDropTestFragmentPresenter @Inject constructor(
     ) as TextView
   }
 
+  /** This handles dragging of items from given position in [DragDropTestFragment]. */
   fun onItemDragged(
     indexFrom: Int,
     indexTo: Int,
@@ -70,6 +72,7 @@ class DragDropTestFragmentPresenter @Inject constructor(
     adapter.notifyItemMoved(indexFrom, indexTo)
   }
 
+  /** This receives dragEndedEvent and unchecks data list in [DragDropTestFragment]. */
   fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
   }

@@ -35,7 +35,7 @@ class PromotedStoryListView @JvmOverloads constructor(
   @Inject
   lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
-  lateinit var promotedDataList: List<PromotedStoryViewModel>
+  private lateinit var promotedDataList: List<PromotedStoryViewModel>
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -66,7 +66,6 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   /**
    * Sets the list of promoted stories that this view shows to the learner.
-   *
    * @param newDataList the new list of stories to present
    */
   fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
