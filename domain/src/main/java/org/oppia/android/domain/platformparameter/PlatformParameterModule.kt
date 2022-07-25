@@ -9,8 +9,8 @@ import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
