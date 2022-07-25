@@ -44,7 +44,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_mark_topics_completed_secondary_toolbar_color">
+        android:background="@color/component_color_mark_topics_completed_container_background_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/mark_topics_completed_all_check_box_container"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="@string/modify_lesson_progress_all"
-            android:textColor="@color/color_def_white"
+            android:textColor="@color/component_color_mark_topics_completed_text_all_color"
             app:layout_constraintBottom_toTopOf="@id/mark_topics_completed_all_check_box"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -93,7 +93,7 @@
           android:minWidth="48dp"
           android:minHeight="48dp"
           android:text="@string/modify_lesson_progress_mark_completed_uppercase"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_mark_topics_completed_text_mark_completed_color"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
