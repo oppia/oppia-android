@@ -70,7 +70,10 @@ class PromotedStoryListView @JvmOverloads constructor(
    * @param newDataList the new list of stories to present
    */
   fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
-    if (newDataList != null) {
+
+    if (newDataList == null) {
+      oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new topics list data")
+    } else {
       promotedDataList = newDataList
       maybeInitializeAdapter()
     }

@@ -75,7 +75,9 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     // way to check that the adapter is created.
     // This ensures that the adapter will only be created once and correctly rebinds the data.
     // For more context:  https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462
-    if (newDataList != null) {
+    if (newDataList == null) {
+      oppiaLogger.w(COMING_SOON_TOPIC_LIST_VIEW_TAG, "Failed to resolve new topics list data")
+    } else {
       comingSoonDataList = newDataList
       maybeInitializeAdapter()
     }
