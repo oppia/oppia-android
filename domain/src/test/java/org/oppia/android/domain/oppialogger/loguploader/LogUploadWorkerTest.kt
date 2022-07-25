@@ -71,6 +71,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtilsModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -404,7 +405,8 @@ class LogUploadWorkerTest {
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, ApplicationLifecycleModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class,
+      PerformanceMetricsUtilsModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
