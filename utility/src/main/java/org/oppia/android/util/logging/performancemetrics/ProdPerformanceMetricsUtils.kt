@@ -69,8 +69,8 @@ class ProdPerformanceMetricsUtils @Inject constructor(
     return when (
       (context.filesDir.totalSpace + context.cacheDir.totalSpace).toDouble() / (1024 * 1024 * 1024)
     ) {
-      in 0.00..5.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
-      in 5.00..20.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+      in 0.00..32.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
+      in 32.00..64.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
   }
@@ -80,8 +80,8 @@ class ProdPerformanceMetricsUtils @Inject constructor(
     val memoryInfo = ActivityManager.MemoryInfo()
     activityManager.getMemoryInfo(memoryInfo)
     return when (memoryInfo.totalMem.toDouble() / (1024 * 1024 * 1024)) {
-      in 0.00..1.00 -> OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
-      in 1.00..2.00 -> OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+      in 0.00..2.00 -> OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
+      in 2.00..3.00 -> OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
       else -> OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
     }
   }

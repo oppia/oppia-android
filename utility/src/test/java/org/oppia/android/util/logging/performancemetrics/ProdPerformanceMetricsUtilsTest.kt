@@ -91,7 +91,7 @@ class ProdPerformanceMetricsUtilsTest {
     shadowActivityManager.setMemoryInfo(memoryInfo)
     val memoryTier = prodPerformanceMetricsUtils.getDeviceMemoryTier()
 
-    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER)
+    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER)
   }
 
   @Test
@@ -124,8 +124,8 @@ class ProdPerformanceMetricsUtilsTest {
     val expectedStorageValue = permanentStorageUsage + cacheStorageUsage
 
     val expectedStorageTierValue = when (expectedStorageValue.toDouble() / (1024 * 1024 * 1024)) {
-      in 0.00..5.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
-      in 5.00..20.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+      in 0.00..32.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
+      in 32.00..64.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
 
