@@ -75,6 +75,7 @@ import javax.inject.Singleton
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_APK_SIZE = Long.MAX_VALUE
+private const val TEST_SCREEN_UNSPECIFIED = "test_screen_unspecified"
 
 /** Tests for [LogUploadWorker]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -223,7 +224,7 @@ class LogUploadWorkerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
+      TEST_SCREEN_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       OppiaMetricLog.Priority.LOW_PRIORITY
     )
@@ -249,7 +250,7 @@ class LogUploadWorkerTest {
       OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
     )
     assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
+      TEST_SCREEN_UNSPECIFIED
     )
     assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
     assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)

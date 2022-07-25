@@ -35,8 +35,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ActivityLifecycleObserverModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -105,7 +105,7 @@ import javax.inject.Singleton
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-    MetricLogSchedulerModule::class, PerformanceMetricsLoggerModule::class,
+    MetricLogSchedulerModule::class, ActivityLifecycleObserverModule::class,
     // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
     //  directly exclude debug files from the build and thus won't be requiring this module.
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class, SyncStatusModule::class

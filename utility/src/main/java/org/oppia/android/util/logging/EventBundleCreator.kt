@@ -117,7 +117,7 @@ class EventBundleCreator @Inject constructor(
     bundle.putString("memory_tier", oppiaMetricLog.memoryTier.toAnalyticsName())
     bundle.putString("storage_tier", oppiaMetricLog.storageTier.toAnalyticsName())
     bundle.putString("network_type", oppiaMetricLog.networkType.toAnalyticsName())
-    bundle.putString("current_screen", oppiaMetricLog.currentScreen.toAnalyticsName())
+    bundle.putString("current_screen", oppiaMetricLog.currentScreen)
     return oppiaMetricLog.loggableMetric.convertToLoggableMetricType()?.also { loggableMetric ->
       // No performance metrics need to be tied to user IDs.
       loggableMetric.storeValue(PropertyStore(bundle, allowUserIds = false))
@@ -545,14 +545,5 @@ class EventBundleCreator @Inject constructor(
     OppiaMetricLog.NetworkType.CELLULAR -> "cellular"
     OppiaMetricLog.NetworkType.NONE -> "none"
     OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
-  }
-
-  private fun OppiaMetricLog.CurrentScreen.toAnalyticsName() = when (this) {
-    OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED -> "unspecified_current_screen"
-    OppiaMetricLog.CurrentScreen.HOME_SCREEN -> "home_screen"
-    OppiaMetricLog.CurrentScreen.BACKGROUND_SCREEN -> "background_screen"
-    OppiaMetricLog.CurrentScreen.APP_STARTUP_SCREEN -> "app_startup_screen"
-    OppiaMetricLog.CurrentScreen.UNRECOGNIZED -> "unknown_screen_name"
-    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
   }
 }

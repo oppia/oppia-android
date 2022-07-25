@@ -44,7 +44,7 @@ class PerformanceMetricsController @Inject constructor(
    */
   fun logPerformanceMetricsEvent(
     timestamp: Long,
-    currentScreen: OppiaMetricLog.CurrentScreen,
+    currentScreen: String,
     loggableMetric: OppiaMetricLog.LoggableMetric,
     priority: Priority
   ) {
@@ -100,7 +100,7 @@ class PerformanceMetricsController @Inject constructor(
   private fun createMetricLog(
     timestamp: Long,
     priority: Priority,
-    currentScreen: OppiaMetricLog.CurrentScreen,
+    currentScreen: String,
     loggableMetric: OppiaMetricLog.LoggableMetric
   ): OppiaMetricLog {
     return OppiaMetricLog.newBuilder().apply {
