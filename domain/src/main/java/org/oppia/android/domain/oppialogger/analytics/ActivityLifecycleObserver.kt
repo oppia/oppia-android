@@ -10,6 +10,7 @@ import javax.inject.Singleton
 
 private const val APPLICATION_STARTUP_SCREEN = "application_startup_screen"
 
+/** Observer that observes activity lifecycle. */
 @Singleton
 class ActivityLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
