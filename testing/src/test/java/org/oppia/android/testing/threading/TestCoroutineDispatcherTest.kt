@@ -11,8 +11,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,8 +64,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundTestDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -77,8 +73,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundTestDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 
@@ -88,8 +82,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -99,8 +91,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 
@@ -111,8 +101,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -123,8 +111,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBackgroundDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 
@@ -135,8 +121,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingTestDispatcher_onRobolectric_isRobolectricImpl() {
     arrangeOnRobolectric()
 
@@ -147,8 +131,6 @@ class TestCoroutineDispatcherTest {
   }
 
   @Test
-  @InternalCoroutinesApi
-  @ExperimentalCoroutinesApi
   fun testBlockingTestDispatcher_onEspresso_isEpressoImpl() {
     arrangeOnEspresso()
 

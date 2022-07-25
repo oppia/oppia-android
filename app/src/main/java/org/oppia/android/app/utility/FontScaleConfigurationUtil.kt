@@ -18,6 +18,7 @@ class FontScaleConfigurationUtil @Inject constructor() {
     configuration.fontScale = getReadingTextSizeConfigurationUtil(readingTextSize)
     val metrics: DisplayMetrics = context.resources.displayMetrics
     val windowManager = context.getSystemService(WINDOW_SERVICE) as? WindowManager
+    @Suppress("DEPRECATION") // Default display & getMetrics were deprecated in SDK 30.
     windowManager!!.defaultDisplay.getMetrics(metrics)
     metrics.scaledDensity = configuration.fontScale * metrics.density
     context.createConfigurationContext(configuration)

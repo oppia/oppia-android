@@ -3,9 +3,9 @@ package org.oppia.android.app.viewmodel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
 import javax.inject.Inject
 
+// TODO(#1051): Remove this class.
 /**
  * Provider for a specific type of [ViewModel] that supports @Inject construction. This class is automatically bound to
  * the narrowest scope and component in which it's used.
@@ -15,11 +15,13 @@ class ViewModelProvider<V : ViewModel> @Inject constructor(
 ) {
   /** Retrieves a new instance of the [ViewModel] of type [V] scoped to the specified fragment. */
   fun getForFragment(fragment: Fragment, clazz: Class<V>): V {
-    return ViewModelProviders.of(fragment, bridgeFactory).get(clazz)
+    @Suppress("DEPRECATION") // See TODO above for fixing this suppression.
+    return androidx.lifecycle.ViewModelProviders.of(fragment, bridgeFactory).get(clazz)
   }
 
   /** Retrieves a new instance of the [ViewModel] of type [V] scoped to the specified activity. */
   fun getForActivity(activity: AppCompatActivity, clazz: Class<V>): V {
-    return ViewModelProviders.of(activity, bridgeFactory).get(clazz)
+    @Suppress("DEPRECATION") // See TODO above for fixing this suppression.
+    return androidx.lifecycle.ViewModelProviders.of(activity, bridgeFactory).get(clazz)
   }
 }

@@ -112,13 +112,13 @@ class QuestionPlayerActivity :
   }
 
   override fun routeToHintsAndSolution(
-    questionId: String,
+    id: String,
     helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionDialogFragment =
         HintsAndSolutionDialogFragment.newInstance(
-          questionId,
+          id,
           state,
           helpIndex,
           writtenTranslationContext

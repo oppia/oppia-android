@@ -14,7 +14,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
 
   private lateinit var prefSummaryValue: String
 
-  fun handleOnCreate(prefKey: String, prefValue: String) {
+  fun handleOnCreate(prefValue: String) {
     val binding: AudioLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.audio_language_activity,
@@ -29,7 +29,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
     }
     setLanguageSelected(prefValue)
     if (getAudioLanguageFragment() == null) {
-      val audioLanguageFragment = AudioLanguageFragment.newInstance(prefKey, prefValue)
+      val audioLanguageFragment = AudioLanguageFragment.newInstance(prefValue)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
     }

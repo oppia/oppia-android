@@ -43,8 +43,8 @@ class OrientationChangeAction(private val orientation: Int) : ViewAction {
     activity!!.requestedOrientation = orientation
   }
 
-  private fun getActivity(context: Context): Activity? {
-    var context = context
+  private fun getActivity(parentContext: Context): Activity? {
+    var context = parentContext
     while (context is ContextWrapper) {
       if (context is Activity) {
         return context

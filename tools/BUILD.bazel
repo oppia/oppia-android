@@ -10,7 +10,7 @@ load("@rules_java//java:defs.bzl", "java_plugin")
 java_plugin(
     name = "moshi_annotation_processor_plugin",
     generates_api = True,
-    processor_class = "com.squareup.moshi.kotlin.codegen.JsonClassCodegenProcessor",
+    processor_class = "com.squareup.moshi.kotlin.codegen.apt.JsonClassCodegenProcessor",
     visibility = ["//third_party:__pkg__"],
     deps = [
         "//third_party:com_squareup_moshi_moshi-kotlin",

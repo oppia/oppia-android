@@ -20,6 +20,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
+@OptIn(ExperimentalCoroutinesApi::class)
 class LogUploadWorker private constructor(
   context: Context,
   params: WorkerParameters,
@@ -57,7 +58,7 @@ class LogUploadWorker private constructor(
         future.set(result.getCompleted())
       }
     }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    // TODO(#4463): Add withTimeout() to avoid potential hanging.
     return future
   }
 

@@ -2,7 +2,7 @@
 This library contains the utilities used in end-to-end testing.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
     name = "e2e_test_helper",

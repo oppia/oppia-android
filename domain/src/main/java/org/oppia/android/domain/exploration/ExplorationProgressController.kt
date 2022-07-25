@@ -2,6 +2,8 @@ package org.oppia.android.domain.exploration
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -378,6 +380,7 @@ class ExplorationProgressController @Inject constructor(
     }
   }
 
+  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
 
@@ -475,20 +478,17 @@ class ExplorationProgressController @Inject constructor(
     message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
-    // TODO(#4119): Switch this to use trySend(), instead, which is much cleaner and doesn't require
-    //  catching an exception.
-    val flowResult: AsyncResult<T> = try {
-      val commandQueue = mostRecentCommandQueue
-      when {
-        commandQueue == null ->
-          AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
-        !commandQueue.offer(message) ->
-          AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
-        // Ensure that the result is first reset since there will be a delay before the message is
-        // processed (if there's a flow).
-        else -> AsyncResult.Pending()
-      }
-    } catch (e: Exception) { AsyncResult.Failure(e) }
+    val sendResult = mostRecentCommandQueue?.trySend(message)
+    val failure = sendResult?.exceptionOrNull()
+    val flowResult: AsyncResult<T> = when {
+      sendResult == null ->
+        AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
+      sendResult.isFailure && failure != null -> AsyncResult.Failure(failure)
+      !sendResult.isSuccess -> AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
+      // Ensure that the result is first reset since there will be a delay before the message is
+      // processed (if there's a flow).
+      else -> AsyncResult.Pending()
+    }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
@@ -856,6 +856,7 @@ class ExplorationProgressController @Inject constructor(
    * Note that while this is changing internal ephemeral state, it does not notify of changes (it
    * instead expects callers to do this when it's best to notify frontend observers of the changes).
    */
+  @OptIn(ExperimentalCoroutinesApi::class)
   private fun ControllerState.saveExplorationCheckpoint() {
     // Do not save checkpoints if shouldSavePartialProgress is false. This is expected to happen
     // when the current exploration has been already completed previously.

@@ -74,7 +74,8 @@ class DisplayLocaleImpl(
   override fun String.formatInLocaleWithoutWrapping(vararg args: CharSequence): String =
     format(formattingLocale, *args)
 
-  override fun String.capitalizeForHumans(): String = capitalize(formattingLocale)
+  override fun String.capitalizeForHumans(): String =
+    replaceFirstChar { if (it.isLowerCase()) it.titlecase(formattingLocale) else it.toString() }
 
   override fun Resources.getStringInLocale(@StringRes id: Int): String = getString(id)
 

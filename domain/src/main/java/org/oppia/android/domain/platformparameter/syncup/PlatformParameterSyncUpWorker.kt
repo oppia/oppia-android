@@ -24,6 +24,7 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
+@OptIn(ExperimentalCoroutinesApi::class)
 class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
@@ -69,7 +70,7 @@ class PlatformParameterSyncUpWorker private constructor(
         future.set(result.getCompleted())
       }
     }
-    // TODO(#3715): Add withTimeout() to avoid potential hanging.
+    // TODO(#4463): Add withTimeout() to avoid potential hanging.
     return future
   }
 

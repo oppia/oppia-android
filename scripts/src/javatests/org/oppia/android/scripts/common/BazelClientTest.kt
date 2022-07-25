@@ -440,7 +440,7 @@ class BazelClientTest {
     val secondNewFile = File(tempFolder.root, secondFilename)
     firstNewFile.appendText(
       """
-      load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
       def custom_jvm_test_base(name, srcs, deps):
           kt_jvm_test(
               name = name,

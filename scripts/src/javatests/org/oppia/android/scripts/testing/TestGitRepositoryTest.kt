@@ -52,7 +52,7 @@ class TestGitRepositoryTest {
 
     testGitRepository.init()
 
-    assertThat(tempFolder.root.list().toList()).containsExactly(".git")
+    assertThat(tempFolder.root.list()?.toList()).containsExactly(".git")
   }
 
   @Test

@@ -4,7 +4,7 @@ This library contains utilities that all other modules, minus model, depend on.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
 
 # Source files that have been migrated to their own package-based libraries. Files added to this

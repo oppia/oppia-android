@@ -3,7 +3,7 @@ Libraries corresponding to accessibility label check that ensures all the activi
 are defined with labels.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "accessibility_label_check_lib",

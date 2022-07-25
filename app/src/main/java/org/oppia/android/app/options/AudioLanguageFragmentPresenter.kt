@@ -18,7 +18,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    prefKey: String,
     prefValue: String
   ): View? {
     val binding = AudioLanguageFragmentBinding.inflate(

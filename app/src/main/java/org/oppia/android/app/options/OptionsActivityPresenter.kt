@@ -102,7 +102,7 @@ class OptionsActivityPresenter @Inject constructor(
 
   fun loadAppLanguageFragment(appLanguage: String) {
     val appLanguageFragment =
-      AppLanguageFragment.newInstance(APP_LANGUAGE, appLanguage)
+      AppLanguageFragment.newInstance(appLanguage)
     activity.supportFragmentManager
       .beginTransaction()
       .add(R.id.multipane_options_container, appLanguageFragment)
@@ -112,7 +112,7 @@ class OptionsActivityPresenter @Inject constructor(
 
   fun loadAudioLanguageFragment(audioLanguage: String) {
     val audioLanguageFragment =
-      AudioLanguageFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
+      AudioLanguageFragment.newInstance(audioLanguage)
     activity.supportFragmentManager
       .beginTransaction()
       .add(R.id.multipane_options_container, audioLanguageFragment)

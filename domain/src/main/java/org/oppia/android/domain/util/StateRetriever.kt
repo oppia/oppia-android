@@ -56,7 +56,7 @@ class StateRetriever @Inject constructor() {
           createWrittenTranslationMappingsFromJson(stateJson.getJSONObject("written_translations"))
         )
       }
-      stateJson.optString("linked_skill_id")?.let { linkedSkillId = it }
+      stateJson.optString("linked_skill_id").takeIf { it.isNotEmpty() }?.let { linkedSkillId = it }
     }.build()
 
   // Creates an interaction from JSON
@@ -162,6 +162,7 @@ class StateRetriever @Inject constructor() {
 
   private fun createCorrectAnswer(containerObject: JSONObject): CorrectAnswer {
     val correctAnswerObject = containerObject.optJSONObject("correct_answer")
+    val correctAnswerStr = containerObject.optString("correct_answer")
     return when {
       correctAnswerObject != null -> {
         CorrectAnswer.newBuilder()
@@ -171,11 +172,8 @@ class StateRetriever @Inject constructor() {
           .setIsNegative(correctAnswerObject.getBoolean("isNegative"))
           .build()
       }
-      containerObject.optString("correct_answer", /* fallback= */ null) != null -> {
-        CorrectAnswer.newBuilder()
-          .setCorrectAnswer(containerObject.getStringFromObject("correct_answer"))
-          .build()
-      }
+      correctAnswerStr.isNotEmpty() ->
+        CorrectAnswer.newBuilder().setCorrectAnswer(correctAnswerStr).build()
       else -> CorrectAnswer.getDefaultInstance() // For incompatible types.
     }
   }

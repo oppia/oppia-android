@@ -1,9 +1,6 @@
 package org.oppia.android.testing.threading
 
 import org.oppia.android.testing.time.FakeSystemClock
-import java.lang.reflect.Method
-import java.time.Duration
-import java.util.TreeSet
 import javax.inject.Inject
 
 /**
@@ -14,11 +11,9 @@ import javax.inject.Inject
  * coordinated, deterministic, and thread-safe way.
  */
 class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
-  @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
+  private val monitoredTaskCoordinators: Set<@JvmSuppressWildcards MonitoredTaskCoordinator>,
   private val fakeSystemClock: FakeSystemClock
 ) : TestCoroutineDispatchers {
-  private val uiTaskCoordinator = RobolectricUiTaskCoordinator()
-
   override fun registerIdlingResource() {
     // Do nothing; idling resources aren't used in Robolectric.
   }
@@ -81,88 +76,22 @@ class TestCoroutineDispatchersRobolectricImpl @Inject constructor(
   }
 
   private fun flushNextTasks() {
-    if (backgroundTestDispatcher.hasPendingCompletableTasks()) {
-      backgroundTestDispatcher.runCurrent()
-    }
-    if (!uiTaskCoordinator.isIdle()) {
-      uiTaskCoordinator.idle()
-    }
+    // Run all executors that have completable tasks.
+    monitoredTaskCoordinators.filter { it.hasPendingCompletableTasks() }.forEach { it.runCurrent() }
   }
 
   /** Returns whether any of the dispatchers have any tasks to run, including in the future. */
-  private fun hasPendingTasks(): Boolean {
-    return backgroundTestDispatcher.hasPendingTasks() ||
-      getNextUiThreadFutureTaskTimeMillis(fakeSystemClock.getTimeMillis()) != null
-  }
+  private fun hasPendingTasks(): Boolean = monitoredTaskCoordinators.any { it.hasPendingTasks() }
 
   /** Returns whether any of the dispatchers have tasks that can be run now. */
-  private fun hasPendingCompletableTasks(): Boolean {
-    return backgroundTestDispatcher.hasPendingCompletableTasks() ||
-      !uiTaskCoordinator.isIdle()
-  }
+  private fun hasPendingCompletableTasks(): Boolean =
+    monitoredTaskCoordinators.any { it.hasPendingCompletableTasks() }
 
   private fun getNextFutureTaskTimeMillis(timeMillis: Long): Long? {
-    val nextBackgroundFutureTaskTimeMills =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
-    val nextBlockingFutureTaskTimeMills =
-      backgroundTestDispatcher.getNextFutureTaskCompletionTimeMillis(timeMillis)
-    val nextUiFutureTaskTimeMills = getNextUiThreadFutureTaskTimeMillis(timeMillis)
-    val futureTimes: TreeSet<Long> = sortedSetOf()
-    nextBackgroundFutureTaskTimeMills?.let { futureTimes.add(it) }
-    nextBlockingFutureTaskTimeMills?.let { futureTimes.add(it) }
-    nextUiFutureTaskTimeMills?.let { futureTimes.add(it) }
-    return futureTimes.firstOrNull()
-  }
-
-  private fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
-    return uiTaskCoordinator.getNextUiThreadFutureTaskTimeMillis(timeMillis)
-  }
-
-  private class RobolectricUiTaskCoordinator {
-    private val shadowLooperClass by lazy { loadShadowLooperClass() }
-    private val shadowUiLooper by lazy { loadMainShadowLooper() }
-    private val isIdleMethod by lazy { loadIsIdleMethod() }
-    private val idleMethod by lazy { loadIdleMethod() }
-    private val nextScheduledTimeMethod by lazy { loadGetNextScheduledTaskTimeMethod() }
-
-    fun isIdle(): Boolean {
-      return isIdleMethod.invoke(shadowUiLooper) as Boolean
-    }
-
-    fun idle() {
-      idleMethod.invoke(shadowUiLooper)
-    }
-
-    fun getNextUiThreadFutureTaskTimeMillis(timeMillis: Long): Long? {
-      val nextScheduledTime = nextScheduledTimeMethod.invoke(shadowUiLooper) as Duration
-      val delayMs = nextScheduledTime.toMillis()
-      if (delayMs == 0L && isIdle()) {
-        // If there's no delay and the looper is idle, that means there are no scheduled tasks.
-        return null
-      }
-      return timeMillis + delayMs
-    }
-
-    private fun loadShadowLooperClass(): Class<*> {
-      val classLoader = TestCoroutineDispatchers::class.java.classLoader!!
-      return classLoader.loadClass("org.robolectric.shadows.ShadowLooper")
-    }
-
-    private fun loadMainShadowLooper(): Any {
-      val shadowMainLooperMethod = shadowLooperClass.getDeclaredMethod("shadowMainLooper")
-      return shadowMainLooperMethod.invoke(/* obj= */ null)
-    }
-
-    private fun loadIsIdleMethod(): Method {
-      return shadowLooperClass.getDeclaredMethod("isIdle")
-    }
-
-    private fun loadIdleMethod(): Method {
-      return shadowLooperClass.getDeclaredMethod("idle")
-    }
-
-    private fun loadGetNextScheduledTaskTimeMethod(): Method {
-      return shadowLooperClass.getDeclaredMethod("getNextScheduledTaskTime")
-    }
+    // Find the soonest next task available to run in the future (after the specified time), or null
+    // if there are none.
+    return monitoredTaskCoordinators.mapNotNull {
+      it.getNextFutureTaskCompletionTimeMillis(timeMillis)
+    }.minOrNull()
   }
 }

@@ -4,7 +4,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
+load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
 # https://docs.bazel.build/versions/master/be/android.html#android_sdk_repository
@@ -30,16 +30,11 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/%s/rules_kotlin_release.tgz" % HTTP_DEPENDENCY_VERSIONS["rules_kotlin"]["version"]],
 )
 
-# TODO(#1535): Remove once rules_kotlin is released because these lines become unnecessary
-load("@io_bazel_rules_kotlin//kotlin:dependencies.bzl", "kt_download_local_dev_dependencies")
-
-kt_download_local_dev_dependencies()
-
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
+load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
 
 kotlin_repositories()
 
-kt_register_toolchains()
+register_toolchains("//tools/kotlin:kotlin_16_toolchain")
 
 # The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
 # module while helping us avoid the unnecessary compilation of protoc. Referecences:
@@ -96,6 +91,7 @@ load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
 # Add support for Robolectric: https://github.com/robolectric/robolectric-bazel
 http_archive(
     name = "robolectric",
+    sha256 = "af0177d32ecd2cd68ee6e9f5d38288e1c4de0dd2a756bb7133c243f2d5fe06f7",
     strip_prefix = "robolectric-bazel-4.5",
     urls = ["https://github.com/robolectric/robolectric-bazel/archive/4.5.tar.gz"],
 )
@@ -109,6 +105,7 @@ git_repository(
     name = "tools_android",
     commit = "00e6f4b7bdd75911e33c618a9bc57bab7a6e8930",
     remote = "https://github.com/bazelbuild/tools_android",
+    shallow_since = "1594238320 -0400",
 )
 
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_workspace_dependencies")
@@ -119,6 +116,7 @@ git_repository(
     name = "circularimageview",
     commit = "35d08ba88a4a22e6e9ac96bdc5a68be27b55d09f",
     remote = "https://github.com/oppia/CircularImageview",
+    shallow_since = "1622148929 -0700",
 )
 
 # A custom version of Android SVG is needed since custom changes needed to be added to the library
@@ -134,9 +132,9 @@ git_repository(
 # min target SDK version to be compatible with Oppia.
 git_repository(
     name = "kotlitex",
-    commit = "6b7db8ff9e0f4a70bdaa25f482143e038fd0c301",
+    commit = "0091f4979b81a860d68021e7f3653a8896fe6b3e",
     remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1647554845 -0700",
+    shallow_since = "1658115608 -0700",
 )
 
 bind(
@@ -146,11 +144,13 @@ bind(
 
 http_archive(
     name = "protobuf_tools",
+    sha256 = "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
     strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
     urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@rules_jvm_external//:specs.bzl", "maven")
 
 ATS_TAG = "1edfdab3134a7f01b37afabd3eebfd2c5bb05151"
 
@@ -176,17 +176,65 @@ http_jar(
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
-    artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
+    name = "maven",
+    artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(maven),
     fail_if_repin_required = True,
     fetch_sources = True,
     maven_install_json = "//third_party:maven_install.json",
-    repositories = DAGGER_REPOSITORIES + [
-        "https://maven.fabric.io/public",
-        "https://maven.google.com",
-        "https://repo1.maven.org/maven2",
-    ],
+    override_targets = {
+        "com.google.guava:guava": "@//third_party:guava_android",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm": "@//third_party:kotlinx-coroutines-core-jvm",
+    },
+    repositories = DAGGER_REPOSITORIES + MAVEN_REPOSITORIES,
 )
 
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
+
+[
+    http_jar(
+        name = "guava_%s" % guava_type,
+        sha256 = HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["sha"],
+        urls = [
+            "{0}/com/google/guava/guava/{1}-{2}/guava-{1}-{2}.jar".format(
+                url_base,
+                HTTP_DEPENDENCY_VERSIONS["guava_%s" % guava_type]["version"],
+                guava_type,
+            )
+            for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+        ],
+    )
+    for guava_type in [
+        # TODO(#1719): Add support for Guava JRE once it's needed in scripts.
+        "android",
+    ]
+]
+
+http_jar(
+    name = "kotlinx-coroutines-core-jvm",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["sha"],
+    urls = [
+        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)
+
+http_jar(
+    name = "kotlinx-coroutines-core-jvm-sources",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["src-sha"],
+    urls = [
+        "{0}/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/{1}/kotlinx-coroutines-core-jvm-{1}-sources.jar".format(
+            url_base,
+            HTTP_DEPENDENCY_VERSIONS["kotlinx-coroutines-core-jvm"]["version"],
+        )
+        for url_base in DAGGER_REPOSITORIES + MAVEN_REPOSITORIES
+    ],
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()

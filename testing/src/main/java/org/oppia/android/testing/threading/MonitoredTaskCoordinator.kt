@@ -1,59 +1,57 @@
 package org.oppia.android.testing.threading
 
 import android.os.Build
-import kotlinx.coroutines.CoroutineDispatcher
 import java.util.concurrent.TimeUnit
 
 /**
- * Replacement for Kotlin's test coroutine dispatcher that can be used to replace coroutine
- * dispatching functionality in Robolectric & Espresso tests in a way that can be coordinated across
- * multiple dispatchers for execution synchronization.
+ * Represents a generic task coordinator that provides introspection capabilities so that execution
+ * can be coordinated among multiple [MonitoredTaskCoordinator]s in Espresso and Robolectric tests.
  *
- * Developers should never use this dispatcher directly. Integrating with it should be done via
+ * Note that this interface does not define the contract for performing actual execution, only
+ * coordinating executing initiated in implementation classes. It's generally expected that
+ * implementations will be [java.util.concurrent.ScheduledExecutorService]s, but this is not a
+ * requirement.
+ *
+ * Developers should never use coordinators directly. Integrating with it should be done via
  * [TestDispatcherModule] and ensuring thread synchronization should be done via
- * [TestCoroutineDispatchers]. Attempting to interact directly with this dispatcher may cause timing
- * inconsistencies between the UI thread and other application coroutine dispatchers.
+ * [TestCoroutineDispatchers]. Attempting to interact directly with coordinators may cause timing
+ * inconsistencies between the UI thread and other application coroutine dispatchers and executors.
  *
- * Further, no assumptions should be made about the coordination functionality of this utility on
- * Robolectric or Espresso. The implementation carefully manages the differences between these two
- * platforms, so tests should only rely on the API. See [TestCoroutineDispatchers] for more details
- * on how to properly integrate with the test coroutine dispatcher API.
+ * Furthermore, no assumptions should be made about the coordination functionality of this utility
+ * on Robolectric or Espresso. [TestCoroutineDispatchers] and the assembled Dagger graph carefully
+ * manage the differences between these two platforms, so tests should only rely on the
+ * corresponding executors/dispatchers directly for execution. See [TestCoroutineDispatchers] for
+ * more details on how to properly integrate with the task coordination API.
+ *
+ * Finally, this interface & implementations are only ever expected to be used in testing scenarios
+ * and are not appropriate to use in real production code.
  */
-abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
-  /** The default time value (in seconds) used for methods with timeouts. */
-  @Suppress("PropertyName")
-  val DEFAULT_TIMEOUT_SECONDS
-    get() = computeTimeout()
-
-  /** The default time unit used for methods that execute with timeouts. */
-  @Suppress("PropertyName")
-  val DEFAULT_TIMEOUT_UNIT = TimeUnit.SECONDS
-
+interface MonitoredTaskCoordinator {
   /**
-   * Returns whether there are any tasks known to the dispatcher that have not yet been started.
+   * Returns whether there are any tasks known to the coordinator that have not yet been started.
    *
    * Note that some of these tasks may be scheduled for the future. This is meant to be used in
    * conjunction with [org.oppia.android.testing.time.FakeSystemClock.advanceTime] since that along
    * with [runCurrent] will execute all tasks up to the new time. If the time returned by
    * [getNextFutureTaskCompletionTimeMillis] plus the current time is passed to
-   * [org.oppia.android.testing.time.FakeSystemClock.advanceTime], this dispatcher guarantees that
+   * [org.oppia.android.testing.time.FakeSystemClock.advanceTime], this coordinator guarantees that
    * [hasPendingTasks] will return false after a call to [runCurrent] returns.
    *
-   * This function makes no guarantees about idleness with respect to other dispatchers (e.g. even
-   * if all tasks are executed, another dispatcher could schedule another task on this dispatcher in
-   * response to a task from this dispatcher being executed). Cross-thread communication should be
-   * managed using [TestCoroutineDispatchers], instead.
+   * This function makes no guarantees about idleness with respect to other coordinators (e.g. even
+   * if all tasks are executed, another coordinator could schedule another task on this coordinator
+   * in response to a task from this coordinator being executed). Cross-thread communication should
+   * be managed using [TestCoroutineDispatchers], instead.
    *
    * Note that it's up to the implementation to define what constitutes as 'pending' as this may
    * differ for different testing environments.
    */
-  abstract fun hasPendingTasks(): Boolean
+  fun hasPendingTasks(): Boolean
 
   /**
    * Returns the clock time at which the next future task will execute ('future' indicates that the
    * task cannot execute right now due to its execution time being in the future).
    */
-  abstract fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long?
+  fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long?
 
   /**
    * Returns whether there are any tasks that are immediately executable and pending.
@@ -65,58 +63,56 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    * Note that it's up to the implementation to define what constitutes as 'completable' as this may
    * differ for different testing environments.
    */
-  abstract fun hasPendingCompletableTasks(): Boolean
+  fun hasPendingCompletableTasks(): Boolean
 
-  /** Sets a [TaskIdleListener] to observe when the dispatcher becomes idle/non-idle. */
-  abstract fun setTaskIdleListener(taskIdleListener: TaskIdleListener)
+  /** Sets a [TaskIdleListener] to observe when the coordinator becomes idle/non-idle. */
+  fun setTaskIdleListener(taskIdleListener: TaskIdleListener)
 
   /**
-   * Runs all tasks currently scheduled to be run in the dispatcher, but none scheduled for the
+   * Runs all tasks currently scheduled to be run in the coordinator, but none scheduled for the
    * future.
    *
    * Note that this function will definitely result in out-of-order execution regardless of when a
    * task is scheduled if the clock has been advanced past that task's time. For this reason, it's
    * highly recommended that callers use [getNextFutureTaskCompletionTimeMillis] in order to ensure
-   * that tasks are run in-order on this dispatcher, and among other dispatchers to ensure tasks
+   * that tasks are run in-order on this coordinator, and among other coordinators to ensure tasks
    * don't inadvertently run out of order.
    *
    * @param timeout the timeout value in the specified unit after which this run attempt should fail
    * @param timeoutUnit the unit for [timeout] corresponding to how long this method should wait
    *     when trying to execute tasks before giving up
    */
-  abstract fun runCurrent(
+  fun runCurrent(
     timeout: Long = DEFAULT_TIMEOUT_SECONDS,
     timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
   )
 
   /**
-   * A listener for whether the test coroutine dispatcher has become idle (that is, is not running
+   * A listener for whether the test coroutine coordinator has become idle (that is, is not running
    * any tasks but may have tasks scheduled).
    */
   interface TaskIdleListener {
     /**
-     * Called when the dispatcher has become non-idle. This may be called immediately after
+     * Called when the coordinator has become non-idle. This may be called immediately after
      * registration, and may be called on different threads.
      */
-    fun onDispatcherRunning()
+    fun onCoordinatorRunning()
 
     /**
-     * Called when the dispatcher has become idle. This may be called immediately after
+     * Called when the coordinator has become idle. This may be called immediately after
      * registration, and may be called on different threads.
      */
-    fun onDispatcherIdle()
+    fun onCoordinatorIdle()
   }
 
-  /** Injectable factory for creating the correct dispatcher for current test platform. */
-  interface Factory {
-    /**
-     * Returns a new [TestCoroutineDispatcher] with the specified [CoroutineDispatcher] to back it
-     * up for actual task execution.
-     */
-    fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher
-  }
+  companion object {
+    /** The default time value (in seconds) used for methods with timeouts. */
+    val DEFAULT_TIMEOUT_SECONDS: Long
+      get() = computeTimeout()
 
-  private companion object {
+    /** The default time unit used for methods that execute with timeouts. */
+    val DEFAULT_TIMEOUT_UNIT: TimeUnit = TimeUnit.SECONDS
+
     private const val STANDARD_TIMEOUT_SECONDS = 10L
     private val TIMEOUT_WHEN_DEBUGGING_SECONDS = TimeUnit.HOURS.toSeconds(1)
 

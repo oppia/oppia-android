@@ -23,3 +23,13 @@
 -dontwarn sun.misc.SignalHandler
 -dontwarn sun.misc.Signal
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+# It seems like this can be safely ignored since it shouldn't be used on Android (though it's
+# unclear why it's causing a Proguard issue in the first place). For reference, see:
+# https://github.com/Kotlin/kotlinx.coroutines/blob/3574c2feca23c3e8a1ad00b5bf92e2bf04d95060/kotlinx-coroutines-core/jvm/src/internal/ExceptionsConstructor.kt#L17
+-dontwarn kotlinx.coroutines.internal.ClassValueCtorCache
+
+# It's not clear why there's a buildSequence issue here as buildSequence was removed (though not
+# until Kotlin 1.7 which isn't being used by the build tools yet). This one is odd, but it seems
+# fine to silence.
+-dontwarn kotlin.sequences.SequencesKt__SequenceBuilderKt

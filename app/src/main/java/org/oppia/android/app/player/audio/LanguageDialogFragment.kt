@@ -72,7 +72,7 @@ class LanguageDialogFragment : InjectableDialogFragment() {
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.audio_language_select_dialog_title)
-      .setSingleChoiceItems(options, selectedIndex) { dialog, which ->
+      .setSingleChoiceItems(options, selectedIndex) { _, which ->
         selectedIndex = which
       }
       .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->

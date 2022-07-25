@@ -1,0 +1,27 @@
+"""
+Custom toolchains pertaining to Kotlin.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain", "kt_javac_options", "kt_kotlinc_options")
+
+kt_javac_options(
+    name = "codebase_wide_kotlin_java_compiler_options",
+    warn = "error",
+)
+
+kt_kotlinc_options(
+    name = "codebase_wide_kotlin_compiler_options",
+    warn = "error",
+    x_optin = [
+        "kotlin.RequiresOptIn",
+    ],
+)
+
+define_kt_toolchain(
+    name = "kotlin_16_toolchain",
+    api_version = "1.6",
+    javac_options = ":codebase_wide_kotlin_java_compiler_options",
+    jvm_target = "1.8",
+    kotlinc_options = ":codebase_wide_kotlin_compiler_options",
+    language_version = "1.6",
+)

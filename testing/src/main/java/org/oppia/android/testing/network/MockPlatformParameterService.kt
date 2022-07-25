@@ -30,7 +30,7 @@ class MockPlatformParameterService(
 
   override fun getPlatformParametersByVersion(
     version: String,
-    plaformType: String
+    platformType: String
   ): Call<Map<String, Any>> {
     val parameters = createMockPlatformParameterMap(version)
     return delegate.returningResponse(parameters).getPlatformParametersByVersion(version)
