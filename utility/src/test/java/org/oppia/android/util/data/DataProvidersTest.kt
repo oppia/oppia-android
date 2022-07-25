@@ -106,6 +106,8 @@ class DataProvidersTest {
     setUpTestApplicationComponent()
   }
 
+  // TODO: Add tests for transformDynamic().
+
   // Note: custom data providers aren't explicitly tested since their interaction with the
   // infrastructure is tested through the providers created by DataProviders, and through other
   // custom data providers in the stack.

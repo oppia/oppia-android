@@ -24,8 +24,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BackgroundExecutor
-import org.oppia.android.util.threading.BlockingDispatcher
-import org.oppia.android.util.threading.BlockingExecutor
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.ScheduledExecutorService
@@ -44,20 +42,12 @@ class TestDispatcherModuleTest {
   lateinit var backgroundExecutor: ScheduledExecutorService
 
   @Inject
-  @field:BlockingExecutor
-  lateinit var blockingExecutor: ScheduledExecutorService
-
-  @Inject
   @field:GlideTestExecutor
   lateinit var glideTestExecutor: ScheduledExecutorService
 
   @Inject
   @field:BackgroundDispatcher
   lateinit var backgroundDispatcher: CoroutineDispatcher
-
-  @Inject
-  @field:BlockingDispatcher
-  lateinit var blockingDispatcher: CoroutineDispatcher
 
   @Inject
   lateinit var monitoredTaskCoordinators: Set<@JvmSuppressWildcards MonitoredTaskCoordinator>
@@ -88,26 +78,6 @@ class TestDispatcherModuleTest {
 
     // Verify that the background executor is replaced by the correct test executor.
     assertThat(backgroundExecutor).isInstanceOf(RealTimeScheduledExecutorService::class.java)
-  }
-
-  @Test
-  fun testBlockingExecutor_onRobolectric_isBlockingScheduledExecutorService() {
-    arrangeOnRobolectric()
-
-    setUpTestApplicationComponent()
-
-    // Verify that the blocking executor is replaced by the correct test executor.
-    assertThat(blockingExecutor).isInstanceOf(BlockingScheduledExecutorService::class.java)
-  }
-
-  @Test
-  fun testBlockingExecutor_onEspresso_isRealTimeScheduledExecutorService() {
-    arrangeOnEspresso()
-
-    setUpTestApplicationComponent()
-
-    // Verify that the blocking executor is replaced by the correct test executor.
-    assertThat(blockingExecutor).isInstanceOf(RealTimeScheduledExecutorService::class.java)
   }
 
   @Test
@@ -155,39 +125,14 @@ class TestDispatcherModuleTest {
   }
 
   @Test
-  fun testBlockingDispatcher_onRobolectric_isCoroutineExecutorTiedToBlockingExecutor() {
-    arrangeOnRobolectric()
-
-    setUpTestApplicationComponent()
-
-    // Verify that the blocking dispatcher is replaced by the correct test dispatcher.
-    val executor = (blockingDispatcher as? ExecutorCoroutineDispatcher)?.executor
-    assertThat(blockingDispatcher).isInstanceOf(ExecutorCoroutineDispatcher::class.java)
-    assertThat(executor).isEqualTo(blockingExecutor)
-  }
-
-  @Test
-  fun testBlockingDispatcher_onEspresso_isCoroutineExecutorTiedToBlockingExecutor() {
-    arrangeOnEspresso()
-
-    setUpTestApplicationComponent()
-
-    // Verify that the blocking dispatcher is replaced by the correct test dispatcher.
-    val executor = (blockingDispatcher as? ExecutorCoroutineDispatcher)?.executor
-    assertThat(blockingDispatcher).isInstanceOf(ExecutorCoroutineDispatcher::class.java)
-    assertThat(executor).isEqualTo(blockingExecutor)
-  }
-
-  @Test
   fun testMonitoredTaskCoordinatorSet_onRobolectric_containsAppExecutorsAndOneForRobolectric() {
     arrangeOnRobolectric()
 
     setUpTestApplicationComponent()
 
     // The executor set includes an extra Robolectric element in Robolectric environments.
-    assertThat(monitoredTaskCoordinators).hasSize(3)
+    assertThat(monitoredTaskCoordinators).hasSize(2)
     assertThat(monitoredTaskCoordinators).contains(backgroundExecutor)
-    assertThat(monitoredTaskCoordinators).contains(blockingExecutor)
     assertThat(monitoredTaskCoordinators).contains(glideTestExecutor)
     assertThat(
       monitoredTaskCoordinators.any {
@@ -203,9 +148,8 @@ class TestDispatcherModuleTest {
     setUpTestApplicationComponent()
 
     // The executor set includes only the custom app task executors.
-    assertThat(monitoredTaskCoordinators).hasSize(2)
+    assertThat(monitoredTaskCoordinators).hasSize(1)
     assertThat(monitoredTaskCoordinators).contains(backgroundExecutor)
-    assertThat(monitoredTaskCoordinators).contains(blockingExecutor)
     assertThat(monitoredTaskCoordinators).contains(glideTestExecutor)
     assertThat(
       monitoredTaskCoordinators.any {

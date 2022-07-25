@@ -21,22 +21,9 @@ class DispatcherModule {
     Executors.newScheduledThreadPool(/* corePoolSize= */ 4)
 
   @Provides
-  @BlockingExecutor
-  @Singleton
-  fun provideBlockingExecutor(): ScheduledExecutorService =
-    Executors.newSingleThreadScheduledExecutor()
-
-  @Provides
   @BackgroundDispatcher
   @Singleton
   fun provideBackgroundDispatcher(
     @BackgroundExecutor executorService: ScheduledExecutorService
-  ): CoroutineDispatcher = executorService.asCoroutineDispatcher()
-
-  @Provides
-  @BlockingDispatcher
-  @Singleton
-  fun provideBlockingDispatcher(
-    @BlockingExecutor executorService: ScheduledExecutorService
   ): CoroutineDispatcher = executorService.asCoroutineDispatcher()
 }

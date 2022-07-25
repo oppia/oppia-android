@@ -96,6 +96,8 @@ class TopicControllerTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
+  // TODO: Add tests for getTopics().
+
   @Test
   fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() {
     val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_1)

@@ -130,11 +130,15 @@ git_repository(
 
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
 # min target SDK version to be compatible with Oppia.
-git_repository(
+#git_repository(
+#    name = "kotlitex",
+#    commit = "0091f4979b81a860d68021e7f3653a8896fe6b3e",
+#    remote = "https://github.com/oppia/kotlitex",
+#    shallow_since = "1658115608 -0700",
+#)
+local_repository(
     name = "kotlitex",
-    commit = "0091f4979b81a860d68021e7f3653a8896fe6b3e",
-    remote = "https://github.com/oppia/kotlitex",
-    shallow_since = "1658115608 -0700",
+    path = "/home/ben/opensource/kotlitex",
 )
 
 bind(

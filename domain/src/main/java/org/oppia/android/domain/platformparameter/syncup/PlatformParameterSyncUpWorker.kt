@@ -22,6 +22,7 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
 @OptIn(ExperimentalCoroutinesApi::class)

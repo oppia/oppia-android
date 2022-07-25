@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -22,6 +23,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
  * used if calling code takes caution to restrict all read/write access to those mutable values to
  * operations invoked by this class.
  */
+@OptIn(ObsoleteCoroutinesApi::class)
 class InMemoryBlockingCache<T : Any> private constructor(
   private val backgroundDispatcher: CoroutineDispatcher,
   initialValue: T?
@@ -156,106 +158,232 @@ class InMemoryBlockingCache<T : Any> private constructor(
   }
 
   private companion object {
-    // TODO: Add doc w/ explanation for why this is needed & why it can't be part of CacheCommand (limitations in Kotlin's type inference engine).
+    /**
+     * Interface to augment [CacheCommand] by allowing command subclasses to be [Completable], that
+     * is, to have a singular value result that can be passed back to calling classes as a
+     * [Deferred].
+     *
+     * Note that this can't actually be part of [CacheCommand] itself due to a limitation in
+     * Kotlin's type inference engine (it can't seem to understand when subclasses predefine a type
+     * for the future in a ``when`` block when the original type uses a wildcard for the future.
+     */
     private interface Completable<V> {
+      /**
+       * Stores the value of the completed [CacheCommand] (see corresponding command KDocs for
+       * specifics on what this value will be for each command).
+       */
       val resultFuture: SettableFuture<V>
     }
 
-    // TODO: Add documentation.
+    /**
+     * Defines an asynchronous command that will execute synchronously relative to other commands
+     * (providing thread safety across a multi-threaded dispatcher).
+     */
     private sealed class CacheCommand<T: Any> {
+      /**
+       * [CacheCommand] for registering a new [changeObserver] for this cache.
+       *
+       * [resultFuture] will store an indication of pass/failure on whether the observer was set.
+       */
       class RegisterObserver<T: Any>(
         val changeObserver: suspend () -> Unit
       ): CacheCommand<T>(), Completable<Unit> {
         override val resultFuture: SettableFuture<Unit> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for initializing the cache with a [newValue].
+       *
+       * [resultFuture] will store the latest value of the cache.
+       */
       class CreateCache<T: Any>(val newValue: T): CacheCommand<T>(), Completable<T> {
         override val resultFuture: SettableFuture<T> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for initializing the cache based on a [newValueGenerator] if it doesn't
+       * already have a value defined.
+       *
+       * [resultFuture] will store the latest value of the cache.
+       */
       class CreateCacheIfAbsent<T: Any>(
         val newValueGenerator: suspend () -> T
       ): CacheCommand<T>(), Completable<T> {
         override val resultFuture: SettableFuture<T> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for reading the current value of the cache.
+       *
+       * [resultFuture] will store the read result.
+       */
       class ReadCache<T: Any>: CacheCommand<T>(), Completable<T?> {
         override val resultFuture: SettableFuture<T?> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for reading the cache (with an assumption that it's already inited).
+       *
+       * [resultFuture] will store the read value (or a failure if the cache is not initialized).
+       */
       class ReadCacheWhenPresent<T: Any>: CacheCommand<T>(), Completable<T> {
         override val resultFuture: SettableFuture<T> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for updating the cache using a transformation [update] function.
+       *
+       * [resultFuture] will store the latest value of the cache.
+       */
       class UpdateCache<T: Any>(val update: suspend (T?) -> T): CacheCommand<T>(), Completable<T> {
         override val resultFuture: SettableFuture<T> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for updating the cache using a transformation [update] function, but only
+       * when the cache is already initialized.
+       *
+       * [resultFuture] will store the latest value of the cache, or a failure if the cache is not
+       * already initialized.
+       */
       class UpdateCacheWhenPresent<T: Any>(
         val update: suspend (T) -> T
       ): CacheCommand<T>(), Completable<T> {
         override val resultFuture: SettableFuture<T> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for updating the cache using a transformation [update] function, but only
+       * when the cache is already initialized.
+       *
+       * This differs from [UpdateCacheWhenPresent] in that a custom channel can be provided as the
+       * result via [update].
+       *
+       * [resultFuture] will store the non-cache value returned by [update] (i.e. the extra
+       * channel), or a failure if the cache is not already initialized.
+       */
       class UpdateCacheWithCustomChannelWhenPresent<T: Any, V: Any?>(
         val update: suspend (T) -> Pair<T, V>
       ): CacheCommand<T>(), Completable<V> {
         override val resultFuture: SettableFuture<V> = SettableFuture.create()
       }
 
+      /**
+       * [CacheCommand] for clearing the cache.
+       *
+       * [resultFuture] will store the pass/fail result on whether the cache was successfully
+       * cleared.
+       */
       class DeleteCache<T: Any>: CacheCommand<T>(), Completable<Unit> {
         override val resultFuture: SettableFuture<Unit> = SettableFuture.create()
       }
 
-      class ConditionallyDeleteCacheIfPresent<T: Any>(
-        val shouldDelete: suspend (T) -> Boolean
-      ): CacheCommand<T>(), Completable<Boolean> {
-        override val resultFuture: SettableFuture<Boolean> = SettableFuture.create()
-      }
-
+      /**
+       * [CacheCommand] for clearing the cache, but only if [shouldDelete] returns true.
+       *
+       * [resultFuture] will store ``true`` if the cache was successfully cleared, or ``false`` if
+       * not.
+       */
       class ConditionallyDeleteCache<T: Any>(
         val shouldDelete: suspend (T?) -> Boolean
       ): CacheCommand<T>(), Completable<Boolean> {
         override val resultFuture: SettableFuture<Boolean> = SettableFuture.create()
       }
+
+      /**
+       * [CacheCommand] for clearing the cache, but only if the cache is present and if
+       * [shouldDelete] returns true.
+       *
+       * [resultFuture] will store ``true`` if the cache was successfully cleared, or ``false`` if
+       * not.
+       */
+      class ConditionallyDeleteCacheIfPresent<T: Any>(
+        val shouldDelete: suspend (T) -> Boolean
+      ): CacheCommand<T>(), Completable<Boolean> {
+        override val resultFuture: SettableFuture<Boolean> = SettableFuture.create()
+      }
     }
 
-    private class CachedValue<T>(
-      private var value: T?, private var changeObserver: suspend () -> Unit = {}
-    ) {
+    /**
+     * Represents the core state of the [InMemoryBlockingCache] with various convenience functions
+     * for mutating the cache's state.
+     *
+     * This class is not safe to access concurrently across multiple threads.
+     *
+     * @property value the initial value of the cache
+     */
+    private class CachedValue<T>(private var value: T?) {
+      private var changeObserver: suspend () -> Unit = {}
+
+      /** The current value of the cache, or null if it hasn't yet been initialized. */
       val nullableValue: T?
         get() = value
+
+      /**
+       * The current non-null value of the cache (assumes that the cache has been initialized), or
+       * fails if the cache isn't initialized.
+       */
       val nonNullValue: T
         get() = checkNotNull(value) { "Expected cache value to be set." }
 
+      /**
+       * Registers a new [changeObserver] that will be called whenever the cache's internal state
+       * has changed.
+       */
       fun registerChangeObserver(changeObserver: suspend () -> Unit) {
         this.changeObserver = changeObserver
       }
 
+      /**
+       * Updates the cache with a [newValue], returning its current state and notifying the
+       * registered observer, if any.
+       */
       suspend fun setCache(newValue: T): T {
         value = newValue
         changeObserver()
         return newValue
       }
 
+      /**
+       * Conditionally updates the cache using [generateNewValue] only if the cache isn't already
+       * initialized, returning the current value of the cache and notifying the registered observer
+       * (if there is any).
+       */
       suspend fun maybeSetCache(generateNewValue: suspend () -> T): T =
         setCache(value ?: generateNewValue())
 
+      /**
+       * Conditionally updates the cache using [generateNewValue], returning the current value of
+       * the cache and notifying the registered observer (if there is any).
+       */
       suspend fun maybeSetCache(generateNewValue: suspend (T?) -> T): T =
         setCache(generateNewValue(value))
 
+      /**
+       * Resets the cache back to null, notifying the registered observer (if any is registered).
+       */
       suspend fun clearCache() {
         value = null
         changeObserver()
       }
 
-      @JvmName("maybeClearCacheIfPresent")
-      suspend fun maybeClearCache(shouldDelete: suspend (T) -> Boolean): Boolean =
-        value?.let { maybeClearCacheInternal(shouldDelete(it)) } ?: false
-
+      /**
+       * Conditionally resets the cache back to null if [shouldDelete] returns true, notifying the
+       * registered observer (if any is registered), and returning whether the cache was reset.
+       */
       @JvmName("maybeClearCache")
       suspend fun maybeClearCache(shouldDelete: suspend (T?) -> Boolean): Boolean =
         maybeClearCacheInternal(shouldDelete(value))
+
+      /**
+       * Conditionally resets the cache back to null if [shouldDelete] returns true, notifying the
+       * registered observer (if any is registered), and returning whether the cache was reset.
+       *
+       * Note that this always returns false if the cache isn't yet initialized.
+       */
+      @JvmName("maybeClearCacheIfPresent")
+      suspend fun maybeClearCache(shouldDelete: suspend (T) -> Boolean): Boolean =
+        value?.let { maybeClearCacheInternal(shouldDelete(it)) } ?: false
 
       private suspend fun maybeClearCacheInternal(shouldClear: Boolean): Boolean =
         shouldClear.also { if (it) clearCache() }

@@ -7,6 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -15,6 +16,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton
+@OptIn(ObsoleteCoroutinesApi::class)
 class ConsoleLogger @Inject constructor(
   private val context: Context,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,

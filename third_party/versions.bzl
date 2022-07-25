@@ -77,6 +77,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlin:kotlin-stdlib-jdk8": "1.6.21",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.6.0",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.6.0",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-guava": "1.6.0",
     "org.jetbrains:annotations:jar": "13.0",
 }
 

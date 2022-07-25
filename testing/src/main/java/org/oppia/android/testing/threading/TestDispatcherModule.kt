@@ -9,8 +9,6 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BackgroundExecutor
-import org.oppia.android.util.threading.BlockingDispatcher
-import org.oppia.android.util.threading.BlockingExecutor
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import javax.inject.Provider
@@ -27,12 +25,6 @@ class TestDispatcherModule {
   @BackgroundExecutor
   fun provideBackgroundExecutor(
     @PrivateBackgroundExecutor executorService: CoordinatedScheduledExecutorService
-  ): ScheduledExecutorService = executorService
-
-  @Provides
-  @BlockingExecutor
-  fun provideBlockingExecutor(
-    @PrivateBlockingExecutor executorService: CoordinatedScheduledExecutorService
   ): ScheduledExecutorService = executorService
 
   @Provides
@@ -55,15 +47,6 @@ class TestDispatcherModule {
     @PrivateBackgroundBackingExecutor backingExecutor: ScheduledExecutorService
   ): CoordinatedScheduledExecutorService = factory.create(backingExecutor)
 
-  @Provides
-  @PrivateBlockingExecutor
-  @Singleton
-  fun provideBlockingTestExecutor(
-    @Private factory: CoordinatedScheduledExecutorService.Factory
-  ): CoordinatedScheduledExecutorService {
-    return factory.create(Executors.newSingleThreadScheduledExecutor())
-  }
-
   // Glide shares the executor service for general background tasks.
   @Provides
   @PrivateGlideExecutor
@@ -76,13 +59,6 @@ class TestDispatcherModule {
   @Private
   fun provideBackgroundTestExecutorForSet(
     @PrivateBackgroundExecutor executorService: CoordinatedScheduledExecutorService
-  ): Optional<MonitoredTaskCoordinator> = Optional.of(executorService)
-
-  @Provides
-  @IntoSet
-  @Private
-  fun provideBlockingTestExecutorForSet(
-    @PrivateBlockingExecutor executorService: CoordinatedScheduledExecutorService
   ): Optional<MonitoredTaskCoordinator> = Optional.of(executorService)
 
   @Provides
@@ -118,13 +94,6 @@ class TestDispatcherModule {
   ): CoroutineDispatcher = executorService.asCoroutineDispatcher()
 
   @Provides
-  @BlockingDispatcher
-  @Singleton
-  fun provideBlockingDispatcher(
-    @BlockingExecutor executorService: ScheduledExecutorService
-  ): CoroutineDispatcher = executorService.asCoroutineDispatcher()
-
-  @Provides
   fun provideTestCoroutineDispatchers(
     @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricImplProvider: Provider<TestCoroutineDispatchersRobolectricImpl>,
@@ -148,6 +117,5 @@ class TestDispatcherModule {
   @Qualifier private annotation class Private
   @Qualifier private annotation class PrivateBackgroundBackingExecutor
   @Qualifier private annotation class PrivateBackgroundExecutor
-  @Qualifier private annotation class PrivateBlockingExecutor
   @Qualifier private annotation class PrivateGlideExecutor
 }

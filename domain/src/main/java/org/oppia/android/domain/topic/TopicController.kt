@@ -116,7 +116,15 @@ class TopicController @Inject constructor(
     return getTopics(profileId, listOf(topicId)).transform(GET_TOPIC_PROVIDER_ID) { it.single() }
   }
 
-  // TODO: Add tests.
+  /**
+   * Fetches a list of topics given by [topicIds] in the same way as [getTopic].
+   *
+   * Note that the provided list of [Topic]s will match the order of the provided [topicIds],
+   * including duplicates, so it can be assumed that there's a 1:1 mapping between the IDs and
+   * returned topics list.
+   *
+   * All IDs must correspond to a valid topic, otherwise the returned provider will fail.
+   */
   fun getTopics(profileId: ProfileId, topicIds: List<String>): DataProvider<List<Topic>> {
     val topicsDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_TOPICS_PROVIDER_ID) {

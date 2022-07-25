@@ -808,8 +808,6 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/OppiaCl
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/system/OppiaClockModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/BackgroundDispatcher.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/BackgroundExecutor.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/BlockingDispatcher.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/BlockingExecutor.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/ConcurrentCollections.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/DispatcherInjector.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/DispatcherInjectorProvider.kt"

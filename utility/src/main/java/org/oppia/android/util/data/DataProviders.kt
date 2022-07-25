@@ -95,12 +95,24 @@ class DataProviders @Inject constructor(
       )
     }
 
-    // TODO: Add tests.
-    // TODO: turn into docs
-    // 3 cases:
-    // 1. notify outer -> full reset (follow (2))
-    // 2. notify base -> notify subs of outer & compute a new dynamic provider
-    // 3. notify dynamic -> notify subs of outer, but don't recompute base (just fetch it)
+    /**
+     * Returns a new [DataProvider] in the same way as [transformAsync] except the provided
+     * [function] can return a different [DataProvider] that's used to source the value of the
+     * returned [DataProvider].
+     *
+     * Note that this function has a particularly complex subscription contract and should thus be
+     * very carefully used, and only in cases when no other [DataProviders] method can be used. The
+     * subscription contract is as follows:
+     * 1. If [this] provider is notified, compute a new provider via [function] and notify
+     *   subscriptions registered to the returned provider.
+     * 2. If the returned provider is notified as changed, follow the same process as (1).
+     * 3. If the computed provider via [function] is notified as changed, notify the subscribers of
+     *   the provider returned by [transformDynamic] but do not compute a new provider.
+     *
+     * The above flow is meant to ensure that in cases when [function] may want to compute a new
+     * provider that it's able to, but it can avoid potential infinite loops (or unnecessary
+     * recomputations) by not recomputing specifically when the dynamic provider has changed.
+     */
     fun <I, O> DataProvider<I>.transformDynamic(
       newId: Any,
       function: (I) -> DataProvider<O>
@@ -355,7 +367,11 @@ class DataProviders @Inject constructor(
     }
   }
 
-  // TODO: Add docs.
+  /**
+   * A [DataProvider] whose base provider can change via [transform].
+   *
+   * This class should never be used directly. Instead, use [transformDynamic].
+   */
   class DynamicallyTransformedDataProvider<I, O> private constructor(
     context: Context,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
@@ -402,11 +418,16 @@ class DataProviders @Inject constructor(
       }
     }
 
+    /** Application-injectable factory for creating new [DynamicallyTransformedDataProvider]s. */
     class Factory @Inject constructor(
       private val context: Context,
       private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
       private val inMemoryBlockingCacheFactory: InMemoryBlockingCache.Factory
     ) {
+      /**
+       * Returns a new [DynamicallyTransformedDataProvider] with the specified [id], [baseProvider],
+       * and dynamic [transform] function.
+       */
       fun <I, O> create(
         id: Any, baseProvider: DataProvider<I>, transform: (I) -> DataProvider<O>
       ): DynamicallyTransformedDataProvider<I, O> {
