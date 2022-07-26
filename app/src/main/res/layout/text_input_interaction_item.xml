@@ -25,6 +25,7 @@
       android:hint="@{viewModel.hintText}"
       android:inputType="text"
       android:text="@={viewModel.answerText}"
+      android:textColorHint="@color/component_color_shared_edit_text_hint_color"
       app:textChangedListener="@{viewModel.answerTextWatcher}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
