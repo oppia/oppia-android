@@ -5,7 +5,7 @@ import org.oppia.android.R
 import org.oppia.android.app.databinding.getResourceHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 
 /** Per-activity utility to manage date and time for user-facing strings. */
