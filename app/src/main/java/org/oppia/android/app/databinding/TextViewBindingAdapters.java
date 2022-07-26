@@ -9,11 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
+import java.util.concurrent.TimeUnit;
 import org.oppia.android.R;
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
 import org.oppia.android.app.translation.AppLanguageResourceHandler;
 import org.oppia.android.util.system.OppiaClock;
-import java.util.concurrent.TimeUnit;
 import org.oppia.android.util.system.OppiaClockInjectorProvider;
 
 /**
