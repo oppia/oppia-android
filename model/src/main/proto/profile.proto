@@ -71,7 +71,7 @@ message Profile {
   // empty or a meaningless value.
   string learner_id = 13;
 
-  // Represents the number of times a user has successfully logged into their profile
+  // Represents the number of times a user has successfully logged into their profile.
   int32 number_of_logins = 14;
 }
 
