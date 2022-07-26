@@ -6,7 +6,6 @@ import android.graphics.Paint
 import android.text.Layout
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
-import android.util.Log
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
 import org.oppia.android.util.locale.OppiaLocale
@@ -70,7 +69,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
           paint.style = Paint.Style.STROKE
           paint.strokeWidth = 2f
         }
-        Log.d("width=","====="+canvas.width+" =trueX="+trueX+" =html="+layout!!.width)
         val correctX = if (isRtl) canvas.width - trueX - 1 - layout!!.width else trueX
         canvas.drawCircle(correctX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
         paint.style = style
@@ -127,7 +125,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
       if (isFirstCharacter) {
         val trueX = gapWidth * indentation + spacingBeforeBullet
-        Log.d("width=","====="+canvas.width+" =trueX="+trueX+" =html="+layout!!.width)
         val correctX = if (isRtl) (canvas.width - trueX - 1 - layout!!.width) else trueX
         canvas.drawText(numberedItemPrefix, correctX.toFloat(), baseline.toFloat(), paint)
 
