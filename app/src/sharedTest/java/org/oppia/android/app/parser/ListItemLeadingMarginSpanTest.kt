@@ -396,7 +396,7 @@ class ListItemLeadingMarginSpanTest {
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, 0, 0, 96, htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
@@ -404,7 +404,7 @@ class ListItemLeadingMarginSpanTest {
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, 96, 0, 182, htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
@@ -414,7 +414,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, 182, 0, 268, htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
@@ -423,7 +423,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, 354, 0, 440, htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
@@ -433,17 +433,17 @@ class ListItemLeadingMarginSpanTest {
     val shadowCanvas = shadowOf(canvas)
     // The below assertion verifies the 1st item of inner level list
     assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(72.0f)
-    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(48.0f)
     // The below assertion verifies the 2nd item of inner level list
     assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(72.0f)
-    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(139.0f)
 
     // The below assertion verifies the 1st item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(72.0f)
-    assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(225.0f)
     // The below assertion verifies the 2nd item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(72.0f)
-    assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 
   @Test
@@ -498,7 +498,7 @@ class ListItemLeadingMarginSpanTest {
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, top, 78, bottom, htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
@@ -506,7 +506,7 @@ class ListItemLeadingMarginSpanTest {
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, top, 164, bottom, htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
@@ -516,7 +516,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, top, 250, bottom, htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
@@ -525,7 +525,7 @@ class ListItemLeadingMarginSpanTest {
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 0, bottom, htmlResult,
+      canvas, paint, x, dir, top, 422, bottom, htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
@@ -537,22 +537,22 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
     // The below assertion verifies the 1st item of inner level list
     assertThat(shadowCanvas.getDrawnTextEvent(0).x).isWithin(1e-5f).of(72.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(0).y).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).y).isWithin(1e-5f).of(78.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(0).text).isEqualTo("1.")
 
     // The below assertion verifies the 2nd item of inner level list
     assertThat(shadowCanvas.getDrawnTextEvent(1).x).isWithin(1e-5f).of(72.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(1).y).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).y).isWithin(1e-5f).of(164.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(1).text).isEqualTo("2.")
 
     // The below assertion verifies the 1st item of outer level list
     assertThat(shadowCanvas.getDrawnTextEvent(2).x).isWithin(1e-5f).of(24.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(2).y).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).y).isWithin(1e-5f).of(250.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(2).text).isEqualTo("1.")
 
     // The below assertion verifies the 2nd item of outer level list
     assertThat(shadowCanvas.getDrawnTextEvent(3).x).isWithin(1e-5f).of(24.0f)
-    assertThat(shadowCanvas.getDrawnTextEvent(3).y).isWithin(1e-5f).of(0.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).y).isWithin(1e-5f).of(422.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("2.")
   }
 
