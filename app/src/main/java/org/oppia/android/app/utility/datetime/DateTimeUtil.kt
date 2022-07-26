@@ -1,12 +1,12 @@
 package org.oppia.android.app.utility.datetime
 
 import android.view.View
-import java.util.*
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.databinding.getResourceHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.*
+import javax.inject.Inject
 
 /** Per-activity utility to manage date and time for user-facing strings. */
 class DateTimeUtil @Inject constructor(
