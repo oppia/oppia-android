@@ -6,18 +6,15 @@ import android.content.ContextWrapper;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-
 import org.oppia.android.R;
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
 import org.oppia.android.app.translation.AppLanguageResourceHandler;
 import org.oppia.android.util.system.OppiaClock;
-import org.oppia.android.util.system.OppiaClockInjectorProvider;
-
 import java.util.concurrent.TimeUnit;
+import org.oppia.android.util.system.OppiaClockInjectorProvider;
 
 /**
  * Holds all custom binding adapters that bind to [TextView].
