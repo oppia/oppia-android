@@ -1,12 +1,12 @@
 package org.oppia.android.app.utility.datetime
 
 import android.view.View
+import java.util.*
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.databinding.getResourceHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.*
-import javax.inject.Inject
 
 /** Per-activity utility to manage date and time for user-facing strings. */
 class DateTimeUtil @Inject constructor(
@@ -42,9 +42,7 @@ const val DAY = 24 * HOUR
 const val MONTH = 30 * DAY
 const val YEAR = 12 * MONTH
 
-private fun currentDate(): Long {
-  return Calendar.getInstance().timeInMillis
-}
+private fun currentDate() = Calendar.getInstance().timeInMillis
 
 fun Long.timeAgo(view: View): String {
   val time = this
@@ -58,31 +56,29 @@ fun Long.timeAgo(view: View): String {
     diff < 2 * MINUTE -> resourceHandler.getStringInLocale(R.string.minute_ago)
     diff < 60 * MINUTE -> resourceHandler.getStringInLocaleWithWrapping(
       R.string.minutes_ago,
-      formatDuration(diff, MINUTE).toString()
+      diff.formatDuration(MINUTE).toString()
     )
     diff < 2 * HOUR -> resourceHandler.getStringInLocale(R.string.hour_ago)
     diff < 24 * HOUR -> resourceHandler.getStringInLocaleWithWrapping(
       R.string.hours_ago,
-      formatDuration(diff, HOUR).toString()
+      diff.formatDuration(HOUR).toString()
     )
     diff < 2 * DAY -> resourceHandler.getStringInLocale(R.string.yesterday)
     diff < 30 * DAY -> resourceHandler.getStringInLocaleWithWrapping(
       R.string.days_ago,
-      formatDuration(diff, DAY).toString()
+      diff.formatDuration(DAY).toString()
     )
     diff < 2 * MONTH -> resourceHandler.getStringInLocale(R.string.month_ago)
     diff < 12 * MONTH -> resourceHandler.getStringInLocaleWithWrapping(
       R.string.months_ago,
-      formatDuration(diff, MONTH).toString()
+      diff.formatDuration(MONTH).toString()
     )
     diff < 2 * YEAR -> resourceHandler.getStringInLocale(R.string.year_ago)
     else -> resourceHandler.getStringInLocaleWithWrapping(
       R.string.years_ago,
-      formatDuration(diff, YEAR).toString()
+      diff.formatDuration(YEAR).toString()
     )
   }
 }
 
-private fun formatDuration(diff: Long, duration: Int): Long {
-  return diff.div(duration)
-}
+private fun Long.formatDuration(duration: Int) = div(duration)
