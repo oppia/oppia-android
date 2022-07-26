@@ -4,4 +4,5 @@
   android:id="@+id/drag_drop_test_fragment_placeholder"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".app.story.StoryActivity" />
+  tools:context=".app.testing.DragDropTestActivity">
+</FrameLayout>

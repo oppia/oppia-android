@@ -22,6 +22,6 @@ class DragDropTestActivityPresenter @Inject constructor(private val activity: Ap
       .supportFragmentManager
       .findFragmentById(
         R.id.drag_drop_test_fragment_placeholder
-      ) as DragDropTestFragment?
+      ) as? DragDropTestFragment
   }
 }

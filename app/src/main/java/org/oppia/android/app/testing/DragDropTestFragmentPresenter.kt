@@ -25,7 +25,6 @@ class DragDropTestFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?
   ): View? {
-
     binding = DragDropTestFragmentBinding.inflate(
       inflater,
       container,
@@ -36,7 +35,6 @@ class DragDropTestFragmentPresenter @Inject constructor(
       adapter = createBindableAdapter()
       (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
     }
-
     return binding.root
   }
 

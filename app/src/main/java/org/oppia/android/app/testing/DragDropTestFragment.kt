@@ -10,14 +10,18 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
-import org.oppia.android.app.story.StoryFragment
 import javax.inject.Inject
 
-/** Fragment for displaying a DragDropTestFragment. */
+/**
+ * Fragment for displaying a [DragDropTestFragment].
+ * Added to enable access to [BindableAdapter]
+ * which should be provided through dependency injection,
+ * this is replacing use case of [DragDropTestActivity] since adapter can not be injected to activities.
+ */
 class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEndedListener {
 
   companion object {
-    /** Returns a new [StoryFragment] to display the story corresponding to the specified story ID. */
+    /** Returns a new instance of [DragDropTestFragment]. */
     fun newInstance(): DragDropTestFragment {
       return DragDropTestFragment()
     }
@@ -36,7 +40,6 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
     return dragDropTestFragmentPresenter.handleCreateView(
       inflater,
       container

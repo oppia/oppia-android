@@ -373,6 +373,62 @@ class BindableAdapterTest {
     }
   }
 
+  @Test
+  fun testSingleTypeAdapter_withLiveData_withLifecycleOwner_rebindsLiveDataValues() {
+    // Set up the adapter to be used for this test.
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeWithDataBindingAndLiveDataAdapter(singleTypeFactory)
+    }
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      val itemLiveData = MutableLiveData("initial")
+      scenario.onActivity { activity ->
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = listOf(LiveDataModel(itemLiveData))
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      itemLiveData.postValue("new value")
+      testCoroutineDispatchers.runCurrent()
+
+      // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
+      onView(
+        atPosition(
+          recyclerViewId = R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
+    }
+  }
+
+  @Test
+  fun testMultiTypeAdapter_withLiveData_withLifecycleOwner_rebindsLiveDataValues() {
+    // Set up the adapter to be used for this test.
+    TestModule.testAdapterFactory = { _, multiTypeFactory ->
+      createMultiViewTypeWithDataBindingBindableAdapter(multiTypeFactory)
+    }
+
+    launch(BindableAdapterTestActivity::class.java).use { scenario ->
+      val itemLiveData = MutableLiveData("initial")
+      scenario.onActivity { activity ->
+        val liveData = getRecyclerViewListLiveData(activity)
+        liveData.value = listOf(LiveDataModel(itemLiveData))
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      itemLiveData.postValue("new value")
+      testCoroutineDispatchers.runCurrent()
+
+      // The updated live data value should be reflected on the UI due to the bound lifecycle owner.
+      onView(
+        atPosition(
+          recyclerViewId = R.id.test_recycler_view,
+          position = 0
+        )
+      ).check(matches(withText("new value")))
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
