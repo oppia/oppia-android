@@ -6,20 +6,27 @@ import android.content.ContextWrapper;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-import java.util.concurrent.TimeUnit;
+
 import org.oppia.android.R;
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
 import org.oppia.android.app.translation.AppLanguageResourceHandler;
 import org.oppia.android.util.system.OppiaClock;
 import org.oppia.android.util.system.OppiaClockInjectorProvider;
 
-/** Holds all custom binding adapters that bind to [TextView]. */
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Holds all custom binding adapters that bind to [TextView].
+ */
 public final class TextViewBindingAdapters {
 
-  /** Binds date text with relative time. */
+  /**
+   * Binds date text with relative time.
+   */
   @BindingAdapter("profile:created")
   public static void setProfileDataText(@NonNull TextView textView, long timestamp) {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
@@ -30,10 +37,12 @@ public final class TextViewBindingAdapters {
     ));
   }
 
-  /** Binds last used with relative timestamp. */
-  @BindingAdapter("profile:lastVisited")
+  /**
+   * Binds last used with relative timestamp.
+   */
+  // @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
-    AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
+    /*AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
     String timeAgoTimeStamp = getTimeAgo(textView, timestamp);
     String profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
@@ -41,11 +50,14 @@ public final class TextViewBindingAdapters {
         profileLastUsed,
         timeAgoTimeStamp
     );
-    textView.setText(profileLastVisited);
+    textView.setText(profileLastVisited);*/
   }
 
   // TODO(#4345): Add test for this method.
-  /** Binds an AndroidX KitKat-compatible drawable top to the specified text view. */
+
+  /**
+   * Binds an AndroidX KitKat-compatible drawable top to the specified text view.
+   */
   @BindingAdapter("app:drawableTopCompat")
   public static void setDrawableTopCompat(
       @NonNull TextView imageView,
@@ -56,7 +68,9 @@ public final class TextViewBindingAdapters {
     );
   }
 
-  /** Binds an AndroidX KitKat-compatible drawable end to the specified text view. */
+  /**
+   * Binds an AndroidX KitKat-compatible drawable end to the specified text view.
+   */
   @BindingAdapter("app:drawableEndCompat")
   public static void setDrawableEndCompat(
       @NonNull TextView imageView,
@@ -82,13 +96,13 @@ public final class TextViewBindingAdapters {
       return resourceHandler.getStringInLocale(R.string.just_now);
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
       return getPluralString(
-              resourceHandler,
+          resourceHandler,
           R.plurals.minutes,
           (int) TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(1)) {
       return getPluralString(
-              resourceHandler,
+          resourceHandler,
           R.plurals.hours,
           (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis)
       );
@@ -96,7 +110,7 @@ public final class TextViewBindingAdapters {
       return resourceHandler.getStringInLocale(R.string.yesterday);
     }
     return getPluralString(
-            resourceHandler,
+        resourceHandler,
         R.plurals.days,
         (int) TimeUnit.MILLISECONDS.toDays(timeDifferenceMillis)
     );
@@ -136,8 +150,8 @@ public final class TextViewBindingAdapters {
     while (context != null && !(context instanceof Activity)) {
       if (!(context instanceof ContextWrapper)) {
         throw new IllegalStateException(
-          "Encountered context in view (" + view + ") that doesn't wrap a parent context: "
-            + context
+            "Encountered context in view (" + view + ") that doesn't wrap a parent context: "
+                + context
         );
       }
       context = ((ContextWrapper) context).getBaseContext();
