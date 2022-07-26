@@ -4,8 +4,9 @@ import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
+import android.widget.TextView
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.Stack
+import java.util.*
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -31,7 +32,7 @@ class LiTagHandler(
     tag: String
   ) {
     when (tag) {
-      CUSTOM_LIST_UL_TAG -> lists.push(Ul(context))
+      CUSTOM_LIST_UL_TAG -> lists.push(Ul(context, displayLocale))
       CUSTOM_LIST_OL_TAG -> lists.push(Ol(context, displayLocale))
       CUSTOM_LIST_LI_TAG -> lists.peek().openItem(output)
     }
@@ -50,7 +51,10 @@ class LiTagHandler(
   }
 
   /** Subclass of [ListTag] for unordered lists.*/
-  private class Ul(private val context: Context) :
+  private class Ul(
+    private val context: Context,
+    private val displayLocale: OppiaLocale.DisplayLocale
+  ) :
     CustomHtmlContentHandler.ListTag {
     override fun openItem(text: Editable) {
       appendNewLine(text)
@@ -61,7 +65,7 @@ class LiTagHandler(
       appendNewLine(text)
 
       getLast<BulletListItem>(text)?.let { mark ->
-        setSpanFromMark(text, mark, ListItemLeadingMarginSpan.UlSpan(context, indentation))
+        setSpanFromMark(text, mark, ListItemLeadingMarginSpan.UlSpan(context, indentation, displayLocale))
       }
     }
   }
@@ -89,7 +93,8 @@ class LiTagHandler(
           ListItemLeadingMarginSpan.OlSpan(
             context,
             indentation,
-            "${displayLocale.run { (mark.number).toHumanReadableString(mark.number) }}."
+            "${displayLocale.run { (mark.number).toHumanReadableString(mark.number) }}.",
+            displayLocale
           )
         )
       }
