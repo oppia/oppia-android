@@ -186,4 +186,27 @@
   <color name="component_color_math_expression_parser_activity_radio_buttons_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_edit_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_hint_text_color">@color/color_palette_hint_text_color</color>
+  <!-- Mark Chapters Completed Activity -->
+  <color name="component_color_mark_chapters_completed_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_mark_chapters_completed_container_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_mark_chapters_completed_background_color">@color/color_palette_mark_chapters_background_color</color>
+  <color name="component_color_mark_chapters_completed_checkbox_text_unselected_state_color">@color/color_palette_checkbox_text_unselected_state_color</color>
+  <color name="component_color_mark_chapters_completed_checkbox_text_selected_state_color">@color/color_palette_checkbox_text_selected_state_color</color>
+  <color name="component_color_mark_chapters_completed_checkbox_selected_state_color">@color/color_palette_checkbox_selected_state_color</color>
+  <color name="component_color_mark_chapters_completed_subtext_heading_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_mark_chapters_completed_subtext_heading_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_mark_chapters_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
+  <color name="component_color_mark_chapters_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
+  <!-- Mark Stories Completed Activity -->
+  <color name="component_color_mark_stories_completed_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_mark_stories_completed_container_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_mark_stories_completed_background_color">@color/color_palette_mark_chapters_background_color</color>
+  <color name="component_color_mark_stories_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
+  <color name="component_color_mark_stories_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
+  <!-- Mark Topics Completed Activity -->
+  <color name="component_color_mark_topics_completed_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_mark_topics_completed_container_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_mark_topics_completed_background_color">@color/color_palette_mark_chapters_background_color</color>
+  <color name="component_color_mark_topics_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
+  <color name="component_color_mark_topics_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
 </resources>

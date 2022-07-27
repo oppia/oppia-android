@@ -82,4 +82,10 @@
   <color name="color_palette_progress_bar_gradient_center_color">@color/color_def_question_player_progress_bar_gradient_center</color>
   <color name="color_palette_progress_bar_gradient_end_color">@color/color_def_question_player_progress_bar_gradient_end</color>
   <color name="color_palette_submit_text_active_color">@color/color_def_white</color>
+  <color name="color_palette_mark_chapters_background_color">@color/color_def_whitish_grey</color>
+  <color name="color_palette_checkbox_text_unselected_state_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_checkbox_text_selected_state_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_checkbox_selected_state_color">@color/color_def_checkbox_green</color>
+  <color name="color_palette_mark_completed_text_color">@color/color_def_white</color>
+  <color name="color_palette_mark_completed_all_text_color">@color/color_def_white</color>
 </resources>
