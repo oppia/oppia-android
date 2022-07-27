@@ -67,7 +67,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     return providerId
   }
 
-  override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<T> {
+  override suspend fun retrieveData(originNotificationIds: Set<Any>): AsyncResult<T> {
     cache.readIfPresentAsync().await().let { cachePayload ->
       // First, determine whether the current cache has been attempted to be retrieved from disk.
       if (cachePayload.state == CacheState.UNLOADED) {

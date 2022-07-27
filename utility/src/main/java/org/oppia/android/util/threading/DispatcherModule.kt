@@ -9,8 +9,8 @@ import java.util.concurrent.ScheduledExecutorService
 import javax.inject.Singleton
 
 /**
- * Dagger [Module] that provides [CoroutineDispatcher]s that bind to [BackgroundDispatcher] and [BlockingDispatcher]
- * qualifiers.
+ * Dagger [Module] that provides [CoroutineDispatcher]s that bind to the [BackgroundDispatcher]
+ * qualifier.
  */
 @Module
 class DispatcherModule {

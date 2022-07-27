@@ -60,6 +60,8 @@ class TestDispatcherModuleTest {
     TestModule.isOnRobolectric = null
   }
 
+  // TODO: Add test to verify custom dispatcher bindings into set.
+
   @Test
   fun testBackgroundExecutor_onRobolectric_isBlockingScheduledExecutorService() {
     arrangeOnRobolectric()

@@ -56,21 +56,21 @@ class TestDispatcherModule {
 
   @Provides
   @IntoSet
-  @Private
+  @CoordinatedTaskExecutor
   fun provideBackgroundTestExecutorForSet(
     @PrivateBackgroundExecutor executorService: CoordinatedScheduledExecutorService
   ): Optional<MonitoredTaskCoordinator> = Optional.of(executorService)
 
   @Provides
   @IntoSet
-  @Private
+  @CoordinatedTaskExecutor
   fun provideGlideTestExecutorForSet(
     @PrivateGlideExecutor executorService: CoordinatedScheduledExecutorService
   ): Optional<MonitoredTaskCoordinator> = Optional.of(executorService)
 
   @Provides
   @IntoSet
-  @Private
+  @CoordinatedTaskExecutor
   fun provideRobolectricUiTaskExecutorForSet(
     @IsOnRobolectric isOnRobolectric: Boolean,
     uiTaskExecutorProvider: Provider<MonitoredRobolectricUiTaskCoordinator>
@@ -81,9 +81,9 @@ class TestDispatcherModule {
   // TODO(#1720): Remove this once Hilt allows for configurable build graphs.
   @Provides
   fun provideAvailableMonitoredTaskCoordinators(
-    @Private taskCoordinators: Set<@JvmSuppressWildcards Optional<MonitoredTaskCoordinator>>
+    @CoordinatedTaskExecutor coorders: Set<@JvmSuppressWildcards Optional<MonitoredTaskCoordinator>>
   ): Set<@JvmSuppressWildcards MonitoredTaskCoordinator> {
-    return taskCoordinators.mapNotNull { it.orNull() }.toSet()
+    return coorders.mapNotNull { it.orNull() }.toSet()
   }
 
   @Provides

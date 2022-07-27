@@ -4,13 +4,15 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
+import dagger.multibindings.IntoSet
+import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -43,12 +45,18 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
+import org.oppia.android.testing.threading.BlockingScheduledExecutorService
+import org.oppia.android.testing.threading.CoordinatedScheduledExecutorService
+import org.oppia.android.testing.threading.CoordinatedTaskExecutor
+import org.oppia.android.testing.threading.MonitoredTaskCoordinator
 
 /** Tests for [HintHandlerProdImpl]. */
 @Suppress("FunctionName")
@@ -64,7 +72,8 @@ class HintHandlerProdImplTest {
   @Inject lateinit var hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl
   @Inject lateinit var explorationRetriever: ExplorationRetriever
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @field:[Inject BlockingDispatcher] lateinit var blockingCoroutineDispatcher: CoroutineDispatcher
+  @field:[Inject CustomBlockingExecutor]
+  lateinit var blockingCoroutineDispatcher: CoroutineDispatcher
 
   private lateinit var blockingCoroutineScope: CoroutineScope
   private lateinit var hintHandler: HintHandler
@@ -2103,6 +2112,29 @@ class HintHandlerProdImplTest {
     @LoadLessonProtosFromAssets
     fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
       testEnvironmentConfig.isUsingBazel()
+
+    @Provides
+    @Singleton
+    @CustomBlockingExecutor
+    fun provideCustomBlockingExecutor(
+      blockingExecutorServiceFactory: BlockingScheduledExecutorService.FactoryImpl
+    ): CoordinatedScheduledExecutorService {
+      return blockingExecutorServiceFactory.create(Executors.newSingleThreadScheduledExecutor())
+    }
+
+    @Provides
+    @IntoSet
+    @CoordinatedTaskExecutor
+    fun bindCustomBlockingExecutorForCoordination(
+      @CustomBlockingExecutor customBlockingExecutor: CoordinatedScheduledExecutorService
+    ): Optional<MonitoredTaskCoordinator> = Optional.of(customBlockingExecutor)
+
+    @Provides
+    @Singleton
+    @CustomBlockingExecutor
+    fun provideCustomBlockingDispatcher(
+      @CustomBlockingExecutor customBlockingExecutor: CoordinatedScheduledExecutorService
+    ): CoroutineDispatcher = customBlockingExecutor.asCoroutineDispatcher()
   }
 
   @Singleton
@@ -2138,4 +2170,6 @@ class HintHandlerProdImplTest {
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
+
+  @Qualifier annotation class CustomBlockingExecutor
 }

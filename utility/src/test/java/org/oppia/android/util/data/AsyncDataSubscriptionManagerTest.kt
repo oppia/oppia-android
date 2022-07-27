@@ -32,6 +32,10 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.oppia.android.testing.mockito.anyOrNull
+import org.oppia.android.testing.mockito.capture
 
 /** Tests for [AsyncDataSubscriptionManager]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -44,20 +48,14 @@ class AsyncDataSubscriptionManagerTest {
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Mock
-  lateinit var mockSubscriptionCallback1: SubscriptionCallback
-
-  @Mock
-  lateinit var mockSubscriptionCallback2: SubscriptionCallback
-
-  @Mock
-  lateinit var mockSubscriptionCallback3: SubscriptionCallback
+  @Mock lateinit var mockSubscriptionCallback1: SubscriptionCallback
+  @Mock lateinit var mockSubscriptionCallback2: SubscriptionCallback
+  @Mock lateinit var mockSubscriptionCallback3: SubscriptionCallback
+  @Captor lateinit var parentIdSetCaptor1: ArgumentCaptor<Set<Any>>
+  @Captor lateinit var parentIdSetCaptor2: ArgumentCaptor<Set<Any>>
 
   private lateinit var notifierDispatcher: CoroutineDispatcher
 
@@ -76,7 +74,7 @@ class AsyncDataSubscriptionManagerTest {
 
     // Verify that no callback was called (since nothing was registered). Also, no exceptions should
     // be thrown.
-    verify(mockSubscriptionCallback1, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
   }
 
   @Test
@@ -84,7 +82,7 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.subscribe("test_sub", mockSubscriptionCallback1.toAsyncChange())
 
     // Verify that just subscribing is insufficient for the callback to be called.
-    verify(mockSubscriptionCallback1, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
   }
 
   @Test
@@ -95,17 +93,18 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.subscribe("test_sub", mockSubscriptionCallback1.toAsyncChange())
 
     // Verify that just subscribing is insufficient for the callback to be called.
-    verify(mockSubscriptionCallback1, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
   }
 
   @Test
-  fun testNotifyChange_forSubscription_invokesCallback() {
+  fun testNotifyChange_forSubscription_invokesCallbackWithSelfId() {
     asyncDataSubscriptionManager.subscribe("test_sub", mockSubscriptionCallback1.toAsyncChange())
 
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub") }
 
     // Verify that the callback was called from the notification.
-    verify(mockSubscriptionCallback1).callback()
+    verify(mockSubscriptionCallback1).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   @Test
@@ -116,8 +115,10 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub") }
 
     // Both callbacks should be called.
-    verify(mockSubscriptionCallback1).callback()
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback1).callback(capture(parentIdSetCaptor1))
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor2))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
+    assertThat(parentIdSetCaptor2.value).containsExactly("test_sub")
   }
 
   @Test
@@ -128,7 +129,7 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub2") }
 
     // A different subscription was notified.
-    verify(mockSubscriptionCallback1, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
   }
 
   @Test
@@ -139,8 +140,9 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub2") }
 
     // Verify that the correct subscription was called.
-    verify(mockSubscriptionCallback1, never()).callback()
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub2")
   }
 
   @Test
@@ -155,7 +157,8 @@ class AsyncDataSubscriptionManagerTest {
     }
 
     // Verify that the callback was called for each.
-    verify(mockSubscriptionCallback1, times(3)).callback()
+    verify(mockSubscriptionCallback1, times(3)).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   @Test
@@ -213,7 +216,7 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub") }
 
     // The callback should not be called since the subscription is no longer active.
-    verify(mockSubscriptionCallback1, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
   }
 
   @Test
@@ -226,8 +229,9 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub") }
 
     // Only the second callback should be called since the first was unregistered.
-    verify(mockSubscriptionCallback1, never()).callback()
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   @Test
@@ -240,7 +244,8 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub") }
 
     // The callback should only be called once (for the notification before unregistering).
-    verify(mockSubscriptionCallback1).callback()
+    verify(mockSubscriptionCallback1).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   @Test
@@ -253,7 +258,8 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("test_sub") }
 
     // The callback should be received for a re-registered subscription.
-    verify(mockSubscriptionCallback1).callback()
+    verify(mockSubscriptionCallback1).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   @Test
@@ -270,19 +276,20 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.associateIds("child_id", "parent_id")
 
     // Nothing should be called since neither ID actually corresponds to a subscription.
-    verify(mockSubscriptionCallback1, never()).callback()
-    verify(mockSubscriptionCallback2, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
+    verify(mockSubscriptionCallback2, never()).callback(anyOrNull())
   }
 
   @Test
-  fun testAssociateIds_unregisteredParentId_notifyParent_invokeChildCallback() {
+  fun testAssociateIds_unregisteredParentId_notifyParent_invokeChildCallbackWithParentId() {
     asyncDataSubscriptionManager.subscribe("child_id", mockSubscriptionCallback1.toAsyncChange())
     asyncDataSubscriptionManager.associateIds("child_id", "parent_id")
 
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // The parent doesn't need to have subscriptions for its children to receive notifications.
-    verify(mockSubscriptionCallback1).callback()
+    verify(mockSubscriptionCallback1).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
   }
 
   @Test
@@ -293,11 +300,11 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // The child subscription shouldn't be called since it isn't subscribed.
-    verify(mockSubscriptionCallback2, never()).callback()
+    verify(mockSubscriptionCallback2, never()).callback(anyOrNull())
   }
 
   @Test
-  fun testAssociateIds_registeredParentChildIds_notifyParent_invokeChildCallback() {
+  fun testAssociateIds_registeredParentChildIds_notifyParent_invokeChildCallbackWithParentId() {
     asyncDataSubscriptionManager.subscribe("parent_id", mockSubscriptionCallback1.toAsyncChange())
     asyncDataSubscriptionManager.subscribe("child_id", mockSubscriptionCallback2.toAsyncChange())
     asyncDataSubscriptionManager.associateIds("child_id", "parent_id")
@@ -306,7 +313,8 @@ class AsyncDataSubscriptionManagerTest {
 
     // The child subscription should be called since the parent was notified & there's an
     // association.
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
   }
 
   @Test
@@ -320,8 +328,10 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // Verify that both children are notified.
-    verify(mockSubscriptionCallback2).callback()
-    verify(mockSubscriptionCallback3).callback()
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    verify(mockSubscriptionCallback3).callback(capture(parentIdSetCaptor2))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
+    assertThat(parentIdSetCaptor2.value).containsExactly("parent_id")
   }
 
   @Test
@@ -335,7 +345,8 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // Verify that the child is only notified once despite multiple association calls.
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
   }
 
   @Test
@@ -348,8 +359,10 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // All of the children's subscriptions should be called upon notification of the parent.
-    verify(mockSubscriptionCallback2).callback()
-    verify(mockSubscriptionCallback3).callback()
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    verify(mockSubscriptionCallback3).callback(capture(parentIdSetCaptor2))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
+    assertThat(parentIdSetCaptor2.value).containsExactly("parent_id")
   }
 
   @Test
@@ -362,7 +375,7 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // The child shouldn't be notified since it was dissociated.
-    verify(mockSubscriptionCallback2, never()).callback()
+    verify(mockSubscriptionCallback2, never()).callback(anyOrNull())
   }
 
   @Test
@@ -377,8 +390,9 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // Only one child should be notified since the other one was dissociated.
-    verify(mockSubscriptionCallback2, never()).callback()
-    verify(mockSubscriptionCallback3).callback()
+    verify(mockSubscriptionCallback2, never()).callback(anyOrNull())
+    verify(mockSubscriptionCallback3).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
   }
 
   @Test
@@ -392,7 +406,8 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
     // The child should be called twice.
-    verify(mockSubscriptionCallback2, times(2)).callback()
+    verify(mockSubscriptionCallback2, times(2)).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
   }
 
   @Test
@@ -405,8 +420,9 @@ class AsyncDataSubscriptionManagerTest {
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("child_id") }
 
     // The association should be one-way & not reciprocated.
-    verify(mockSubscriptionCallback1, never()).callback()
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("child_id")
   }
 
   @Test
@@ -421,7 +437,8 @@ class AsyncDataSubscriptionManagerTest {
 
     // The child should only be notified once since the second notification was after
     // disassociation.
-    verify(mockSubscriptionCallback2).callback()
+    verify(mockSubscriptionCallback2).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id")
   }
 
   @Test
@@ -454,6 +471,8 @@ class AsyncDataSubscriptionManagerTest {
     assertThat(error).hasMessageThat().contains("Encountered cycle")
   }
 
+  // TODO: Add tests for multiple parents/grandparents where the observer receives all of the IDs.
+
   @Test
   fun testAssociateIds_indirectChildSubscription_notifyGrandparent_invokesChildCallback() {
     asyncDataSubscriptionManager.subscribe("parent_id", mockSubscriptionCallback1.toAsyncChange())
@@ -465,8 +484,10 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.associateIds("child_id2", "child_id1")
     runBlocking(notifierDispatcher) { asyncDataSubscriptionManager.notifyChange("parent_id") }
 
-    // The grandparent being notified should result in the derived child also being notified.
-    verify(mockSubscriptionCallback3).callback()
+    // The grandparent being notified should result in the derived child also being notified. Note
+    // that 'child_id1' is provided here as the immediate parent that was indirectly notified.
+    verify(mockSubscriptionCallback3).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("child_id1")
   }
 
   @Test
@@ -483,7 +504,8 @@ class AsyncDataSubscriptionManagerTest {
 
     // In this case, the child is subscribed both directly & indirectly to the notified ID. Ensure
     // that its callback is only called once since it doesn't need to be called multiple times.
-    verify(mockSubscriptionCallback3).callback()
+    verify(mockSubscriptionCallback3).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("parent_id", "child_id1").inOrder()
   }
 
   @Test
@@ -493,7 +515,7 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test_sub")
 
     // The subscription shouldn't be called if the dispatcher doesn't run.
-    verify(mockSubscriptionCallback1, never()).callback()
+    verify(mockSubscriptionCallback1, never()).callback(anyOrNull())
   }
 
   @Test
@@ -504,7 +526,8 @@ class AsyncDataSubscriptionManagerTest {
     testCoroutineDispatchers.runCurrent()
 
     // Running the coroutine should trigger the notification.
-    verify(mockSubscriptionCallback1).callback()
+    verify(mockSubscriptionCallback1).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   @Test
@@ -520,7 +543,8 @@ class AsyncDataSubscriptionManagerTest {
     // of more testing test behaviors (since explicit thread synchronization is needed in tests),
     // but having multiple notifications stack up before they have a chance to execute could certain
     // happen in some production cases.
-    verify(mockSubscriptionCallback1, times(2)).callback()
+    verify(mockSubscriptionCallback1, times(2)).callback(capture(parentIdSetCaptor1))
+    assertThat(parentIdSetCaptor1.value).containsExactly("test_sub")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -557,10 +581,10 @@ class AsyncDataSubscriptionManagerTest {
   }
 
   interface SubscriptionCallback {
-    fun callback()
+    fun callback(parentId: Set<Any>)
 
     companion object {
-      fun SubscriptionCallback.toAsyncChange(): ObserveAsyncChange = { callback() }
+      fun SubscriptionCallback.toAsyncChange(): ObserveAsyncChange = { callback(it) }
     }
   }
 }

@@ -114,7 +114,7 @@ class PlatformParameterSyncUpWorker private constructor(
         }
         val cachingResult = platformParameterController
           .updatePlatformParameterDatabase(platformParameterList)
-          .retrieveData(originNotificationId = null)
+          .retrieveData(originNotificationIds = setOf())
         if (cachingResult is AsyncResult.Failure) {
           throw IllegalStateException(cachingResult.error)
         }

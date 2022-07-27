@@ -85,8 +85,9 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * Returns a [Deferred] in the same way as [updateAsync], excepted this update is expected to
    * occur after cache creation otherwise an exception will be thrown.
    */
-  fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> =
-    dispatchCommandAsync(CacheCommand.UpdateCacheWhenPresent(update))
+  fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> {
+    return dispatchCommandAsync(CacheCommand.UpdateCacheWhenPresent(update))
+  }
 
   /** See [updateIfPresentAsync]. Returns a custom deferred result. */
   fun <V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T, V>): Deferred<V> =
@@ -336,11 +337,15 @@ class InMemoryBlockingCache<T : Any> private constructor(
 
       /**
        * Updates the cache with a [newValue], returning its current state and notifying the
-       * registered observer, if any.
+       * registered observer, if any (note that the observer is only called if the value has
+       * actually changed).
        */
       suspend fun setCache(newValue: T): T {
+        val oldValue = value
         value = newValue
-        changeObserver()
+        if (oldValue != newValue) {
+          changeObserver()
+        }
         return newValue
       }
 
@@ -360,11 +365,15 @@ class InMemoryBlockingCache<T : Any> private constructor(
         setCache(generateNewValue(value))
 
       /**
-       * Resets the cache back to null, notifying the registered observer (if any is registered).
+       * Resets the cache back to null, notifying the registered observer (if any is registered) and
+       * only if the cache wasn't already cleared.
        */
       suspend fun clearCache() {
+        val oldValue = value
         value = null
-        changeObserver()
+        if (oldValue != null) {
+          changeObserver()
+        }
       }
 
       /**

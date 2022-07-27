@@ -64,6 +64,8 @@ class InMemoryBlockingCacheTest {
     setUpTestApplicationComponent()
   }
 
+  // TODO: Add tests for not receiving an observe callback when value changes.
+
   @Test
   fun testReadCache_withoutInitialValue_providesNull() {
     val cache = cacheFactory.create<String>()

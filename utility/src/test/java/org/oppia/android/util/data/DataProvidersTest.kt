@@ -119,7 +119,7 @@ class DataProvidersTest {
 
       override fun getId(): Any = "fake_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> {
+      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<Int> {
         hasRetrieveBeenCalled = true
         return AsyncResult.Pending()
       }
@@ -138,7 +138,7 @@ class DataProvidersTest {
 
       override fun getId(): Any = "fake_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> {
+      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<Int> {
         hasRetrieveBeenCalled = true
         return AsyncResult.Pending()
       }
@@ -155,7 +155,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
+      override suspend fun retrieveData(originNotificationId: Any?) = AsyncResult.Success(123)
     }
 
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -171,7 +171,8 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
+      override suspend fun retrieveData(originNotificationId: Any?) =
+        AsyncResult.Success(providerValue)
     }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
@@ -189,7 +190,8 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
+      override suspend fun retrieveData(originNotificationId: Any?) =
+        AsyncResult.Success(providerValue)
     }
     providerValue = 456
     asyncDataSubscriptionManager.notifyChangeAsync(simpleDataProvider.getId())
@@ -209,7 +211,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
+      override suspend fun retrieveData(originNotificationId: Any?) = AsyncResult.Success(123)
     }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -233,7 +235,7 @@ class DataProvidersTest {
 
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> {
+      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<Int> {
         // Note that while this behavior is a bit contrived, it's actually representing a real
         // possibility that many different calls to retrieveData() race against each other and could
         // yield results from different times, resulting in out-of-order delivery. The oldest result
@@ -264,7 +266,7 @@ class DataProvidersTest {
       override fun getId(): Any = "simple_data_provider"
 
       // Return a new pending result for each call.
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Pending()
+      override suspend fun retrieveData(originNotificationId: Any?) = AsyncResult.Pending<Int>()
     }
     // Ensure the initial value is retrieved.
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)

@@ -8,6 +8,20 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
+    name = "coordinated_task_executor",
+    testonly = True,
+    srcs = [
+        "CoordinatedTaskExecutor.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
     name = "glide_test_executor",
     testonly = True,
     srcs = [
@@ -150,6 +164,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":blocking_scheduled_executor_service",
+        ":coordinated_task_executor",
         ":dagger",
         ":espresso_impl",
         ":glide_test_executor",

@@ -91,7 +91,7 @@ class PersistentCacheStoreTest {
     // timing model in tests is a bit too different from production to properly simulate this case.
     // This seems like a reasonable workaround to verify the same effective behavior.
     val deferredResult = backgroundDispatcherScope.async {
-      cacheStore.retrieveData(originNotificationId = null)
+      cacheStore.retrieveData(originNotificationIds = setOf())
     }
     testCoroutineDispatchers.advanceUntilIdle()
 
