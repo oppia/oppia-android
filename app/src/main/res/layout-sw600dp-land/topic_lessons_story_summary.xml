@@ -99,8 +99,6 @@
               android:layout_height="wrap_content"
               android:layout_marginStart="@dimen/topic_lessons_summary_story_name_chapter_count_container_margin_start"
               android:layout_weight="1"
-              android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
-              android:contentDescription="@{viewModel.computeStoryNameChapterCountContainerContentDescription()}"
               android:gravity="center_vertical"
               android:orientation="vertical">
 
@@ -110,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
+                android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
                 android:paddingTop="24dp"
                 android:paddingBottom="4dp"
                 android:text="@{viewModel.storySummary.storyName}"
