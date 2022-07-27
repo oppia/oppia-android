@@ -521,7 +521,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testLoginProfile_addProfiles_loginProfile_checkProfileId_Timestamp_NumberOfLogins_Correct() {
+  fun testLoginProfile_addedProfile_profileIdTimestampAndNumberOfLoginsIsCorrectlyUpdated() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
@@ -532,31 +532,24 @@ class ProfileManagementControllerTest {
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
-    assertThat(profile.numberOfLogins).isNotEqualTo(0)
+    assertThat(profile.numberOfLogins).isEqualTo(1)
   }
 
   @Test
-  fun testLoginToProfile_addProfile_loginToProfile_logoutProfile_checkNumberOfLoginsIsCorrect() {
+  fun testLoginToProfile_addProfile_loginToProfileTwice_checkNumberOfLoginsIsTwo() {
     setUpTestApplicationComponent()
     addTestProfiles()
-
-    var profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    var profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.numberOfLogins).isEqualTo(0)
-
     var loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.numberOfLogins).isEqualTo(1)
 
+    // log out of profile 2
     loginProvider = profileManagementController.loginToProfile(PROFILE_ID_3)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
 
     loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
-    profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
-    profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.numberOfLogins).isEqualTo(2)
   }
 

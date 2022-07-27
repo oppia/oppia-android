@@ -26,7 +26,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -616,40 +615,13 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this login operation.
    */
   fun loginToProfile(profileId: ProfileId): DataProvider<Any?> {
-    return setCurrentProfileId(profileId).transformNested(LOGIN_TO_PROFILE_PROVIDER_ID) {
-      return@transformNested getDeferredResult(
+    return setCurrentProfileId(profileId).transformAsync(LOGIN_TO_PROFILE_PROVIDER_ID) {
+      return@transformAsync getDeferredResult(
         profileId,
         null,
-        incrementLoginCountAsync(profileId)
-      ).transformAsync {
-        return@transformAsync getDeferredResult(
-          profileId,
-          null,
-          updateLastLoggedInAsync(profileId)
-        )
-      }
-    }
-  }
-
-  private fun incrementLoginCountAsync(profileId: ProfileId): Deferred<ProfileActionStatus> {
-//    val deferred =
-    return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile =
-        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
-          it,
-          ProfileActionStatus.PROFILE_NOT_FOUND
-        )
-      val currentNumberOfLogins = profile.numberOfLogins
-      val updatedProfile = profile.toBuilder().setNumberOfLogins(currentNumberOfLogins + 1).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
+        updateLastLoggedInAsyncAndNumberOfLogins(profileId)
       )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-//    return dataProviders.createInMemoryDataProviderAsync(UPDATE_NUMBER_OF_LOGINS_PROVIDER_ID) {
-//      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
-//    }
   }
 
   private fun setCurrentProfileId(profileId: ProfileId): DataProvider<Any?> {
@@ -668,19 +640,22 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
-  private fun updateLastLoggedInAsync(profileId: ProfileId): Deferred<ProfileActionStatus> {
-    return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-      val profile = it.profilesMap[profileId.internalId]
-        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-      val updatedProfile =
-        profile.toBuilder().setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs()).build()
-      val profileDatabaseBuilder = it.toBuilder().putProfiles(
-        profileId.internalId,
-        updatedProfile
-      )
-      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+  private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
+    Deferred<ProfileActionStatus> {
+      return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+        val profile = it.profilesMap[profileId.internalId]
+          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+        val updatedProfile = profile.toBuilder()
+          .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
+          .setNumberOfLogins(profile.numberOfLogins + 1)
+          .build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+      }
     }
-  }
 
   /**
    * Deletes an existing profile.
