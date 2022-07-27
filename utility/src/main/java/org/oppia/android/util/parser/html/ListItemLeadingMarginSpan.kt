@@ -69,7 +69,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
           paint.style = Paint.Style.STROKE
           paint.strokeWidth = 2f
         }
-        val correctX = if (isRtl) canvas.width - trueX - 1 - layout!!.width else trueX
+        val correctX = if (isRtl) canvas.width - trueX - 1 else trueX
         canvas.drawCircle(correctX.toFloat(), yPosition, bulletRadius.toFloat(), paint)
         paint.style = style
       }
@@ -125,7 +125,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
       if (isFirstCharacter) {
         val trueX = gapWidth * indentation + spacingBeforeBullet
-        val correctX = if (isRtl) (canvas.width - trueX - 1 - layout!!.width) else trueX
+        val correctX = if (isRtl) canvas.width - trueX - 1 else trueX
         canvas.drawText(numberedItemPrefix, correctX.toFloat(), baseline.toFloat(), paint)
       }
     }
