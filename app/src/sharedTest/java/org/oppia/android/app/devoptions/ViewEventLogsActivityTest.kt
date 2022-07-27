@@ -176,7 +176,8 @@ class ViewEventLogsActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, PerformanceMetricsAssessorModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class,
+      PerformanceMetricsAssessorModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

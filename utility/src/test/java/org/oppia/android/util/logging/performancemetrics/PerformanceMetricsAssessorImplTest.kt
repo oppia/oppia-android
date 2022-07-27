@@ -120,8 +120,8 @@ class PerformanceMetricsAssessorImplTest {
   @Test
   fun testPerformanceMetricsUtils_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
     val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(
-        ApplicationProvider.getApplicationContext<Application>().applicationInfo.uid
-      )
+      ApplicationProvider.getApplicationContext<Application>().applicationInfo.uid
+    )
 
     assertThat(performanceMetricsUtilsImpl.getTotalSentBytes())
       .isEqualTo(expectedNetworkBytesSent)

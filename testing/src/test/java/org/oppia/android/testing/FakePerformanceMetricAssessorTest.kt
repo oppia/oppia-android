@@ -70,7 +70,8 @@ class FakePerformanceMetricAssessorTest {
   fun testFakeMetricUtils_setTotalReceivedBytes_returnsCorrectTotalReceivedBytes() {
     fakePerformanceMetricUtils.setTotalReceivedBytes(DEFAULT_TEST_BYTES_RECEIVED)
 
-    assertThat(fakePerformanceMetricUtils.getTotalReceivedBytes()).isEqualTo(DEFAULT_TEST_BYTES_RECEIVED)
+    assertThat(fakePerformanceMetricUtils.getTotalReceivedBytes())
+      .isEqualTo(DEFAULT_TEST_BYTES_RECEIVED)
   }
 
   @Test
