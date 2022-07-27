@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
@@ -181,6 +184,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       /* paint= */ null
     )
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
+    addChapterRecyclerViewItemDecoration(binding)
 
     binding.root.setOnClickListener {
       val previousIndex: Int? = currentExpandedChapterListIndex
@@ -206,6 +210,13 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         }
       }
     }
+  }
+
+  private fun addChapterRecyclerViewItemDecoration(binding: TopicLessonsStorySummaryBinding) {
+    val chapterRecyclerView = binding.chapterRecyclerView
+    val layoutManager = chapterRecyclerView.layoutManager as LinearLayoutManager
+    val dividerItemDecoration = DividerItemDecoration(chapterRecyclerView.context, layoutManager.orientation)
+    chapterRecyclerView.addItemDecoration(dividerItemDecoration)
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
