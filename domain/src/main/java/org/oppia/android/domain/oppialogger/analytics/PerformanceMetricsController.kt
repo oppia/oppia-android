@@ -9,7 +9,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -23,7 +23,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class PerformanceMetricsController @Inject constructor(
-  private val performanceMetricsUtils: PerformanceMetricsUtils,
+  private val performanceMetricsAssessor: PerformanceMetricsAssessor,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val exceptionLogger: ExceptionLogger,
@@ -111,8 +111,8 @@ class PerformanceMetricsController @Inject constructor(
       this.currentScreen = currentScreen
       this.loggableMetric = loggableMetric
       this.isAppInForeground = this@PerformanceMetricsController.isAppInForeground
-      this.storageTier = performanceMetricsUtils.getDeviceStorageTier()
-      this.memoryTier = performanceMetricsUtils.getDeviceMemoryTier()
+      this.storageTier = performanceMetricsAssessor.getDeviceStorageTier()
+      this.memoryTier = performanceMetricsAssessor.getDeviceMemoryTier()
     }.build()
   }
 

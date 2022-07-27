@@ -17,9 +17,6 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.reset
 import org.mockito.MockitoAnnotations
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.testing.TestLogReportingModule
@@ -49,28 +46,27 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowActivityManager
 import java.io.File
 import javax.inject.Inject
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
-private const val TEST_PACKAGE_NAME = "TEST_PACKAGE_NAME"
 private const val TEST_PACKAGE_LABEL = "TEST_PACKAGE_LABEL"
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_PID = 1
-private const val TEST_UID = 1
+private const val TEST_FILE_NAME = "TEST_FILE_NAME"
+private const val TEST_FILE_CONTENT = "TEST_FILE_CONTENT"
 
-/** Tests for [ProdPerformanceMetricsUtils]. */
+/** Tests for [PerformanceMetricsAssessorImpl]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ProdPerformanceMetricsUtilsTest.TestApplication::class)
-class ProdPerformanceMetricsUtilsTest {
+@Config(application = PerformanceMetricsAssessorImplTest.TestApplication::class)
+class PerformanceMetricsAssessorImplTest {
 
   @Inject
-  lateinit var prodPerformanceMetricsUtils: ProdPerformanceMetricsUtils
+  lateinit var performanceMetricsUtilsImpl: PerformanceMetricsAssessorImpl
 
-  @field:[Inject MockContext]
-  lateinit var mockContext: Context
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -83,77 +79,61 @@ class ProdPerformanceMetricsUtilsTest {
     val activityManager: ActivityManager =
       ApplicationProvider.getApplicationContext<Application>()
         .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    `when`(mockContext.getSystemService(Context.ACTIVITY_SERVICE)).thenReturn(activityManager)
-
     val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = (1.5 * 1024 * 1024 * 1024).toLong()
     shadowActivityManager.setMemoryInfo(memoryInfo)
-    val memoryTier = prodPerformanceMetricsUtils.getDeviceMemoryTier()
+    val memoryTier = performanceMetricsUtilsImpl.getDeviceMemoryTier()
 
     assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getTotalStorageUsed_returnsCorrectStorageUsage() {
-    val testFile = File(TEST_APP_PATH)
-    val cacheFile = File(TEST_APP_PATH)
-    reset(mockContext)
-    `when`(mockContext.applicationContext).thenReturn(mockContext)
-    `when`(mockContext.filesDir).thenReturn(testFile)
-    `when`(mockContext.cacheDir).thenReturn(cacheFile)
+    context.openFileOutput(TEST_FILE_NAME, Context.MODE_PRIVATE).use {
+      it.write(TEST_FILE_CONTENT.toByteArray())
+    }
+    val cacheFile = File.createTempFile(TEST_APP_PATH, null, context.cacheDir)
+    val expectedStorageValue = TEST_FILE_CONTENT.length + cacheFile.length()
 
-    val permanentStorageUsage = testFile.totalSpace - testFile.freeSpace
-    val cacheStorageUsage = cacheFile.totalSpace - cacheFile.freeSpace
-    val expectedStorageValue = permanentStorageUsage + cacheStorageUsage
-
-    assertThat(prodPerformanceMetricsUtils.getUsedStorage()).isEqualTo(expectedStorageValue)
+    assertThat(performanceMetricsUtilsImpl.getUsedStorage()).isEqualTo(expectedStorageValue)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getTotalStorageUsageTier_returnsCorrectStorageUsageTier() {
-    val testFile = File(TEST_APP_PATH)
-    val cacheFile = File(TEST_APP_PATH)
-    reset(mockContext)
-    `when`(mockContext.applicationContext).thenReturn(mockContext)
-    `when`(mockContext.filesDir).thenReturn(testFile)
-    `when`(mockContext.cacheDir).thenReturn(cacheFile)
+    context.openFileOutput(TEST_FILE_NAME, Context.MODE_PRIVATE).use {
+      it.write(TEST_FILE_CONTENT.toByteArray())
+    }
+    val cacheFile = File.createTempFile(TEST_APP_PATH, null, context.cacheDir)
+    val expectedStorageValue = TEST_FILE_CONTENT.length + cacheFile.length()
 
-    val permanentStorageUsage = testFile.totalSpace - testFile.freeSpace
-    val cacheStorageUsage = cacheFile.totalSpace - cacheFile.freeSpace
-    val expectedStorageValue = permanentStorageUsage + cacheStorageUsage
-
-    val expectedStorageTierValue = when (expectedStorageValue.toDouble() / (1024 * 1024 * 1024)) {
-      in 0.00..32.00 -> OppiaMetricLog.StorageTier.LOW_STORAGE
-      in 32.00..64.00 -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+    val expectedStorageTierValue = when (expectedStorageValue / (1024 * 1024 * 1024)) {
+      in 0L until 32L -> OppiaMetricLog.StorageTier.LOW_STORAGE
+      in 32L..64L -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
       else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
     }
 
-    assertThat(prodPerformanceMetricsUtils.getDeviceStorageTier())
+    assertThat(performanceMetricsUtilsImpl.getDeviceStorageTier())
       .isEqualTo(expectedStorageTierValue)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
-    val applicationInfo = ApplicationInfo().apply {
-      this.uid = TEST_UID
-    }
-    `when`(mockContext.applicationInfo).thenReturn(applicationInfo)
-    val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(mockContext.applicationInfo.uid)
+    val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(
+        ApplicationProvider.getApplicationContext<Application>().applicationInfo.uid
+      )
 
-    assertThat(prodPerformanceMetricsUtils.getTotalSentBytes())
+    assertThat(performanceMetricsUtilsImpl.getTotalSentBytes())
       .isEqualTo(expectedNetworkBytesSent)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
-    val applicationInfo = ApplicationInfo().apply {
-      this.uid = TEST_UID
-    }
-    `when`(mockContext.applicationInfo).thenReturn(applicationInfo)
-    val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(mockContext.applicationInfo.uid)
+    val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(
+      ApplicationProvider.getApplicationContext<Application>().applicationInfo.uid
+    )
 
-    assertThat(prodPerformanceMetricsUtils.getTotalReceivedBytes())
+    assertThat(performanceMetricsUtilsImpl.getTotalReceivedBytes())
       .isEqualTo(expectedNetworkBytesReceived)
   }
 
@@ -162,27 +142,16 @@ class ProdPerformanceMetricsUtilsTest {
     val activityManager: ActivityManager =
       ApplicationProvider.getApplicationContext<Application>()
         .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    `when`(mockContext.getSystemService(Context.ACTIVITY_SERVICE)).thenReturn(activityManager)
     val process1 = ActivityManager.RunningAppProcessInfo().apply {
       this.pid = TEST_PID
       this.importanceReasonComponent = ComponentName("com.robolectric", "process 1")
     }
-    val process2 = ActivityManager.RunningAppProcessInfo().apply {
-      this.pid = TEST_PID
-      this.importanceReasonComponent = ComponentName("com.robolectric", "process 2")
-    }
-    var totalPssUsedTest = 0
-
     val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
-    shadowActivityManager.setProcesses(listOf(process1, process2))
+    shadowActivityManager.setProcesses(listOf(process1))
     val processMemoryInfo = activityManager.getProcessMemoryInfo(arrayOf(TEST_PID).toIntArray())
-    if (processMemoryInfo != null) {
-      for (element in processMemoryInfo) {
-        totalPssUsedTest += element.totalPss
-      }
-    }
+    val totalPssUsedTest = processMemoryInfo?.get(0)?.totalPss?.toLong() ?: 0L
 
-    assertThat(prodPerformanceMetricsUtils.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
+    assertThat(performanceMetricsUtilsImpl.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
   }
 
   @Test
@@ -191,7 +160,7 @@ class ProdPerformanceMetricsUtilsTest {
     val applicationInfo = ApplicationInfo()
     val testApkSize = (File(TEST_APP_PATH).length() / 1024)
     applicationInfo.apply {
-      this.packageName = TEST_PACKAGE_NAME
+      this.packageName = context.packageName
       this.sourceDir = TEST_APP_PATH
       this.name = TEST_PACKAGE_LABEL
       this.flags = 0
@@ -202,12 +171,12 @@ class ProdPerformanceMetricsUtilsTest {
     shadowPackageManager.removePackage(application.packageName)
     shadowPackageManager.installPackage(
       PackageInfo().apply {
-        this.packageName = TEST_PACKAGE_NAME
+        this.packageName = context.packageName
         this.applicationInfo = applicationInfo
       }
     )
 
-    val apkSize = prodPerformanceMetricsUtils.getApkSize()
+    val apkSize = performanceMetricsUtilsImpl.getApkSize()
     assertThat(apkSize).isEqualTo(testApkSize)
   }
 
@@ -215,24 +184,13 @@ class ProdPerformanceMetricsUtilsTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Qualifier
-  annotation class MockContext
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    @Provides
-    @Singleton
-    @MockContext
-    fun provideMockContext(): Context {
-      return mock(Context::class.java).also {
-        `when`(it.applicationContext).thenReturn(it)
-      }
-    }
 
     @Provides
     @Singleton
-    fun providesContext(@MockContext delegate: Context): Context = delegate
+    fun providesContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -293,7 +251,7 @@ class ProdPerformanceMetricsUtilsTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, SyncStatusModule::class,
-      PerformanceMetricsUtilsModule::class
+      PerformanceMetricsAssessorModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -304,17 +262,17 @@ class ProdPerformanceMetricsUtilsTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(performanceMetricsUtilsTest: ProdPerformanceMetricsUtilsTest)
+    fun inject(performanceMetricsUtilsTest: PerformanceMetricsAssessorImplTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProdPerformanceMetricsUtilsTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsAssessorImplTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(performanceMetricsUtilsTest: ProdPerformanceMetricsUtilsTest) {
+    fun inject(performanceMetricsUtilsTest: PerformanceMetricsAssessorImplTest) {
       component.inject(performanceMetricsUtilsTest)
     }
 

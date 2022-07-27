@@ -5,9 +5,9 @@ import dagger.Module
 
 /** Provides production-specific performance metrics utilities related dependencies. */
 @Module
-interface PerformanceMetricsUtilsModule {
+interface PerformanceMetricsAssessorModule {
   @Binds
-  fun bindPerformanceMetricUtils(
-    prodPerformanceMetricsUtils: ProdPerformanceMetricsUtils
-  ): PerformanceMetricsUtils
+  fun bindPerformanceMetricsAssessor(
+    performanceMetricsUtilsImpl: PerformanceMetricsAssessorImpl
+  ): PerformanceMetricsAssessor
 }

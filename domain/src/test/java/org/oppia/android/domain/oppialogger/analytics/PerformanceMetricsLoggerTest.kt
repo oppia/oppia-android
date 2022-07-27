@@ -31,7 +31,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakePerformanceMetricUtils
+import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -46,7 +46,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -82,7 +82,7 @@ class PerformanceMetricsLoggerTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var fakePerformanceMetricUtils: FakePerformanceMetricUtils
+  lateinit var fakePerformanceMetricUtils: FakePerformanceMetricAssessor
 
   @Mock
   lateinit var context: Context
@@ -273,8 +273,8 @@ class PerformanceMetricsLoggerTest {
   interface TestPerformanceMetricsModule {
     @Binds
     fun bindPerformanceMetricsUtils(
-      fakePerformanceMetricUtils: FakePerformanceMetricUtils
-    ): PerformanceMetricsUtils
+      fakePerformanceMetricUtils: FakePerformanceMetricAssessor
+    ): PerformanceMetricsAssessor
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -1,55 +1,20 @@
 package org.oppia.android.testing
 
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** A test specific fake for performance metric utils. */
 @Singleton
-class FakePerformanceMetricUtils @Inject constructor() : PerformanceMetricsUtils {
-  /**
-   * Returns the apk size of the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setApkSize].
-   */
-  internal var testApkSize = 0L
-  /**
-   * Returns the storage usage of the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setStorageUsage].
-   */
-  internal var testStorageUsage = 0L
-  /**
-   * Returns the total pss of the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setTotalPss].
-   */
-  internal var testTotalPss = 0L
-  /**
-   * Returns the total sent bytes by the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setTotalSentBytes].
-   */
-  internal var testTotalBytesSent = 0L
-  /**
-   * Returns the total received bytes by the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setTotalReceivedBytes].
-   */
-  internal var testTotalReceivedBytes = 0L
-  /**
-   * Returns the storage tier of the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setDeviceStorageTier].
-   */
-  internal var testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-  /**
-   * Returns the memory tier of the current device.
-   *
-   * It returns a default value unless a specific value has been set using [setDeviceMemoryTier].
-   */
-  internal var testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAssessor {
+  private var testApkSize = 0L
+  private var testStorageUsage = 0L
+  private var testTotalPss = 0L
+  private var testTotalBytesSent = 0L
+  private var testTotalReceivedBytes = 0L
+  private var testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+  private var testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 
   override fun getApkSize(): Long = testApkSize
 
