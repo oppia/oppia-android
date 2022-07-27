@@ -99,7 +99,7 @@ class BindableAdapter<T : Any> internal constructor(
    * The base builder for [BindableAdapter]. This class should not be used directly--use either
    * [SingleTypeBuilder] or [MultiTypeBuilder] instead.
    */
-  abstract class BaseBuilder internal constructor(fragment: Fragment) {
+  abstract class BaseBuilder(fragment: Fragment) {
     /**
      * A [WeakReference] to a [LifecycleOwner] for databinding inflation.
      * Note that this needs to be a weak reference so that long-held references to the adapter do
@@ -206,8 +206,8 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, data)
-            // Attach lifecycleOwner after viewModel has been attached to the view.
-            // Attaching lifecycleOwner before view model initialization can sometimes cause a NullPointerException because data might not be attached to the views yet.
+            // Attaching lifecycleOwner before view model initialization can sometimes cause a
+            // NullPointerException because data might not be attached to the views yet.
             binding.lifecycleOwner = getLifecycleOwner()
           }
         }
@@ -334,8 +334,8 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, transformViewModel(data))
-            // Attach lifecycleOwner after viewModel has been attached data to the view.
-            // Attaching lifecycleOwner before view model initialization can sometimes cause a NullPointerException because data might not be attached to the views yet.
+            // Attaching lifecycleOwner before view model initialization can sometimes cause a
+            // NullPointerException because data might not be attached to the views yet.
             binding.lifecycleOwner = getLifecycleOwner()
           }
         }

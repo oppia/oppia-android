@@ -12,12 +12,7 @@ import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import javax.inject.Inject
 
-/**
- * Fragment for displaying a [DragDropTestFragment].
- * Added to enable access to [BindableAdapter]
- * which should be provided through dependency injection,
- * this is replacing use case of [DragDropTestActivity] since adapter can not be injected to activities.
- */
+/** Test-only fragment used for verifying ``BindableAdapter`` functionality. */
 class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEndedListener {
 
   companion object {

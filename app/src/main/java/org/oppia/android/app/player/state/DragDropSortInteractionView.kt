@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -68,7 +69,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     viewComponent.inject(this)
 
     isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled()
-    maybeInitializeAdapter()
+
+    Log.e("ATTACHING TO WIN", "ATTACHING TO WIN")
+    // maybeInitializeAdapter()
   }
 
   private fun maybeInitializeAdapter() {
@@ -94,14 +97,14 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
-    maybeInitializeAdapter()
+    // maybeInitializeAdapter()
     this.isMultipleItemsInSamePositionAllowed = isAllowed
   }
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
   fun setEntityId(entityId: String) {
-    maybeInitializeAdapter()
+    // maybeInitializeAdapter()
     this.entityId = entityId
   }
 
@@ -187,7 +190,7 @@ fun setEntityId(
   dragDropSortInteractionView: DragDropSortInteractionView,
   entityId: String
 ) {
-  dragDropSortInteractionView.setEntityId(entityId)
+  // dragDropSortInteractionView.setEntityId(entityId)
 }
 
 /** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
@@ -196,5 +199,5 @@ fun setAllowMultipleItemsInSamePosition(
   dragDropSortInteractionView: DragDropSortInteractionView,
   isAllowed: Boolean
 ) {
-  dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)
+  // dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)
 }
