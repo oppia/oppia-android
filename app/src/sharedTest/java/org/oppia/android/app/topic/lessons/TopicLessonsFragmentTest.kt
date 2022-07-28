@@ -224,7 +224,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0% In Progress")
     }
   }
 
@@ -915,7 +915,7 @@ class TopicLessonsFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.story_summary_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.story_progress_container
+        targetViewId = R.id.story_progress_linear_layout
       )
     ).check(matches(withContentDescription(stringToMatch)))
   }
