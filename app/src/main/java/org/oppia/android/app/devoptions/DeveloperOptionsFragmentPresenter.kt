@@ -26,7 +26,6 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-
 ) {
 
   private lateinit var binding: DeveloperOptionsFragmentBinding

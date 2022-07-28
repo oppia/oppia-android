@@ -14,7 +14,7 @@ import javax.inject.Inject
 /** The presenter for [DragDropTestFragment]. */
 class DragDropTestFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val singleTypeBuilder: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private var dataList = mutableListOf("Item 1", "Item 2", "Item 3", "Item 4")
@@ -39,7 +39,7 @@ class DragDropTestFragmentPresenter @Inject constructor(
   }
 
   private fun createBindableAdapter(): BindableAdapter<String> {
-    return singleTypeBuilder.create<String>()
+    return singleTypeBuilderFactory.create<String>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
         bindView = this::bindTextViewForStringWithoutDataBinding

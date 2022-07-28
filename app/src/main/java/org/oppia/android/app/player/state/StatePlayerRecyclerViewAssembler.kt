@@ -888,12 +888,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
-    private val adapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-    private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
-      StateItemViewModel.ViewType> = adapterBuilderFactory.create { it.viewType }
+      StateItemViewModel.ViewType> = multiTypeBuilderFactory.create { it.viewType }
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1118,7 +1118,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
-      return singleAdapterFactory.create<StringList>()
+      return singleTypeBuilderFactory.create<StringList>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedAnswerListItemBinding.inflate(
@@ -1139,7 +1139,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
-      return singleAdapterFactory.create<String>()
+      return singleTypeBuilderFactory.create<String>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedHtmlAnswerItemBinding.inflate(

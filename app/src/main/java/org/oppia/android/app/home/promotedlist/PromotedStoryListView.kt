@@ -39,8 +39,7 @@ class PromotedStoryListView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val viewComponentFactory =
-      FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
 
@@ -69,7 +68,6 @@ class PromotedStoryListView @JvmOverloads constructor(
    * @param newDataList the new list of stories to present
    */
   fun setPromotedStoryList(newDataList: List<PromotedStoryViewModel>?) {
-
     if (newDataList == null) {
       oppiaLogger.w(PROMOTED_STORY_LIST_VIEW_TAG, "Failed to resolve new topics list data")
     } else {

@@ -434,9 +434,9 @@ class BindableAdapterTest {
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(
-    singleTypeBuilder: SingleTypeBuilder.Factory
+    singleTypeBuilderFactory: SingleTypeBuilder.Factory
   ): BindableAdapter<BindableAdapterTestDataModel> {
-    return singleTypeBuilder.create<BindableAdapterTestDataModel>()
+    return singleTypeBuilderFactory.create<BindableAdapterTestDataModel>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
         bindView = this::bindTextViewForStringWithoutDataBinding
@@ -473,10 +473,10 @@ class BindableAdapterTest {
     }
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter(
-    multiTypeBuilder: MultiTypeBuilder.Factory
+    multiTypeBuilderFactory: MultiTypeBuilder.Factory
   ):
     BindableAdapter<BindableAdapterTestDataModel> {
-      return multiTypeBuilder.create(ViewModelType.Companion::deriveTypeFrom)
+      return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
         .registerViewBinder(
           viewType = ViewModelType.STRING,
           inflateView = this::inflateTextViewForStringWithoutDataBinding,
@@ -491,9 +491,9 @@ class BindableAdapterTest {
     }
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
-    multiTypeBuilder: MultiTypeBuilder.Factory
+    multiTypeBuilderFactory: MultiTypeBuilder.Factory
   ): BindableAdapter<BindableAdapterTestDataModel> {
-    return multiTypeBuilder.create(ViewModelType.Companion::deriveTypeFrom)
+    return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
       .registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.STRING,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
@@ -598,9 +598,9 @@ class BindableAdapterTest {
       return object : BindableAdapterTestFragmentPresenter.BindableAdapterFactory {
         override fun create(
           singleTypeBuilder: SingleTypeBuilder.Factory,
-          multiTypeBuilder: MultiTypeBuilder.Factory
+          multiTypeBuilderFactory: MultiTypeBuilder.Factory
         ): BindableAdapter<BindableAdapterTestDataModel> {
-          return createFunction(singleTypeBuilder, multiTypeBuilder)
+          return createFunction(singleTypeBuilder, multiTypeBuilderFactory)
         }
       }
     }
