@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that contains Administrator Controls of the application. */
-class AdministratorControlsFragment : InjectableFragment() {
+class             AdministratorControlsFragment : InjectableFragment() {
   @Inject
   lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
