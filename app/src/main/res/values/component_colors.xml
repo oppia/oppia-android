@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_cursor_color</color>
+  <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
-  <color name="component_color_shared_submitted_answer_item_solid_color">@color/color_palette_submitted_answer_item_solid_color</color>
-  <color name="component_color_shared_submitted_answer_item_stroke_color">@color/color_palette_submitted_answer_item_stroke_color</color>
-  <color name="component_color_shared_submitted_answer_item_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_edit_text_hint_color">@color/color_palette_hint_text_input_interaction_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_border_color">@color/color_palette_input_interaction_edit_text_border_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_not_selected_border_color">@color/color_palette_input_interaction_edit_text_not_selected_border_color</color>
-  <color name="component_color_shared_arrow_down_grey_color">@color/color_palette_arrow_down_grey_color</color>
-  <color name="component_color_shared_arrow_right_grey_color">@color/color_palette_arrow_right_grey_color</color>
   <color name="component_color_shared_rounded_rect_background_color">@color/color_palette_rounded_rect_background_color</color>
   <color name="component_color_shared_multiple_choice_interaction_color">@color/color_palette_multiple_choice_color</color>
   <color name="component_color_shared_multiple_choice_interaction_text_color">@color/color_palette_multiple_choice_text_color</color>
@@ -50,7 +40,7 @@
   <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_background_color">@color/color_palette_text_input_background_color</color>
+  <color name="component_color_shared_text_input_layout_background_color">@color/color_palette_text_input_background_color</color>
   <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
   <color name="component_color_general_item_background_solid_color">@color/color_palette_container_background_color</color>
   <color name="component_color_general_item_background_stroke_color">@color/color_palette_dark_background_color</color>
