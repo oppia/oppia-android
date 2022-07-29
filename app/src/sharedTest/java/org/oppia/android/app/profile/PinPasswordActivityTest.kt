@@ -224,9 +224,9 @@ class PinPasswordActivityTest {
       closeSoftKeyboard()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(closeSoftKeyboard())
         .perform(editTextInputAction.appendText("54321"), closeSoftKeyboard())
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+      onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          isDisplayed()
+          hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
         )
       )
     }
@@ -262,9 +262,9 @@ class PinPasswordActivityTest {
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
         editTextInputAction.appendText("321"), closeSoftKeyboard()
       )
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+      onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          isDisplayed()
+          hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
         )
       )
     }
@@ -943,9 +943,9 @@ class PinPasswordActivityTest {
         closeSoftKeyboard()
       )
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(context.getString(R.string.pin_password_incorrect_pin))).check(
+      onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          isDisplayed()
+          hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
         )
       )
     }

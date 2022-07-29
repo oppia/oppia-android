@@ -74,12 +74,13 @@ class PinPasswordActivityPresenter @Inject constructor(
     // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
     binding.pinPasswordInputPinEditText.onTextChanged { pin ->
       pin?.let { inputtedPin ->
+        if (inputtedPin.isNotEmpty()) {
+          pinViewModel.errorMessage.set("")
+        }
         if (inputtedPin.length == pinViewModel.correctPin.get()!!.length &&
           inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!
             .isNotEmpty()
         ) {
-          binding.pinPasswordInputPinEditText.error =
-            resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
               .loginToProfile(
@@ -94,6 +95,9 @@ class PinPasswordActivityPresenter @Inject constructor(
                 }
               )
           } else {
+            pinViewModel.errorMessage.set(
+              resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
+            )
             binding.pinPasswordInputPinEditText.startAnimation(
               AnimationUtils.loadAnimation(
                 activity,
@@ -106,7 +110,6 @@ class PinPasswordActivityPresenter @Inject constructor(
                 binding.pinPasswordInputPinEditText.setText("")
               }
             )
-            pinViewModel.showError.set(true)
           }
         }
       }
