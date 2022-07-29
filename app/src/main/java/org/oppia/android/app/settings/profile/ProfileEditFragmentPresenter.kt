@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,12 +12,13 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.utility.alertDialog
+import org.oppia.android.app.utility.positiveButton
 import org.oppia.android.databinding.ProfileEditFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.toast
 import javax.inject.Inject
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
@@ -102,9 +102,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       profileManagementController.updateAllowDownloadAccess(
         ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         binding.profileEditAllowDownloadSwitch.isChecked
-      ).toLiveData().observe(
-        activity
-      ) {
+      ).toLiveData().observe(activity) {
         if (it is AsyncResult.Failure) {
           oppiaLogger.e(
             "ProfileEditActivityPresenter",
@@ -134,23 +132,28 @@ class ProfileEditFragmentPresenter @Inject constructor(
   fun deleteProfile(internalProfileId: Int) {
     profileManagementController
       .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
-      .observe(
-        fragment
-      ) {
+      .observe(fragment) {
         if (it is AsyncResult.Success) {
-          fragment.requireContext().toast(
-            fragment.requireContext().getString(R.string.profile_edit_delete_successful_message),
-            Toast.LENGTH_SHORT
-          )
-          if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-            val intent =
-              Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            fragment.startActivity(intent)
-          } else {
-            val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            fragment.startActivity(intent)
+          fragment.requireContext().alertDialog {
+            // show the alert dialog title
+            setTitle(fragment.getString(R.string.profile_edit_delete))
+            // show the message for the action
+            setMessage(fragment.getString(R.string.profile_edit_delete_successful_message))
+            // handle the positive button
+            positiveButton(
+              text = fragment.getString(R.string.ok)
+            ) {
+              if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
+                val intent =
+                  Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                fragment.startActivity(intent)
+              } else {
+                val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                fragment.startActivity(intent)
+              }
+            }
           }
         }
       }

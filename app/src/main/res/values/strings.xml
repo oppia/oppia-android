@@ -426,6 +426,7 @@
   <string name="lets_get_started">Let’s get \nstarted.</string>
   <string name="yes">Yes</string>
   <string name="no">No…</string>
+  <string name="ok">OK</string>
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="are_you_interested">Are you interested in:\n%s?</string>
   <!-- HintsAndSolutionDialogFragment -->

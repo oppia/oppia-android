@@ -116,9 +116,7 @@ class AppVersionActivityTest {
 
   @get:Rule
   val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
-    AppVersionActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
+    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   @Inject
