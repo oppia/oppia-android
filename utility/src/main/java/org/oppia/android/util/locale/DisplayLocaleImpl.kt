@@ -8,7 +8,9 @@ import androidx.core.text.TextUtilsCompat
 import org.oppia.android.app.model.OppiaLocaleContext
 import java.text.DateFormat
 import java.text.NumberFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.Objects
 
 // TODO(#3766): Restrict to be 'internal'.
 /** Implementation of [OppiaLocale.DisplayLocale]. */
