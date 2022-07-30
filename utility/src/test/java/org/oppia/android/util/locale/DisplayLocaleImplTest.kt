@@ -266,7 +266,7 @@ class DisplayLocaleImplTest {
   fun testNumbersForHumans_egyptArabicLocale_numberFormat_returnsHumanReadableString() {
     val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
-    val localizedNumber = impl.run { 0.toHumanReadableString(1) }
+    val localizedNumber = impl.run { toHumanReadableString(1) }
 
     assertThat(localizedNumber).isEqualTo("١")
   }
@@ -275,7 +275,7 @@ class DisplayLocaleImplTest {
   fun testNumbersForHumans_turkishLocale_numberFormat_returnsHumanReadableString() {
     val impl = createDisplayLocaleImpl(TURKEY_TURKISH_CONTEXT)
 
-    val localizedNumber = impl.run { 0.toHumanReadableString(1) }
+    val localizedNumber = impl.run { toHumanReadableString(1) }
 
     assertThat(localizedNumber).isEqualTo("1")
   }
@@ -284,7 +284,7 @@ class DisplayLocaleImplTest {
   fun testNumbersForHumans_englishLocale_numberFormat_returnsHumanReadableString() {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
-    val localizedNumber = impl.run { 0.toHumanReadableString(1) }
+    val localizedNumber = impl.run { toHumanReadableString(1) }
 
     assertThat(localizedNumber).isEqualTo("1")
   }

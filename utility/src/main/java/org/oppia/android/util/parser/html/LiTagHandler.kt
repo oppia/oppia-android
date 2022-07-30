@@ -96,7 +96,7 @@ class LiTagHandler(
           ListItemLeadingMarginSpan.OlSpan(
             context,
             indentation,
-            "${displayLocale.run { (mark.number).toHumanReadableString(mark.number) }}.",
+            "${displayLocale.run { toHumanReadableString(mark.number) }}.",
             displayLocale
           )
         )

@@ -8,9 +8,7 @@ import androidx.core.text.TextUtilsCompat
 import org.oppia.android.app.model.OppiaLocaleContext
 import java.text.DateFormat
 import java.text.NumberFormat
-import java.util.Date
-import java.util.Locale
-import java.util.Objects
+import java.util.*
 
 // TODO(#3766): Restrict to be 'internal'.
 /** Implementation of [OppiaLocale.DisplayLocale]. */
@@ -50,7 +48,7 @@ class DisplayLocaleImpl(
 
   override fun formatDouble(value: Double): String = numberFormat.format(value)
 
-  override fun Int.toHumanReadableString(number: Int): String? = numberFormat.format(number)
+  override fun toHumanReadableString(number: Int): String? = numberFormat.format(number)
 
   override fun computeDateString(timestampMillis: Long): String =
     dateFormat.format(Date(timestampMillis))
