@@ -56,7 +56,7 @@ class SelectionInteractionViewModel private constructor(
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField(false)
-
+  val selectedItemText = ObservableField("Please select atleast one choice.")
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
@@ -138,6 +138,19 @@ class SelectionInteractionViewModel private constructor(
         // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
         //  number required.
         selectedItems += itemIndex
+        selectedItemText.set("You may select more choices")
+        updateIsAnswerAvailable()
+        true
+      }
+      selectedItems.size == 0 -> {
+        selectedItems += itemIndex
+        selectedItemText.set("Please select one or more choices.")
+        updateIsAnswerAvailable()
+        true
+      }
+      selectedItems.size == maxAllowableSelectionCount -> {
+        selectedItems += itemIndex
+        selectedItemText.set("No more than $maxAllowableSelectionCount choices may be selected.")
         updateIsAnswerAvailable()
         true
       }
