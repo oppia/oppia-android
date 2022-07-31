@@ -25,6 +25,7 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.accessibility.AccessibilityService
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
@@ -43,6 +44,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
   @Inject
   lateinit var topicLessonViewModel: TopicLessonViewModel
+
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   private var currentExpandedChapterListIndex: Int? = null
 
@@ -181,6 +185,33 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
 
     binding.root.setOnClickListener {
+      if (!accessibilityService.isScreenReaderEnabled()) {
+        val previousIndex: Int? = currentExpandedChapterListIndex
+        currentExpandedChapterListIndex =
+          if (currentExpandedChapterListIndex != null &&
+            currentExpandedChapterListIndex == position
+          ) {
+            null
+          } else {
+            position
+          }
+        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+        if (previousIndex != null && currentExpandedChapterListIndex != null &&
+          previousIndex == currentExpandedChapterListIndex
+        ) {
+          bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+        } else {
+          previousIndex?.let {
+            bindingAdapter.notifyItemChanged(previousIndex)
+          }
+          currentExpandedChapterListIndex?.let {
+            bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+          }
+        }
+      }
+    }
+
+    binding.chapterListDropDownIcon.setOnClickListener {
       val previousIndex: Int? = currentExpandedChapterListIndex
       currentExpandedChapterListIndex =
         if (currentExpandedChapterListIndex != null &&
