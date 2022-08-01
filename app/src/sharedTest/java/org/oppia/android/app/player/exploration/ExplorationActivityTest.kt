@@ -160,7 +160,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1797,7 +1796,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testActivity_initialState_openBottomSheet_showsBottomSheet() {
+  fun testActivity_openBottomsheet_selectCloseInBottomSheet_closeBottomsheet() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,

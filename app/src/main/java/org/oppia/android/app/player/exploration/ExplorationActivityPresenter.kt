@@ -2,7 +2,6 @@ package org.oppia.android.app.player.exploration
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
