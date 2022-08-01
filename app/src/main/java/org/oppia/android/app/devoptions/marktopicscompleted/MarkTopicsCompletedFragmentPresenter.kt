@@ -22,7 +22,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<MarkTopicsCompletedViewModel>,
   private val modifyLessonProgressController: ModifyLessonProgressController,
-  private val singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : TopicSelector {
   private lateinit var binding: MarkTopicsCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -90,7 +90,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicViewModel> {
-    return singleTypeAdapterFactory.create<TopicViewModel>()
+    return singleTypeBuilderFactory.create<TopicViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = MarkTopicsCompletedTopicViewBinding::inflate,
         setViewModel = this::bindTopicSummaryView

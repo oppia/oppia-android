@@ -33,7 +33,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   lateinit var oppiaLogger: OppiaLogger
 
   @Inject
-  lateinit var singleTypeAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var comingSoonDataList: List<ComingSoonTopicsViewModel>
 
@@ -57,7 +57,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
     if (::bindingInterface.isInitialized &&
       ::bindingInterface.isInitialized &&
       ::oppiaLogger.isInitialized &&
-      ::singleTypeAdapterFactory.isInitialized &&
+      ::singleTypeBuilderFactory.isInitialized &&
       ::comingSoonDataList.isInitialized
     ) {
       bindDataToAdapter()
@@ -96,7 +96,7 @@ class ComingSoonTopicsListView @JvmOverloads constructor(
   }
 
   private fun createAdapter(): BindableAdapter<ComingSoonTopicsViewModel> {
-    return singleTypeAdapterFactory.create<ComingSoonTopicsViewModel>()
+    return singleTypeBuilderFactory.create<ComingSoonTopicsViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
           bindingInterface.provideComingSoonTopicViewInflatedView(

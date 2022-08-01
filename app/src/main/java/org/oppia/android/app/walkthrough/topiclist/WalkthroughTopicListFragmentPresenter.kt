@@ -27,7 +27,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<WalkthroughTopicViewModel>,
-  private val multiTypeAdapterFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
@@ -74,7 +74,7 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
-    return multiTypeAdapterFactory.create<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
       when (viewModel) {
         is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
         is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC

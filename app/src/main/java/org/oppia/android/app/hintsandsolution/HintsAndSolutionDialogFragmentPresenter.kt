@@ -37,7 +37,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val multiTypeAdapterFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
 
   private var currentExpandedHintListIndex: Int? = null
@@ -168,7 +168,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HintsAndSolutionItemViewModel> {
-    return multiTypeAdapterFactory.create<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
+    return multiTypeBuilderFactory.create<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
       when (viewModel) {
         is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
         is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
