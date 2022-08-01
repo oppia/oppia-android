@@ -225,7 +225,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         when (viewModel.chapterPlayState) {
           ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> ChapterViewType.CHAPTER_LOCKED
           ChapterPlayState.COMPLETED -> ChapterViewType.CHAPTER_COMPLETED
-          else -> ChapterViewType.CHAPTER_COMPLETED
+          else -> ChapterViewType.CHAPTER_NOT_STARTED
         }
       }
       .registerViewDataBinder(

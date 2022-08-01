@@ -13,9 +13,10 @@
   </data>
 
   <LinearLayout
-    android:id="@+id/chapter_container"
+    android:id="@+id/not_started_chapter_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/border_white"
     android:clickable="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
     android:minHeight="48dp"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
@@ -26,14 +27,14 @@
       android:layout_width="60dp"
       android:layout_height="match_parent"
       android:layout_marginStart="0dp"
-      android:background="@drawable/border_bright_green"
       android:fontFamily="sans-serif"
       android:gravity="center"
+      android:background="@drawable/border_bright_green"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:paddingStart="8dp"
-      android:paddingTop="12dp"
+
       android:paddingEnd="8dp"
-      android:paddingBottom="12dp"
+
       android:text="@{viewModel.computePlayChapterIndexText()}"
       android:textColor="@color/color_def_white"
       android:textSize="20sp" />
@@ -42,16 +43,15 @@
       android:id="@+id/chapter_name"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@drawable/border_white"
       android:fontFamily="sans-serif"
       android:gravity="center|start"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:paddingStart="12dp"
-      android:paddingTop="16dp"
+
       android:paddingEnd="12dp"
-      android:paddingBottom="16dp"
+
       android:text="@{viewModel.chapterName}"
-      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary_text : @color/oppia_primary_text_30}"
+      android:textColor="@color/color_def_black"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>

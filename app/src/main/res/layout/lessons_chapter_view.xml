@@ -13,10 +13,10 @@
   </data>
 
   <LinearLayout
-    android:id="@+id/chapter_container"
+    android:id="@+id/completed_chapter_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_dark_green"
+    android:background="@color/color_def_dark_green"
     android:clickable="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
     android:minHeight="48dp"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
@@ -35,7 +35,7 @@
       android:layout_width="60dp"
       android:layout_height="match_parent"
       android:layout_marginStart="0dp"
-      android:background="@drawable/border_dark_green"
+      android:background="@color/color_def_oppia_green"
       android:fontFamily="sans-serif"
       android:gravity="center"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
@@ -51,7 +51,7 @@
       android:id="@+id/chapter_name"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@drawable/border_light_green"
+      android:background="@color/color_def_light_green"
       android:fontFamily="sans-serif"
       android:gravity="center|start"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
