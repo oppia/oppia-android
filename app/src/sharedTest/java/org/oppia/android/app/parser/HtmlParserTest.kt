@@ -116,6 +116,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -414,6 +415,8 @@ class HtmlParserTest {
 
   @Test
   fun testHtmlContent_changeDeviceToRtl_textViewDirectionIsSetToRtl() {
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -425,7 +428,7 @@ class HtmlParserTest {
       htmlParser,
       ViewCompat.LAYOUT_DIRECTION_RTL
     )
-    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_ANY_RTL)
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
   }
 
   @Test
@@ -810,6 +813,11 @@ class HtmlParserTest {
     }
   }
 
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int
   ): Int {
@@ -897,5 +905,9 @@ class HtmlParserTest {
 
   private interface Consumer<T> {
     fun consume(value: T)
+  }
+
+  private companion object {
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
   }
 }

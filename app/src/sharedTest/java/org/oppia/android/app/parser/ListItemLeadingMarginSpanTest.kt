@@ -7,8 +7,10 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.Spannable
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
@@ -74,6 +76,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -94,6 +97,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -109,6 +113,8 @@ class ListItemLeadingMarginSpanTest {
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
 
   @Inject lateinit var context: Context
+
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val bulletRadius by lazy {
     context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.bullet_radius)
@@ -146,12 +152,14 @@ class ListItemLeadingMarginSpanTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
     Intents.init()
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
@@ -352,8 +360,6 @@ class ListItemLeadingMarginSpanTest {
     val paint = Paint()
     val x = 10
     val dir = 15
-    val top = 0
-    val bottom = 0
 
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -379,6 +385,111 @@ class ListItemLeadingMarginSpanTest {
       )
     }
 
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans =
+      htmlResult.getSpans(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan.UlSpan::class.java
+      )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(4)
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
+    assertThat(bulletSpan0).isNotNull()
+    htmlResult.setSpan(
+      bulletSpan0,
+      0,
+      3,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    bulletSpan0.drawLeadingMargin(
+      canvas, paint, x, dir, 0, 0, 96, htmlResult,
+      htmlResult.getSpanStart(bulletSpan0),
+      htmlResult.getSpanEnd(bulletSpan0),
+      true,
+      null
+    )
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
+    bulletSpan1.drawLeadingMargin(
+      canvas, paint, x, dir, 96, 0, 182, htmlResult,
+      htmlResult.getSpanStart(bulletSpan1),
+      htmlResult.getSpanEnd(bulletSpan1),
+      true,
+      null
+    )
+
+    val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
+    assertThat(bulletSpan2).isNotNull()
+    bulletSpan2.drawLeadingMargin(
+      canvas, paint, x, dir, 182, 0, 268, htmlResult,
+      htmlResult.getSpanStart(bulletSpan2),
+      htmlResult.getSpanEnd(bulletSpan2),
+      true,
+      null
+    )
+    val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
+    assertThat(bulletSpan3).isNotNull()
+    bulletSpan3.drawLeadingMargin(
+      canvas, paint, x, dir, 354, 0, 440, htmlResult,
+      htmlResult.getSpanStart(bulletSpan3),
+      htmlResult.getSpanEnd(bulletSpan3),
+      true,
+      null
+    )
+
+    val shadowCanvas = shadowOf(canvas)
+    // The below assertion verifies the 1st item of inner level list
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(48.0f)
+    // The below assertion verifies the 2nd item of inner level list
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(139.0f)
+
+    // The below assertion verifies the 1st item of outer level list
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(225.0f)
+    // The below assertion verifies the 2nd item of outer level list
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
+  }
+
+  @Test
+  fun testDrawLeadingMargin_forNestedBulletItems_inRtl_isDrawnCorrectlyWithIndentation() {
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+
+    val canvas = Canvas()
+    val paint = Paint()
+    val x = 10
+    val dir = 15
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      testCoroutineDispatchers.runCurrent()
+      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      val htmlResult =  htmlParser.parseOppiaHtml(
+        "<ul>" +
+          "        <li> Usage Data\", such as:" +
+          "          <ul>" +
+          "            <li>your answers to Lessons;</li>" +
+          "            <li>when you begin and end a Lesson;</li>" +
+          "          </ul>" +
+          "        </li>" +
+          "        <li> any contributions you make to the Site (such as feedback on" +
+          "            Lessons, edits to Lessons, and Lessons created);</li>" +
+          "      </ul>",
+        textView
+      )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
+    }
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val layoutDirection = displayLocale.getLayoutDirection()
+    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+    assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans =
       htmlResult.getSpans(
@@ -568,6 +679,11 @@ class ListItemLeadingMarginSpanTest {
     return valueCaptor.value
   }
 
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -628,5 +744,9 @@ class ListItemLeadingMarginSpanTest {
 
   private interface Consumer<T> {
     fun consume(value: T)
+  }
+
+  private companion object {
+   private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
   }
 }

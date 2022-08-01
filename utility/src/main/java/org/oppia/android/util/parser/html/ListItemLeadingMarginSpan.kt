@@ -125,7 +125,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
       if (isFirstCharacter) {
         val trueX = gapWidth * indentation + spacingBeforeBullet
-        val correctX = if (isRtl) canvas.width - trueX - 1 else trueX
+        val correctX = if (isRtl) canvas.width - trueX - spacingBeforeBullet else trueX
         canvas.drawText(numberedItemPrefix, correctX.toFloat(), baseline.toFloat(), paint)
       }
     }
