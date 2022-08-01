@@ -56,7 +56,7 @@
             android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
         
             <ImageButton
-              android:id="@+id/action_bottom_sheet"
+              android:id="@+id/action_bottom_sheet_options_menu"
               android:layout_width="48dp"
               android:layout_height="48dp"
               android:layout_gravity="end"

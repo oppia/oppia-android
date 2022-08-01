@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
-import org.oppia.android.databinding.FragmentBottomSheetBinding
+import org.oppia.android.databinding.BottomSheetOptionsMenuFragmentBinding
 
 /** Bottom sheet fragment for displaying options menu */
 class BottomSheetOptionsMenu : BottomSheetDialogFragment() {
@@ -16,12 +16,12 @@ class BottomSheetOptionsMenu : BottomSheetDialogFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    val binding = FragmentBottomSheetBinding.inflate(inflater, container, false)
+    val binding = BottomSheetOptionsMenuFragmentBinding.inflate(inflater, container, false)
     setUpOnClickListeners(binding)
     return binding.root
   }
 
-  private fun setUpOnClickListeners(binding: FragmentBottomSheetBinding) {
+  private fun setUpOnClickListeners(binding: BottomSheetOptionsMenuFragmentBinding) {
     val bottomSheetItemClickListener = activity as BottomSheetOptionsMenuItemClickListener
     binding.actionHelp.setOnClickListener {
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_help)

@@ -104,7 +104,7 @@ class ExplorationActivityPresenter @Inject constructor(
       getExplorationFragment()?.handlePlayAudio()
     }
 
-    binding.actionBottomSheet.setOnClickListener {
+    binding.actionBottomSheetOptionsMenu.setOnClickListener {
       val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
       bottomSheetOptionsMenu.show(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
     }
