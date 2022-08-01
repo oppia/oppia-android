@@ -62,31 +62,12 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    val viewComponentFactory =
-      FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+
+    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
 
     isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled()
-    maybeInitializeAdapter()
-  }
-
-  private fun maybeInitializeAdapter() {
-    if (::htmlParserFactory.isInitialized &&
-      ::accessibilityService.isInitialized &&
-      ::entityType.isInitialized &&
-      ::resourceBucketName.isInitialized &&
-      ::viewBindingShim.isInitialized &&
-      ::singleTypeBuilderFactory.isInitialized
-    ) {
-      bindDataToAdapter()
-    }
-  }
-
-  private fun bindDataToAdapter() {
-    if (adapter == null) {
-      adapter = createAdapter()
-    }
   }
 
   fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
@@ -94,14 +75,13 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
-    maybeInitializeAdapter()
     this.isMultipleItemsInSamePositionAllowed = isAllowed
+    adapter = createAdapter()
   }
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
   fun setEntityId(entityId: String) {
-    maybeInitializeAdapter()
     this.entityId = entityId
   }
 
@@ -186,15 +166,11 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 fun setEntityId(
   dragDropSortInteractionView: DragDropSortInteractionView,
   entityId: String
-) {
-  dragDropSortInteractionView.setEntityId(entityId)
-}
+) = dragDropSortInteractionView.setEntityId(entityId)
 
 /** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
 @BindingAdapter("allowMultipleItemsInSamePosition")
 fun setAllowMultipleItemsInSamePosition(
   dragDropSortInteractionView: DragDropSortInteractionView,
   isAllowed: Boolean
-) {
-  dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)
-}
+) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)

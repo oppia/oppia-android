@@ -57,22 +57,6 @@ class SelectionInteractionView @JvmOverloads constructor(
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
-    maybeInitializeAdapter()
-  }
-
-  private fun maybeInitializeAdapter() {
-    if (::bindingInterface.isInitialized &&
-      ::htmlParserFactory.isInitialized &&
-      ::entityType.isInitialized &&
-      ::resourceBucketName.isInitialized &&
-      ::singleTypeBuilderFactory.isInitialized
-    ) {
-      bindDataToAdapter()
-    }
-  }
-
-  private fun bindDataToAdapter() {
-    adapter = createAdapter()
   }
 
   fun setAllOptionsItemInputType(selectionItemInputType: SelectionItemInputType) {
@@ -81,14 +65,13 @@ class SelectionInteractionView @JvmOverloads constructor(
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
     this.selectionItemInputType = selectionItemInputType
-    maybeInitializeAdapter()
+    adapter = createAdapter()
   }
 
   // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
   //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
   fun setEntityId(entityId: String) {
     this.entityId = entityId
-    maybeInitializeAdapter()
   }
 
   /**
@@ -98,7 +81,6 @@ class SelectionInteractionView @JvmOverloads constructor(
    */
   fun setWrittenTranslationContext(writtenTranslationContext: WrittenTranslationContext) {
     this.writtenTranslationContext = writtenTranslationContext
-    maybeInitializeAdapter()
   }
 
   private fun createAdapter(): BindableAdapter<SelectionInteractionContentViewModel> {
