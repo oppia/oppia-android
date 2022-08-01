@@ -68,7 +68,11 @@ class ResetPinDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.reset_pin_enter)
       .setView(binding.root)
-      .setMessage(resourceHandler.getStringInLocaleWithWrapping(R.string.reset_pin_enter_dialog_message, name))
+      .setMessage(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.reset_pin_enter_dialog_message, name
+        )
+      )
       .setPositiveButton(R.string.admin_settings_submit, null)
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         dialog.dismiss()
