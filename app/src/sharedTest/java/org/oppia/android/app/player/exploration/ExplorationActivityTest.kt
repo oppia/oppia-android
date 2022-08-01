@@ -1731,7 +1731,7 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
       )
-      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       onView(withId(R.id.bottom_sheet_layout)).check(matches(isDisplayed()))
     }
   }
@@ -1753,7 +1753,7 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
       )
-      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       onView(withText(context.getString(R.string.menu_help))).perform(click())
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
@@ -1783,7 +1783,7 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
       )
-      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       onView(withText(context.getString(R.string.menu_options))).perform(click())
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
@@ -1813,7 +1813,7 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
       )
-      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       onView(withText(context.getString(R.string.bottom_sheet_options_menu_close))).perform(click())
       onView(withId(R.id.bottom_sheet_layout)).check(doesNotExist())
     }
