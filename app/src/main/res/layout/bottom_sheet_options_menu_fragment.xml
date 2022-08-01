@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
   <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottom_sheet_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <TextView
       android:id="@+id/action_options"
       android:layout_width="match_parent"
       android:layout_height="48dp"
       android:drawableStart="@drawable/ic_options_icon_grey_24dp"
+      android:drawablePadding="10dp"
+      android:gravity="center_vertical"
       android:text="@string/menu_options"
       android:textColor="@color/color_def_black"
-      android:gravity="center_vertical"
-      android:drawablePadding="10dp"
-      android:textSize="20sp"/>
+      android:textSize="20sp" />
 
     <TextView
       android:id="@+id/action_help"
       android:layout_width="match_parent"
       android:layout_height="48dp"
       android:drawableStart="@drawable/ic_baseline_help_outline_24"
+      android:drawablePadding="10dp"
+      android:gravity="center_vertical"
       android:text="@string/menu_help"
       android:textColor="@color/color_def_black"
-      android:gravity="center_vertical"
-      android:drawablePadding="10dp"
-      android:textSize="20sp"/>
+      android:textSize="20sp" />
 
     <TextView
       android:id="@+id/action_close"
       android:layout_width="match_parent"
       android:layout_height="48dp"
       android:drawableStart="@drawable/ic_baseline_close_24"
+      android:drawablePadding="10dp"
+      android:gravity="center_vertical"
       android:text="@string/bottom_sheet_options_menu_close"
       android:textColor="@color/color_def_black"
-      android:gravity="center_vertical"
-      android:drawablePadding="10dp"
-      android:textSize="20sp"/>
-
+      android:textSize="20sp" />
   </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

@@ -1,15 +1,14 @@
 package org.oppia.android.app.player.exploration
 
 /**
- * Listener for executing the correct function based on the options clicked in the
+ * Listener for when the user interacts with the play session options bottom sheet.
  * [BottomSheetOptionsMenu].
  */
 interface BottomSheetOptionsMenuItemClickListener {
   /**
-   * Function for passing the selected itemId
+   * Called when the user selects a customization option mid-play session.
    *
-   * @param itemId: Resource Id of the option selected
-   * @return [Unit]
+   * @param itemId resource Id of the option selected
    */
-  fun handleOnOptionsItemSelected(itemId: Int)
+  fun handleOnOptionsItemSelected(itemID: Int)
 }

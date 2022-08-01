@@ -160,6 +160,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ExplorationCheckpoint
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -1711,6 +1712,111 @@ class ExplorationActivityTest {
         .check(matches(withText(containsString("واحدة كاملة"))))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testActivity_initialise_openBottomSheet_showsBottomSheet() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+      )
+      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withId(R.id.bottom_sheet_layout)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testExploration_openBottomsheet_selectHelpInBottomsheet_opensHelpActivity() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withText(context.getString(R.string.menu_help))).perform(click())
+      intended(hasComponent(HelpActivity::class.java.name))
+      intended(
+        hasExtra(
+          HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testExploration_openBottomsheet_selectOptionsInBottomsheet_opensOptionsActivity() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+      )
+      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withText(context.getString(R.string.menu_options))).perform(click())
+      intended(hasComponent(OptionsActivity::class.java.name))
+      intended(
+        hasExtra(
+          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testActivity_initialState_openBottomSheet_showsBottomSheet() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+      )
+      onView(withId(R.id.action_bottom_sheet)).perform(click())
+      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close))).perform(click())
+      onView(withId(R.id.bottom_sheet_layout)).check(doesNotExist())
+    }
   }
 
   private fun createExplorationActivityIntent(

@@ -9,13 +9,13 @@ import org.oppia.android.R
 import org.oppia.android.databinding.FragmentBottomSheetBinding
 
 /** Bottom sheet fragment for displaying options menu */
-class BottomSheetOptionsMenu(val internalProfileId: Int) : BottomSheetDialogFragment() {
+class BottomSheetOptionsMenu : BottomSheetDialogFragment() {
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     val binding = FragmentBottomSheetBinding.inflate(inflater, container, false)
     setUpOnClickListeners(binding)
     return binding.root
@@ -24,12 +24,10 @@ class BottomSheetOptionsMenu(val internalProfileId: Int) : BottomSheetDialogFrag
   private fun setUpOnClickListeners(binding: FragmentBottomSheetBinding) {
     val bottomSheetItemClickListener = activity as BottomSheetOptionsMenuItemClickListener
     binding.actionHelp.setOnClickListener {
-
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_help)
       dismiss()
     }
     binding.actionOptions.setOnClickListener {
-
       bottomSheetItemClickListener.handleOnOptionsItemSelected(R.id.action_options)
       dismiss()
     }
