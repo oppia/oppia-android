@@ -3,13 +3,15 @@ package org.oppia.android.app.topic.lessons
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
@@ -215,7 +217,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private fun addChapterRecyclerViewItemDecoration(binding: TopicLessonsStorySummaryBinding) {
     val chapterRecyclerView = binding.chapterRecyclerView
     val layoutManager = chapterRecyclerView.layoutManager as LinearLayoutManager
-    val dividerItemDecoration = DividerItemDecoration(chapterRecyclerView.context, layoutManager.orientation)
+    val dividerItemDecoration =
+      DividerItemDecoration(chapterRecyclerView.context, layoutManager.orientation)
+    dividerItemDecoration.setDrawable(
+      ContextCompat.getDrawable(
+        fragment.requireContext(),
+        R.drawable.divider_item_decoration_grey
+      )!!
+    )
     chapterRecyclerView.addItemDecoration(dividerItemDecoration)
   }
 
