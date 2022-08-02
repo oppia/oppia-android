@@ -194,7 +194,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo(
-            "Please visit [this page] for the latest version of this privacy policy."
+            "Please visit this page for the latest version of this privacy policy."
           )
       }
     }
@@ -215,7 +215,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo(
-            "Please visit [this page] for the latest version of this privacy policy."
+            "Please visit this page for the latest version of this privacy policy."
           )
         val link = "https://www.oppia.org/privacy-policy"
         val expectingIntent = allOf(
@@ -257,7 +257,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
-          .isEqualTo("Please visit [this page] for the latest version of these terms.")
+          .isEqualTo("Please visit this page for the latest version of these terms.")
       }
     }
   }
@@ -276,7 +276,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
-          .isEqualTo("Please visit [this page] for the latest version of these terms.")
+          .isEqualTo("Please visit this page for the latest version of these terms.")
         val link = "https://www.oppia.org/terms"
         val expectingIntent = allOf(
           IntentMatchers.hasAction(Intent.ACTION_VIEW),
