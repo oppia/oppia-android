@@ -97,6 +97,12 @@ class TopicControllerTest {
   }
 
   // TODO: Add tests for getTopics().
+  // testGetTopics_noTopicIds_returnsProviderWithEmptyList
+  // testGetTopics_oneTopicId_returnsProviderWithTopic
+  // testGetTopics_multipleTopicIds_returnsProviderWithTopicsInOrder
+  // testGetTopics_invalidTopicId_returnsFailingProvider
+  // testGetTopics_multipleTopicIds_oneInvalid_returnsFailingProvider
+  // testGetTopics_multipleTopicIds_withDuplicates_returnsProviderWithDuplicatedTopics
 
   @Test
   fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() {

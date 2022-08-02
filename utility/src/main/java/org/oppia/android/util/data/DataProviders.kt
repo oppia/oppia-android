@@ -69,8 +69,7 @@ class DataProviders @Inject constructor(
       newId: Any,
       function: suspend (I) -> AsyncResult<O>
     ): DataProvider<O> {
-      val dataProviders = getDataProviders()
-      dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
+      getDataProviders().asyncDataSubscriptionManager.associateIds(newId, getId())
       return object : DataProvider<O>(context) {
         override fun getId(): Any = newId
 
@@ -117,6 +116,7 @@ class DataProviders @Inject constructor(
       newId: Any,
       function: (I) -> DataProvider<O>
     ): DataProvider<O> {
+      getDataProviders().asyncDataSubscriptionManager.associateIds(newId, getId())
       return getDataProviders().dynamicallyTransformedDataProviderFactory.create(
         newId, baseProvider = this, function
       )
@@ -387,36 +387,47 @@ class DataProviders @Inject constructor(
     override fun getId(): Any = id
 
     override suspend fun retrieveData(originNotificationIds: Set<Any>): AsyncResult<O> {
-      return currentProviderResult.createIfAbsentAsync {
-        asyncDataSubscriptionManager.associateIds(id, baseProvider.getId())
-        createNewDynamicProvider(originNotificationIds)
-      }.await().transformAsync { dynamicProvider ->
-        // If there's a dynamic provider available, determine if it needs to be reset.
-        val dynamicProviderId = dynamicProvider.getId()
-        val maybeNewProviderResult = if (originNotificationIds != setOf(dynamicProviderId)) {
+      return currentProviderResult.updateAsync { cachePayload ->
+        val currentProvider = cachePayload?.let { it as? AsyncResult.Success }?.value
+        println("@@@@@ update current val: $cachePayload, cur prov: $currentProvider ($this)")
+        println("@@@@@ current prov id: ${currentProvider?.getId()} with notification IDs: $originNotificationIds")
+        when {
+          // If there's no provider initially, create one.
+          currentProvider == null -> {
+            println("@@@@@ currentProvider == null")
+            createNewDynamicProvider(originNotificationIds)
+          }
+          // If the provider doesn't need to be recomputed, don't change anything.
+          originNotificationIds.isEmptyOrContains(currentProvider.getId()) -> {
+            println("@@@@@ use existing cachePayload")
+            cachePayload
+          }
           // If the notification originated from somewhere else (even if partially), create a new
           // provider.
-          asyncDataSubscriptionManager.dissociateIds(id, dynamicProviderId)
-          currentProviderResult.updateAsync {
-            createNewDynamicProvider(originNotificationIds)
-          }.await()
-        } else AsyncResult.Success(dynamicProvider)
-
-        return@transformAsync maybeNewProviderResult.transformAsync {
-          it.retrieveData(originNotificationIds)
+          else -> {
+            println("@@@@@ create new provider per notification IDs")
+            createNewDynamicProvider(originNotificationIds).also {
+              asyncDataSubscriptionManager.dissociateIds(id, currentProvider.getId())
+            }
+          }
         }
-      }
+      }.await().transformAsync { it.retrieveData(originNotificationIds) }
     }
 
     private suspend fun createNewDynamicProvider(
       originNotificationIds: Set<Any>
     ): AsyncResult<DataProvider<O>> {
+      println("@@@@@ create new provider... ($this)")
       return baseProvider.retrieveData(originNotificationIds).transform(transform).transform {
         // Make sure that the new provider, if available, is properly connected to the outer
         // provider.
         asyncDataSubscriptionManager.associateIds(id, it.getId())
         it
       }
+    }
+
+    private companion object {
+      private fun Set<Any>.isEmptyOrContains(value: Any) = isEmpty() || this == setOf(value)
     }
 
     /** Application-injectable factory for creating new [DynamicallyTransformedDataProvider]s. */

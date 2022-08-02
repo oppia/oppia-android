@@ -49,12 +49,14 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProviders.Companion.transformDynamic
 
 private const val BASE_PROVIDER_ID_0 = "base_id_0"
 private const val BASE_PROVIDER_ID_1 = "base_id_1"
 private const val OTHER_PROVIDER_ID = "other_id"
 private const val TRANSFORMED_PROVIDER_ID = "transformed_id"
 private const val COMBINED_PROVIDER_ID = "combined_id"
+private const val DYNAMIC_PROVIDER_ID = "dynamic_id"
 private const val STR_VALUE_0 = "I used to be indecisive."
 private const val STR_VALUE_1 = "Now I'm not so sure."
 private const val STR_VALUE_2 = "At least I thought I was."
@@ -106,8 +108,6 @@ class DataProvidersTest {
     setUpTestApplicationComponent()
   }
 
-  // TODO: Add tests for transformDynamic().
-
   // Note: custom data providers aren't explicitly tested since their interaction with the
   // infrastructure is tested through the providers created by DataProviders, and through other
   // custom data providers in the stack.
@@ -119,7 +119,7 @@ class DataProvidersTest {
 
       override fun getId(): Any = "fake_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<Int> {
+      override suspend fun retrieveData(originNotificationIds: Set<Any>): AsyncResult<Int> {
         hasRetrieveBeenCalled = true
         return AsyncResult.Pending()
       }
@@ -138,7 +138,7 @@ class DataProvidersTest {
 
       override fun getId(): Any = "fake_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<Int> {
+      override suspend fun retrieveData(originNotificationIds: Set<Any>): AsyncResult<Int> {
         hasRetrieveBeenCalled = true
         return AsyncResult.Pending()
       }
@@ -155,7 +155,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?) = AsyncResult.Success(123)
+      override suspend fun retrieveData(originNotificationIds: Set<Any>) = AsyncResult.Success(123)
     }
 
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -171,7 +171,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?) =
+      override suspend fun retrieveData(originNotificationIds: Set<Any>) =
         AsyncResult.Success(providerValue)
     }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -190,7 +190,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?) =
+      override suspend fun retrieveData(originNotificationIds: Set<Any>) =
         AsyncResult.Success(providerValue)
     }
     providerValue = 456
@@ -211,7 +211,7 @@ class DataProvidersTest {
     val simpleDataProvider = object : DataProvider<Int>(context) {
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?) = AsyncResult.Success(123)
+      override suspend fun retrieveData(originNotificationIds: Set<Any>) = AsyncResult.Success(123)
     }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -235,7 +235,7 @@ class DataProvidersTest {
 
       override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(originNotificationId: Any?): AsyncResult<Int> {
+      override suspend fun retrieveData(originNotificationIds: Set<Any>): AsyncResult<Int> {
         // Note that while this behavior is a bit contrived, it's actually representing a real
         // possibility that many different calls to retrieveData() race against each other and could
         // yield results from different times, resulting in out-of-order delivery. The oldest result
@@ -266,7 +266,8 @@ class DataProvidersTest {
       override fun getId(): Any = "simple_data_provider"
 
       // Return a new pending result for each call.
-      override suspend fun retrieveData(originNotificationId: Any?) = AsyncResult.Pending<Int>()
+      override suspend fun retrieveData(originNotificationIds: Set<Any>) =
+        AsyncResult.Pending<Int>()
     }
     // Ensure the initial value is retrieved.
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -3245,6 +3246,178 @@ class DataProvidersTest {
     val result = monitor.waitForNextSuccessResult()
     assertThat(result).isEqualTo("new str")
   }
+
+  @Test
+  fun testTransformDynamic_baseProviderAndTransformer_providerValueSourcedFromDynamicProvider() {
+    var outerProviderVal = 0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      dataProviders.createInMemoryDataProvider(DYNAMIC_PROVIDER_ID) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+    }
+
+    val successValue = monitorFactory.waitForNextSuccessfulResult(dynamicProvider)
+    assertThat(successValue).isEqualTo("1_1")
+  }
+
+  @Test
+  fun testTransformDynamic_secondSubscription_onlyRetrievesDataFromDynamic() {
+    var outerProviderVal = 0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      dataProviders.createInMemoryDataProvider(DYNAMIC_PROVIDER_ID) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+    }
+
+    monitorFactory.ensureDataProviderExecutes(dynamicProvider)
+    // The second subscription will trigger a re-retrieveData() only on the dynamic provider.
+    val successValue = monitorFactory.waitForNextSuccessfulResult(dynamicProvider)
+    assertThat(successValue).isEqualTo("1_2")
+  }
+
+  @Test
+  fun testTransformDynamic_notifyReturnedProvider_recomputesDynamicProvider() {
+    var outerProviderVal = 0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      dataProviders.createInMemoryDataProvider(DYNAMIC_PROVIDER_ID) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+    }
+    val monitor = monitorFactory.createMonitor(dynamicProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notify that the returned provider changed.
+    asyncDataSubscriptionManager.notifyChangeAsync(TRANSFORMED_PROVIDER_ID)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notifying that the returned provider changed will result in a new dynamic provider.
+    val successValue = monitor.ensureNextResultIsSuccess()
+    assertThat(successValue).isEqualTo("2_1")
+  }
+
+  @Test
+  fun testTransformDynamic_notifyBaseProvider_recomputesDynamicProvider() {
+    var outerProviderVal = 0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      dataProviders.createInMemoryDataProvider(DYNAMIC_PROVIDER_ID) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+    }
+    val monitor = monitorFactory.createMonitor(dynamicProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notify that the base provider changed.
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notifying that the base provider changed will result in a new dynamic provider.
+    val successValue = monitor.ensureNextResultIsSuccess()
+    assertThat(successValue).isEqualTo("2_1")
+  }
+
+  @Test
+  fun testTransformDynamic_twoLayerBase_notifyBaseBaseProvider_recomputesDynamicProvider() {
+    var outerProviderVal = 0
+    val baseBaseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+    val baseProvider = baseBaseProvider.transform(BASE_PROVIDER_ID_1) { it * 2 }
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      dataProviders.createInMemoryDataProvider(DYNAMIC_PROVIDER_ID) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+    }
+    val monitor = monitorFactory.createMonitor(dynamicProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notify that the base's base provider changed.
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_0)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notifying that the base's base provider changed will result in a new dynamic provider.
+    val successValue = monitor.ensureNextResultIsSuccess()
+    assertThat(successValue).isEqualTo("4_1")
+  }
+
+  @Test
+  fun testTransformDynamic_notifyDynamicProvider_callsDynamicProviderAgain() {
+    var outerProviderVal = 0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      dataProviders.createInMemoryDataProvider(DYNAMIC_PROVIDER_ID) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+    }
+    val monitor = monitorFactory.createMonitor(dynamicProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notify that the dynamic provider changed.
+    asyncDataSubscriptionManager.notifyChangeAsync(DYNAMIC_PROVIDER_ID)
+    testCoroutineDispatchers.runCurrent()
+
+    // Changing the dynamic provider will not result in a new dynamic provider.
+    val successValue = monitor.ensureNextResultIsSuccess()
+    assertThat(successValue).isEqualTo("1_2")
+  }
+
+  @Test
+  fun testTransformDynamic_twoLayerDynamic_notifyDynamicBaseProvider_callsDynamicProviderAgain() {
+    var outerProviderVal = 0
+    val baseProvider =
+      dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { ++outerProviderVal }
+    val dynamicProvider = baseProvider.transformDynamic(TRANSFORMED_PROVIDER_ID) { outerVal ->
+      var innerProviderVal = 0
+      val baseDynamicProvider = dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) {
+        val innerVal = ++innerProviderVal
+        return@createInMemoryDataProvider "${outerVal}_$innerVal"
+      }
+      baseDynamicProvider.transform(DYNAMIC_PROVIDER_ID) { "${it}_more" }
+    }
+    val monitor = monitorFactory.createMonitor(dynamicProvider)
+    testCoroutineDispatchers.runCurrent()
+
+    // Notify that the dynamic provider's base changed.
+    asyncDataSubscriptionManager.notifyChangeAsync(BASE_PROVIDER_ID_1)
+    testCoroutineDispatchers.runCurrent()
+
+    // Changing the dynamic provider's base will not result in a new dynamic provider.
+    val successValue = monitor.ensureNextResultIsSuccess()
+    assertThat(successValue).isEqualTo("1_2_more")
+  }
+
+  // TODO: Add tests for transformDynamic().
+  //
+  //
+  //
+  //
+  //
+  //
+  // testTransformDynamic_pendingBaseProvider_producesPendingTransformedProvider
+  // testTransformDynamic_pendingDynamicProvider_producesPendingTransformedProvider
+  // testTransformDynamic_failingBaseProvider_producesFailingTransformedProvider
+  // testTransformDynamic_failingDynamicProvider_producesFailingTransformedProvider
 
   private fun transformString(str: String): Int = str.length
 

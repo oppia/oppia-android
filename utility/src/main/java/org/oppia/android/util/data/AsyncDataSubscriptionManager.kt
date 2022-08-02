@@ -51,6 +51,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
   fun associateIds(childId: Any, parentId: Any) {
     // TODO(#3625): Find a way to determine parent-child ID associations during subscription time to
     //  avoid needing to store long-lived references to IDs prior to subscriptions.
+    println("@@@@@ associate $childId as dependent on $parentId")
     subscriptionLock.withLock {
       // First, verify that child isn't already subscribed.
       val isSubscribed = associatedIds[parentId]?.let { childId in it } ?: false
