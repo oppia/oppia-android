@@ -184,34 +184,23 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     )
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
 
-    binding.root.setOnClickListener {
-      if (!accessibilityService.isScreenReaderEnabled()) {
-        val previousIndex: Int? = currentExpandedChapterListIndex
-        currentExpandedChapterListIndex =
-          if (currentExpandedChapterListIndex != null &&
-            currentExpandedChapterListIndex == position
-          ) {
-            null
-          } else {
-            position
-          }
-        expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-        if (previousIndex != null && currentExpandedChapterListIndex != null &&
-          previousIndex == currentExpandedChapterListIndex
-        ) {
-          bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
-        } else {
-          previousIndex?.let {
-            bindingAdapter.notifyItemChanged(previousIndex)
-          }
-          currentExpandedChapterListIndex?.let {
-            bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
-          }
-        }
-      }
+    binding.chapterListDropDownIcon.setOnClickListener {
+      expandStoryList(position)
     }
 
-    binding.chapterListDropDownIcon.setOnClickListener {
+    binding.root.setOnClickListener {
+      expandStoryList(position)
+    }
+
+    if (accessibilityService.isScreenReaderEnabled()) {
+      binding.root.isClickable = false
+    } else {
+      binding.chapterListDropDownIcon.isClickable = false
+    }
+
+  }
+
+  private fun expandStoryList(position: Int) {
       val previousIndex: Int? = currentExpandedChapterListIndex
       currentExpandedChapterListIndex =
         if (currentExpandedChapterListIndex != null &&
@@ -234,7 +223,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
         }
       }
-    }
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
