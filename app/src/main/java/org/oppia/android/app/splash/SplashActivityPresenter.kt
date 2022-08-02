@@ -97,12 +97,9 @@ class SplashActivityPresenter @Inject constructor(
               // Ensure that pending states last no longer than 5 seconds. In cases where the app
               // enters a bad state, this ensures that the user doesn't become stuck on the splash
               // screen.
-              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 5000).observe(
-                activity,
-                {
-                  processInitState(SplashInitState.computeDefault(localeController))
-                }
-              )
+              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 5000).observe(activity) {
+                processInitState(SplashInitState.computeDefault(localeController))
+              }
             }
             is AsyncResult.Failure -> {
               oppiaLogger.e(
@@ -140,14 +137,12 @@ class SplashActivityPresenter @Inject constructor(
         // (for development purposes).
         when (currentBuildFlavor) {
           BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
-          BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY -> processStartupMode()
+          BuildFlavor.TESTING, BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY ->
+            processStartupMode()
           BuildFlavor.ALPHA, BuildFlavor.BETA -> {
-            lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(
-              activity,
-              {
-                processStartupMode()
-              }
-            )
+            lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(activity) {
+              processStartupMode()
+            }
           }
         }
       }
@@ -163,6 +158,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun processStartupMode() {
+    println("@@@@@ process startup: $startupMode")
     when (startupMode) {
       StartupMode.USER_IS_ONBOARDED -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))

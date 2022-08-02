@@ -12,7 +12,10 @@ kt_android_library(
         "AlphaBuildFlavorModule.kt",
         "AlphaOppiaApplication.kt",
     ],
-    visibility = ["//:oppia_binary_visibility"],
+    visibility = [
+        "//:oppia_binary_visibility",
+        "//app/src/test/java/org/oppia/android/app/application/alpha:__pkg__",
+    ],
     deps = [
         ":dagger",
         "//app",

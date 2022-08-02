@@ -73,7 +73,7 @@ private const val REPLACE_IMG_FILE_PATH_ATTRIBUTE = "src"
  */
 @Singleton
 class PrimeTopicAssetsControllerImpl @Inject constructor(
-  private val context: Context,
+  private val application: Application,
   private val oppiaLogger: OppiaLogger,
   private val assetRepository: AssetRepository,
   private val topicController: TopicController,
@@ -197,7 +197,6 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
 
   private fun prepareUiForDownloadStatusChanges(dialogStyleResId: Int) {
     // Reference: https://stackoverflow.com/a/37713320.
-    val application = context.applicationContext as Application
     application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
       override fun onActivityPaused(activity: Activity) {}
       override fun onActivityResumed(activity: Activity) {}

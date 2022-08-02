@@ -1,11 +1,7 @@
 package org.oppia.android.domain.onboarding
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -13,17 +9,11 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
-import javax.inject.Singleton
 
-private const val UPDATE_ONBOARDING_STATE_PROVIDER_ID = "update_onboarding_state_data_provider_id"
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 
 /** Controller for persisting and retrieving the user's initial app state upon opening the app. */
@@ -33,24 +23,31 @@ class AppStartupStateController @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val expirationMetaDataRetriever: ExpirationMetaDataRetriever,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val dataProviders: DataProviders,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   private val currentBuildFlavor: BuildFlavor
 ) {
-  private val onboardingFlowStore =
+  private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
+  }
 
   private val appStartupStateDataProvider by lazy { computeAppStartupStateProvider() }
 
   init {
     // Prime the cache ahead of time so that any existing history is read prior to any calls to
-    // markOnboardingFlowCompleted().
-    onboardingFlowStore.primeInMemoryCacheAsync().invokeOnCompletion { failure ->
-      if (failure != null) {
+    // markOnboardingFlowCompleted(). Note that this also ensures that the on-disk cache contains
+    // the last used build flavor (but it doesn't update the in-memory copy as it's the *last* used
+    // flavor, and thus requires an app restart in order to observe).
+    println("@@@@@ initing controller: $this")
+    onboardingFlowStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = PersistentCacheStore.UpdateMode.UPDATE_ALWAYS,
+      publishMode = PersistentCacheStore.PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+    ) { state ->
+      state.toBuilder().apply { lastUsedBuildFlavor = currentBuildFlavor }.build()
+    }.invokeOnCompletion { primeFailure ->
+      if (primeFailure != null) {
         oppiaLogger.e(
           "StartupController",
           "Failed to prime cache ahead of data retrieval for user onboarding data.",
-          failure
+          primeFailure
         )
       }
     }
@@ -63,11 +60,7 @@ class AppStartupStateController @Inject constructor(
    * subscribers observe this state until the app restarts.
    */
   fun markOnboardingFlowCompleted() {
-    updateOnboardingState { onboardingState ->
-      onboardingState.toBuilder().apply {
-        alreadyOnboardedApp = true
-      }.build()
-    }
+    updateOnboardingState { alreadyOnboardedApp = true }
   }
 
   /**
@@ -77,11 +70,7 @@ class AppStartupStateController @Inject constructor(
    * subscribers observe this state until the app restarts.
    */
   fun dismissBetaNoticesPermanently() {
-    updateOnboardingState { onboardingState ->
-      onboardingState.toBuilder().apply {
-        permanentlyDismissedBetaNotice = true
-      }.build()
-    }
+    updateOnboardingState { permanentlyDismissedBetaNotice = true }
   }
 
   /**
@@ -92,11 +81,7 @@ class AppStartupStateController @Inject constructor(
    * subscribers observe this state until the app restarts.
    */
   fun dismissGaUpgradeNoticesPermanently() {
-    updateOnboardingState { onboardingState ->
-      onboardingState.toBuilder().apply {
-        permanentlyDismissedGaUpgradeNotice = true
-      }.build()
-    }
+    updateOnboardingState { permanentlyDismissedGaUpgradeNotice = true }
   }
 
   /**
@@ -106,26 +91,26 @@ class AppStartupStateController @Inject constructor(
   fun getAppStartupState(): DataProvider<AppStartupState> = appStartupStateDataProvider
 
   private fun computeAppStartupStateProvider(): DataProvider<AppStartupState> {
-    val updateProvider = dataProviders.run {
-      onboardingFlowStore.storeDataAsync(updateInMemoryCache = false) { state ->
-        state.toBuilder().apply { lastUsedBuildFlavor = currentBuildFlavor }.build()
-      }.toStateFlow().convertAsyncToSimpleDataProvider(UPDATE_ONBOARDING_STATE_PROVIDER_ID)
-    }
-    // Combining a cache read and update like this may seem like it could introduce a data race,
-    // however it won't because: (1) the update doesn't alter the in-memory cache, and (2) the
-    // in-memory cache should already be primed before this point.
-    return updateProvider.combineWith(
-      onboardingFlowStore, APP_STARTUP_STATE_PROVIDER_ID
-    ) { _, onboardingState ->
+    println("@@@@@ computeAppStartupStateProvider")
+    return onboardingFlowStore.transform(APP_STARTUP_STATE_PROVIDER_ID) { onboardingState ->
+      println("@@@@@ transform: $onboardingState")
       AppStartupState.newBuilder().apply {
         startupMode = computeAppStartupMode(onboardingState)
-        buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState)
+        buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
       }.build()
     }
   }
 
-  private fun updateOnboardingState(updateState: (OnboardingState) -> OnboardingState) {
-    val deferred = onboardingFlowStore.storeDataAsync(updateInMemoryCache = false, updateState)
+  private fun updateOnboardingState(updateState: OnboardingState.Builder.() -> Unit) {
+    // Note that the flavor must be written here since it only gets updated on-disk and never
+    // in-memory (which means it will be inadvertently overwritten when updating onboarding state
+    // here).
+    val deferred = onboardingFlowStore.storeDataAsync(updateInMemoryCache = false) { state ->
+      state.toBuilder().apply {
+        updateState()
+        lastUsedBuildFlavor = currentBuildFlavor
+      }.build()
+    }
     deferred.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e("StartupController", "Failed to update onboarding state.", failure)
@@ -141,18 +126,24 @@ class AppStartupStateController @Inject constructor(
     }
   }
 
-  private fun computeBuildNoticeMode(onboardingState: OnboardingState): BuildFlavorNoticeMode {
+  private fun computeBuildNoticeMode(
+    onboardingState: OnboardingState, startupMode: StartupMode
+  ): BuildFlavorNoticeMode {
     return when (currentBuildFlavor) {
       BuildFlavor.TESTING, BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED ->
         BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED
       // No notice is shown for developer & alpha builds.
       BuildFlavor.DEVELOPER, BuildFlavor.ALPHA -> BuildFlavorNoticeMode.NO_NOTICE
       BuildFlavor.BETA -> {
+        // Only show the beta notice if the user hasn't permanently dismissed it, and when it's
+        // appropriate to show (i.e. they've recently changed to the beta flavor, and their app is
+        // not force-deprecated).
         if (!onboardingState.permanentlyDismissedBetaNotice &&
-          onboardingState.lastUsedBuildFlavor != BuildFlavor.BETA
+          onboardingState.lastUsedBuildFlavor != BuildFlavor.BETA &&
+          startupMode != StartupMode.APP_IS_DEPRECATED
         ) {
           BuildFlavorNoticeMode.SHOW_BETA_NOTICE
-        } else BuildFlavorNoticeMode.NO_NOTICE // The user doesn't want to see the notice again.
+        } else BuildFlavorNoticeMode.NO_NOTICE
       }
       BuildFlavor.GENERAL_AVAILABILITY -> when (onboardingState.lastUsedBuildFlavor) {
         BuildFlavor.ALPHA, BuildFlavor.BETA, null -> {
@@ -179,23 +170,5 @@ class AppStartupStateController @Inject constructor(
       // Assume the app is in an expired state if something fails when comparing the date.
       expirationDate?.isBeforeToday() ?: true
     } else false
-  }
-
-  /**
-   * Converts a [Deferred] to a [StateFlow] in a way that avoids potentially deadlocking when
-   * asynchronously blocking on the [Deferred] since it leverages a background coroutine.
-   *
-   * The returned [StateFlow] will never be updated more than once, and will always start in a
-   * pending state.
-   */
-  private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
-    val deferred = this
-    return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      CoroutineScope(backgroundDispatcher).async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
-    }
   }
 }

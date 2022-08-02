@@ -86,6 +86,12 @@
       android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.notice.testing.BetaNoticeDialogFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.onboarding.OnboardingActivity"
       android:label="@string/onboarding_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />

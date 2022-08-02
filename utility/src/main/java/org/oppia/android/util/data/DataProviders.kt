@@ -1,5 +1,6 @@
 package org.oppia.android.util.data
 
+import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import dagger.Reusable
@@ -26,7 +27,7 @@ import javax.inject.Inject
  */
 @Reusable // Since otherwise a new provider will be created for each companion object call.
 class DataProviders @Inject constructor(
-  private val context: Context,
+  private val application: Application,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val exceptionLogger: ExceptionLogger
@@ -45,8 +46,10 @@ class DataProviders @Inject constructor(
      */
     fun <I, O> DataProvider<I>.transform(newId: Any, function: (I) -> O): DataProvider<O> {
       val dataProviders = getDataProviders()
+      println("@@@@@ data providers inst (transform): $dataProviders")
+      println("@@@@@ context inst (transform): $application from $this")
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any = newId
 
         override suspend fun retrieveData(): AsyncResult<O> {
@@ -70,7 +73,7 @@ class DataProviders @Inject constructor(
     ): DataProvider<O> {
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any = newId
 
         override suspend fun retrieveData(): AsyncResult<O> {
@@ -90,7 +93,7 @@ class DataProviders @Inject constructor(
       function: suspend (I) -> AsyncResult<O>
     ): NestedTransformedDataProvider<O> {
       return NestedTransformedDataProvider.createNestedTransformedDataProvider(
-        context, newId, this, function, getDataProviders().asyncDataSubscriptionManager
+        application, newId, this, function, getDataProviders().asyncDataSubscriptionManager
       )
     }
 
@@ -113,7 +116,7 @@ class DataProviders @Inject constructor(
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any {
           return newId
         }
@@ -141,7 +144,7 @@ class DataProviders @Inject constructor(
       val dataProviders = getDataProviders()
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, getId())
       dataProviders.asyncDataSubscriptionManager.associateIds(newId, dataProvider.getId())
-      return object : DataProvider<O>(context) {
+      return object : DataProvider<O>(application) {
         override fun getId(): Any {
           return newId
         }
@@ -161,13 +164,14 @@ class DataProviders @Inject constructor(
      */
     fun <T> DataProvider<T>.toLiveData(): LiveData<AsyncResult<T>> {
       val dataProviders = getDataProviders()
+      println("@@@@@ create livedata for ${getId()}")
       return NotifiableAsyncLiveData(
         dataProviders.backgroundDispatcher, dataProviders.asyncDataSubscriptionManager, this
       )
     }
 
     private fun <T> DataProvider<T>.getDataProviders(): DataProviders {
-      val injectorProvider = context.applicationContext as DataProvidersInjectorProvider
+      val injectorProvider = application as DataProvidersInjectorProvider
       return injectorProvider.getDataProvidersInjector().getDataProviders()
     }
   }
@@ -184,7 +188,7 @@ class DataProviders @Inject constructor(
    * [AsyncDataSubscriptionManager.notifyChange] with the in-memory provider's identifier.
    */
   fun <T> createInMemoryDataProvider(id: Any, loadFromMemory: () -> T): DataProvider<T> {
-    return object : DataProvider<T>(context) {
+    return object : DataProvider<T>(application) {
       override fun getId(): Any {
         return id
       }
@@ -208,7 +212,7 @@ class DataProviders @Inject constructor(
     id: Any,
     loadFromMemoryAsync: suspend () -> AsyncResult<T>
   ): DataProvider<T> {
-    return object : DataProvider<T>(context) {
+    return object : DataProvider<T>(application) {
       override fun getId(): Any {
         return id
       }
@@ -277,12 +281,12 @@ class DataProviders @Inject constructor(
    * provider can change.
    */
   class NestedTransformedDataProvider<O> private constructor(
-    context: Context,
+    application: Application,
     private val id: Any,
     private var baseId: Any,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
     private var retrieveTransformedData: suspend () -> AsyncResult<O>
-  ) : DataProvider<O>(context) {
+  ) : DataProvider<O>(application) {
     init {
       initializeTransformer()
     }
@@ -320,14 +324,14 @@ class DataProviders @Inject constructor(
     companion object {
       /** Returns a new [NestedTransformedDataProvider]. */
       internal fun <I, O> createNestedTransformedDataProvider(
-        context: Context,
+        application: Application,
         id: Any,
         baseDataProvider: DataProvider<I>,
         transform: suspend (I) -> AsyncResult<O>,
         asyncDataSubscriptionManager: AsyncDataSubscriptionManager
       ): NestedTransformedDataProvider<O> {
         return NestedTransformedDataProvider(
-          context, id, baseDataProvider.getId(), asyncDataSubscriptionManager
+          application, id, baseDataProvider.getId(), asyncDataSubscriptionManager
         ) {
           baseDataProvider.retrieveData().transformAsync(transform)
         }
@@ -358,6 +362,7 @@ class DataProviders @Inject constructor(
     override fun onActive() {
       super.onActive()
       // Subscribe to the ID immediately in case there's a value in the data provider already ready.
+      println("@@@@ registering livedata to ${dataProvider.getId()}")
       asyncDataSubscriptionManager.subscribe(dataProvider.getId(), asyncSubscriber)
       isActive.set(true)
 
@@ -375,6 +380,7 @@ class DataProviders @Inject constructor(
 
     override fun onInactive() {
       super.onInactive()
+      println("@@@@ unregistering livedata from ${dataProvider.getId()}")
       // Stop watching for updates immediately, then cancel any existing operations.
       asyncDataSubscriptionManager.unsubscribe(dataProvider.getId(), asyncSubscriber)
       isActive.set(false)
@@ -408,6 +414,7 @@ class DataProviders @Inject constructor(
       // mechanism which in turn always calls setValue(), even if there are no active observers. See
       // the override of setValue() above for the adjusted semantics this class requires to ensure
       // its own cache remains up-to-date.
+      println("@@@@@ receive update from ${dataProvider.getId()}")
       retrieveFromDataProvider()?.let {
         super.postValue(it)
         runningJob.set(null)

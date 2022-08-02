@@ -13,6 +13,8 @@ import java.util.Random
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 
 private const val SESSION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.session_id"
 private const val INSTALLATION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.installation_id"
@@ -36,10 +38,11 @@ class LoggingIdentifierController @Inject constructor(
     persistentCacheStoreFactory.create(
       cacheName = "device_context_database", DeviceContextDatabase.getDefaultInstance()
     ).also {
-      it.primeInMemoryAndDiskCacheAsync { database ->
-        database.toBuilder().apply {
-          installationId = computeInstallationId()
-        }.build()
+      it.primeInMemoryAndDiskCacheAsync(
+        updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+        publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+      ) { database ->
+        database.toBuilder().apply { installationId = computeInstallationId() }.build()
       }.invokeOnCompletion { failure ->
         if (failure != null) {
           oppiaLogger.e(

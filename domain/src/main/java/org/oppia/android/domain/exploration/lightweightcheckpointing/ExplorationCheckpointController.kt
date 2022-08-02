@@ -16,6 +16,8 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 
 private const val CACHE_NAME = "exploration_checkpoint_database"
 private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
@@ -282,7 +284,10 @@ class ExplorationCheckpointController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "ExplorationCheckpointController",

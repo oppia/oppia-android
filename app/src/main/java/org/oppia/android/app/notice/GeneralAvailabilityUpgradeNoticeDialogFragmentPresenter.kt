@@ -30,7 +30,7 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter @Inject constructo
     return AlertDialog.Builder(activity)
       .setTitle(R.string.general_availability_notice_dialog_title)
       .setView(contentView)
-      .setNegativeButton(R.string.general_availability_notice_dialog_close_button_text) { _, _ ->
+      .setPositiveButton(R.string.general_availability_notice_dialog_close_button_text) { _, _ ->
         gaUpgradeNoticeClosedListener.onGaUpgradeNoticeOkayButtonClicked(
           preferenceCheckbox.isChecked
         )

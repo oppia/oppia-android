@@ -44,6 +44,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * Duplicate subscriptions are ignored.
    */
   fun associateIds(childId: Any, parentId: Any) {
+    println("@@@@@ associate $childId as dependent on $parentId")
     // TODO(#3625): Find a way to determine parent-child ID associations during subscription time to
     //  avoid needing to store long-lived references to IDs prior to subscriptions.
     subscriptionLock.withLock {
@@ -66,6 +67,9 @@ class AsyncDataSubscriptionManager @Inject constructor(
         associatedIds.getOrPut(parentId) { mutableSetOf() } += childId
       }
     }
+    println("@@@@@ IDs (associate): $associatedIds")
+    println("@@@@@ all subs (associate): $subscriptionMap")
+    println("@@@@@ current mgr (associate): $this")
   }
 
   /**
@@ -73,6 +77,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
    * parent ID from also notifying observers of the child ID.
    */
   fun dissociateIds(childId: Any, parentId: Any) {
+    Exception("@@@@@ disassociate $childId from $parentId").printStackTrace(System.out)
     subscriptionLock.withLock { associatedIds[parentId]?.remove(childId) }
   }
 
@@ -82,7 +87,14 @@ class AsyncDataSubscriptionManager @Inject constructor(
    */
   suspend fun notifyChange(id: Any) {
     // First, retrieve subscribers & the closure of child IDs to notify.
-    val subscriptions = subscriptionLock.withLock { computeSubscriptionClosure(id) }
+    val subscriptions = subscriptionLock.withLock {
+      println("@@@@@ IDs (notify): $associatedIds")
+      println("@@@@@ all subs (notify): $subscriptionMap")
+      println("@@@@@ current mgr (notify): $this")
+      computeSubscriptionClosure(id)
+    }
+
+    println("@@@@@ notify change for provider: $id (${subscriptions.size} subs)")
 
     // Notify all subscribers (both directly for this parent & all child IDs).
     subscriptions.forEach { observeChange -> observeChange() }

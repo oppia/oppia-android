@@ -15,6 +15,8 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_2 = "test_story_id_2"
@@ -371,8 +373,11 @@ class StoryProgressController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion {
-      it?.let { it ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion {
+      if (it != null) {
         oppiaLogger.e(
           "StoryProgressController",
           "Failed to prime cache ahead of data retrieval for StoryProgressController.",
