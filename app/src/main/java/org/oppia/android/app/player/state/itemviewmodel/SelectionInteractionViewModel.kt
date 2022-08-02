@@ -57,6 +57,7 @@ class SelectionInteractionViewModel private constructor(
 
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText = ObservableField("Please select atleast one choice.")
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
@@ -151,11 +152,11 @@ class SelectionInteractionViewModel private constructor(
     }
   }
 
-  private fun updateSelectionText(){
-    if (selectedItems.size < maxAllowableSelectionCount)  {
+  private fun updateSelectionText() {
+    if (selectedItems.size < maxAllowableSelectionCount) {
       selectedItemText.set("You may select more choices")
     }
-    if(selectedItems.size == 0) {
+    if (selectedItems.size == 0) {
       selectedItemText.set("Please select one or more choices.")
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
