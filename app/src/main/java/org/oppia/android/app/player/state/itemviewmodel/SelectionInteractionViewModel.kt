@@ -124,6 +124,7 @@ class SelectionInteractionViewModel private constructor(
       isCurrentlySelected -> {
         selectedItems -= itemIndex
         updateIsAnswerAvailable()
+        updateSelectionText()
         false
       }
       !areCheckboxesBound() -> {
@@ -140,24 +141,25 @@ class SelectionInteractionViewModel private constructor(
         selectedItems += itemIndex
         selectedItemText.set("You may select more choices")
         updateIsAnswerAvailable()
-        true
-      }
-      selectedItems.size == 0 -> {
-        selectedItems += itemIndex
-        selectedItemText.set("Please select one or more choices.")
-        updateIsAnswerAvailable()
-        true
-      }
-      selectedItems.size == maxAllowableSelectionCount -> {
-        selectedItems += itemIndex
-        selectedItemText.set("No more than $maxAllowableSelectionCount choices may be selected.")
-        updateIsAnswerAvailable()
+        updateSelectionText()
         true
       }
       else -> {
         // Do not change the current status if it isn't valid to do so.
         isCurrentlySelected
       }
+    }
+  }
+
+  private fun updateSelectionText(){
+    if (selectedItems.size < maxAllowableSelectionCount)  {
+      selectedItemText.set("You may select more choices")
+    }
+    if(selectedItems.size == 0) {
+      selectedItemText.set("Please select one or more choices.")
+    }
+    if (selectedItems.size == maxAllowableSelectionCount) {
+      selectedItemText.set("No more than $maxAllowableSelectionCount choices may be selected.")
     }
   }
 
