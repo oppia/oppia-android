@@ -164,8 +164,6 @@
           android:id="@+id/chapter_recycler_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:layout_marginBottom="8dp"
           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
           app:list="@{viewModel.chapterSummaryItemList}" />
       </LinearLayout>
