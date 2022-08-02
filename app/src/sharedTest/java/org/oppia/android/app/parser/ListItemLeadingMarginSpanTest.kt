@@ -470,7 +470,7 @@ class ListItemLeadingMarginSpanTest {
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       testCoroutineDispatchers.runCurrent()
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      val htmlResult =  htmlParser.parseOppiaHtml(
+      val htmlResult = htmlParser.parseOppiaHtml(
         "<ul>" +
           "        <li> Usage Data\", such as:" +
           "          <ul>" +
@@ -747,6 +747,6 @@ class ListItemLeadingMarginSpanTest {
   }
 
   private companion object {
-   private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
   }
 }
