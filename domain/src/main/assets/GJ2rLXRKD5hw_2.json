@@ -4,7 +4,7 @@
   "page_contents": {
     "subtitled_html": {
       "content_id": "content",
-      "html": "<p>Description of subtopic is here. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5RM9KPfQxobH&amp;quot;\" text-with-value=\"&amp;quot;Learn more&amp;quot;\"></oppia-noninteractive-skillreview></p>"
+      "html": "<p>Description of subtopic is here. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;5RM9KPfQxobH&amp;quot;\" text-with-value=\"&amp;quot;This concept card demonstrates overall concept card functionality.&amp;quot;\"></oppia-noninteractive-skillreview></p>"
     },
     "recorded_voiceovers": {
       "voiceovers_mapping": {
