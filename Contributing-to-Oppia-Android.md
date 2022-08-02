@@ -131,13 +131,13 @@ Welcome! Please make sure to follow the onboarding instructions above if you hav
 **UI**
 
  - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
- - [Supporting dark mode](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+in%3Atitle+add+dark+mode) (see also [these instructions](https://github.com/oppia/oppia-android/wiki/Dark-Mode)).
+ - [Supporting dark mode](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+in%3Atitle+add+dark+mode+is%3Aopen) (see also [these instructions](https://github.com/oppia/oppia-android/wiki/Dark-Mode)).
 
 **Bazel**
 
 **Accessibility**
 
- - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y)
+ - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y+no%3Aassignee)
 
 
 ## Communication channels
