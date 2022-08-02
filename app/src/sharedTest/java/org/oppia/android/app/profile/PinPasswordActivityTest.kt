@@ -108,6 +108,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.containsString
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -1144,9 +1145,13 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.reset_pin_enter_dialog_message))).check(
-        matches(isDisplayed())
-      )
+      onView(
+        withText(
+          containsString(
+            context.resources.getString(R.string.reset_pin_enter_dialog_message, "Ben")
+          )
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
