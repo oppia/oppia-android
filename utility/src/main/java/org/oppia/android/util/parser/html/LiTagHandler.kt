@@ -33,7 +33,7 @@ class LiTagHandler(
     when (tag) {
       CUSTOM_LIST_UL_TAG -> lists.push(Ul(context, displayLocale))
       CUSTOM_LIST_OL_TAG -> lists.push(Ol(context, displayLocale))
-      CUSTOM_LIST_LI_TAG -> lists.peek().openItem(output)
+      CUSTOM_LIST_LI_TAG -> if(lists.isNotEmpty())lists.peek().openItem(output)
     }
   }
 
@@ -45,7 +45,8 @@ class LiTagHandler(
     when (tag) {
       CUSTOM_LIST_UL_TAG -> lists.pop()
       CUSTOM_LIST_OL_TAG -> lists.pop()
-      CUSTOM_LIST_LI_TAG -> lists.peek().closeItem(output, indentation = lists.size - 1)
+      CUSTOM_LIST_LI_TAG -> if(lists.isNotEmpty())
+        lists.peek().closeItem(output, indentation = lists.size - 1)
     }
   }
 
