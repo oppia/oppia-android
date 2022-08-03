@@ -101,7 +101,6 @@ import javax.inject.Singleton
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
-import org.robolectric.annotation.TextLayoutMode
 
 /** Test for [ResumeLessonFragment]. */
 @RunWith(AndroidJUnit4::class)
