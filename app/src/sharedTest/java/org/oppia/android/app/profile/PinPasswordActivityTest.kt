@@ -1123,7 +1123,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testResetPinDialogFragmentPresenter_userNameMatches_isDisplayed() {
+  fun testPinPassword_clickforgotPin_enterAdminPin_clickSubmit_dialogMessageIsCorrect() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
