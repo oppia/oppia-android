@@ -44,6 +44,9 @@ const val YEAR = 12 * MONTH
 
 private fun currentDate() = Calendar.getInstance().timeInMillis
 
+/**
+* Returns the readable string of the duration from the provided time in [Long].
+*/
 fun Long.timeAgo(view: View): String {
   val time = this
   val now = currentDate()

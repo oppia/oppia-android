@@ -27,6 +27,7 @@ fun setProfileDataText(textView: TextView, timestamp: Long) {
   )
 }
 
+// TODO: Move this to a common place.
 fun getResourceHandler(view: View): AppLanguageResourceHandler {
   val provider =
     getAttachedActivity(view) as AppLanguageActivityInjectorProvider
