@@ -3,7 +3,6 @@ package org.oppia.android.util.parser.html
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.View
@@ -15,7 +14,6 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import java.util.Locale
 import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
@@ -56,6 +54,10 @@ class HtmlParser private constructor(
   private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
 
+  private val isRtl by lazy {
+    displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  }
+
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
    *
@@ -74,9 +76,7 @@ class HtmlParser private constructor(
   ): Spannable {
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
-    if (TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) ==
-      ViewCompat.LAYOUT_DIRECTION_RTL
-    ) {
+    if (isRtl) {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_RTL
     } else {
       htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
