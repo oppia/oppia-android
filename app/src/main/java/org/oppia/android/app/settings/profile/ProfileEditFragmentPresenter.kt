@@ -134,6 +134,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
       .deleteProfile(ProfileId.newBuilder().setInternalId(internalProfileId).build()).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
+          // show alert dialog
           fragment.requireContext().alertDialog {
             // show the alert dialog title
             setTitle(fragment.getString(R.string.profile_edit_delete))

@@ -248,6 +248,9 @@ class ProfileEditActivityTest {
       onView(withText(R.string.profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
+      onView(withText(""))
+        .inRoot(isDialog())
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
