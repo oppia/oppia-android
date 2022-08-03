@@ -47,7 +47,7 @@ class LiTagHandler(
       CUSTOM_LIST_OL_TAG -> lists.pop()
       CUSTOM_LIST_LI_TAG ->
         if (lists.isNotEmpty())
-        lists.peek().closeItem(output, indentation = lists.size - 1)
+          lists.peek().closeItem(output, indentation = lists.size - 1)
     }
   }
 
