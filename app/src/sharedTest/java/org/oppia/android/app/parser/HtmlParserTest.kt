@@ -56,6 +56,11 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.HtmlParserTestActivity
@@ -91,8 +96,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -103,7 +112,11 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.AndroidLocaleFactory
+import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -116,7 +129,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
@@ -126,9 +138,23 @@ import kotlin.reflect.KClass
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HtmlParserTest.TestApplication::class, qualifiers = "port-xxhdpi")
+@DefineAppLanguageLocaleContext(
+  oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
+  appStringIetfTag = "en",
+  appStringAndroidLanguageId = "en"
+)
 class HtmlParserTest {
 
   private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  lateinit var androidLocaleFactory: AndroidLocaleFactory
+
+  @Inject
+  lateinit var formatterFactory: OppiaBidiFormatter.Factory
 
   @Rule
   @JvmField
@@ -413,16 +439,23 @@ class HtmlParserTest {
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHtmlContent_changeDeviceToRtl_textViewDirectionIsSetToRtl() {
-    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      displayLocale = displayLocale
     )
     val textView = arrangeTextViewWithLayoutDirection(
       htmlParser,
@@ -813,10 +846,8 @@ class HtmlParserTest {
     }
   }
 
-  private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
-    Locale.setDefault(locale)
-  }
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
+    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
 
   private fun <A : Activity> ActivityScenario<A>.getDimensionPixelSize(
     @DimenRes dimenResId: Int
@@ -908,6 +939,25 @@ class HtmlParserTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+
+    private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ARABIC
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "ar"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.REGION_UNSPECIFIED
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "EG"
+        }.build()
+      }.build()
+    }.build()
+
   }
 }

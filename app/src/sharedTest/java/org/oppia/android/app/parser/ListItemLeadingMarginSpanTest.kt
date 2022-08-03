@@ -37,6 +37,11 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ListItemLeadingMarginSpanTestActivity
@@ -72,8 +77,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -84,7 +93,11 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
+import org.oppia.android.util.locale.AndroidLocaleFactory
+import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -97,7 +110,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -107,8 +119,19 @@ import javax.inject.Singleton
   application = ListItemLeadingMarginSpanTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+@DefineAppLanguageLocaleContext(
+  oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
+  appStringIetfTag = "en",
+  appStringAndroidLanguageId = "en"
+)
 class ListItemLeadingMarginSpanTest {
   private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
+
+  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject lateinit var androidLocaleFactory: AndroidLocaleFactory
+
+  @Inject lateinit var formatterFactory: OppiaBidiFormatter.Factory
 
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
 
@@ -452,9 +475,16 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedBulletItems_inRtl_isDrawnCorrectlyWithIndentation() {
-    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
 
     val canvas = Canvas()
     val paint = Paint()
@@ -465,7 +495,7 @@ class ListItemLeadingMarginSpanTest {
       entityType = "",
       entityId = "",
       imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      displayLocale = displayLocale
     )
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       testCoroutineDispatchers.runCurrent()
@@ -486,9 +516,7 @@ class ListItemLeadingMarginSpanTest {
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
     }
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val layoutDirection = displayLocale.getLayoutDirection()
-    assertThat(layoutDirection).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
+    assertThat(displayLocale.getLayoutDirection()).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
     /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
     val bulletSpans =
@@ -543,18 +571,137 @@ class ListItemLeadingMarginSpanTest {
 
     val shadowCanvas = shadowOf(canvas)
     // The below assertion verifies the 1st item of inner level list
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(-73.0f)
     assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(48.0f)
     // The below assertion verifies the 2nd item of inner level list
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(72.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(-73.0f)
     assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(139.0f)
 
     // The below assertion verifies the 1st item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(-25.0f)
     assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(225.0f)
     // The below assertion verifies the 2nd item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(24.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(-25.0f)
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
+  }
+
+  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  fun testDrawLeadingMargin_forNestedNumberedListItems_inRtl_isDrawnCorrectlyWithIndentation() {
+    val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+
+    val canvas = Canvas()
+    val paint = Paint()
+    val x = 10
+    val dir = 15
+    val top = 0
+    val bottom = 0
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = displayLocale
+    )
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "<p>" +
+          "<ol>" +
+          "        <li> Usage Data\", such as:" +
+          "          <ol>" +
+          "            <li>your answers to Lessons;</li>" +
+          "            <li>when you begin and end a Lesson;</li>" +
+          "          </ol>" +
+          "        </li>" +
+          "        <li> any contributions you make to the Site (such as feedback on" +
+          "            Lessons, edits to Lessons, and Lessons created);</li>" +
+          "</ol>" +
+          "   </p>",
+        textView
+      )
+    }
+
+    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    val bulletSpans =
+      htmlResult.getSpans(
+        0,
+        htmlResult.length,
+        ListItemLeadingMarginSpan.OlSpan::class.java
+      )
+    assertThat(bulletSpans.size.toLong()).isEqualTo(4)
+
+    val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
+    assertThat(bulletSpan0).isNotNull()
+    htmlResult.setSpan(
+      bulletSpan0,
+      0,
+      3,
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    bulletSpan0.drawLeadingMargin(
+      canvas, paint, x, dir, top, 78, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan0),
+      htmlResult.getSpanEnd(bulletSpan0),
+      true,
+      null
+    )
+    val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
+    bulletSpan1.drawLeadingMargin(
+      canvas, paint, x, dir, top, 164, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan1),
+      htmlResult.getSpanEnd(bulletSpan1),
+      true,
+      null
+    )
+
+    val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
+    assertThat(bulletSpan2).isNotNull()
+    bulletSpan2.drawLeadingMargin(
+      canvas, paint, x, dir, top, 250, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan2),
+      htmlResult.getSpanEnd(bulletSpan2),
+      true,
+      null
+    )
+    val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
+    assertThat(bulletSpan3).isNotNull()
+    bulletSpan3.drawLeadingMargin(
+      canvas, paint, x, dir, top, 422, bottom, htmlResult,
+      htmlResult.getSpanStart(bulletSpan3),
+      htmlResult.getSpanEnd(bulletSpan3),
+      true,
+      null
+    )
+
+    val shadowCanvas = shadowOf(canvas)
+
+    assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
+    // The below assertion verifies the 1st item of inner level list
+    assertThat(shadowCanvas.getDrawnTextEvent(0).x).isWithin(1e-5f).of(-96.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).y).isWithin(1e-5f).of(78.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).text).isEqualTo("١.")
+
+    // The below assertion verifies the 2nd item of inner level list
+    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isWithin(1e-5f).of(-96.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).y).isWithin(1e-5f).of(164.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).text).isEqualTo("٢.")
+
+    // The below assertion verifies the 1st item of outer level list
+    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isWithin(1e-5f).of(-48.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).y).isWithin(1e-5f).of(250.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).text).isEqualTo("١.")
+
+    // The below assertion verifies the 2nd item of outer level list
+    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isWithin(1e-5f).of(-48.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).y).isWithin(1e-5f).of(422.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("٢.")
   }
 
   @Test
@@ -679,10 +826,8 @@ class ListItemLeadingMarginSpanTest {
     return valueCaptor.value
   }
 
-  private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
-    Locale.setDefault(locale)
-  }
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
+    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -747,6 +892,23 @@ class ListItemLeadingMarginSpanTest {
   }
 
   private companion object {
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ARABIC
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "ar"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.REGION_UNSPECIFIED
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "EG"
+        }.build()
+      }.build()
+    }.build()
   }
 }
