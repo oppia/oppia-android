@@ -117,7 +117,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   private fun updateChapterDescription() {
-    binding.resumeLessonChapterDescriptionTextView.text = htmlParserFactory.create(
+    val chapterDescription = htmlParserFactory.create(
       resourceBucketName,
       resumeLessonViewModel.entityType,
       explorationId,
@@ -126,6 +126,12 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       resumeLessonViewModel.chapterSummary.get()!!.summary,
       binding.resumeLessonChapterDescriptionTextView
     )
+    if (chapterDescription.isNotBlank()) {
+      binding.resumeLessonChapterDescriptionTextView.visibility = View.VISIBLE
+      binding.resumeLessonChapterDescriptionTextView.text = chapterDescription
+    } else {
+      binding.resumeLessonChapterDescriptionTextView.visibility = View.GONE
+    }
   }
 
   private fun getResumeLessonViewModel(): ResumeLessonViewModel {
