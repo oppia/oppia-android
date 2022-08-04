@@ -226,7 +226,7 @@ sealed class OppiaLocale {
      */
     abstract fun formatDouble(value: Double): String
 
-    /** Returns a human-readable representation of this [Int]. */
+    /** Returns a human-readable representation of [number]. */
     abstract fun toHumanReadableString(number: Int): String?
 
     /**
