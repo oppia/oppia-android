@@ -307,7 +307,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
