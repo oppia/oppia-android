@@ -1324,7 +1324,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.all_topics))
+        stringToMatch = context.getString((R.string.select_a_topic_to_start))
       )
     }
   }
