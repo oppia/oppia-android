@@ -307,7 +307,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -329,7 +335,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 1)
@@ -353,7 +365,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -371,7 +389,14 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
+
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -401,7 +426,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -420,7 +451,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -450,7 +487,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -473,7 +516,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -509,7 +558,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -533,7 +588,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -582,7 +643,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -630,7 +697,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -654,7 +727,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -678,7 +757,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(1)
       verifyTextOnHomeListItemAtPosition(
@@ -716,7 +801,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -737,7 +828,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -755,7 +852,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -777,7 +880,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(isRoot()).perform(orientationLandscape())
@@ -800,7 +909,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -830,7 +945,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
@@ -858,7 +979,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyTextOnHomeListItemAtPosition(
@@ -871,7 +998,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
@@ -884,7 +1017,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       verifyTextOnHomeListItemAtPosition(
@@ -902,7 +1041,13 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
@@ -915,7 +1060,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       verifyTextOnHomeListItemAtPosition(
@@ -1002,7 +1153,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 4)
@@ -1016,7 +1173,13 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
+    val loginFirstTimeData = profileTestHelper.logIntoUser()
+    val loginSecondTimeData = profileTestHelper.logIntoUser()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity {
+        profileTestHelper.waitForOperationToComplete(loginFirstTimeData)
+        profileTestHelper.waitForOperationToComplete(loginSecondTimeData)
+      }
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
