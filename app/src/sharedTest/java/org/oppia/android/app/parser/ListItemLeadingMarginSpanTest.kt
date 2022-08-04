@@ -475,7 +475,7 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 
-  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,

@@ -439,7 +439,7 @@ class HtmlParserTest {
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
   }
 
-  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
