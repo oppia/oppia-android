@@ -1145,9 +1145,13 @@ class PinPasswordActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(containsString(
-        context.resources.getString(R.string.reset_pin_enter_dialog_message, "Ben"))
-      )).check(matches(isDisplayed()))
+      onView(
+        withText(
+          containsString(
+            context.resources.getString(R.string.reset_pin_enter_dialog_message, "Ben")
+          )
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
