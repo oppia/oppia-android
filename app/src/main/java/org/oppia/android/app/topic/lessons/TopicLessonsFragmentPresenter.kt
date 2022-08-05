@@ -201,28 +201,28 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun expandStoryList(position: Int) {
-      val previousIndex: Int? = currentExpandedChapterListIndex
-      currentExpandedChapterListIndex =
-        if (currentExpandedChapterListIndex != null &&
-          currentExpandedChapterListIndex == position
-        ) {
-          null
-        } else {
-          position
-        }
-      expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-      if (previousIndex != null && currentExpandedChapterListIndex != null &&
-        previousIndex == currentExpandedChapterListIndex
+    val previousIndex: Int? = currentExpandedChapterListIndex
+    currentExpandedChapterListIndex =
+      if (currentExpandedChapterListIndex != null &&
+        currentExpandedChapterListIndex == position
       ) {
-        bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+        null
       } else {
-        previousIndex?.let {
-          bindingAdapter.notifyItemChanged(previousIndex)
-        }
-        currentExpandedChapterListIndex?.let {
-          bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
-        }
+        position
       }
+    expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+    if (previousIndex != null && currentExpandedChapterListIndex != null &&
+      previousIndex == currentExpandedChapterListIndex
+    ) {
+      bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+    } else {
+      previousIndex?.let {
+        bindingAdapter.notifyItemChanged(previousIndex)
+      }
+      currentExpandedChapterListIndex?.let {
+        bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+      }
+    }
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
