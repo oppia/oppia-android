@@ -197,7 +197,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     } else {
       binding.chapterListDropDownIcon.isClickable = false
     }
-
   }
 
   private fun expandStoryList(position: Int) {
