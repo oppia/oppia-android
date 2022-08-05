@@ -14,7 +14,6 @@
     <item name="colorAccent">@color/color_palette_accent_color</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
-    <item name="android:textCursorDrawable">@style/InputInteractionEditText</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 

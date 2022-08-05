@@ -70,6 +70,7 @@
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
   <color name="color_def_dark_purple">#441530</color>
+  <color name="color_def_error_text">#923026</color>
   <color name="color_def_black_grey">#33999999</color>
   <color name="color_def_platinum">#E5E5E5</color>
   <color name="color_def_light_grey_2">#666666</color>
@@ -81,4 +82,6 @@
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_start">#23272A00</color>
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_center">#23272A</color>
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_end">#00C7B6</color>
+  <color name="color_def_whitish_grey">#E5E5E5</color>
+  <color name="color_def_checkbox_green">#008577</color>
 </resources>
