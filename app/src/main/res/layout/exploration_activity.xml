@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
   <data>
 
     <import type="android.view.View" />
@@ -52,17 +53,18 @@
             android:layout_gravity="end"
             android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
             android:scaleType="center"
-            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}"
-            android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
-        
-            <ImageButton
-              android:id="@+id/action_bottom_sheet_options_menu"
-              android:layout_width="48dp"
-              android:layout_height="48dp"
-              android:layout_gravity="end"
-              android:scaleType="center"
-              style="?android:actionOverflowButtonStyle"/>
-          
+            android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
+            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}" />
+
+          <ImageButton
+            android:id="@+id/action_bottom_sheet_options_menu"
+            style="?android:actionOverflowButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:scaleType="center" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

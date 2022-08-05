@@ -1714,7 +1714,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testActivity_initialise_openBottomSheet_showsBottomSheet() {
+  fun testExplorationActivity_initialise_openBottomSheet_showsBottomSheet() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1736,7 +1736,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_openBottomsheet_selectHelpInBottomsheet_opensHelpActivity() {
+  fun testExplorationActivity_openBottomsheet_selectHelpInBottomsheet_opensHelpActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1766,7 +1766,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_openBottomsheet_selectOptionsInBottomsheet_opensOptionsActivity() {
+  fun testExplorationActivity_openBottomsheet_selectOptionsInBottomsheet_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1796,7 +1796,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testActivity_openBottomsheet_selectCloseInBottomSheet_closeBottomsheet() {
+  fun testExplorationActivity_openBottomsheet_selectCloseOption_bottomSheetCloses() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,

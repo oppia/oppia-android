@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oppia.android.R
+import org.oppia.android.app.fragment.InjectableBottomSheetDialogFragment
 import org.oppia.android.databinding.BottomSheetOptionsMenuFragmentBinding
 
 /** Bottom sheet fragment for displaying options menu */
-class BottomSheetOptionsMenu : BottomSheetDialogFragment() {
-
+class BottomSheetOptionsMenu : InjectableBottomSheetDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
