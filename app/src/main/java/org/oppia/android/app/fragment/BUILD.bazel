@@ -91,3 +91,18 @@ kt_android_library(
         "//third_party:androidx_appcompat_appcompat",
     ],
 )
+
+kt_android_library(
+    name = "injectable_dialog_fragment",
+    srcs = [
+        "InjectableBottomSheetDialogFragment.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        ":fragment_component_factory",
+        "//app/src/main/java/org/oppia/android/app/view:view_component",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
+        "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
+        "//third_party:androidx_appcompat_appcompat",
+    ],
+)

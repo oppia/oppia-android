@@ -436,85 +436,6 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testExploration_overflowMenu_isDisplayedSuccessfully() {
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.menu_help))).check(matches(isDisplayed()))
-    }
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-  }
-
-  @Test
-  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_help))).perform(click())
-      intended(hasComponent(HelpActivity::class.java.name))
-      intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
-    }
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-  }
-
-  @Test
-  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_options))).perform(click())
-      intended(hasComponent(OptionsActivity::class.java.name))
-      intended(
-        hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
-        )
-      )
-    }
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-  }
-
-  @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1730,8 +1651,10 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
-      onView(withId(R.id.bottom_sheet_layout)).check(matches(isDisplayed()))
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.bottom_sheet_layout)).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
@@ -1752,8 +1675,11 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
-      onView(withText(context.getString(R.string.menu_help))).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
@@ -1782,8 +1708,11 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
-      onView(withText(context.getString(R.string.menu_options))).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
         hasExtra(
@@ -1812,8 +1741,12 @@ class ExplorationActivityTest {
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
-      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close))).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close))).inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.bottom_sheet_layout)).check(doesNotExist())
     }
   }
