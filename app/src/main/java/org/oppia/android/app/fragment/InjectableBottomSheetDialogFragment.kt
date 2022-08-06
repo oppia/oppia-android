@@ -11,7 +11,8 @@ import org.oppia.android.app.view.ViewComponentFactory
  * A fragment that facilitates field injection to children. This fragment can only be used with
  * [org.oppia.android.app.activity.InjectableAppCompatActivity] contexts.
  */
-abstract class InjectableBottomSheetDialogFragment : BottomSheetDialogFragment(),
+abstract class InjectableBottomSheetDialogFragment :
+  BottomSheetDialogFragment(),
   ViewComponentFactory {
   /**
    * The [FragmentComponent] corresponding to this fragment. This cannot be used before [onAttach]

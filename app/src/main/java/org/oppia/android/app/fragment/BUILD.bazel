@@ -93,7 +93,7 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "injectable_dialog_fragment",
+    name = "injectable_bottom_sheet_dialog_fragment",
     srcs = [
         "InjectableBottomSheetDialogFragment.kt",
     ],

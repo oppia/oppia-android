@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -1744,7 +1743,8 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close))).inRoot(isDialog())
+      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close)))
+        .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.bottom_sheet_layout)).check(doesNotExist())
