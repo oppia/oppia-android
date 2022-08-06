@@ -95,6 +95,7 @@ message ImageWithRegions {
     }
 
     Region region = 2;
+    string content_description = 3;
   }
   repeated LabeledRegion label_regions = 2;
 }

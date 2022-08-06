@@ -136,6 +136,7 @@ class ClickableAreasImage(
             showOrHideRegion(newView, clickableArea)
           }
         }
+        newView.contentDescription = clickableArea.contentDescription
         it.addView(newView)
       }
 
