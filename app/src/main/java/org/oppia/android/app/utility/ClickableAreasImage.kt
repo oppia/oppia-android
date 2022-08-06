@@ -159,7 +159,12 @@ class ClickableAreasImage(
 
   private fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
     resetRegionSelectionViews()
-    listener.onClickableAreaTouched(NamedRegionClickedEvent(clickableArea.label))
+    listener.onClickableAreaTouched(
+      NamedRegionClickedEvent(
+        clickableArea.label,
+        clickableArea.contentDescription
+      )
+    )
     newView.setBackgroundResource(R.drawable.selected_region_background)
   }
 }
