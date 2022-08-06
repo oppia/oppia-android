@@ -82,9 +82,7 @@ class HomeViewModel(
           computePromotedActivityListViewModel(promotedActivityList)
         )
       } else {
-        listOfNotNull(
-          computeWelcomeViewModel(profile),
-        )
+        listOfNotNull(computeWelcomeViewModel(profile))
       }
     }.combineWith(
       topicListSummaryDataProvider,
