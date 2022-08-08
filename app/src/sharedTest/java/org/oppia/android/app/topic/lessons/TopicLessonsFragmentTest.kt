@@ -822,7 +822,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          targetViewId = R.id.chapter_list_drop_down_icon
+          targetViewId = R.id.expand_list_icon
         )
       ).check(
         matches(isClickable())
@@ -839,7 +839,7 @@ class TopicLessonsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          targetViewId = R.id.chapter_list_drop_down_icon
+          targetViewId = R.id.expand_list_icon
         )
       ).check(
         matches(not(isClickable()))

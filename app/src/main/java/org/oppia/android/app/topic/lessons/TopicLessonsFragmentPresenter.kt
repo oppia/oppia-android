@@ -184,7 +184,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     )
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
 
-    binding.chapterListDropDownIcon.setOnClickListener {
+    binding.expandListIcon.setOnClickListener {
       expandStoryList(position)
     }
 
@@ -194,7 +194,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
     if (accessibilityService.isScreenReaderEnabled()) {
       binding.root.isClickable = false
+      binding.chapterListDropDownIcon.isClickable = true
     } else {
+      binding.root.isClickable = true
       binding.chapterListDropDownIcon.isClickable = false
     }
   }
