@@ -411,7 +411,7 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">Por favor, selecione todas as opções corretas.</string>
+  <string name="item_selection_text">Por favor, selecione pelo menos uma opção.</string>
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>

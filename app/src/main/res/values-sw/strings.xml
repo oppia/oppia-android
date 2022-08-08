@@ -397,7 +397,7 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">\nInaendelea_kuchakata tena_mtazamo_tag</string>
-  <string name="item_selection_text">\nTafadhali chagua chaguo zote sahihi.</string>
+  <string name="item_selection_text">\nTafadhali chagua angalau chaguo moja.</string>
   <string name="unsupported_app_version_dialog_title">\nToleo la programu lisilotumika</string>
   <string name="unsupported_app_version_dialog_message">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Funga programu</string>
