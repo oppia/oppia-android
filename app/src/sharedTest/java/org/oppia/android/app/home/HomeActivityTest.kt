@@ -300,12 +300,7 @@ class HomeActivityTest {
   fun testHomeActivity_logUserInFirstTime_checkPromotedStoriesIsNotDisplayed() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
-      verifyExactTextNotOnHomeListItemAtPosition(
-        itemPosition = 1,
-        targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
-      )
+      onView(withId(R.id.recently_played_stories_text_view)).check(doesNotExist())
     }
   }
 
@@ -1965,20 +1960,6 @@ class HomeActivityTest {
         targetViewId
       )
     ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun verifyExactTextNotOnHomeListItemAtPosition(
-    itemPosition: Int,
-    targetViewId: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        R.id.home_recycler_view,
-        itemPosition,
-        targetViewId
-      )
-    ).check(matches(not(stringToMatch)))
   }
 
   private fun verifyHomeRecyclerViewHasGridColumnCount(columnCount: Int) {
