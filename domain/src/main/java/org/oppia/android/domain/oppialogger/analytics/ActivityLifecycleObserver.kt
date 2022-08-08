@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 private const val APPLICATION_STARTUP_SCREEN = "application_startup_screen"
 
-/** Observer that observes activity lifecycle. */
+/** Observer that observes activity lifecycle and further logs analytics events on its basis. */
 @Singleton
 class ActivityLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
@@ -52,7 +52,7 @@ class ActivityLifecycleObserver @Inject constructor(
     currentScreen = activity.javaClass.simpleName
     if (!isStartupLatencyLogged) {
       performanceMetricsLogger.logStartupLatency(
-        initialTimestamp,
+        getStartupLatency(initialTimestamp),
         activity.javaClass.simpleName
       )
       isStartupLatencyLogged = true
@@ -76,4 +76,7 @@ class ActivityLifecycleObserver @Inject constructor(
   override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {}
 
   override fun onActivityDestroyed(activity: Activity) {}
+
+  private fun getStartupLatency(initialTimestamp: Long): Long =
+    oppiaClock.getCurrentTimeMs() - initialTimestamp
 }

@@ -58,6 +58,7 @@ private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
 private const val TEST_TOTAL_PSS = Long.MAX_VALUE
 private const val TEST_BYTES_SENT = Long.MAX_VALUE
 private const val TEST_BYTES_RECEIVED = Long.MAX_VALUE
+private const val TEST_STARTUP_LATENCY_IN_MILLISECONDS = 3000L
 private const val TEST_SCREEN_UNSPECIFIED = "test_screen_unspecified"
 
 /** Tests for [PerformanceMetricsLoggerTest]. */
@@ -161,7 +162,10 @@ class PerformanceMetricsLoggerTest {
     val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
-    performanceMetricsLogger.logStartupLatency(TEST_TIMESTAMP, TEST_SCREEN_UNSPECIFIED)
+    performanceMetricsLogger.logStartupLatency(
+      TEST_STARTUP_LATENCY_IN_MILLISECONDS,
+      TEST_SCREEN_UNSPECIFIED
+    )
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(loggedEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -171,7 +175,8 @@ class PerformanceMetricsLoggerTest {
     // Startup latency millis will be equal to 0 since the initial timestamp is equal to
     // Long.MAX_VALUE and using FakeOppiaClock we've set the recording timestamp to also be
     // Long.MAX_VALUE. The difference between the two equals 0 and hence the startup latency millis.
-    assertThat(loggedEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis).isEqualTo(0)
+    assertThat(loggedEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
+      .isEqualTo(TEST_STARTUP_LATENCY_IN_MILLISECONDS)
     assertThat(loggedEvent.memoryTier).isEqualTo(memoryTier)
     assertThat(loggedEvent.storageTier).isEqualTo(storageTier)
     assertThat(loggedEvent.isAppInForeground).isEqualTo(isAppInForeground)

@@ -53,10 +53,10 @@ class PerformanceMetricsLogger @Inject constructor(
    * Logs the startup latency of the application as a performance metric for the current state of
    * the app. This metric should only be logged when the application starts.
    *
+   * @param startupLatency denotes the startup latency value that'll be logged to Firebase
    * @param currentScreen denotes the application screen at which this metric has been logged
    */
-  fun logStartupLatency(firstTimestamp: Long, currentScreen: String) {
-    val startupLatency = oppiaClock.getCurrentTimeMs() - firstTimestamp
+  fun logStartupLatency(startupLatency: Long, currentScreen: String) {
     if (startupLatency >= 0) {
       performanceMetricsController.logLowPriorityMetricEvent(
         oppiaClock.getCurrentTimeMs(),
