@@ -18,11 +18,17 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val DEFAULT_TEST_APK_SIZE = Long.MAX_VALUE
-private const val DEFAULT_TEST_STORAGE_USAGE = Long.MAX_VALUE
-private const val DEFAULT_TEST_TOTAL_PSS = Long.MAX_VALUE
-private const val DEFAULT_TEST_BYTES_SENT = Long.MAX_VALUE
-private const val DEFAULT_TEST_BYTES_RECEIVED = Long.MAX_VALUE
+private const val ONE_MEGABYTE = 1024L * 1024L
+private const val TEST_APK_SIZE = ONE_MEGABYTE * 3L
+private const val TEST_STORAGE_USAGE = ONE_MEGABYTE * 7L
+private const val TEST_TOTAL_PSS = ONE_MEGABYTE * 2L
+private const val TEST_BYTES_SENT = ONE_MEGABYTE
+private const val TEST_BYTES_RECEIVED = ONE_MEGABYTE
+private const val DEFAULT_TEST_APK_SIZE = 0L
+private const val DEFAULT_TEST_STORAGE_USAGE = 0L
+private const val DEFAULT_TEST_TOTAL_PSS = 0L
+private const val DEFAULT_TEST_BYTES_SENT = 0L
+private const val DEFAULT_TEST_BYTES_RECEIVED = 0L
 
 /** Tests for [FakePerformanceMetricAssessor]. */
 @RunWith(AndroidJUnit4::class)
@@ -31,7 +37,7 @@ private const val DEFAULT_TEST_BYTES_RECEIVED = Long.MAX_VALUE
 class FakePerformanceMetricAssessorTest {
 
   @Inject
-  lateinit var fakePerformanceMetricUtils: FakePerformanceMetricAssessor
+  lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
 
   @Before
   fun setUp() {
@@ -39,55 +45,100 @@ class FakePerformanceMetricAssessorTest {
   }
 
   @Test
-  fun testFakeMetricUtils_setApkSize_returnsCorrectApkSize() {
-    fakePerformanceMetricUtils.setApkSize(DEFAULT_TEST_APK_SIZE)
+  fun testFakeMetricAssessor_setApkSize_returnsCorrectApkSize() {
+    fakePerformanceMetricAssessor.setApkSize(TEST_APK_SIZE)
 
-    assertThat(fakePerformanceMetricUtils.getApkSize()).isEqualTo(DEFAULT_TEST_APK_SIZE)
+    assertThat(fakePerformanceMetricAssessor.getApkSize()).isEqualTo(TEST_APK_SIZE)
   }
 
   @Test
-  fun testFakeMetricUtils_setStorageUsage_returnsCorrectStorageSize() {
-    fakePerformanceMetricUtils.setStorageUsage(DEFAULT_TEST_STORAGE_USAGE)
-
-    assertThat(fakePerformanceMetricUtils.getUsedStorage()).isEqualTo(DEFAULT_TEST_STORAGE_USAGE)
+  fun testFakeMetricAssessor_getApkSize_returnsDefaultApkSize() {
+    assertThat(fakePerformanceMetricAssessor.getApkSize()).isEqualTo(DEFAULT_TEST_APK_SIZE)
   }
 
   @Test
-  fun testFakeMetricUtils_setTotalPss_returnsCorrectTotalPss() {
-    fakePerformanceMetricUtils.setTotalPss(DEFAULT_TEST_TOTAL_PSS)
+  fun testFakeMetricAssessor_setStorageUsage_returnsCorrectStorageSize() {
+    fakePerformanceMetricAssessor.setStorageUsage(TEST_STORAGE_USAGE)
 
-    assertThat(fakePerformanceMetricUtils.getTotalPssUsed()).isEqualTo(DEFAULT_TEST_TOTAL_PSS)
+    assertThat(fakePerformanceMetricAssessor.getUsedStorage()).isEqualTo(TEST_STORAGE_USAGE)
   }
 
   @Test
-  fun testFakeMetricUtils_setTotalSentBytes_returnsCorrectTotalSentBytes() {
-    fakePerformanceMetricUtils.setTotalSentBytes(DEFAULT_TEST_BYTES_SENT)
-
-    assertThat(fakePerformanceMetricUtils.getTotalSentBytes()).isEqualTo(DEFAULT_TEST_BYTES_SENT)
+  fun testFakeMetricAssessor_getStorageUsage_returnsDefaultStorageUsage() {
+    assertThat(fakePerformanceMetricAssessor.getUsedStorage()).isEqualTo(DEFAULT_TEST_STORAGE_USAGE)
   }
 
   @Test
-  fun testFakeMetricUtils_setTotalReceivedBytes_returnsCorrectTotalReceivedBytes() {
-    fakePerformanceMetricUtils.setTotalReceivedBytes(DEFAULT_TEST_BYTES_RECEIVED)
+  fun testFakeMetricAssessor_setTotalPss_returnsCorrectTotalPss() {
+    fakePerformanceMetricAssessor.setTotalPss(TEST_TOTAL_PSS)
 
-    assertThat(fakePerformanceMetricUtils.getTotalReceivedBytes())
+    assertThat(fakePerformanceMetricAssessor.getTotalPssUsed()).isEqualTo(TEST_TOTAL_PSS)
+  }
+
+  @Test
+  fun testFakeMetricAssessor_getTotalPss_returnsDefaultTotalPss() {
+    assertThat(fakePerformanceMetricAssessor.getUsedStorage()).isEqualTo(DEFAULT_TEST_TOTAL_PSS)
+  }
+
+  @Test
+  fun testFakeMetricAssessor_setTotalSentBytes_returnsCorrectTotalSentBytes() {
+    fakePerformanceMetricAssessor.setTotalSentBytes(TEST_BYTES_SENT)
+
+    assertThat(fakePerformanceMetricAssessor.getTotalSentBytes()).isEqualTo(TEST_BYTES_SENT)
+  }
+
+  @Test
+  fun testFakeMetricAssessor_getTotalSentBytes_returnsDefaultTotalSentBytes() {
+    assertThat(fakePerformanceMetricAssessor.getTotalSentBytes()).isEqualTo(DEFAULT_TEST_BYTES_SENT)
+  }
+
+  @Test
+  fun testFakeMetricAssessor_setTotalReceivedBytes_returnsCorrectTotalReceivedBytes() {
+    fakePerformanceMetricAssessor.setTotalReceivedBytes(TEST_BYTES_RECEIVED)
+
+    assertThat(fakePerformanceMetricAssessor.getTotalReceivedBytes())
+      .isEqualTo(TEST_BYTES_RECEIVED)
+  }
+
+  @Test
+  fun testFakeMetricAssessor_getTotalReceivedBytes_returnsDefaultTotalReceivedBytes() {
+    assertThat(fakePerformanceMetricAssessor.getTotalReceivedBytes())
       .isEqualTo(DEFAULT_TEST_BYTES_RECEIVED)
   }
 
   @Test
-  fun testFakeMetricUtils_setDeviceStorageTier_returnsCorrectTotalDeviceStorageTier() {
+  fun testFakeMetricAssessor_setDeviceStorageTier_returnsCorrectTotalDeviceStorageTier() {
     val testDeviceStorageTier = OppiaMetricLog.StorageTier.LOW_STORAGE
-    fakePerformanceMetricUtils.setDeviceStorageTier(testDeviceStorageTier)
+    fakePerformanceMetricAssessor.setDeviceStorageTier(testDeviceStorageTier)
 
-    assertThat(fakePerformanceMetricUtils.getDeviceStorageTier()).isEqualTo(testDeviceStorageTier)
+    assertThat(fakePerformanceMetricAssessor.getDeviceStorageTier())
+      .isEqualTo(testDeviceStorageTier)
   }
 
   @Test
-  fun testFakeMetricUtils_setDeviceMemoryTier_returnsCorrectTotalDeviceMemoryTier() {
-    val testDeviceMemoryTier = OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
-    fakePerformanceMetricUtils.setDeviceMemoryTier(testDeviceMemoryTier)
+  fun testFakeMetricAssessor_getDeviceStorageTier_returnsDefaultTotalDeviceStorageTier() {
+    val defaultTestDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 
-    assertThat(fakePerformanceMetricUtils.getDeviceMemoryTier()).isEqualTo(testDeviceMemoryTier)
+    assertThat(fakePerformanceMetricAssessor.getDeviceStorageTier()).isEqualTo(
+      defaultTestDeviceStorageTier
+    )
+  }
+
+  @Test
+  fun testFakeMetricAssessor_setDeviceMemoryTier_returnsCorrectTotalDeviceMemoryTier() {
+    val testDeviceMemoryTier = OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
+    fakePerformanceMetricAssessor.setDeviceMemoryTier(testDeviceMemoryTier)
+
+    assertThat(fakePerformanceMetricAssessor.getDeviceMemoryTier()).isEqualTo(testDeviceMemoryTier)
+  }
+
+  @Test
+  fun testFakeMetricAssessor_getDeviceMemoryTier_returnsDefaultTotalDeviceMemoryTier() {
+    val defaultTestDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+
+    assertThat(fakePerformanceMetricAssessor.getDeviceMemoryTier()).isEqualTo(
+      defaultTestDeviceMemoryTier
+    )
   }
 
   private fun setUpTestApplicationComponent() {

@@ -2,24 +2,28 @@ package org.oppia.android.util.logging.performancemetrics
 
 import android.app.ActivityManager
 import android.app.Application
-import android.content.ComponentName
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.net.TrafficStats
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -48,136 +52,180 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_PACKAGE_LABEL = "TEST_PACKAGE_LABEL"
 private const val TEST_APP_PATH = "TEST_APP_PATH"
-private const val TEST_PID = 1
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
-private const val TEST_FILE_CONTENT = "TEST_FILE_CONTENT"
+private const val ONE_KILOBYTE = 1024
+private const val ONE_MEGABYTE = ONE_KILOBYTE * 1024
+private const val TWO_MEGABYTES = ONE_MEGABYTE * 2L
+private const val THREE_MEGABYTES = ONE_MEGABYTE * 3L
+private const val ONE_GIGABYTE = ONE_MEGABYTE * 1024
+private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
+private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
 
 /** Tests for [PerformanceMetricsAssessorImpl]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-@RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(application = PerformanceMetricsAssessorImplTest.TestApplication::class)
 class PerformanceMetricsAssessorImplTest {
 
+  @Parameter
+  var totalMemory: Long = Long.MIN_VALUE // Inited because primitives can't be lateinit.
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
   @Inject
-  lateinit var performanceMetricsUtilsImpl: PerformanceMetricsAssessorImpl
+  lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
 
   @Inject
   lateinit var context: Context
 
+  private val activityManager by lazy {
+    context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+  }
+
   @Before
   fun setUp() {
-    MockitoAnnotations.initMocks(this)
     setUpTestApplicationComponent()
   }
 
   @Test
-  fun testPerformanceMetricsUtils_setTotalMemory_returnsCorrectMemoryTier() {
-    val activityManager: ActivityManager =
-      ApplicationProvider.getApplicationContext<Application>()
-        .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
-    val memoryInfo = ActivityManager.MemoryInfo()
-    memoryInfo.totalMem = (1.5 * 1024 * 1024 * 1024).toLong()
-    shadowActivityManager.setMemoryInfo(memoryInfo)
-    val memoryTier = performanceMetricsUtilsImpl.getDeviceMemoryTier()
-
-    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER)
-  }
-
-  @Test
   fun testPerformanceMetricsUtils_getTotalStorageUsed_returnsCorrectStorageUsage() {
-    context.openFileOutput(TEST_FILE_NAME, Context.MODE_PRIVATE).use {
-      it.write(TEST_FILE_CONTENT.toByteArray())
-    }
-    val cacheFile = File.createTempFile(TEST_APP_PATH, null, context.cacheDir)
-    val expectedStorageValue = TEST_FILE_CONTENT.length + cacheFile.length()
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+      .write(ByteArray(ONE_MEGABYTE))
+    File.createTempFile(TEST_FILE_NAME, null, context.cacheDir)
+      .writeBytes(ByteArray(ONE_MEGABYTE))
 
-    assertThat(performanceMetricsUtilsImpl.getUsedStorage()).isEqualTo(expectedStorageValue)
+    assertThat(performanceMetricsAssessorImpl.getUsedStorage()).isEqualTo(ONE_MEGABYTE * 2)
   }
 
   @Test
-  fun testPerformanceMetricsUtils_getTotalStorageUsageTier_returnsCorrectStorageUsageTier() {
-    context.openFileOutput(TEST_FILE_NAME, Context.MODE_PRIVATE).use {
-      it.write(TEST_FILE_CONTENT.toByteArray())
-    }
-    val cacheFile = File.createTempFile(TEST_APP_PATH, null, context.cacheDir)
-    val expectedStorageValue = TEST_FILE_CONTENT.length + cacheFile.length()
+  fun testPerformanceMetricsUtils_writeBytesLowerThanLowTierHigherBound_retsLowStorageUsageTier() {
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+      .write(ByteArray(ONE_KILOBYTE))
+    assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
+      .isEqualTo(OppiaMetricLog.StorageTier.LOW_STORAGE)
+  }
 
-    val expectedStorageTierValue = when (expectedStorageValue / (1024 * 1024 * 1024)) {
-      in 0L until 32L -> OppiaMetricLog.StorageTier.LOW_STORAGE
-      in 32L..64L -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-      else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
-    }
+  @Test
+  fun testPerformanceMetricsUtils_writeBytesEqualToLowTierHigherBound_retsLowStorageUsageTier() {
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+      .write(ByteArray(ONE_MEGABYTE))
+    assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
+      .isEqualTo(OppiaMetricLog.StorageTier.LOW_STORAGE)
+  }
 
-    assertThat(performanceMetricsUtilsImpl.getDeviceStorageTier())
-      .isEqualTo(expectedStorageTierValue)
+  @Test
+  fun testPerformanceMetricsUtils_writeBytesEqualToMedTierLowerBound_retsMediumStorageUsageTier() {
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+      .write(ByteArray(TWO_MEGABYTES.toInt()))
+    assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
+      .isEqualTo(OppiaMetricLog.StorageTier.MEDIUM_STORAGE)
+  }
+
+  @Test
+  fun testPerformanceMetricsUtils_writeBytesEqualToMedTierHigherBound_retsMediumStorageUsageTier() {
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+      .write(ByteArray(THREE_MEGABYTES.toInt()))
+    assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
+      .isEqualTo(OppiaMetricLog.StorageTier.MEDIUM_STORAGE)
+  }
+
+  @Test
+  fun testPerformanceMetricsUtils_writeBytesGreaterThanHighTierLowerBound_retsHighStorageTier() {
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+      .write(ByteArray(TWO_MEGABYTES.toInt() * 2))
+    assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
+      .isEqualTo(OppiaMetricLog.StorageTier.HIGH_STORAGE)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
-    val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(
-      ApplicationProvider.getApplicationContext<Application>().applicationInfo.uid
-    )
+    val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(context.applicationInfo.uid)
 
-    assertThat(performanceMetricsUtilsImpl.getTotalSentBytes())
+    assertThat(performanceMetricsAssessorImpl.getTotalSentBytes())
       .isEqualTo(expectedNetworkBytesSent)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
-    val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(
-      ApplicationProvider.getApplicationContext<Application>().applicationInfo.uid
-    )
+    val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(context.applicationInfo.uid)
 
-    assertThat(performanceMetricsUtilsImpl.getTotalReceivedBytes())
+    assertThat(performanceMetricsAssessorImpl.getTotalReceivedBytes())
       .isEqualTo(expectedNetworkBytesReceived)
   }
 
   @Test
-  fun testPerformanceMetricsUtils_setAppProcesses_getMemoryUsage_returnsCorrectMemoryUsage() {
-    val activityManager: ActivityManager =
-      ApplicationProvider.getApplicationContext<Application>()
-        .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    val process1 = ActivityManager.RunningAppProcessInfo().apply {
-      this.pid = TEST_PID
-      this.importanceReasonComponent = ComponentName("com.robolectric", "process 1")
-    }
-    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
-    shadowActivityManager.setProcesses(listOf(process1))
-    val processMemoryInfo = activityManager.getProcessMemoryInfo(arrayOf(TEST_PID).toIntArray())
-    val totalPssUsedTest = processMemoryInfo?.get(0)?.totalPss?.toLong() ?: 0L
-
-    assertThat(performanceMetricsUtilsImpl.getTotalPssUsed()).isEqualTo(totalPssUsedTest)
-  }
-
-  @Test
   fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
-    val application: Application = ApplicationProvider.getApplicationContext()
-    val applicationInfo = ApplicationInfo()
-    val testApkSize = (File(TEST_APP_PATH).length() / 1024)
-    applicationInfo.apply {
-      this.packageName = context.packageName
+    val shadowPackageManager = shadowOf(context.packageManager)
+    File(TEST_APP_PATH).writeBytes(ByteArray(ONE_MEGABYTE))
+    val applicationInfo = context.applicationInfo.apply {
       this.sourceDir = TEST_APP_PATH
-      this.name = TEST_PACKAGE_LABEL
-      this.flags = 0
     }
-    val packageManager = application.packageManager
-    val shadowPackageManager = shadowOf(packageManager)
-
-    shadowPackageManager.removePackage(application.packageName)
+    shadowPackageManager.removePackage(context.packageName)
     shadowPackageManager.installPackage(
       PackageInfo().apply {
         this.packageName = context.packageName
         this.applicationInfo = applicationInfo
       }
     )
+    val apkSize = performanceMetricsAssessorImpl.getApkSize()
+    assertThat(apkSize).isEqualTo(ONE_MEGABYTE)
+  }
 
-    val apkSize = performanceMetricsUtilsImpl.getApkSize()
-    assertThat(apkSize).isEqualTo(testApkSize)
+  @Test
+  @RunParameterized(
+    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=0"),
+    OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=1147483648"),
+    OppiaParameterizedTestRunner.Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
+  )
+  fun testPerformanceMetricsUtils_setTotalMemoryForLowMemoryRange_returnsCorrectLowMemoryTier() {
+    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
+    val memoryInfo = ActivityManager.MemoryInfo()
+    memoryInfo.totalMem = totalMemory
+    shadowActivityManager.setMemoryInfo(memoryInfo)
+    val memoryTier = performanceMetricsAssessorImpl.getDeviceMemoryTier()
+
+    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER)
+  }
+
+  @Test
+  @RunParameterized(
+    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=2147483648"),
+    OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=2684354560"),
+    OppiaParameterizedTestRunner.Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
+  )
+  fun testPerformanceMetricsUtils_setTotalMemoryForMediumMemoryRange_retsCorrectMediumMemoryTier() {
+    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
+    val memoryInfo = ActivityManager.MemoryInfo()
+    memoryInfo.totalMem = totalMemory
+    shadowActivityManager.setMemoryInfo(memoryInfo)
+    val memoryTier = performanceMetricsAssessorImpl.getDeviceMemoryTier()
+
+    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER)
+  }
+
+  @Test
+  @RunParameterized(
+    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=3221225473"),
+    OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=5221225472"),
+    OppiaParameterizedTestRunner.Iteration(
+      "memoryEqualToMaxValue",
+      "totalMemory=9223372036854775807"
+    )
+  )
+  fun testPerformanceMetricsUtils_setTotalMemoryForHighMemoryRange_retsCorrectHighMemoryTier() {
+    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
+    val memoryInfo = ActivityManager.MemoryInfo()
+    memoryInfo.totalMem = totalMemory
+    shadowActivityManager.setMemoryInfo(memoryInfo)
+    val memoryTier = performanceMetricsAssessorImpl.getDeviceMemoryTier()
+
+    assertThat(memoryTier).isEqualTo(OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -243,6 +291,30 @@ class PerformanceMetricsAssessorImplTest {
     }
   }
 
+  @Module
+  class TestPerformanceMetricsAssessorModule {
+    @Provides
+    fun providePerformanceMetricsAssessor(
+      performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
+    ): PerformanceMetricsAssessor = performanceMetricsAssessorImpl
+
+    @Provides
+    @LowStorageTierUpperBound
+    fun provideLowStorageTierUpperBound(): Long = TWO_MEGABYTES
+
+    @Provides
+    @MediumStorageTierUpperBound
+    fun provideMediumStorageTierUpperBound(): Long = THREE_MEGABYTES
+
+    @Provides
+    @LowMemoryTierUpperBound
+    fun provideLowMemoryTierUpperBound(): Long = TWO_GIGABYTES
+
+    @Provides
+    @MediumMemoryTierUpperBound
+    fun provideMediumMemoryTierUpperBound(): Long = THREE_GIGABYTES
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -251,7 +323,7 @@ class PerformanceMetricsAssessorImplTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, SyncStatusModule::class,
-      PerformanceMetricsAssessorModule::class
+      TestPerformanceMetricsAssessorModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

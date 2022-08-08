@@ -4,12 +4,24 @@ import android.app.ActivityManager
 import android.content.Context
 import android.net.TrafficStats
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
+import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
+import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
+import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
+import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import java.io.File
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Utility to extract performance metrics from the underlying Android system. */
+@Singleton
 class PerformanceMetricsAssessorImpl @Inject constructor(
-  private val context: Context
+  private val context: Context,
+  @LowStorageTierUpperBound private val lowStorageTierUpperBound: Long,
+  @MediumStorageTierUpperBound private val mediumStorageTierUpperBound: Long,
+  @LowMemoryTierUpperBound private val lowMemoryTierUpperBound: Long,
+  @MediumMemoryTierUpperBound private val mediumMemoryTierUpperBound: Long
 ) : PerformanceMetricsAssessor {
 
   private val activityManager: ActivityManager by lazy {
@@ -19,13 +31,13 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   override fun getApkSize(): Long {
     val apkPath =
       context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo.sourceDir
-    return File(apkPath).length() / 1024
+    return File(apkPath).length()
   }
 
   override fun getUsedStorage(): Long {
-    val permanentStorageUsage = context.filesDir?.listFiles()?.map { it.length() }?.sum()
-    val cacheStorageUsage = context.cacheDir?.listFiles()?.map { it.length() }?.sum()
-    return (cacheStorageUsage?.let { permanentStorageUsage?.plus(it) }) ?: 0L
+    val permanentStorageUsage = context.filesDir?.listFiles()?.map { it.length() }?.sum() ?: 0L
+    val cacheStorageUsage = context.cacheDir?.listFiles()?.map { it.length() }?.sum() ?: 0L
+    return permanentStorageUsage + cacheStorageUsage
   }
 
   override fun getTotalSentBytes(): Long = TrafficStats.getUidTxBytes(context.applicationInfo.uid)
@@ -35,34 +47,24 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
 
   override fun getTotalPssUsed(): Long {
     val pid = ActivityManager.RunningAppProcessInfo().pid
-    activityManager.runningAppProcesses
     val processMemoryInfo = activityManager.getProcessMemoryInfo(intArrayOf(pid))
     return processMemoryInfo?.map { it.totalPss }?.sum()?.toLong() ?: 0L
   }
 
-  override fun getDeviceStorageTier(): OppiaMetricLog.StorageTier {
-    val permanentStorageUsage = context.filesDir?.listFiles()?.map { it.length() }?.sum()
-    val cacheStorageUsage = context.cacheDir?.listFiles()?.map { it.length() }?.sum()
-    val usedStorage = (cacheStorageUsage?.let { permanentStorageUsage?.plus(it) })
-    if (usedStorage != null) {
-      return when (
-        usedStorage.let { it / (1024 * 1024 * 1024) }
-      ) {
-        in 0L until 32L -> OppiaMetricLog.StorageTier.LOW_STORAGE
-        in 32L..64L -> OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-        else -> OppiaMetricLog.StorageTier.HIGH_STORAGE
-      }
+  override fun getDeviceStorageTier(): OppiaMetricLog.StorageTier =
+    when (getUsedStorage()) {
+      in 0L until lowStorageTierUpperBound -> LOW_STORAGE
+      in lowStorageTierUpperBound..mediumStorageTierUpperBound -> MEDIUM_STORAGE
+      else -> HIGH_STORAGE
     }
-    return OppiaMetricLog.StorageTier.UNRECOGNIZED
-  }
 
   override fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier {
     val memoryInfo = ActivityManager.MemoryInfo()
     activityManager.getMemoryInfo(memoryInfo)
-    return when (memoryInfo.totalMem.toDouble() / (1024 * 1024 * 1024)) {
-      in 0.00..2.00 -> OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
-      in 2.00..3.00 -> OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
-      else -> OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
+    return when (memoryInfo.totalMem) {
+      in 0L until lowMemoryTierUpperBound -> LOW_MEMORY_TIER
+      in lowMemoryTierUpperBound..mediumMemoryTierUpperBound -> MEDIUM_MEMORY_TIER
+      else -> HIGH_MEMORY_TIER
     }
   }
 }

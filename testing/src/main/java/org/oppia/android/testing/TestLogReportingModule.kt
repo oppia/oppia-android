@@ -24,6 +24,6 @@ interface TestLogReportingModule {
 
   @Binds
   fun bindFakePerformanceMetricsUtils(
-    fakePerformanceMetricUtils: FakePerformanceMetricAssessor
+    fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
   ): PerformanceMetricsAssessor
 }
