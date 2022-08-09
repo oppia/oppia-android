@@ -194,10 +194,10 @@ class TopicLessonsFragmentPresenter @Inject constructor(
 
     if (accessibilityService.isScreenReaderEnabled()) {
       binding.root.isClickable = false
-      binding.chapterListDropDownIcon.isClickable = true
+      binding.expandListIcon.isClickable = true
     } else {
       binding.root.isClickable = true
-      binding.chapterListDropDownIcon.isClickable = false
+      binding.expandListIcon.isClickable = false
     }
   }
 
