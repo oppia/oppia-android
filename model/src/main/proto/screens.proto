@@ -6,7 +6,7 @@ option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 enum ScreenName {
-  ACTIVITY_NOT_SET = 0;
+  ACTIVITY_NAME_UNSPECIFIED = 0;
   SPLASH_ACTIVITY = 1;
   PROFILE_CHOOSER_ACTIVITY = 2;
   ADD_PROFILE_ACTIVITY = 3;
