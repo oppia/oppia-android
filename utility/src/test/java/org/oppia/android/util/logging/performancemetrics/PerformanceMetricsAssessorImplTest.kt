@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.net.TrafficStats
+import android.os.Debug
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -51,6 +52,8 @@ import org.robolectric.shadows.ShadowActivityManager
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
+import org.robolectric.shadow.api.Shadow
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
@@ -68,7 +71,10 @@ private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
 @LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(OppiaParameterizedTestRunner::class)
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
-@Config(application = PerformanceMetricsAssessorImplTest.TestApplication::class)
+@Config(
+  application = PerformanceMetricsAssessorImplTest.TestApplication::class,
+  shadows = [OppiaShadowActivityManager::class]
+  )
 class PerformanceMetricsAssessorImplTest {
 
   @Parameter
@@ -157,6 +163,20 @@ class PerformanceMetricsAssessorImplTest {
 
     assertThat(performanceMetricsAssessorImpl.getTotalReceivedBytes())
       .isEqualTo(expectedNetworkBytesReceived)
+  }
+
+  @Test
+  fun testAssessor_setProcessMemoryInfo_setTotalPss_returnsCorrectMemoryUsage() {
+    val shadow = Shadow.extract(activityManager) as OppiaShadowActivityManager
+    shadow.setProcessMemoryInfo(
+      Debug.MemoryInfo().apply {
+        this.nativePss = 2
+        this.dalvikPss = 1
+        this.otherPss = 4
+      }
+    )
+
+    assertThat(performanceMetricsAssessorImpl.getTotalPssUsed()).isEqualTo(7)
   }
 
   @Test
