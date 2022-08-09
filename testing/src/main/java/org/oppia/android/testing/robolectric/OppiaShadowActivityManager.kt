@@ -14,8 +14,8 @@ import org.robolectric.annotation.Implements
 @Implements(ActivityManager::class)
 class OppiaShadowActivityManager {
 
-  private var processMemoryInfo: Array<Debug.MemoryInfo?>? = arrayOfNulls(1)
-    //arrayOf(Debug.MemoryInfo().apply { this.otherPss = 2 })
+  private var processMemoryInfo: Array<Debug.MemoryInfo?>? =
+    arrayOf(Debug.MemoryInfo().apply { this.otherPss = 2 })
 
   /**
    * Sets [memoryInfo] as part of [processMemoryInfo] which is then returned whenever
