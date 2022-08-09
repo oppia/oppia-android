@@ -1,10 +1,10 @@
 package org.oppia.android.util.logging
 
 import android.content.Intent
-import javax.inject.Inject
 import org.oppia.android.app.model.CurrentAppScreen
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.extensions.putProtoExtra
+import javax.inject.Inject
 
 private const val CURRENT_APP_SCREEN_NAME_KEY = "key"
 

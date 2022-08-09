@@ -10,8 +10,8 @@ import org.oppia.android.app.deprecation.DeprecationNoticeExitAppListener
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
-import javax.inject.Inject
 import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import javax.inject.Inject
 
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to

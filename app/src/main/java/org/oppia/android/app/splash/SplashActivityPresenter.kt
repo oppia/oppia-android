@@ -11,6 +11,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
@@ -24,9 +25,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
-import javax.inject.Inject
-import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val SPLASH_INIT_STATE_DATA_PROVIDER_ID = "splash_init_state_data_provider"

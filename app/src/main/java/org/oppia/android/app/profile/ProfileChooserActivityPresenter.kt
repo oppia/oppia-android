@@ -4,11 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.domain.profile.ProfileManagementController
-import javax.inject.Inject
-import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import javax.inject.Inject
 
 /** The presenter for [ProfileChooserActivity]. */
 @ActivityScope
