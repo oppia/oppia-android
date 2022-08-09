@@ -25,6 +25,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -48,12 +49,11 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadow.api.Shadow
 import org.robolectric.shadows.ShadowActivityManager
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
-import org.robolectric.shadow.api.Shadow
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
@@ -74,7 +74,7 @@ private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
 @Config(
   application = PerformanceMetricsAssessorImplTest.TestApplication::class,
   shadows = [OppiaShadowActivityManager::class]
-  )
+)
 class PerformanceMetricsAssessorImplTest {
 
   @Parameter
