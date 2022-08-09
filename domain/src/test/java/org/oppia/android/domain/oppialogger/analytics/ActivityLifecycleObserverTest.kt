@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -48,6 +49,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -69,6 +73,9 @@ class ActivityLifecycleObserverTest {
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
+  @Inject
+  lateinit var currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -77,8 +84,9 @@ class ActivityLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_getCurrentScreen_verifyInitialValueIsNull() {
-    assertThat(activityLifecycleObserver.getCurrentScreen()).isNull()
+  fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
+    assertThat(activityLifecycleObserver.getCurrentScreen())
+      .isEqualTo(ScreenName.ACTIVITY_NAME_UNSPECIFIED.name)
   }
 
   @Test
@@ -97,10 +105,12 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
     val activity = Robolectric.buildActivity(Activity::class.java).get()
+    activity.intent = currentAppScreenNameWrapper
+      .getCurrentAppScreenNameIntent(ScreenName.ACTIVITY_NAME_UNSPECIFIED)
     activityLifecycleObserver.onActivityResumed(activity)
 
     val currentScreenValue = activityLifecycleObserver.getCurrentScreen()
-    assertThat(currentScreenValue).isEqualTo(activity.javaClass.simpleName)
+    assertThat(currentScreenValue).isEqualTo(ScreenName.ACTIVITY_NAME_UNSPECIFIED.name)
   }
 
   @Test
@@ -112,8 +122,10 @@ class ActivityLifecycleObserverTest {
 
     activityLifecycleObserver.onActivityResumed(activity)
     val currentScreen = activityLifecycleObserver.getCurrentScreen()
-    val startupLatencyEvent =
-      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)[1]
+    val startupLatencyEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
+
+    val startupLatencyEvent = startupLatencyEvents[1]
 
     assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
       STARTUP_LATENCY_METRIC
@@ -163,13 +175,13 @@ class ActivityLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_activityResumed_activityPaused_verifyCurrentScreenReturnsNull() {
+  fun testObserver_activityResumed_activityPaused_verifyCurrentScreenReturnsUnspecifiedValue() {
     val activity = Robolectric.buildActivity(Activity::class.java).get()
     activityLifecycleObserver.onActivityResumed(activity)
     activityLifecycleObserver.onActivityPaused(activity)
     val currentScreen = activityLifecycleObserver.getCurrentScreen()
 
-    assertThat(currentScreen).isNull()
+    assertThat(currentScreen).isEqualTo(ScreenName.ACTIVITY_NAME_UNSPECIFIED.name)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -10,8 +10,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val APPLICATION_STARTUP_SCREEN = "application_startup_screen"
+import org.oppia.android.app.model.ScreenName
 
 /** Observer that observes activity lifecycle and further logs analytics events on its basis. */
 @Singleton
@@ -37,19 +36,19 @@ class ActivityLifecycleObserver @Inject constructor(
    * */
   private var isStartupLatencyLogged: Boolean = false
 
-  private var currentScreen: String? = null
+  private var currentScreen: String = ScreenName.ACTIVITY_NAME_UNSPECIFIED.name
 
   /**
    * Returns the current active UI screen that's visible to the user. If UI is in-active or the app
-   * is in background, this value returns null.
+   * is in background, this value returns [ScreenName.ACTIVITY_NAME_UNSPECIFIED].
    */
-  fun getCurrentScreen(): String? = currentScreen
+  fun getCurrentScreen(): String = currentScreen
 
   override fun onCreate() {
     initialTimestamp = oppiaClock.getCurrentTimeMs()
     application.registerActivityLifecycleCallbacks(this)
-    performanceMetricsLogger.logApkSize(APPLICATION_STARTUP_SCREEN)
-    performanceMetricsLogger.logStorageUsage(APPLICATION_STARTUP_SCREEN)
+    performanceMetricsLogger.logApkSize(currentScreen)
+    performanceMetricsLogger.logStorageUsage(currentScreen)
   }
 
   override fun onActivityResumed(activity: Activity) {
@@ -57,13 +56,11 @@ class ActivityLifecycleObserver @Inject constructor(
       currentAppScreenNameWrapper.getCurrentAppScreenNameIntentKey(),
       CurrentAppScreen.getDefaultInstance()
     )
-    if (currentAppScreen != null) {
-      currentScreen = currentAppScreen.screenName.name
-    }
+    currentScreen = currentAppScreen.screenName.name
     if (!isStartupLatencyLogged) {
       performanceMetricsLogger.logStartupLatency(
         getStartupLatency(initialTimestamp),
-        activity.javaClass.simpleName
+        currentScreen
       )
       isStartupLatencyLogged = true
     }
@@ -74,7 +71,7 @@ class ActivityLifecycleObserver @Inject constructor(
 
   override fun onActivityPaused(activity: Activity) {
     // It's necessary to remove the value of active UI whenever the it leaves foreground.
-    currentScreen = null
+    currentScreen = ScreenName.ACTIVITY_NAME_UNSPECIFIED.name
   }
 
   override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
