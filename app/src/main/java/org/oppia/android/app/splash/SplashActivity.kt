@@ -11,6 +11,7 @@ import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 
 /**
  * An activity that shows a temporary loading page until the app is fully loaded then navigates to
@@ -27,12 +28,16 @@ class SplashActivity :
   @Inject
   lateinit var splashActivityPresenter: SplashActivityPresenter
 
+  @Inject
+  lateinit var currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val componentFactory = applicationContext as ActivityComponentFactory
     activityComponent = componentFactory.createActivityComponent(this)
     (activityComponent as ActivityComponentImpl).inject(this)
     splashActivityPresenter.handleOnCreate()
+    intent = splashActivityPresenter.getCurrentAppScreenNameIntent()
   }
 
   override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()

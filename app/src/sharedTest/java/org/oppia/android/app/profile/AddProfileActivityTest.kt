@@ -119,6 +119,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.CurrentAppScreen
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -151,6 +155,9 @@ class AddProfileActivityTest {
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
+  @Inject
+  lateinit var currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
 
   @Before
   fun setUp() {
@@ -1685,6 +1692,18 @@ class AddProfileActivityTest {
           )
         )
     }
+  }
+
+  @Test
+  fun testAddProfileActivity_onCreate_getIntent_setsIntentWithCorrectIntent() {
+    activityTestRule.launchActivity(createAddProfileActivityIntent())
+    val intent = activityTestRule.activity.intent
+    val currentScreenName = intent.getProtoExtra(
+      currentAppScreenNameWrapper.getCurrentAppScreenNameIntentKey(),
+      CurrentAppScreen.getDefaultInstance()
+    ).screenName
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.ADD_PROFILE_ACTIVITY)
   }
 
   private fun createAddProfileActivityIntent(): Intent {

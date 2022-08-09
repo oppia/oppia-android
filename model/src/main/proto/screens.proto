@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+enum ScreenName {
+  ACTIVITY_NOT_SET = 0;
+  SPLASH_ACTIVITY = 1;
+  PROFILE_CHOOSER_ACTIVITY = 2;
+  ADD_PROFILE_ACTIVITY = 3;
+  HOME_ACTIVITY = 4;
+}
+
+message CurrentAppScreen {
+  ScreenName screen_name = 1;
+}

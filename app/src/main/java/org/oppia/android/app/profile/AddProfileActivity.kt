@@ -26,6 +26,7 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     addProfileFragmentPresenter.handleOnCreate()
+    intent = addProfileFragmentPresenter.getCurrentAppScreenNameIntent()
   }
 
   override fun onSupportNavigateUp(): Boolean {

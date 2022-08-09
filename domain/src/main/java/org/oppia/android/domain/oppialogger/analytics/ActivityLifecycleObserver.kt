@@ -7,6 +7,9 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.CurrentAppScreen
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 
 private const val APPLICATION_STARTUP_SCREEN = "application_startup_screen"
 
@@ -15,7 +18,8 @@ private const val APPLICATION_STARTUP_SCREEN = "application_startup_screen"
 class ActivityLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val application: Application,
-  private val performanceMetricsLogger: PerformanceMetricsLogger
+  private val performanceMetricsLogger: PerformanceMetricsLogger,
+  private val currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
 ) : Application.ActivityLifecycleCallbacks, ApplicationStartupListener {
 
   /**
@@ -49,7 +53,13 @@ class ActivityLifecycleObserver @Inject constructor(
   }
 
   override fun onActivityResumed(activity: Activity) {
-    currentScreen = activity.javaClass.simpleName
+    val currentAppScreen = activity.intent.getProtoExtra(
+      currentAppScreenNameWrapper.getCurrentAppScreenNameIntentKey(),
+      CurrentAppScreen.getDefaultInstance()
+    )
+    if (currentAppScreen != null) {
+      currentScreen = currentAppScreen.screenName.name
+    }
     if (!isStartupLatencyLogged) {
       performanceMetricsLogger.logStartupLatency(
         getStartupLatency(initialTimestamp),
@@ -58,7 +68,7 @@ class ActivityLifecycleObserver @Inject constructor(
       isStartupLatencyLogged = true
     }
     performanceMetricsLogger.logMemoryUsage(
-      activity.javaClass.simpleName
+      currentAppScreen.screenName.name
     )
   }
 

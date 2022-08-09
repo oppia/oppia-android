@@ -24,5 +24,6 @@ class ProfileChooserActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     profileChooserActivityPresenter.handleOnCreate()
+    intent = profileChooserActivityPresenter.getCurrentAppScreenNameIntent()
   }
 }

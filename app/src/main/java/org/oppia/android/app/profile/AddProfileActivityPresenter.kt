@@ -32,6 +32,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 
 const val GALLERY_INTENT_RESULT_CODE = 1
 
@@ -41,7 +43,8 @@ class AddProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<AddProfileViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
 ) {
   private lateinit var uploadImageView: ImageView
   private val profileViewModel by lazy {
@@ -166,6 +169,10 @@ class AddProfileActivityPresenter @Inject constructor(
       showInfoDialog()
     }
   }
+
+  /** Returns an intent that wraps up a proto object carrying the screen name of the activity. */
+  fun getCurrentAppScreenNameIntent(): Intent =
+    currentAppScreenNameWrapper.getCurrentAppScreenNameIntent(ScreenName.ADD_PROFILE_ACTIVITY)
 
   private fun setValidPin(binding: AddProfileActivityBinding) {
     if (inputtedPin && inputtedConfirmPin) {
