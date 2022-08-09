@@ -3,13 +3,13 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import org.oppia.android.app.model.CurrentAppScreen
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.CurrentAppScreen
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 
 private const val APPLICATION_STARTUP_SCREEN = "application_startup_screen"
 
