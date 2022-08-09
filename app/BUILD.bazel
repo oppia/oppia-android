@@ -755,6 +755,7 @@ kt_android_library(
         ":views",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/fragment:injectable_bottom_sheet_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_dialog_fragment",
         "//app/src/main/java/org/oppia/android/app/fragment:injectable_fragment",
         "//app/src/main/java/org/oppia/android/app/shim:prod_modules",
