@@ -260,9 +260,10 @@
   <!-- AddProfileActivity -->
   <string name="add_profile_activity_label">Add Profile</string>
   <string name="add_profile_title">Add Profile</string>
-  <string name="add_profile_input_name">Name*</string>
-  <string name="add_profile_input_pin">3-Digit PIN*</string>
-  <string name="add_profile_input_confirm_pin">Confirm 3-Digit PIN*</string>
+
+  <string name="add_profile_input_name"><font color='@android:color/transparent'>*</font>Name*</string>
+  <string name="add_profile_input_pin">3-Digit <font color='@android:color/transparent'>*</font>PIN*</string>
+  <string name="add_profile_input_confirm_pin">Confirm 3-Digit <font color='@android:color/transparent'>*</font>PIN*</string>
   <string name="add_profile_allow_download_heading">Allow Download Access</string>
   <string name="add_profile_allow_download_sub">User is able to download and delete content without Administrator PIN.</string>
   <string name="add_profile_create_btn">Create</string>
