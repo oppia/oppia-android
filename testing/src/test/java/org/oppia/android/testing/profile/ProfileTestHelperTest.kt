@@ -130,14 +130,16 @@ class ProfileTestHelperTest {
   @Test
   fun testLogIntoUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
-    val loginProvider = monitorFactory.waitForNextFailureResult(profileTestHelper.logIntoUser())
+    val loginProvider = profileTestHelper.logIntoUser()
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
   }
 
   @Test
   fun testLogIntoNewUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
-    val loginProvider = monitorFactory.waitForNextFailureResult(profileTestHelper.logIntoNewUser())
+    val loginProvider = profileTestHelper.logIntoNewUser()
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
   }
 
