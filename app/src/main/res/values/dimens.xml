@@ -377,7 +377,6 @@
   <dimen name="general_button_item_split_view_margin_top_left">20dp</dimen>
   <dimen name="general_button_item_split_view_margin_top_right">68dp</dimen>
   <dimen name="general_button_item_margin_top">20dp</dimen>
-  <dimen name="continue_submit_button_width">180dp</dimen>
 
   <!-- General Button Item: Exploration Split View -->
   <dimen name="general_button_item_exploration_split_view_margin_start">44dp</dimen>
