@@ -122,36 +122,22 @@ class ProfileTestHelperTest {
   @Test
   fun testLogIntoAdmin_initializeProfiles_logIntoAdmin_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
-
-    profileTestHelper.logIntoAdmin().observeForever(mockUpdateResultObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value).isSuccess()
+    val loginProvider = profileTestHelper.logIntoAdmin()
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(0)
   }
 
   @Test
   fun testLogIntoUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
-
-    profileTestHelper.logIntoUser().observeForever(mockUpdateResultObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value).isSuccess()
+    val loginProvider = monitorFactory.waitForNextFailureResult(profileTestHelper.logIntoUser())
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(1)
   }
 
   @Test
   fun testLogIntoNewUser_initializeProfiles_logIntoUser_checkIsSuccessful() {
     profileTestHelper.initializeProfiles()
-
-    profileTestHelper.logIntoNewUser().observeForever(mockUpdateResultObserver)
-    testCoroutineDispatchers.runCurrent()
-
-    verify(mockUpdateResultObserver, atLeastOnce()).onChanged(updateResultCaptor.capture())
-    assertThat(updateResultCaptor.value).isSuccess()
+    val loginProvider = monitorFactory.waitForNextFailureResult(profileTestHelper.logIntoNewUser())
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
   }
 
