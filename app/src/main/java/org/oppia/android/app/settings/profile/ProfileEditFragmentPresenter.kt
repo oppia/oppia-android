@@ -4,7 +4,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,7 +17,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.toast
 import javax.inject.Inject
 
 /** Argument key for profile deletion dialog in [ProfileEditFragment]. */
@@ -138,10 +136,6 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment
       ) {
         if (it is AsyncResult.Success) {
-          fragment.requireContext().toast(
-            fragment.requireContext().getString(R.string.profile_edit_delete_successful_message),
-            Toast.LENGTH_SHORT
-          )
           if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
             val intent =
               Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)

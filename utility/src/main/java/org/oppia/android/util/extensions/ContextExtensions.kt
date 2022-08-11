@@ -19,9 +19,3 @@ fun Context.getVersionCode(): Int {
 fun Context.getLastUpdateTime(): Long {
   return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).lastUpdateTime
 }
-
-/**
- * Extension method to show toast for Context.
- */
-fun Context?.toast(text: CharSequence, duration: Int = Toast.LENGTH_SHORT) =
-  this?.let { Toast.makeText(it, text, duration).show() }
