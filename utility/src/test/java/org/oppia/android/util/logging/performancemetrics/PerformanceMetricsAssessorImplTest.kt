@@ -39,14 +39,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -54,6 +46,8 @@ import org.robolectric.shadow.api.Shadow
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
 private const val ONE_KILOBYTE = 1024
@@ -274,42 +268,6 @@ class PerformanceMetricsAssessorImplTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-  }
-
-  @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLearnerAnalyticsStudy: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @LearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
   }
 
   @Module
