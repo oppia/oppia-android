@@ -4,8 +4,9 @@ import android.net.TrafficStats
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 
-private var uidTxBytes = 0L
-private var uidRxBytes = 0L
+private const val DEFAULT_BYTE_VALUE = 0L
+private var uidTxBytes = DEFAULT_BYTE_VALUE
+private var uidRxBytes = DEFAULT_BYTE_VALUE
 
 /**
  * Shadows the Traffic Stats to extend its testing capabilities.
@@ -43,5 +44,14 @@ class OppiaShadowTrafficStats {
     @Implementation
     @JvmStatic
     fun getUidTxBytes(uid: Int): Long = uidTxBytes
+
+    /**
+     * Resets [uidTxBytes] and [uidRxBytes] values. This should always be called in a tear-down
+     * method to avoid leaking state between tests.
+     */
+    fun reset() {
+      uidRxBytes = DEFAULT_BYTE_VALUE
+      uidTxBytes = DEFAULT_BYTE_VALUE
+    }
   }
 }

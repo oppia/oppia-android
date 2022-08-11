@@ -26,6 +26,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
+import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -53,7 +54,6 @@ import org.robolectric.shadow.api.Shadow
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
 private const val ONE_KILOBYTE = 1024
