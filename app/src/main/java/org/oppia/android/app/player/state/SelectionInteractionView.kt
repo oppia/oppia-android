@@ -45,7 +45,6 @@ class SelectionInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var bindingInterface: ViewBindingShim
 
-  @Inject
   lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var entityId: String
@@ -53,7 +52,6 @@ class SelectionInteractionView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
@@ -65,6 +63,7 @@ class SelectionInteractionView @JvmOverloads constructor(
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
     this.selectionItemInputType = selectionItemInputType
+    singleTypeBuilderFactory = BindableAdapter.SingleTypeBuilder.Factory(Fragment())
     adapter = createAdapter()
   }
 

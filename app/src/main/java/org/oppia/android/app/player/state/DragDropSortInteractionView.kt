@@ -53,7 +53,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @Inject
   lateinit var viewBindingShim: ViewBindingShim
 
-  @Inject
   lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var entityId: String
@@ -76,6 +75,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
     //  type is set (plus the type ought to be permanent).
     this.isMultipleItemsInSamePositionAllowed = isAllowed
+    singleTypeBuilderFactory = BindableAdapter.SingleTypeBuilder.Factory(Fragment())
     adapter = createAdapter()
   }
 

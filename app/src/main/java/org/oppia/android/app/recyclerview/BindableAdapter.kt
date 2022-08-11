@@ -336,11 +336,7 @@ class BindableAdapter<T : Any> internal constructor(
             setViewModel(binding, transformViewModel(data))
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
-            // Skip attaching Lifecycle when StateFragment is created as this is causing NPE, yet to find fix.
-            val currentFragment = getLifecycleOwner()?.javaClass?.simpleName.toString()
-            if (currentFragment != "QuestionPlayerFragment" && currentFragment != "StateFragment") {
-              binding.lifecycleOwner = getLifecycleOwner()
-            }
+            binding.lifecycleOwner = getLifecycleOwner()
           }
         }
       }
