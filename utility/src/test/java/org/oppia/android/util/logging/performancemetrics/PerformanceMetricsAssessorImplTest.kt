@@ -50,11 +50,10 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadow.api.Shadow
-import org.robolectric.shadows.ShadowActivityManager
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-
+import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
 private const val ONE_KILOBYTE = 1024
@@ -73,7 +72,7 @@ private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(
   application = PerformanceMetricsAssessorImplTest.TestApplication::class,
-  shadows = [OppiaShadowActivityManager::class]
+  shadows = [OppiaShadowActivityManager::class, OppiaShadowTrafficStats::class]
 )
 class PerformanceMetricsAssessorImplTest {
 
@@ -151,18 +150,20 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testPerformanceMetricsUtils_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
-    val expectedNetworkBytesSent = TrafficStats.getUidTxBytes(context.applicationInfo.uid)
+    val shadow = Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
+    shadow.setUidTxBytes(20L)
 
     assertThat(performanceMetricsAssessorImpl.getTotalSentBytes())
-      .isEqualTo(expectedNetworkBytesSent)
+      .isEqualTo(20L)
   }
 
   @Test
   fun testPerformanceMetricsUtils_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
-    val expectedNetworkBytesReceived = TrafficStats.getUidRxBytes(context.applicationInfo.uid)
+    val shadow = Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
+    shadow.setUidRxBytes(20L)
 
     assertThat(performanceMetricsAssessorImpl.getTotalReceivedBytes())
-      .isEqualTo(expectedNetworkBytesReceived)
+      .isEqualTo(20L)
   }
 
   @Test
@@ -204,7 +205,7 @@ class PerformanceMetricsAssessorImplTest {
     OppiaParameterizedTestRunner.Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
   )
   fun testPerformanceMetricsUtils_setTotalMemoryForLowMemoryRange_returnsCorrectLowMemoryTier() {
-    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
+    val shadowActivityManager = Shadow.extract(activityManager) as OppiaShadowActivityManager
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
     shadowActivityManager.setMemoryInfo(memoryInfo)
@@ -220,7 +221,7 @@ class PerformanceMetricsAssessorImplTest {
     OppiaParameterizedTestRunner.Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
   )
   fun testPerformanceMetricsUtils_setTotalMemoryForMediumMemoryRange_retsCorrectMediumMemoryTier() {
-    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
+    val shadowActivityManager = Shadow.extract(activityManager) as OppiaShadowActivityManager
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
     shadowActivityManager.setMemoryInfo(memoryInfo)
@@ -239,7 +240,7 @@ class PerformanceMetricsAssessorImplTest {
     )
   )
   fun testPerformanceMetricsUtils_setTotalMemoryForHighMemoryRange_retsCorrectHighMemoryTier() {
-    val shadowActivityManager: ShadowActivityManager = shadowOf(activityManager)
+    val shadowActivityManager = Shadow.extract(activityManager) as OppiaShadowActivityManager
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
     shadowActivityManager.setMemoryInfo(memoryInfo)

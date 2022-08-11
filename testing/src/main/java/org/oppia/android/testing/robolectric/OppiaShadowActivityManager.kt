@@ -9,13 +9,14 @@ import org.robolectric.annotation.Implements
  * Shadows the Activity Manager to extend its testing capabilities.
  *
  * There is an existing robolectric shadow of Activity Manager but that doesn't provide us enough
- * control over MemoryInfo and hence MemoryUsage can't be tested using that.
+ * control over Debug.MemoryInfo and hence memory usage can't be tested using that.
  */
 @Implements(ActivityManager::class)
 class OppiaShadowActivityManager {
 
-  private var processMemoryInfo: Array<Debug.MemoryInfo?>? =
-    arrayOf(Debug.MemoryInfo().apply { this.otherPss = 2 })
+  private var processMemoryInfo: Array<Debug.MemoryInfo?>? = arrayOf(Debug.MemoryInfo())
+
+  private var memoryInfo: ActivityManager.MemoryInfo = ActivityManager.MemoryInfo()
 
   /**
    * Sets [memoryInfo] as part of [processMemoryInfo] which is then returned whenever
@@ -25,9 +26,28 @@ class OppiaShadowActivityManager {
     processMemoryInfo?.set(0, memoryInfo)
   }
 
-  /** Returns [processMemoryInfo] as the memory usage info of the application. */
+  /** Sets [memoryInfo] as equal to [memoryInfoValue]. */
+  fun setMemoryInfo(memoryInfoValue: ActivityManager.MemoryInfo) {
+    this.memoryInfo = memoryInfoValue
+  }
+
+  /**
+   * Robolectric shadow override of [ActivityManager.getProcessMemoryInfo]. Note that the value of
+   * [pids] isn't taken into account in this implementation unlike the actual one.
+   */
   @Implementation
   fun getProcessMemoryInfo(pids: IntArray?): Array<Debug.MemoryInfo?>? {
     return processMemoryInfo
+  }
+
+  /** Robolectric shadow override of [ActivityManager.getMemoryInfo]. */
+  @Implementation
+  fun getMemoryInfo(outInfo: ActivityManager.MemoryInfo) {
+    outInfo.apply {
+      availMem = memoryInfo.availMem
+      outInfo.lowMemory = memoryInfo.lowMemory
+      outInfo.threshold = memoryInfo.threshold
+      outInfo.totalMem = memoryInfo.totalMem
+    }
   }
 }
