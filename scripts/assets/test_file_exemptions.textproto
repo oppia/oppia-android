@@ -811,8 +811,6 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/Disp
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessor.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/MetricLogScheduler.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/MetricLogSchedulerModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsEventLogger.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsLogScheduler.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorkerFactory.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/PerformanceMetricsLoggerModule.kt"

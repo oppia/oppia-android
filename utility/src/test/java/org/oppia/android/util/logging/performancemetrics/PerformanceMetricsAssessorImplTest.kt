@@ -49,6 +49,9 @@ import javax.inject.Singleton
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
+private const val TEST_APP_PATH_CACHE = "TEST_APP_PATH_CACHE"
+private const val TEST_APP_SUB_PATH = "TEST_APP_SUB_PATH"
+private const val TEST_APP_SEMI_SUB_PATH = "TEST_APP_SEMI_SUB_PATH"
 private const val TEST_FILE_NAME = "TEST_FILE_NAME"
 private const val ONE_KILOBYTE = 1024
 private const val ONE_MEGABYTE = ONE_KILOBYTE * 1024
@@ -93,13 +96,28 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_getTotalStorageUsed_returnsCorrectStorageUsage() {
+  fun testAssessor_createFilesWithContent_getTotalStorageUsed_retsCorrectStorageUsage() {
     context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(ONE_MEGABYTE))
     File.createTempFile(TEST_FILE_NAME, null, context.cacheDir)
       .writeBytes(ByteArray(ONE_MEGABYTE))
 
     assertThat(performanceMetricsAssessorImpl.getUsedStorage()).isEqualTo(ONE_MEGABYTE * 2)
+  }
+
+  @Test
+  fun testAssessor_createFilesWithContent_withNesting_getTotStorageUsed_retsCorrectStorageUsage() {
+    val mainFile = File(TEST_APP_PATH)
+    val cacheFile = File.createTempFile(TEST_APP_PATH_CACHE, null, context.cacheDir)
+    val subFile = File(mainFile, TEST_APP_SUB_PATH)
+    val semiSubFile = File(subFile, TEST_APP_SEMI_SUB_PATH)
+
+    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE).write(ByteArray(ONE_MEGABYTE))
+    cacheFile.writeBytes(ByteArray(ONE_MEGABYTE))
+    context.openFileOutput(subFile.name, Context.MODE_PRIVATE).write(ByteArray(ONE_MEGABYTE))
+    context.openFileOutput(semiSubFile.name, Context.MODE_PRIVATE).write(ByteArray(ONE_MEGABYTE))
+
+    assertThat(performanceMetricsAssessorImpl.getUsedStorage()).isEqualTo(ONE_MEGABYTE * 4)
   }
 
   @Test
