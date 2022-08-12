@@ -13,11 +13,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -25,6 +22,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
 import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -46,7 +44,6 @@ import org.robolectric.shadow.api.Shadow
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_APP_PATH_CACHE = "TEST_APP_PATH_CACHE"
@@ -75,10 +72,6 @@ class PerformanceMetricsAssessorImplTest {
 
   @Parameter
   var totalMemory: Long = Long.MIN_VALUE // Inited because primitives can't be lateinit.
-
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
