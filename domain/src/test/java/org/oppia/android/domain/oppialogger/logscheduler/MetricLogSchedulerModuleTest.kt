@@ -1,4 +1,4 @@
-package org.oppia.android.util.logging.performancemetrics
+package org.oppia.android.domain.oppialogger.logscheduler
 
 import android.app.Application
 import android.content.Context

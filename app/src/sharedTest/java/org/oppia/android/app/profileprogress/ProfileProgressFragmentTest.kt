@@ -119,7 +119,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.logging.performancemetrics.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
