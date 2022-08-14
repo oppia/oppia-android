@@ -104,5 +104,6 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/view:view_component_builder_injector",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
         "//third_party:androidx_appcompat_appcompat",
+        "//third_party:com_google_android_material_material",
     ],
 )
