@@ -14,13 +14,6 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
-/**
- * RecyclerView items are 2 times of (No. of Hints + Solution),
- * this is because in UI after each hint or solution there is a horizontal line/view
- * which is considered as a separate item in recyclerview.
- */
-const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 1
-
 private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 
 /** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */
@@ -65,13 +58,11 @@ class HintsViewModel @Inject constructor(
         addHintToList(index, hintList[index])
       } else if (itemList.size > 0) {
         val isLastHintRevealed =
-          (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
+          (itemList[itemList.size - 1] as HintsViewModel)
             .isHintRevealed.get()
             ?: false
         val availableHintIndex = newAvailableHintIndex.get() ?: 0
-        if (isLastHintRevealed &&
-          index <= availableHintIndex / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-        ) {
+        if (isLastHintRevealed && index <= availableHintIndex) {
           addHintToList(index, hintList[index])
         } else {
           break
@@ -80,12 +71,10 @@ class HintsViewModel @Inject constructor(
     }
     if (itemList.size > 1) {
       val isLastHintRevealed =
-        (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
-          .isHintRevealed.get()
-          ?: false
+        (itemList[itemList.size - 1] as HintsViewModel).isHintRevealed.get() ?: false
       val areAllHintsExhausted = allHintsExhausted.get() ?: false
       if (solution.hasExplanation() &&
-        hintList.size * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER == itemList.size &&
+        hintList.size == itemList.size &&
         isLastHintRevealed &&
         areAllHintsExhausted
       ) {
