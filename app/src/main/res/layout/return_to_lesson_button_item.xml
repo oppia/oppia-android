@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="buttonViewModel"
+      type="org.oppia.android.app.hintsandsolution.ReturnToLessonViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/hints_and_solution_summary_card_margin_start"
+    android:layout_marginTop="64dp">
+
+    <Button
+      android:id="@+id/return_to_lesson_button"
+      style="@style/StateButtonActive"
+      android:paddingStart="24dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="24dp"
+      android:paddingBottom="8dp"
+      android:text="@string/return_to_lesson"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

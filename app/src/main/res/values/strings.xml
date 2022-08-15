@@ -447,6 +447,7 @@
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
+  <string name="return_to_lesson">Return to lesson</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
   <string name="link_to_item_below">Link to item %s</string>

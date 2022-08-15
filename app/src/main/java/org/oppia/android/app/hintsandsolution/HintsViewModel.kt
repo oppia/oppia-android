@@ -81,6 +81,7 @@ class HintsViewModel @Inject constructor(
         addSolutionToList(solution)
       }
     }
+    addReturnToLessonButtonItem()
     return itemList
   }
 
@@ -114,5 +115,9 @@ class HintsViewModel @Inject constructor(
     solutionViewModel.solutionSummary.set(explanationHtml)
     solutionViewModel.isSolutionRevealed.set(helpIndex.isSolutionRevealed())
     itemList.add(solutionViewModel)
+  }
+
+  private fun addReturnToLessonButtonItem(){
+    itemList.add(ReturnToLessonViewModel())
   }
 }

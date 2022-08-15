@@ -18,6 +18,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.databinding.HintsSummaryBinding
+import org.oppia.android.databinding.ReturnToLessonButtonItemBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
@@ -160,6 +161,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HINT_ITEM,
     VIEW_TYPE_SOLUTION_ITEM,
+    VIEW_TYPE_RETURN_TO_LESSON_ITEM
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HintsAndSolutionItemViewModel> {
@@ -168,6 +170,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         when (viewModel) {
           is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
           is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
+          is ReturnToLessonViewModel -> ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
@@ -182,6 +185,12 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         inflateDataBinding = SolutionSummaryBinding::inflate,
         setViewModel = this::bindSolutionViewModel,
         transformViewModel = { it as SolutionViewModel }
+      )
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM,
+        inflateDataBinding = ReturnToLessonButtonItemBinding::inflate,
+        setViewModel = this::bindReturnToLessonViewModel,
+        transformViewModel = { it as ReturnToLessonViewModel }
       )
       .build()
   }
@@ -250,7 +259,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.viewModel = solutionViewModel
 
     val position: Int = itemList.indexOf(solutionViewModel)
-
     binding.isListExpanded = expandedItemsList.contains(position)
 
     solutionIndex?.let { solutionIndex ->
@@ -291,6 +299,17 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       if (solutionViewModel.isSolutionRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
+    }
+  }
+
+  private fun bindReturnToLessonViewModel(
+    binding: ReturnToLessonButtonItemBinding,
+    returnToLessonViewModel: ReturnToLessonViewModel
+  ) {
+    binding.buttonViewModel = returnToLessonViewModel
+
+    binding.returnToLessonButton.setOnClickListener {
+      (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()
     }
   }
 
