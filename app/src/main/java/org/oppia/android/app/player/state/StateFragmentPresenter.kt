@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -338,7 +339,7 @@ class StateFragmentPresenter @Inject constructor(
           oppiaLogger.e("StateFragment", "Failed to retrieve hint/solution", result.error)
         } else {
           // If the hint/solution, was revealed remove dot and radar.
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
         }
       }
     )
@@ -459,31 +460,45 @@ class StateFragmentPresenter @Inject constructor(
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
-      viewModel.setHintOpenedAndUnRevealedVisibility(false)
+      setHintOpenedAndUnRevealed(false)
       viewModel.setHintBulbVisibility(false)
     } else {
       when (helpIndex.indexTypeCase) {
         HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_INDEX -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
         }
         HelpIndex.IndexTypeCase.SHOW_SOLUTION -> {
           viewModel.setHintBulbVisibility(true)
-          viewModel.setHintOpenedAndUnRevealedVisibility(true)
+          setHintOpenedAndUnRevealed(true)
         }
         HelpIndex.IndexTypeCase.EVERYTHING_REVEALED -> {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
           viewModel.setHintBulbVisibility(true)
         }
         else -> {
-          viewModel.setHintOpenedAndUnRevealedVisibility(false)
+          setHintOpenedAndUnRevealed(false)
           viewModel.setHintBulbVisibility(false)
         }
       }
+    }
+  }
+
+  private fun setHintOpenedAndUnRevealed(isHintRevealed: Boolean) {
+    viewModel.setHintOpenedAndUnRevealedVisibility(isHintRevealed)
+    if (isHintRevealed) {
+      binding.hintBulb.startAnimation(
+        AnimationUtils.loadAnimation(
+          context,
+          R.anim.hint_bulb_animation
+        )
+      )
+    } else {
+      binding.hintBulb.clearAnimation()
     }
   }
 }
