@@ -356,7 +356,6 @@
   <string name="hints_andSolution_close_icon_description">العودة للسابق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="reveal_solution">عرض الحل</string>
-  <string name="reveal_hint">عرض الملاحظة</string>
   <string name="show_hide_hint_list">عرض/إخفاء قائمة الملاحظات الخاصة ب%s</string>
   <string name="show_hide_solution_list">عرض/إخفاء الحل</string>
   <string name="the_only_solution_is">الحل الوحيد هو :</string>
