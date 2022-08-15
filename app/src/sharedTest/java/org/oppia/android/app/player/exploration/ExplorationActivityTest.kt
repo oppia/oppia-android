@@ -1829,7 +1829,7 @@ class ExplorationActivityTest {
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
       .perform(scrollToPosition<RecyclerView.ViewHolder>(hintPosition * 2))
-    onView(allOf(withId(R.id.reveal_hint_button), isDisplayed()))
+    onView(allOf(withId(R.id.show_hint_button), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
     testCoroutineDispatchers.runCurrent()
