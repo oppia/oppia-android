@@ -77,7 +77,7 @@
             android:text="@string/show_solution"
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
-            android:visibility="@{viewModel.isSolutionRevealed? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.isSolutionRevealed()? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"

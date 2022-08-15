@@ -314,10 +314,10 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
-    if (itemList[itemList.size - 1] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
-      bindingAdapter.notifyItemChanged(itemList.size - 1)
+      bindingAdapter.notifyItemChanged(itemList.size - 2)
     }
   }
 
@@ -336,15 +336,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   fun handleRevealSolution() {
-    if (itemList[itemList.size - 1] is SolutionViewModel) {
-      val solutionViewModel = itemList[itemList.size - 1] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(true)
       expandedHintListIndexListener.onRevealSolutionClicked(
-        /* solutionIndex= */ itemList.size - 1,
+        /* solutionIndex= */ itemList.size - 2,
         /* isSolutionRevealed= */ true
       )
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution()
-      expandOrCollapseItem(itemList.size - 1)
+      expandOrCollapseItem(itemList.size - 2)
     }
   }
 
