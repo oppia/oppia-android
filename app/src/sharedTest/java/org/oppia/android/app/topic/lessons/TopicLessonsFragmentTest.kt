@@ -18,6 +18,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -106,6 +107,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -145,6 +147,9 @@ class TopicLessonsFragmentTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
@@ -212,7 +217,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "100%")
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "100% Completed")
     }
   }
 
@@ -224,7 +229,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0% In Progress")
     }
   }
 
@@ -240,7 +245,10 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "50%")
+      verifyProgressContentDescriptionAtPosition(
+        itemPosition = 1,
+        stringToMatch = "50% In Progress"
+      )
     }
   }
 
@@ -248,18 +256,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_noStoryProgress_contentDescriptionIsCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
-    }
-  }
-
-  @Test
-  fun testLessonsPlayFragment_loadFractionsTopic_storyChapterTextsContentDescriptionIsCorrect() {
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
-      clickLessonTab()
-      verifyStoryAndChapterCountContentDescriptionAtPosition(
-        itemPosition = 1,
-        stringToMatch = "2 Chapters in Matthew Goes to the Bakery"
-      )
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0% In Progress")
     }
   }
 
@@ -677,40 +674,6 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonPlayFrag_loadRatiosTopic_partialProg_verifyContentDescriptionIsCorrect() {
-    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconContentDescriptionIsCorrect(
-        itemPosition = 0,
-        contentDescription = "Chapter 1 with title What is a Ratio? is in progress"
-      )
-    }
-  }
-
-  @Test
-  fun testLessonPlayFrag_loadRatiosTopic_topicCompleted_verifyContentDescriptionIsCorrect() {
-    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconContentDescriptionIsCorrect(
-        itemPosition = 0,
-        contentDescription = "Chapter 1 with title What is a Ratio? is completed"
-      )
-    }
-  }
-
-  @Test
   fun testLessonPlayFrag_loadRatiosTopic_partialProg_partialProgIconIsDisplayed() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId,
@@ -849,6 +812,76 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_checkDropDownIconWithScreenReader_isClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).check(
+        matches(isClickable())
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFragment_loadRatiosTopic_checkDropDownIconWithoutScreenReader_isNotClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).check(
+        matches(not(isClickable()))
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithScreenReader_isNotClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_container
+        )
+      ).check(
+        matches(not(isClickable()))
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithoutScreenReader_isClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_container
+        )
+      ).check(
+        matches(isClickable())
+      )
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -915,35 +948,9 @@ class TopicLessonsFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.story_summary_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.story_progress_container
+        targetViewId = R.id.story_progress_linear_layout
       )
     ).check(matches(withContentDescription(stringToMatch)))
-  }
-
-  private fun verifyStoryAndChapterCountContentDescriptionAtPosition(
-    itemPosition: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.story_summary_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.story_name_chapter_count_container
-      )
-    ).check(matches(withContentDescription(stringToMatch)))
-  }
-
-  private fun verifyChapterPlayStateIconContentDescriptionIsCorrect(
-    itemPosition: Int,
-    contentDescription: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.chapter_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.chapter_play_state_icon
-      )
-    ).check(matches(withContentDescription(contentDescription)))
   }
 
   private fun verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition: Int) {
