@@ -164,6 +164,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Ignore
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -637,19 +638,19 @@ class StateFragmentLocalTest {
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+  fun testStateFragment_showFirstHint_prevState_currentState_checkFirstHintRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -713,7 +714,7 @@ class StateFragmentLocalTest {
       submitTwoWrongAnswersForFractionsState2AndWait()
       openHintsAndSolutionsDialog()
 
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
@@ -1042,7 +1043,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
+  fun testStateFragment_nextState_viewSolution_clickShowSolutionButton_showsDialog() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1129,7 +1130,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
+  fun testStateFragment_nextState_viewShowSolutionDialog_clickCancel_canViewShowSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1142,7 +1143,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withSubstring("Reveal Solution"))
+      onView(withSubstring("Show"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1295,10 +1296,10 @@ class StateFragmentLocalTest {
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
 
       // The hint button label should be in English.
-      onView(withId(R.id.show_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.show_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1318,9 +1319,9 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
 
       // The hint explanation should be in English. Note that an Arabic version of this test doesn't
       // exist because while the corresponding situation should be true with Arabic, limitations in
@@ -1337,6 +1338,7 @@ class StateFragmentLocalTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
+  @Ignore // TODO(#4492): Update the arabic string for show hint button.
   fun testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -1347,9 +1349,9 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
 
       // The hint button label should be in Arabic.
       onView(withId(R.id.show_hint_button)).check(matches(withText("عرض الملاحظة")))
@@ -1375,7 +1377,7 @@ class StateFragmentLocalTest {
 
       // Reveal the hint.
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
 
       // The hint explanation should be in Arabic.
       onView(withId(R.id.hints_and_solution_summary))
@@ -1401,13 +1403,13 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
 
       // The hint button label should be in English since the app string locale is unaffected by the
       // content string setting.
-      onView(withId(R.id.show_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.show_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1429,9 +1431,9 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
 
       // The hint explanation should be in Arabic per the content locale override.
       onView(withId(R.id.hints_and_solution_summary))
@@ -1640,7 +1642,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb))
@@ -1662,7 +1664,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb))
@@ -1722,7 +1724,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer("1/2")
 
       openHintsAndSolutionsDialog()
-      pressRevealHintButton(hintPosition = 0)
+      pressShowHintButton(hintPosition = 0)
       closeHintsAndSolutionsDialog()
 
       onView(withId(R.id.hint_bulb))
@@ -1740,23 +1742,6 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
       onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed()))
         .inRoot(isDialog())
-    }
-  }
-
-  @Test
-  fun testStateFragment_openHintsAndSolution_clickReturnToLessonButton_returnsToState() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      startPlayingExploration()
-      playThroughFractionsState1()
-      submitTwoWrongAnswersForFractionsState2()
-
-      openHintsAndSolutionsDialog()
-      onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed()))
-        .inRoot(isDialog())
-        .perform(click())
-
-      onView(withId(R.id.hint_bulb))
-        .check(matches(withDrawable(R.drawable.ic_keyboard_arrow_right_white_48)))
     }
   }
 
@@ -1972,15 +1957,15 @@ class StateFragmentLocalTest {
       .perform(click())
   }
 
-  private fun pressRevealHintButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.show_hint_button, hintPosition)
+  private fun pressShowHintButton(hintPosition: Int) {
+    pressShowHintOrSolutionButton(R.id.show_hint_button, hintPosition)
   }
 
-  private fun pressRevealSolutionButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.show_solution_button, hintPosition)
+  private fun pressShowSolutionButton(hintPosition: Int) {
+    pressShowHintOrSolutionButton(R.id.show_solution_button, hintPosition)
   }
 
-  private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
+  private fun pressShowHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
     onView(withId(R.id.hints_and_solution_recycler_view))
@@ -2118,7 +2103,7 @@ class StateFragmentLocalTest {
   private fun produceAndViewNextHint(hintPosition: Int, submitAnswer: () -> Unit) {
     submitAnswer()
     openHintsAndSolutionsDialog()
-    pressRevealHintButton(hintPosition)
+    pressShowHintButton(hintPosition)
     closeHintsAndSolutionsDialog()
   }
 
@@ -2156,7 +2141,7 @@ class StateFragmentLocalTest {
   ) {
     submitWrongAnswerToFractionsState2AndWait()
     openHintsAndSolutionsDialog()
-    pressRevealSolutionButton(revealedHintCount)
+    pressShowSolutionButton(revealedHintCount)
     clickConfirmRevealSolutionButton(activityScenario)
     closeHintsAndSolutionsDialog()
   }
