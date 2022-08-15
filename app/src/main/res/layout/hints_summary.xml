@@ -63,7 +63,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
           <Button
-            android:id="@+id/reveal_hint_button"
+            android:id="@+id/show_hint_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"

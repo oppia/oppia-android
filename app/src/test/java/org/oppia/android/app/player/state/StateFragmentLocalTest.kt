@@ -79,7 +79,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -663,7 +662,7 @@ class StateFragmentLocalTest {
         .perform(scrollToPosition<ViewHolder>(0))
       testCoroutineDispatchers.runCurrent()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())
@@ -983,7 +982,7 @@ class StateFragmentLocalTest {
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1036,7 +1035,7 @@ class StateFragmentLocalTest {
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1058,7 +1057,7 @@ class StateFragmentLocalTest {
         .inRoot(isDialog())
         .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -1103,7 +1102,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickConfirmRevealSolutionButton(scenario)
 
-      onView(withId(R.id.reveal_solution_button))
+      onView(withId(R.id.show_solution_button))
         .inRoot(isDialog())
         .check(matches(not(isDisplayed())))
     }
@@ -1299,7 +1298,7 @@ class StateFragmentLocalTest {
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.show_hint_button)).check(matches(withText("Reveal Hint")))
     }
   }
 
@@ -1353,7 +1352,7 @@ class StateFragmentLocalTest {
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in Arabic.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("عرض الملاحظة")))
+      onView(withId(R.id.show_hint_button)).check(matches(withText("عرض الملاحظة")))
     }
   }
 
@@ -1408,7 +1407,7 @@ class StateFragmentLocalTest {
 
       // The hint button label should be in English since the app string locale is unaffected by the
       // content string setting.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.show_hint_button)).check(matches(withText("Reveal Hint")))
     }
   }
 
@@ -1731,6 +1730,36 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_openHintsAndSolution_checkReturnToLessonButtonIsVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
+
+      openHintsAndSolutionsDialog()
+      onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed()))
+        .inRoot(isDialog())
+    }
+  }
+
+  @Test
+  fun testStateFragment_openHintsAndSolution_clickReturnToLessonButton_returnsToState() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
+
+      openHintsAndSolutionsDialog()
+      onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed()))
+        .inRoot(isDialog())
+        .perform(click())
+
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withDrawable(R.drawable.ic_keyboard_arrow_right_white_48)))
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1938,17 +1967,17 @@ class StateFragmentLocalTest {
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
       .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
-    onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+    onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
   }
 
   private fun pressRevealHintButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
+    pressRevealHintOrSolutionButton(R.id.show_hint_button, hintPosition)
   }
 
   private fun pressRevealSolutionButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_solution_button, hintPosition)
+    pressRevealHintOrSolutionButton(R.id.show_solution_button, hintPosition)
   }
 
   private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {

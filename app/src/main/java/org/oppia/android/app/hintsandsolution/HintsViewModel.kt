@@ -117,7 +117,7 @@ class HintsViewModel @Inject constructor(
     itemList.add(solutionViewModel)
   }
 
-  private fun addReturnToLessonButtonItem(){
+  private fun addReturnToLessonButtonItem() {
     itemList.add(ReturnToLessonViewModel())
   }
 }

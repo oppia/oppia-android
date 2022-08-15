@@ -227,7 +227,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     if (hintsViewModel.hintCanBeRevealed.get()!!) {
       binding.root.visibility = View.VISIBLE
-      binding.revealHintButton.setOnClickListener {
+      binding.showHintButton.setOnClickListener {
         hintsViewModel.isHintRevealed.set(true)
         expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
         (fragment.requireActivity() as? RevealHintListener)?.revealHint(hintIndex = position)
@@ -290,7 +290,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     if (solutionViewModel.solutionCanBeRevealed.get()!!) {
       binding.root.visibility = View.VISIBLE
-      binding.revealSolutionButton.setOnClickListener {
+      binding.showSolutionButton.setOnClickListener {
         showRevealSolutionDialogFragment()
       }
     }
