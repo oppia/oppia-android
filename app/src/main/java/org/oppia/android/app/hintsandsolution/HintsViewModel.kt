@@ -19,7 +19,7 @@ import javax.inject.Inject
  * this is because in UI after each hint or solution there is a horizontal line/view
  * which is considered as a separate item in recyclerview.
  */
-const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 2
+const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 1
 
 private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 
@@ -63,7 +63,7 @@ class HintsViewModel @Inject constructor(
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
         addHintToList(index, hintList[index])
-      } else if (itemList.size > 1) {
+      } else if (itemList.size > 0) {
         val isLastHintRevealed =
           (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
             .isHintRevealed.get()
@@ -110,7 +110,6 @@ class HintsViewModel @Inject constructor(
     hintsViewModel.hintsAndSolutionSummary.set(hintContentHtml)
     hintsViewModel.isHintRevealed.set(helpIndex.isHintRevealed(hintIndex, hintList))
     itemList.add(hintsViewModel)
-    addDividerItem()
   }
 
   private fun addSolutionToList(solution: Solution) {
@@ -126,10 +125,5 @@ class HintsViewModel @Inject constructor(
     solutionViewModel.solutionSummary.set(explanationHtml)
     solutionViewModel.isSolutionRevealed.set(helpIndex.isSolutionRevealed())
     itemList.add(solutionViewModel)
-    addDividerItem()
-  }
-
-  private fun addDividerItem() {
-    itemList.add(HintsDividerViewModel())
   }
 }

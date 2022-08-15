@@ -17,7 +17,6 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
-import org.oppia.android.databinding.HintsDividerBinding
 import org.oppia.android.databinding.HintsSummaryBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -73,7 +72,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     isHintRevealed: Boolean?,
     solutionIndex: Int?,
     isSolutionRevealed: Boolean?
-  ): View? {
+  ): View {
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     this.currentExpandedHintListIndex = currentExpandedHintListIndex
@@ -163,7 +162,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HINT_ITEM,
     VIEW_TYPE_SOLUTION_ITEM,
-    VIEW_TYPE_HINTS_DIVIDER_ITEM
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HintsAndSolutionItemViewModel> {
@@ -172,7 +170,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         when (viewModel) {
           is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
           is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
-          is HintsDividerViewModel -> ViewType.VIEW_TYPE_HINTS_DIVIDER_ITEM
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
@@ -187,17 +184,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         inflateDataBinding = SolutionSummaryBinding::inflate,
         setViewModel = this::bindSolutionViewModel,
         transformViewModel = { it as SolutionViewModel }
-      )
-      .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_HINTS_DIVIDER_ITEM,
-        inflateView = { parent ->
-          HintsDividerBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { _, _ -> }
       )
       .build()
   }
