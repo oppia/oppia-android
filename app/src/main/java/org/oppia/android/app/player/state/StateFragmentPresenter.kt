@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state
 
-import android.animation.Animator
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
