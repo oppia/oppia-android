@@ -34,6 +34,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
   @AutomaticallyUpdateTopic private val automaticallyUpdateTopic: PlatformParameterValue<Boolean>
+
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -73,9 +74,13 @@ class AdministratorControlsViewModel @Inject constructor(
   private fun processAdministratorControlsList(
     deviceSettings: DeviceSettings
   ): List<AdministratorControlsItemViewModel> {
-    val itemViewModelList: MutableList<AdministratorControlsItemViewModel> = mutableListOf(
-      AdministratorControlsGeneralViewModel()
-    )
+
+    val itemViewModelList = mutableListOf<AdministratorControlsItemViewModel>()
+
+    if (enableEditAccountsOptionsUi.value) {
+      itemViewModelList.add(AdministratorControlsGeneralViewModel())
+    }
+
     itemViewModelList.add(
       AdministratorControlsProfileViewModel(
         routeToProfileListListener,
@@ -86,6 +91,7 @@ class AdministratorControlsViewModel @Inject constructor(
     if (learnerStudyAnalytics.value) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
+
     itemViewModelList.add(
       AdministratorControlsDownloadPermissionsViewModel(
         fragment,
@@ -96,6 +102,7 @@ class AdministratorControlsViewModel @Inject constructor(
         automaticallyUpdateTopic.value
       )
     )
+
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(
       AdministratorControlsAccountActionsViewModel(

@@ -59,7 +59,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.File
 import java.io.FileInputStream
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -121,6 +120,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
+    assertThat(profile.numberOfLogins).isEqualTo(0)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -521,7 +521,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testLoginToProfile_addProfiles_loginToProfile_checkGetProfileIdAndLoginTimestampIsCorrect() {
+  fun testLoginProfile_addedProfile_profileIdTimestampAndNumberOfLoginsIsCorrectlyUpdated() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
@@ -532,6 +532,25 @@ class ProfileManagementControllerTest {
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profileManagementController.getCurrentProfileId().internalId).isEqualTo(2)
     assertThat(profile.lastLoggedInTimestampMs).isNotEqualTo(0)
+    assertThat(profile.numberOfLogins).isEqualTo(1)
+  }
+
+  @Test
+  fun testLoginToProfile_addProfile_loginToProfileTwice_checkNumberOfLoginsIsTwo() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    var loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+
+    // log out of profile 2
+    loginProvider = profileManagementController.loginToProfile(PROFILE_ID_3)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+
+    loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
+    monitorFactory.waitForNextSuccessfulResult(loginProvider)
+    val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
+    val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
+    assertThat(profile.numberOfLogins).isEqualTo(2)
   }
 
   @Test
