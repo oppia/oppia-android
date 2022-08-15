@@ -6,7 +6,7 @@
     android:duration="600"
     android:fromAlpha="0.0"
     android:interpolator="@android:anim/accelerate_interpolator"
-    android:repeatCount="infinite"
+    android:repeatCount="10"
     android:repeatMode="reverse"
     android:toAlpha="1.0" />
 </set>

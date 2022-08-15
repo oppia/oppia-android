@@ -1,9 +1,11 @@
 package org.oppia.android.app.player.state
 
+import android.animation.Animator
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -14,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import javax.inject.Inject
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -33,6 +36,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
@@ -45,7 +49,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -62,6 +65,7 @@ class StateFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val context: Context,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val viewModelProvider: ViewModelProvider<StateViewModel>,
   private val explorationProgressController: ExplorationProgressController,
   private val storyProgressController: StoryProgressController,
@@ -491,12 +495,25 @@ class StateFragmentPresenter @Inject constructor(
   private fun setHintOpenedAndUnRevealed(isHintRevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintRevealed)
     if (isHintRevealed) {
-      binding.hintBulb.startAnimation(
-        AnimationUtils.loadAnimation(
-          context,
-          R.anim.hint_bulb_animation
-        )
+      val hintBulbAnimation = AnimationUtils.loadAnimation(
+        context,
+        R.anim.hint_bulb_animation
       )
+      binding.hintBulb.startAnimation(
+        hintBulbAnimation
+      )
+
+      // The hint bulb will blink 5 times in duration of 6 sec, stop for next 24 sec and again
+      // start repeating.
+      lifecycleSafeTimerFactory.createTimer(30000).observe(
+        activity
+      ) {
+        if (viewModel.isHintOpenedAndUnRevealed.get()!!) {
+          binding.hintBulb.startAnimation(
+            hintBulbAnimation
+          )
+        }
+      }
     } else {
       binding.hintBulb.clearAnimation()
     }
