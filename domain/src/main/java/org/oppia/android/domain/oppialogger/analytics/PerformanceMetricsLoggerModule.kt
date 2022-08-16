@@ -1,16 +1,16 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.multibindings.IntoSet
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** Binds [PerformanceMetricsLogger] as an [ApplicationStartupListener] */
 @Module
-class PerformanceMetricsLoggerModule {
-  @Provides
+abstract class PerformanceMetricsLoggerModule {
+  @Binds
   @IntoSet
-  fun providePerformanceMetricsLogger(
+  abstract fun providePerformanceMetricsLogger(
     performanceMetricsLogger: PerformanceMetricsLogger
-  ): ApplicationStartupListener = performanceMetricsLogger
+  ): ApplicationStartupListener
 }

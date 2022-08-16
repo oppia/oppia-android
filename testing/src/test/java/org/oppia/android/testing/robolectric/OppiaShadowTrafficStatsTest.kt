@@ -2,6 +2,7 @@ package org.oppia.android.testing.robolectric
 
 import android.app.Application
 import android.content.Context
+import android.net.TrafficStats
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,9 +17,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadow.api.Shadow
+import javax.inject.Inject
 import javax.inject.Singleton
-
-private val oppiaShadowTrafficStats by lazy { OppiaShadowTrafficStats() }
 
 /** Tests for [OppiaShadowTrafficStats]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -31,6 +32,14 @@ private val oppiaShadowTrafficStats by lazy { OppiaShadowTrafficStats() }
   shadows = [OppiaShadowTrafficStats::class]
 )
 class OppiaShadowTrafficStatsTest {
+
+  @Inject
+  lateinit var context: Context
+
+  private val oppiaShadowTrafficStats by lazy {
+    Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
+  }
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -46,24 +55,18 @@ class OppiaShadowTrafficStatsTest {
   fun testCustomShadow_initialState_returnsDefaultValuesForTxAndRxBytes() {
     assertThat(OppiaShadowTrafficStats.getUidRxBytes(0)).isEqualTo(0L)
     assertThat(OppiaShadowTrafficStats.getUidTxBytes(0)).isEqualTo(0L)
-
-    OppiaShadowTrafficStats.reset()
   }
 
   @Test
   fun testCustomShadow_setUidTxBytes_returnsCorrectTxBytesValue() {
     oppiaShadowTrafficStats.setUidTxBytes(9)
     assertThat(OppiaShadowTrafficStats.getUidTxBytes(0)).isEqualTo(9L)
-
-    OppiaShadowTrafficStats.reset()
   }
 
   @Test
   fun testCustomShadow_setUidRxBytes_returnsCorrectTxBytesValue() {
     oppiaShadowTrafficStats.setUidRxBytes(9)
     assertThat(OppiaShadowTrafficStats.getUidRxBytes(0)).isEqualTo(9L)
-
-    OppiaShadowTrafficStats.reset()
   }
 
   private fun setUpTestApplicationComponent() {

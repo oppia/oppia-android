@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.os.Debug
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
+import org.robolectric.shadows.ShadowActivityManager
 
 /**
  * Shadows the Activity Manager to extend its testing capabilities.
@@ -12,7 +13,7 @@ import org.robolectric.annotation.Implements
  * control over Debug.MemoryInfo and hence memory usage can't be tested using that.
  */
 @Implements(ActivityManager::class)
-class OppiaShadowActivityManager {
+class OppiaShadowActivityManager : ShadowActivityManager() {
 
   private var processMemoryInfo: Array<Debug.MemoryInfo?>? = arrayOf(Debug.MemoryInfo())
 
@@ -27,7 +28,7 @@ class OppiaShadowActivityManager {
   }
 
   /** Sets [memoryInfo] as equal to [memoryInfoValue]. */
-  fun setMemoryInfo(memoryInfoValue: ActivityManager.MemoryInfo) {
+  override fun setMemoryInfo(memoryInfoValue: ActivityManager.MemoryInfo) {
     this.memoryInfo = memoryInfoValue
   }
 
@@ -42,7 +43,7 @@ class OppiaShadowActivityManager {
 
   /** Robolectric shadow override of [ActivityManager.getMemoryInfo]. */
   @Implementation
-  fun getMemoryInfo(outInfo: ActivityManager.MemoryInfo) {
+  public override fun getMemoryInfo(outInfo: ActivityManager.MemoryInfo) {
     outInfo.apply {
       availMem = memoryInfo.availMem
       outInfo.lowMemory = memoryInfo.lowMemory

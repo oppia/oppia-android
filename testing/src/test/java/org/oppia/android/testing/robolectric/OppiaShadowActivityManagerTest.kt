@@ -15,11 +15,11 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
-
-private val oppiaShadowActivityManager by lazy { OppiaShadowActivityManager() }
 
 /** Tests for [OppiaShadowActivityManager]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -32,6 +32,15 @@ private val oppiaShadowActivityManager by lazy { OppiaShadowActivityManager() }
   shadows = [OppiaShadowActivityManager::class]
 )
 class OppiaShadowActivityManagerTest {
+  @Inject
+  lateinit var context: Context
+
+  private val oppiaShadowActivityManager: OppiaShadowActivityManager by lazy {
+    shadowOf(
+      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    ) as OppiaShadowActivityManager
+  }
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

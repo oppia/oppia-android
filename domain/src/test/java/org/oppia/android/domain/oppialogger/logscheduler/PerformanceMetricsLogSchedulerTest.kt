@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.PeriodicWorkRequest
@@ -61,9 +60,10 @@ class PerformanceMetricsLogSchedulerTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private lateinit var workManager: WorkManager
+  @Inject
+  lateinit var context: Context
 
-  private lateinit var context: Context
+  private lateinit var workManager: WorkManager
 
   private val workerCaseForSchedulingPeriodicBackgroundMetricLogs: Data = Data.Builder()
     .putString(
@@ -89,7 +89,6 @@ class PerformanceMetricsLogSchedulerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
       .setWorkerFactory(metricLogSchedulingWorkerFactory)

@@ -51,19 +51,22 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     return processMemoryInfo?.map { it.totalPss }?.sum()?.toLong() ?: 0L
   }
 
-  override fun getDeviceStorageTier(): OppiaMetricLog.StorageTier =
-    when (getUsedStorage()) {
-      in 0L until lowStorageTierUpperBound -> LOW_STORAGE
-      in lowStorageTierUpperBound..mediumStorageTierUpperBound -> MEDIUM_STORAGE
+  override fun getDeviceStorageTier(): OppiaMetricLog.StorageTier {
+    val usedStorage = getUsedStorage()
+    return when {
+      usedStorage <= lowStorageTierUpperBound -> LOW_STORAGE
+      usedStorage <= mediumStorageTierUpperBound -> MEDIUM_STORAGE
       else -> HIGH_STORAGE
     }
+  }
 
   override fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier {
     val memoryInfo = ActivityManager.MemoryInfo()
     activityManager.getMemoryInfo(memoryInfo)
-    return when (memoryInfo.totalMem) {
-      in 0L until lowMemoryTierUpperBound -> LOW_MEMORY_TIER
-      in lowMemoryTierUpperBound..mediumMemoryTierUpperBound -> MEDIUM_MEMORY_TIER
+    val totalMemory = memoryInfo.totalMem
+    return when {
+      totalMemory <= lowMemoryTierUpperBound -> LOW_MEMORY_TIER
+      totalMemory <= mediumMemoryTierUpperBound -> MEDIUM_MEMORY_TIER
       else -> HIGH_MEMORY_TIER
     }
   }

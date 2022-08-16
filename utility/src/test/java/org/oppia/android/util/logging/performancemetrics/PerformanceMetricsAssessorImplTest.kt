@@ -53,6 +53,7 @@ private const val TEST_FILE_NAME = "TEST_FILE_NAME"
 private const val ONE_KILOBYTE = 1024
 private const val ONE_MEGABYTE = ONE_KILOBYTE * 1024
 private const val TWO_MEGABYTES = ONE_MEGABYTE * 2L
+private const val TWO_AND_HALF_MEGABYTES = ONE_MEGABYTE * 2.5
 private const val THREE_MEGABYTES = ONE_MEGABYTE * 3L
 private const val ONE_GIGABYTE = ONE_MEGABYTE * 1024
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
@@ -79,8 +80,10 @@ class PerformanceMetricsAssessorImplTest {
   @Inject
   lateinit var context: Context
 
-  private val activityManager by lazy {
-    context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+  private val shadowActivityManager by lazy {
+    shadowOf(
+      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    ) as OppiaShadowActivityManager
   }
 
   @Before
@@ -114,7 +117,7 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_writeBytesLowerThanLowTierHigherBound_retsLowStorageUsageTier() {
+  fun testAssessor_writeBytesLowerThanLowTierHigherBound_retsLowStorageUsageTier() {
     context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(ONE_KILOBYTE))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
@@ -122,7 +125,7 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_writeBytesEqualToLowTierHigherBound_retsLowStorageUsageTier() {
+  fun testAssessor_writeBytesEqualToLowTierHigherBound_retsLowStorageUsageTier() {
     context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(ONE_MEGABYTE))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
@@ -130,15 +133,15 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_writeBytesEqualToMedTierLowerBound_retsMediumStorageUsageTier() {
+  fun testAssessor_writeBytesGreaterThanMediumTierLowerBound_retsMediumStorageUsageTier() {
     context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
-      .write(ByteArray(TWO_MEGABYTES.toInt()))
+      .write(ByteArray(TWO_AND_HALF_MEGABYTES.toInt()))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
       .isEqualTo(OppiaMetricLog.StorageTier.MEDIUM_STORAGE)
   }
 
   @Test
-  fun testPerformanceMetricsUtils_writeBytesEqualToMedTierHigherBound_retsMediumStorageUsageTier() {
+  fun testAssessor_writeBytesEqualToMedTierHigherBound_retsMediumStorageUsageTier() {
     context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(THREE_MEGABYTES.toInt()))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
@@ -146,7 +149,7 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_writeBytesGreaterThanHighTierLowerBound_retsHighStorageTier() {
+  fun testAssessor_writeBytesGreaterThanHighTierLowerBound_retsHighStorageTier() {
     context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(TWO_MEGABYTES.toInt() * 2))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
@@ -154,27 +157,24 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
+  fun testAssessor_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
     val shadow = Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
     shadow.setUidTxBytes(20L)
 
-    assertThat(performanceMetricsAssessorImpl.getTotalSentBytes())
-      .isEqualTo(20L)
+    assertThat(performanceMetricsAssessorImpl.getTotalSentBytes()).isEqualTo(20L)
   }
 
   @Test
-  fun testPerformanceMetricsUtils_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
+  fun testAssessor_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
     val shadow = Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
     shadow.setUidRxBytes(20L)
 
-    assertThat(performanceMetricsAssessorImpl.getTotalReceivedBytes())
-      .isEqualTo(20L)
+    assertThat(performanceMetricsAssessorImpl.getTotalReceivedBytes()).isEqualTo(20L)
   }
 
   @Test
   fun testAssessor_setProcessMemoryInfo_setTotalPss_returnsCorrectMemoryUsage() {
-    val shadow = Shadow.extract(activityManager) as OppiaShadowActivityManager
-    shadow.setProcessMemoryInfo(
+    shadowActivityManager.setProcessMemoryInfo(
       Debug.MemoryInfo().apply {
         this.nativePss = 2
         this.dalvikPss = 1
@@ -186,7 +186,7 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
-  fun testPerformanceMetricsUtils_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
+  fun testAssessor_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
     val shadowPackageManager = shadowOf(context.packageManager)
     File(TEST_APP_PATH).writeBytes(ByteArray(ONE_MEGABYTE))
     val applicationInfo = context.applicationInfo.apply {
@@ -209,8 +209,7 @@ class PerformanceMetricsAssessorImplTest {
     OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=1147483648"),
     OppiaParameterizedTestRunner.Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
   )
-  fun testPerformanceMetricsUtils_setTotalMemoryForLowMemoryRange_returnsCorrectLowMemoryTier() {
-    val shadowActivityManager = Shadow.extract(activityManager) as OppiaShadowActivityManager
+  fun testAssessor_setTotalMemoryForLowMemoryRange_returnsCorrectLowMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
     shadowActivityManager.setMemoryInfo(memoryInfo)
@@ -221,12 +220,11 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   @RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=2147483648"),
+    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=2147483649"),
     OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=2684354560"),
     OppiaParameterizedTestRunner.Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
   )
-  fun testPerformanceMetricsUtils_setTotalMemoryForMediumMemoryRange_retsCorrectMediumMemoryTier() {
-    val shadowActivityManager = Shadow.extract(activityManager) as OppiaShadowActivityManager
+  fun testAssessor_setTotalMemoryForMediumMemoryRange_retsCorrectMediumMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
     shadowActivityManager.setMemoryInfo(memoryInfo)
@@ -244,8 +242,7 @@ class PerformanceMetricsAssessorImplTest {
       "totalMemory=9223372036854775807"
     )
   )
-  fun testPerformanceMetricsUtils_setTotalMemoryForHighMemoryRange_retsCorrectHighMemoryTier() {
-    val shadowActivityManager = Shadow.extract(activityManager) as OppiaShadowActivityManager
+  fun testAssessor_setTotalMemoryForHighMemoryRange_retsCorrectHighMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
     memoryInfo.totalMem = totalMemory
     shadowActivityManager.setMemoryInfo(memoryInfo)

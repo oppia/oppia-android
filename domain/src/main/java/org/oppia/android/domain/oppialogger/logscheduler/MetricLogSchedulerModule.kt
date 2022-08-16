@@ -1,14 +1,14 @@
 package org.oppia.android.domain.oppialogger.logscheduler
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import org.oppia.android.util.logging.MetricLogScheduler
 
-/** Provides Log Generator related dependencies. */
+/** Provides metric log scheduler related dependencies. */
 @Module
-class MetricLogSchedulerModule {
-  @Provides
-  fun provideMetricLogScheduler(
+abstract class MetricLogSchedulerModule {
+  @Binds
+  abstract fun provideMetricLogScheduler(
     performanceMetricLogScheduler: PerformanceMetricsLogScheduler
-  ): MetricLogScheduler = performanceMetricLogScheduler
+  ): MetricLogScheduler
 }
