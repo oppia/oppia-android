@@ -180,7 +180,7 @@ class MathExpressionInteractionsViewModel private constructor(
   }
 
   private fun foldPlaceholderText(placeholder: CharSequence): String {
-    val numberOfLettersInOneLine = 40
+    val numberOfLettersInOneLine = 50
     val length = placeholder.length
     return if (length <= numberOfLettersInOneLine) placeholder.toString()
     else {
