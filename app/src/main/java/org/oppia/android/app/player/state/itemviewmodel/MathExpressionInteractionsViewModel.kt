@@ -87,7 +87,7 @@ class MathExpressionInteractionsViewModel private constructor(
   var errorMessage = ObservableField("")
 
   /** Specifies the text to show in the answer box when no text is entered. */
-  val hintText: CharSequence = deriveHintText(interaction)
+  val hintText: CharSequence = foldPlaceholderText(deriveHintText(interaction))
 
   private val allowedVariables = retrieveAllowedVariables(interaction)
   private val useFractionsForDivision =
@@ -177,6 +177,42 @@ class MathExpressionInteractionsViewModel private constructor(
       override fun afterTextChanged(s: Editable) {
       }
     }
+  }
+
+  private fun foldPlaceholderText(placeholder: CharSequence): String {
+    val numberOfLettersInOneLine = 40
+    val length = placeholder.length
+    return if (length <= numberOfLettersInOneLine) placeholder.toString()
+    else {
+      val newPlaceholder = StringBuilder()
+      var start = 0
+      var end = numberOfLettersInOneLine
+      while (end <= length) {
+        newPlaceholder.append(placeholder.subSequence(start, end))
+        if (placeholder[end - 1] == ' ') {
+          newPlaceholder.append("\n")
+          start = end
+          end = findMin((start + numberOfLettersInOneLine), length)
+          continue
+        }
+        start = end
+        val index = (placeholder.subSequence(start, length)).indexOfFirst {
+          it == ' '
+        }
+        if (index == -1) {
+          return newPlaceholder.append("\n" + placeholder.subSequence(start, length)).toString()
+        }
+        end = start + index
+        newPlaceholder.appendLine(placeholder.subSequence(start, end))
+        start = end + 1
+        end = findMin((start + numberOfLettersInOneLine), length)
+      }
+      newPlaceholder.toString()
+    }
+  }
+
+  private fun findMin(a: Int, b: Int): Int {
+    return if (a < b) a else b
   }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
