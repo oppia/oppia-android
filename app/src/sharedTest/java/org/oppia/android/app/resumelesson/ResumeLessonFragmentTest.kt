@@ -11,6 +11,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -18,6 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -71,6 +73,9 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
+import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
+import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
@@ -209,6 +214,16 @@ class ResumeLessonFragmentTest {
   }
 
   @Test
+  fun testResumeLessonFragment_emptyLessonDescriptionNotDisplayed() {
+    launch<ResumeLessonActivity>(createResumeRatiosLessonActivityIntent()).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
+        matches(not(isDisplayed()))
+      )
+    }
+  }
+
+  @Test
   fun testResumeLessonFragment_lessonDescriptionIsInRtl_isDisplayedCorrectly() {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
@@ -255,6 +270,18 @@ class ResumeLessonFragmentTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
+      backflowScreen = null,
+      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+    )
+  }
+
+  private fun createResumeRatiosLessonActivityIntent(): Intent {
+    return ResumeLessonActivity.createResumeLessonActivityIntent(
+      context,
+      internalProfileId,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0,
+      RATIOS_EXPLORATION_ID_0,
       backflowScreen = null,
       explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
     )
