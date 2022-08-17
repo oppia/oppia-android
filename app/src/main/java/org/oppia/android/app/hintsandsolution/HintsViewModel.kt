@@ -58,7 +58,7 @@ class HintsViewModel @Inject constructor(
         addHintToList(index, hintList[index])
       } else if (itemList.size > 0) {
         val isLastHintRevealed =
-          (itemList[itemList.size - 1] as HintsViewModel)
+          (itemList.last() as HintsViewModel)
             .isHintRevealed.get()
             ?: false
         val availableHintIndex = newAvailableHintIndex.get() ?: 0
@@ -71,7 +71,7 @@ class HintsViewModel @Inject constructor(
     }
     if (itemList.size > 1) {
       val isLastHintRevealed =
-        (itemList[itemList.size - 1] as HintsViewModel).isHintRevealed.get() ?: false
+        (itemList.last() as HintsViewModel).isHintRevealed.get() ?: false
       val areAllHintsExhausted = allHintsExhausted.get() ?: false
       if (solution.hasExplanation() &&
         hintList.size == itemList.size &&

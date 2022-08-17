@@ -227,7 +227,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     if (hintsViewModel.hintCanBeRevealed.get()!!) {
       binding.root.visibility = View.VISIBLE
-      binding.showHintButton.setOnClickListener {
+      binding.revealHintButton.setOnClickListener {
         hintsViewModel.isHintRevealed.set(true)
         expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
         (fragment.requireActivity() as? RevealHintListener)?.revealHint(hintIndex = position)
@@ -314,6 +314,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
+    // The last item of the list is ReturnToLessonViewModel and therefore second last item is
+    // SolutionViewModel as a result subtracting 2 from itemList size.
     if (itemList[itemList.size - 2] is SolutionViewModel) {
       val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)

@@ -63,7 +63,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
           <Button
-            android:id="@+id/show_hint_button"
+            android:id="@+id/reveal_hint_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
@@ -74,7 +74,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
-            android:text="@string/show_hint"
+            android:text="@string/reveal_hint"
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
             android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}"
