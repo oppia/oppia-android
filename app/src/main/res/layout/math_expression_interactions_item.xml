@@ -24,7 +24,7 @@
       android:id="@+id/math_expression_input_interaction_view"
       style="@style/InputInteractionEditText"
       app:placeholder="@{viewModel.hintText}"
-      android:inputType="text"
+      android:inputType="textMultiLine"
       android:text="@={viewModel.answerText}"
       app:textChangedListener="@{viewModel.answerTextWatcher}"
       app:layout_constraintEnd_toEndOf="parent"
