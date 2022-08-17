@@ -23,6 +23,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
 import org.oppia.android.databinding.LessonsChapterViewBinding
+import org.oppia.android.databinding.LessonsInProgressChapterViewBinding
 import org.oppia.android.databinding.LessonsLockedChapterViewBinding
 import org.oppia.android.databinding.LessonsNotStartedChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
@@ -186,7 +187,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       /* paint= */ null
     )
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
-    addChapterRecyclerViewItemDecoration(binding)
+//    addChapterRecyclerViewItemDecoration(binding)
 
     binding.root.setOnClickListener {
       val previousIndex: Int? = currentExpandedChapterListIndex
@@ -218,7 +219,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     val chapterRecyclerView = binding.chapterRecyclerView
     val layoutManager = chapterRecyclerView.layoutManager as LinearLayoutManager
     val dividerItemDecoration =
-      DividerItemDecoration(chapterRecyclerView.context, layoutManager.orientation)
+      DividerItemDecoration(fragment.requireContext(), layoutManager.orientation)
     dividerItemDecoration.setDrawable(
       ContextCompat.getDrawable(
         fragment.requireContext(),
@@ -234,6 +235,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         when (viewModel.chapterPlayState) {
           ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> ChapterViewType.CHAPTER_LOCKED
           ChapterPlayState.COMPLETED -> ChapterViewType.CHAPTER_COMPLETED
+          ChapterPlayState.IN_PROGRESS_SAVED -> ChapterViewType.CHAPTER_IN_PROGRESS
           else -> ChapterViewType.CHAPTER_NOT_STARTED
         }
       }
@@ -255,13 +257,20 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         setViewModel = LessonsNotStartedChapterViewBinding::setViewModel,
         transformViewModel = { it }
       )
+      .registerViewDataBinder(
+        viewType = ChapterViewType.CHAPTER_IN_PROGRESS,
+        inflateDataBinding = LessonsInProgressChapterViewBinding::inflate,
+        setViewModel = LessonsInProgressChapterViewBinding::setViewModel,
+        transformViewModel = { it }
+      )
       .build()
   }
 
   enum class ChapterViewType {
     CHAPTER_NOT_STARTED,
     CHAPTER_COMPLETED,
-    CHAPTER_LOCKED
+    CHAPTER_LOCKED,
+    CHAPTER_IN_PROGRESS
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
