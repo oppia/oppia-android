@@ -10,18 +10,18 @@ import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.PlayVoiceOverContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger.BaseLogger.Companion.maybeLogEvent
+import org.oppia.android.util.math.toAnswerString
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.Context as EventContext
 import org.oppia.android.app.model.EventLog.Context.Builder as EventBuilder
-import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.util.math.toAnswerString
 
 /**
  * Convenience logger for learner-related analytics events.

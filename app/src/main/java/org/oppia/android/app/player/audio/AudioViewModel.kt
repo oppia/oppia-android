@@ -1,12 +1,15 @@
 package org.oppia.android.app.player.audio
 
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
@@ -14,11 +17,8 @@ import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
-import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import java.util.Locale
-import org.oppia.android.R
-import androidx.databinding.ObservableBoolean
+import javax.inject.Inject
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
