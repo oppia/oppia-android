@@ -21,23 +21,25 @@ class RatioInputInteractionView @JvmOverloads constructor(
 
   init {
     onFocusChangeListener = this
+    // Assume multi-line for the purpose of properly showing long hints.
+    setSingleLine(hint != null)
     hintText = (hint ?: "")
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
-    hint = ""
-    typeface = Typeface.DEFAULT
+    hideHint()
     KeyboardHelper.showSoftKeyboard(v, context)
   } else {
-    hint = hintText
-    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    restoreHint()
     KeyboardHelper.hideSoftKeyboard(v, context)
   }
 
   override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
-    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP)
-      this.clearFocus()
+    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+      clearFocus()
+      restoreHint()
+    }
     return super.onKeyPreIme(keyCode, event)
   }
 
@@ -46,5 +48,17 @@ class RatioInputInteractionView @JvmOverloads constructor(
       stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
     }
     super.onEditorAction(actionCode)
+  }
+
+  private fun hideHint() {
+    hint = ""
+    typeface = Typeface.DEFAULT
+    setSingleLine(true)
+  }
+
+  private fun restoreHint() {
+    hint = hintText
+    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
+    setSingleLine(false)
   }
 }
