@@ -105,7 +105,8 @@ class ActivityLifecycleObserverTest {
     activity.intent = Intent().apply {
       this.putProtoExtra(
         CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
-        CurrentAppScreenNameIntentDecorator.decorateWithScreenName(ScreenName.ACTIVITY_NAME_UNSPECIFIED)
+        CurrentAppScreenNameIntentDecorator
+          .decorateWithScreenName(ScreenName.ACTIVITY_NAME_UNSPECIFIED)
       )
     }
     activityLifecycleObserver.onActivityResumed(activity)
