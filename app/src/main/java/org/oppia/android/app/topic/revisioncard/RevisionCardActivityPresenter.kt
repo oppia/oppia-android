@@ -20,6 +20,7 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
@@ -62,6 +63,11 @@ class RevisionCardActivityPresenter @Inject constructor(
     }
     subscribeToSubtopicTitle()
 
+    binding.actionBottomSheetOptionsMenu.setOnClickListener {
+      val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
+      bottomSheetOptionsMenu.show(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
+    }
+
     if (getReviewCardFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.revision_card_fragment_placeholder,
@@ -71,9 +77,9 @@ class RevisionCardActivityPresenter @Inject constructor(
   }
 
   /** Action for onOptionsItemSelected */
-  fun handleOnOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      R.id.action_preferences -> {
+  fun handleOnOptionsItemSelected(itemId: Int): Boolean {
+    return when (itemId) {
+      R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity, profileId.internalId, isFromNavigationDrawer = false
         )

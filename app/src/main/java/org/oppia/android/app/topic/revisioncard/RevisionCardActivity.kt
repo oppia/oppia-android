@@ -10,10 +10,14 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 
 /** Activity for revision card. */
 class RevisionCardActivity :
-  InjectableAppCompatActivity(), ReturnToTopicClickListener, ConceptCardListener {
+  InjectableAppCompatActivity(),
+  ReturnToTopicClickListener,
+  ConceptCardListener,
+  BottomSheetOptionsMenuItemClickListener {
 
   @Inject
   lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
@@ -31,13 +35,8 @@ class RevisionCardActivity :
     }
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_reading_options, menu)
-    return super.onCreateOptionsMenu(menu)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return revisionCardActivityPresenter.handleOnOptionsItemSelected(item)
+  override fun handleOnOptionsItemSelected(itemId: Int) {
+    revisionCardActivityPresenter.handleOnOptionsItemSelected(itemId)
   }
 
   companion object {
