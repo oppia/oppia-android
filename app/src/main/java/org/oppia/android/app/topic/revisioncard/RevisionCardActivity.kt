@@ -3,14 +3,11 @@ package org.oppia.android.app.topic.revisioncard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
-import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 
 /** Activity for revision card. */
 class RevisionCardActivity :

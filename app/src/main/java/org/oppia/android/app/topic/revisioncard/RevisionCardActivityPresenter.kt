@@ -1,6 +1,5 @@
 package org.oppia.android.app.topic.revisioncard
 
-import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,13 +13,13 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.OptionsActivity
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
