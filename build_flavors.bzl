@@ -3,7 +3,7 @@ Macros & definitions corresponding to Oppia binary build flavors.
 """
 
 load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KENYA_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
