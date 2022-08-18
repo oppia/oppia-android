@@ -24,12 +24,17 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
+        <org.oppia.android.app.customview.MarqueeView
+          android:id="@+id/marquee_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
         <TextView
           android:id="@+id/license_text_viewer_activity_toolbar_title"
           style="@style/MarqueeToolbarTitleTextView"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp" />
+        </org.oppia.android.app.customview.MarqueeView>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -12,7 +12,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -25,7 +24,6 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModelProvider: ViewModelProvider<TopicViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
@@ -59,12 +57,8 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
-    binding.topicToolbar.setOnClickListener {
-      binding.topicToolbarTitle.isSelected = true
-
-      lifecycleSafeTimerFactory.createTimer(25000).observe(fragment.viewLifecycleOwner) {
-          binding.topicToolbarTitle.isSelected = false
-      }
+    binding.topicToolbarTitle.setOnClickListener {
+      binding.marqueeView.startMarquee()
     }
 
     val viewModel = getTopicViewModel()

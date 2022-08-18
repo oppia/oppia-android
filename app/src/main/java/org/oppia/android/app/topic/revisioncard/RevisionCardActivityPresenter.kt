@@ -58,7 +58,7 @@ class RevisionCardActivityPresenter @Inject constructor(
       (activity as RevisionCardActivity).finish()
     }
     binding.revisionCardToolbarTitle.setOnClickListener {
-      binding.revisionCardToolbarTitle.isSelected = true
+      binding.marqueeView.startMarquee()
     }
     subscribeToSubtopicTitle()
 

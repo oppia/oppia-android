@@ -36,6 +36,10 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
+        <org.oppia.android.app.customview.MarqueeView
+          android:id="@+id/marquee_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
         <TextView
           android:id="@+id/story_toolbar_title"
           style="@style/MarqueeToolbarTitleTextView"
@@ -43,6 +47,7 @@
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"
           android:text="@{viewModel.storyNameLiveData}" />
+        </org.oppia.android.app.customview.MarqueeView>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
