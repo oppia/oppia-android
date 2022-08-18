@@ -1,9 +1,7 @@
 package org.oppia.android.app.customview
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Paint
-import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -46,15 +44,16 @@ class MarqueeView : LinearLayout {
   /**Control the pause between the animations.*/
   private var mAnimationPause = 2000
 
+  /**Init the Marquee when class in invoked takes param [Context].*/
   constructor(context: Context?) : super(context) {
     init()
   }
-
+  /**Init the Marquee when class in invoked takes param [Context] [AttributeSet].*/
   constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
     init()
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+  /**Init the Marquee when class in invoked takes param [Context] [AttributeSet] [Int].*/
   constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
     context,
     attrs,
