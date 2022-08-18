@@ -108,19 +108,6 @@ _FLAVOR_METADATA = {
         "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
         "application_class": ".app.application.alphakenya.AlphaKenyaOppiaApplication",
     },
-    "beta": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
-        "target_sdk_version": 30,
-        "multidex": "native",
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "production_release": True,
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
-        ],
-        "version_code": OPPIA_BETA_VERSION_CODE,
-        "application_class": ".app.application.beta.BetaOppiaApplication",
-    },
 }
 
 def _transform_android_manifest_impl(ctx):
