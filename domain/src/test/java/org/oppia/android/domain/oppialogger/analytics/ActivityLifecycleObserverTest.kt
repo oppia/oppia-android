@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -29,8 +30,9 @@ import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -71,9 +73,6 @@ class ActivityLifecycleObserverTest {
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
-  @Inject
-  lateinit var currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -103,8 +102,12 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
     val activity = Robolectric.buildActivity(Activity::class.java).get()
-    activity.intent = currentAppScreenNameWrapper
-      .getCurrentAppScreenNameIntent(ScreenName.ACTIVITY_NAME_UNSPECIFIED)
+    activity.intent = Intent().apply {
+      this.putProtoExtra(
+        CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
+        CurrentAppScreenNameIntentDecorator.decorateWithScreenName(ScreenName.ACTIVITY_NAME_UNSPECIFIED)
+      )
+    }
     activityLifecycleObserver.onActivityResumed(activity)
 
     val currentScreenValue = activityLifecycleObserver.getCurrentScreen()

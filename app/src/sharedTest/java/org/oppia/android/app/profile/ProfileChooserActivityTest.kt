@@ -69,10 +69,9 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -111,9 +110,6 @@ class ProfileChooserActivityTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  lateinit var currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
-
-  @Inject
   lateinit var context: Context
 
   @Before
@@ -136,7 +132,7 @@ class ProfileChooserActivityTest {
     activityTestRule.launchActivity(Intent(context, ProfileChooserActivity::class.java))
     val intent = activityTestRule.activity.intent
     val currentScreenName = intent.getProtoExtra(
-      currentAppScreenNameWrapper.getCurrentAppScreenNameIntentKey(),
+      CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
       CurrentAppScreen.getDefaultInstance()
     ).screenName
 

@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
 import javax.inject.Inject
 
 const val ADD_PROFILE_COLOR_RGB_EXTRA_KEY = "AddProfileActivity.add_profile_color_rgb"
@@ -18,6 +21,10 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
       val intent = Intent(context, AddProfileActivity::class.java)
       intent.putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
+      intent.putProtoExtra(
+        CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
+        CurrentAppScreenNameIntentDecorator.decorateWithScreenName(ScreenName.ADD_PROFILE_ACTIVITY)
+      )
       return intent
     }
   }
@@ -26,7 +33,6 @@ class AddProfileActivity : InjectableAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     addProfileFragmentPresenter.handleOnCreate()
-    intent = addProfileFragmentPresenter.getCurrentAppScreenNameIntent()
   }
 
   override fun onSupportNavigateUp(): Boolean {

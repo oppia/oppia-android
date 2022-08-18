@@ -10,7 +10,6 @@ import org.oppia.android.app.deprecation.DeprecationNoticeExitAppListener
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 import javax.inject.Inject
 
 /**
@@ -27,9 +26,6 @@ class SplashActivity :
 
   @Inject
   lateinit var splashActivityPresenter: SplashActivityPresenter
-
-  @Inject
-  lateinit var currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

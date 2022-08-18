@@ -7,7 +7,7 @@ import org.oppia.android.app.model.CurrentAppScreen
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,8 +17,7 @@ import javax.inject.Singleton
 class ActivityLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val application: Application,
-  private val performanceMetricsLogger: PerformanceMetricsLogger,
-  private val currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
+  private val performanceMetricsLogger: PerformanceMetricsLogger
 ) : Application.ActivityLifecycleCallbacks, ApplicationStartupListener {
 
   /**
@@ -53,7 +52,7 @@ class ActivityLifecycleObserver @Inject constructor(
 
   override fun onActivityResumed(activity: Activity) {
     val currentAppScreen = activity.intent.getProtoExtra(
-      currentAppScreenNameWrapper.getCurrentAppScreenNameIntentKey(),
+      CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
       CurrentAppScreen.getDefaultInstance()
     )
     currentScreen = currentAppScreen.screenName.name

@@ -24,8 +24,9 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -40,8 +41,7 @@ class SplashActivityPresenter @Inject constructor(
   private val primeTopicAssetsController: PrimeTopicAssetsController,
   private val translationController: TranslationController,
   private val localeController: LocaleController,
-  private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
-  private val currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
+  private val appLanguageLocaleHandler: AppLanguageLocaleHandler
 ) {
 
   fun handleOnCreate() {
@@ -62,8 +62,12 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   /** Returns an intent that wraps up a proto object carrying the screen name of the activity. */
-  fun getCurrentAppScreenNameIntent(): Intent =
-    currentAppScreenNameWrapper.getCurrentAppScreenNameIntent(ScreenName.SPLASH_ACTIVITY)
+  fun getCurrentAppScreenNameIntent(): Intent = Intent().apply {
+    this.putProtoExtra(
+      CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
+      CurrentAppScreenNameIntentDecorator.decorateWithScreenName(ScreenName.SPLASH_ACTIVITY)
+    )
+  }
 
   private fun subscribeToOnboardingFlow() {
     val liveData = computeInitStateLiveData()

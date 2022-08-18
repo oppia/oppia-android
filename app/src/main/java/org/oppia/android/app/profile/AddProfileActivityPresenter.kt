@@ -24,7 +24,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -32,7 +31,6 @@ import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.logging.CurrentAppScreenNameWrapper
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -43,8 +41,7 @@ class AddProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<AddProfileViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val currentAppScreenNameWrapper: CurrentAppScreenNameWrapper
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var uploadImageView: ImageView
   private val profileViewModel by lazy {
@@ -169,10 +166,6 @@ class AddProfileActivityPresenter @Inject constructor(
       showInfoDialog()
     }
   }
-
-  /** Returns an intent that wraps up a proto object carrying the screen name of the activity. */
-  fun getCurrentAppScreenNameIntent(): Intent =
-    currentAppScreenNameWrapper.getCurrentAppScreenNameIntent(ScreenName.ADD_PROFILE_ACTIVITY)
 
   private fun setValidPin(binding: AddProfileActivityBinding) {
     if (inputtedPin && inputtedConfirmPin) {
