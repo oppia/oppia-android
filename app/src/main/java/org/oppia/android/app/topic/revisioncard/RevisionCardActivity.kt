@@ -8,12 +8,16 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
 
 /** Activity for revision card. */
 class RevisionCardActivity :
-  InjectableAppCompatActivity(), ReturnToTopicClickListener, ConceptCardListener {
+  InjectableAppCompatActivity(),
+  ReturnToTopicClickListener,
+  ConceptCardListener,
+  RouteToRevisionCardListener {
 
   @Inject
   lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
@@ -58,6 +62,18 @@ class RevisionCardActivity :
       intent.putExtra(SUBTOPIC_ID_EXTRA_KEY, subtopicId)
       return intent
     }
+  }
+
+  override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
+    startActivity(
+      createRevisionCardActivityIntent(
+        this,
+        internalProfileId,
+        topicId,
+        subtopicId
+      )
+    )
+    this.finish()
   }
 
   override fun onReturnToTopicClicked() {

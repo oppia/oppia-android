@@ -7,6 +7,8 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -21,7 +23,7 @@ class RevisionCardViewModel @Inject constructor(
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
-  private lateinit var topicId: String
+  lateinit var topicId: String
   private var subtopicId: Int = 0
   private lateinit var profileId: ProfileId
 
@@ -30,6 +32,49 @@ class RevisionCardViewModel @Inject constructor(
 
   val revisionCardLiveData: LiveData<EphemeralRevisionCard> by lazy {
     processRevisionCardLiveData()
+  }
+
+  val topicLiveData: LiveData<AsyncResult<Topic>> by lazy {
+    getTopicResultLiveData()
+  }
+
+  private fun getTopicResultLiveData(): LiveData<AsyncResult<Topic>> {
+    return topicController.getTopic(profileId, topicId).toLiveData()
+  }
+
+  val nextSubtopicLiveData: LiveData<Subtopic> by lazy {
+    Transformations.map(topicLiveData, ::processNextSubtopicData)
+  }
+
+  val previousSubtopicLiveData: LiveData<Subtopic> by lazy {
+    Transformations.map(topicLiveData, ::processPreviousSubtopicData)
+  }
+
+  private fun processPreviousSubtopicData(topicLiveData: AsyncResult<Topic>): Subtopic? {
+    return if (subtopicId == 0) Subtopic.getDefaultInstance()
+    else {
+      when (topicLiveData) {
+        is AsyncResult.Success -> {
+          val topic = topicLiveData.value
+          topic.subtopicList.find {
+            it.subtopicId == subtopicId - 1
+          } ?: Subtopic.getDefaultInstance()
+        }
+        else -> Subtopic.getDefaultInstance()
+      }
+    }
+  }
+
+  private fun processNextSubtopicData(topicLiveData: AsyncResult<Topic>): Subtopic {
+    return when (topicLiveData) {
+      is AsyncResult.Success -> {
+        val topic = topicLiveData.value
+        topic.subtopicList.find {
+          it.subtopicId == subtopicId + 1
+        } ?: Subtopic.getDefaultInstance()
+      }
+      else -> Subtopic.getDefaultInstance()
+    }
   }
 
   fun clickReturnToTopic(@Suppress("UNUSED_PARAMETER") v: View) {

@@ -3,9 +3,12 @@ package org.oppia.android.app.topic.revisioncard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Subtopic
+import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -20,6 +23,7 @@ import javax.inject.Inject
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class RevisionCardFragmentPresenter @Inject constructor(
+  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val htmlParserFactory: HtmlParser.Factory,
@@ -29,6 +33,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val translationController: TranslationController
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
+  private var previousSubtopicId = Subtopic.getDefaultInstance().subtopicId
+  private val routeToReviewListener = activity as RouteToRevisionCardListener
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -54,6 +60,32 @@ class RevisionCardFragmentPresenter @Inject constructor(
     binding.let {
       it.viewModel = viewModel
       it.lifecycleOwner = fragment
+    }
+
+    binding.nextSubtopicImageView?.setEntityType(entityType)
+    binding.prevSubtopicImageView?.setEntityType(entityType)
+
+    binding.prev?.setOnClickListener {
+      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId - 1)
+    }
+
+    binding.next?.setOnClickListener {
+      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId + 1)
+    }
+
+    viewModel.nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
+      if (nextSubtopic == Subtopic.getDefaultInstance()) binding.next?.visibility = View.INVISIBLE
+      binding.nextSubtopicImageView?.setLessonThumbnail(nextSubtopic.subtopicThumbnail)
+      binding.nextSubtopicTitle?.text = nextSubtopic.title
+    }
+
+    viewModel.previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
+      if (previousSubtopic.equals(Subtopic.getDefaultInstance())) {
+        binding.prev?.visibility = View.INVISIBLE
+      }
+      binding.prevSubtopicImageView?.setLessonThumbnail(previousSubtopic.subtopicThumbnail)
+      binding.prevSubtopicTitle?.text = previousSubtopic.title
+      this.previousSubtopicId = previousSubtopic.subtopicId
     }
 
     viewModel.revisionCardLiveData.observe(
