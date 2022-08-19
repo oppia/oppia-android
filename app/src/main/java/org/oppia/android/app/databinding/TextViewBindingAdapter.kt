@@ -8,12 +8,11 @@ import androidx.databinding.BindingAdapter
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.datetime.timeAgo
 
 @BindingAdapter("profile:lastVisited")
 fun TextView.setProfileLastVisitedText(timestamp: Long?) {
   timestamp?.let {
-    text = it.timeAgo(this)
+    // text =
   }
 }
 

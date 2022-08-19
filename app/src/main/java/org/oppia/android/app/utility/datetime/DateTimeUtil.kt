@@ -1,12 +1,12 @@
 package org.oppia.android.app.utility.datetime
 
 import android.view.View
+import java.util.*
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.databinding.getResourceHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
-import java.util.Calendar
-import javax.inject.Inject
 
 /** Per-activity utility to manage date and time for user-facing strings. */
 class DateTimeUtil @Inject constructor(
@@ -33,55 +33,64 @@ class DateTimeUtil @Inject constructor(
     /** Returns [DateTimeUtil] for the current Dagger graph. */
     fun getDateTimeUtil(): DateTimeUtil
   }
-}
 
-const val SECOND = 1
-const val MINUTE = 60 * SECOND
-const val HOUR = 60 * MINUTE
-const val DAY = 24 * HOUR
-const val MONTH = 30 * DAY
-const val YEAR = 12 * MONTH
+  /**
+   * Returns the readable string of the duration from the provided time in [Long].
+   */
+  fun timeAgoFromTimestamp(timestamp: Long, referenceTime: Long): String {
+    val diff = (currentDate() - timestamp) / MILLI_SECONDS
 
-private fun currentDate() = Calendar.getInstance().timeInMillis
+    return when (true) {
+      diff < SECONDS -> resourceHandler.getStringInLocale(R.string.just_now)
+      diff < HOUR -> resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.minutes_ago,
+        diff.diffToInt(SECONDS),
+        diff.diffToString(SECONDS)
+      )
+      diff < DAY -> resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.hours_ago,
+        diff.diffToInt(HOUR),
+        diff.diffToString(HOUR)
+      )
+      diff < WEEK -> resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.days_ago,
+        diff.diffToInt(DAY),
+        diff.diffToString(DAY)
+      )
+      diff < WEEKS ->
+        resourceHandler.getQuantityStringInLocaleWithWrapping(
+          R.plurals.weeks_ago,
+          diff.diffToInt(WEEK),
+          diff.diffToString(WEEK)
+        )
 
-/**
-* Returns the readable string of the duration from the provided time in [Long].
-*/
-fun Long.timeAgo(view: View): String {
-  val time = this
-  val now = currentDate()
-  val diff = (now - time) / 1000
+      diff < MONTHS ->
+        resourceHandler.getQuantityStringInLocaleWithWrapping(
+          R.plurals.months_ago,
+          diff.diffToInt(WEEKS),
+          diff.diffToString(WEEKS)
+        )
 
-  val resourceHandler = getResourceHandler(view)
+      else ->
+        resourceHandler.getQuantityStringInLocaleWithWrapping(
+          R.plurals.years_ago,
+          diff.diffToInt(MONTHS),
+          diff.diffToString(MONTHS)
+        )
+    }
+  }
 
-  return when {
-    diff < MINUTE -> resourceHandler.getStringInLocale(R.string.just_now)
-    diff < 2 * MINUTE -> resourceHandler.getStringInLocale(R.string.minute_ago)
-    diff < 60 * MINUTE -> resourceHandler.getStringInLocaleWithWrapping(
-      R.string.minutes_ago,
-      diff.formatDuration(MINUTE).toString()
-    )
-    diff < 2 * HOUR -> resourceHandler.getStringInLocale(R.string.hour_ago)
-    diff < 24 * HOUR -> resourceHandler.getStringInLocaleWithWrapping(
-      R.string.hours_ago,
-      diff.formatDuration(HOUR).toString()
-    )
-    diff < 2 * DAY -> resourceHandler.getStringInLocale(R.string.yesterday)
-    diff < 30 * DAY -> resourceHandler.getStringInLocaleWithWrapping(
-      R.string.days_ago,
-      diff.formatDuration(DAY).toString()
-    )
-    diff < 2 * MONTH -> resourceHandler.getStringInLocale(R.string.month_ago)
-    diff < 12 * MONTH -> resourceHandler.getStringInLocaleWithWrapping(
-      R.string.months_ago,
-      diff.formatDuration(MONTH).toString()
-    )
-    diff < 2 * YEAR -> resourceHandler.getStringInLocale(R.string.year_ago)
-    else -> resourceHandler.getStringInLocaleWithWrapping(
-      R.string.years_ago,
-      diff.formatDuration(YEAR).toString()
-    )
+  companion object {
+    fun currentDate() = Calendar.getInstance().timeInMillis
+    const val MILLI_SECONDS = 1000L
+    const val SECONDS = 60L
+    const val HOUR = 60 * SECONDS
+    const val DAY = 24 * HOUR
+    const val WEEK = 7 * DAY
+    const val WEEKS = 2_628_000L
+    const val MONTHS = 31_536_000L
   }
 }
 
-private fun Long.formatDuration(duration: Int) = div(duration)
+private fun Long.diffToInt(duration: Long) = div(duration).toInt()
+private fun Long.diffToString(duration: Long) = div(duration).toString()
