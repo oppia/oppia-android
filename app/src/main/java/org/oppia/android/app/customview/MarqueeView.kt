@@ -41,7 +41,7 @@ class MarqueeView : LinearLayout {
   private var mSpeed = 15
 
   /**Control the pause between the animations.*/
-  private var mAnimationPause = 2000
+  private var mAnimationPause = 1000
 
   /**Init the Marquee when class in invoked takes param [Context].*/
   constructor(context: Context?) : super(context) {
