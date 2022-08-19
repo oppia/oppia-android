@@ -1,6 +1,5 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
