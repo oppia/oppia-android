@@ -10,6 +10,7 @@
   <string name="menu_help">مساعدة</string>
   <string name="exploration_activity_title">مشغل رحلة الاستكشاف</string>
   <string name="help_activity_title">المساعدة</string>
+  <string name="bottom_sheet_options_menu_close">إغلاق</string>
   <string name="menu_switch_profile">تغيير الملف الشخصي</string>
   <string name="developer_options">خيارات المطورين</string>
   <string name="administrator_controls">أدوات تحكم المشرف</string>
