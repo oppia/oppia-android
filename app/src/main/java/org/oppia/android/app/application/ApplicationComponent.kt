@@ -3,7 +3,6 @@ package org.oppia.android.app.application
 import android.app.Application
 import androidx.work.Configuration
 import dagger.BindsInstance
-import dagger.Component
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
@@ -34,46 +33,14 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionDebugModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
-import org.oppia.android.domain.question.QuestionModule
-import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.util.accessibility.AccessibilityProdModule
-import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.caching.CachingModule
-import org.oppia.android.util.gcsresource.GcsResourceModule
-import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
-import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
-import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
-import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.system.OppiaClockModule
-import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
-import javax.inject.Singleton
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
  * this component.
  *
- * At the time of building the app in prod mode -
- * Remove: [DeveloperOptionsStarterModule], [DebugLogReportingModule],
- * [NetworkConnectionUtilDebugModule], [HintsAndSolutionDebugModule]
- * Add: [LogReportingModule], [NetworkConnectionUtilProdModule], [HintsAndSolutionProdModule]
- *
- * When building with Bazel, please also refer to instructions in app/BUILD.bazel.
+ * This component will be subclasses for specific contexts (such as test builds, or specific build
+ * flavors of the app).
  */
 @Singleton
 @Component(
@@ -109,11 +76,12 @@ import javax.inject.Singleton
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class, SyncStatusModule::class
   ]
 )
+
 interface ApplicationComponent : ApplicationInjector {
-  @Component.Builder
   interface Builder {
     @BindsInstance
     fun setApplication(application: Application): Builder
+
     fun build(): ApplicationComponent
   }
 

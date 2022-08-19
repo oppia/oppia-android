@@ -54,7 +54,6 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationContext
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
@@ -191,7 +190,6 @@ class StateFragmentLocalTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  @field:ApplicationContext
   lateinit var context: Context
 
   @Inject
