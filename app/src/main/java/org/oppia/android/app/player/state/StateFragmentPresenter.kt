@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -490,30 +492,47 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun setHintOpenedAndUnRevealed(isHintRevealed: Boolean) {
-    viewModel.setHintOpenedAndUnRevealedVisibility(isHintRevealed)
-    if (isHintRevealed) {
+  private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
+    viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
+    if (isHintUnrevealed) {
       val hintBulbAnimation = AnimationUtils.loadAnimation(
         context,
         R.anim.hint_bulb_animation
-      )
-      binding.hintBulb.startAnimation(
-        hintBulbAnimation
-      )
+      ).also { it.interpolator = BounceUpAndDownInterpolator() }
 
-      // The hint bulb will blink 5 times in duration of 6 sec, stop for next 24 sec and again
-      // start repeating.
-      lifecycleSafeTimerFactory.createTimer(30000).observe(
-        activity
-      ) {
-        if (viewModel.isHintOpenedAndUnRevealed.get()!!) {
-          binding.hintBulb.startAnimation(
-            hintBulbAnimation
-          )
+      // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
+      // cases like configuration changes, or returning from a saved checkpoint.
+      lifecycleSafeTimerFactory.run {
+        activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
+          return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
+            if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+          }
         }
       }
     } else {
       binding.hintBulb.clearAnimation()
+    }
+  }
+
+  /**
+   * An [Interpolator] when performs a reversed, then regular bounce interpolation using
+   * [BounceInterpolator].
+   *
+   * This interpolator maps input time from [0, 0.5] to [1.0, 0.0] and (0.5, 1.0] to (0.0, 1.0],
+   * allowing a clean continuous reverse bounce animation such that the item being bounced returns
+   * to its original position (which is expected to be the "final" transformation value). Note the
+   * start and end of the same time values for output--interpolators in Android normally don't allow
+   * this which is why modeling this animation behavior any other way is particularly challenging.
+   */
+  private class BounceUpAndDownInterpolator : Interpolator {
+    private val bounceInterpolator by lazy { BounceInterpolator() }
+
+    override fun getInterpolation(input: Float): Float {
+      // To get the correct continuous bounce, run the reverse bounce from 100% to 0% for the first
+      // 50% of time, then run the regular bounce from 0% to 100% for the remaining 50%.
+      return if (input <= 0.5f) {
+        bounceInterpolator.getInterpolation(1f - input * 2f)
+      } else bounceInterpolator.getInterpolation(input * 2f - 1f)
     }
   }
 }
