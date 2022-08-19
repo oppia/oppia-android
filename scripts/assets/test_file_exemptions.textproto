@@ -612,6 +612,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/feedbackrepor
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowAdditionalHintsFromWrongAnswerMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowAdditionalHintsMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/DelayShowInitialHintMillis.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigAlphaKenyaModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigFastShowTestModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintsAndSolutionConfigModule.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandler.kt"

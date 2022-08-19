@@ -56,22 +56,16 @@ class HintsViewModel @Inject constructor(
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
         addHintToList(index, hintList[index])
-      } else if (itemList.size > 0) {
-        val isLastHintRevealed =
-          (itemList.last() as HintsViewModel)
-            .isHintRevealed.get()
-            ?: false
+      } else {
+        val isPriorHintRevealed = (itemList.last() as HintsViewModel).isHintRevealed.get() ?: false
         val availableHintIndex = newAvailableHintIndex.get() ?: 0
-        if (isLastHintRevealed && index <= availableHintIndex) {
+        if (isPriorHintRevealed && index <= availableHintIndex) {
           addHintToList(index, hintList[index])
-        } else {
-          break
-        }
+        } else break
       }
     }
-    if (itemList.size > 1) {
-      val isLastHintRevealed =
-        (itemList.last() as HintsViewModel).isHintRevealed.get() ?: false
+    if (itemList.isNotEmpty()) {
+      val isLastHintRevealed = (itemList.last() as HintsViewModel).isHintRevealed.get() ?: false
       val areAllHintsExhausted = allHintsExhausted.get() ?: false
       if (solution.hasExplanation() &&
         hintList.size == itemList.size &&
@@ -81,7 +75,7 @@ class HintsViewModel @Inject constructor(
         addSolutionToList(solution)
       }
     }
-    addReturnToLessonButtonItem()
+    itemList.add(ReturnToLessonViewModel())
     return itemList
   }
 
@@ -115,9 +109,5 @@ class HintsViewModel @Inject constructor(
     solutionViewModel.solutionSummary.set(explanationHtml)
     solutionViewModel.isSolutionRevealed.set(helpIndex.isSolutionRevealed())
     itemList.add(solutionViewModel)
-  }
-
-  private fun addReturnToLessonButtonItem() {
-    itemList.add(ReturnToLessonViewModel())
   }
 }

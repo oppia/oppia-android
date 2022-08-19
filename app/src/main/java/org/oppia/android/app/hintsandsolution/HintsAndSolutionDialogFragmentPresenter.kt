@@ -97,9 +97,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.state = state
     this.helpIndex = helpIndex
     this.writtenTranslationContext = writtenTranslationContext
-    // The newAvailableHintIndex received here is coming from state player but in this
-    // implementation hints/solutions are shown on every even index and on every odd index we show a
-    // divider. The relative index therefore needs to be doubled to account for the divider.
+
     val newAvailableHintIndex = computeNewAvailableHintIndex(helpIndex)
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
     viewModel.allHintsExhausted.set(computeWhetherAllHintsAreExhausted(helpIndex))
