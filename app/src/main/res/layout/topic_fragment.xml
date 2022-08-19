@@ -35,7 +35,7 @@
         app:navigationIcon="?attr/homeAsUpIndicator">
 
         <org.oppia.android.app.customview.MarqueeView
-          android:id="@+id/marquee_view"
+          android:id="@+id/topic_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
         <TextView

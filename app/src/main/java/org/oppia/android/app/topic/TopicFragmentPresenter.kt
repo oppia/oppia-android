@@ -58,7 +58,7 @@ class TopicFragmentPresenter @Inject constructor(
     }
 
     binding.topicToolbarTitle.setOnClickListener {
-      binding.marqueeView.startMarquee()
+      binding.topicMarqueeView.startMarquee()
     }
 
     val viewModel = getTopicViewModel()

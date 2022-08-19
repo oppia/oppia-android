@@ -39,7 +39,7 @@
           android:orientation="horizontal">
 
           <org.oppia.android.app.customview.MarqueeView
-            android:id="@+id/marquee_view"
+            android:id="@+id/exploration_marquee_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
           <TextView

@@ -28,7 +28,6 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.StoryChapterViewBinding
 import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
@@ -50,7 +49,6 @@ class StoryFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
@@ -85,7 +83,7 @@ class StoryFragmentPresenter @Inject constructor(
     }
 
     binding.storyToolbarTitle.setOnClickListener {
-      binding.marqueeView?.startMarquee()
+      binding.storyMarqueeView?.startMarquee()
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
