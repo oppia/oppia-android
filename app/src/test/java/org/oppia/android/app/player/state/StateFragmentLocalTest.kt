@@ -637,14 +637,14 @@ class StateFragmentLocalTest {
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
@@ -1298,7 +1298,7 @@ class StateFragmentLocalTest {
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1407,7 +1407,7 @@ class StateFragmentLocalTest {
 
       // The hint button label should be in English since the app string locale is unaffected by the
       // content string setting.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
