@@ -13,17 +13,17 @@ import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
-/** The root [Application] of the Oppia app. */
-class OppiaApplication :
-  MultiDexApplication(),
+/** The root base [Application] of the Oppia app. */
+abstract class AbstractOppiaApplication(
+  createComponentBuilder: () -> ApplicationComponent.Builder
+) : MultiDexApplication(),
   ActivityComponentFactory,
   ApplicationInjectorProvider,
   Configuration.Provider {
+
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
-    DaggerApplicationComponent.builder()
-      .setApplication(this)
-      .build()
+    createComponentBuilder().setApplication(this).build()
   }
 
   override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
