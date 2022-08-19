@@ -73,6 +73,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -89,6 +93,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
@@ -103,6 +109,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -119,6 +129,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
@@ -133,6 +145,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -149,6 +165,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
@@ -163,6 +181,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -179,6 +201,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
@@ -193,6 +217,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -209,6 +237,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
@@ -223,6 +253,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -239,6 +273,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
@@ -253,6 +289,10 @@ oppia_android_test(
         "//app",
         "//app:test_deps",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//domain",
         "//testing",
@@ -269,6 +309,8 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
