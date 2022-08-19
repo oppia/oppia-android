@@ -89,7 +89,7 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, AlphaKenyaBuildFlavorModule::class
+    HintsAndSolutionProdModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {
