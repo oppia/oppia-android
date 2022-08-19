@@ -72,7 +72,7 @@ class PromotedStoryListViewModel(
   }
 
   fun clickOnViewAll() {
-    routeToRecentlyPlayedListener.routeToRecentlyPlayed()
+    routeToRecentlyPlayedListener.routeToRecentlyPlayed(getHeader())
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel

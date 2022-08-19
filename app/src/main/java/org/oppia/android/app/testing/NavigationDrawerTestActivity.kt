@@ -15,6 +15,7 @@ import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
@@ -71,12 +72,24 @@ class NavigationDrawerTestActivity :
     )
   }
 
-  override fun routeToRecentlyPlayed() {
+  override fun routeToRecentlyPlayed(title: String) {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .build()
+        .setActivityTitle(
+          when (title) {
+            getString(R.string.stories_for_you) -> {
+              RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+            }
+            getString(R.string.recently_played_activity) -> {
+              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+            }
+            else -> {
+              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+            }
+          }
+        ).build()
 
     activityRouter.routeToScreen(
       DestinationScreen

@@ -76,4 +76,19 @@ message DestinationScreen {
 message RecentlyPlayedActivityParams {
   // The ID of current profile.
   ProfileId profile_id = 1;
+
+  // The title which should be displayed for the activity.
+  RecentlyPlayedActivityTitle activity_title = 2;
+}
+
+// Corresponds to activity title of RecentlyPlayedActivity.
+enum RecentlyPlayedActivityTitle {
+  // Activity title is not specified.
+  UNSPECIFIED = 0;
+
+  // Corresponds to activity title as "Recently played stories".
+  RECENTLY_PLAYED_STORIES = 1;
+
+  // Corresponds to activity title as "Stories for you".
+  STORIES_FOR_YOU = 2;
 }

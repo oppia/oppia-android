@@ -3,6 +3,7 @@ package org.oppia.android.app.profileprogress
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
@@ -11,6 +12,7 @@ import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
 
@@ -36,12 +38,24 @@ class ProfileProgressActivity :
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }
 
-  override fun routeToRecentlyPlayed() {
+  override fun routeToRecentlyPlayed(title: String) {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .build()
+        .setActivityTitle(
+          when (title) {
+            getString(R.string.stories_for_you) -> {
+              RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+            }
+            getString(R.string.recently_played_activity) -> {
+              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+            }
+            else -> {
+              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+            }
+          }
+        ).build()
 
     activityRouter.routeToScreen(
       DestinationScreen
