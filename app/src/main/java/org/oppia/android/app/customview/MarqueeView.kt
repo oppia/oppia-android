@@ -36,7 +36,6 @@ class MarqueeView : LinearLayout {
   private var mStarted = false
 
   private val textviewVirtualWidth = 2000
-  private val tag = MarqueeView::class.java.simpleName
 
   /**Control the speed. The lower this value, the faster it will scroll.*/
   private var mSpeed = 15
