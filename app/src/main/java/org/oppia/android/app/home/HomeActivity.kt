@@ -15,10 +15,10 @@ import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
-import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 
 /** The central activity for all users entering the app. */
 class HomeActivity :

@@ -1,18 +1,31 @@
 package org.oppia.android.app.home.recentlyplayed
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
-import javax.inject.Inject
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
+import javax.inject.Inject
+import org.oppia.android.databinding.RecentlyPlayedActivityBinding
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
 class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   fun handleOnCreate(recentlyPlayedActivityParams: RecentlyPlayedActivityParams) {
+    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     activity.title = getTitle(recentlyPlayedActivityParams)
-    activity.setContentView(R.layout.recently_played_activity)
+    val binding = DataBindingUtil.setContentView<RecentlyPlayedActivityBinding>(
+      activity,
+      R.layout.recently_played_activity
+    )
+
+    binding.recentlyPlayedToolbar.setNavigationOnClickListener {
+      (activity as RecentlyPlayedActivity).finish()
+    }
+    binding.recentlyPlayedToolbar.title = getTitle(recentlyPlayedActivityParams)
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
