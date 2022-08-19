@@ -2,7 +2,6 @@ package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
-import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
