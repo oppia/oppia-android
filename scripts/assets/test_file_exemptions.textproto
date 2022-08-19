@@ -57,6 +57,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interact
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/NumericInputInteractionView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/RatioInputInteractionView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/TextInputInteractionView.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/MarqueeView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/deprecation/AutomaticAppDeprecationNoticeDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/deprecation/AutomaticAppDeprecationNoticeDialogFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/deprecation/DeprecationNoticeExitAppListener.kt"
