@@ -2,6 +2,7 @@ package org.oppia.android.app.shim
 
 import android.content.Context
 import android.content.Intent
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
@@ -32,10 +33,4 @@ interface IntentFactoryShim {
     internalProfileId: Int,
     topicId: String
   ): Intent
-
-  /**
-   * Creates a [RecentlyPlayedActivity] intent for [PromotedStoryListViewModel] and passes
-   * necessary string data.
-   * */
-  fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent
 }

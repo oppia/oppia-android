@@ -9,12 +9,15 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.activity.route.ActivityRouter
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
 /** The central activity for all users entering the app. */
 class HomeActivity :
@@ -27,6 +30,9 @@ class HomeActivity :
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
+
+  @Inject
+  lateinit var activityRouter: ActivityRouter
 
   private var internalProfileId: Int = -1
 
@@ -83,11 +89,17 @@ class HomeActivity :
   }
 
   override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId
-      )
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+        .build()
     )
   }
 }

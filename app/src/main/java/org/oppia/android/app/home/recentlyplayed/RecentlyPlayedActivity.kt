@@ -9,10 +9,12 @@ import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Activity for recent stories. */
@@ -27,23 +29,36 @@ class RecentlyPlayedActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val internalProfileId = intent.getIntExtra(
-      RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-      -1
+    val bundle = checkNotNull(intent.getBundleExtra(RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY)) {
+      "Expected arguments to be passed to RecentlyPlayedActivity"
+    }
+    val recentlyPlayedActivityParams = bundle.getProto(
+      RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+      RecentlyPlayedActivityParams.getDefaultInstance()
     )
-    recentlyPlayedActivityPresenter.handleOnCreate(internalProfileId)
+    recentlyPlayedActivityPresenter.handleOnCreate(recentlyPlayedActivityParams)
   }
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY =
-      "RecentlyPlayedActivity.internal_profile_id"
+    const val RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY =
+      "RecentlyPlayedActivity.bundle"
+    const val RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY =
+      "RecentlyPlayedActivity.intent_extras"
 
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
-    fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
-      return Intent(context, RecentlyPlayedActivity::class.java).apply {
-        putExtra(RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
-      }
+    fun createRecentlyPlayedActivityIntent(
+      context: Context,
+      recentlyPlayedActivityParams: RecentlyPlayedActivityParams
+    ): Intent {
+      val bundle = Bundle()
+      bundle.putProto(
+        RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+        recentlyPlayedActivityParams
+      )
+      val intent = Intent(context, RecentlyPlayedActivity::class.java)
+      intent.putExtra(RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY, bundle)
+      return intent
     }
   }
 
@@ -92,7 +107,9 @@ class RecentlyPlayedActivity :
   class RecentlyPlayedActivityIntentFactoryImpl @Inject constructor(
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
-    override fun createIntent(profileId: ProfileId): Intent =
-      createRecentlyPlayedActivityIntent(activity, profileId.internalId)
+    override fun createIntent(
+      recentlyPlayedActivityParams: RecentlyPlayedActivityParams
+    ): Intent =
+      createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityParams)
   }
 }

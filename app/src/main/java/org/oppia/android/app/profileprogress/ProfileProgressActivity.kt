@@ -5,9 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
 
@@ -23,6 +26,9 @@ class ProfileProgressActivity :
   lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
   private var internalProfileId = -1
 
+  @Inject
+  lateinit var activityRouter: ActivityRouter
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -31,11 +37,17 @@ class ProfileProgressActivity :
   }
 
   override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId
-      )
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+        .build()
     )
   }
 

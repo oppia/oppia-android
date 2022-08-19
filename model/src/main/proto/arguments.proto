@@ -3,6 +3,7 @@ syntax = "proto3";
 package model;
 
 import "exploration.proto";
+import "profile.proto";
 import "translation.proto";
 
 option java_package = "org.oppia.android.app.model";
@@ -62,4 +63,17 @@ message InputInteractionViewTestActivityParams {
     // Indicates that the math equation input interaction will be used for testing.
     MATH_EQUATION = 3;
   }
+}
+
+// Corresponds to intent extras of destination activity.
+message DestinationScreen {
+  oneof destination_screen {
+    RecentlyPlayedActivityParams recently_played_activity_params = 1;
+  }
+}
+
+// Intent extras for RecentlyPlayedActivity.
+message RecentlyPlayedActivityParams {
+  // The ID of current profile.
+  ProfileId profile_id = 1;
 }

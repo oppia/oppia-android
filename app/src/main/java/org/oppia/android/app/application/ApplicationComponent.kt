@@ -62,6 +62,7 @@ import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.activity.route.ActivityRouterModule
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
@@ -99,7 +100,7 @@ import javax.inject.Singleton
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
     NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
-    LocaleProdModule::class, ActivityRecreatorProdModule::class,
+    LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

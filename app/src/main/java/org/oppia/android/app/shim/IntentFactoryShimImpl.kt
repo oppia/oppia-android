@@ -6,6 +6,7 @@ import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActi
 import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
 import org.oppia.android.app.model.ProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
 /**
  * Creates intents for ViewModels in order to avoid ViewModel files directly depending on Activites.
@@ -52,21 +53,6 @@ class IntentFactoryShimImpl @Inject constructor(
         internalId = internalProfileId
       }.build(),
       topicId
-    )
-  }
-
-  /**
-   * Creates a recently played activity intent for [PromotedStoryListViewModel] and passes
-   * necessary string data.
-   */
-  override fun createRecentlyPlayedActivityIntent(
-    context: Context,
-    internalProfileId: Int
-  ): Intent {
-    return recentlyPlayedActivityIntentFactory.createIntent(
-      ProfileId.newBuilder().apply {
-        internalId = internalProfileId
-      }.build()
     )
   }
 }
