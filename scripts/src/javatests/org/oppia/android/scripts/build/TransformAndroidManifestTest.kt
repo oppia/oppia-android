@@ -98,7 +98,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_threeAgs_failsWithUsageString() {
+  fun testUtility_threeArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -114,7 +114,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_fourAgs_failsWithUsageString() {
+  fun testUtility_fourArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -131,7 +131,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_fiveAgs_failsWithUsageString() {
+  fun testUtility_fiveArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -149,7 +149,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_sixAgs_failsWithUsageString() {
+  fun testUtility_sixArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -168,7 +168,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_sevenAgs_failsWithUsageString() {
+  fun testUtility_sevenArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -188,7 +188,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_eightAgs_failsWithUsageString() {
+  fun testUtility_eightArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
