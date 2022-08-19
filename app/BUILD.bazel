@@ -278,7 +278,7 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/help/thirdparty/LicenseItemViewModel.kt",
     "src/main/java/org/oppia/android/app/help/thirdparty/ThirdPartyDependencyItemViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionItemViewModel.kt",
-    "src/main/java/org/oppia/android/app/hintsandsolution/HintsDividerViewModel.kt",
+    "src/main/java/org/oppia/android/app/hintsandsolution/ReturnToLessonViewModel.kt",
     "src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicListViewModel.kt",
