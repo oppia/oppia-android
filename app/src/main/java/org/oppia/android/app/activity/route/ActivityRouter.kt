@@ -7,6 +7,9 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
+/**
+ * ActivityRouter used to route to given [DestinationScreen].
+ */
 class ActivityRouter @Inject constructor(
   private val activity: AppCompatActivity,
   private val consoleLogger: ConsoleLogger
