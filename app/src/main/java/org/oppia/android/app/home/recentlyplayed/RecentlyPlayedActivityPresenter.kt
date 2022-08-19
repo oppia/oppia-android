@@ -6,12 +6,16 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
-import javax.inject.Inject
 import org.oppia.android.databinding.RecentlyPlayedActivityBinding
+import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
-class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class RecentlyPlayedActivityPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val resourceHandler: AppLanguageResourceHandler
+) {
   fun handleOnCreate(recentlyPlayedActivityParams: RecentlyPlayedActivityParams) {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
@@ -40,18 +44,16 @@ class RecentlyPlayedActivityPresenter @Inject constructor(private val activity: 
     ) as RecentlyPlayedFragment?
   }
 
-  private fun getTitle(
-    recentlyPlayedActivityParams: RecentlyPlayedActivityParams
-  ): String {
+  private fun getTitle(recentlyPlayedActivityParams: RecentlyPlayedActivityParams): String {
     return when (recentlyPlayedActivityParams.activityTitle) {
       RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES -> {
-        activity.getString(R.string.recently_played_activity)
+        resourceHandler.getStringInLocale(R.string.recently_played_activity)
       }
       RecentlyPlayedActivityTitle.STORIES_FOR_YOU -> {
-        activity.getString(R.string.stories_for_you)
+        resourceHandler.getStringInLocale(R.string.stories_for_you)
       }
       else -> {
-        activity.getString(R.string.recently_played_activity)
+        resourceHandler.getStringInLocale(R.string.recently_played_activity)
       }
     }
   }
