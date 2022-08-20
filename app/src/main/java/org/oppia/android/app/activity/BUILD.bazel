@@ -76,35 +76,6 @@ kt_android_library(
     ],
     deps = [
         "//model/src/main/proto:profile_java_proto_lite",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_activity",
-    ],
-)
-
-kt_android_library(
-    name = "activity_router",
-    srcs = [
-        "route/ActivityRouter.kt",
-    ],
-    visibility = [
-        "//app:app_visibility",
-    ],
-    deps = [
-        "//third_party:androidx_appcompat_appcompat",
         "//model/src/main/proto:arguments_java_proto_lite",
-        "//app/src/main/java/org/oppia/android/app/home/recentlyplayed:recently_played_activity",
-        "//app/src/main/java/org/oppia/android/utility/logging:console_logger",
-    ]
-)
-
-kt_android_library(
-    name = "activity_router_module",
-    srcs = [
-        "route/ActivityRouterModule.kt",
     ],
-    visibility = [
-        "//app:app_visibility",
-    ],
-    deps = [
-        "//model/src/main/proto:arguments_java_proto_lite",
-    ]
 )
