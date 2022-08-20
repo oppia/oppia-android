@@ -38,43 +38,28 @@ class DateTimeUtil @Inject constructor(
   fun timeAgoFromTimestamp(timestamp: Long, referenceTime: Long): String {
     val diff = (currentDate() - timestamp) / MILLI_SECONDS
 
-    return when (true) {
+    return when {
       diff < SECONDS -> resourceHandler.getStringInLocale(R.string.just_now)
       diff < HOUR -> resourceHandler.getQuantityStringInLocaleWithWrapping(
-        R.plurals.minutes_ago,
-        diff.diffToInt(SECONDS),
-        diff.diffToString(SECONDS)
+        R.plurals.minutes_ago, diff.diffToInt(SECONDS), diff.diffToString(SECONDS)
       )
       diff < DAY -> resourceHandler.getQuantityStringInLocaleWithWrapping(
-        R.plurals.hours_ago,
-        diff.diffToInt(HOUR),
-        diff.diffToString(HOUR)
+        R.plurals.hours_ago, diff.diffToInt(HOUR), diff.diffToString(HOUR)
       )
       diff < WEEK -> resourceHandler.getQuantityStringInLocaleWithWrapping(
-        R.plurals.days_ago,
-        diff.diffToInt(DAY),
-        diff.diffToString(DAY)
+        R.plurals.days_ago, diff.diffToInt(DAY), diff.diffToString(DAY)
       )
-      diff < WEEKS ->
-        resourceHandler.getQuantityStringInLocaleWithWrapping(
-          R.plurals.weeks_ago,
-          diff.diffToInt(WEEK),
-          diff.diffToString(WEEK)
-        )
-
-      diff < MONTHS ->
-        resourceHandler.getQuantityStringInLocaleWithWrapping(
-          R.plurals.months_ago,
-          diff.diffToInt(WEEKS),
-          diff.diffToString(WEEKS)
-        )
-
-      else ->
-        resourceHandler.getQuantityStringInLocaleWithWrapping(
-          R.plurals.years_ago,
-          diff.diffToInt(MONTHS),
-          diff.diffToString(MONTHS)
-        )
+      diff < WEEKS -> resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.weeks_ago, diff.diffToInt(WEEK), diff.diffToString(WEEK)
+      )
+      diff < MONTHS -> resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.months_ago,
+        diff.diffToInt(WEEKS),
+        diff.diffToString(WEEKS)
+      )
+      else -> resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.years_ago, diff.diffToInt(MONTHS), diff.diffToString(MONTHS)
+      )
     }
   }
 
