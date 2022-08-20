@@ -84,7 +84,7 @@ message RecentlyPlayedActivityParams {
 // Corresponds to activity title of RecentlyPlayedActivity.
 enum RecentlyPlayedActivityTitle {
   // Activity title is not specified.
-  UNSPECIFIED = 0;
+  _UNSPECIFIED = 0;
 
   // Corresponds to activity title as "Recently played stories".
   RECENTLY_PLAYED_STORIES = 1;
