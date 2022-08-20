@@ -28,8 +28,8 @@ oppia_proto_library(
     srcs = ["arguments.proto"],
     deps = [
         ":exploration_proto",
+        ":profile_proto",
         ":translation_proto",
-        ":profile_proto"
     ],
 )
 
