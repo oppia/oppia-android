@@ -59,6 +59,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -660,12 +662,17 @@ class ProfileProgressFragmentTest {
         targetViewId = R.id.view_all_text_view,
         stringToMatch = "View All"
       )
+      val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
+        .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
         hasExtra(
           RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-          internalProfileId
+          recentlyPlayedActivityParams
         )
       )
     }
