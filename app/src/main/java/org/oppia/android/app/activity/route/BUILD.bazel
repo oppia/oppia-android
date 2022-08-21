@@ -12,7 +12,7 @@ exports_files([
 kt_android_library(
     name = "activity_router_module",
     srcs = [
-        "route/ActivityRouterModule.kt",
+        "ActivityRouterModule.kt",
     ],
     visibility = [
         "//app:app_visibility",
