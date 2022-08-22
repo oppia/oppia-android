@@ -47,7 +47,7 @@
           <TextView
             android:id="@+id/exploration_toolbar_title"
             style="@style/MarqueeToolbarTitleTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
           </org.oppia.android.app.customview.MarqueeView>
