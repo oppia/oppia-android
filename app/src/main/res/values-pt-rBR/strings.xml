@@ -377,7 +377,7 @@
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
   <string name="reveal_solution">Revelar Solução</string>
-  <string name="reveal_hint">Revelar Dica</string>
+  <string name="reveal_hint" fuzzy="true">Revelar Dica</string>
   <string name="show_hide_hint_list">Mostrar/Esconder lista de dicas de %s</string>
   <string name="show_hide_solution_list">Mostrar/Esconder solução</string>
   <string name="the_only_solution_is">A única solução é :</string>
@@ -411,7 +411,7 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">Por favor, selecione pelo menos uma opção.</string>
+  <string name="item_selection_text" fuzzy="true">Por favor, selecione pelo menos uma opção.</string>
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
