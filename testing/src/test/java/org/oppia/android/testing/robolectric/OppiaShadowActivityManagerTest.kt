@@ -35,11 +35,10 @@ class OppiaShadowActivityManagerTest {
   @Inject
   lateinit var context: Context
 
-  private val oppiaShadowActivityManager: OppiaShadowActivityManager by lazy {
-    shadowOf(
+  private val oppiaShadowActivityManager: OppiaShadowActivityManager
+    get() = shadowOf(
       context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     ) as OppiaShadowActivityManager
-  }
 
   @Before
   fun setUp() {

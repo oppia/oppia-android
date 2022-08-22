@@ -36,9 +36,9 @@ class OppiaShadowTrafficStatsTest {
   @Inject
   lateinit var context: Context
 
-  private val oppiaShadowTrafficStats by lazy {
-    Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
-  }
+  private val oppiaShadowTrafficStats: OppiaShadowTrafficStats
+    get() =
+      Shadow.extract(Shadow.newInstanceOf(TrafficStats::class.java)) as OppiaShadowTrafficStats
 
   @Before
   fun setUp() {
