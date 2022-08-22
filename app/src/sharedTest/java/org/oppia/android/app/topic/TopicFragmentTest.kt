@@ -134,6 +134,10 @@ class TopicFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @JvmField
+  @field:[Inject EnablePracticeTab]
+  var enablePracticeTab: Boolean = false
+
   private val internalProfileId = 0
 
   private val TOPIC_NAME = "Fractions"
@@ -141,7 +145,6 @@ class TopicFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    initializeApplicationComponent()
   }
 
   @After
@@ -218,28 +221,20 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_enableExtraTabsUi_swipePage_hasSwipedPage() {
+  fun testTopicFragment_swipePage_hasSwipedPage() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
-      verifyTabTitleAtPosition(
-        position = LESSON_TAB_POSITION,
-        TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-      )
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
   }
 
   @Test
-  fun testTopicFragment_enableExtraTopicTabs_infoTopicTab_isDisplayedInTabLayout() {
+  fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        withText(
-          TopicTab.getTabForPosition(
-            position = 0,
-            TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-          ).name
-        )
-      ).check(
+      onView(withText(TopicTab.getTabForPosition(position = 0, enablePracticeTab).name)).check(
         matches(
           isDescendantOfA(
             withId(
@@ -252,41 +247,16 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_disableExtraTopicTabs_infoTopicTab_isNotDisplayedInTabLayout() {
+  fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(
-        withText(
-          TopicTab.getTabForPosition(
-            position = 0,
-            TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-          ).name
-        )
-      ).check(matches(not(isDescendantOfA(withId(R.id.topic_tabs_container)))))
-    }
-  }
-
-  @Test
-  fun testTopicFragment_enableExtraTopicTabs_defaultTabIsInfo_isSuccessful() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      verifyTabTitleAtPosition(
-        position = INFO_TAB_POSITION, TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-      )
-    }
-  }
-
-  @Test
-  fun testTopicFragment_disableExtraTopicTabs_defaultTabIsLessons_isSuccessful() {
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      verifyTabTitleAtPosition(
-        position = LESSON_TAB_POSITION,
-        TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-      )
+      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
   }
 
   @Test
   fun testTopicFragment_defaultTabIsInfo_showsMatchingContent() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
@@ -608,11 +578,11 @@ class TopicFragmentTest {
     ).perform(click())
   }
 
-  private fun verifyTabTitleAtPosition(position: Int, enableExtraTabsUi: Boolean) {
+  private fun verifyTabTitleAtPosition(position: Int) {
     onView(withId(R.id.topic_tabs_container)).check(
       matches(
         matchCurrentTabTitle(
-          TopicTab.getTabForPosition(position, enableExtraTabsUi).name
+          TopicTab.getTabForPosition(position, enablePracticeTab).name
         )
       )
     )
@@ -642,7 +612,8 @@ class TopicFragmentTest {
     )
   }
 
-  private fun initializeApplicationComponent() {
+  private fun initializeApplicationComponent(practiceTabIsEnabled: Boolean = true) {
+    TestModule.checkIfPracticeTabIsEnabled = { practiceTabIsEnabled }
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -651,11 +622,26 @@ class TopicFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  @Module
+  class TestModule {
+    companion object {
+      // Note that a lambda is used here since primitive types (like booleans) can't be lateinit,
+      // and defaulting the boolean can inadvertently enable actual state in the test (i.e. both
+      // 'true' and 'false' mean something other than "not yet initialized").
+      lateinit var checkIfPracticeTabIsEnabled: () -> Boolean
+    }
+
+    @Provides
+    @EnablePracticeTab
+    @Singleton
+    fun provideEnablePracticeTab(): Boolean = checkIfPracticeTabIsEnabled()
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestPlatformParameterModule::class, RobolectricModule::class,
+      TestModule::class, PlatformParameterModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
