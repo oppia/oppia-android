@@ -541,8 +541,6 @@ class ListItemLeadingMarginSpanTest {
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
 
-    System.out.println("test canvas" + "=====" + canvas.width)
-
     bulletSpan0.drawLeadingMargin(
       canvas, paint, x, dir, 0, 0, 96, htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
@@ -828,7 +826,7 @@ class ListItemLeadingMarginSpanTest {
   ): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = Mockito.mock(Consumer::class.java) as Consumer<V>
+    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
     val valueCaptor = ArgumentCaptor.forClass(V::class.java)
     onActivity { fakeMock.consume(action(it)) }
     Mockito.verify(fakeMock).consume(valueCaptor.capture())
