@@ -80,7 +80,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/help/faq/faqsingle/
 exempted_file_path: "app/src/main/java/org/oppia/android/app/help/faq/faqsingle/FAQSingleActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionDialogFragmentPresenter.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsDividerViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"
