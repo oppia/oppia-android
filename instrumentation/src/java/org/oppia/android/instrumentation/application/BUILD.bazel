@@ -12,17 +12,21 @@ kt_android_library(
         "EndToEndTestGcsResourceModule.kt",
         "EndToEndTestImageParsingModule.kt",
         "EndToEndTestNetworkConfigModule.kt",
-        "OppiaTestApplication.kt",
         "TestApplicationComponent.kt",
+        "TestOppiaApplication.kt",
     ],
     visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
         ":dagger",
         "//app",
+        "//app/src/main/java/org/oppia/android/app/application:abstract_application",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
         "//domain",
         "//utility",
-        "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
