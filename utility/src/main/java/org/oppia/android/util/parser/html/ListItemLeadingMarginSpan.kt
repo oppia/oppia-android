@@ -53,7 +53,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       start: Int,
       end: Int,
       first: Boolean,
-      layout: Layout?
+      layout: Layout
     ) {
       val startCharOfSpan = (text as Spanned).getSpanStart(this)
       val isFirstCharacter = startCharOfSpan == start
@@ -118,7 +118,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       start: Int,
       end: Int,
       first: Boolean,
-      layout: Layout?
+      layout: Layout
     ) {
       val startCharOfSpan = (text as Spanned).getSpanStart(this)
       val isFirstCharacter = startCharOfSpan == start

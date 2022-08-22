@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.text.Layout
 import android.text.Spannable
 import android.view.View
 import android.widget.TextView
@@ -18,6 +19,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,6 +30,7 @@ import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -110,8 +114,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -382,7 +384,7 @@ class ListItemLeadingMarginSpanTest {
     val canvas = Canvas()
     val paint = Paint()
     val x = 10
-    val dir = 15
+    val dir = 1
 
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -429,7 +431,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     bulletSpan1.drawLeadingMargin(
@@ -437,7 +439,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      null
+      mock(Layout::class.java)
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
@@ -447,7 +449,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
@@ -456,7 +458,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      null
+      mock(Layout::class.java)
     )
 
     val shadowCanvas = shadowOf(canvas)
@@ -485,11 +487,14 @@ class ListItemLeadingMarginSpanTest {
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedBulletItems_inRtl_isDrawnCorrectlyWithIndentation() {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+    val width: Int = context.resources.displayMetrics.widthPixels
 
     val canvas = Canvas()
+    shadowOf(canvas).setWidth(width)
     val paint = Paint()
-    val x = 10
-    val dir = 15
+    val shadowCanvas = shadowOf(canvas)
+    val x = 960
+    val dir = -1
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -500,6 +505,7 @@ class ListItemLeadingMarginSpanTest {
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       testCoroutineDispatchers.runCurrent()
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       val htmlResult = htmlParser.parseOppiaHtml(
         "<ul>" +
           "        <li> Usage Data\", such as:" +
@@ -531,15 +537,18 @@ class ListItemLeadingMarginSpanTest {
     htmlResult.setSpan(
       bulletSpan0,
       0,
-      3,
+      26,
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     )
+
+    System.out.println("test canvas" + "=====" + canvas.width)
+
     bulletSpan0.drawLeadingMargin(
       canvas, paint, x, dir, 0, 0, 96, htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     bulletSpan1.drawLeadingMargin(
@@ -547,7 +556,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      null
+      mock(Layout::class.java)
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
@@ -557,7 +566,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
@@ -566,22 +575,21 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      null
+      mock(Layout::class.java)
     )
 
-    val shadowCanvas = shadowOf(canvas)
     // The below assertion verifies the 1st item of inner level list
-    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(-73.0f)
+    assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(887.0f)
     assertThat(shadowCanvas.getDrawnCircle(0).centerY).isWithin(1e-5f).of(48.0f)
     // The below assertion verifies the 2nd item of inner level list
-    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(-73.0f)
+    assertThat(shadowCanvas.getDrawnCircle(1).centerX).isWithin(1e-5f).of(887.0f)
     assertThat(shadowCanvas.getDrawnCircle(1).centerY).isWithin(1e-5f).of(139.0f)
 
     // The below assertion verifies the 1st item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(-25.0f)
+    assertThat(shadowCanvas.getDrawnCircle(2).centerX).isWithin(1e-5f).of(935.0f)
     assertThat(shadowCanvas.getDrawnCircle(2).centerY).isWithin(1e-5f).of(225.0f)
     // The below assertion verifies the 2nd item of outer level list
-    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(-25.0f)
+    assertThat(shadowCanvas.getDrawnCircle(3).centerX).isWithin(1e-5f).of(935.0f)
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 
@@ -595,11 +603,14 @@ class ListItemLeadingMarginSpanTest {
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedNumberedListItems_inRtl_isDrawnCorrectlyWithIndentation() {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+    val width: Int = context.resources.displayMetrics.widthPixels
 
     val canvas = Canvas()
+    shadowOf(canvas).setWidth(width)
     val paint = Paint()
-    val x = 10
-    val dir = 15
+    val shadowCanvas = shadowOf(canvas)
+    val x = 960
+    val dir = -1
     val top = 0
     val bottom = 0
     val htmlParser = htmlParserFactory.create(
@@ -650,7 +661,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     bulletSpan1.drawLeadingMargin(
@@ -658,7 +669,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      null
+      mock(Layout::class.java)
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
@@ -668,7 +679,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan3).isNotNull()
@@ -677,29 +688,27 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      null
+      mock(Layout::class.java)
     )
-
-    val shadowCanvas = shadowOf(canvas)
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
     // The below assertion verifies the 1st item of inner level list
-    assertThat(shadowCanvas.getDrawnTextEvent(0).x).isWithin(1e-5f).of(-96.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(0).x).isWithin(1e-5f).of(864.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(0).y).isWithin(1e-5f).of(78.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(0).text).isEqualTo("١.")
 
     // The below assertion verifies the 2nd item of inner level list
-    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isWithin(1e-5f).of(-96.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(1).x).isWithin(1e-5f).of(864.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(1).y).isWithin(1e-5f).of(164.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(1).text).isEqualTo("٢.")
 
     // The below assertion verifies the 1st item of outer level list
-    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isWithin(1e-5f).of(-48.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(2).x).isWithin(1e-5f).of(912.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(2).y).isWithin(1e-5f).of(250.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(2).text).isEqualTo("١.")
 
     // The below assertion verifies the 2nd item of outer level list
-    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isWithin(1e-5f).of(-48.0f)
+    assertThat(shadowCanvas.getDrawnTextEvent(3).x).isWithin(1e-5f).of(912.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(3).y).isWithin(1e-5f).of(422.0f)
     assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("٢.")
   }
@@ -709,7 +718,7 @@ class ListItemLeadingMarginSpanTest {
     val canvas = Canvas()
     val paint = Paint()
     val x = 10
-    val dir = 15
+    val dir = 1
     val top = 0
     val bottom = 0
     val htmlParser = htmlParserFactory.create(
@@ -760,7 +769,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     bulletSpan1.drawLeadingMargin(
@@ -768,7 +777,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      null
+      mock(Layout::class.java)
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
@@ -778,7 +787,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      null
+      mock(Layout::class.java)
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan3).isNotNull()
@@ -787,7 +796,7 @@ class ListItemLeadingMarginSpanTest {
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      null
+      mock(Layout::class.java)
     )
 
     val shadowCanvas = shadowOf(canvas)
