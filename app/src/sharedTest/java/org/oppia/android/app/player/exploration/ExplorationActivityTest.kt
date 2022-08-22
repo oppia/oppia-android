@@ -3,7 +3,6 @@ package org.oppia.android.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -303,25 +302,6 @@ class ExplorationActivityTest {
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
-    onView(withId(R.id.exploration_toolbar_title)).perform(click())
-    assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
-  }
-
-  @Test
-  fun testExploration_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
-    explorationActivityTestRule.launchActivity(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    )
-    val explorationToolbarTitle: TextView =
-      explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
-    ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
     onView(withId(R.id.exploration_toolbar_title)).perform(click())
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
