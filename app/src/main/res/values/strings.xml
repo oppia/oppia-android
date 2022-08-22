@@ -13,6 +13,7 @@
   <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
+  <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
@@ -490,6 +491,7 @@
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
+  <string name="text_input_default_hint_text">Tap here to enter text.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
