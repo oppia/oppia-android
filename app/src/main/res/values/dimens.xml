@@ -690,7 +690,10 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
-  
+  <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
