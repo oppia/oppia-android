@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -170,7 +169,6 @@ class RevisionCardActivityTest {
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
-        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -190,7 +188,6 @@ class RevisionCardActivityTest {
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
-        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }

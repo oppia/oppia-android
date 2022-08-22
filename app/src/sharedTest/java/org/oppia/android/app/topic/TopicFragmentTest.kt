@@ -2,7 +2,6 @@ package org.oppia.android.app.topic
 
 import android.app.Application
 import android.content.Intent
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -177,7 +176,6 @@ class TopicFragmentTest {
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -195,7 +193,6 @@ class TopicFragmentTest {
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
