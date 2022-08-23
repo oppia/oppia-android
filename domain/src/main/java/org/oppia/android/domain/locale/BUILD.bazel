@@ -92,7 +92,7 @@ kt_android_library(
         "LocaleApplicationInjector.kt",
     ],
     visibility = [
-        "//app:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/application:__pkg__",
         "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
@@ -106,7 +106,7 @@ kt_android_library(
         "LocaleApplicationInjectorProvider.kt",
     ],
     visibility = [
-        "//app:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/application:__pkg__",
         "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
