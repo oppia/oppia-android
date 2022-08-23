@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_cursor_color</color>
+  <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
-  <color name="component_color_shared_submitted_answer_item_solid_color">@color/color_palette_submitted_answer_item_solid_color</color>
-  <color name="component_color_shared_submitted_answer_item_stroke_color">@color/color_palette_submitted_answer_item_stroke_color</color>
-  <color name="component_color_shared_submitted_answer_item_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_edit_text_hint_color">@color/color_palette_hint_text_input_interaction_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_border_color">@color/color_palette_input_interaction_edit_text_border_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_not_selected_border_color">@color/color_palette_input_interaction_edit_text_not_selected_border_color</color>
-  <color name="component_color_shared_arrow_down_grey_color">@color/color_palette_arrow_down_grey_color</color>
-  <color name="component_color_shared_arrow_right_grey_color">@color/color_palette_arrow_right_grey_color</color>
   <color name="component_color_shared_rounded_rect_background_color">@color/color_palette_rounded_rect_background_color</color>
   <color name="component_color_shared_multiple_choice_interaction_color">@color/color_palette_multiple_choice_color</color>
   <color name="component_color_shared_multiple_choice_interaction_text_color">@color/color_palette_multiple_choice_text_color</color>
@@ -50,7 +40,7 @@
   <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_shared_input_interaction_edit_text_background_color">@color/color_palette_text_input_background_color</color>
+  <color name="component_color_shared_text_input_layout_background_color">@color/color_palette_text_input_background_color</color>
   <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
   <color name="component_color_general_item_background_solid_color">@color/color_palette_container_background_color</color>
   <color name="component_color_general_item_background_stroke_color">@color/color_palette_dark_background_color</color>
@@ -115,6 +105,12 @@
   <color name="component_color_hints_and_solutions_fragment_description_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_hints_and_solutions_divider_color">@color/color_palette_divider_color</color>
   <color name="component_color_hints_and_solutions_drawable_tint_color">@color/color_palette_icon_background_color</color>
+  <color name="component_color_hints_and_solution_summary_card_border_color">@color/color_palette_hints_and_solution_summary_card_border_color</color>
+  <color name="component_color_hints_and_solution_summary_card_background_color">@color/color_palette_hints_and_solution_summary_card_background_color</color>
+  <color name="component_color_hints_and_solution_summary_divider_color">@color/color_palette_hints_and_solution_summary_divider_color</color>
+  <color name="component_color_hints_and_solution_summary_bottom_background_color">@color/color_palette_hints_and_solution_summary_bottom_background_color</color>
+  <color name="component_color_hints_and_solution_summary_button_text_color">@color/color_palette_hints_and_solution_summary_button_text_color</color>
+
   <!-- Story Activity -->
   <color name="component_color_story_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_story_activity_story_header_view_text_color">@color/color_palette_highlighted_text_color</color>
@@ -186,4 +182,27 @@
   <color name="component_color_math_expression_parser_activity_radio_buttons_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_edit_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_math_expression_parser_activity_hint_text_color">@color/color_palette_hint_text_color</color>
+  <!-- Mark Chapters Completed Activity -->
+  <color name="component_color_mark_chapters_completed_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_mark_chapters_completed_container_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_mark_chapters_completed_background_color">@color/color_palette_mark_chapters_background_color</color>
+  <color name="component_color_mark_chapters_completed_checkbox_text_unselected_state_color">@color/color_palette_checkbox_text_unselected_state_color</color>
+  <color name="component_color_mark_chapters_completed_checkbox_text_selected_state_color">@color/color_palette_checkbox_text_selected_state_color</color>
+  <color name="component_color_mark_chapters_completed_checkbox_selected_state_color">@color/color_palette_checkbox_selected_state_color</color>
+  <color name="component_color_mark_chapters_completed_subtext_heading_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_mark_chapters_completed_subtext_heading_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_mark_chapters_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
+  <color name="component_color_mark_chapters_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
+  <!-- Mark Stories Completed Activity -->
+  <color name="component_color_mark_stories_completed_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_mark_stories_completed_container_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_mark_stories_completed_background_color">@color/color_palette_mark_chapters_background_color</color>
+  <color name="component_color_mark_stories_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
+  <color name="component_color_mark_stories_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
+  <!-- Mark Topics Completed Activity -->
+  <color name="component_color_mark_topics_completed_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_mark_topics_completed_container_background_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_mark_topics_completed_background_color">@color/color_palette_mark_chapters_background_color</color>
+  <color name="component_color_mark_topics_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
+  <color name="component_color_mark_topics_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
 </resources>
