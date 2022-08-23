@@ -62,6 +62,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 
 /**
  * Root Dagger component for developer versions of the application.
@@ -95,7 +96,7 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, MetricLogSchedulerModule::class, PerformanceMetricsLoggerModule::class,
-    PerformanceMetricsAssessorModule::class
+    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

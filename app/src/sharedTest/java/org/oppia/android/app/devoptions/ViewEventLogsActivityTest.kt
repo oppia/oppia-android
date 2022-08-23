@@ -88,6 +88,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 
 /** Tests for [ViewEventLogsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -177,7 +178,7 @@ class ViewEventLogsActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class,
-      PerformanceMetricsAssessorModule::class
+      PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

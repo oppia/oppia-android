@@ -59,6 +59,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 
 /** Tests for [MetricLogSchedulingWorker]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -237,7 +238,8 @@ class MetricLogSchedulingWorkerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      PerformanceMetricsAssessorModule::class, ApplicationLifecycleModule::class
+      PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
+      ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
