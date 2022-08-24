@@ -2,7 +2,6 @@ package org.oppia.android.app.application.alphakenya
 
 import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -36,6 +35,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterAlphaKenyaModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
@@ -67,7 +67,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
-    ApplicationModule::class, DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
+    DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
     ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
     NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
@@ -89,7 +89,7 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class
+    HintsAndSolutionProdModule::class, PlatformParameterModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {
