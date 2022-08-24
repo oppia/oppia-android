@@ -93,7 +93,6 @@
   <string name="ongoing_story_last_month">تم تشغيلها خلال الشهر الماضي</string>
   <string name="story_activity_title">قائمة الفصول</string>
   <string name="lesson_thumbnail_content_description">صورة %s</string>
-  <string name="all_topics">كل المواضيع</string>
   <string name="stories_you_can_play">القصص التي باستطاعتك تشغيلها</string>
   <string name="navigate_up">العودة للسابق</string>
   <string name="recently_played_activity">القصص التي تم تشغيلها مؤخرًا</string>
