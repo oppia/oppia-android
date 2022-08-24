@@ -35,7 +35,8 @@ class MarqueeView : LinearLayout {
   private lateinit var mAnimationStartRunnable: Runnable
   private var mStarted = false
 
-  private val textviewVirtualWidth = 2000
+  /**Device screen width. Pass the width of the device as width param to the textview for it to Expand .*/
+  private var deviceActualWidth: Int? = null
 
   /**Control the speed. The lower this value, the faster it will scroll.*/
   private var mSpeed = 15
@@ -68,6 +69,9 @@ class MarqueeView : LinearLayout {
     mPaint.strokeWidth = 1f
     mPaint.strokeCap = Paint.Cap.ROUND
     mInterpolator = LinearInterpolator()
+
+    val displayMetrics = resources.displayMetrics
+    deviceActualWidth = displayMetrics.widthPixels
   }
 
   override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -213,7 +217,9 @@ class MarqueeView : LinearLayout {
    */
   private fun expandTextView() {
     val lp = mTextField.layoutParams
-    lp.width = textviewVirtualWidth
+    if (deviceActualWidth != null) {
+      lp.width = deviceActualWidth!!.toInt()
+    }
     mTextField.layoutParams = lp
   }
 
