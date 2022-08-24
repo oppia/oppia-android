@@ -28,7 +28,10 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -75,7 +78,6 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -85,6 +87,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -104,13 +107,13 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
 private const val PRACTICE_TAB_POSITION = 2
 private const val REVISION_TAB_POSITION = 3
+private const val LESSON_TAB_POSITION_EXTRA_TABS_DISABLED = 0
+private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
 
 /** Tests for [TopicFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -138,6 +141,8 @@ class TopicFragmentTest {
   @field:[Inject EnablePracticeTab]
   var enablePracticeTab: Boolean = false
 
+  private var enableExtraTopicTabsUi: Boolean = false
+
   private val internalProfileId = 0
 
   private val TOPIC_NAME = "Fractions"
@@ -145,12 +150,21 @@ class TopicFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
+    disableExtraTabs()
   }
 
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  private fun enableExtraTabs() {
+    enableExtraTopicTabsUi = TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+  }
+
+  private fun disableExtraTabs() {
+    enableExtraTopicTabsUi = TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
   }
 
   @Test
@@ -226,58 +240,64 @@ class TopicFragmentTest {
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
+      verifyTabTitleAtPosition(position = 1)
+    }
+  }
+
+  @Test
+  fun testTopicFragment_enableExtraTabs_infoTopicTab_isDisplayedInTabLayout() {
+    enableExtraTabs()
+    initializeApplicationComponent()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(
+        withText(
+          TopicTab.getTabForPosition(
+            position = INFO_TAB_POSITION,
+            enableExtraTopicTabsUi
+          ).name
+        )
+      ).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
+    }
+  }
+
+  @Test
+  fun testTopicFragment_disableExtraTabs_infoTopicTab_isNotDisplayedInTabLayout() {
+    initializeApplicationComponent()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withText(TopicTab.getTabForPosition(position = INFO_TAB_POSITION, true).name))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testTopicFragment_disableExtraTabs_defaultTabIsLessons_isSuccessful() {
+    initializeApplicationComponent()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
+    }
+  }
+
+  @Test
+  fun testTopicFragment_enableExtraTabs_defaultTabIsLessons_isSuccessful() {
+    enableExtraTabs()
+    initializeApplicationComponent()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
   }
 
   @Test
-  fun testTopicFragment_infoTopicTab_isDisplayedInTabLayout() {
+  fun testTopicFragment_disableExtraTabs_clickOnLessonsTab_showsPlayTabSelected() {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(position = 0, enablePracticeTab).name)).check(
-        matches(
-          isDescendantOfA(
-            withId(
-              R.id.topic_tabs_container
-            )
-          )
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testTopicFragment_defaultTabIsInfo_isSuccessful() {
-    initializeApplicationComponent()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
-    }
-  }
-
-  @Test
-  fun testTopicFragment_defaultTabIsInfo_showsMatchingContent() {
-    initializeApplicationComponent()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.topic_name_text_view)).check(
-        matches(
-          withText(containsString(TOPIC_NAME))
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testTopicFragment_clickOnLessonsTab_showsPlayTabSelected() {
-    initializeApplicationComponent()
-    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      clickTabAtPosition(position = LESSON_TAB_POSITION)
-      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
+      clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
   }
 
   @Test
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
@@ -294,10 +314,11 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_practiceTabEnabled_practiceTopicTabIsDisplayedInTabLayout() {
+    enableExtraTabs()
     initializeApplicationComponent(practiceTabIsEnabled = true)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab)
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi)
       onView(withText(practiceTab.name)).check(
         matches(
           isDescendantOfA(
@@ -311,19 +332,19 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_practiceTabDisabled_practiceTopicTabIsNotDisplayedInTabLayout() {
+  fun testTopicFragment_disableExtraTabs_practiceTopicTabIsNotDisplayedInTabLayout() {
     initializeApplicationComponent(practiceTabIsEnabled = false)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       // Unconditionally retrieve the practice tab name since this test is verifying that it's not
       // enabled.
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab = true)
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi = true)
       onView(withText(practiceTab.name)).check(doesNotExist())
     }
   }
 
   @Test
-  fun testTopicFragment_practiceTabDisabled_configChange_practiceTopicTabIsNotDisplayed() {
+  fun testTopicFragment_disableExtraTabs_configChange_practiceTopicTabIsNotDisplayed() {
     initializeApplicationComponent(practiceTabIsEnabled = false)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -332,14 +353,15 @@ class TopicFragmentTest {
       // Unconditionally retrieve the practice tab name since this test is verifying that it's not
       // enabled.
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enablePracticeTab = true)
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi = true)
       // The tab should still not be visible even after a configuration change.
       onView(withText(practiceTab.name)).check(doesNotExist())
     }
   }
 
   @Test
-  fun testTopicFragment_clickOnPracticeTab_showsPracticeTabSelected() {
+  fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabSelected() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -348,7 +370,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
+  fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
@@ -367,8 +390,8 @@ class TopicFragmentTest {
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      clickTabAtPosition(position = REVISION_TAB_POSITION)
-      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
+      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
   }
 
@@ -377,7 +400,7 @@ class TopicFragmentTest {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
         recyclerView = R.id.revision_recycler_view,
@@ -389,7 +412,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTab() {
+  fun testTopicFragment_enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTab() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION)
@@ -399,7 +423,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
+  fun enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
@@ -420,10 +445,10 @@ class TopicFragmentTest {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = LESSON_TAB_POSITION)
+      clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
       matchStringOnListItem(
         recyclerView = R.id.story_summary_recycler_view,
         itemPosition = 1,
@@ -434,7 +459,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+  fun enableExtraTabs_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
@@ -463,10 +489,10 @@ class TopicFragmentTest {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION)
+      verifyTabTitleAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       matchStringOnListItem(
         recyclerView = R.id.revision_recycler_view,
         itemPosition = 0,
@@ -477,24 +503,41 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_configChange_showsDefaultTabAndItsContent() {
+  fun testTopicFragment_enableExtraTabs_configChange_showsDefaultTabAndItsContent() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
-      onView(withId(R.id.topic_name_text_view)).check(
-        matches(
-          withText(
-            containsString(TOPIC_NAME)
-          )
-        )
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
+      matchStringOnListItem(
+        recyclerView = R.id.story_summary_recycler_view,
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "Matthew Goes to the Bakery"
       )
     }
   }
 
   @Test
-  fun testTopicFragment_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+  fun testTopicFragment_disableExtraTabs_configChange_showsDefaultTabAndItsContent() {
+    initializeApplicationComponent()
+    launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
+      matchStringOnListItem(
+        recyclerView = R.id.story_summary_recycler_view,
+        itemPosition = 1,
+        targetViewId = R.id.story_name_text_view,
+        stringToMatch = "Matthew Goes to the Bakery"
+      )
+    }
+  }
+
+  @Test
+  fun enableExtraTabs_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
+    enableExtraTabs()
     initializeApplicationComponent()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
@@ -572,7 +615,7 @@ class TopicFragmentTest {
   private fun clickTabAtPosition(position: Int) {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position, enablePracticeTab).name),
+        withText(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -582,7 +625,7 @@ class TopicFragmentTest {
     onView(withId(R.id.topic_tabs_container)).check(
       matches(
         matchCurrentTabTitle(
-          TopicTab.getTabForPosition(position, enablePracticeTab).name
+          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi).name
         )
       )
     )
@@ -641,7 +684,7 @@ class TopicFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PlatformParameterModule::class, RobolectricModule::class,
+      TestModule::class, TestPlatformParameterModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
