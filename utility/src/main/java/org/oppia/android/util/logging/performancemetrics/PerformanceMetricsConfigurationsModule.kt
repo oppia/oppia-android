@@ -28,6 +28,9 @@ annotation class LowMemoryTierUpperBound
 @Qualifier
 annotation class MediumMemoryTierUpperBound
 
+/**
+ * Provides production-specific metrics-related storage and memory configuration values.
+ */
 @Module
 class PerformanceMetricsConfigurationsModule {
   @Provides

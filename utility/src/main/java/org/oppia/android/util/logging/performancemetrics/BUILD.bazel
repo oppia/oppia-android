@@ -1,5 +1,5 @@
 """
-General purpose utilities for logging.
+General purpose utilities for performance metrics logging.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")

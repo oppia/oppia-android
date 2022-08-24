@@ -11,12 +11,12 @@ kt_android_library(
         "LogReportWorkManagerInitializer.kt",
     ],
     deps = [
-        ":worker",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker"
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
         "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker"
+        ":worker",
     ],
 )
 
@@ -44,8 +44,8 @@ kt_android_library(
     ],
     visibility = ["//domain:__pkg__"],
     deps = [
-        ":worker",
         "//third_party:androidx_work_work-runtime-ktx",
+        ":worker",
     ],
 )
 
@@ -56,9 +56,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         ":dagger",
         ":initializer",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )
 
