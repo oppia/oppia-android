@@ -619,7 +619,7 @@ class ListItemLeadingMarginSpanTest {
     val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
       testCoroutineDispatchers.runCurrent()
       val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-       ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
       val htmlResult = htmlParser.parseOppiaHtml(
         "<ul>" +
           "        <li> Usage Data\", such as:" +
