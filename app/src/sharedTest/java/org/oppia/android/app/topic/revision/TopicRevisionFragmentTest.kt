@@ -43,7 +43,6 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.EnablePracticeTab
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
@@ -75,7 +74,6 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -106,6 +104,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -127,9 +126,7 @@ class TopicRevisionFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @JvmField
-  @field:[Inject EnablePracticeTab]
-  var enablePracticeTab: Boolean = false
+  var enableExtraTopicTabsUi: Boolean = false
 
   private val subtopicThumbnail = R.drawable.topic_fractions_01
   private val internalProfileId = 0
@@ -137,6 +134,7 @@ class TopicRevisionFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
+    enableExtraTopicTabsUi()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -145,6 +143,11 @@ class TopicRevisionFragmentTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+  }
+
+  private fun enableExtraTopicTabsUi() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    enableExtraTopicTabsUi = true
   }
 
   private fun setUpTestApplicationComponent() {
@@ -287,7 +290,7 @@ class TopicRevisionFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = 3,
-            enableExtraTopicTabsUi = enablePracticeTab
+            enableExtraTopicTabsUi = enableExtraTopicTabsUi
           ).name
         ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
@@ -309,7 +312,7 @@ class TopicRevisionFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
