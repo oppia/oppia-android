@@ -19,6 +19,7 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_profile_id"
@@ -46,10 +47,14 @@ class StateFragmentTestActivity :
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var profileId: ProfileId
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
+    profileId = ProfileId.newBuilder().apply {
+      internalId = intent.getIntExtra(TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY, -1)
+    }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
@@ -109,7 +114,8 @@ class StateFragmentTestActivity :
           explorationId,
           state,
           helpIndex,
-          writtenTranslationContext
+          writtenTranslationContext,
+          profileId
         )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

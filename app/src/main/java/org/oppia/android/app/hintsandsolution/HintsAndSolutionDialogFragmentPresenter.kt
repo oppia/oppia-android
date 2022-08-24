@@ -25,6 +25,8 @@ import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import java.lang.IllegalStateException
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 
@@ -37,7 +39,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler
-) {
+) : HtmlParser.CustomOppiaTagActionListener {
 
   private var index: Int? = null
   private var expandedItemsList = ArrayList<Int>()
@@ -49,6 +51,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private lateinit var state: State
   private lateinit var helpIndex: HelpIndex
   private lateinit var writtenTranslationContext: WrittenTranslationContext
+  private lateinit var profileId: ProfileId
   private lateinit var itemList: List<HintsAndSolutionItemViewModel>
   private lateinit var bindingAdapter: BindableAdapter<HintsAndSolutionItemViewModel>
 
@@ -72,7 +75,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     index: Int?,
     isHintRevealed: Boolean?,
     solutionIndex: Int?,
-    isSolutionRevealed: Boolean?
+    isSolutionRevealed: Boolean?,
+    profileId: ProfileId
   ): View {
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -97,6 +101,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.state = state
     this.helpIndex = helpIndex
     this.writtenTranslationContext = writtenTranslationContext
+    this.profileId = profileId
 
     val newAvailableHintIndex = computeNewAvailableHintIndex(helpIndex)
     viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
@@ -218,9 +223,13 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         resourceBucketName,
         entityType,
         hintsViewModel.explorationId.get()!!,
-        /* imageCenterAlign= */ true
+        customOppiaTagActionListener = this,
+        imageCenterAlign = true
       ).parseOppiaHtml(
-        hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
+        hintsViewModel.hintsAndSolutionSummary.get()!!,
+        binding.hintsAndSolutionSummary,
+        supportsLinks = true,
+        supportsConceptCards = true
       )
 
     if (hintsViewModel.hintCanBeRevealed.get()!!) {
@@ -233,7 +242,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.root.setOnClickListener {
+    binding.expandableHintHeader.setOnClickListener {
       if (hintsViewModel.isHintRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
@@ -280,11 +289,19 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     } else {
       binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
     }
-    binding.solutionSummary.text = htmlParserFactory.create(
-      resourceBucketName, entityType, viewModel.explorationId.get()!!, /* imageCenterAlign= */ true
-    ).parseOppiaHtml(
-      solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
-    )
+    binding.solutionSummary.text =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType,
+        viewModel.explorationId.get()!!,
+        customOppiaTagActionListener = this,
+        imageCenterAlign = true
+      ).parseOppiaHtml(
+        solutionViewModel.solutionSummary.get()!!,
+        binding.solutionSummary,
+        supportsLinks = true,
+        supportsConceptCards = true
+      )
 
     if (solutionViewModel.solutionCanBeRevealed.get()!!) {
       binding.root.visibility = View.VISIBLE
@@ -293,7 +310,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.root.setOnClickListener {
+    binding.expandableSolutionHeader.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
@@ -364,5 +381,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
     this.solutionIndex = solutionIndex
     this.isSolutionRevealed = isSolutionRevealed
+  }
+
+  override fun onConceptCardLinkClicked(view: View, skillId: String) {
+    ConceptCardFragment
+      .newInstance(skillId, profileId)
+      .showNow(fragment.childFragmentManager, ConceptCardFragment.CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

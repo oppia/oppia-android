@@ -22,6 +22,7 @@ import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -41,7 +42,7 @@ class ExplorationActivity :
 
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -53,7 +54,8 @@ class ExplorationActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+    val internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
+    profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     topicId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
       "Expected $EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY to be in intent extras."
     }
@@ -178,7 +180,8 @@ class ExplorationActivity :
         explorationId,
         state,
         helpIndex,
-        writtenTranslationContext
+        writtenTranslationContext,
+        profileId
       )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }

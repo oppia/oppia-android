@@ -15,6 +15,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
 
 private const val CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY =
   "HintsAndSolutionDialogFragment.current_expanded_list_index"
@@ -47,6 +48,8 @@ class HintsAndSolutionDialogFragment :
     internal const val HELP_INDEX_KEY = "HintsAndSolutionDialogFragment.help_index"
     internal const val WRITTEN_TRANSLATION_CONTEXT_KEY =
       "HintsAndSolutionDialogFragment.written_translation_context"
+    internal const val PROFILE_ID_KEY =
+      "HintsAndSolutionDialogFragment.profile_id"
 
     /**
      * Creates a new instance of a DialogFragment to display hints and solution
@@ -57,13 +60,15 @@ class HintsAndSolutionDialogFragment :
      * @param helpIndex the [HelpIndex] corresponding to the current hints/solution configuration
      * @param writtenTranslationContext the [WrittenTranslationContext] needed to translate the
      *     hints/solution
+     * @param profileId the ID of the profile viewing the hint/solution
      * @return [HintsAndSolutionDialogFragment]: DialogFragment
      */
     fun newInstance(
       id: String,
       state: State,
       helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      profileId: ProfileId
     ): HintsAndSolutionDialogFragment {
       return HintsAndSolutionDialogFragment().apply {
         arguments = Bundle().apply {
@@ -71,6 +76,7 @@ class HintsAndSolutionDialogFragment :
           putProto(STATE_KEY, state)
           putProto(HELP_INDEX_KEY, helpIndex)
           putProto(WRITTEN_TRANSLATION_CONTEXT_KEY, writtenTranslationContext)
+          putProto(PROFILE_ID_KEY, profileId)
         }
       }
     }
@@ -114,6 +120,7 @@ class HintsAndSolutionDialogFragment :
     val helpIndex = args.getProto(HELP_INDEX_KEY, HelpIndex.getDefaultInstance())
     val writtenTranslationContext =
       args.getProto(WRITTEN_TRANSLATION_CONTEXT_KEY, WrittenTranslationContext.getDefaultInstance())
+    val profileId = args.getProto(PROFILE_ID_KEY, ProfileId.getDefaultInstance())
 
     return hintsAndSolutionDialogFragmentPresenter.handleCreateView(
       inflater,
@@ -127,7 +134,8 @@ class HintsAndSolutionDialogFragment :
       index,
       isHintRevealed,
       solutionIndex,
-      isSolutionRevealed
+      isSolutionRevealed,
+      profileId
     )
   }
 

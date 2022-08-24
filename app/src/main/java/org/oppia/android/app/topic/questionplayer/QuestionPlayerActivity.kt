@@ -46,9 +46,6 @@ class QuestionPlayerActivity :
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
-  private lateinit var state: State
-  private lateinit var writtenTranslationContext: WrittenTranslationContext
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -105,39 +102,19 @@ class QuestionPlayerActivity :
     questionPlayerActivityPresenter.revealSolution()
   }
 
-  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
-    return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
-    ) as HintsAndSolutionDialogFragment?
-  }
-
   override fun routeToHintsAndSolution(
-    questionId: String,
+    id: String,
     helpIndex: HelpIndex
   ) {
-    if (getHintsAndSolution() == null) {
-      val hintsAndSolutionDialogFragment =
-        HintsAndSolutionDialogFragment.newInstance(
-          questionId,
-          state,
-          helpIndex,
-          writtenTranslationContext
-        )
-      hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
-    }
+    questionPlayerActivityPresenter.routeToHintsAndSolution(id, helpIndex)
   }
 
-  override fun dismiss() {
-    getHintsAndSolution()?.dismiss()
-  }
+  override fun dismiss() = questionPlayerActivityPresenter.dismissHintsAndSolutionDialog()
 
   override fun onQuestionStateLoaded(
     state: State,
     writtenTranslationContext: WrittenTranslationContext
-  ) {
-    this.state = state
-    this.writtenTranslationContext = writtenTranslationContext
-  }
+  ) = questionPlayerActivityPresenter.loadQuestionState(state, writtenTranslationContext)
 
   override fun dismissConceptCard() {
     questionPlayerActivityPresenter.dismissConceptCard()
