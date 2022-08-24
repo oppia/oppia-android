@@ -174,7 +174,7 @@ class TestPlatformParameterModule {
   @EnableExtraTopicTabsUi
   fun provideEnableExtraTopicTabsUi(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+      enableExtraTopicTabsUi
     )
   }
 
@@ -204,9 +204,8 @@ class TestPlatformParameterModule {
 
     /** Enables forcing [EnableExtraTopicTabsUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableExtraTopicTabsUi(value: Boolean): Boolean{
+    fun forceEnableExtraTopicTabsUi(value: Boolean) {
       enableExtraTopicTabsUi = value
-      return enableExtraTopicTabsUi
     }
   }
 }
