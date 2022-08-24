@@ -105,6 +105,12 @@
   <color name="component_color_hints_and_solutions_fragment_description_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_hints_and_solutions_divider_color">@color/color_palette_divider_color</color>
   <color name="component_color_hints_and_solutions_drawable_tint_color">@color/color_palette_icon_background_color</color>
+  <color name="component_color_hints_and_solution_summary_card_border_color">@color/color_palette_hints_and_solution_summary_card_border_color</color>
+  <color name="component_color_hints_and_solution_summary_card_background_color">@color/color_palette_hints_and_solution_summary_card_background_color</color>
+  <color name="component_color_hints_and_solution_summary_divider_color">@color/color_palette_hints_and_solution_summary_divider_color</color>
+  <color name="component_color_hints_and_solution_summary_bottom_background_color">@color/color_palette_hints_and_solution_summary_bottom_background_color</color>
+  <color name="component_color_hints_and_solution_summary_button_text_color">@color/color_palette_hints_and_solution_summary_button_text_color</color>
+
   <!-- Story Activity -->
   <color name="component_color_story_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_story_activity_story_header_view_text_color">@color/color_palette_highlighted_text_color</color>

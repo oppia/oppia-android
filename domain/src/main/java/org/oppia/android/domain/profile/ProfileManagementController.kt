@@ -205,7 +205,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(name)) {
+      if (!learnerStudyAnalytics.value && !onlyLetters(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -324,7 +324,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(newName)) {
+      if (!learnerStudyAnalytics.value && !onlyLetters(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {
