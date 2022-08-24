@@ -65,6 +65,9 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger"
     ],
 )
 
@@ -111,6 +114,9 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+    "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger"
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
