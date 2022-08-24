@@ -2,8 +2,11 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
@@ -14,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
@@ -163,10 +167,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.text.style.ClickableSpan
-import androidx.test.espresso.UiController
-import android.text.Spannable
-import android.widget.TextView
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -2159,7 +2159,8 @@ class StateFragmentLocalTest {
   }
 
   private fun produceAndViewSolution(
-    activityScenario: ActivityScenario<StateFragmentTestActivity>, submitAnswer: () -> Unit
+    activityScenario: ActivityScenario<StateFragmentTestActivity>,
+    submitAnswer: () -> Unit
   ) {
     submitAnswer()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))

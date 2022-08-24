@@ -10,6 +10,7 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -19,7 +20,6 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
 
 internal const val TEST_ACTIVITY_PROFILE_ID_EXTRA_KEY =
   "StateFragmentTestActivity.test_activity_profile_id"

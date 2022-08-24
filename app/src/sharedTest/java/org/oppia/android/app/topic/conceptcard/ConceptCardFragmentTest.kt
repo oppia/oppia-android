@@ -2,18 +2,22 @@ package org.oppia.android.app.topic.conceptcard
 
 import android.app.Application
 import android.content.Context
-import android.widget.TextView
+import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -24,9 +28,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -114,13 +121,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.text.style.ClickableSpan
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
-import android.text.Spannable
 
 /** Tests for [ConceptCardFragment]. */
 @RunWith(AndroidJUnit4::class)

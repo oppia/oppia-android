@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
@@ -13,7 +12,6 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener

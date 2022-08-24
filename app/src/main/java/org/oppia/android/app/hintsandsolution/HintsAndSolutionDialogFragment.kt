@@ -9,13 +9,13 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileId
 
 private const val CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY =
   "HintsAndSolutionDialogFragment.current_expanded_list_index"
