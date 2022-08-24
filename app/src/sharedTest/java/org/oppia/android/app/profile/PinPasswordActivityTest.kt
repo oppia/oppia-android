@@ -1123,7 +1123,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_clickforgotPin_enterAdminPin_clickSubmit_dialogMessageIsCorrect() {
+  fun testPinPassword_clickForgotPin_enterAdminPin_clickSubmit_dialogMessageIsCorrect() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
