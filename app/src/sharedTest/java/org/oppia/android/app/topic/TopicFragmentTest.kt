@@ -30,6 +30,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.properties.Delegates
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
@@ -160,11 +161,13 @@ class TopicFragmentTest {
   }
 
   private fun enableExtraTabs() {
-    enableExtraTopicTabsUi = TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    enableExtraTopicTabsUi = true
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
   }
 
   private fun disableExtraTabs() {
-    enableExtraTopicTabsUi = TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    enableExtraTopicTabsUi = false
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
   }
 
   @Test
