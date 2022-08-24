@@ -108,7 +108,7 @@ const val CACHE_LATEX_RENDERING_DEFAULT_VALUE = true
 annotation class EnableEditAccountsOptionsUi
 
 /** Default value for the feature flag corresponding to [EnableEditAccountsOptionsUi]. */
-const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = true
+const val ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE = false
 
 /** Qualifier for the platform parameter that controls whether to record performance metrics. */
 @Qualifier

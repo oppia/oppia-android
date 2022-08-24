@@ -26,22 +26,33 @@ class TransformAndroidManifestTest {
       "</absolute/path/to/input/AndroidManifest.xml:Path> " +
       "</absolute/path/to/output/AndroidManifest.xml:Path> " +
       "<build_flavor:String> <major_app_version:Int> <minor_app_version:Int> <version_code:Int> " +
-      "<base_develop_branch_reference:String>"
+      "<application_relative_qualified_class:String> <base_develop_branch_reference:String>"
 
   private val TEST_MANIFEST_FILE_NAME = "AndroidManifest.xml"
   private val TRANSFORMED_MANIFEST_FILE_NAME = "TransformedAndroidManifest.xml"
-  private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS =
+  private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS_AND_APPLICATION =
     """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       package="org.oppia.android" />
     """.trimIndent()
+  private val TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS =
+    """
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      package="org.oppia.android">
+      <application
+        android:name=".different.CustomApplication" />
+    </manifest>
+    """.trimIndent()
 
   private val BUILD_FLAVOR = "beta"
   private val MAJOR_VERSION = "1"
   private val MINOR_VERSION = "3"
   private val VERSION_CODE = "23"
+  private val APPLICATION_RELATIVE_QUALIFIED_CLASS = ".example.CustomApplication"
 
   @Rule
   @JvmField
@@ -87,7 +98,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_threeAgs_failsWithUsageString() {
+  fun testUtility_threeArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -103,7 +114,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_fourAgs_failsWithUsageString() {
+  fun testUtility_fourArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -120,7 +131,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_fiveAgs_failsWithUsageString() {
+  fun testUtility_fiveArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -138,7 +149,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_sixAgs_failsWithUsageString() {
+  fun testUtility_sixArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -157,7 +168,7 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_sevenAgs_failsWithUsageString() {
+  fun testUtility_sevenArgs_failsWithUsageString() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
 
@@ -170,6 +181,27 @@ class TransformAndroidManifestTest {
         MAJOR_VERSION,
         MINOR_VERSION,
         VERSION_CODE
+      )
+    }
+
+    assertThat(exception).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
+  fun testUtility_eightArgs_failsWithUsageString() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME)
+
+    val exception = assertThrows(IllegalStateException::class) {
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS
       )
     }
 
@@ -190,6 +222,7 @@ class TransformAndroidManifestTest {
         "major_version",
         MINOR_VERSION,
         VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
         "develop"
       )
     }
@@ -211,6 +244,7 @@ class TransformAndroidManifestTest {
         MAJOR_VERSION,
         "minor_version",
         VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
         "develop"
       )
     }
@@ -232,6 +266,7 @@ class TransformAndroidManifestTest {
         MAJOR_VERSION,
         MINOR_VERSION,
         "version_code",
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
         "develop"
       )
     }
@@ -253,6 +288,7 @@ class TransformAndroidManifestTest {
         MAJOR_VERSION,
         MINOR_VERSION,
         VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
         "develop"
       )
     }
@@ -273,6 +309,7 @@ class TransformAndroidManifestTest {
         MAJOR_VERSION,
         MINOR_VERSION,
         VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
         "develop"
       )
     }
@@ -281,7 +318,33 @@ class TransformAndroidManifestTest {
   }
 
   @Test
-  fun testUtility_allArgsCorrect_outputsNewManifestWithVersionNameAndCode() {
+  fun testUtility_allArgsCorrect_manifestMissingApplicationTag_throwsException() {
+    initializeEmptyGitRepository()
+    val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
+      writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS_AND_APPLICATION)
+    }
+
+    val exception = assertThrows(IllegalStateException::class) {
+      runScript(
+        tempFolder.root.absolutePath,
+        manifestFile.absolutePath,
+        File(tempFolder.root, TRANSFORMED_MANIFEST_FILE_NAME).absolutePath,
+        BUILD_FLAVOR,
+        MAJOR_VERSION,
+        MINOR_VERSION,
+        VERSION_CODE,
+        APPLICATION_RELATIVE_QUALIFIED_CLASS,
+        "develop"
+      )
+    }
+
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Failed to find an 'application' tag in manifest")
+  }
+
+  @Test
+  fun testUtility_allArgsCorrect_outputsNewManifestWithVersionNameAndCodeAndCustomApplication() {
     initializeEmptyGitRepository()
     val manifestFile = tempFolder.newFile(TEST_MANIFEST_FILE_NAME).apply {
       writeText(TEST_MANIFEST_CONTENT_WITHOUT_VERSIONS)
@@ -295,6 +358,7 @@ class TransformAndroidManifestTest {
       MAJOR_VERSION,
       MINOR_VERSION,
       VERSION_CODE,
+      APPLICATION_RELATIVE_QUALIFIED_CLASS,
       "develop"
     )
 
@@ -305,6 +369,8 @@ class TransformAndroidManifestTest {
         "android:versionName=\"$MAJOR_VERSION\\.$MINOR_VERSION" +
           "-$BUILD_FLAVOR-[a-f0-9]{10}\""
       )
+    assertThat(transformedManifest)
+      .containsMatch("<application android:name=\"$APPLICATION_RELATIVE_QUALIFIED_CLASS\"")
   }
 
   /** Runs the transform_android_manifest utility. */
