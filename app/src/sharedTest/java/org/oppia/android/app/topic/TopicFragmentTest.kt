@@ -138,10 +138,6 @@ class TopicFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @JvmField
-  @field:[Inject EnablePracticeTab]
-  var enablePracticeTab: Boolean = false
-
   private var enableExtraTopicTabsUi: Boolean = false
 
   private val internalProfileId = 0
@@ -318,7 +314,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_practiceTabEnabled_practiceTopicTabIsDisplayedInTabLayout() {
     enableExtraTabs()
-    initializeApplicationComponent(practiceTabIsEnabled = true)
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
         TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi)
@@ -336,7 +332,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_disableExtraTabs_practiceTopicTabIsNotDisplayedInTabLayout() {
-    initializeApplicationComponent(practiceTabIsEnabled = false)
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       // Unconditionally retrieve the practice tab name since this test is verifying that it's not
       // enabled.
@@ -348,7 +344,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_disableExtraTabs_configChange_practiceTopicTabIsNotDisplayed() {
-    initializeApplicationComponent(practiceTabIsEnabled = false)
+    initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -658,8 +654,7 @@ class TopicFragmentTest {
     )
   }
 
-  private fun initializeApplicationComponent(practiceTabIsEnabled: Boolean = true) {
-    TestModule.checkIfPracticeTabIsEnabled = { practiceTabIsEnabled }
+  private fun initializeApplicationComponent() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -668,26 +663,11 @@ class TopicFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Module
-  class TestModule {
-    companion object {
-      // Note that a lambda is used here since primitive types (like booleans) can't be lateinit,
-      // and defaulting the boolean can inadvertently enable actual state in the test (i.e. both
-      // 'true' and 'false' mean something other than "not yet initialized").
-      lateinit var checkIfPracticeTabIsEnabled: () -> Boolean
-    }
-
-    @Provides
-    @EnablePracticeTab
-    @Singleton
-    fun provideEnablePracticeTab(): Boolean = checkIfPracticeTabIsEnabled()
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestPlatformParameterModule::class, RobolectricModule::class,
+      TestPlatformParameterModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
