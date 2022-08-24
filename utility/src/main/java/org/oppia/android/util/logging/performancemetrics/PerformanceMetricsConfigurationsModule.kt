@@ -2,9 +2,9 @@ package org.oppia.android.util.logging.performancemetrics
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier
+import javax.inject.Qualifier
 
 private const val ONE_GIGABYTE = 1024L * 1024L * 1024L
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
