@@ -287,7 +287,7 @@ class TopicRevisionFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = 3,
-            enablePracticeTab = enablePracticeTab
+            enableExtraTopicTabsUi = enablePracticeTab
           ).name
         ),
         isDescendantOfA(withId(R.id.topic_tabs_container))
