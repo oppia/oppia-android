@@ -22,6 +22,7 @@ kt_android_library(
     srcs = [
         "MetricLogSchedulingWorker.kt",
     ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",

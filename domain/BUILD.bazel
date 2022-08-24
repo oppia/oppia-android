@@ -116,6 +116,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/util:asset",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//domain/src/main/java/org/oppia/android/domain/util:retriever",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker_factory",
         "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
         "//model/src/main/proto:onboarding_java_proto_lite",
         "//model/src/main/proto:platform_parameter_java_proto_lite",

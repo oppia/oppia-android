@@ -1,0 +1,21 @@
+"""
+Package for testing utilities for log uploading functionality.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_log_scheduler",
+    testonly = True,
+    srcs = [
+        "FakeLogScheduler.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+    ],
+)
+
+dagger_rules()
