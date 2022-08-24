@@ -11,7 +11,7 @@ kt_android_library(
         "LogReportWorkManagerInitializer.kt",
     ],
     deps = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker"
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
