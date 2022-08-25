@@ -37,9 +37,9 @@ public final class TextViewBindingAdapters {
   /**
    * Binds last used with relative timestamp.
    */
-  // @BindingAdapter("profile:lastVisited")
+  @BindingAdapter("profile:lastVisited")
   public static void setProfileLastVisitedText(@NonNull TextView textView, long timestamp) {
-    /*AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
+    AppLanguageResourceHandler resourceHandler = getResourceHandler(textView);
     String profileLastUsed = resourceHandler.getStringInLocale(R.string.profile_last_used);
     String timeAgoTimeStamp = getTimeAgo(textView, timestamp);
     String profileLastVisited = resourceHandler.getStringInLocaleWithWrapping(
@@ -47,7 +47,7 @@ public final class TextViewBindingAdapters {
         profileLastUsed,
         timeAgoTimeStamp
     );
-    textView.setText(profileLastVisited);*/
+    textView.setText(profileLastVisited);
   }
 
   // TODO(#4345): Add test for this method.
@@ -79,15 +79,14 @@ public final class TextViewBindingAdapters {
   }
 
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
-    long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();
     AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
 
-    if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
+    if (lastVisitedTimestamp > currentTimeMillis || lastVisitedTimestamp <= 0) {
       return resourceHandler.getStringInLocale(R.string.last_logged_in_recently);
     }
 
-    long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
+    long timeDifferenceMillis = currentTimeMillis - lastVisitedTimestamp;
 
     if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
       return resourceHandler.getStringInLocale(R.string.just_now);
@@ -118,22 +117,9 @@ public final class TextViewBindingAdapters {
       @PluralsRes int pluralsResId,
       int count
   ) {
-    // TODO(#3841): Combine these strings together.
-    return resourceHandler.getStringInLocaleWithWrapping(
-        R.string.time_ago,
-        resourceHandler.getQuantityStringInLocaleWithWrapping(
+    return resourceHandler.getQuantityStringInLocaleWithWrapping(
             pluralsResId, count, String.valueOf(count)
-        )
     );
-  }
-
-  private static long ensureTimestampIsInMilliseconds(long lastVisitedTimestamp) {
-    // TODO(#3842): Investigate & remove this check.
-    if (lastVisitedTimestamp < 1000000000000L) {
-      // If timestamp is given in seconds, convert that to milliseconds.
-      return TimeUnit.SECONDS.toMillis(lastVisitedTimestamp);
-    }
-    return lastVisitedTimestamp;
   }
 
   private static AppLanguageResourceHandler getResourceHandler(View view) {
