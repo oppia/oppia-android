@@ -63,8 +63,7 @@ annotation class EnableLanguageSelectionUi
 const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
 
 /**
- * Qualifier for the feature flag corresponding to enabling the extra topic tabs - Practice tab
- * and info tab.
+ * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
  */
 @Qualifier
 annotation class EnableExtraTopicTabsUi
