@@ -490,8 +490,8 @@ class ListItemLeadingMarginSpanTest {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
     val canvas = Canvas()
-    shadowOf(canvas).setWidth(width)
     val shadowCanvas = shadowOf(canvas)
+    shadowCanvas.setWidth(width)
     val paint = Paint()
     val x = 960
     val dir = -1
@@ -603,8 +603,8 @@ class ListItemLeadingMarginSpanTest {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
     val canvas = Canvas()
-    shadowOf(canvas).setWidth(width)
     val shadowCanvas = shadowOf(canvas)
+    shadowCanvas.setWidth(width)
     val paint = Paint()
     val x = 0
     val dir = 1
@@ -705,7 +705,7 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.getDrawnCircle(3).centerY).isWithin(1e-5f).of(397.0f)
   }
 
-  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
@@ -717,8 +717,8 @@ class ListItemLeadingMarginSpanTest {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
     val canvas = Canvas()
-    shadowOf(canvas).setWidth(width)
     val shadowCanvas = shadowOf(canvas)
+    shadowCanvas.setWidth(width)
     val paint = Paint()
     val x = 960
     val dir = -1
@@ -827,7 +827,7 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("٢.")
   }
 
-  // TODO(#3840): Make this test work on Espresso & Robolectric.
+  // TODO(#3840): Make this test work on Espresso.
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
@@ -839,8 +839,8 @@ class ListItemLeadingMarginSpanTest {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
     val canvas = Canvas()
-    shadowOf(canvas).setWidth(width)
     val shadowCanvas = shadowOf(canvas)
+    shadowCanvas.setWidth(width)
     val paint = Paint()
     val x = 0
     val dir = 1
