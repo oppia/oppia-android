@@ -214,4 +214,12 @@
   <color name="component_color_reading_text_size_items_heading_text_color">@color/color_palette_dark_text_color</color>
   <!-- App Language Activity -->
   <color name="component_color_app_language_activity_background_color">@color/color_palette_dark_background_color</color>
+  <!-- Alerts Dialog Theme -->
+  <color name="component_color_alert_dialog_background_color">@color/color_palette_container_background_color</color>
+  <color name="component_color_alert_dialog_text_color">@color/color_palette_dark_text_color</color>
+  <!-- Cellular Data Dialog -->
+  <color name="component_color_cellular_data_dialog_checkbox_color">@color/color_palette_dark_text_color</color>
+  <!-- Profile Picture Edit Dialog -->
+  <color name="component_color_profile_picture_edit_dialog_text_color">@color/color_palette_dark_text_color</color>
+
 </resources>
