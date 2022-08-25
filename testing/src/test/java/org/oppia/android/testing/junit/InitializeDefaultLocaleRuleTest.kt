@@ -78,6 +78,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 
 /** Tests for [InitializeDefaultLocaleRule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -144,7 +145,7 @@ class InitializeDefaultLocaleRuleTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
