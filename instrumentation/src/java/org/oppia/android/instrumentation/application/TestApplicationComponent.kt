@@ -90,7 +90,9 @@ import javax.inject.Singleton
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-    SyncStatusModule::class, NetworkConnectionDebugUtilModule::class
+    SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
+    MetricLogSchedulerModule::class, PerformanceMetricsLoggerModule::class,
+    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {
