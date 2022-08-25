@@ -112,6 +112,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -188,6 +189,9 @@ class HomeActivityTest {
 
   @Inject
   lateinit var testActivityRecreator: TestActivityRecreator
+
+  @Inject
+  lateinit var dataProviderTestMonitor: DataProviderTestMonitor.Factory
 
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
@@ -298,6 +302,14 @@ class HomeActivityTest {
   }
 
   @Test
+  fun testHomeActivity_logUserInFirstTime_checkPromotedStoriesIsNotDisplayed() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.recently_played_stories_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testHomeActivity_recentlyPlayedStoriesTextIsDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -308,6 +320,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -330,6 +343,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -354,6 +368,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -372,7 +387,9 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
@@ -402,6 +419,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -421,6 +439,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_noTopicProgress_initialRecommendationFractionsAndRatiosIsCorrect() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -451,6 +470,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -474,6 +494,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -510,6 +531,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -534,6 +556,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -583,6 +606,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -631,6 +655,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -655,6 +680,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -679,6 +705,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(1)
@@ -717,6 +744,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -738,6 +766,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -756,6 +785,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -778,6 +808,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -801,6 +832,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -831,6 +863,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -859,6 +892,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = true
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -872,6 +906,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -885,6 +920,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_fiveLessons_topicSummary_lessonCountIsCorrect() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -903,6 +939,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
@@ -916,6 +953,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_lessonCountIsCorrect() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
@@ -1003,6 +1041,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_oneLesson_topicSummary_configChange_lessonCountIsCorrect() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1017,6 +1056,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -1098,6 +1138,7 @@ class HomeActivityTest {
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1126,6 +1167,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1144,13 +1186,14 @@ class HomeActivityTest {
       profileId = createProfileId(internalProfileId),
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.all_topics))
+        stringToMatch = context.getString((R.string.select_a_topic_to_start))
       )
     }
   }
@@ -1162,6 +1205,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -1176,14 +1220,14 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicsCompleted_displaysAllTopicsHeader() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.logIntoNewUser()
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.all_topics))
+        stringToMatch = context.getString((R.string.select_a_topic_to_start))
       )
     }
   }
@@ -1192,7 +1236,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicsStarted_mobilePortraitDisplaysTopicsIn2Columns() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.logIntoNewUser()
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
@@ -1211,7 +1255,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicsStarted_mobileLandscapeDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.logIntoNewUser()
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1231,7 +1275,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.logIntoNewUser()
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
@@ -1246,7 +1290,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
     // Only new users will have no progress for any topics.
-    profileTestHelper.logIntoNewUser()
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1280,6 +1324,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1317,6 +1362,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -1353,6 +1399,7 @@ class HomeActivityTest {
       profileId = profileId1,
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1383,6 +1430,7 @@ class HomeActivityTest {
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
+    logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 6)
@@ -1725,6 +1773,16 @@ class HomeActivityTest {
 
   private fun createProfileId(internalProfileId: Int): ProfileId {
     return ProfileId.newBuilder().setInternalId(internalProfileId).build()
+  }
+
+  private fun logIntoAdminTwice() {
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+  }
+
+  private fun logIntoUserTwice() {
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
