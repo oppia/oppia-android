@@ -1582,7 +1582,8 @@ class StateFragmentTest {
       // Verify that fraction input uses the standard text software keyboard.
       scenario.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
-        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(textView.inputType)
+          .isEqualTo(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
       }
     }
   }
@@ -1603,7 +1604,8 @@ class StateFragmentTest {
       // Verify that ratio input uses the standard text software keyboard.
       scenario.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
-        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(textView.inputType)
+          .isEqualTo(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
       }
     }
   }
