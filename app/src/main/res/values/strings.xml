@@ -13,6 +13,7 @@
   <string name="drawer_close_content_description">Navigation Menu Close</string>
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
+  <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancel</string>
   <string name="audio_language_select_dialog_title">Audio Language</string>
@@ -126,7 +127,6 @@
   <string name="ongoing_story_last_month">Played within the Last Month</string>
   <string name="story_activity_title">Chapter List</string>
   <string name="lesson_thumbnail_content_description">Image for %s</string>
-  <string name="all_topics">All Topics</string>
   <string name="stories_you_can_play">Stories You Can Play</string>
   <string name="navigate_up">Navigate up</string>
   <string name="recently_played_activity">Recently-Played Stories</string>
@@ -433,8 +433,9 @@
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
+  <string name="show_solution">Show</string>
   <string name="reveal_solution">Reveal Solution</string>
-  <string name="reveal_hint">Reveal Hint</string>
+  <string name="reveal_hint">Show Hint</string>
   <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
   <string name="show_hide_solution_list">Show/Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
@@ -446,6 +447,7 @@
   <string name="time_ago">%s ago</string>
   <string name="yesterday">yesterday</string>
   <string name="return_to_topic">Return to topic</string>
+  <string name="return_to_lesson">Return to lesson</string>
   <string name="explanation">Explanation:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">If two items are equal, merge them.</string>
   <string name="link_to_item_below">Link to item %s</string>
@@ -471,7 +473,7 @@
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
-  <string name="item_selection_text">Please select at least one choice.</string>
+  <string name="item_selection_text">Please select all correct choices.</string>
   <!-- SplashActivity -->
   <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
     Unsupported app version
@@ -488,6 +490,7 @@
   <string name="ratio_default_hint_text" description="The default hint text for the ratio interaction if the placeholder text is not available.">
     Enter a ratio in the form x:y.
   </string>
+  <string name="text_input_default_hint_text">Tap here to enter text.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="coming_soon">Coming Soon</string>
@@ -544,4 +547,5 @@
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
+  <string name="select_a_topic_to_start">Select a Topic to Start</string>
 </resources>

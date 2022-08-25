@@ -7,10 +7,10 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** Binds [PerformanceMetricsLogger] as an [ApplicationStartupListener] */
 @Module
-interface PerformanceMetricsLoggerModule {
+abstract class PerformanceMetricsLoggerModule {
   @Binds
   @IntoSet
-  fun bindPerformanceMetricsLogger(
+  abstract fun providePerformanceMetricsLogger(
     performanceMetricsLogger: PerformanceMetricsLogger
   ): ApplicationStartupListener
 }

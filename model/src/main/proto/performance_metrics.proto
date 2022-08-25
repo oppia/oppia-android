@@ -99,6 +99,7 @@ message OppiaMetricLog {
   // Structure of the cpu usage metric.
   message CpuUsageMetric {
     // Amount of cpu used by the application.
+    // TODO(#4466): Add correct proto definitions and comments for cpu usage metric logging.
     int64 cpu_usage_metric = 1;
   }
 
@@ -135,14 +136,15 @@ message OppiaMetricLog {
     // The undefined memory tier of a device.
     MEMORY_TIER_UNSPECIFIED = 0;
 
-    // The memory tier where the amount of memory is less than or equal to 1GB.
-    LOW_MEMORY_TIER = 1; // =<1GB
+    // The memory tier where the amount of memory is less than 2GB.
+    LOW_MEMORY_TIER = 1; // <2GB
 
-    // The memory tier where the amount of memory is less than or equal to 2GB and more than 1GB.
-    MEDIUM_MEMORY_TIER = 2; // =<2GB && >1GB
+    // The memory tier where the amount of memory is less than or equal to 3GB and more than or
+    // equal to 2GB.
+    MEDIUM_MEMORY_TIER = 2; // =<3GB && >2GB
 
-    // The memory tier where the amount of memory is greater than 2GB.
-    HIGH_MEMORY_TIER = 3; // >2GB
+    // The memory tier where the amount of memory is greater than 3GB.
+    HIGH_MEMORY_TIER = 3; // >3GB
   }
 
   // Supported storage tiers for indicating the total storage space on user's device.
@@ -150,14 +152,15 @@ message OppiaMetricLog {
     // The undefined storage tier of a device.
     STORAGE_TIER_UNSPECIFIED = 0;
 
-    // The storage tier where the amount of storage is less than or equal to 5GB.
-    LOW_STORAGE = 1; // =<5GB
+    // The storage tier where the amount of storage is less than 32GB.
+    LOW_STORAGE = 1; // <32GB
 
-    // The storage tier where the amount of storage is less than or equal to 20GB and more than 5GB.
-    MEDIUM_STORAGE = 2; // =<20GB && >5GB
+    // The storage tier where the amount of storage is less than or equal to 64GB and more than or
+    // equal to 32GB.
+    MEDIUM_STORAGE = 2; // =<64GB && >=32GB
 
-    // The storage tier where the amount of storage is greater than 20GB.
-    HIGH_STORAGE = 3; // >20GB
+    // The storage tier where the amount of storage is greater than 64GB.
+    HIGH_STORAGE = 3; // >64GB
   }
 
   // Supported network types for indicating the current network situation on user's device.

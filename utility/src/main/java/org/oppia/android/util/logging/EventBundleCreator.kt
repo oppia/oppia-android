@@ -399,7 +399,12 @@ class EventBundleCreator @Inject constructor(
       value: SubmitAnswerEventContext
     ) : EventActivityContext<SubmitAnswerEventContext>(activityName, value) {
       override fun SubmitAnswerEventContext.storeValue(store: PropertyStore) {
+        // Note that values can't exceed 100 characters, so answers must be cut off.
+        val adjustedAnswer = if (stringifiedAnswer.length > 100) {
+          "${stringifiedAnswer.take(97)}..."
+        } else stringifiedAnswer
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
+        store.putNonSensitiveValue("submitted_answer", adjustedAnswer)
         store.putNonSensitiveValue("is_answer_correct", isAnswerCorrect.toString())
       }
     }

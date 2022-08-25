@@ -1,11 +1,7 @@
 package org.oppia.android.instrumentation.application
 
-import android.app.Application
-import androidx.work.Configuration
-import dagger.BindsInstance
 import dagger.Component
-import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
@@ -34,7 +30,6 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
-import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -60,7 +55,6 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
-import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
@@ -96,23 +90,12 @@ import javax.inject.Singleton
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-    SyncStatusModule::class,
-    // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
-    //  directly exclude debug files from the build and thus won't be requiring this module.
-    NetworkConnectionDebugUtilModule::class
+    SyncStatusModule::class, NetworkConnectionDebugUtilModule::class
   ]
 )
-interface TestApplicationComponent : ApplicationInjector {
+interface TestApplicationComponent : ApplicationComponent {
   @Component.Builder
-  interface Builder {
-    @BindsInstance
-    fun setApplication(application: Application): Builder
-    fun build(): TestApplicationComponent
+  interface Builder : ApplicationComponent.Builder {
+    override fun build(): TestApplicationComponent
   }
-
-  fun getActivityComponentBuilderProvider(): Provider<ActivityComponentImpl.Builder>
-
-  fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
-
-  fun getWorkManagerConfiguration(): Configuration
 }

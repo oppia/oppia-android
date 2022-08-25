@@ -3,7 +3,7 @@ package org.oppia.android.util.logging.performancemetrics
 import org.oppia.android.app.model.OppiaMetricLog
 
 /** Utility to extract performance metrics from the underlying Android system. */
-interface PerformanceMetricsUtils {
+interface PerformanceMetricsAssessor {
 
   /** Returns the size of the app's installed APK file, in bytes. */
   fun getApkSize(): Long

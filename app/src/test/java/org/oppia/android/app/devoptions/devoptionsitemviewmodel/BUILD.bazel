@@ -12,9 +12,15 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         "//app",
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector",
+        "//app/src/main/java/org/oppia/android/app/application:application_injector_provider",
+        "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//third_party:junit_junit",
         "//third_party:org_mockito_mockito-core",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )

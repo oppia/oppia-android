@@ -2,7 +2,7 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class PerformanceMetricsLogger @Inject constructor(
   private val performanceMetricsController: PerformanceMetricsController,
-  private val performanceMetricsUtils: PerformanceMetricsUtils,
+  private val performanceMetricsAssessor: PerformanceMetricsAssessor,
   private val oppiaClock: OppiaClock
 ) : ApplicationStartupListener {
 
@@ -44,7 +44,7 @@ class PerformanceMetricsLogger @Inject constructor(
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
-      createApkSizeLoggableMetric(performanceMetricsUtils.getApkSize())
+      createApkSizeLoggableMetric(performanceMetricsAssessor.getApkSize())
     )
   }
 
@@ -59,7 +59,7 @@ class PerformanceMetricsLogger @Inject constructor(
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
-      createStorageUsageLoggableMetric(performanceMetricsUtils.getUsedStorage())
+      createStorageUsageLoggableMetric(performanceMetricsAssessor.getUsedStorage())
     )
   }
 
@@ -91,7 +91,7 @@ class PerformanceMetricsLogger @Inject constructor(
     performanceMetricsController.logMediumPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
-      createMemoryUsageLoggableMetric(performanceMetricsUtils.getTotalPssUsed())
+      createMemoryUsageLoggableMetric(performanceMetricsAssessor.getTotalPssUsed())
     )
   }
 
@@ -107,8 +107,8 @@ class PerformanceMetricsLogger @Inject constructor(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
       createNetworkUsageLoggableMetric(
-        performanceMetricsUtils.getTotalReceivedBytes(),
-        performanceMetricsUtils.getTotalSentBytes()
+        performanceMetricsAssessor.getTotalReceivedBytes(),
+        performanceMetricsAssessor.getTotalSentBytes()
       )
     )
   }
