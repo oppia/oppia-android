@@ -2,6 +2,7 @@ package org.oppia.android.app.application.alphakenya
 
 import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -67,7 +68,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
-    DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
+    ApplicationModule::class, DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
     ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
     NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
