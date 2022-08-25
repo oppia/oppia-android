@@ -186,7 +186,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       /* paint= */ null
     )
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
-//    addChapterRecyclerViewItemDecoration(binding)
 
     binding.root.setOnClickListener {
       val previousIndex: Int? = currentExpandedChapterListIndex
@@ -212,20 +211,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         }
       }
     }
-  }
-
-  private fun addChapterRecyclerViewItemDecoration(binding: TopicLessonsStorySummaryBinding) {
-    val chapterRecyclerView = binding.chapterRecyclerView
-    val layoutManager = chapterRecyclerView.layoutManager as LinearLayoutManager
-    val dividerItemDecoration =
-      DividerItemDecoration(fragment.requireContext(), layoutManager.orientation)
-    dividerItemDecoration.setDrawable(
-      ContextCompat.getDrawable(
-        fragment.requireContext(),
-        R.drawable.divider_item_decoration_grey
-      )!!
-    )
-    chapterRecyclerView.addItemDecoration(dividerItemDecoration)
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
