@@ -56,6 +56,10 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerModule
 
 /**
  * Root Dagger component for the test application. All application-scoped modules should be included
