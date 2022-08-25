@@ -98,7 +98,7 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
     "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
     "//testing/src/main/java/org/oppia/android/testing/mockito",
-    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module"
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
