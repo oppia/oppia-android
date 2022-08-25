@@ -8,13 +8,15 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 kt_android_library(
     name = "initializer",
     srcs = [
-        "LogUploadWorkManagerInitializer.kt",
+        "LogReportWorkManagerInitializer.kt",
     ],
     deps = [
-        ":worker",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
+        "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
+        ":worker",
     ],
 )
 
@@ -42,21 +44,21 @@ kt_android_library(
     ],
     visibility = ["//domain:__pkg__"],
     deps = [
-        ":worker",
         "//third_party:androidx_work_work-runtime-ktx",
+        ":worker",
     ],
 )
 
 kt_android_library(
     name = "worker_module",
     srcs = [
-        "LogUploadWorkerModule.kt",
+        "LogReportWorkerModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         ":dagger",
         ":initializer",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )
 

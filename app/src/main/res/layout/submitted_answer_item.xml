@@ -50,7 +50,7 @@
       android:contentDescription="@{viewModel.submittedAnswerContentDescription}"
       android:padding="12dp"
       android:text="@{viewModel.submittedAnswer}"
-      android:textColor="@color/component_color_shared_submitted_answer_item_text_color"
+      android:textColor="@color/oppia_primary_text"
       android:textSize="16sp"
       android:visibility="gone"
       app:layout_constrainedWidth="true"

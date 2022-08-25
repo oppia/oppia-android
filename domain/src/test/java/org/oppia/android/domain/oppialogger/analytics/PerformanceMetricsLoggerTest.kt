@@ -29,7 +29,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakePerformanceMetricUtils
+import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -44,7 +44,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtils
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -82,7 +82,7 @@ class PerformanceMetricsLoggerTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
-  lateinit var fakePerformanceMetricUtils: FakePerformanceMetricUtils
+  lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
 
   @Mock
   lateinit var context: Context
@@ -100,9 +100,9 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logApkSizePerformanceMetric_verifyLogsMetricCorrectly() {
-    val apkSize = fakePerformanceMetricUtils.getApkSize()
-    val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
-    val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
+    val apkSize = fakePerformanceMetricAssessor.getApkSize()
+    val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
+    val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logApkSize(TEST_SCREEN_UNSPECIFIED)
 
@@ -119,10 +119,10 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logStorageUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
-    val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
+    val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
+    val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
-    val storageUsage = fakePerformanceMetricUtils.getUsedStorage()
+    val storageUsage = fakePerformanceMetricAssessor.getUsedStorage()
     performanceMetricsLogger.logStorageUsage(TEST_SCREEN_UNSPECIFIED)
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
@@ -140,9 +140,9 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logMemoryUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    val memoryUsage = fakePerformanceMetricUtils.getTotalPssUsed()
-    val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
-    val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
+    val memoryUsage = fakePerformanceMetricAssessor.getTotalPssUsed()
+    val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
+    val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logMemoryUsage(TEST_SCREEN_UNSPECIFIED)
 
@@ -159,8 +159,8 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logStartupLatencyPerformanceMetric_verifyLogsMetricCorrectly() {
-    val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
-    val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
+    val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
+    val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logStartupLatency(
       TEST_STARTUP_LATENCY_IN_MILLISECONDS,
@@ -184,8 +184,8 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logCpuUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
-    val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
+    val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
+    val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logCpuUsage(
       TEST_CPU_USAGE,
@@ -205,10 +205,10 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logNetworkUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    val bytesSent = fakePerformanceMetricUtils.getTotalSentBytes()
-    val bytesReceived = fakePerformanceMetricUtils.getTotalReceivedBytes()
-    val memoryTier = fakePerformanceMetricUtils.getDeviceMemoryTier()
-    val storageTier = fakePerformanceMetricUtils.getDeviceStorageTier()
+    val bytesSent = fakePerformanceMetricAssessor.getTotalSentBytes()
+    val bytesReceived = fakePerformanceMetricAssessor.getTotalReceivedBytes()
+    val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
+    val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logNetworkUsage(TEST_SCREEN_UNSPECIFIED)
 
@@ -229,7 +229,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   private fun setUpFakePerformanceMetricsUtils() {
-    fakePerformanceMetricUtils.apply {
+    fakePerformanceMetricAssessor.apply {
       setApkSize(TEST_APK_SIZE)
       setStorageUsage(TEST_STORAGE_USAGE)
       setTotalPss(TEST_TOTAL_PSS)
@@ -280,8 +280,8 @@ class PerformanceMetricsLoggerTest {
   interface TestPerformanceMetricsModule {
     @Binds
     fun bindPerformanceMetricsUtils(
-      fakePerformanceMetricUtils: FakePerformanceMetricUtils
-    ): PerformanceMetricsUtils
+      fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
+    ): PerformanceMetricsAssessor
   }
 
   // TODO(#89): Move this to a common test application component.

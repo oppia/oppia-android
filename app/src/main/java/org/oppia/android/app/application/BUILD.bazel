@@ -1,0 +1,139 @@
+"""
+This package contains all of the top-level infrastructure for the application entrypoint and root
+Dagger graph.
+
+Specific application implementations can be found in subpackages.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "abstract_application",
+    srcs = [
+        "AbstractOppiaApplication.kt",
+    ],
+    visibility = [
+        "//app/src/main/java/org/oppia/android/app/application:__subpackages__",
+        "//instrumentation/src/java/org/oppia/android/instrumentation/application:__pkg__",
+    ],
+    deps = [
+        ":application_component",
+        ":application_injector",
+        ":application_injector_provider",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:androidx_work_work-runtime-ktx",
+        "//third_party:com_google_firebase_firebase-common",
+    ],
+)
+
+kt_android_library(
+    name = "application_component",
+    srcs = [
+        "ApplicationComponent.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app/src/main/java/org/oppia/android/app/application:__subpackages__",
+    ],
+    deps = [
+        ":application_injector",
+        "//app",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
+    name = "application_injector",
+    srcs = [
+        "ApplicationInjector.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
+    ],
+)
+
+kt_android_library(
+    name = "application_injector_provider",
+    srcs = [
+        "ApplicationInjectorProvider.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":application_injector",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
+        "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
+        "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
+    ],
+)
+
+kt_android_library(
+    name = "modules",
+    srcs = [
+        "ApplicationModule.kt",
+        "ApplicationStartupListenerModule.kt",
+    ],
+    deps = [
+        ":dagger",
+        "//app",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+    ],
+)
+
+# TODO(#1720): Remove this once the list can be automatically determined from the build graph.
+android_library(
+    name = "common_application_modules",
+    visibility = [
+        "//:oppia_testing_visibility",
+        "//app/src/main/java/org/oppia/android/app/application:__subpackages__",
+    ],
+    exports = [
+        ":modules",
+        "//app/src/main/java/org/oppia/android/app/translation:prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput:drag_and_drop_sort_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:fraction_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:image_click_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/itemselectioninput:item_selection_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput:math_equation_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/multiplechoiceinput:multiple_choice_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:number_with_units_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericexpressioninput:numeric_expression_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/caching:caching_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser_entity_type_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
+    ],
+)
+
+dagger_rules()
