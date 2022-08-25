@@ -11,9 +11,9 @@ kt_android_library(
         "PerformanceMetricsLogScheduler.kt",
     ],
     deps = [
+        ":metric_log_scheduling_worker",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
-        ":metric_log_scheduling_worker",
     ],
 )
 
@@ -39,8 +39,8 @@ kt_android_library(
     ],
     visibility = ["//domain:__pkg__"],
     deps = [
-        "//third_party:androidx_work_work-runtime-ktx",
         ":metric_log_scheduling_worker",
+        "//third_party:androidx_work_work-runtime-ktx",
     ],
 )
 
@@ -51,10 +51,10 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
-        "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
         ":dagger",
         ":performance_metrics_log_scheduler",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//utility/src/main/java/org/oppia/android/util/logging:metric_log_scheduler",
     ],
 )
 

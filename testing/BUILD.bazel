@@ -37,6 +37,7 @@ kt_android_library(
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
@@ -61,13 +62,12 @@ kt_android_library(
         "//third_party:org_mockito_mockito-core",
         "//third_party:org_robolectric_robolectric",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger"
         "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
         "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
-        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger"
     ],
 )
 
@@ -79,9 +79,10 @@ TEST_DEPS = [
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//domain",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
-    "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+    "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
     "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
@@ -108,15 +109,14 @@ TEST_DEPS = [
     "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
-    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/system:prod_module",
-    "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
-    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
-    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger"
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

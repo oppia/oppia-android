@@ -34,10 +34,10 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":dagger",
+        ":performance_metrics_assessor_impl",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
-        ":dagger",
-        ":performance_metrics_assessor_impl"
     ],
 )
 
@@ -48,10 +48,10 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":performance_metrics_assessor",
+        ":performance_metrics_configurations_module",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
-        ":performance_metrics_assessor",
-        ":performance_metrics_configurations_module"
     ],
 )
 
@@ -62,9 +62,9 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":dagger",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
-        ":dagger"
     ],
 )
 

@@ -46,14 +46,14 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":dagger",
+        ":firebase_exception_logger",
+        ":prod_impl",
         "//third_party:com_google_firebase_firebase-analytics",
         "//third_party:com_google_firebase_firebase-crashlytics",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:log_uploader",
-        ":dagger",
-        ":firebase_exception_logger",
-        ":prod_impl",
     ],
 )
 
@@ -66,10 +66,10 @@ kt_android_library(
         "//app:__pkg__",
     ],
     deps = [
+        ":prod_impl",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
-        ":prod_impl",
     ],
 )
 
