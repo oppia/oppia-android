@@ -2,6 +2,8 @@ package org.oppia.android.app.help
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
+import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
@@ -34,6 +36,23 @@ class HelpItemViewModel(
           routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()
         }
       }
+      resourceHandler.getStringInLocale(R.string.privacy_policy_title) -> {
+        loadPolicyPage(PolicyPage.PRIVACY_POLICY)
+      }
+      resourceHandler.getStringInLocale(R.string.terms_of_service_title) -> {
+        loadPolicyPage(PolicyPage.TERMS_OF_SERVICE)
+      }
+    }
+  }
+
+  private fun loadPolicyPage(policyPage: PolicyPage) {
+    if (isMultipane) {
+      val loadPoliciesFragmentListener = activity as
+        LoadPoliciesFragmentListener
+      loadPoliciesFragmentListener.loadPoliciesFragment(policyPage)
+    } else {
+      val routeToPoliciesListener = activity as RouteToPoliciesListener
+      routeToPoliciesListener.onRouteToPolicies(policyPage)
     }
   }
 }

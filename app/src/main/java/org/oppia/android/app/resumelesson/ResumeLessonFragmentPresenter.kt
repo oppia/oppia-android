@@ -12,6 +12,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -32,6 +33,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger
 ) {
 
@@ -121,7 +123,8 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       resourceBucketName,
       resumeLessonViewModel.entityType,
       explorationId,
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageResourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       resumeLessonViewModel.chapterSummary.get()!!.summary,
       binding.resumeLessonChapterDescriptionTextView
