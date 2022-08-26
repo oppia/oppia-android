@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
-  <stroke android:color="@color/color_def_bright_green" android:width="4dp"/>
-  <solid android:color="@color/color_def_oppia_green"/>
+  <stroke
+    android:width="4dp"
+    android:color="@color/color_def_bright_green" />
+  <solid android:color="@color/color_def_oppia_green" />
 </shape>

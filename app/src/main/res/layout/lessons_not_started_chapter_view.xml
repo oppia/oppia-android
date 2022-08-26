@@ -14,9 +14,9 @@
 
   <LinearLayout
     android:id="@+id/not_started_chapter_container"
-    android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:orientation="vertical">
 
     <LinearLayout
