@@ -17,5 +17,7 @@ class DebugLogReportingModule {
 
   @Provides
   @Singleton
-  fun provideDebugEventLogger(debugEventLogger: DebugAnalyticsEventLogger): AnalyticsEventLogger = debugEventLogger
+  fun provideDebugEventLogger(
+    debugEventLogger: DebugAnalyticsEventLogger
+  ): AnalyticsEventLogger = debugEventLogger
 }
