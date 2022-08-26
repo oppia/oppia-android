@@ -273,16 +273,14 @@ class AudioPlayerController @Inject constructor(
    * MediaPlayer must already be initialized.
    */
   fun releaseMediaPlayer() {
-    if (mediaPlayerActive) {
-      audioLock.withLock {
-        check(mediaPlayerActive) { "Media player has not been previously initialized" }
-        mediaPlayerActive = false
-        isReleased = true
-        prepared = false
-        mediaPlayer.release()
-        stopUpdatingSeekBar()
-        playProgress = null
-      }
+    audioLock.withLock {
+      check(mediaPlayerActive) { "Media player has not been previously initialized" }
+      mediaPlayerActive = false
+      isReleased = true
+      prepared = false
+      mediaPlayer.release()
+      stopUpdatingSeekBar()
+      playProgress = null
     }
   }
 

@@ -182,7 +182,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   /** Releases audio player resources */
   fun handleOnDestroy() {
-    if (!activity.isChangingConfigurations) {
+    if (!activity.isChangingConfigurations && prepared) {
       viewModel.handleRelease()
     }
   }
