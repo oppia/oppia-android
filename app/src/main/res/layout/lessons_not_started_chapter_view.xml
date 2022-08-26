@@ -22,7 +22,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/border_white"
+      android:background="@drawable/chapter_white_bright_green_border_background"
       android:minHeight="48dp"
       android:orientation="horizontal">
 
@@ -31,7 +31,7 @@
         android:layout_width="60dp"
         android:layout_height="match_parent"
         android:layout_marginStart="0dp"
-        android:background="@drawable/border_bright_green"
+        android:background="@drawable/chapter_dark_green_bright_green_border_background"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
