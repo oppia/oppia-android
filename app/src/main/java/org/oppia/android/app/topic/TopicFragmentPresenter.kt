@@ -86,8 +86,10 @@ class TopicFragmentPresenter @Inject constructor(
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
     }.attach()
-    if (!isConfigChanged && topicId.isNotEmpty() && enableExtraTopicTabsUi.value) {
-      setCurrentTab(TopicTab.LESSONS)
+    if (!isConfigChanged && topicId.isNotEmpty()) {
+      if (enableExtraTopicTabsUi.value){
+        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      }
     }
   }
 
