@@ -362,7 +362,7 @@
   <string name="hints_andSolution_close_icon_description">Nenda juu</string>
   <string name="hints_toolbar_title">Vidokezo</string>
   <string name="reveal_solution">Fichua Suluhisho</string>
-  <string name="reveal_hint">\nFichua Kidokezo</string>
+  <string name="reveal_hint" fuzzy="true">\nFichua Kidokezo</string>
   <string name="show_hide_hint_list">Onyesha/Ficha orodha ya vidokezo ya %s</string>
   <string name="show_hide_solution_list">\nOnyesha/Ficha suluhisho</string>
   <string name="the_only_solution_is">Suluhisho pekee ni:</string>
@@ -396,7 +396,7 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">mada_marudio_mtazamo wa kuchakata tena_tag</string>
   <string name="ongoing_recycler_view_tag">\nInaendelea_kuchakata tena_mtazamo_tag</string>
-  <string name="item_selection_text">\nTafadhali chagua angalau chaguo moja.</string>
+  <string name="item_selection_text" fuzzy="true">\nTafadhali chagua angalau chaguo moja.</string>
   <string name="unsupported_app_version_dialog_title">\nToleo la programu lisilotumika</string>
   <string name="unsupported_app_version_dialog_message">Toleo hili la programu halitumiki tena. Tafadhali isasishe kupitia hifadhi ya michezo.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Funga programu</string>

@@ -23,7 +23,6 @@ import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
@@ -218,9 +217,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         resourceBucketName,
         entityType,
         hintsViewModel.explorationId.get()!!,
-        /* imageCenterAlign= */ true
+        /* imageCenterAlign= */ true,
+        displayLocale = resourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
-        hintsViewModel.hintsAndSolutionSummary.get()!!, binding.hintsAndSolutionSummary
+        hintsViewModel.hintsAndSolutionSummary.get()!!,
+        binding.hintsAndSolutionSummary
       )
 
     if (hintsViewModel.hintCanBeRevealed.get()!!) {
@@ -281,7 +282,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       binding.solutionCorrectAnswer.text = solutionViewModel.correctAnswer.get()
     }
     binding.solutionSummary.text = htmlParserFactory.create(
-      resourceBucketName, entityType, viewModel.explorationId.get()!!, /* imageCenterAlign= */ true
+      resourceBucketName, entityType, viewModel.explorationId.get()!!, /* imageCenterAlign= */ true,
+      displayLocale = resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       solutionViewModel.solutionSummary.get()!!, binding.solutionSummary
     )
