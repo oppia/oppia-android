@@ -16,7 +16,6 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
-import org.oppia.android.databinding.LessonsChapterViewBinding
 import org.oppia.android.databinding.LessonsInProgressChapterViewBinding
 import org.oppia.android.databinding.LessonsLockedChapterViewBinding
 import org.oppia.android.databinding.LessonsNotStartedChapterViewBinding
@@ -30,6 +29,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.databinding.LessonsCompletedChapterViewBinding
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
@@ -247,8 +247,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       )
       .registerViewDataBinder(
         viewType = ChapterViewType.CHAPTER_COMPLETED,
-        inflateDataBinding = LessonsChapterViewBinding::inflate,
-        setViewModel = LessonsChapterViewBinding::setViewModel,
+        inflateDataBinding = LessonsCompletedChapterViewBinding::inflate,
+        setViewModel = LessonsCompletedChapterViewBinding::setViewModel,
         transformViewModel = { it }
       )
       .registerViewDataBinder(
