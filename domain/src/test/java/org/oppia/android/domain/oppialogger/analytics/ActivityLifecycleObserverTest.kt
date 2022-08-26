@@ -52,6 +52,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -83,7 +84,7 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
     assertThat(activityLifecycleObserver.getCurrentScreen())
-      .isEqualTo(ScreenName.ACTIVITY_NAME_UNSPECIFIED.name)
+      .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
   }
 
   @Test
@@ -102,17 +103,11 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
     val activity = Robolectric.buildActivity(Activity::class.java).get()
-    activity.intent = Intent().apply {
-      this.putProtoExtra(
-        CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
-        CurrentAppScreenNameIntentDecorator
-          .decorateWithScreenName(ScreenName.ACTIVITY_NAME_UNSPECIFIED)
-      )
-    }
+    activity.intent = Intent().apply { decorateWithScreenName(ScreenName.HOME_ACTIVITY) }
     activityLifecycleObserver.onActivityResumed(activity)
 
     val currentScreenValue = activityLifecycleObserver.getCurrentScreen()
-    assertThat(currentScreenValue).isEqualTo(ScreenName.ACTIVITY_NAME_UNSPECIFIED.name)
+    assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
   }
 
   @Test
@@ -183,7 +178,7 @@ class ActivityLifecycleObserverTest {
     activityLifecycleObserver.onActivityPaused(activity)
     val currentScreen = activityLifecycleObserver.getCurrentScreen()
 
-    assertThat(currentScreen).isEqualTo(ScreenName.ACTIVITY_NAME_UNSPECIFIED.name)
+    assertThat(currentScreen).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -269,7 +264,7 @@ class ActivityLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, ActivityLifecycleObserverModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

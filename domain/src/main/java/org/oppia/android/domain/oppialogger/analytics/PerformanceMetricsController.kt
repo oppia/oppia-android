@@ -14,6 +14,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ScreenName
 
 /**
  * Controller for handling performance metrics event logging.
@@ -46,7 +47,7 @@ class PerformanceMetricsController @Inject constructor(
    */
   fun logPerformanceMetricsEvent(
     timestamp: Long,
-    currentScreen: String,
+    currentScreen: ScreenName,
     loggableMetric: OppiaMetricLog.LoggableMetric,
     priority: Priority
   ) {
@@ -102,7 +103,7 @@ class PerformanceMetricsController @Inject constructor(
   private fun createMetricLog(
     timestamp: Long,
     priority: Priority,
-    currentScreen: String,
+    currentScreen: ScreenName,
     loggableMetric: OppiaMetricLog.LoggableMetric
   ): OppiaMetricLog {
     return OppiaMetricLog.newBuilder().apply {

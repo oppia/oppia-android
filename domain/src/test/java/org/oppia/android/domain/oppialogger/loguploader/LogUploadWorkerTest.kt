@@ -27,6 +27,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -63,7 +64,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADIN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsUtilsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -72,11 +73,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
 private const val TEST_APK_SIZE = Long.MAX_VALUE
-private const val TEST_SCREEN_UNSPECIFIED = "test_screen_unspecified"
 
 /** Tests for [LogUploadWorker]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -225,7 +226,7 @@ class LogUploadWorkerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      TEST_SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       OppiaMetricLog.Priority.LOW_PRIORITY
     )
@@ -251,7 +252,7 @@ class LogUploadWorkerTest {
       OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
     )
     assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
-      TEST_SCREEN_UNSPECIFIED
+      SCREEN_NAME_UNSPECIFIED
     )
     assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
     assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)
@@ -407,7 +408,8 @@ class LogUploadWorkerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      PerformanceMetricsUtilsModule::class, ApplicationLifecycleModule::class
+      PerformanceMetricsAssessorModule::class, ApplicationLifecycleModule::class,
+      PerformanceMetricsConfigurationsModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

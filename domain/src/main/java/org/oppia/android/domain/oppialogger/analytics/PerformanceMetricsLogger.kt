@@ -5,6 +5,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ScreenName
 
 /**
  * Convenience logger for performance metrics related analytics events.
@@ -26,7 +27,7 @@ class PerformanceMetricsLogger @Inject constructor(
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
    */
-  fun logApkSize(currentScreen: String) {
+  fun logApkSize(currentScreen: ScreenName) {
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
@@ -41,7 +42,7 @@ class PerformanceMetricsLogger @Inject constructor(
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
    */
-  fun logStorageUsage(currentScreen: String) {
+  fun logStorageUsage(currentScreen: ScreenName) {
     performanceMetricsController.logLowPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
@@ -56,7 +57,7 @@ class PerformanceMetricsLogger @Inject constructor(
    * @param startupLatency denotes the startup latency value that'll be logged to Firebase
    * @param currentScreen denotes the application screen at which this metric has been logged
    */
-  fun logStartupLatency(startupLatency: Long, currentScreen: String) {
+  fun logStartupLatency(startupLatency: Long, currentScreen: ScreenName) {
     if (startupLatency >= 0) {
       performanceMetricsController.logLowPriorityMetricEvent(
         oppiaClock.getCurrentTimeMs(),
@@ -73,7 +74,7 @@ class PerformanceMetricsLogger @Inject constructor(
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
    */
-  fun logMemoryUsage(currentScreen: String) {
+  fun logMemoryUsage(currentScreen: ScreenName) {
     performanceMetricsController.logMediumPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
@@ -88,7 +89,7 @@ class PerformanceMetricsLogger @Inject constructor(
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
    */
-  fun logNetworkUsage(currentScreen: String) {
+  fun logNetworkUsage(currentScreen: ScreenName) {
     performanceMetricsController.logHighPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
@@ -107,7 +108,7 @@ class PerformanceMetricsLogger @Inject constructor(
    * @param currentScreen denotes the application screen at which this metric has been logged
    * @param cpuUsage denotes the current cpu usage of the application
    */
-  fun logCpuUsage(cpuUsage: Long, currentScreen: String) {
+  fun logCpuUsage(cpuUsage: Long, currentScreen: ScreenName) {
     performanceMetricsController.logHighPriorityMetricEvent(
       oppiaClock.getCurrentTimeMs(),
       currentScreen,
@@ -128,7 +129,7 @@ class PerformanceMetricsLogger @Inject constructor(
      */
     private fun PerformanceMetricsController.logHighPriorityMetricEvent(
       timestamp: Long,
-      currentScreen: String,
+      currentScreen: ScreenName,
       loggableMetric: OppiaMetricLog.LoggableMetric
     ) {
       logPerformanceMetricsEvent(
@@ -155,7 +156,7 @@ class PerformanceMetricsLogger @Inject constructor(
      */
     private fun PerformanceMetricsController.logMediumPriorityMetricEvent(
       timestamp: Long,
-      currentScreen: String,
+      currentScreen: ScreenName,
       loggableMetric: OppiaMetricLog.LoggableMetric
     ) {
       logPerformanceMetricsEvent(
@@ -185,7 +186,7 @@ class PerformanceMetricsLogger @Inject constructor(
      */
     private fun PerformanceMetricsController.logLowPriorityMetricEvent(
       timestamp: Long,
-      currentScreen: String,
+      currentScreen: ScreenName,
       loggableMetric: OppiaMetricLog.LoggableMetric
     ) {
       logPerformanceMetricsEvent(

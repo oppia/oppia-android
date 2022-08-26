@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "screens.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -29,7 +31,7 @@ message OppiaMetricLog {
   LoggableMetric loggable_metric = 7;
 
   // The current screen where the event is getting logged.
-  string current_screen = 8;
+  ScreenName current_screen = 8;
 
   // Structure of a loggable metric.
   message LoggableMetric {

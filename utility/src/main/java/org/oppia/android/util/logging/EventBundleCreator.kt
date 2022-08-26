@@ -117,7 +117,7 @@ class EventBundleCreator @Inject constructor(
     bundle.putString("memory_tier", oppiaMetricLog.memoryTier.toAnalyticsName())
     bundle.putString("storage_tier", oppiaMetricLog.storageTier.toAnalyticsName())
     bundle.putString("network_type", oppiaMetricLog.networkType.toAnalyticsName())
-    bundle.putString("current_screen", oppiaMetricLog.currentScreen)
+    bundle.putString("current_screen", oppiaMetricLog.currentScreen.name)
     return oppiaMetricLog.loggableMetric.convertToLoggableMetricType()?.also { loggableMetric ->
       // No performance metrics need to be tied to user IDs.
       loggableMetric.storeValue(PropertyStore(bundle, allowUserIds = false))

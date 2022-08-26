@@ -14,8 +14,8 @@ import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-
-private const val BACKGROUND_WORKER_SCREEN = "background_worker_screen"
+import org.oppia.android.app.model.ScreenName.BACKGROUND_WORKER_SCREEN
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 
 /**
  * Worker class that generates metric log reports regarding the performance of the application
@@ -102,7 +102,7 @@ class MetricLogSchedulingWorker private constructor(
   private fun schedulePeriodicUiMetricLogging(): Result {
     return try {
       val currentScreen = activityLifecycleObserver.getCurrentScreen()
-      if (currentScreen != null) {
+      if (currentScreen != SCREEN_NAME_UNSPECIFIED) {
         performanceMetricsLogger.logMemoryUsage(currentScreen)
       } else {
         performanceMetricsLogger.logMemoryUsage(BACKGROUND_WORKER_SCREEN)

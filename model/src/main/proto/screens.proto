@@ -5,14 +5,31 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
+// The list of names of all the ui-screens that are supported by the Android App.
 enum ScreenName {
-  ACTIVITY_NAME_UNSPECIFIED = 0;
+
+  // Default screen name value which is used when the screen_name isn't set.
+  SCREEN_NAME_UNSPECIFIED = 0;
+
+  // Screen name value for the scenario when the splash activity is visible to the user.
   SPLASH_ACTIVITY = 1;
+
+  // Screen name value for the scenario when the profile chooser activity is visible to the user.
   PROFILE_CHOOSER_ACTIVITY = 2;
+
+  // Screen name value for the scenario when the add profile activity is visible to the user.
   ADD_PROFILE_ACTIVITY = 3;
+
+  // Screen name value for the scenario when the home activity is visible to the user.
   HOME_ACTIVITY = 4;
+
+  // Screen name value for the scenario when the app is in background and no particular ui is
+  // visible to the user.
+  BACKGROUND_WORKER_SCREEN = 5;
 }
 
+// Defines the current visible ui screen of the application.
 message CurrentAppScreen {
+  //S creen name value depicting the name of the currently visible ui screen.
   ScreenName screen_name = 1;
 }
