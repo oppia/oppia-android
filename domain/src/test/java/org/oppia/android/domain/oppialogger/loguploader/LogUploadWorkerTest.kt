@@ -87,7 +87,8 @@ class LogUploadWorkerTest {
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-  @field:[Inject MockAnalyticsEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @field:[Inject MockAnalyticsEventLogger]
+  lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
 
   private lateinit var context: Context
 
@@ -306,7 +307,9 @@ class LogUploadWorkerTest {
     }
 
     @Provides
-    fun bindFakeEventLogger(@MockAnalyticsEventLogger delegate: AnalyticsEventLogger): AnalyticsEventLogger = delegate
+    fun bindFakeEventLogger(
+      @MockAnalyticsEventLogger delegate: AnalyticsEventLogger
+    ): AnalyticsEventLogger = delegate
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger

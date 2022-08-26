@@ -6,8 +6,8 @@ import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.AnalyticsEventLogger
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
