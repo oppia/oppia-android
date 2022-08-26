@@ -8,14 +8,14 @@ import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import org.oppia.android.app.model.ScreenName.BACKGROUND_WORKER_SCREEN
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.analytics.ActivityLifecycleObserver
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.model.ScreenName.BACKGROUND_WORKER_SCREEN
-import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 
 /**
  * Worker class that generates metric log reports regarding the performance of the application

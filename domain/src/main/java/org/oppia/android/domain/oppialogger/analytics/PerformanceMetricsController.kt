@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
 import org.oppia.android.app.model.OppiaMetricLogs
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
@@ -14,7 +15,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ScreenName
 
 /**
  * Controller for handling performance metrics event logging.

@@ -6,10 +6,10 @@ import android.os.Bundle
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
 
 /** Observer that observes activity lifecycle and further logs analytics events on its basis. */
 @Singleton
