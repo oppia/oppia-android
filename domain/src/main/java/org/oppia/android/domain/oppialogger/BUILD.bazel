@@ -62,8 +62,8 @@ kt_android_library(
         "LoggingIdentifierModule.kt",
     ],
     visibility = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
         "//:oppia_prod_module_visibility",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__",
     ],
     deps = [
         ":application_id_seed",
