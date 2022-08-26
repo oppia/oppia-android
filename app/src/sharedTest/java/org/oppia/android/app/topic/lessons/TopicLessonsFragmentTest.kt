@@ -508,7 +508,8 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container))))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ResumeLessonActivity::class.java.name))
       intended(
@@ -559,7 +560,8 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container))))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(
         allOf(
@@ -656,7 +658,8 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container))))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(
         allOf(
