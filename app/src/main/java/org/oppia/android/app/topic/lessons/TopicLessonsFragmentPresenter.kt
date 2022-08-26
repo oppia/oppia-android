@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import java.lang.IllegalStateException
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
@@ -236,7 +237,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> ChapterViewType.CHAPTER_LOCKED
           ChapterPlayState.COMPLETED -> ChapterViewType.CHAPTER_COMPLETED
           ChapterPlayState.IN_PROGRESS_SAVED -> ChapterViewType.CHAPTER_IN_PROGRESS
-          else -> ChapterViewType.CHAPTER_NOT_STARTED
+          ChapterPlayState.IN_PROGRESS_NOT_SAVED -> ChapterViewType.CHAPTER_IN_PROGRESS
+          ChapterPlayState.NOT_STARTED -> ChapterViewType.CHAPTER_NOT_STARTED
+          ChapterPlayState.STARTED_NOT_COMPLETED -> ChapterViewType.CHAPTER_IN_PROGRESS
+          ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED -> ChapterViewType.CHAPTER_IN_PROGRESS
+          ChapterPlayState.UNRECOGNIZED -> throw IllegalArgumentException("Play state unknown")
         }
       }
       .registerViewDataBinder(

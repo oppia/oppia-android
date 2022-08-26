@@ -48,7 +48,7 @@
         android:layout_gravity="center"
         android:layout_marginEnd="10dp"
         android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
-        app:srcCompat="@drawable/ic_baseline_lock_20" />
+        app:srcCompat="@drawable/ic_baseline_lock_24" />
 
       <TextView
         android:id="@+id/chapter_name"
@@ -69,6 +69,6 @@
       android:id="@+id/divider"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@drawable/divider_item_decoration_grey" />
+      android:background="@drawable/grey_recycler_view_item_decoration_divider" />
   </LinearLayout>
 </layout>

@@ -16,15 +16,14 @@
     android:id="@+id/lessons_completed_chapter_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
     android:orientation="vertical">
+
     <LinearLayout
-      android:id="@+id/completed_chapter_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/color_def_dark_green"
-      android:clickable="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? true : false}"
       android:minHeight="48dp"
-      android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
       android:orientation="horizontal">
 
       <TextView
@@ -63,6 +62,6 @@
       android:id="@+id/divider"
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@drawable/divider_item_decoration_grey"/>
+      android:background="@drawable/grey_recycler_view_item_decoration_divider" />
   </LinearLayout>
 </layout>

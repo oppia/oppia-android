@@ -559,7 +559,7 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.lessons_completed_chapter_view)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container)))).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(
         allOf(
@@ -843,20 +843,6 @@ class TopicLessonsFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
       verifyPartialProgressIconIsDisplayedAtPosition(itemPosition = 0)
-    }
-  }
-
-  @Test
-  fun testLessonPlayFrag_loadRatiosTopic_unsavedPartialProg_chapterPlayStateIconIsNotVisible() {
-    storyProgressTestHelper.markInProgressNotSavedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition = 0)
     }
   }
 
