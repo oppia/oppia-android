@@ -53,6 +53,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "performance_metrics_event_logger_proto",
     srcs = ["performance_metrics.proto"],
+    deps = [":screens_proto"]
 )
 
 java_lite_proto_library(
@@ -96,6 +97,18 @@ java_lite_proto_library(
     name = "languages_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":languages_proto"],
+)
+
+oppia_proto_library(
+    name = "screens_proto",
+    srcs = ["screens.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "screens_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":screens_proto"],
 )
 
 oppia_proto_library(

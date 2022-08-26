@@ -27,6 +27,7 @@ kt_android_library(
     ],
     deps = [
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",
         "//third_party:androidx_work_work-runtime-ktx",
@@ -34,6 +35,7 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
     ],
 )
 

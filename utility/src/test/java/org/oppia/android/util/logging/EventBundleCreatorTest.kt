@@ -42,6 +42,8 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -94,7 +96,6 @@ class EventBundleCreatorTest {
     private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
     private const val TEST_NETWORK_USAGE = Long.MAX_VALUE
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
-    private const val TEST_SCREEN_UNSPECIFIED = "test_screen_unspecified"
   }
 
   @Inject
@@ -181,7 +182,7 @@ class EventBundleCreatorTest {
     val performanceMetricLog = createPerformanceMetricLog(
       timestamp = TEST_TIMESTAMP_1,
       priority = HIGH_PRIORITY,
-      currentScreen = TEST_SCREEN_UNSPECIFIED,
+      currentScreen = SCREEN_NAME_UNSPECIFIED,
       memoryTier = HIGH_MEMORY_TIER,
       storageTier = HIGH_STORAGE,
       networkType = WIFI,
@@ -256,7 +257,7 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
     val performanceMetricLog =
-      createPerformanceMetricLog(currentScreen = TEST_SCREEN_UNSPECIFIED)
+      createPerformanceMetricLog(currentScreen = SCREEN_NAME_UNSPECIFIED)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -1250,7 +1251,7 @@ class EventBundleCreatorTest {
   private fun createPerformanceMetricLog(
     timestamp: Long = TEST_TIMESTAMP_1,
     priority: Priority = HIGH_PRIORITY,
-    currentScreen: String = TEST_SCREEN_UNSPECIFIED,
+    currentScreen: ScreenName = SCREEN_NAME_UNSPECIFIED,
     memoryTier: MemoryTier = HIGH_MEMORY_TIER,
     storageTier: StorageTier = HIGH_STORAGE,
     isAppInForeground: Boolean = true,
