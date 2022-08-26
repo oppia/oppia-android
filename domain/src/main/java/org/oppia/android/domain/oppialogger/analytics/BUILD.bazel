@@ -80,12 +80,12 @@ kt_android_library(
 kt_android_library(
     name = "performance_metrics_logger_module",
     srcs = [
-        "PerformanceMetricsLoggerModule.kt",
+        "ActivityLifecycleObserverModule.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
-        ":performance_metrics_logger",
+        ":activity_lifecycle_observer",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )

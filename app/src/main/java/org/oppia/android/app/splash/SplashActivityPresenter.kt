@@ -1,6 +1,5 @@
 package org.oppia.android.app.splash
 
-import android.content.Intent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -11,7 +10,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.StartupMode
-import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
@@ -24,9 +22,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
 import javax.inject.Inject
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
@@ -59,14 +55,6 @@ class SplashActivityPresenter @Inject constructor(
     // If the app close button is clicked for the deprecation notice, finish the activity to close
     // the app.
     activity.finish()
-  }
-
-  /** Returns an intent that wraps up a proto object carrying the screen name of the activity. */
-  fun getCurrentAppScreenNameIntent(): Intent = Intent().apply {
-    this.putProtoExtra(
-      CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
-      CurrentAppScreenNameIntentDecorator.decorateWithScreenName(ScreenName.SPLASH_ACTIVITY)
-    )
   }
 
   private fun subscribeToOnboardingFlow() {

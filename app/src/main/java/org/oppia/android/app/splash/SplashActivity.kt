@@ -10,6 +10,8 @@ import org.oppia.android.app.deprecation.DeprecationNoticeExitAppListener
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
+import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /**
@@ -33,7 +35,7 @@ class SplashActivity :
     activityComponent = componentFactory.createActivityComponent(this)
     (activityComponent as ActivityComponentImpl).inject(this)
     splashActivityPresenter.handleOnCreate()
-    intent = splashActivityPresenter.getCurrentAppScreenNameIntent()
+    intent.decorateWithScreenName(SPLASH_ACTIVITY)
   }
 
   override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
