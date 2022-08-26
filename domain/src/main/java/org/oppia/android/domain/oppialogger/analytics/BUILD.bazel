@@ -36,10 +36,10 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
-        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
         "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
     ],
 )
