@@ -105,7 +105,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
     binding.actionBottomSheetOptionsMenu.setOnClickListener {
       val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
-      bottomSheetOptionsMenu.show(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
+      bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
     }
 
     updateToolbarTitle(explorationId)
