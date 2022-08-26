@@ -1,4 +1,4 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
 import android.app.Application
 import android.content.Context
@@ -20,11 +20,8 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
-import org.oppia.android.domain.R
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.OppiaBidiFormatter
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
 import org.robolectric.annotation.Config
@@ -51,8 +48,7 @@ class DisplayLocaleImplTest {
   @Inject
   lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -264,6 +260,33 @@ class DisplayLocaleImplTest {
     val capitalized = impl.run { "lowercased string".capitalizeForHumans() }
 
     assertThat(capitalized).isEqualTo("Lowercased string")
+  }
+
+  @Test
+  fun testNumbersForHumans_egyptArabicLocale_numberFormat_returnsHumanReadableString() {
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+
+    val localizedNumber = impl.toHumanReadableString(1)
+
+    assertThat(localizedNumber).isEqualTo("١")
+  }
+
+  @Test
+  fun testNumbersForHumans_turkishLocale_numberFormat_returnsHumanReadableString() {
+    val impl = createDisplayLocaleImpl(TURKEY_TURKISH_CONTEXT)
+
+    val localizedNumber = impl.toHumanReadableString(1)
+
+    assertThat(localizedNumber).isEqualTo("1")
+  }
+
+  @Test
+  fun testNumbersForHumans_englishLocale_numberFormat_returnsHumanReadableString() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val localizedNumber = impl.toHumanReadableString(1)
+
+    assertThat(localizedNumber).isEqualTo("1")
   }
 
   @Test

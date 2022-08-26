@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/oppia_grey_background"
+    android:clipToPadding="false"
+    android:overScrollMode="never"
+    android:paddingBottom="@dimen/policies_fragment_page_scroll_padding_bottom"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/color_def_white"
+      android:paddingStart="@dimen/policies_fragment_page_padding_start"
+      android:paddingTop="@dimen/policies_fragment_page_padding_top"
+      android:paddingEnd="@dimen/policies_fragment_page_padding_end"
+      android:paddingBottom="@dimen/policies_fragment_page_padding_bottom">
+
+      <TextView
+        android:id="@+id/policy_description_text_view"
+        style="@style/Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/oppia_primary_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/policy_web_link_text_view"
+        style="@style/Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/oppia_primary_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/policy_description_text_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
+</layout>

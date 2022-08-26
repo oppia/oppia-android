@@ -1,12 +1,19 @@
 package org.oppia.android.util.parser.html
 
+import android.app.Application
+import android.content.Context
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
-import android.text.style.BulletSpan
 import android.text.style.StyleSpan
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.Binds
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,20 +22,72 @@ import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.app.model.LanguageSupportDefinition
+import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.OppiaLocaleContext
+import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.AndroidLocaleFactory
+import org.oppia.android.util.locale.DisplayLocaleImpl
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.OppiaBidiFormatter
+import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.AttributesImpl
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.reflect.KClass
+
+private const val UL_TAG_MARKUP_1 =
+  "<p>Paragraph 1</p><oppia-ul><oppia-li>Item</oppia-li></oppia-ul>" +
+    "<p>Paragraph 2.</p>"
+
+private const val OL_TAG_MARKUP_1 =
+  "<p>Paragraph 1</p><oppia-ol><oppia-li>Item</oppia-li></oppia-ol>" +
+    "<p>Paragraph 2.</p>"
 
 /** Tests for [CustomHtmlContentHandler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CustomHtmlContentHandlerTest {
+  private lateinit var tagHandlersWithListTagSupport: Map<String, CustomTagHandler>
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Mock lateinit var mockImageRetriever: FakeImageRetriever
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
+
+  @Inject
+  lateinit var androidLocaleFactory: AndroidLocaleFactory
+
+  @Inject
+  lateinit var formatterFactory: OppiaBidiFormatter.Factory
+
+  @Mock
+  private var mockImageRetriever: FakeImageRetriever? = null
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val liTaghandler = LiTagHandler(context, displayLocale)
+    tagHandlersWithListTagSupport = mapOf(
+      CUSTOM_LIST_OL_TAG to liTaghandler,
+      CUSTOM_LIST_UL_TAG to liTaghandler,
+      CUSTOM_LIST_LI_TAG to liTaghandler
+    )
+  }
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
@@ -61,7 +120,7 @@ class CustomHtmlContentHandlerTest {
       customTagHandlers = mapOf()
     )
 
-    verify(mockImageRetriever).getDrawable(anyString())
+    verify(mockImageRetriever)!!.getDrawable(anyString())
   }
 
   @Test
@@ -150,19 +209,30 @@ class CustomHtmlContentHandlerTest {
 
   @Test
   fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoBulletSpan() {
-    val htmlString = "<p>Paragraph 1</p><ul><oppia-li>Item</oppia-li></ul><p>Paragraph 2.</p>"
-
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = htmlString,
+        html = UL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          CUSTOM_BULLET_LIST_TAG to BulletTagHandler()
-        )
+        customTagHandlers = tagHandlersWithListTagSupport
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
-    assertThat(parsedHtml.getSpansFromWholeString(BulletSpan::class)).hasLength(1)
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.UlSpan::class))
+      .hasLength(1)
+  }
+
+  @Test
+  fun testCustomListElement_betweenParagraphs_parsesCorrectlyIntoNumberedListSpan() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = OL_TAG_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithListTagSupport
+      )
+
+    assertThat(parsedHtml.toString()).isNotEmpty()
+    assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
+      .hasLength(1)
   }
 
   @Test
@@ -241,6 +311,9 @@ class CustomHtmlContentHandlerTest {
     )
   }
 
+  private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl =
+    DisplayLocaleImpl(context, machineLocale, androidLocaleFactory, formatterFactory)
+
   private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1
@@ -256,19 +329,26 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
       this.attributes = attributes
     }
 
-    override fun handleOpeningTag(output: Editable) {
+    override fun handleOpeningTag(
+      output: Editable,
+      tag: String
+    ) {
       handleOpeningTagCalled = true
       handleOpeningTagCallIndex = methodCallCount++
     }
 
-    override fun handleClosingTag(output: Editable) {
+    override fun handleClosingTag(
+      output: Editable,
+      indentation: Int,
+      tag: String
+    ) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++
     }
@@ -282,10 +362,17 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    DaggerCustomHtmlContentHandlerTest_TestApplicationComponent.builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   /**
@@ -293,4 +380,52 @@ class CustomHtmlContentHandlerTest {
    * [CustomHtmlContentHandler.ImageRetriever].
    */
   interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
+
+  @Module
+  interface TestModule {
+    @Binds
+    fun provideContext(application: Application): Context
+  }
+
+  // TODO(#89): Move this to a common test application component.
+  @Singleton
+  @Component(
+    modules = [
+      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+    ]
+  )
+
+  interface TestApplicationComponent {
+    @Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+      fun build(): TestApplicationComponent
+    }
+
+    fun inject(customHtmlContentHandlerTest: CustomHtmlContentHandlerTest)
+  }
+
+  private companion object {
+
+    private val US_ENGLISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
+      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
+        language = OppiaLanguage.ENGLISH
+        minAndroidSdkVersion = 1
+        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
+          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
+            ietfLanguageTag = "en"
+          }.build()
+        }.build()
+      }.build()
+      regionDefinition = RegionSupportDefinition.newBuilder().apply {
+        region = OppiaRegion.UNITED_STATES
+        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
+          ietfRegionTag = "US"
+        }.build()
+      }.build()
+    }.build()
+  }
 }
