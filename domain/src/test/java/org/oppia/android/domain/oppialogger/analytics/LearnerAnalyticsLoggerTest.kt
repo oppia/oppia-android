@@ -39,7 +39,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -88,7 +88,7 @@ class LearnerAnalyticsLoggerTest {
   @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
 
   @Parameter lateinit var iid: String
   @Parameter lateinit var lid: String

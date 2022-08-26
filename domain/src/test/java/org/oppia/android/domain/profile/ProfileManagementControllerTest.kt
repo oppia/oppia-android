@@ -30,7 +30,7 @@ import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -76,7 +76,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(

@@ -17,7 +17,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -61,7 +61,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Test

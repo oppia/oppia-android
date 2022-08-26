@@ -2,7 +2,7 @@ package org.oppia.android.testing
 
 import dagger.Binds
 import dagger.Module
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 
 /** Provides fake log reporting dependencies. */
@@ -13,5 +13,5 @@ interface TestLogReportingModule {
   fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
   @Binds
-  fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger
+  fun bindFakeEventLogger(fakeEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger
 }

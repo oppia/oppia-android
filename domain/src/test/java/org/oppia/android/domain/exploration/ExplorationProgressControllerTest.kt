@@ -77,7 +77,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -148,7 +148,7 @@ class ExplorationProgressControllerTest {
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()

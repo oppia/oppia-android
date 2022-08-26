@@ -17,7 +17,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -64,7 +64,7 @@ class AnalyticsControllerTest {
   @Inject lateinit var analyticsController: AnalyticsController
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager

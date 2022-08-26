@@ -7,7 +7,7 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
@@ -22,7 +22,7 @@ import javax.inject.Inject
  * provides convenience log methods.
  */
 class AnalyticsController @Inject constructor(
-  private val eventLogger: EventLogger,
+  private val analyticsEventLogger: AnalyticsEventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val consoleLogger: ConsoleLogger,
   private val networkConnectionUtil: NetworkConnectionUtil,
@@ -85,7 +85,7 @@ class AnalyticsController @Inject constructor(
       }
       else -> {
         syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
-        eventLogger.logEvent(eventLog)
+        analyticsEventLogger.logEvent(eventLog)
         syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
       }
     }

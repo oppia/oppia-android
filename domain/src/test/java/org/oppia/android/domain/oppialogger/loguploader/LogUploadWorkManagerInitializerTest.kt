@@ -29,7 +29,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -67,7 +67,7 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger

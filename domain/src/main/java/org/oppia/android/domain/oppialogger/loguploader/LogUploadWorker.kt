@@ -14,7 +14,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -27,7 +27,7 @@ class LogUploadWorker private constructor(
   private val analyticsController: AnalyticsController,
   private val exceptionsController: ExceptionsController,
   private val exceptionLogger: ExceptionLogger,
-  private val eventLogger: EventLogger,
+  private val analyticsEventLogger: AnalyticsEventLogger,
   private val consoleLogger: ConsoleLogger,
   private val syncStatusManager: SyncStatusManager,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -85,7 +85,7 @@ class LogUploadWorker private constructor(
     return try {
       syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
       analyticsController.getEventLogStoreList().forEach { eventLog ->
-        eventLogger.logEvent(eventLog)
+        analyticsEventLogger.logEvent(eventLog)
         analyticsController.removeFirstEventLogFromStore()
       }
       syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
@@ -102,7 +102,7 @@ class LogUploadWorker private constructor(
     private val analyticsController: AnalyticsController,
     private val exceptionsController: ExceptionsController,
     private val exceptionLogger: ExceptionLogger,
-    private val eventLogger: EventLogger,
+    private val analyticsEventLogger: AnalyticsEventLogger,
     private val consoleLogger: ConsoleLogger,
     private val syncStatusManager: SyncStatusManager,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -115,7 +115,7 @@ class LogUploadWorker private constructor(
         analyticsController,
         exceptionsController,
         exceptionLogger,
-        eventLogger,
+        analyticsEventLogger,
         consoleLogger,
         syncStatusManager,
         backgroundDispatcher

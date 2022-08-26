@@ -59,7 +59,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -94,7 +94,7 @@ class HomeActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId: Int = 1
 

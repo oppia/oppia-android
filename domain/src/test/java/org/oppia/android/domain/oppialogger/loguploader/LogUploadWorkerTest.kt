@@ -36,7 +36,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.logging.FakeSyncStatusManager
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -50,7 +50,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
@@ -78,7 +78,7 @@ private const val TEST_TOPIC_ID = "test_topicId"
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var analyticsController: AnalyticsController
@@ -87,7 +87,7 @@ class LogUploadWorkerTest {
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-  @field:[Inject MockEventLogger] lateinit var mockEventLogger: EventLogger
+  @field:[Inject MockAnalyticsEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
 
   private lateinit var context: Context
 
@@ -259,8 +259,8 @@ class LogUploadWorkerTest {
   private fun setUpEventLoggerToFail() {
     // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
     // to remove the default stubbing for the mock so that it can properly trigger a failure.
-    reset(mockEventLogger)
-    `when`(mockEventLogger.logEvent(anyOrNull())).thenThrow(IllegalStateException("Failure."))
+    reset(mockAnalyticsEventLogger)
+    `when`(mockAnalyticsEventLogger.logEvent(anyOrNull())).thenThrow(IllegalStateException("Failure."))
   }
 
   /**
@@ -285,7 +285,7 @@ class LogUploadWorkerTest {
       .inject(this)
   }
 
-  @Qualifier annotation class MockEventLogger
+  @Qualifier annotation class MockAnalyticsEventLogger
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -295,9 +295,9 @@ class LogUploadWorkerTest {
 
     @Provides
     @Singleton
-    @MockEventLogger
-    fun bindMockEventLogger(fakeLogger: FakeEventLogger): EventLogger {
-      return mock(EventLogger::class.java).also {
+    @MockAnalyticsEventLogger
+    fun bindMockEventLogger(fakeLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger {
+      return mock(AnalyticsEventLogger::class.java).also {
         `when`(it.logEvent(anyOrNull())).then { answer ->
           fakeLogger.logEvent(answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java))
           return@then null
@@ -306,7 +306,7 @@ class LogUploadWorkerTest {
     }
 
     @Provides
-    fun bindFakeEventLogger(@MockEventLogger delegate: EventLogger): EventLogger = delegate
+    fun bindFakeEventLogger(@MockAnalyticsEventLogger delegate: AnalyticsEventLogger): AnalyticsEventLogger = delegate
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger

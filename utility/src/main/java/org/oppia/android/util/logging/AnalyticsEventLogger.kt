@@ -3,7 +3,7 @@ package org.oppia.android.util.logging
 import org.oppia.android.app.model.EventLog
 
 /** Logger for uploading analytics events to remote services. */
-interface EventLogger {
+interface AnalyticsEventLogger {
   /**
    * Logs an event to remote services.
    *
