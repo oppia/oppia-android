@@ -99,6 +99,7 @@ kt_android_library(
     manifest = "src/main/AndroidManifest.xml",
     visibility = ["//visibility:public"],
     deps = [
+        ":dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae/api",
         "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
         "//domain/src/main/java/org/oppia/android/domain/classify:answer_classification_controller",
@@ -135,7 +136,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
-        ":dagger",
     ],
 )
 
