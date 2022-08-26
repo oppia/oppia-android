@@ -145,6 +145,19 @@ class ExplorationActivityPresenter @Inject constructor(
         ),
         TAG_EXPLORATION_FRAGMENT
       ).commitNow()
+    } else if (getExplorationFragment() != null && ExplorationActivity.isResumingFromOptions) {
+      ExplorationActivity.isResumingFromOptions = false
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        ExplorationFragment.newInstance(
+          topicId = topicId,
+          internalProfileId = internalProfileId,
+          storyId = storyId,
+          readingTextSize = readingTextSize.name,
+          explorationId = explorationId
+        ),
+        TAG_EXPLORATION_FRAGMENT
+      ).commitNow()
     }
 
     if (getHintsAndSolutionManagerFragment() == null) {
@@ -179,6 +192,23 @@ class ExplorationActivityPresenter @Inject constructor(
         true
       }
       else -> false
+    }
+  }
+
+  fun handleOnActivityResume() {
+    if (getExplorationManagerFragment() != null && ExplorationActivity.isResumingFromOptions) {
+      val explorationManagerFragment = ExplorationManagerFragment()
+      val args = Bundle()
+      args.putInt(
+        ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
+        internalProfileId
+      )
+      explorationManagerFragment.arguments = args
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_fragment_placeholder,
+        explorationManagerFragment,
+        TAG_EXPLORATION_MANAGER_FRAGMENT
+      ).commitNow()
     }
   }
 

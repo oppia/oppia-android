@@ -95,6 +95,7 @@ class ExplorationActivity :
       "ExplorationActivity.backflow_screen"
     const val EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY =
       "ExplorationActivity.is_checkpointing_enabled_key"
+    internal var isResumingFromOptions: Boolean = false
 
     fun createExplorationActivityIntent(
       context: Context,
@@ -134,6 +135,9 @@ class ExplorationActivity :
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    if (item.itemId == R.id.action_preferences) {
+      isResumingFromOptions = true
+    }
     return explorationActivityPresenter.handleOnOptionsItemSelected(item)
   }
 
@@ -201,4 +205,11 @@ class ExplorationActivity :
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+
+  override fun onResume() {
+    super.onResume()
+    if (isResumingFromOptions) {
+      explorationActivityPresenter.handleOnActivityResume()
+    }
+  }
 }
