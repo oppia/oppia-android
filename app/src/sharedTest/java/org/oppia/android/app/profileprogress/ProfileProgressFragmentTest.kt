@@ -35,6 +35,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -668,9 +669,10 @@ class ProfileProgressFragmentTest {
         .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
         .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
+
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
-        hasExtra(
+        hasProtoExtra(
           RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
           recentlyPlayedActivityParams
         )
@@ -817,6 +819,10 @@ class ProfileProgressFragmentTest {
     onView(withText(textInDialog))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
+  }
+
+  private fun <T: MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    return hasExtra(keyName, expectedProto.toByteString())
   }
 
   @Module
