@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.AUDIO_LANGUAGE_ACTIVITY
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** The activity to change the Default Audio language of the app. */
 class AudioLanguageActivity : InjectableAppCompatActivity() {
@@ -43,10 +45,11 @@ class AudioLanguageActivity : InjectableAppCompatActivity() {
       prefKey: String,
       summaryValue: String?
     ): Intent {
-      val intent = Intent(context, AudioLanguageActivity::class.java)
-      intent.putExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
-      intent.putExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
-      return intent
+      return Intent(context, AudioLanguageActivity::class.java).apply {
+        putExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
+        putExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
+        decorateWithScreenName(AUDIO_LANGUAGE_ACTIVITY)
+      }
     }
 
     fun getKeyAudioLanguagePreferenceTitle(): String {

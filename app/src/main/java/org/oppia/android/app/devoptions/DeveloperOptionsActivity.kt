@@ -15,6 +15,8 @@ import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
@@ -79,9 +81,10 @@ class DeveloperOptionsActivity :
   companion object {
     /** Function to create intent for DeveloperOptionsActivity */
     fun createDeveloperOptionsActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, DeveloperOptionsActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      return intent
+      return Intent(context, DeveloperOptionsActivity::class.java).apply {
+        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+        decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
+      }
     }
 
     fun getIntentKey(): String {

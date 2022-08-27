@@ -6,6 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.READING_TEXT_SIZE_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** The activity to change the text size of the reading content in the app. */
 class ReadingTextSizeActivity : InjectableAppCompatActivity() {
@@ -36,10 +38,11 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
       prefKey: String,
       summaryValue: String?
     ): Intent {
-      val intent = Intent(context, ReadingTextSizeActivity::class.java)
-      intent.putExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, prefKey)
-      intent.putExtra(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, summaryValue)
-      return intent
+      return Intent(context, ReadingTextSizeActivity::class.java).apply {
+        putExtra(KEY_READING_TEXT_SIZE_PREFERENCE_TITLE, prefKey)
+        putExtra(KEY_READING_TEXT_SIZE_PREFERENCE_SUMMARY_VALUE, summaryValue)
+        decorateWithScreenName(READING_TEXT_SIZE_ACTIVITY)
+      }
     }
 
     fun getKeyReadingTextSizePreferenceTitle(): String {

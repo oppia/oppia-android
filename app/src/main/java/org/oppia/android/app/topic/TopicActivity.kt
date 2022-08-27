@@ -17,6 +17,8 @@ import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.TOPIC_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
@@ -159,6 +161,7 @@ class TopicActivity :
       return Intent(context, TopicActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
         putExtra(TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        decorateWithScreenName(TOPIC_ACTIVITY)
       }
     }
 

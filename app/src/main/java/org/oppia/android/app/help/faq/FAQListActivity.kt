@@ -7,6 +7,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.FAQ_LIST_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** The FAQ page activity for placement of different FAQs. */
 class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {
@@ -22,7 +24,9 @@ class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener 
 
   companion object {
     fun createFAQListActivityIntent(context: Context): Intent {
-      return Intent(context, FAQListActivity::class.java)
+      return Intent(context, FAQListActivity::class.java).apply {
+        decorateWithScreenName(FAQ_LIST_ACTIVITY)
+      }
     }
   }
 

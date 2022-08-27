@@ -22,6 +22,8 @@ import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -105,14 +107,15 @@ class ExplorationActivity :
       backflowScreen: Int?,
       isCheckpointingEnabled: Boolean
     ): Intent {
-      val intent = Intent(context, ExplorationActivity::class.java)
-      intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
-      intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
-      intent.putExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, isCheckpointingEnabled)
-      return intent
+      return Intent(context, ExplorationActivity::class.java).apply {
+        putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
+        putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+        putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+        putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
+        putExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, isCheckpointingEnabled)
+        decorateWithScreenName(EXPLORATION_ACTIVITY)
+      }
     }
   }
 

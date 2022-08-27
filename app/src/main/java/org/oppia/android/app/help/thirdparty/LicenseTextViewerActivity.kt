@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** The activity that will show the license text of a copyright license. */
 class LicenseTextViewerActivity : InjectableAppCompatActivity() {
@@ -36,6 +38,7 @@ class LicenseTextViewerActivity : InjectableAppCompatActivity() {
       val intent = Intent(context, LicenseTextViewerActivity::class.java)
       intent.putExtra(LICENSE_TEXT_VIEWER_ACTIVITY_DEP_INDEX, dependencyIndex)
       intent.putExtra(LICENSE_TEXT_VIEWER_ACTIVITY_LICENSE_INDEX, licenseIndex)
+      intent.decorateWithScreenName(LICENSE_TEXT_VIEWER_ACTIVITY)
       return intent
     }
   }

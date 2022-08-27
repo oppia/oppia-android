@@ -9,6 +9,8 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.RESUME_LESSON_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity that allows the user to resume a saved exploration. */
 class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationListener {
@@ -91,17 +93,18 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
       backflowScreen: Int?,
       explorationCheckpoint: ExplorationCheckpoint
     ): Intent {
-      val intent = Intent(context, ResumeLessonActivity::class.java)
-      intent.putExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      intent.putExtra(RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.putExtra(RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      intent.putExtra(RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      intent.putExtra(RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
-      intent.putExtra(
-        RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY,
-        explorationCheckpoint.toByteArray()
-      )
-      return intent
+      return Intent(context, ResumeLessonActivity::class.java).apply {
+        putExtra(RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+        putExtra(RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
+        putExtra(RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
+        putExtra(RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
+        putExtra(RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
+        putExtra(
+          RESUME_LESSON_ACTIVITY_EXPLORATION_CHECKPOINT_ARGUMENT_KEY,
+          explorationCheckpoint.toByteArray()
+        )
+        decorateWithScreenName(RESUME_LESSON_ACTIVITY)
+      }
     }
   }
 

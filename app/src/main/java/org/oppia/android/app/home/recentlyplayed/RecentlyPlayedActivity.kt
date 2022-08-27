@@ -13,7 +13,9 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
+import org.oppia.android.app.model.ScreenName.RECENTLY_PLAYED_ACTIVITY
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity for recent stories. */
 class RecentlyPlayedActivity :
@@ -43,6 +45,7 @@ class RecentlyPlayedActivity :
     fun createRecentlyPlayedActivityIntent(context: Context, internalProfileId: Int): Intent {
       return Intent(context, RecentlyPlayedActivity::class.java).apply {
         putExtra(RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY, internalProfileId)
+        decorateWithScreenName(RECENTLY_PLAYED_ACTIVITY)
       }
     }
   }

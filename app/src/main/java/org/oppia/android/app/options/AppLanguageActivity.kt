@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.APP_LANGUAGE_ACTIVITY
+
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** The activity to change the language of the app. */
 class AppLanguageActivity : InjectableAppCompatActivity() {
@@ -43,10 +46,11 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       prefKey: String,
       summaryValue: String?
     ): Intent {
-      val intent = Intent(context, AppLanguageActivity::class.java)
-      intent.putExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
-      intent.putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
-      return intent
+      return Intent(context, AppLanguageActivity::class.java).apply {
+        putExtra(APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
+        putExtra(APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
+        decorateWithScreenName(APP_LANGUAGE_ACTIVITY)
+      }
     }
 
     fun getAppLanguagePreferenceTitleExtraKey(): String {

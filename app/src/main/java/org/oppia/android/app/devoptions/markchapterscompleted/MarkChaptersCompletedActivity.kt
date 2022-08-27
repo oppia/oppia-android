@@ -9,6 +9,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity for Mark Chapters Completed. */
 class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
@@ -40,9 +42,10 @@ class MarkChaptersCompletedActivity : InjectableAppCompatActivity() {
     const val PROFILE_ID_EXTRA_KEY = "MarkChaptersCompletedActivity.profile_id"
 
     fun createMarkChaptersCompletedIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
-      return intent
+      return Intent(context, MarkChaptersCompletedActivity::class.java).apply {
+        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)
+      }
     }
   }
 }

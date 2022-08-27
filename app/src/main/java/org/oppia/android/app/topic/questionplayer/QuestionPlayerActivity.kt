@@ -23,6 +23,8 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.QUESTION_PLAYER_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 private const val QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
   "QuestionPlayerActivity.profile_id"
@@ -93,6 +95,7 @@ class QuestionPlayerActivity :
       return Intent(context, QuestionPlayerActivity::class.java).apply {
         putProtoExtra(QUESTION_PLAYER_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
         putExtra(QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY, skillIdList)
+        decorateWithScreenName(QUESTION_PLAYER_ACTIVITY)
       }
     }
   }

@@ -6,6 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.FAQ_SINGLE_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** The FAQ page activity for placement of single FAQ. */
 class FAQSingleActivity : InjectableAppCompatActivity() {
@@ -34,6 +36,7 @@ class FAQSingleActivity : InjectableAppCompatActivity() {
       val intent = Intent(context, FAQSingleActivity::class.java)
       intent.putExtra(FAQ_SINGLE_ACTIVITY_QUESTION, question)
       intent.putExtra(FAQ_SINGLE_ACTIVITY_ANSWER, answer)
+      intent.decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
       return intent
     }
   }

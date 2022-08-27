@@ -13,7 +13,9 @@ import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
 const val SELECTED_FRAGMENT_SAVED_KEY = "HelpActivity.selected_fragment"
@@ -82,6 +84,7 @@ class HelpActivity :
       val intent = Intent(context, HelpActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      intent.decorateWithScreenName(HELP_ACTIVITY)
       return intent
     }
   }

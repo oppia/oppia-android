@@ -9,7 +9,9 @@ import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
+import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
 import javax.inject.Inject
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
@@ -62,9 +64,10 @@ class ProfileProgressActivity :
     const val PROFILE_ID_EXTRA_KEY = "ProfileProgressActivity.profile_id"
 
     fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, ProfileProgressActivity::class.java)
-      intent.putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
-      return intent
+      return Intent(context, ProfileProgressActivity::class.java).apply {
+        putExtra(PROFILE_ID_EXTRA_KEY, internalProfileId)
+        decorateWithScreenName(PROFILE_PROGRESS_ACTIVITY)
+      }
     }
   }
 

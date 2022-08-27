@@ -8,6 +8,8 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.VIEW_EVENT_LOGS_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity for View Event Logs. */
 class ViewEventLogsActivity : InjectableAppCompatActivity() {
@@ -26,7 +28,9 @@ class ViewEventLogsActivity : InjectableAppCompatActivity() {
 
   companion object {
     fun createViewEventLogsActivityIntent(context: Context): Intent {
-      return Intent(context, ViewEventLogsActivity::class.java)
+      return Intent(context, ViewEventLogsActivity::class.java).apply {
+        decorateWithScreenName(VIEW_EVENT_LOGS_ACTIVITY)
+      }
     }
   }
 }

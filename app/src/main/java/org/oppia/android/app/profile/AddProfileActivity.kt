@@ -18,10 +18,10 @@ class AddProfileActivity : InjectableAppCompatActivity() {
 
   companion object {
     fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
-      val intent = Intent(context, AddProfileActivity::class.java)
-      intent.putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
-      intent.decorateWithScreenName(ADD_PROFILE_ACTIVITY)
-      return intent
+      return Intent(context, AddProfileActivity::class.java).apply {
+        putExtra(ADD_PROFILE_COLOR_RGB_EXTRA_KEY, colorRgb)
+        decorateWithScreenName(ADD_PROFILE_ACTIVITY)
+      }
     }
   }
 

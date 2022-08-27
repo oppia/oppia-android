@@ -6,6 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName.ONGOING_TOPIC_LIST_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity for ongoing topics. */
 class OngoingTopicListActivity : InjectableAppCompatActivity() {
@@ -28,9 +30,10 @@ class OngoingTopicListActivity : InjectableAppCompatActivity() {
 
     /** Returns a new [Intent] to route to [OngoingTopicListActivity] for a specified profile ID. */
     fun createOngoingTopicListActivityIntent(context: Context, internalProfileId: Int): Intent {
-      val intent = Intent(context, OngoingTopicListActivity::class.java)
-      intent.putExtra(ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
-      return intent
+      return Intent(context, OngoingTopicListActivity::class.java).apply {
+        putExtra(ONGOING_TOPIC_LIST_ACTIVITY_PROFILE_ID_KEY, internalProfileId)
+        decorateWithScreenName(ONGOING_TOPIC_LIST_ACTIVITY)
+      }
     }
   }
 }

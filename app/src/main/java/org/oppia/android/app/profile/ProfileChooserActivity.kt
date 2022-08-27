@@ -16,10 +16,10 @@ class ProfileChooserActivity : InjectableAppCompatActivity() {
 
   companion object {
     fun createProfileChooserActivity(context: Context): Intent {
-      val intent = Intent(context, ProfileChooserActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      intent.decorateWithScreenName(PROFILE_CHOOSER_ACTIVITY)
-      return intent
+      return Intent(context, ProfileChooserActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        decorateWithScreenName(PROFILE_CHOOSER_ACTIVITY)
+      }
     }
   }
 
