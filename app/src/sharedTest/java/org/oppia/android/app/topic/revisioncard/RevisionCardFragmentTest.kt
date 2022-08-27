@@ -45,6 +45,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.HelpActivity
@@ -365,7 +366,7 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withText(containsString("Learn more")))
+        matches(withText(containsString("Description of subtopic is here.")))
       )
     }
   }
@@ -386,7 +387,7 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withText(containsString("Learn more")))
+        matches(withText(containsString("Description of subtopic is here.")))
       )
     }
   }
@@ -403,7 +404,9 @@ class RevisionCardFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      onView(withId(R.id.revision_card_explanation_text)).perform(
+        openClickableSpan("This concept card demonstrates overall concept card functionality.")
+      )
       testCoroutineDispatchers.runCurrent()
 
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -427,7 +430,9 @@ class RevisionCardFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.revision_card_explanation_text)).perform(openClickableSpan("Learn more"))
+      onView(withId(R.id.revision_card_explanation_text)).perform(
+        openClickableSpan("This concept card demonstrates overall concept card functionality.")
+      )
       testCoroutineDispatchers.runCurrent()
 
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -597,7 +602,7 @@ class RevisionCardFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, TestingBuildFlavorModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

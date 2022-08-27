@@ -15,101 +15,122 @@
       type="org.oppia.android.app.hintsandsolution.HintsViewModel" />
   </data>
 
-  <LinearLayout
-    android:id="@+id/hint_summary_container"
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="32dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+      android:id="@+id/hint_summary_container"
+      android:layout_width="@dimen/hints_and_solution_summary_card_width"
       android:layout_height="wrap_content"
-      android:layout_marginStart="28dp"
-      android:layout_marginEnd="28dp"
-      android:layout_marginBottom="20dp">
-
-      <TextView
-        android:id="@+id/hint_title"
-        style="@style/TextViewStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <Button
-        android:id="@+id/reveal_hint_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/reveal_hint_button_blue_background"
-        android:minWidth="160dp"
-        android:minHeight="48dp"
-        android:text="@string/reveal_hint"
-        android:textColor="@color/color_def_white"
-        android:textSize="14sp"
-        android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hint_title" />
-
-      <FrameLayout
-        android:id="@+id/expand_list_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.966"
-        app:layout_constraintStart_toEndOf="@+id/hint_title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <ImageView
-          android:id="@+id/hint_list_drop_down_icon"
-          android:layout_width="48dp"
-          android:layout_height="48dp"
-          android:layout_gravity="center_vertical"
-          android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
-          android:padding="8dp"
-          android:tint="@color/component_color_hints_and_solutions_drawable_tint_color"
-          app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
-          app:isRotationAnimationClockwise="@{isListExpanded}"
-          app:rotationAnimationAngle="@{180f}" />
-      </FrameLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-      android:id="@+id/hint_list_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="40dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginEnd="40dp"
-      android:layout_marginBottom="32dp"
+      android:layout_marginStart="@dimen/hints_and_solution_summary_card_margin_start"
+      android:layout_marginTop="12dp"
+      android:layout_marginEnd="@dimen/hints_and_solution_summary_card_margin_end"
+      android:layout_marginBottom="12dp"
       android:orientation="vertical"
-      android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+      app:cardBackgroundColor="@color/component_color_hints_and_solution_summary_card_background_color"
+      app:cardCornerRadius="4dp"
+      app:cardElevation="4dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:strokeColor="@color/component_color_hints_and_solution_summary_card_border_color"
+      app:strokeWidth="2dp">
 
-      <TextView
-        android:id="@+id/hints_and_solution_summary"
-        style="@style/TextViewStart"
-        android:layout_width="wrap_content"
+      <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-        android:textSize="16sp" />
-    </LinearLayout>
-  </LinearLayout>
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/hint_title"
+            style="@style/TextViewStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <Button
+            android:id="@+id/reveal_hint_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/reveal_hint_button_blue_background"
+            android:minWidth="110dp"
+            android:minHeight="48dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            android:text="@string/reveal_hint"
+            android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
+            android:textSize="14sp"
+            android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/hint_title"
+            app:layout_constraintTop_toTopOf="parent" />
+
+          <ImageView
+            android:id="@+id/expand_list_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:padding="8dp"
+            android:visibility="@{viewModel.isHintRevealed? View.VISIBLE : View.GONE}"
+            app:isRotationAnimationClockwise="@{isListExpanded}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/hint_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:rotationAnimationAngle="@{180f}"
+            app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+            app:tint="@color/component_color_hints_and_solutions_drawable_tint_color" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@color/component_color_hints_and_solution_summary_divider_color"
+          android:visibility="@{isListExpanded? View.VISIBLE : View.GONE, default=gone}" />
+
+        <TextView
+          android:id="@+id/hints_and_solution_summary"
+          style="@style/TextViewStart"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/component_color_hints_and_solution_summary_bottom_background_color"
+          android:fontFamily="sans-serif"
+          android:paddingStart="12dp"
+          android:paddingTop="16dp"
+          android:paddingEnd="12dp"
+          android:paddingBottom="16dp"
+          android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
+          android:textSize="16sp"
+          android:visibility="@{isListExpanded? View.VISIBLE : View.GONE, default=gone}" />
+      </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

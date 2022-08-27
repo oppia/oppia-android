@@ -30,6 +30,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.ViewBindingAdapters.setRotationAnimation
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
@@ -231,7 +232,8 @@ class ViewBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
+      TestingBuildFlavorModule::class
     ]
   )
   /** Create a TestApplicationComponent. */

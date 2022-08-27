@@ -17,8 +17,8 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
-import org.oppia.android.databinding.HintsDividerBinding
 import org.oppia.android.databinding.HintsSummaryBinding
+import org.oppia.android.databinding.ReturnToLessonButtonItemBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
@@ -39,8 +39,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
-  private var currentExpandedHintListIndex: Int? = null
   private var index: Int? = null
+  private var expandedItemsList = ArrayList<Int>()
   private var isHintRevealed: Boolean? = null
   private var solutionIndex: Int? = null
   private var isSolutionRevealed: Boolean? = null
@@ -67,16 +67,16 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     helpIndex: HelpIndex,
     writtenTranslationContext: WrittenTranslationContext,
     id: String?,
-    currentExpandedHintListIndex: Int?,
+    expandedItemsList: ArrayList<Int>?,
     expandedHintListIndexListener: ExpandedHintListIndexListener,
     index: Int?,
     isHintRevealed: Boolean?,
     solutionIndex: Int?,
     isSolutionRevealed: Boolean?
-  ): View? {
+  ): View {
     binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    this.currentExpandedHintListIndex = currentExpandedHintListIndex
+    this.expandedItemsList = expandedItemsList ?: ArrayList()
     this.expandedHintListIndexListener = expandedHintListIndexListener
     this.index = index
     this.isHintRevealed = isHintRevealed
@@ -97,13 +97,9 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.state = state
     this.helpIndex = helpIndex
     this.writtenTranslationContext = writtenTranslationContext
-    // The newAvailableHintIndex received here is coming from state player but in this
-    // implementation hints/solutions are shown on every even index and on every odd index we show a
-    // divider. The relative index therefore needs to be doubled to account for the divider.
+
     val newAvailableHintIndex = computeNewAvailableHintIndex(helpIndex)
-    viewModel.newAvailableHintIndex.set(
-      newAvailableHintIndex * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-    )
+    viewModel.newAvailableHintIndex.set(newAvailableHintIndex)
     viewModel.allHintsExhausted.set(computeWhetherAllHintsAreExhausted(helpIndex))
     viewModel.explorationId.set(id)
 
@@ -163,7 +159,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private enum class ViewType {
     VIEW_TYPE_HINT_ITEM,
     VIEW_TYPE_SOLUTION_ITEM,
-    VIEW_TYPE_HINTS_DIVIDER_ITEM
+    VIEW_TYPE_RETURN_TO_LESSON_ITEM
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HintsAndSolutionItemViewModel> {
@@ -172,7 +168,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         when (viewModel) {
           is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
           is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
-          is HintsDividerViewModel -> ViewType.VIEW_TYPE_HINTS_DIVIDER_ITEM
+          is ReturnToLessonViewModel -> ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM
           else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
         }
       }
@@ -188,16 +184,11 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         setViewModel = this::bindSolutionViewModel,
         transformViewModel = { it as SolutionViewModel }
       )
-      .registerViewBinder(
-        viewType = ViewType.VIEW_TYPE_HINTS_DIVIDER_ITEM,
-        inflateView = { parent ->
-          HintsDividerBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          ).root
-        },
-        bindView = { _, _ -> }
+      .registerViewDataBinder(
+        viewType = ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM,
+        inflateDataBinding = ReturnToLessonButtonItemBinding::inflate,
+        setViewModel = this::bindReturnToLessonViewModel,
+        transformViewModel = { it as ReturnToLessonViewModel }
       )
       .build()
   }
@@ -210,11 +201,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     val position: Int = itemList.indexOf(hintsViewModel)
 
-    var isHintListVisible = false
-    currentExpandedHintListIndex?.let {
-      isHintListVisible = it == position
-    }
-    binding.isListExpanded = isHintListVisible
+    binding.isListExpanded = expandedItemsList.contains(position)
 
     index?.let { index ->
       isHintRevealed?.let { isHintRevealed ->
@@ -241,48 +228,26 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       binding.revealHintButton.setOnClickListener {
         hintsViewModel.isHintRevealed.set(true)
         expandedHintListIndexListener.onRevealHintClicked(position, /* isHintRevealed= */ true)
-        (fragment.requireActivity() as? RevealHintListener)?.revealHint(
-          hintIndex = position / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-        )
-        val previousIndex: Int? = currentExpandedHintListIndex
-        currentExpandedHintListIndex =
-          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-        if (previousIndex != null && previousIndex != currentExpandedHintListIndex) {
-          bindingAdapter.notifyItemChanged(previousIndex)
-        }
+        (fragment.requireActivity() as? RevealHintListener)?.revealHint(hintIndex = position)
+        expandOrCollapseItem(position)
       }
     }
 
     binding.root.setOnClickListener {
       if (hintsViewModel.isHintRevealed.get()!!) {
-        val previousIndex: Int? = currentExpandedHintListIndex
-        currentExpandedHintListIndex =
-          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-        if (previousIndex != null &&
-          currentExpandedHintListIndex != null &&
-          previousIndex == currentExpandedHintListIndex
-        ) {
-          bindingAdapter.notifyItemChanged(currentExpandedHintListIndex!!)
-        } else {
-          previousIndex?.let {
-            bindingAdapter.notifyItemChanged(it)
-          }
-          currentExpandedHintListIndex?.let {
-            bindingAdapter.notifyItemChanged(it)
-          }
-        }
+        expandOrCollapseItem(position)
       }
     }
+  }
+
+  private fun expandOrCollapseItem(position: Int) {
+    if (expandedItemsList.contains(position)) {
+      expandedItemsList.remove(position)
+    } else {
+      expandedItemsList.add(position)
+    }
+    bindingAdapter.notifyItemChanged(position)
+    expandedHintListIndexListener.onExpandListIconClicked(expandedItemsList)
   }
 
   private fun bindSolutionViewModel(
@@ -292,12 +257,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.viewModel = solutionViewModel
 
     val position: Int = itemList.indexOf(solutionViewModel)
-
-    var isHintListVisible = false
-    currentExpandedHintListIndex?.let { currentExpandedHintListIndex ->
-      isHintListVisible = currentExpandedHintListIndex == position
-    }
-    binding.isListExpanded = isHintListVisible
+    binding.isListExpanded = expandedItemsList.contains(position)
 
     solutionIndex?.let { solutionIndex ->
       isSolutionRevealed?.let { isSolutionRevealed ->
@@ -328,46 +288,36 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
     if (solutionViewModel.solutionCanBeRevealed.get()!!) {
       binding.root.visibility = View.VISIBLE
-      binding.revealSolutionButton.setOnClickListener {
+      binding.showSolutionButton.setOnClickListener {
         showRevealSolutionDialogFragment()
       }
     }
 
     binding.root.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()!!) {
-        val previousIndex: Int? = currentExpandedHintListIndex
-        currentExpandedHintListIndex =
-          if (currentExpandedHintListIndex != null && currentExpandedHintListIndex == position) {
-            null
-          } else {
-            position
-          }
-        expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-        if (previousIndex != null &&
-          currentExpandedHintListIndex != null &&
-          previousIndex == currentExpandedHintListIndex
-        ) {
-          bindingAdapter.notifyItemChanged(currentExpandedHintListIndex!!)
-        } else {
-          previousIndex?.let {
-            bindingAdapter.notifyItemChanged(it)
-          }
-          currentExpandedHintListIndex?.let {
-            bindingAdapter.notifyItemChanged(it)
-          }
-        }
+        expandOrCollapseItem(position)
       }
     }
   }
 
+  private fun bindReturnToLessonViewModel(
+    binding: ReturnToLessonButtonItemBinding,
+    returnToLessonViewModel: ReturnToLessonViewModel
+  ) {
+    binding.buttonViewModel = returnToLessonViewModel
+
+    binding.returnToLessonButton.setOnClickListener {
+      (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()
+    }
+  }
+
   private fun handleAllHintsExhausted(allHintsExhausted: Boolean) {
-    if (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] is SolutionViewModel) {
-      val solutionViewModel =
-        itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as SolutionViewModel
+    // The last item of the list is ReturnToLessonViewModel and therefore second last item is
+    // SolutionViewModel as a result subtracting 2 from itemList size.
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.solutionCanBeRevealed.set(allHintsExhausted)
-      bindingAdapter.notifyItemChanged(
-        itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-      )
+      bindingAdapter.notifyItemChanged(itemList.size - 2)
     }
   }
 
@@ -386,28 +336,15 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   fun handleRevealSolution() {
-    if (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] is SolutionViewModel) {
-      val solutionViewModel =
-        itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as SolutionViewModel
+    if (itemList[itemList.size - 2] is SolutionViewModel) {
+      val solutionViewModel = itemList[itemList.size - 2] as SolutionViewModel
       solutionViewModel.isSolutionRevealed.set(true)
       expandedHintListIndexListener.onRevealSolutionClicked(
-        /* solutionIndex= */ itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER,
+        /* solutionIndex= */ itemList.size - 2,
         /* isSolutionRevealed= */ true
       )
       (fragment.requireActivity() as? RevealSolutionInterface)?.revealSolution()
-      val previousIndex: Int? = currentExpandedHintListIndex
-      currentExpandedHintListIndex =
-        if (currentExpandedHintListIndex != null &&
-          currentExpandedHintListIndex == itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-        ) {
-          null
-        } else {
-          itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-        }
-      expandedHintListIndexListener.onExpandListIconClicked(currentExpandedHintListIndex)
-      if (previousIndex != null && previousIndex != currentExpandedHintListIndex) {
-        bindingAdapter.notifyItemChanged(previousIndex)
-      }
+      expandOrCollapseItem(itemList.size - 2)
     }
   }
 
@@ -417,12 +354,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       hintsViewModel.hintCanBeRevealed.set(true)
       bindingAdapter.notifyItemChanged(hintIndex)
     }
-  }
-
-  fun onExpandClicked(index: Int?) {
-    currentExpandedHintListIndex = index
-    if (index != null)
-      bindingAdapter.notifyItemChanged(index)
   }
 
   fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {

@@ -40,6 +40,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="@+id/logo_top_margin" />
     <TextView
+      android:id="@+id/build_flavor_label"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@{isOnAlphaFlavor ? @string/splash_screen_alpha_label : isOnBetaFlavor ? @string/splash_screen_beta_label : @string/splash_screen_developer_label}"

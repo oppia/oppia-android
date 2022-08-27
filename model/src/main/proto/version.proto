@@ -11,15 +11,22 @@ enum BuildFlavor {
   // reasonable default).
   BUILD_FLAVOR_UNSPECIFIED = 0;
 
+  // Corresponds to a testing environment-specific build of the app. Note that this is different
+  // than a 'test version' of the app for the purpose of quality assurance testing. The QA team will
+  // always be testing one of the user-facing flavors of the app (generally alpha, beta, and GA, but
+  // potentially the developer flavor on occasion). This flavor is never expected to be used for a
+  // version of the app used directly by a human.
+  TESTING = 1;
+
   // Corresponds to a developer-only build of the app.
-  DEVELOPER = 1;
+  DEVELOPER = 2;
 
   // Corresponds to an alpha (closed testing track) pre-release build of the app.
-  ALPHA = 2;
+  ALPHA = 3;
 
   // Corresponds to a beta (open testing track) pre-release/early access build of the app.
-  BETA = 3;
+  BETA = 4;
 
   // Corresponds to a generally available production build of the app.
-  GENERAL_AVAILABILITY = 4;
+  GENERAL_AVAILABILITY = 5;
 }

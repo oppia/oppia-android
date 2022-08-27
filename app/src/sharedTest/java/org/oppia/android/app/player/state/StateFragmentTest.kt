@@ -70,6 +70,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
@@ -1581,7 +1582,8 @@ class StateFragmentTest {
       // Verify that fraction input uses the standard text software keyboard.
       scenario.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
-        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(textView.inputType)
+          .isEqualTo(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
       }
     }
   }
@@ -1602,7 +1604,8 @@ class StateFragmentTest {
       // Verify that ratio input uses the standard text software keyboard.
       scenario.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
-        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(textView.inputType)
+          .isEqualTo(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
       }
     }
   }
@@ -4316,7 +4319,7 @@ class StateFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, TestingBuildFlavorModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

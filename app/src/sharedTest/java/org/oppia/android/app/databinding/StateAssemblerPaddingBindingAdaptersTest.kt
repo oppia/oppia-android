@@ -30,6 +30,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setExplorationSplitViewPadding
 import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setExplorationViewPadding
 import org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdapters.setQuestionSplitViewPadding
@@ -497,7 +498,8 @@ class StateAssemblerPaddingBindingAdaptersTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
+      TestingBuildFlavorModule::class
     ]
   )
 

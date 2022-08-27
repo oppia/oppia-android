@@ -97,12 +97,9 @@ class SplashActivityPresenter @Inject constructor(
               // Ensure that pending states last no longer than 5 seconds. In cases where the app
               // enters a bad state, this ensures that the user doesn't become stuck on the splash
               // screen.
-              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 5000).observe(
-                activity,
-                {
-                  processInitState(SplashInitState.computeDefault(localeController))
-                }
-              )
+              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 5000).observe(activity) {
+                processInitState(SplashInitState.computeDefault(localeController))
+              }
             }
             is AsyncResult.Failure -> {
               oppiaLogger.e(
@@ -130,36 +127,36 @@ class SplashActivityPresenter @Inject constructor(
     // Second, prepare to route the user to the correct destination.
     startupMode = initState.appStartupState.startupMode
 
-    // Third, show any dismissible notices.
-    when (initState.appStartupState.buildFlavorNoticeMode) {
-      BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED, BuildFlavorNoticeMode.NO_NOTICE,
-      BuildFlavorNoticeMode.UNRECOGNIZED, null -> {
-        // No notice should be shown. However, when a pre-release version of the app is active that
-        // changes the splash screen have it wait a bit longer so that the build flavor can be
-        // clearly seen. The developer build isn't part of the wait to ensure fast startup times
-        // (for development purposes).
-        when (currentBuildFlavor) {
-          BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
-          BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY -> processStartupMode()
-          BuildFlavor.ALPHA, BuildFlavor.BETA -> {
-            lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(
-              activity,
-              {
+    // Third, show any dismissible notices (if the app isn't deprecated).
+    if (startupMode != StartupMode.APP_IS_DEPRECATED) {
+      when (initState.appStartupState.buildFlavorNoticeMode) {
+        BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED, BuildFlavorNoticeMode.NO_NOTICE,
+        BuildFlavorNoticeMode.UNRECOGNIZED, null -> {
+          // No notice should be shown. However, when a pre-release version of the app is active
+          // that changes the splash screen have it wait a bit longer so that the build flavor can
+          // be clearly seen. The developer build isn't part of the wait to ensure fast startup
+          // times (for development purposes).
+          when (currentBuildFlavor) {
+            BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
+            BuildFlavor.TESTING, BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY ->
+              processStartupMode()
+            BuildFlavor.ALPHA, BuildFlavor.BETA -> {
+              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(activity) {
                 processStartupMode()
               }
-            )
+            }
           }
         }
+        BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
+          showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
+        BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
+          showDialog(
+            GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+            GeneralAvailabilityUpgradeNoticeDialogFragment::newInstance
+          )
+        }
       }
-      BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
-        showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
-      BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
-        showDialog(
-          GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-          GeneralAvailabilityUpgradeNoticeDialogFragment::newInstance
-        )
-      }
-    }
+    } else processStartupMode()
   }
 
   private fun processStartupMode() {

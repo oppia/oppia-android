@@ -22,7 +22,7 @@ class BetaNoticeDialogFragmentPresenter @Inject constructor(
     return AlertDialog.Builder(activity)
       .setTitle(R.string.beta_notice_dialog_title)
       .setView(contentView)
-      .setNegativeButton(R.string.beta_notice_dialog_close_button_text) { _, _ ->
+      .setPositiveButton(R.string.beta_notice_dialog_close_button_text) { _, _ ->
         betaNoticeClosedListener.onBetaNoticeOkayButtonClicked(preferenceCheckbox.isChecked)
       }
       .setCancelable(false)

@@ -10,7 +10,6 @@ kt_android_library(
     name = "alpha_kenya_application",
     srcs = [
         "AlphaKenyaApplicationComponent.kt",
-        "AlphaKenyaBuildFlavorModule.kt",
         "AlphaKenyaOppiaApplication.kt",
     ],
     visibility = ["//:oppia_binary_visibility"],

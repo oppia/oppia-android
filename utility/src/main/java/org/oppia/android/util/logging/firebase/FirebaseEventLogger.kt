@@ -49,9 +49,7 @@ class FirebaseEventLogger private constructor(
     private val networkConnectionUtil: NetworkConnectionUtil,
     private val eventBundleCreator: EventBundleCreator
   ) {
-    private val firebaseAnalytics by lazy {
-      FirebaseAnalytics.getInstance(context.applicationContext)
-    }
+    private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(context) }
 
     /**
      * Returns a new [FirebaseEventLogger] for the current application context.
