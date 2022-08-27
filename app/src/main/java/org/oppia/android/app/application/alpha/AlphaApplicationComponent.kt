@@ -58,7 +58,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
-import org.oppia.android.app.activity.route.ActivityRouterModule
 
 /**
  * Root Dagger component for alpha versions of the application.
@@ -84,7 +83,7 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
-    LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
+    LocaleProdModule::class, ActivityRecreatorProdModule::class,
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
