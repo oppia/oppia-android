@@ -6,7 +6,7 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 import org.oppia.android.app.model.DestinationScreen
 
-/** Module to bind [DestinationScreen]. */
+/** RouterModule to bind [DestinationScreen]. */
 @Module
 class ActivityRouterModule {
   @Provides

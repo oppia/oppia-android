@@ -734,7 +734,6 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/activity:ActivityComponentImpl.kt",
         "//app/src/main/java/org/oppia/android/app/activity:ActivityIntentFactoriesModule.kt",
         "//app/src/main/java/org/oppia/android/app/activity:ActivityModule.kt",
-        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router_module",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentBuilderModule.kt",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentImpl.kt",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentModule.kt",

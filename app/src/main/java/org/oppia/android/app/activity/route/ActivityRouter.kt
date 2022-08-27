@@ -8,21 +8,20 @@ import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
 /**
- * A central router that can navigate the user to a specific activity based on a provided
- * [DestinationScreen].
+ * ActivityRouter used to route to given [DestinationScreen].
  */
 class ActivityRouter @Inject constructor(
   private val activity: AppCompatActivity,
   private val consoleLogger: ConsoleLogger
 ) {
 
-  /** Opens the activity corresponding to the specified [destinationScreen]. */
+  /** Checks the value of [DestinationScreen] and routes to different activities accordingly. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
-    when (destinationScreen.destinationScreenCase!!) {
+    when (destinationScreen.destinationScreenCase) {
       DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
         openRecentlyPlayedActivity(destinationScreen.recentlyPlayedActivityParams)
       }
-      DestinationScreen.DestinationScreenCase.DESTINATIONSCREEN_NOT_SET -> {
+      else -> {
         consoleLogger.w("ActivityRouter", "Destination screen case is not identified.")
       }
     }
