@@ -3,6 +3,15 @@ package org.oppia.android.domain.spotlight
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.Spotlight.FeatureCase.FEATURE_NOT_SET
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
+import org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
+import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
+import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
 import org.oppia.android.app.model.SpotlightStateDatabase
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -28,14 +37,13 @@ class SpotlightStateController @Inject constructor(
   private val dataProviders: DataProviders,
 ) {
   // thrown when spotlight feature is not set while retrieving or marking spotlight view states
-  class SpotlightFeatureNotFoundException(message: String) : Exception(message)
+  class SpotlightFeatureNotFoundException(message: String) : IllegalArgumentException(message)
 
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<SpotlightStateDatabase>>()
 
   /**
-   * Marks the [SpotlightViewState] of a spotlit feature for a given profile as seen
-   *
+   * Marks the [SpotlightViewState] of a spotlit feature for a given profile as seen.
    * @param profileId the ID of the profile viewing the spotlight
    * @param feature the spotlight feature who's view state is to be recorded
    * @throws SpotlightFeatureNotFoundException when feature is not set correctly
@@ -58,10 +66,8 @@ class SpotlightStateController @Inject constructor(
 
   /**
    * Retrieves the current [SpotlightViewState] of a spotlit feature for a given profile.
-   *
    * @param profileId the ID of the profile that will be viewing the spotlight
    * @param feature the spotlight feature to be spotlit
-   *
    * @return DataProvider containing the current [SpotlightViewState] corresponding to the specified [feature]
    */
   fun retrieveSpotlightViewState(
@@ -72,33 +78,16 @@ class SpotlightStateController @Inject constructor(
       .transformAsync(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
       ) {
-
         val viewState = when (feature) {
-          Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON -> {
-            it.onboardingNextButton
-          }
-          Spotlight.FeatureCase.TOPIC_LESSON_TAB -> {
-            it.topicLessonTab
-          }
-          Spotlight.FeatureCase.TOPIC_REVISION_TAB -> {
-            it.topicRevisionTab
-          }
-          Spotlight.FeatureCase.FIRST_CHAPTER -> {
-            it.firstChapter
-          }
-          Spotlight.FeatureCase.PROMOTED_STORIES -> {
-            it.promotedStories
-          }
-          Spotlight.FeatureCase.LESSONS_BACK_BUTTON -> {
-            it.lessonsBackButton
-          }
-          Spotlight.FeatureCase.VOICEOVER_PLAY_ICON -> {
-            it.voiceoverPlayIcon
-          }
-          Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON -> {
-            it.voiceoverLanguageIcon
-          }
-          Spotlight.FeatureCase.FEATURE_NOT_SET -> {
+          ONBOARDING_NEXT_BUTTON -> it.onboardingNextButton
+          TOPIC_LESSON_TAB -> it.topicLessonTab
+          TOPIC_REVISION_TAB -> it.topicRevisionTab
+          FIRST_CHAPTER -> it.firstChapter
+          PROMOTED_STORIES -> it.promotedStories
+          LESSONS_BACK_BUTTON -> it.lessonsBackButton
+          VOICEOVER_PLAY_ICON -> it.voiceoverPlayIcon
+          VOICEOVER_LANGUAGE_ICON -> it.voiceoverLanguageIcon
+          FEATURE_NOT_SET -> {
             return@transformAsync AsyncResult.Failure(
               SpotlightFeatureNotFoundException("Spotlight feature was not found")
             )
@@ -113,42 +102,24 @@ class SpotlightStateController @Inject constructor(
     feature: Spotlight.FeatureCase,
     viewState: SpotlightViewState
   ): Deferred<Any> {
-    return retrieveCacheStore(profileId).storeDataWithCustomChannelAsync(
+    return retrieveCacheStore(profileId).storeDataAsync(
       updateInMemoryCache = true
-    ) {
-      val spotlightStateDatabaseBuilder = it.toBuilder()
-
-      val spotlight = when (feature) {
-        Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON -> {
-          spotlightStateDatabaseBuilder.setOnboardingNextButton(viewState)
+    ) { spotlightStateDatabase ->
+      spotlightStateDatabase.toBuilder().run {
+        when (feature) {
+          ONBOARDING_NEXT_BUTTON -> this.setOnboardingNextButton(viewState)
+          TOPIC_LESSON_TAB -> this.setTopicLessonTab(viewState)
+          TOPIC_REVISION_TAB -> this.setTopicRevisionTab(viewState)
+          FIRST_CHAPTER -> this.setFirstChapter(viewState)
+          PROMOTED_STORIES -> this.setPromotedStories(viewState)
+          LESSONS_BACK_BUTTON -> this.setLessonsBackButton(viewState)
+          VOICEOVER_PLAY_ICON -> this.setVoiceoverPlayIcon(viewState)
+          VOICEOVER_LANGUAGE_ICON -> this.setVoiceoverLanguageIcon(viewState)
+          FEATURE_NOT_SET -> {
+            throw SpotlightFeatureNotFoundException("Spotlight feature was not found")
+          }
         }
-        Spotlight.FeatureCase.TOPIC_LESSON_TAB -> {
-          spotlightStateDatabaseBuilder.setTopicLessonTab(viewState)
-        }
-        Spotlight.FeatureCase.TOPIC_REVISION_TAB -> {
-          spotlightStateDatabaseBuilder.setTopicRevisionTab(viewState)
-        }
-        Spotlight.FeatureCase.FIRST_CHAPTER -> {
-          spotlightStateDatabaseBuilder.setFirstChapter(viewState)
-        }
-        Spotlight.FeatureCase.PROMOTED_STORIES -> {
-          spotlightStateDatabaseBuilder.setPromotedStories(viewState)
-        }
-        Spotlight.FeatureCase.LESSONS_BACK_BUTTON -> {
-          spotlightStateDatabaseBuilder.setLessonsBackButton(viewState)
-        }
-        Spotlight.FeatureCase.VOICEOVER_PLAY_ICON -> {
-          spotlightStateDatabaseBuilder.setVoiceoverPlayIcon(viewState)
-        }
-        Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON -> {
-          spotlightStateDatabaseBuilder.setVoiceoverLanguageIcon(viewState)
-        }
-        Spotlight.FeatureCase.FEATURE_NOT_SET -> {
-          throw SpotlightFeatureNotFoundException("Spotlight feature was not found")
-        }
-      }
-      val spotlightStateDatabase = spotlightStateDatabaseBuilder.build()
-      Pair(spotlightStateDatabase, spotlight)
+      }.build()
     }
   }
 
@@ -158,12 +129,13 @@ class SpotlightStateController @Inject constructor(
     val cacheStore = if (profileId in cacheStoreMap) {
       cacheStoreMap[profileId]!!
     } else {
-      val cacheStore =
+      val cacheStore = cacheStoreMap.getOrPut(profileId) {
         cacheStoreFactory.createPerProfile(
           CACHE_NAME,
           SpotlightStateDatabase.getDefaultInstance(),
           profileId
         )
+      }
       cacheStoreMap[profileId] = cacheStore
       cacheStore
     }
