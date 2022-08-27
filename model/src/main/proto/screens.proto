@@ -146,6 +146,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when the force network type activity is visible to the user.
   FORCE_NETWORK_TYPE_ACTIVITY = 45;
+
+  // Screen name value for the scenario when the admin pin activity is visible to the user.
+  ADMIN_PIN_ACTIVITY = 46;
 }
 
 // Defines the current visible ui screen of the application.
