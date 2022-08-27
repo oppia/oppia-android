@@ -19,19 +19,32 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.TestMessage
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_ALWAYS
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
+import org.oppia.android.data.persistence.PersistentCacheStoreTest.SubscriptionCallback.Companion.toAsyncChange
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.data.ObserveAsyncChange
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -43,19 +56,6 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.full.staticFunctions
-import org.junit.Rule
-import org.mockito.Mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
-import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
-import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_ALWAYS
-import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
-import org.oppia.android.data.persistence.PersistentCacheStoreTest.SubscriptionCallback.Companion.toAsyncChange
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
-import org.oppia.android.util.data.ObserveAsyncChange
 
 private const val CACHE_NAME_1 = "test_cache_1"
 private const val CACHE_NAME_2 = "test_cache_2"
@@ -162,7 +162,8 @@ class PersistentCacheStoreTest {
     // The store operation should be completed, and the observer should be notified of the changed
     // value.
     assertThat(storeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
   }
 
   @Test
@@ -206,7 +207,8 @@ class PersistentCacheStoreTest {
     // NB: This may not be ideal behavior long-term; the store may need to be updated to be more
     // resilient to these types of scenarios.
     assertThat(storeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
   }
 
   @Test
@@ -223,7 +225,8 @@ class PersistentCacheStoreTest {
     // refresh since UI components should share the same cache instance via an application-bound
     // controller object.
     assertThat(storeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
   }
 
   @Test
@@ -241,7 +244,8 @@ class PersistentCacheStoreTest {
     // Dagger component refresh since UI components should share the same cache instance via an
     // application-bound controller object.
     assertThat(storeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
   }
 
   @Test
@@ -260,7 +264,8 @@ class PersistentCacheStoreTest {
     // update was posted before the read occurred.
     assertThat(storeOp1.isCompleted).isTrue()
     assertThat(storeOp2.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V2)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V2)
   }
 
   @Test
@@ -322,7 +327,8 @@ class PersistentCacheStoreTest {
     // different default value that would only be used if there wasn't already on-disk storage.
     assertThat(storeOp.isCompleted).isTrue()
     assertThat(clearOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V2)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V2)
   }
 
   @Test
@@ -338,7 +344,8 @@ class PersistentCacheStoreTest {
     // proto instances for initialization, but it's a possible edge case that should at least have
     // established behavior that can be adjusted later if it isn't desirable in some circumstances.
     assertThat(storeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
   }
 
   @Test
@@ -372,7 +379,8 @@ class PersistentCacheStoreTest {
     // Only the observer of the first cache should notice the update since they are different
     // caches.
     assertThat(storeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore1b)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore1b))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
     assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2b)).isEqualToDefaultInstance()
   }
 
@@ -1224,7 +1232,7 @@ class PersistentCacheStoreTest {
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
         UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
-      ) {  it.addString(TEST_STR_V1) }
+      ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
     // The corrupted cache should have failed to be read, so it will be treated as a new cache. Note
@@ -1352,7 +1360,8 @@ class PersistentCacheStoreTest {
     assertThat(storeOp1.isCompleted).isTrue()
     assertThat(storeOp2.isCompleted).isTrue()
     assertThat(primeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V1)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V1)
   }
 
   @Test
@@ -1378,7 +1387,8 @@ class PersistentCacheStoreTest {
     assertThat(storeOp1.isCompleted).isTrue()
     assertThat(storeOp2.isCompleted).isTrue()
     assertThat(primeOp.isCompleted).isTrue()
-    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2)).isEqualTo(TEST_INT_MESSAGE_V2)
+    assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore2))
+      .isEqualTo(TEST_INT_MESSAGE_V2)
   }
 
   @Test
@@ -1534,20 +1544,22 @@ class PersistentCacheStoreTest {
     assertThat(onDiskValue.strValue).isEqualTo("different initial first transform")
   }
 
-  private fun <T: MessageLite> subscribeToCacheStoreChanges(cacheStore: PersistentCacheStore<T>) {
+  private fun <T : MessageLite> subscribeToCacheStoreChanges(cacheStore: PersistentCacheStore<T>) {
     asyncDataSubscriptionManager.subscribe(
       cacheStore.getId(), mockSubscriptionCallback.toAsyncChange()
     )
   }
 
-  private fun <T: MessageLite> loadCacheIntoMemory(cacheStore: PersistentCacheStore<T>) {
+  private fun <T : MessageLite> loadCacheIntoMemory(cacheStore: PersistentCacheStore<T>) {
     // Attempt to load the cache store from disk--this ensures that the cache store is at least
     // loaded into memory.
     monitorFactory.ensureDataProviderExecutes(cacheStore)
   }
 
-  private fun <T: MessageLite> verifyCacheStoreHasInMemoryValue(
-    cacheName: String, cacheStore: PersistentCacheStore<T>, value: T
+  private fun <T : MessageLite> verifyCacheStoreHasInMemoryValue(
+    cacheName: String,
+    cacheStore: PersistentCacheStore<T>,
+    value: T
   ) {
     // Delete the cache before reading from the store to verify that the read value is actually
     // in-memory and not being read from disk.
@@ -1555,7 +1567,7 @@ class PersistentCacheStoreTest {
     assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore)).isEqualTo(value)
   }
 
-  private fun <T: MessageLite> verifyDiskCacheHasValue(cacheName: String, value: T) {
+  private fun <T : MessageLite> verifyDiskCacheHasValue(cacheName: String, value: T) {
     assertThat(readFileCache<TestMessage>(cacheName)).isEqualTo(value)
   }
 
@@ -1566,7 +1578,7 @@ class PersistentCacheStoreTest {
   private fun verifyCacheStoreDidNotSendDataProviderNotification() {
     verify(mockSubscriptionCallback, never()).onDataProviderChanged()
   }
-  
+
   private fun getCacheFile(cacheName: String) = File(context.filesDir, "$cacheName.cache")
 
   private fun deleteCacheFile(cacheName: String) = getCacheFile(cacheName).delete()

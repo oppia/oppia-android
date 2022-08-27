@@ -1,7 +1,5 @@
 package org.oppia.android.domain.onboarding
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -13,6 +11,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -36,7 +36,6 @@ class AppStartupStateController @Inject constructor(
     // markOnboardingFlowCompleted(). Note that this also ensures that the on-disk cache contains
     // the last used build flavor (but it doesn't update the in-memory copy as it's the *last* used
     // flavor, and thus requires an app restart in order to observe).
-    println("@@@@@ initing controller: $this")
     onboardingFlowStore.primeInMemoryAndDiskCacheAsync(
       updateMode = PersistentCacheStore.UpdateMode.UPDATE_ALWAYS,
       publishMode = PersistentCacheStore.PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
@@ -91,9 +90,7 @@ class AppStartupStateController @Inject constructor(
   fun getAppStartupState(): DataProvider<AppStartupState> = appStartupStateDataProvider
 
   private fun computeAppStartupStateProvider(): DataProvider<AppStartupState> {
-    println("@@@@@ computeAppStartupStateProvider")
     return onboardingFlowStore.transform(APP_STARTUP_STATE_PROVIDER_ID) { onboardingState ->
-      println("@@@@@ transform: $onboardingState")
       AppStartupState.newBuilder().apply {
         startupMode = computeAppStartupMode(onboardingState)
         buildFlavorNoticeMode = computeBuildNoticeMode(onboardingState, startupMode)
@@ -127,7 +124,8 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun computeBuildNoticeMode(
-    onboardingState: OnboardingState, startupMode: StartupMode
+    onboardingState: OnboardingState,
+    startupMode: StartupMode
   ): BuildFlavorNoticeMode {
     return when (currentBuildFlavor) {
       BuildFlavor.TESTING, BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED ->

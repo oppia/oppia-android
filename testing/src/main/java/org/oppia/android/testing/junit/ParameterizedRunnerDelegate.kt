@@ -66,7 +66,6 @@ class ParameterizedRunnerDelegate(
         override fun evaluate() {
           // Initialize the test prior to execution.
           parameterizedMethod.initializeForTest(test, iterationName)
-          println("@@@@@ INVOKE: $methodName in $iterationName")
           invoker.evaluate()
         }
       }

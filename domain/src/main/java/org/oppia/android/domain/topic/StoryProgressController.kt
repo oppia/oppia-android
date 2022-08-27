@@ -8,6 +8,8 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -15,8 +17,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
-import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_2 = "test_story_id_2"

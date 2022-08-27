@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.DeviceContextDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
@@ -13,8 +15,6 @@ import java.util.Random
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
-import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 
 private const val SESSION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.session_id"
 private const val INSTALLATION_ID_DATA_PROVIDER_ID = "LoggingIdentifierController.installation_id"

@@ -87,9 +87,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.notice.testing.BetaNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.notice.testing.GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"

@@ -6,10 +6,9 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//app:app_test.bzl", "app_test")
 load("//app:test_with_resources.bzl", "test_with_resources")
 
-# TODO: Revert src & R import.
 app_test(
     name = "SplashActivityTest",
-    processed_src = "SplashActivityTest.kt",  #test_with_resources("SplashActivityTest.kt"),
+    processed_src = test_with_resources("SplashActivityTest.kt"),
     test_class = "org.oppia.android.app.splash.SplashActivityTest",
     deps = [
         ":dagger",

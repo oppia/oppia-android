@@ -3,7 +3,6 @@ package org.oppia.android.domain.topic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.SystemClock

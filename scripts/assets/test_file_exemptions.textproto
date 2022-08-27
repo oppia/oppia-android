@@ -222,6 +222,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/MyDownl
 exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/MyDownloadsViewPagerAdapter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/UpdatesTabFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/mydownloads/UpdatesTabFragmentPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/testing/BetaNoticeDialogFragmentTestActivity.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/notice/testing/GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenter.kt"

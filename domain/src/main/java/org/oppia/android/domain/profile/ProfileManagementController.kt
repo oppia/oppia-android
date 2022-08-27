@@ -17,6 +17,8 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
@@ -35,8 +37,6 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
-import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"

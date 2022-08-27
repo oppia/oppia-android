@@ -127,38 +127,39 @@ class SplashActivityPresenter @Inject constructor(
     // Second, prepare to route the user to the correct destination.
     startupMode = initState.appStartupState.startupMode
 
-    // Third, show any dismissible notices.
-    when (initState.appStartupState.buildFlavorNoticeMode) {
-      BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED, BuildFlavorNoticeMode.NO_NOTICE,
-      BuildFlavorNoticeMode.UNRECOGNIZED, null -> {
-        // No notice should be shown. However, when a pre-release version of the app is active that
-        // changes the splash screen have it wait a bit longer so that the build flavor can be
-        // clearly seen. The developer build isn't part of the wait to ensure fast startup times
-        // (for development purposes).
-        when (currentBuildFlavor) {
-          BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
-          BuildFlavor.TESTING, BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY ->
-            processStartupMode()
-          BuildFlavor.ALPHA, BuildFlavor.BETA -> {
-            lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(activity) {
+    // Third, show any dismissible notices (if the app isn't deprecated).
+    if (startupMode != StartupMode.APP_IS_DEPRECATED) {
+      when (initState.appStartupState.buildFlavorNoticeMode) {
+        BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED, BuildFlavorNoticeMode.NO_NOTICE,
+        BuildFlavorNoticeMode.UNRECOGNIZED, null -> {
+          // No notice should be shown. However, when a pre-release version of the app is active
+          // that changes the splash screen have it wait a bit longer so that the build flavor can
+          // be clearly seen. The developer build isn't part of the wait to ensure fast startup
+          // times (for development purposes).
+          when (currentBuildFlavor) {
+            BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
+            BuildFlavor.TESTING, BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY ->
               processStartupMode()
+            BuildFlavor.ALPHA, BuildFlavor.BETA -> {
+              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(activity) {
+                processStartupMode()
+              }
             }
           }
         }
+        BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
+          showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
+        BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
+          showDialog(
+            GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
+            GeneralAvailabilityUpgradeNoticeDialogFragment::newInstance
+          )
+        }
       }
-      BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
-        showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
-      BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
-        showDialog(
-          GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-          GeneralAvailabilityUpgradeNoticeDialogFragment::newInstance
-        )
-      }
-    }
+    } else processStartupMode()
   }
 
   private fun processStartupMode() {
-    println("@@@@@ process startup: $startupMode")
     when (startupMode) {
       StartupMode.USER_IS_ONBOARDED -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))

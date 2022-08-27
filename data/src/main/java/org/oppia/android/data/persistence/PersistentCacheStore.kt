@@ -1,7 +1,6 @@
 package org.oppia.android.data.persistence
 
 import android.app.Application
-import android.content.Context
 import androidx.annotation.GuardedBy
 import com.google.protobuf.MessageLite
 import kotlinx.coroutines.Deferred
@@ -55,7 +54,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
 
   init {
     cache.observeChanges { oldValue, newValue ->
-      println("@@@@@ cache store changes: $oldValue -> $newValue")
       // Only notice subscribers if the in-memory version of the cache actually changed (not just
       // its load state). This extra check ensures that priming the cache does not unnecessarily
       // trigger a notification which would result in an unnecessary retrieveData() call. The
@@ -72,9 +70,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   override fun getId(): Any = providerId
 
   override suspend fun retrieveData(): AsyncResult<T> {
-    println("@@@@@ retrieveData()")
     cache.readIfPresentAsync().await().let { cachePayload ->
-      println("@@@@ retrieving payload: $cachePayload")
       // First, determine whether the current cache has been attempted to be retrieved from disk.
       if (cachePayload.state == CacheState.UNLOADED) {
         deferLoadFile()
@@ -135,11 +131,11 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * @return a [Deferred] tracking the success/failure of priming this cache store
    */
   fun primeInMemoryAndDiskCacheAsync(
-    updateMode: UpdateMode, publishMode: PublishMode, update: (T) -> T = { it }
+    updateMode: UpdateMode,
+    publishMode: PublishMode,
+    update: (T) -> T = { it }
   ): Deferred<Any> {
-    println("@@@@@ primeInMemoryAndDiskCacheAsync")
     return cache.updateIfPresentAsync { cachePayload ->
-      println("@@@@@ updateIfPresentAsync for prime: $cachePayload")
       // It's expected 'oldState' to match 'cachePayload' unless the cache hasn't yet been read
       // (since then 'cachePayload' will be based on the store's default value).
       val (oldState, newState) = when (cachePayload.state) {
@@ -317,7 +313,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   }
 
   private fun CachePayload<T>.maybeReprimePayload(
-    updateMode: UpdateMode, initialize: (T) -> T
+    updateMode: UpdateMode,
+    initialize: (T) -> T
   ): CachePayload<T> {
     return when (updateMode) {
       UpdateMode.UPDATE_IF_NEW_CACHE -> this // Nothing extra to do.
@@ -341,13 +338,36 @@ class PersistentCacheStore<T : MessageLite> private constructor(
 
   private data class CachePayload<T>(val state: CacheState, val value: T)
 
+  /**
+   * The mode of on-disk data updating that can be configured for specific operations like cache
+   * priming.
+   *
+   * This mode only configures on-disk data changes, not in-memory (see [PublishMode] for that).
+   */
   enum class UpdateMode {
+    /** Indicates that the on-disk cache should only be changed if it doesn't already exist. */
     UPDATE_IF_NEW_CACHE,
+
+    /**
+     * Indicates that the on-disk cache should always be changed regardless of if it already exists.
+     */
     UPDATE_ALWAYS
   }
 
+  /**
+   * The mode of in-memory data updating that can be configured for specific operations like cache
+   * priming.
+   *
+   * This mode only configures in-memory data changes, not on-disk (see [UpdateMode] for that).
+   */
   enum class PublishMode {
+    /**
+     * Indicates that data changes should update the in-memory cache and be broadcast to
+     * subscribers.
+     */
     PUBLISH_TO_IN_MEMORY_CACHE,
+
+    /** Indicates that data changes should not change the in-memory cache. */
     DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
   }
 
@@ -369,16 +389,13 @@ class PersistentCacheStore<T : MessageLite> private constructor(
      * Use this method when data is shared by all profiles.
      */
     fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
-      println("@@@@@ sanity check: create cache $cacheName")
       return PersistentCacheStore(
         application,
         cacheFactory,
         asyncDataSubscriptionManager,
         cacheName,
         initialValue
-      ).also {
-        Exception("@@@@@ create store with context: $application (store: $it)").printStackTrace(System.out)
-      }
+      )
     }
 
     /**

@@ -125,8 +125,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Databinding adapters.
 /app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
 
-# App deprecation functionality.
-/app/src/*/java/org/oppia/android/app/deprecation/ @BenHenning
+# App notices functionality (such as for deprecations).
+/app/src/*/java/org/oppia/android/app/notice/ @BenHenning
 
 # Parsing functionality needed for interactions.
 /app/src/*/java/org/oppia/android/app/parser/ @BenHenning

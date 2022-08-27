@@ -11,11 +11,17 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.NO_NOTICE
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_BETA_NOTICE
+import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE
 import org.oppia.android.app.model.AppStartupState.StartupMode.APP_IS_DEPRECATED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_IS_ONBOARDED
 import org.oppia.android.app.model.AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED
+import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -25,6 +31,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -47,18 +59,6 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Before
-import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED
-import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.NO_NOTICE
-import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_BETA_NOTICE
-import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE
-import org.oppia.android.app.model.BuildFlavor
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
-import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.
