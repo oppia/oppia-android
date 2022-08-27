@@ -27,7 +27,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigAlphaKenyaModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -79,7 +79,7 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
     PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
     RatioInputModule::class, UncaughtExceptionLoggerModule::class,
     ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-    WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+    WorkManagerConfigurationModule::class, HintsAndSolutionConfigAlphaKenyaModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
     PlatformParameterAlphaKenyaModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
@@ -90,7 +90,7 @@ import org.oppia.android.app.activity.route.ActivityRouterModule
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, AlphaKenyaBuildFlavorModule::class
+    HintsAndSolutionProdModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {

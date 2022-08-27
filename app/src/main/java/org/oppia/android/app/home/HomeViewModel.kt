@@ -76,10 +76,14 @@ class HomeViewModel(
       promotedActivityListSummaryDataProvider,
       PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
     ) { profile, promotedActivityList ->
-      listOfNotNull(
-        computeWelcomeViewModel(profile),
-        computePromotedActivityListViewModel(promotedActivityList)
-      )
+      if (profile.numberOfLogins > 1) {
+        listOfNotNull(
+          computeWelcomeViewModel(profile),
+          computePromotedActivityListViewModel(promotedActivityList)
+        )
+      } else {
+        listOfNotNull(computeWelcomeViewModel(profile))
+      }
     }.combineWith(
       topicListSummaryDataProvider,
       HOME_FRAGMENT_COMBINED_PROVIDER_ID

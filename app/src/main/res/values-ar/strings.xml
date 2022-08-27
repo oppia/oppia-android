@@ -93,7 +93,6 @@
   <string name="ongoing_story_last_month">تم تشغيلها خلال الشهر الماضي</string>
   <string name="story_activity_title">قائمة الفصول</string>
   <string name="lesson_thumbnail_content_description">صورة %s</string>
-  <string name="all_topics">كل المواضيع</string>
   <string name="stories_you_can_play">القصص التي باستطاعتك تشغيلها</string>
   <string name="navigate_up">العودة للسابق</string>
   <string name="recently_played_activity">القصص التي تم تشغيلها مؤخرًا</string>
@@ -356,7 +355,7 @@
   <string name="hints_andSolution_close_icon_description">العودة للسابق</string>
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="reveal_solution">عرض الحل</string>
-  <string name="reveal_hint">عرض الملاحظة</string>
+  <string name="reveal_hint" fuzzy="true">عرض الملاحظة</string>
   <string name="show_hide_hint_list">عرض/إخفاء قائمة الملاحظات الخاصة ب%s</string>
   <string name="show_hide_solution_list">عرض/إخفاء الحل</string>
   <string name="the_only_solution_is">الحل الوحيد هو :</string>
@@ -401,7 +400,7 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
+  <string name="item_selection_text" fuzzy="true">برجاء اختيار خيار واحد على الأقل.</string>
   <string name="unsupported_app_version_dialog_title">إصدار تطبيق غير مدعوم</string>
   <string name="unsupported_app_version_dialog_message">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
   <string name="unsupported_app_version_dialog_close_button_text">إغلاق التطبيق</string>
