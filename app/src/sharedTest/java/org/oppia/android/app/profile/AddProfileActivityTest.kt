@@ -56,7 +56,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.CurrentAppScreen
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -109,7 +108,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -1691,13 +1690,8 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_onCreate_getIntent_setsIntentWithCorrectIntent() {
-    activityTestRule.launchActivity(createAddProfileActivityIntent())
-    val intent = activityTestRule.activity.intent
-    val currentScreenName = intent.getProtoExtra(
-      CurrentAppScreenNameIntentDecorator.getCurrentAppScreenNameIntentKey(),
-      CurrentAppScreen.getDefaultInstance()
-    ).screenName
+  fun testActivity_getIntent_verifyScreenNameInIntent() {
+    val currentScreenName = createAddProfileActivityIntent().getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.ADD_PROFILE_ACTIVITY)
   }

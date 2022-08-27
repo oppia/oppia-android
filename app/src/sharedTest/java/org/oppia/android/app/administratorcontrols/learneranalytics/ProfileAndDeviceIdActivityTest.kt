@@ -30,6 +30,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -79,6 +80,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusModule
@@ -154,6 +156,15 @@ class ProfileAndDeviceIdActivityTest {
       // correct string when it's read out.
       assertThat(title).isEqualTo(context.getString(R.string.profile_and_device_id_activity_title))
     }
+  }
+
+  @Test
+  fun testActivity_getIntent_verifyScreenNameInIntent() {
+    val screenName = ProfileAndDeviceIdActivity.createIntent(
+      ApplicationProvider.getApplicationContext()
+    ).getCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY)
   }
 
   @Test
