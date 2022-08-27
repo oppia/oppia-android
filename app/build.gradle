@@ -98,7 +98,6 @@ def filesToExclude = [
     '**/*AppLanguageLocaleHandlerTest*.kt',
     '**/*AppLanguageResourceHandlerTest*.kt',
     '**/*AppLanguageWatcherMixinTest*.kt',
-    '**/alphakenya/*.kt',
 ]
 _excludeSourceFiles(filesToExclude)
 

@@ -6,6 +6,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
@@ -113,12 +114,10 @@ class ProfileTestHelper @Inject constructor(
    */
   fun logIntoNewUser() = logIntoProfile(internalProfileId = 2)
 
-  private fun logIntoProfile(internalProfileId: Int): LiveData<AsyncResult<Any?>> {
-    val result = profileManagementController.loginToProfile(
+  private fun logIntoProfile(internalProfileId: Int): DataProvider<Any?> {
+    return profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    ).toLiveData()
-    testCoroutineDispatchers.runCurrent()
-    return result
+    )
   }
 
   /**

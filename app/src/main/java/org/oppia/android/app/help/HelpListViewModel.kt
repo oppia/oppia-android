@@ -18,22 +18,24 @@ class HelpListViewModel @Inject constructor(
 
   private fun getRecyclerViewItemList(): ArrayList<HelpItemViewModel> {
     for (item in HelpItems.values()) {
-      val category: String
-      val helpItemViewModel: HelpItemViewModel
-      when (item) {
-        HelpItems.FAQ -> {
-          category = resourceHandler.getStringInLocale(R.string.frequently_asked_questions_FAQ)
-          helpItemViewModel =
-            HelpItemViewModel(activity, category, isMultipane.get()!!, resourceHandler)
-        }
-        HelpItems.THIRD_PARTY -> {
-          category =
-            resourceHandler.getStringInLocale(R.string.third_party_dependency_list_activity_title)
-          helpItemViewModel =
-            HelpItemViewModel(activity, category, isMultipane.get()!!, resourceHandler)
-        }
+      val category = when (item) {
+        HelpItems.FAQ -> resourceHandler.getStringInLocale(R.string.frequently_asked_questions_FAQ)
+        HelpItems.THIRD_PARTY -> resourceHandler.getStringInLocale(
+          R.string.third_party_dependency_list_activity_title
+        )
+        HelpItems.PRIVACY_POLICY -> resourceHandler.getStringInLocale(
+          R.string.privacy_policy_title
+        )
+        HelpItems.TERMS_OF_SERVICE -> resourceHandler.getStringInLocale(
+          R.string.terms_of_service_title
+        )
       }
-      arrayList.add(helpItemViewModel)
+      arrayList += HelpItemViewModel(
+        activity,
+        category,
+        isMultipane.get() ?: false,
+        resourceHandler
+      )
     }
     return arrayList
   }
