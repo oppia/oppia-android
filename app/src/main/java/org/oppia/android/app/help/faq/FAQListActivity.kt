@@ -6,9 +6,9 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
-import javax.inject.Inject
 import org.oppia.android.app.model.ScreenName.FAQ_LIST_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */
 class FAQListActivity : InjectableAppCompatActivity(), RouteToFAQSingleListener {

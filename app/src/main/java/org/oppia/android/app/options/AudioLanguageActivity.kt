@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.AUDIO_LANGUAGE_ACTIVITY
-import javax.inject.Inject
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
 class AudioLanguageActivity : InjectableAppCompatActivity() {

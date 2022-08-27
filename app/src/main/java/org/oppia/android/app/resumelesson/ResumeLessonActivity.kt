@@ -7,10 +7,10 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.player.exploration.ExplorationActivity
-import javax.inject.Inject
 import org.oppia.android.app.model.ScreenName.RESUME_LESSON_ACTIVITY
+import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity that allows the user to resume a saved exploration. */
 class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationListener {

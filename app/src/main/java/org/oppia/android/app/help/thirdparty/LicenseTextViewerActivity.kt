@@ -6,8 +6,8 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY
-import javax.inject.Inject
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** The activity that will show the license text of a copyright license. */
 class LicenseTextViewerActivity : InjectableAppCompatActivity() {

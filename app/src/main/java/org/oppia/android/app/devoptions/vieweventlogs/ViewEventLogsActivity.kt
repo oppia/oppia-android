@@ -6,10 +6,10 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import javax.inject.Inject
 import org.oppia.android.app.model.ScreenName.VIEW_EVENT_LOGS_ACTIVITY
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity for View Event Logs. */
 class ViewEventLogsActivity : InjectableAppCompatActivity() {

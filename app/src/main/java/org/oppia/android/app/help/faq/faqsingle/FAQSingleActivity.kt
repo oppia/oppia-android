@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.app.model.ScreenName.FAQ_SINGLE_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** The FAQ page activity for placement of single FAQ. */
 class FAQSingleActivity : InjectableAppCompatActivity() {

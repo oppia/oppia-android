@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.profile.ProfileChooserActivity
-import javax.inject.Inject
 import org.oppia.android.app.model.ScreenName.ONBOARDING_ACTIVITY
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity : InjectableAppCompatActivity(), RouteToProfileListListener {

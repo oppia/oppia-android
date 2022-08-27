@@ -13,10 +13,10 @@ import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedA
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import javax.inject.Inject
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
