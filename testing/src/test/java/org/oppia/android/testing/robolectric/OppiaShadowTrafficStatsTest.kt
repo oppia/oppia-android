@@ -21,6 +21,8 @@ import org.robolectric.shadow.api.Shadow
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val ARBITRARY_UID = 0
+
 /** Tests for [OppiaShadowTrafficStats]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -53,20 +55,22 @@ class OppiaShadowTrafficStatsTest {
 
   @Test
   fun testCustomShadow_initialState_returnsDefaultValuesForTxAndRxBytes() {
-    assertThat(OppiaShadowTrafficStats.getUidRxBytes(0)).isEqualTo(0L)
-    assertThat(OppiaShadowTrafficStats.getUidTxBytes(0)).isEqualTo(0L)
+    assertThat(OppiaShadowTrafficStats.getUidRxBytes(ARBITRARY_UID)).isEqualTo(0L)
+    assertThat(OppiaShadowTrafficStats.getUidTxBytes(ARBITRARY_UID)).isEqualTo(0L)
   }
 
   @Test
   fun testCustomShadow_setUidTxBytes_returnsCorrectTxBytesValue() {
     oppiaShadowTrafficStats.setUidTxBytes(9)
-    assertThat(OppiaShadowTrafficStats.getUidTxBytes(0)).isEqualTo(9L)
+    assertThat(OppiaShadowTrafficStats.getUidTxBytes(ARBITRARY_UID)).isEqualTo(9L)
+    assertThat(OppiaShadowTrafficStats.getUidRxBytes(ARBITRARY_UID)).isEqualTo(0)
   }
 
   @Test
   fun testCustomShadow_setUidRxBytes_returnsCorrectTxBytesValue() {
     oppiaShadowTrafficStats.setUidRxBytes(9)
-    assertThat(OppiaShadowTrafficStats.getUidRxBytes(0)).isEqualTo(9L)
+    assertThat(OppiaShadowTrafficStats.getUidRxBytes(ARBITRARY_UID)).isEqualTo(9L)
+    assertThat(OppiaShadowTrafficStats.getUidTxBytes(ARBITRARY_UID)).isEqualTo(0)
   }
 
   private fun setUpTestApplicationComponent() {

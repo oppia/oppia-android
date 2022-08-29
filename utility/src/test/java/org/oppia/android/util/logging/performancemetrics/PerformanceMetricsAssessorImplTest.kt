@@ -40,7 +40,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadow.api.Shadow
+import org.robolectric.shadow.api.Shadow.extract
+import org.robolectric.shadow.api.Shadow.newInstanceOf
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -84,6 +85,10 @@ class PerformanceMetricsAssessorImplTest {
     shadowOf(
       context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     ) as OppiaShadowActivityManager
+  }
+
+  private val shadowTrafficStats by lazy {
+    extract(newInstanceOf(TrafficStats::class.java)) as OppiaShadowTrafficStats
   }
 
   @Before
@@ -158,16 +163,14 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_getBytesSent_returnsCorrectAmountOfNetworkBytesSent() {
-    val shadow = Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
-    shadow.setUidTxBytes(20L)
+    shadowTrafficStats.setUidTxBytes(20L)
 
     assertThat(performanceMetricsAssessorImpl.getTotalSentBytes()).isEqualTo(20L)
   }
 
   @Test
   fun testAssessor_getBytesReceived_returnsCorrectAmountOfNetworkBytesReceived() {
-    val shadow = Shadow.extract(TrafficStats()) as OppiaShadowTrafficStats
-    shadow.setUidRxBytes(20L)
+    shadowTrafficStats.setUidRxBytes(20L)
 
     assertThat(performanceMetricsAssessorImpl.getTotalReceivedBytes()).isEqualTo(20L)
   }
