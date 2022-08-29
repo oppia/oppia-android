@@ -164,7 +164,7 @@
   </style>
 
   <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-    <item name="boxBackgroundColor">@color/component_color_shared_text_input_layout_background_color</item>
+    <item name="boxBackgroundColor">@color/component_color_shared_input_interaction_edit_text_background_color</item>
     <item name="boxCornerRadiusBottomEnd">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
