@@ -270,7 +270,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       .build()
   }
 
-  enum class ChapterViewType {
+  private enum class ChapterViewType {
     CHAPTER_NOT_STARTED,
     CHAPTER_COMPLETED,
     CHAPTER_LOCKED,
