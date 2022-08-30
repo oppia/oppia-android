@@ -14,10 +14,10 @@
   </data>
 
   <LinearLayout
+    android:id="@+id/lessons_in_progress_chapter_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
-    android:id="@+id/lessons_in_progress_chapter_container"
     android:orientation="vertical">
 
     <LinearLayout
@@ -29,12 +29,14 @@
 
       <TextView
         android:id="@+id/chapter_index"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
         android:fontFamily="sans-serif"
         android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
+        android:minWidth="20dp"
+        android:minHeight="20dp"
         android:text="@{viewModel.computePlayChapterIndexText()}"
         android:textAlignment="center"
         android:textColor="@color/color_def_white"

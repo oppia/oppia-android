@@ -144,8 +144,8 @@
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>
-      <!-- FrameLayout is used here instead of LinearLayout to properly adjust the visible thickness
-       of the dashed divider-->
+      <!-- FrameLayout is used here instead of LinearLayout to properly adjust the spacing of the
+      dashed divider by allowing the divider to render slightly on top of the container. -->
       <FrameLayout
         android:id="@+id/chapter_list_container"
         android:layout_width="match_parent"

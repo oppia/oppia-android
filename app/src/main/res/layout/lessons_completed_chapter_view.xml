@@ -28,12 +28,13 @@
 
       <TextView
         android:id="@+id/chapter_index"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/color_def_oppia_green"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
+        android:minWidth="60dp"
         android:paddingStart="8dp"
         android:paddingTop="12dp"
         android:paddingEnd="8dp"

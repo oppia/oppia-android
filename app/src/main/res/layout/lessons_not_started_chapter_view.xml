@@ -28,7 +28,8 @@
 
       <TextView
         android:id="@+id/chapter_index"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
+        android:minWidth="60dp"
         android:layout_height="match_parent"
         android:layout_marginStart="0dp"
         android:background="@drawable/chapter_dark_green_bright_green_border_background"
