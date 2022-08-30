@@ -10,10 +10,14 @@ import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.PlayVoiceOverContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger.BaseLogger.Companion.maybeLogEvent
+import org.oppia.android.util.math.toAnswerString
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.Context as EventContext
@@ -312,10 +316,63 @@ class LearnerAnalyticsLogger @Inject constructor(
 
     /**
      * Logs that the learner submitted an answer, where [isCorrect] indicates whether the answer was
-     * labelled as correct.
+     * labelled as correct, and [userAnswer] was the actual structured answer submitted by the
+     * learner (in the provided [interaction]).
      */
-    fun logSubmitAnswer(isCorrect: Boolean) {
-      logStateEvent(isCorrect, ::createSubmitAnswerContext, EventBuilder::setSubmitAnswerContext)
+    fun logSubmitAnswer(interaction: Interaction, userAnswer: UserAnswer, isCorrect: Boolean) {
+      val answer = userAnswer.answer
+      val stringifiedUserAnswer = when (answer.objectTypeCase) {
+        InteractionObject.ObjectTypeCase.NORMALIZED_STRING -> answer.normalizedString
+        InteractionObject.ObjectTypeCase.SIGNED_INT -> answer.signedInt.toString()
+        InteractionObject.ObjectTypeCase.REAL -> answer.real.toString()
+        InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT -> answer.nonNegativeInt.toString()
+        InteractionObject.ObjectTypeCase.FRACTION -> answer.fraction.toAnswerString()
+        InteractionObject.ObjectTypeCase.CLICK_ON_IMAGE ->
+          "(${answer.clickOnImage.clickPosition.x}, ${answer.clickOnImage.clickPosition.y})"
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION -> answer.ratioExpression.toAnswerString()
+        InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS -> {
+          val choices = interaction.customizationArgsMap["choices"]
+            ?.schemaObjectList
+            ?.schemaObjectList
+            ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml.contentId }
+            ?.toSet()
+            ?: setOf()
+          val contentIds = answer.setOfTranslatableHtmlContentIds.contentIdsList
+          contentIds.joinToString(prefix = "[", postfix = "]") {
+            choices.indexOf(it.contentId).toString()
+          }
+        }
+        InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS -> {
+          val choices = interaction.customizationArgsMap["choices"]
+            ?.schemaObjectList
+            ?.schemaObjectList
+            ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml.contentId }
+            ?.toSet()
+            ?: setOf()
+          val contentIdLists = answer.listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+          contentIdLists.joinToString(prefix = "[", postfix = "]") { contentIdsList ->
+            contentIdsList.contentIdsList.joinToString(prefix = "[", postfix = "]") {
+              choices.indexOf(it.contentId).toString()
+            }
+          }
+        }
+        InteractionObject.ObjectTypeCase.MATH_EXPRESSION -> answer.mathExpression
+        InteractionObject.ObjectTypeCase.BOOL_VALUE,
+        InteractionObject.ObjectTypeCase.LIST_OF_SETS_OF_HTML_STRING,
+        InteractionObject.ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING,
+        InteractionObject.ObjectTypeCase.TRANSLATABLE_HTML_CONTENT_ID,
+        InteractionObject.ObjectTypeCase.SET_OF_HTML_STRING,
+        InteractionObject.ObjectTypeCase.IMAGE_WITH_REGIONS,
+        InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS,
+        InteractionObject.ObjectTypeCase.OBJECTTYPE_NOT_SET, null -> null
+      }
+
+      logStateEvent(
+        stringifiedUserAnswer,
+        isCorrect,
+        ::createSubmitAnswerContext,
+        EventBuilder::setSubmitAnswerContext
+      )
     }
 
     /**
@@ -341,6 +398,19 @@ class LearnerAnalyticsLogger @Inject constructor(
       baseLogger.maybeLogEvent(
         computeLogContext()?.let {
           createAnalyticsEvent(baseContextFactory(detail, it), setter)
+        }?.ensureNonEmpty()
+      )
+    }
+
+    private fun <D1, D2, T> logStateEvent(
+      detail1: D1,
+      detail2: D2,
+      baseContextFactory: (D1, D2, ExplorationContext) -> T,
+      setter: EventBuilder.(T) -> EventBuilder
+    ) {
+      baseLogger.maybeLogEvent(
+        computeLogContext()?.let {
+          createAnalyticsEvent(baseContextFactory(detail1, detail2, it), setter)
         }?.ensureNonEmpty()
       )
     }
@@ -448,9 +518,11 @@ class LearnerAnalyticsLogger @Inject constructor(
     }.build()
 
     private fun createSubmitAnswerContext(
+      stringifiedAnswer: String?,
       isAnswerCorrect: Boolean,
       explorationDetails: ExplorationContext
     ) = SubmitAnswerContext.newBuilder().apply {
+      stringifiedAnswer?.let { this.stringifiedAnswer = it }
       this.isAnswerCorrect = isAnswerCorrect
       this.explorationDetails = explorationDetails
     }.build()

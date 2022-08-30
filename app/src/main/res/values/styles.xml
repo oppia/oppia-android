@@ -256,6 +256,10 @@
     <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
   </style>
 
+  <style name="Heading4ViewCenter" parent="Heading4">
+    <item name="android:gravity">center</item>
+  </style>
+
   <style name="Heading4ViewCenterVertical" parent="Heading4">
     <item name="android:gravity">center_vertical</item>
   </style>
@@ -311,8 +315,12 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
-  <style name="Subtitle2ViewCenter" parent="Subtitle2">
+  <style name="Subtitle2ViewCenterVertical" parent="Subtitle2">
     <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Subtitle2ViewCenter" parent="Subtitle2">
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="SubtitleLight" parent="TextView.Common1">
