@@ -3,6 +3,9 @@ package org.oppia.android.testing.platformparameter
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -33,8 +36,6 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.AUTOMATICALLY_UPDATE_TOPIC
-import org.oppia.android.util.platformparameter.AUTOMATICALLY_UPDATE_TOPIC_VALUE
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -68,6 +69,15 @@ class TestPlatformParameterModule {
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(TEST_BOOLEAN_PARAM_NAME)
       ?: PlatformParameterValue.createDefaultParameter(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
+  }
+
+  @Provides
+  @AutomaticUpdateTopicSetting
+  fun provideAutomaticUpdateTopicSettingParam(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(AUTOMATIC_UPDATE_TOPIC_SETTING)
+      ?: PlatformParameterValue.createDefaultParameter(AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE)
   }
 
   @Provides
@@ -193,14 +203,4 @@ class TestPlatformParameterModule {
       enableLearnerStudyAnalytics = value
     }
   }
-}
-
-@TestBooleanParam
-@Provides
-@Singleton
-fun provideTestBooleanParam(
-  platformParameterSingleton: PlatformParameterSingleton
-): PlatformParameterValue<Boolean> {
-  return platformParameterSingleton.getBooleanPlatformParameter(AUTOMATICALLY_UPDATE_TOPIC)
-    ?: PlatformParameterValue.createDefaultParameter(AUTOMATICALLY_UPDATE_TOPIC_VALUE)
 }

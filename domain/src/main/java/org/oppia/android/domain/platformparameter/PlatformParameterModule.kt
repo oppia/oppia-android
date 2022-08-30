@@ -2,9 +2,9 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.platformparameter.AUTOMATICALLY_UPDATE_TOPIC
-import org.oppia.android.util.platformparameter.AUTOMATICALLY_UPDATE_TOPIC_VALUE
-import org.oppia.android.util.platformparameter.AutomaticallyUpdateTopic
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -41,12 +41,12 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 class PlatformParameterModule {
 
   @Provides
-  @AutomaticallyUpdateTopic
+  @AutomaticUpdateTopicSetting
   fun provideAutomaticallyUpdateTopicMarker(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(AUTOMATICALLY_UPDATE_TOPIC)
-      ?: PlatformParameterValue.createDefaultParameter(AUTOMATICALLY_UPDATE_TOPIC_VALUE)
+    return platformParameterSingleton.getBooleanPlatformParameter(AUTOMATIC_UPDATE_TOPIC_SETTING )
+      ?: PlatformParameterValue.createDefaultParameter(AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE)
   }
 
   @Provides

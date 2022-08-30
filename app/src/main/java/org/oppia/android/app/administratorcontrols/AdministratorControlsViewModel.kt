@@ -20,7 +20,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.AutomaticallyUpdateTopic
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -33,8 +33,7 @@ class AdministratorControlsViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
-  @AutomaticallyUpdateTopic private val automaticallyUpdateTopic: PlatformParameterValue<Boolean>
-
+  @AutomaticUpdateTopicSetting private val automaticallyUpdateTopic: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener

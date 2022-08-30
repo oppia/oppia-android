@@ -22,8 +22,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   automaticallyUpdateTopic: Boolean,
 ) : AdministratorControlsItemViewModel() {
 
-  val visibility: LiveData<Boolean> get() = _visibility
-  private var _visibility = MutableLiveData(automaticallyUpdateTopic)
+  val isVisible = ObservableField(automaticallyUpdateTopic)
 
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
