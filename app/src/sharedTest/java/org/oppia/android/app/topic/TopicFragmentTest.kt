@@ -266,7 +266,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_disableExtraTabs_defaultTabIsLessons_isSuccessful() {
+  fun testTopicFragment_disableExtraTabs_defaultTabIsLessons() {
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
@@ -274,7 +274,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_enableExtraTabs_defaultTabIsLessons_isSuccessful() {
+  fun testTopicFragment_enableExtraTabs_defaultTabIsLessons() {
     enableExtraTabs()
     initializeApplicationComponent()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
