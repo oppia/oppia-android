@@ -100,7 +100,7 @@ class ExplorationActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeAnalyticsEventLogger : FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

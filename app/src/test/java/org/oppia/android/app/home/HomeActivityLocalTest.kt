@@ -158,7 +158,7 @@ class HomeActivityLocalTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationC` omponent.Builder
+    interface Builder : ApplicationComponent.Builder
 
     fun inject(homeActivityLocalTest: HomeActivityLocalTest)
   }
