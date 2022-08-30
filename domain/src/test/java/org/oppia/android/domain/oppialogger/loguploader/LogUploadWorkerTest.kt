@@ -78,7 +78,7 @@ private const val TEST_TOPIC_ID = "test_topicId"
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var analyticsController: AnalyticsController
@@ -143,7 +143,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
   }
 
   @Test
@@ -171,7 +171,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -308,7 +308,7 @@ class LogUploadWorkerTest {
     }
 
     @Provides
-    fun bindFakeEventLogger(
+    fun bindFakeAnalyticsEventLogger(
       @MockAnalyticsEventLogger delegate: AnalyticsEventLogger
     ): AnalyticsEventLogger = delegate
 

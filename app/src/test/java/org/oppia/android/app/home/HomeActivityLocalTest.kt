@@ -94,7 +94,7 @@ class HomeActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId: Int = 1
 
@@ -112,7 +112,7 @@ class HomeActivityLocalTest {
   @Test
   fun testHomeActivity_onLaunch_logsEvent() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
@@ -158,7 +158,7 @@ class HomeActivityLocalTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationC` omponent.Builder
 
     fun inject(homeActivityLocalTest: HomeActivityLocalTest)
   }

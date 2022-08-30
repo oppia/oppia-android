@@ -99,7 +99,7 @@ class OppiaLoggerTest {
   }
 
   @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
@@ -116,7 +116,7 @@ class OppiaLoggerTest {
 
     oppiaLogger.logImportantEvent(openHomeEventContext)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
   }

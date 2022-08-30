@@ -91,7 +91,7 @@ class ProfileChooserFragmentLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -101,7 +101,7 @@ class ProfileChooserFragmentLocalTest {
   @Test
   fun testProfileChooser_onLaunch_logsEvent() {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)

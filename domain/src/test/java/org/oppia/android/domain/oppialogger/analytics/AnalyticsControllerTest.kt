@@ -64,7 +64,7 @@ class AnalyticsControllerTest {
   @Inject lateinit var analyticsController: AnalyticsController
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
@@ -86,7 +86,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenQuestionPlayerContext()
@@ -103,7 +103,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenExplorationActivityContext()
@@ -115,7 +115,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenInfoTabContext()
@@ -127,7 +127,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenPracticeTabContext()
@@ -139,7 +139,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenLessonsTabContext()
@@ -151,7 +151,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenRevisionTabContext()
@@ -163,7 +163,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenStoryActivityContext()
@@ -175,7 +175,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenRevisionCardContext()
@@ -187,7 +187,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasOpenConceptCardContext()
@@ -205,7 +205,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenQuestionPlayerContext()
@@ -222,7 +222,7 @@ class AnalyticsControllerTest {
       )
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenExplorationActivityContext()
@@ -234,7 +234,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenInfoTabContext()
@@ -246,7 +246,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenPracticeTabContext()
@@ -258,7 +258,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenLessonsTabContext()
@@ -270,7 +270,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenRevisionTabContext()
@@ -282,7 +282,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenStoryActivityContext()
@@ -294,7 +294,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenRevisionCardContext()
@@ -306,7 +306,7 @@ class AnalyticsControllerTest {
       TEST_TIMESTAMP, oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)
     assertThat(eventLog).isOptionalPriority()
     assertThat(eventLog).hasOpenConceptCardContext()
@@ -424,7 +424,7 @@ class AnalyticsControllerTest {
 
     val logsProvider = analyticsController.getEventLogStore()
 
-    val uploadedEventLog = fakeEventLogger.getMostRecentEvent()
+    val uploadedEventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val cachedEventLog = monitorFactory.waitForNextSuccessfulResult(logsProvider).getEventLog(0)
 
     assertThat(uploadedEventLog).hasTimestampThat().isEqualTo(TEST_TIMESTAMP)

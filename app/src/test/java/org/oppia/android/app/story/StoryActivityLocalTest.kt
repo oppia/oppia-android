@@ -96,7 +96,7 @@ class StoryActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId = 0
 
@@ -116,7 +116,7 @@ class StoryActivityLocalTest {
     ActivityScenario.launch<StoryActivity>(
       createStoryActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID)
     ).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)

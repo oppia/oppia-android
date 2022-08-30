@@ -61,7 +61,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
 
   @Test
@@ -98,7 +98,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInForegroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -113,7 +113,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -129,7 +129,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -144,7 +144,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()

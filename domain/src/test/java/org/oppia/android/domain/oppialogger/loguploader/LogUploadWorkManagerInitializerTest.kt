@@ -67,7 +67,7 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger

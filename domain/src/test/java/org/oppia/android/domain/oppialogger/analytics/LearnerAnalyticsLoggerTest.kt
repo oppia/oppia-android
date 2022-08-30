@@ -88,7 +88,7 @@ class LearnerAnalyticsLoggerTest {
   @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Parameter lateinit var iid: String
   @Parameter lateinit var lid: String
@@ -128,7 +128,7 @@ class LearnerAnalyticsLoggerTest {
 
     learnerAnalyticsLogger.beginExploration(exploration)
 
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -196,14 +196,14 @@ class LearnerAnalyticsLoggerTest {
 
     learnerAnalyticsLogger.endExploration()
 
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
   fun testLogAppInBackground_noOngoingSession_logsEventWithIds() {
     learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, TEST_LEARNER_ID)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
     assertThat(event).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -217,7 +217,7 @@ class LearnerAnalyticsLoggerTest {
 
     learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, TEST_LEARNER_ID)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
     assertThat(event).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -229,7 +229,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInBackground_withoutInstallationId_logsEventWithoutInstallationId() {
     learnerAnalyticsLogger.logAppInBackground(installationId = null, TEST_LEARNER_ID)
 
-    assertThat(fakeEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isEmpty()
     }
@@ -239,7 +239,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInBackground_withoutLearnerId_logsEventWithoutLearnerId() {
     learnerAnalyticsLogger.logAppInBackground(TEST_INSTALL_ID, learnerId = null)
 
-    assertThat(fakeEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()
       hasInstallationIdThat().isNotEmpty()
     }
@@ -249,7 +249,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInBackground_withoutIds_logsEventWithoutIds() {
     learnerAnalyticsLogger.logAppInBackground(installationId = null, learnerId = null)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasAppInBackgroundContextThat().isEqualToDefaultInstance()
   }
 
@@ -257,7 +257,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInForeground_noOngoingSession_logsEventWithIds() {
     learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, TEST_LEARNER_ID)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
     assertThat(event).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -271,7 +271,7 @@ class LearnerAnalyticsLoggerTest {
 
     learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, TEST_LEARNER_ID)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
     assertThat(event).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -283,7 +283,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInForeground_withoutInstallationId_logsEventWithoutInstallationId() {
     learnerAnalyticsLogger.logAppInForeground(installationId = null, TEST_LEARNER_ID)
 
-    assertThat(fakeEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isEmpty()
     }
@@ -293,7 +293,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInForeground_withoutLearnerId_logsEventWithoutLearnerId() {
     learnerAnalyticsLogger.logAppInForeground(TEST_INSTALL_ID, learnerId = null)
 
-    assertThat(fakeEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEmpty()
       hasInstallationIdThat().isNotEmpty()
     }
@@ -303,7 +303,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogAppInForeground_withoutIds_logsEventWithoutIds() {
     learnerAnalyticsLogger.logAppInForeground(installationId = null, learnerId = null)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasAppInForegroundContextThat().isEqualToDefaultInstance()
   }
 
@@ -311,7 +311,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogDeleteProfile_noOngoingSession_logsEventWithIds() {
     learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, TEST_LEARNER_ID)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
     assertThat(event).hasDeleteProfileContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -325,7 +325,7 @@ class LearnerAnalyticsLoggerTest {
 
     learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, TEST_LEARNER_ID)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).isEssentialPriority()
     assertThat(event).hasDeleteProfileContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -337,7 +337,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogDeleteProfile_withoutInstallationId_logsEventWithoutInstallationId() {
     learnerAnalyticsLogger.logDeleteProfile(installationId = null, TEST_LEARNER_ID)
 
-    assertThat(fakeEventLogger.getMostRecentEvent()).hasDeleteProfileContextThat {
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasDeleteProfileContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isEmpty()
     }
@@ -347,7 +347,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogDeleteProfile_withoutLearnerId_logsEventWithoutLearnerId() {
     learnerAnalyticsLogger.logDeleteProfile(TEST_INSTALL_ID, learnerId = null)
 
-    assertThat(fakeEventLogger.getMostRecentEvent()).hasDeleteProfileContextThat {
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).hasDeleteProfileContextThat {
       hasLearnerIdThat().isEmpty()
       hasInstallationIdThat().isNotEmpty()
     }
@@ -357,7 +357,7 @@ class LearnerAnalyticsLoggerTest {
   fun testLogDeleteProfile_withoutIds_logsEventWithoutIds() {
     learnerAnalyticsLogger.logDeleteProfile(installationId = null, learnerId = null)
 
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(event).hasDeleteProfileContextThat().isEqualToDefaultInstance()
   }
 
@@ -387,7 +387,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.startCard(initState)
 
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -473,7 +473,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.endCard()
 
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -483,7 +483,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logResumeExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasResumeExplorationContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -499,7 +499,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logResumeExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasResumeExplorationContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -514,7 +514,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logStartExplorationOver()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasStartOverExplorationContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -530,7 +530,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logStartExplorationOver()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasStartOverExplorationContextThat {
       hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
@@ -548,7 +548,7 @@ class LearnerAnalyticsLoggerTest {
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to log a state event outside state")
     assertThat(log.type).isEqualTo(Log.WARN)
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -559,7 +559,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logExitExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasExitExplorationContextThat {
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
@@ -585,7 +585,7 @@ class LearnerAnalyticsLoggerTest {
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(log.msg).contains("Attempting to log a state event outside state")
     assertThat(log.type).isEqualTo(Log.WARN)
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -596,7 +596,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logFinishExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasFinishExplorationContextThat {
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
@@ -620,7 +620,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logStartCard()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat {
@@ -647,7 +647,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logStartCard()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
   }
@@ -660,7 +660,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logEndCard()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasEndCardContextThat {
       hasExplorationDetailsThat {
@@ -687,7 +687,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logEndCard()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
   }
@@ -700,7 +700,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logHintOffered(hintIndex = 1)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasHintOfferedContextThat {
       hasExplorationDetailsThat {
@@ -727,7 +727,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logHintOffered(hintIndex = 2)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasHintOfferedContextThat().hasHintIndexThat().isEqualTo(2)
   }
@@ -740,7 +740,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logViewHint(hintIndex = 1)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAccessHintContextThat {
       hasExplorationDetailsThat {
@@ -767,7 +767,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logViewHint(hintIndex = 2)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAccessHintContextThat().hasHintIndexThat().isEqualTo(2)
   }
@@ -780,7 +780,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logSolutionOffered()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSolutionOfferedContextThat {
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
@@ -804,7 +804,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logViewSolution()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAccessSolutionContextThat {
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
@@ -832,7 +832,7 @@ class LearnerAnalyticsLoggerTest {
       isCorrect = false
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat {
@@ -863,7 +863,7 @@ class LearnerAnalyticsLoggerTest {
       isCorrect = true
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasSubmitAnswerContextThat().hasAnswerCorrectValueThat().isTrue()
   }
@@ -876,7 +876,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logPlayVoiceOver(contentId = "test_content_id_1")
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
       hasExplorationDetailsThat {
@@ -903,7 +903,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logPlayVoiceOver(contentId = "content_id_2")
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEqualTo("content_id_2")
   }
@@ -916,7 +916,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logPlayVoiceOver(contentId = null)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasPlayVoiceOverContextThat().hasContentIdThat().isEmpty()
   }
@@ -936,7 +936,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logResumeExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasResumeExplorationContextThat {
       hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
       hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
@@ -958,7 +958,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logStartExplorationOver()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasStartOverExplorationContextThat {
       hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
       hasInstallationIdThat().isEqualTo(expectedInstallIdParameter)
@@ -980,7 +980,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logExitExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasExitExplorationContextThat {
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
@@ -1001,7 +1001,7 @@ class LearnerAnalyticsLoggerTest {
     // Since both the learner & installation IDs are missing, the event logging fails since it would
     // have no context. An unknown installation ID is used to indicate the installation ID was
     // missing.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1023,7 +1023,7 @@ class LearnerAnalyticsLoggerTest {
 
     expLogger.logFinishExploration()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFinishExplorationContextThat {
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
@@ -1042,7 +1042,7 @@ class LearnerAnalyticsLoggerTest {
     expLogger.logFinishExploration()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1064,7 +1064,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logStartCard()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
@@ -1085,7 +1085,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logStartCard()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1107,7 +1107,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logEndCard()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasEndCardContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
@@ -1128,7 +1128,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logEndCard()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1150,7 +1150,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logHintOffered(hintIndex = 1)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasHintOfferedContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
@@ -1171,7 +1171,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logHintOffered(hintIndex = 1)
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1193,7 +1193,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logViewHint(hintIndex = 1)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessHintContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
@@ -1214,7 +1214,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logViewHint(hintIndex = 1)
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1236,7 +1236,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logSolutionOffered()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasSolutionOfferedContextThat {
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
@@ -1255,7 +1255,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logSolutionOffered()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1277,7 +1277,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logViewSolution()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessSolutionContextThat {
       hasLearnerDetailsThat {
         hasLearnerIdThat().isEqualTo(expectedLearnerIdParameter)
@@ -1296,7 +1296,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logViewSolution()
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1322,7 +1322,7 @@ class LearnerAnalyticsLoggerTest {
       isCorrect = true
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
@@ -1347,7 +1347,7 @@ class LearnerAnalyticsLoggerTest {
     )
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")
@@ -1369,7 +1369,7 @@ class LearnerAnalyticsLoggerTest {
 
     stateLogger.logPlayVoiceOver(contentId = "test_content_id_1")
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasPlayVoiceOverContextThat {
       hasExplorationDetailsThat {
         hasLearnerDetailsThat {
@@ -1390,7 +1390,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logPlayVoiceOver(contentId = "test_content_id_1")
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     val log = ShadowLog.getLogs().getMostRecentWithTag("LearnerAnalyticsLogger")
     assertThat(eventLog).hasInstallIdForAnalyticsLogFailureThat().isEqualTo(UNKNOWN_INSTALL_ID)
     assertThat(log.msg).contains("Event is being dropped due to incomplete event")

@@ -13,12 +13,12 @@ import javax.inject.Inject
  */
 @FragmentScope
 class ViewEventLogsViewModel @Inject constructor(
-  debugEventLogger: DebugAnalyticsEventLogger,
+  debugAnalyticsEventLogger: DebugAnalyticsEventLogger,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
-  private val eventList = debugEventLogger.getEventList()
+  private val eventList = debugAnalyticsEventLogger.getEventList()
 
   /**
    * List of [EventLogItemViewModel] used to populate recyclerview of [ViewEventLogsFragment]

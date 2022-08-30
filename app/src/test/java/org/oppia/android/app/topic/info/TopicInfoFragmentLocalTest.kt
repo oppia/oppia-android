@@ -93,7 +93,7 @@ class TopicInfoFragmentLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId = 0
 
@@ -105,7 +105,7 @@ class TopicInfoFragmentLocalTest {
   @Test
   fun testTopicInfoFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_INFO_TAB)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)

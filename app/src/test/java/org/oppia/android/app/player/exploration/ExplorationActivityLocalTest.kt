@@ -100,7 +100,7 @@ class ExplorationActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger : FakeAnalyticsEventLogger
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -137,7 +137,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeEventLogger.getOldestEvent()
+      val event = fakeAnalyticsEventLogger.getOldestEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)

@@ -76,7 +76,7 @@ class ProfileManagementControllerTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private companion object {
     private val PROFILES_LIST = listOf<Profile>(
@@ -653,8 +653,8 @@ class ProfileManagementControllerTest {
       profileManagementController.deleteProfile(PROFILE_ID_2)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasDeleteProfileContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()

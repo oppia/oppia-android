@@ -93,7 +93,7 @@ class TopicLessonsFragmentLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId = 0
 
@@ -105,7 +105,7 @@ class TopicLessonsFragmentLocalTest {
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase)
         .isEqualTo(EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB)

@@ -94,7 +94,7 @@ class RevisionCardActivityLocalTest {
   private val internalProfileId = 1
 
   @Inject
-  lateinit var fakeEventLogger: FakeAnalyticsEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -111,7 +111,7 @@ class RevisionCardActivityLocalTest {
         SUBTOPIC_TOPIC_ID
       )
     ).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
