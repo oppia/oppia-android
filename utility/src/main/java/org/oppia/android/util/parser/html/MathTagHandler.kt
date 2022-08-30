@@ -31,7 +31,7 @@ class MathTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     // Only insert the image tag if it's parsed correctly.
     val content = MathContent.parseMathContent(
@@ -43,6 +43,7 @@ class MathTagHandler(
       "block" -> false
       else -> true
     }
+    checkNotNull(imageRetriever) { "Expected imageRetriever to be not null." }
     val newSpan = when (content) {
       is MathContent.MathAsSvg -> {
         ImageSpan(

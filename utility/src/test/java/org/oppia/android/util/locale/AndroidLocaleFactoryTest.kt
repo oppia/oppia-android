@@ -1,4 +1,4 @@
-package org.oppia.android.domain.locale
+package org.oppia.android.util.locale
 
 import android.app.Application
 import android.content.Context
@@ -23,7 +23,6 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.LocaleProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
