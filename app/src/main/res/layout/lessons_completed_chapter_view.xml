@@ -30,7 +30,6 @@
         android:id="@+id/chapter_index"
         android:layout_width="60dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="0dp"
         android:background="@color/color_def_oppia_green"
         android:fontFamily="sans-serif"
         android:gravity="center"
