@@ -32,7 +32,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.testing.oppialogger.logscheduler.FakeLogScheduler
+import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
@@ -137,10 +137,10 @@ class LogReportWorkManagerInitializerTest {
     assertThat(fakeLogScheduler.getMostRecentStorageUsageMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingStorageUsageMetricWorkRequestId
     )
-    assertThat(fakeLogScheduler.getMostRecentMemoryUsageMetricLoggingRequestId()).isEqualTo(
+    assertThat(fakeLogScheduler.getMostRecentPeriodicUiMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingPeriodicUiMetricWorkRequestId
     )
-    assertThat(fakeLogScheduler.getMostRecentPeriodicPerformanceMetricLoggingRequestId()).isEqualTo(
+    assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
       enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
     )
   }

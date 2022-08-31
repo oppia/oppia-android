@@ -9,6 +9,7 @@ import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
@@ -19,6 +20,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,6 +62,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
+
 
 /** Tests for [MetricLogSchedulingWorker]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -178,6 +183,27 @@ class MetricLogSchedulingWorkerTest {
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testScheduler_enqueueRequestForIncorrectWorkerCase_verifyWorkRequestReturnsFailureResult() {
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData: Data = Data.Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        INCORRECT_WORKER_CASE
+      ).build()
+
+    val request = OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
   }
 
   private fun setUpTestApplicationComponent() {

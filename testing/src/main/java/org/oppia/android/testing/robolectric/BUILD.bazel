@@ -57,10 +57,7 @@ kt_android_library(
         "OppiaShadowActivityManager.kt",
     ],
     visibility = [
-        "//:oppia_testing_visibility",
-        "//testing/src/test/java/org/oppia/android/testing/robolectric:__pkg__",
-        "//utility/src/test/java/org/oppia/android/util/locale:__pkg__",
-        "//utility/src/test/java/org/oppia/android/util/locale/testing:__pkg__",
+        "//:oppia_testing_visibility"
     ],
     deps = [
         "//third_party:org_robolectric_robolectric",

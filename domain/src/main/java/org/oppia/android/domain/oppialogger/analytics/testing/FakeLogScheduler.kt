@@ -1,4 +1,4 @@
-package org.oppia.android.domain.testing.oppialogger.logscheduler
+package org.oppia.android.domain.oppialogger.analytics.testing
 
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -11,14 +11,14 @@ import javax.inject.Singleton
 @Singleton
 class FakeLogScheduler @Inject constructor() : MetricLogScheduler {
   private val schedulingStorageUsageMetricLoggingRequestIdList = mutableListOf<UUID>()
-  private val schedulingMemoryUsageMetricLoggingRequestIdList = mutableListOf<UUID>()
-  private val schedulingPeriodicPerformanceMetricLoggingRequestIdList = mutableListOf<UUID>()
+  private val schedulingPeriodicUiMetricLoggingRequestIdList = mutableListOf<UUID>()
+  private val schedulingPeriodicBackgroundMetricsLoggingRequestIdList = mutableListOf<UUID>()
 
   override fun enqueueWorkRequestForPeriodicBackgroundMetrics(
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   ) {
-    schedulingPeriodicPerformanceMetricLoggingRequestIdList.add(workRequest.id)
+    schedulingPeriodicBackgroundMetricsLoggingRequestIdList.add(workRequest.id)
   }
 
   override fun enqueueWorkRequestForStorageUsage(
@@ -32,7 +32,7 @@ class FakeLogScheduler @Inject constructor() : MetricLogScheduler {
     workManager: WorkManager,
     workRequest: PeriodicWorkRequest
   ) {
-    schedulingMemoryUsageMetricLoggingRequestIdList.add(workRequest.id)
+    schedulingPeriodicUiMetricLoggingRequestIdList.add(workRequest.id)
   }
 
   /**
@@ -44,15 +44,15 @@ class FakeLogScheduler @Inject constructor() : MetricLogScheduler {
 
   /**
    * Returns the most recent work request id that's stored in the
-   * [schedulingMemoryUsageMetricLoggingRequestIdList].
+   * [schedulingPeriodicUiMetricLoggingRequestIdList].
    */
-  fun getMostRecentMemoryUsageMetricLoggingRequestId() =
-    schedulingMemoryUsageMetricLoggingRequestIdList.last()
+  fun getMostRecentPeriodicUiMetricLoggingRequestId() =
+    schedulingPeriodicUiMetricLoggingRequestIdList.last()
 
   /**
    * Returns the most recent work request id that's stored in the
-   * [schedulingPeriodicPerformanceMetricLoggingRequestIdList].
+   * [schedulingPeriodicBackgroundMetricsLoggingRequestIdList].
    */
-  fun getMostRecentPeriodicPerformanceMetricLoggingRequestId() =
-    schedulingPeriodicPerformanceMetricLoggingRequestIdList.last()
+  fun getMostRecentPeriodicBackgroundMetricLoggingRequestId() =
+    schedulingPeriodicBackgroundMetricsLoggingRequestIdList.last()
 }
