@@ -9,8 +9,6 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,6 +20,8 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val ONE_GIGABYTES = 1024L * 1024L * 1024L
 
