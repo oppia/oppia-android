@@ -16,7 +16,12 @@ import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListFragment
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PoliciesFragmentArguments
+import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** The presenter for [HelpActivity]. */
@@ -32,18 +37,24 @@ class HelpActivityPresenter @Inject constructor(
   private lateinit var selectedHelpOptionTitle: String
   private var selectedDependencyIndex: Int? = null
   private var selectedLicenseIndex: Int? = null
+  private var internalPolicyPage: PolicyPage = PolicyPage.POLICY_PAGE_UNSPECIFIED
 
   fun handleOnCreate(
     helpOptionsTitle: String,
     isFromNavigationDrawer: Boolean,
     selectedFragment: String,
     dependencyIndex: Int,
-    licenseIndex: Int
+    licenseIndex: Int,
+    policiesActivityParams: PoliciesActivityParams?
   ) {
     selectedFragmentTag = selectedFragment
     selectedDependencyIndex = dependencyIndex
     selectedLicenseIndex = licenseIndex
     selectedHelpOptionTitle = helpOptionsTitle
+    if (policiesActivityParams != null) {
+      internalPolicyPage = policiesActivityParams.policyPage
+    }
+
     if (isFromNavigationDrawer) {
       activity.setContentView(R.layout.help_activity)
       setUpToolbar()
@@ -141,6 +152,12 @@ class HelpActivityPresenter @Inject constructor(
     outState.putString(SELECTED_FRAGMENT_SAVED_KEY, selectedFragmentTag)
     selectedDependencyIndex?.let { outState.putInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY, it) }
     selectedLicenseIndex?.let { outState.putInt(LICENSE_INDEX_SAVED_KEY, it) }
+    val policiesActivityParams =
+      PoliciesActivityParams
+        .newBuilder()
+        .setPolicyPage(internalPolicyPage)
+        .build()
+    outState.putProto(POLICIES_ARGUMENT_PROTO, policiesActivityParams)
   }
 
   private fun setUpToolbar() {
@@ -194,6 +211,7 @@ class HelpActivityPresenter @Inject constructor(
   ) {
     when (selectedFragment) {
       FAQ_LIST_FRAGMENT_TAG -> handleLoadFAQListFragment()
+      POLICIES_FRAGMENT_TAG -> handleLoadPoliciesFragment(internalPolicyPage)
       THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG -> handleLoadThirdPartyDependencyListFragment()
       LICENSE_LIST_FRAGMENT_TAG -> handleLoadLicenseListFragment(dependencyIndex)
       LICENSE_TEXT_FRAGMENT_TAG -> handleLoadLicenseTextViewerFragment(
@@ -295,5 +313,39 @@ class HelpActivityPresenter @Inject constructor(
 
   private fun getMultipaneOptionsFragment(): Fragment? {
     return activity.supportFragmentManager.findFragmentById(R.id.multipane_options_container)
+  }
+
+  fun handleLoadPoliciesFragment(policyPage: PolicyPage) {
+    internalPolicyPage = policyPage
+    selectPoliciesFragment(policyPage)
+
+    val policiesFragmentArguments =
+      PoliciesFragmentArguments
+        .newBuilder()
+        .setPolicyPage(policyPage)
+        .build()
+    val previousFragment = getMultipaneOptionsFragment()
+    if (previousFragment != null) {
+      activity.supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.multipane_options_container,
+      PoliciesFragment.newInstance(policiesFragmentArguments)
+    ).commitNow()
+  }
+
+  private fun selectPoliciesFragment(policyPage: PolicyPage) {
+    when (policyPage) {
+      PolicyPage.PRIVACY_POLICY -> setMultipaneContainerTitle(
+        resourceHandler.getStringInLocale(R.string.privacy_policy_title)
+      )
+      PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
+        resourceHandler.getStringInLocale(R.string.terms_of_service_title)
+      )
+      else -> { }
+    }
+    setMultipaneBackButtonVisibility(View.GONE)
+    selectedFragmentTag = POLICIES_FRAGMENT_TAG
+    selectedHelpOptionTitle = getMultipaneContainerTitle()
   }
 }

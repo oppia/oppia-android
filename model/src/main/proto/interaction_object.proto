@@ -95,6 +95,8 @@ message ImageWithRegions {
     }
 
     Region region = 2;
+    // Content description to be read by screen readers when the associated region is clicked.
+    string content_description = 3;
   }
   repeated LabeledRegion label_regions = 2;
 }
