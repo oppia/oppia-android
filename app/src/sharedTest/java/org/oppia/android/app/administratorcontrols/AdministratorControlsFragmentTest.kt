@@ -144,6 +144,7 @@ class AdministratorControlsFragmentTest {
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
   }
 
   @After

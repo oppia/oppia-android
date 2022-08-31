@@ -181,9 +181,16 @@ class TestPlatformParameterModule {
   }
 
   companion object {
+    private var enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+
+    /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceShowAutomaticUpdateTopicSettingUi(value: Boolean) {
+      enableAutomaticUpdateTopicSettingUi = value
+    }
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

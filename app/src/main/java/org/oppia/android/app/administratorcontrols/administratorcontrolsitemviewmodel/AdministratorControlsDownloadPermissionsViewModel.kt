@@ -2,8 +2,6 @@ package org.oppia.android.app.administratorcontrols.administratorcontrolsitemvie
 
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.DeviceSettings
 import org.oppia.android.app.model.ProfileId
