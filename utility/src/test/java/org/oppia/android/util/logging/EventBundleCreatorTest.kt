@@ -202,7 +202,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
   }
 
   @Test
@@ -261,7 +261,7 @@ class EventBundleCreatorTest {
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
   }
 
   @Test
@@ -379,7 +379,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("apk_size_bytes").isEqualTo(TEST_APK_SIZE)
   }
 
@@ -403,7 +403,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("storage_usage_bytes").isEqualTo(TEST_STORAGE_USAGE)
   }
 
@@ -427,7 +427,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("startup_latency_millis").isEqualTo(TEST_STARTUP_LATENCY)
   }
 
@@ -451,7 +451,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("total_pss_bytes").isEqualTo(TEST_MEMORY_USAGE)
   }
 
@@ -475,7 +475,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("bytes_received").isEqualTo(TEST_NETWORK_USAGE)
     assertThat(bundle).longInt("bytes_sent").isEqualTo(TEST_NETWORK_USAGE)
   }
@@ -500,7 +500,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("test_screen_unspecified")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("cpu_usage").isEqualTo(TEST_CPU_USAGE)
   }
 
