@@ -140,7 +140,7 @@ class ProfilePictureActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createProfilePictureActivityIntent(internalProfileId)
-        .getCurrentAppScreenName()
+      .getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_PICTURE_ACTIVITY)
   }
