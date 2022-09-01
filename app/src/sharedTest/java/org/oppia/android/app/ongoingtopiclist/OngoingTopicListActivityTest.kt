@@ -149,7 +149,7 @@ class OngoingTopicListActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
       createOngoingTopicListActivityIntent(internalProfileId).getCurrentAppScreenName()
 

@@ -144,7 +144,7 @@ class RevisionCardActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
       context, 1, FRACTIONS_TOPIC_ID, 1
     ).getCurrentAppScreenName()

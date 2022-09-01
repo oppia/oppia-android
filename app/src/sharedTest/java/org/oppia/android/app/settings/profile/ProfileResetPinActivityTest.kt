@@ -129,7 +129,7 @@ class ProfileResetPinActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
       createProfileResetPinActivityIntent(internalProfileId, true).getCurrentAppScreenName()
 

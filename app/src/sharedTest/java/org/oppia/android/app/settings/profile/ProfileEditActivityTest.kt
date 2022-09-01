@@ -148,7 +148,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
       ProfileEditActivity.createProfileEditActivity(context, 1).getCurrentAppScreenName()
 

@@ -142,7 +142,7 @@ class StoryActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createStoryActivityIntent(
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID_0,

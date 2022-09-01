@@ -165,7 +165,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = PinPasswordActivity.createPinPasswordActivityIntent(
       context = context,
       adminPin = adminPin,

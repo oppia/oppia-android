@@ -162,7 +162,7 @@ class AdminPinActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = AdminPinActivity.createAdminPinActivityIntent(
       context = context,
       profileId = 0,

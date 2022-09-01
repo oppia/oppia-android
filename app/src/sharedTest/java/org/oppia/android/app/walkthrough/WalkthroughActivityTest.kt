@@ -123,7 +123,7 @@ class WalkthroughActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = WalkthroughActivity.createWalkthroughActivityIntent(
       context, 1
     ).getCurrentAppScreenName()

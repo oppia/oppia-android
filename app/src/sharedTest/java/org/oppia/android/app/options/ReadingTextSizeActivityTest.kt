@@ -117,7 +117,7 @@ class ReadingTextSizeActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createReadingTextSizeActivityIntent(summaryValue).getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.READING_TEXT_SIZE_ACTIVITY)

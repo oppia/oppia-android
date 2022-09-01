@@ -139,7 +139,7 @@ class FAQSingleActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createFAQSingleActivity().getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FAQ_SINGLE_ACTIVITY)

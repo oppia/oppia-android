@@ -126,7 +126,7 @@ class ViewEventLogsActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createViewEventLogsActivityIntent().getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.VIEW_EVENT_LOGS_ACTIVITY)

@@ -633,7 +633,7 @@ class AdministratorControlsActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createAdministratorControlsActivityIntent(1).getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY)

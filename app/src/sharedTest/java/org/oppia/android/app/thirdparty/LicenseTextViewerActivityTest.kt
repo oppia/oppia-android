@@ -115,7 +115,7 @@ class LicenseTextViewerActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createLicenseTextViewerActivityIntent(0, 0).getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY)

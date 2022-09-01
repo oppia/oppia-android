@@ -1690,7 +1690,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createAddProfileActivityIntent().getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.ADD_PROFILE_ACTIVITY)

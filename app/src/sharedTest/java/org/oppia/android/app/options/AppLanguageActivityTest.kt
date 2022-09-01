@@ -117,7 +117,7 @@ class AppLanguageActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createAppLanguageActivityIntent(summaryValue).getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.APP_LANGUAGE_ACTIVITY)

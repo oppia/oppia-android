@@ -61,7 +61,7 @@ enum ScreenName {
   RECENTLY_PLAYED_ACTIVITY = 16;
 
   // Screen name value for the scenario when the my download activity is visible to the user.
-  MY_DOWNLOAD_ACTIVITY = 17;
+  MY_DOWNLOADS_ACTIVITY = 17;
 
   // Screen name value for the scenario when the onboarding activity is visible to the user.
   ONBOARDING_ACTIVITY = 18;

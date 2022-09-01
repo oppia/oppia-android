@@ -251,7 +251,7 @@ class ExplorationActivityTest {
   )
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createExplorationActivityIntent(
       internalProfileId,
       TEST_TOPIC_ID_0,

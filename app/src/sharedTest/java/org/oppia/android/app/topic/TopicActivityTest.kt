@@ -139,7 +139,7 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
       context, 1, FRACTIONS_TOPIC_ID
     ).getCurrentAppScreenName()

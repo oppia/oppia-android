@@ -120,7 +120,7 @@ class ForceNetworkTypeActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createForceNetworkTypeActivityIntent().getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FORCE_NETWORK_TYPE_ACTIVITY)

@@ -109,7 +109,7 @@ class FaqListActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createFaqListActivityIntent().getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FAQ_LIST_ACTIVITY)

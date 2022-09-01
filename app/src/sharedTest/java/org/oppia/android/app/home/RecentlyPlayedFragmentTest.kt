@@ -124,6 +124,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -198,6 +200,13 @@ class RecentlyPlayedFragmentTest {
       context = context,
       internalProfileId = internalProfileId
     )
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createRecentlyPlayedActivityIntent(internalProfileId).getCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.RECENTLY_PLAYED_ACTIVITY)
   }
 
   @Test

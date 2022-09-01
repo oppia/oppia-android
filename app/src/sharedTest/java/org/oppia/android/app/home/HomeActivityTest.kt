@@ -222,7 +222,7 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createHomeActivityIntent(internalProfileId).getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.HOME_ACTIVITY)

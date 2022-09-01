@@ -147,7 +147,7 @@ class ResumeLessonActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createResumeLessonActivityIntent().getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.RESUME_LESSON_ACTIVITY)

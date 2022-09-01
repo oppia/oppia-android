@@ -153,7 +153,7 @@ class AdminAuthActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = AdminAuthActivity.createAdminAuthActivityIntent(
       context = context,
       adminPin = "12345",

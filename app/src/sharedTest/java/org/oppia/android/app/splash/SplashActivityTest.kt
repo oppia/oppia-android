@@ -400,7 +400,7 @@ class SplashActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     activityTestRule.launchActivity(null)
 
     val currentScreenName = activityTestRule.activity.intent.getCurrentAppScreenName()

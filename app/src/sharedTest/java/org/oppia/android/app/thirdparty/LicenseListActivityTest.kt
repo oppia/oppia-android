@@ -111,7 +111,7 @@ class LicenseListActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createLicenseListActivityIntent(0).getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.LICENSE_LIST_ACTIVITY)

@@ -120,13 +120,13 @@ class MyDownloadsActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = MyDownloadsActivity.createMyDownloadsActivityIntent(
       ApplicationProvider.getApplicationContext(),
       1
     ).getCurrentAppScreenName()
 
-    assertThat(screenName).isEqualTo(ScreenName.MY_DOWNLOAD_ACTIVITY)
+    assertThat(screenName).isEqualTo(ScreenName.MY_DOWNLOADS_ACTIVITY)
   }
 
   @Singleton

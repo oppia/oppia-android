@@ -224,7 +224,7 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
       context, ArrayList(SKILL_ID_LIST), profileId
     ).getCurrentAppScreenName()

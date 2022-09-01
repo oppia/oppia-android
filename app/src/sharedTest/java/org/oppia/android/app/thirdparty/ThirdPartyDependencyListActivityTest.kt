@@ -115,7 +115,7 @@ class ThirdPartyDependencyListActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = createThirdPartyDependencyListActivityIntent().getCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY)

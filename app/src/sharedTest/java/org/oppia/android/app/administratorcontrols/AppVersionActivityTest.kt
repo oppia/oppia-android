@@ -162,7 +162,7 @@ class AppVersionActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createAppVersionActivityIntent().getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.APP_VERSION_ACTIVITY)

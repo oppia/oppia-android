@@ -108,7 +108,7 @@ class OptionsActivityTest {
   }
 
   @Test
-  fun testActivity_getIntent_verifyScreenNameInIntent() {
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createOptionsActivityIntent().getCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.OPTIONS_ACTIVITY)
