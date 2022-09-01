@@ -16,6 +16,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.R
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -56,6 +57,7 @@ class SelectionInteractionViewModel private constructor(
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField(false)
+  val selectedItemText = ObservableField("Please select all correct choices")
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -124,6 +126,7 @@ class SelectionInteractionViewModel private constructor(
       isCurrentlySelected -> {
         selectedItems -= itemIndex
         updateIsAnswerAvailable()
+        updateSelectionText()
         false
       }
       !areCheckboxesBound() -> {
@@ -139,11 +142,27 @@ class SelectionInteractionViewModel private constructor(
         //  number required.
         selectedItems += itemIndex
         updateIsAnswerAvailable()
+        updateSelectionText()
         true
       }
       else -> {
         // Do not change the current status if it isn't valid to do so.
         isCurrentlySelected
+      }
+    }
+  }
+
+  private fun updateSelectionText(){
+    if (selectedItems.size < maxAllowableSelectionCount) {
+      selectedItemText.set("You may select more choices")
+    }
+    if (selectedItems.size == 0) {
+      selectedItemText.set("Please select all correct choices")
+    }
+    if (selectedItems.size == maxAllowableSelectionCount) {
+      selectedItemText.set("No more than $maxAllowableSelectionCount choices may be selected.")
+      if(areCheckboxesBound()) {
+
       }
     }
   }
