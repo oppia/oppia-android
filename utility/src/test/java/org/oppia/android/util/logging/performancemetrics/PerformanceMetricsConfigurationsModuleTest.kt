@@ -23,7 +23,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val ONE_GIGABYTES = 1024L * 1024L * 1024L
+private const val ONE_GIGABYTE = 1024L * 1024L * 1024L
 
 /** Tests for [PerformanceMetricsConfigurationsModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -55,23 +55,23 @@ class PerformanceMetricsConfigurationsModuleTest {
   }
 
   @Test
-  fun testConfigModule_verifyLowStorageTierUpperBound() {
-    assertThat(lowStorageTierUpperBound).isEqualTo(ONE_GIGABYTES * 32L)
+  fun testLowStorageTierUpperBound_isThirtyTwoGigabytes() {
+    assertThat(lowStorageTierUpperBound).isEqualTo(ONE_GIGABYTE * 32L)
   }
 
   @Test
-  fun testConfigModule_verifyMediumStorageTierUpperBound() {
-    assertThat(mediumStorageTierUpperBound).isEqualTo(ONE_GIGABYTES * 64L)
+  fun testMediumStorageTierUpperBound_isSixtyFourGigabytes() {
+    assertThat(mediumStorageTierUpperBound).isEqualTo(ONE_GIGABYTE * 64L)
   }
 
   @Test
-  fun testConfigModule_verifyCorrectValueOfLowMemoryTierUpperBound() {
-    assertThat(lowMemoryTierUpperBound).isEqualTo(ONE_GIGABYTES * 2L)
+  fun testLowMemoryTierUpperBound_isTwoGigabytes() {
+    assertThat(lowMemoryTierUpperBound).isEqualTo(ONE_GIGABYTE * 2L)
   }
 
   @Test
-  fun testConfigModule_verifyCorrectValueOfMediumMemoryTierUpperBound() {
-    assertThat(mediumMemoryTierUpperBound).isEqualTo(ONE_GIGABYTES * 3L)
+  fun testLowMemoryTierUpperBound_isThreeGigabytes() {
+    assertThat(mediumMemoryTierUpperBound).isEqualTo(ONE_GIGABYTE * 3L)
   }
 
   private fun setUpTestApplicationComponent() {

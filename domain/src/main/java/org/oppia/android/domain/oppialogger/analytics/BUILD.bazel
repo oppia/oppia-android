@@ -49,7 +49,7 @@ kt_android_library(
     srcs = [
         "LearnerAnalyticsLogger.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
@@ -64,7 +64,7 @@ kt_android_library(
     srcs = [
         "PerformanceMetricsLogger.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         ":performance_metrics_controller",
@@ -95,7 +95,7 @@ kt_android_library(
     srcs = [
         "LearnerAnalyticsInactivityLimitMillis.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
@@ -106,7 +106,7 @@ kt_android_library(
     srcs = [
         "ApplicationLifecycleObserver.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
