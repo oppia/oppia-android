@@ -29,16 +29,19 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
     return listOf(
       createLabeledRegion(
         "Region 3",
+        "You have selected Region 3",
         createPoint2d(0.24242424242424243f, 0.22400442477876106f) to
           createPoint2d(0.49242424242424243f, 0.7638274336283186f)
       ),
       createLabeledRegion(
         "Region 1",
+        "You have selected Region 1",
         createPoint2d(0.553030303030303f, 0.5470132743362832f) to
           createPoint2d(0.7613636363636364f, 0.7638274336283186f)
       ),
       createLabeledRegion(
         "Region 2",
+        "You have selected Region 2",
         createPoint2d(0.5454545454545454f, 0.22842920353982302f) to
           createPoint2d(0.7537878787878788f, 0.4540929203539823f)
       )
@@ -47,9 +50,10 @@ class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
 
   private fun createLabeledRegion(
     label: String,
+    contentDescription: String,
     points: Pair<Point2d, Point2d>
   ): LabeledRegion {
-    return LabeledRegion.newBuilder().setLabel(label)
+    return LabeledRegion.newBuilder().setLabel(label).setContentDescription(contentDescription)
       .setRegion(
         LabeledRegion.Region.newBuilder()
           .setRegionType(LabeledRegion.Region.RegionType.RECTANGLE)
