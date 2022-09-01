@@ -67,7 +67,9 @@ message InputInteractionViewTestActivityParams {
 
 // Corresponds to intent extras of destination activity.
 message DestinationScreen {
+  // Indicates destination screen which we send in intent extras with RecentlyPlayedActivityParams.
   oneof destination_screen {
+    // Indicates information about the RecentlyPlayedActivity.
     RecentlyPlayedActivityParams recently_played_activity_params = 1;
   }
 }

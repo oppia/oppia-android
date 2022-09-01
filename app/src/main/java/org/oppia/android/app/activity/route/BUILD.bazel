@@ -1,5 +1,5 @@
 """
-Constructs for setting up ActivityRoute for injection in the Dagger graph.
+Constructs for setting up activity routing support in the Dagger graph.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -16,7 +16,7 @@ kt_android_library(
         "ActivityRouterModule.kt",
     ],
     visibility = [
-        "//app:app_visibility",
+        "//:oppia_prod_module_visibility",
     ],
     deps = [
         ":dagger",

@@ -58,6 +58,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.app.activity.route.ActivityRouterModule
 
 /**
  * Root Dagger component for the alpha version of the application specific to a user study in Kenya.
@@ -83,7 +84,7 @@ import javax.inject.Singleton
     PlatformParameterAlphaKenyaModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
-    LocaleProdModule::class, ActivityRecreatorProdModule::class,
+    LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
