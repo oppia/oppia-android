@@ -2,7 +2,6 @@ package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
