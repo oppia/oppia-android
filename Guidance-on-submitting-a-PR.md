@@ -149,8 +149,10 @@ You have successfully created a pull request! Now, wait for your code to get rev
 
 When your reviewer has reviewed the code, you'll get an email. You'll need to respond in two ways:
 1. Make a new commit addressing the comments you agree with, and push it to the same branch. (Continue to use descriptive commit messages. If your commit addresses lots of disparate review comments, it's fine to refer to the original commit message and add something like "(address review comments)".)
-       - **Always make commits locally, and then push to GitHub.** Don't make changes using the online GitHub editor -- this bypasses lint/presubmit checks, and will cause the code on GitHub to diverge from the code on your machine.
-       - ** Never force-push changes to GitHub, especially after reviews have started.** This is disallowed and may result in your PR being closed, because it overwrites history on GitHub and makes the incremental changes harder to review.
+
+    - **Always make commits locally, and then push to GitHub.** Don't make changes using the online GitHub editor -- this bypasses lint/presubmit checks, and will cause the code on GitHub to diverge from the code on your machine.
+
+    - **Never force-push changes to GitHub, especially after reviews have started.** This is disallowed and may result in your PR being closed, because it overwrites history on GitHub and makes the incremental changes harder to review.
 
     In addition, reply to each comment via the Files Changed tab, choosing the “Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. When you’ve responded to all comments, submit the review to add all your messages to the main thread. All comments must be responded to and resolved before LGTM can be given.
 
