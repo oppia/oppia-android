@@ -8,8 +8,7 @@ import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import org.oppia.android.app.model.ScreenName.BACKGROUND_WORKER_SCREEN
-import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.domain.oppialogger.analytics.ActivityLifecycleObserver
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 import org.oppia.android.domain.util.getStringFromData
@@ -80,7 +79,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicBackgroundMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logNetworkUsage(BACKGROUND_WORKER_SCREEN)
+      performanceMetricsLogger.logNetworkUsage(BACKGROUND_SCREEN)
       // TODO(#4340): Add functionality to log cpu usage performance metrics.
       Result.success()
     } catch (e: Exception) {
@@ -91,7 +90,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleStorageUsageMetricLogging(): Result {
     return try {
-      performanceMetricsLogger.logStorageUsage(BACKGROUND_WORKER_SCREEN)
+      performanceMetricsLogger.logStorageUsage(BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -102,11 +101,7 @@ class MetricLogSchedulingWorker private constructor(
   private fun schedulePeriodicUiMetricLogging(): Result {
     return try {
       val currentScreen = activityLifecycleObserver.getCurrentScreen()
-      if (currentScreen != SCREEN_NAME_UNSPECIFIED) {
-        performanceMetricsLogger.logMemoryUsage(currentScreen)
-      } else {
-        performanceMetricsLogger.logMemoryUsage(BACKGROUND_WORKER_SCREEN)
-      }
+      performanceMetricsLogger.logMemoryUsage(currentScreen)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
@@ -62,8 +63,7 @@ class ActivityLifecycleObserver @Inject constructor(
   }
 
   override fun onActivityPaused(activity: Activity) {
-    // It's necessary to remove the value of active UI whenever the it leaves foreground.
-    currentScreen = SCREEN_NAME_UNSPECIFIED
+    currentScreen = BACKGROUND_SCREEN
   }
 
   override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}

@@ -5,7 +5,7 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-// The list of names of all the ui-screens that are supported by the Android App.
+// The list of names of all the UI-screens that are supported by the Android App.
 enum ScreenName {
 
   // Default screen name value which is used when the screen_name isn't set.
@@ -23,9 +23,9 @@ enum ScreenName {
   // Screen name value for the scenario when the home activity is visible to the user.
   HOME_ACTIVITY = 4;
 
-  // Screen name value for the scenario when the app is in background and no particular ui is
+  // Screen name value for the scenario when the app is in background and no particular UI is
   // visible to the user.
-  BACKGROUND_WORKER_SCREEN = 5;
+  BACKGROUND_SCREEN = 5;
 
   // Screen name value for the scenario when the app version activity is visible to the user.
   APP_VERSION_ACTIVITY = 6;
@@ -40,7 +40,7 @@ enum ScreenName {
   COMPLETED_STORY_LIST_ACTIVITY = 9;
 
   // Screen name value for the scenario when the faq single activity is visible to the user.
-  FAQ_SINGLE_ACTIVITY= 10;
+  FAQ_SINGLE_ACTIVITY = 10;
 
   // Screen name value for the scenario when the faq list activity is visible to the user.
   FAQ_LIST_ACTIVITY = 11;
@@ -151,8 +151,8 @@ enum ScreenName {
   ADMIN_PIN_ACTIVITY = 46;
 }
 
-// Defines the current visible ui screen of the application.
+// Defines the current visible UI screen of the application.
 message CurrentAppScreen {
-  //S creen name value depicting the name of the currently visible ui screen.
+  // Screen name value depicting the name of the currently visible UI screen.
   ScreenName screen_name = 1;
 }
