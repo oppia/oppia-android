@@ -112,6 +112,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [DeveloperOptionsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -162,7 +163,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createDeveloperOptionsActivityIntent(internalProfileId).getCurrentAppScreenName()
+      createDeveloperOptionsActivityIntent(internalProfileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.DEVELOPER_OPTIONS_ACTIVITY)
   }

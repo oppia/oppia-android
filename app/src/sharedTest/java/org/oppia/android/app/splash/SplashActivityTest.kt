@@ -95,7 +95,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -401,9 +401,12 @@ class SplashActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    activityTestRule.launchActivity(null)
+    initializeTestApplication()
 
-    val currentScreenName = activityTestRule.activity.intent.getCurrentAppScreenName()
+    activityTestRule.launchActivity(null)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val currentScreenName = activityTestRule.activity.intent.extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.SPLASH_ACTIVITY)
   }

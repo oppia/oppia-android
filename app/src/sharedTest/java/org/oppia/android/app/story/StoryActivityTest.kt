@@ -89,7 +89,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -147,7 +147,7 @@ class StoryActivityTest {
       internalProfileId = internalProfileId,
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0
-    ).getCurrentAppScreenName()
+    ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.STORY_ACTIVITY)
   }

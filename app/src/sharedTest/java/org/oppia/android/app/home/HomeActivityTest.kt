@@ -142,6 +142,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -223,7 +224,7 @@ class HomeActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createHomeActivityIntent(internalProfileId).getCurrentAppScreenName()
+    val screenName = createHomeActivityIntent(internalProfileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.HOME_ACTIVITY)
   }

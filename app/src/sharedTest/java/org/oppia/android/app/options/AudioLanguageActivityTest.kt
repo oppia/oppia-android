@@ -82,6 +82,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [AudioLanguageActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -118,7 +119,7 @@ class AudioLanguageActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createDefaultAudioActivityIntent(summaryValue).getCurrentAppScreenName()
+    val screenName = createDefaultAudioActivityIntent(summaryValue).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.AUDIO_LANGUAGE_ACTIVITY)
   }

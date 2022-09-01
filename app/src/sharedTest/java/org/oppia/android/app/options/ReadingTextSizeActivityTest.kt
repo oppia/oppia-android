@@ -82,6 +82,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [ReadingTextSizeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -118,7 +119,7 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createReadingTextSizeActivityIntent(summaryValue).getCurrentAppScreenName()
+    val screenName = createReadingTextSizeActivityIntent(summaryValue).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.READING_TEXT_SIZE_ACTIVITY)
   }

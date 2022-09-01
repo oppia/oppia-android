@@ -123,6 +123,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -634,7 +635,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAdministratorControlsActivityIntent(1).getCurrentAppScreenName()
+    val screenName = createAdministratorControlsActivityIntent(1)
+      .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY)
   }

@@ -83,6 +83,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [FAQListActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -110,7 +111,7 @@ class FaqListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createFaqListActivityIntent().getCurrentAppScreenName()
+    val screenName = createFaqListActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FAQ_LIST_ACTIVITY)
   }

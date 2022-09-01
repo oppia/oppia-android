@@ -82,6 +82,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [HelpActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -109,7 +110,7 @@ class HelpActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createHelpActivityIntent().getCurrentAppScreenName()
+    val screenName = createHelpActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.HELP_ACTIVITY)
   }

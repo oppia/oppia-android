@@ -102,6 +102,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -163,7 +164,7 @@ class AppVersionActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAppVersionActivityIntent().getCurrentAppScreenName()
+    val screenName = createAppVersionActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.APP_VERSION_ACTIVITY)
   }

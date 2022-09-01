@@ -92,7 +92,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -160,7 +160,7 @@ class AdminAuthActivityTest {
       profileId = internalProfileId,
       colorRgb = -10710042,
       adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-    ).getCurrentAppScreenName()
+    ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ADMIN_AUTH_ACTIVITY)
   }

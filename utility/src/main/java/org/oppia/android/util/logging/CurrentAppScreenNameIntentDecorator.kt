@@ -22,7 +22,7 @@ object CurrentAppScreenNameIntentDecorator {
   }
 
   /** Returns [ScreenName] after unpacking intent. */
-  fun Intent.getCurrentAppScreenName(): ScreenName {
+  fun Intent.extractCurrentAppScreenName(): ScreenName {
     return this.getProtoExtra(
       CURRENT_APP_SCREEN_NAME_KEY,
       CurrentAppScreen.getDefaultInstance()

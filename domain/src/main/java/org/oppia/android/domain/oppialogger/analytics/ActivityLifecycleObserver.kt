@@ -7,7 +7,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,7 +51,7 @@ class ActivityLifecycleObserver @Inject constructor(
   }
 
   override fun onActivityResumed(activity: Activity) {
-    currentScreen = activity.intent.getCurrentAppScreenName()
+    currentScreen = activity.intent.extractCurrentAppScreenName()
     if (!isStartupLatencyLogged) {
       performanceMetricsLogger.logStartupLatency(
         getStartupLatency(initialTimestamp),

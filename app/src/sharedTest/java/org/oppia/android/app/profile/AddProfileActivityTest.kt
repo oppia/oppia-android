@@ -121,6 +121,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -1691,7 +1692,7 @@ class AddProfileActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createAddProfileActivityIntent().getCurrentAppScreenName()
+    val currentScreenName = createAddProfileActivityIntent().extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.ADD_PROFILE_ACTIVITY)
   }

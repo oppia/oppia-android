@@ -105,6 +105,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [OngoingTopicListActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -151,7 +152,7 @@ class OngoingTopicListActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createOngoingTopicListActivityIntent(internalProfileId).getCurrentAppScreenName()
+      createOngoingTopicListActivityIntent(internalProfileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ONGOING_TOPIC_LIST_ACTIVITY)
   }

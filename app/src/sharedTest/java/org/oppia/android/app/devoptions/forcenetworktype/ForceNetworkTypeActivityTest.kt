@@ -89,6 +89,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [ForceNetworkTypeActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -121,7 +122,7 @@ class ForceNetworkTypeActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createForceNetworkTypeActivityIntent().getCurrentAppScreenName()
+    val screenName = createForceNetworkTypeActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FORCE_NETWORK_TYPE_ACTIVITY)
   }

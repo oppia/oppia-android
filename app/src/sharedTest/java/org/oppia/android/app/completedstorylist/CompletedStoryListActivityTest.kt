@@ -106,6 +106,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [CompletedStoryListActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -173,6 +174,7 @@ class CompletedStoryListActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createCompletedStoryListActivityIntent(internalProfileId)
+      .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.COMPLETED_STORY_LIST_ACTIVITY)
   }

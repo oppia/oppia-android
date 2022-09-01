@@ -70,7 +70,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -116,7 +116,7 @@ class ThirdPartyDependencyListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createThirdPartyDependencyListActivityIntent().getCurrentAppScreenName()
+    val currentScreenName = createThirdPartyDependencyListActivityIntent().extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY)
   }

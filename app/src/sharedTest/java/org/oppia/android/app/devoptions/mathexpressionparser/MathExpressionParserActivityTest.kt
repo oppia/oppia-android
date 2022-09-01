@@ -85,6 +85,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [MathExpressionParserActivity] and its presenter. */
 // FunctionName: test names are conventionally named with underscores.
@@ -115,7 +117,8 @@ class MathExpressionParserActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = MathExpressionParserActivity.createIntent(context).getCurrentAppScreenName()
+    val screenName = MathExpressionParserActivity.createIntent(context)
+      .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY)
   }

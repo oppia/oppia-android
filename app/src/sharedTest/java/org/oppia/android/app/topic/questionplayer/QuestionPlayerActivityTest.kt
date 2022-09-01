@@ -136,7 +136,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -227,7 +227,7 @@ class QuestionPlayerActivityTest {
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
       context, ArrayList(SKILL_ID_LIST), profileId
-    ).getCurrentAppScreenName()
+    ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.QUESTION_PLAYER_ACTIVITY)
   }

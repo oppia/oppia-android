@@ -163,6 +163,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -258,7 +259,7 @@ class ExplorationActivityTest {
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
       shouldSavePartialProgress = false
-    ).getCurrentAppScreenName()
+    ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.EXPLORATION_ACTIVITY)
   }

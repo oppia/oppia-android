@@ -82,6 +82,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.getCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -140,7 +141,7 @@ class FAQSingleActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createFAQSingleActivity().getCurrentAppScreenName()
+    val screenName = createFAQSingleActivity().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FAQ_SINGLE_ACTIVITY)
   }

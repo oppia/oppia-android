@@ -116,6 +116,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -168,7 +169,7 @@ class AdminPinActivityTest {
       profileId = 0,
       colorRgb = -10710042,
       adminPinEnum = 0
-    ).getCurrentAppScreenName()
+    ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.ADMIN_PIN_ACTIVITY)
   }

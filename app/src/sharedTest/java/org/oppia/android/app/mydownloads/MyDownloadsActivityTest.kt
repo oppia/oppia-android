@@ -81,6 +81,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -124,7 +125,7 @@ class MyDownloadsActivityTest {
     val screenName = MyDownloadsActivity.createMyDownloadsActivityIntent(
       ApplicationProvider.getApplicationContext(),
       1
-    ).getCurrentAppScreenName()
+    ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MY_DOWNLOADS_ACTIVITY)
   }

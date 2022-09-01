@@ -88,6 +88,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [MarkTopicsCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -127,7 +128,7 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      createMarkTopicsCompletedActivityIntent(internalProfileId).getCurrentAppScreenName()
+      createMarkTopicsCompletedActivityIntent(internalProfileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY)
   }
