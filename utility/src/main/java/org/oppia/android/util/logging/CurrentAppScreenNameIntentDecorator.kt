@@ -14,11 +14,13 @@ object CurrentAppScreenNameIntentDecorator {
    * Packs the intent with a [CurrentAppScreen] proto object that sets [screenName] as the current
    * screen.
    */
-  fun Intent.decorateWithScreenName(screenName: ScreenName) {
-    this.putProtoExtra(
-      CURRENT_APP_SCREEN_NAME_KEY,
-      CurrentAppScreen.newBuilder().setScreenName(screenName).build()
-    )
+  fun Intent.decorateWithScreenName(screenName: ScreenName?) {
+    if(screenName != null) {
+      this.putProtoExtra(
+        CURRENT_APP_SCREEN_NAME_KEY,
+        CurrentAppScreen.newBuilder().setScreenName(screenName).build()
+      )
+    }
   }
 
   /** Returns [ScreenName] after unpacking intent. */
