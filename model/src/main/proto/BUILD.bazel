@@ -51,6 +51,17 @@ java_lite_proto_library(
 )
 
 oppia_proto_library(
+    name = "performance_metrics_event_logger_proto",
+    srcs = ["performance_metrics.proto"],
+)
+
+java_lite_proto_library(
+    name = "performance_metrics_event_logger_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":performance_metrics_event_logger_proto"],
+)
+
+oppia_proto_library(
     name = "exploration_checkpoint_proto",
     srcs = ["exploration_checkpoint.proto"],
     deps = [":exploration_proto"],
