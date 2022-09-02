@@ -72,9 +72,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "event_logger",
+    name = "analytics_event_logger",
     srcs = [
-        "EventLogger.kt",
+        "AnalyticsEventLogger.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
