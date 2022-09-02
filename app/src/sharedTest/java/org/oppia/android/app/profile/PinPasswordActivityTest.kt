@@ -1131,8 +1131,6 @@ class PinPasswordActivityTest {
         profileId = userId
       )
     ).use {
-      onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText(""), closeSoftKeyboard())
       onView(withId(R.id.forgot_pin)).perform(click())
       onView(
         allOf(
