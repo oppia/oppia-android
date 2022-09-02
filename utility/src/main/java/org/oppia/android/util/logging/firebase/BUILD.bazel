@@ -69,7 +69,7 @@ kt_android_library(
         ":prod_impl",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
-        "//utility/src/main/java/org/oppia/android/util/logging:event_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:analytics_event_logger",
     ],
 )
 
