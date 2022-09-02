@@ -61,6 +61,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
+
 /** Tests for [MetricLogSchedulingWorker]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
@@ -178,6 +180,27 @@ class MetricLogSchedulingWorkerTest {
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testScheduler_enqueueRequestForIncorrectWorkerCase_verifyWorkRequestReturnsFailureResult() {
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData: Data = Data.Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        INCORRECT_WORKER_CASE
+      ).build()
+
+    val request = OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
+      .setInputData(inputData)
+      .build()
+
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+    val workInfo = workManager.getWorkInfoById(request.id)
+
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
   }
 
   private fun setUpTestApplicationComponent() {
