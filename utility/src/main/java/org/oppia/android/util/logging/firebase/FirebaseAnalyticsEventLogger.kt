@@ -6,8 +6,8 @@ import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.AnalyticsEventLogger
+import org.oppia.android.util.logging.EventBundleCreator
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.util.Locale
