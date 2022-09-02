@@ -58,9 +58,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "debug_event_logger",
+    name = "debug_analytics_event_logger",
     srcs = [
-        "DebugEventLogger.kt",
+        "DebugAnalyticsEventLogger.kt",
     ],
     visibility = [
         "//app:__pkg__",
