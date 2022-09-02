@@ -63,6 +63,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
@@ -150,6 +151,22 @@ class ApplicationLifecycleObserverTest {
       hasLearnerIdThat().isEmpty()
       hasInstallationIdThat().isNotEmpty()
     }
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_setsAppInForeground() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onAppInForeground()
+
+    assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
+  }
+
+  @Test
+  fun testObserver_onAppInBackground_setsAppInBackground() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onAppInBackground()
+
+    assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
   }
 
   private fun waitInBackgroundFor(millis: Long) {

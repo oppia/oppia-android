@@ -127,6 +127,18 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "metric_log_scheduler",
+    srcs = [
+        "MetricLogScheduler.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_work_work-runtime",
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
     name = "sync_status_manager",
     srcs = [
         "SyncStatusManager.kt",

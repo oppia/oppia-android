@@ -5,8 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.util.logging.AnalyticsEventLogger
+import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.EventBundleCreator
+import org.oppia.android.util.logging.AnalyticsEventLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.util.Locale
 import javax.inject.Inject
@@ -19,7 +21,7 @@ class FirebaseAnalyticsEventLogger private constructor(
   private val firebaseAnalytics: FirebaseAnalytics,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val eventBundleCreator: EventBundleCreator
-) : AnalyticsEventLogger {
+) : AnalyticsEventLogger, PerformanceMetricsEventLogger {
   /**
    * Logs an event to Firebase Analytics with [NETWORK_USER_PROPERTY] and [COUNTRY_USER_PROPERTY].
    */
@@ -30,6 +32,13 @@ class FirebaseAnalyticsEventLogger private constructor(
     // TODO(#3792): Remove this usage of Locale.
     firebaseAnalytics.setUserProperty(COUNTRY_USER_PROPERTY, Locale.getDefault().displayCountry)
     firebaseAnalytics.setUserProperty(NETWORK_USER_PROPERTY, getNetworkStatus())
+  }
+
+  /**
+   * Logs a performance metric to Firebase Analytics with [NETWORK_USER_PROPERTY] and [COUNTRY_USER_PROPERTY].
+   */
+  override fun logPerformanceMetric(oppiaMetricLog: OppiaMetricLog) {
+    // TODO(#4335): Add implementation to upload performance metrics logs to firebase.
   }
 
   private fun getNetworkStatus(): String {
@@ -57,8 +66,20 @@ class FirebaseAnalyticsEventLogger private constructor(
      * Returns a new [FirebaseAnalyticsEventLogger] for the current application context.
      *
      * Generally, only one of these needs to be created per application.
+     *
+     * This [FirebaseAnalyticsEventLogger] implements the [AnalyticsEventLogger] for facilitating analytics log
+     * reporting.
      */
     fun create(): AnalyticsEventLogger =
+      FirebaseAnalyticsEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
+
+    /**
+     * Returns a new [FirebaseAnalyticsEventLogger] for the current application context.
+     *
+     * This [FirebaseAnalyticsEventLogger] implements the [PerformanceMetricsEventLogger] for facilitating
+     * performance metrics log reporting.
+     */
+    fun createPerformanceMetricEventLogger(): PerformanceMetricsEventLogger =
       FirebaseAnalyticsEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
   }
 }

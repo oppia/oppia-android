@@ -15,7 +15,7 @@
     android:paddingTop="24dp"
     android:paddingBottom="12dp"
     android:text="@string/profile_picture_edit_alert_dialog_view_profile_picture"
-    android:textColor="@color/color_def_black"
+    android:textColor="@color/component_color_profile_picture_edit_dialog_text_color"
     android:textSize="16sp" />
 
   <TextView
@@ -29,6 +29,6 @@
     android:paddingTop="12dp"
     android:paddingBottom="16dp"
     android:text="@string/profile_picture_edit_alert_dialog_choose_from_library"
-    android:textColor="@color/color_def_black"
+    android:textColor="@color/component_color_profile_picture_edit_dialog_text_color"
     android:textSize="16sp" />
 </LinearLayout>
