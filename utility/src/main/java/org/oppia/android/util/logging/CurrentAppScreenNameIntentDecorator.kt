@@ -15,7 +15,7 @@ object CurrentAppScreenNameIntentDecorator {
    * screen.
    */
   fun Intent.decorateWithScreenName(screenName: ScreenName?) {
-    if(screenName != null) {
+    if (screenName != null) {
       this.putProtoExtra(
         CURRENT_APP_SCREEN_NAME_KEY,
         CurrentAppScreen.newBuilder().setScreenName(screenName).build()
