@@ -34,7 +34,7 @@
         android:layout_marginEnd="@dimen/home_welcome_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.greeting}"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_home_activity_greeting_text_color"
         android:textSize="24sp" />
 
       <TextView
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.computeProfileNameText()}"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_home_activity_greeting_text_color"
         android:textSize="24sp" />
     </com.google.android.flexbox.FlexboxLayout>
 
@@ -51,7 +51,7 @@
       android:layout_width="0dp"
       android:layout_height="6dp"
       android:layout_marginTop="4dp"
-      android:background="@color/color_def_oppia_light_brown"
+      android:background="@color/component_color_home_activity_layout_below_greeting_text_color"
       app:layout_constraintEnd_toEndOf="@id/welcome_message_container"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@+id/welcome_message_container"

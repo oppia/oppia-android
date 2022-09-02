@@ -14,6 +14,7 @@
   <color name="color_def_oppia_red">#B92D00</color>
   <color name="color_def_white">#FFFFFF</color>
   <color name="color_def_white_80">#CCFFFFFF</color>
+  <color name="color_def_oppia_white">#F2F2F2</color>
   <color name="color_def_black">#000000</color>
   <color name="color_def_transparent">#00000000</color>
   <color name="color_def_black_12">#1F000000</color>
@@ -74,4 +75,5 @@
   <color name="color_def_stroke_silver">#777777</color>
   <color name="color_def_drag_drop_single_item_gradient_center">#F7F7F7</color>
   <color name="color_def_drag_drop_single_item_gradient_end">#DCDCDC</color>
+  <color name="color_def_dark_turquoise">#009C8A</color>
 </resources>
