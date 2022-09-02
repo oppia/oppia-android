@@ -1,10 +1,9 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -46,11 +45,12 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
-import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.testing.TextInputActionTestActivity
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -62,6 +62,20 @@ private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityLifecycleObserverTest.TestApplication::class)
 class ActivityLifecycleObserverTest {
+
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TextInputActionTestActivity>(
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()).apply {
+        decorateWithScreenName(ScreenName.BACKGROUND_SCREEN)
+      }
+    )
+
+  @get:Rule
+  var activityRuleForUnspecifiedActivity =
+    ActivityScenarioRule<TextInputActionTestActivity>(
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   @Inject
   lateinit var activityLifecycleObserver: ActivityLifecycleObserver
@@ -86,6 +100,15 @@ class ActivityLifecycleObserverTest {
   }
 
   @Test
+  fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
+    activityRuleForUnspecifiedActivity.scenario.onActivity { activity ->
+      activityLifecycleObserver.onActivityResumed(activity)
+      val currentScreenValue = activityLifecycleObserver.getCurrentScreen()
+      assertThat(currentScreenValue).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+    }
+  }
+
+  @Test
   fun testObserver_onCreate_verifyPerformanceMetricsLoggingWithCorrectDetails() {
     activityLifecycleObserver.onCreate()
 
@@ -100,83 +123,86 @@ class ActivityLifecycleObserverTest {
 
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
-    val activity = Robolectric.buildActivity(Activity::class.java).get()
-    activity.intent = Intent().apply { decorateWithScreenName(ScreenName.HOME_ACTIVITY) }
-    activityLifecycleObserver.onActivityResumed(activity)
-
-    val currentScreenValue = activityLifecycleObserver.getCurrentScreen()
-    assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
+    activityRule.scenario.onActivity { activity ->
+      activityLifecycleObserver.onActivityResumed(activity)
+      val currentScreenValue = activityLifecycleObserver.getCurrentScreen()
+      assertThat(currentScreenValue).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    }
   }
 
   @Test
   fun testObserver_onFirstActivityResume_verifyLogsStartupLatency() {
     activityLifecycleObserver.onCreate()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    val activity = Robolectric.buildActivity(Activity::class.java).get()
-    val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
+    activityRule.scenario.onActivity { activity ->
+      val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
+      activityLifecycleObserver.onActivityResumed(activity)
+      val currentScreen = activityLifecycleObserver.getCurrentScreen()
+      val startupLatencyEvents =
+        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
+      val startupLatencyEvent = startupLatencyEvents[1]
 
-    activityLifecycleObserver.onActivityResumed(activity)
-    val currentScreen = activityLifecycleObserver.getCurrentScreen()
-    val startupLatencyEvents =
-      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
-
-    val startupLatencyEvent = startupLatencyEvents[1]
-
-    assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      STARTUP_LATENCY_METRIC
-    )
-    assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    assertThat(startupLatencyEvent.currentScreen).isEqualTo(currentScreen)
-    assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
-      .isEqualTo(expectedStartupLatency)
+      assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
+        STARTUP_LATENCY_METRIC
+      )
+      assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
+      assertThat(startupLatencyEvent.currentScreen).isEqualTo(currentScreen)
+      assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
+        .isEqualTo(expectedStartupLatency)
+    }
   }
 
   @Test
   fun testObserver_onSecondActivityResume_verifyStartupLatencyIsLoggedOnce() {
     activityLifecycleObserver.onCreate()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    val activity = Robolectric.buildActivity(Activity::class.java).get()
-    activityLifecycleObserver.onActivityResumed(activity)
-    activityLifecycleObserver.onActivityResumed(activity)
+    activityRule.scenario.onActivity { activity ->
+      activityLifecycleObserver.onActivityResumed(activity)
+      activityLifecycleObserver.onActivityResumed(activity)
 
-    val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    )
+      val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+      )
 
-    assertThat(loggedEvents.size).isEqualTo(5)
-    assertThat(loggedEvents[0].loggableMetric.loggableMetricTypeCase).isEqualTo(APK_SIZE_METRIC)
-    assertThat(loggedEvents[1].loggableMetric.loggableMetricTypeCase)
-      .isEqualTo(STORAGE_USAGE_METRIC)
-    assertThat(loggedEvents[2].loggableMetric.loggableMetricTypeCase)
-      .isEqualTo(STARTUP_LATENCY_METRIC)
-    assertThat(loggedEvents[3].loggableMetric.loggableMetricTypeCase).isEqualTo(MEMORY_USAGE_METRIC)
-    assertThat(loggedEvents[4].loggableMetric.loggableMetricTypeCase).isEqualTo(MEMORY_USAGE_METRIC)
+      assertThat(loggedEvents.size).isEqualTo(5)
+      assertThat(loggedEvents[0].loggableMetric.loggableMetricTypeCase).isEqualTo(APK_SIZE_METRIC)
+      assertThat(loggedEvents[1].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(STORAGE_USAGE_METRIC)
+      assertThat(loggedEvents[2].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(STARTUP_LATENCY_METRIC)
+      assertThat(loggedEvents[3].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(MEMORY_USAGE_METRIC)
+      assertThat(loggedEvents[4].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(MEMORY_USAGE_METRIC)
+    }
   }
 
   @Test
   fun testObserver_activityResumed_verifyLogsMemoryUsage() {
-    val activity = Robolectric.buildActivity(Activity::class.java).get()
-    activityLifecycleObserver.onActivityResumed(activity)
+    activityRule.scenario.onActivity { activity ->
+      activityLifecycleObserver.onActivityResumed(activity)
 
-    val currentScreen = activityLifecycleObserver.getCurrentScreen()
-    val memoryUsageEvent =
-      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+      val currentScreen = activityLifecycleObserver.getCurrentScreen()
+      val memoryUsageEvent =
+        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
-    assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      MEMORY_USAGE_METRIC
-    )
-    assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
-    assertThat(memoryUsageEvent.currentScreen).isEqualTo(currentScreen)
+      assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
+        MEMORY_USAGE_METRIC
+      )
+      assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+      assertThat(memoryUsageEvent.currentScreen).isEqualTo(currentScreen)
+    }
   }
 
   @Test
-  fun testObserver_activityResumed_activityPaused_verifyCurrentScreenReturnsUnspecifiedValue() {
-    val activity = Robolectric.buildActivity(Activity::class.java).get()
-    activityLifecycleObserver.onActivityResumed(activity)
-    activityLifecycleObserver.onActivityPaused(activity)
-    val currentScreen = activityLifecycleObserver.getCurrentScreen()
+  fun testObserver_activityResumed_activityPaused_verifyCurrentScreenReturnsBackgroundValue() {
+    activityRule.scenario.onActivity { activity ->
+      activityLifecycleObserver.onActivityResumed(activity)
+      activityLifecycleObserver.onActivityPaused(activity)
+      val currentScreen = activityLifecycleObserver.getCurrentScreen()
 
-    assertThat(currentScreen).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+      assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    }
   }
 
   private fun setUpTestApplicationComponent() {
