@@ -89,6 +89,8 @@ class TopicFragmentPresenter @Inject constructor(
     if (!isConfigChanged && topicId.isNotEmpty()) {
       if (enableExtraTopicTabsUi.value) {
         setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      }else{
+        setCurrentTab(TopicTab.LESSONS)
       }
     }
   }
