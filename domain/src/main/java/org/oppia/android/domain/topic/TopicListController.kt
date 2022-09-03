@@ -1,6 +1,9 @@
 package org.oppia.android.domain.topic
 
 import android.graphics.Color
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.json.JSONObject
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
@@ -34,9 +37,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val ONE_WEEK_IN_DAYS = 7
 
@@ -187,6 +187,7 @@ class TopicListController @Inject constructor(
           baseMessage = StoryRecord.getDefaultInstance()
         )
       }
+      val firstStoryId = storyRecords.first().storyId
       TopicSummary.newBuilder().apply {
         this.topicId = topicId
         name = topicRecord.name
@@ -197,6 +198,7 @@ class TopicListController @Inject constructor(
         } else {
           TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
         }
+        this.firstStoryId = firstStoryId
       }.build()
     } else {
       createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)
@@ -218,6 +220,9 @@ class TopicListController @Inject constructor(
         .getJSONArray("node_titles")
         .length()
     }
+    val firstStoryId =
+      if (storyData.length() == 0) "" else storyData.getJSONObject(0).getString("id")
+
     val topicPlayAvailability = if (jsonObject.getBoolean("published")) {
       TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
     } else {
@@ -230,6 +235,7 @@ class TopicListController @Inject constructor(
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
       .setTopicPlayAvailability(topicPlayAvailability)
+      .setFirstStoryId(firstStoryId)
       .build()
   }
 

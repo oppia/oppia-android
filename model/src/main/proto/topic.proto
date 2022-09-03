@@ -242,6 +242,9 @@ message TopicSummary {
 
   // Specifics about whether this topic is playable.
   TopicPlayAvailability topic_play_availability = 6;
+
+  // The ID of the first story of this topic
+  string first_story_id = 7;
 }
 
 // Represents the play state of a single chapter.

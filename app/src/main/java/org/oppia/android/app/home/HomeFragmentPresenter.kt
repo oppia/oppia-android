@@ -43,7 +43,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil
 ) {
-  private val routeToTopicListener = activity as RouteToTopicListener
+  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
 
@@ -146,7 +146,7 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
+    routeToTopicPlayStoryListener.routeToTopicPlayStory(internalProfileId, topicSummary.topicId, topicSummary.firstStoryId)
   }
 
   private fun logHomeActivityEvent() {
