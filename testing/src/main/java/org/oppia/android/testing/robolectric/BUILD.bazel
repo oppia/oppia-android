@@ -50,4 +50,28 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "oppia_shadow_activity_manager",
+    testonly = True,
+    srcs = [
+        "OppiaShadowActivityManager.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
+kt_android_library(
+    name = "oppia_shadow_traffic_stats",
+    testonly = True,
+    srcs = [
+        "OppiaShadowTrafficStats.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//third_party:org_robolectric_robolectric",
+    ],
+)
+
 dagger_rules()

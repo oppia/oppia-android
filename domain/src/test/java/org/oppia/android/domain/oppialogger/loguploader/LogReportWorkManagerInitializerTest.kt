@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.DelegatingWorkerFactory
 import androidx.work.NetworkType
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
@@ -24,8 +25,12 @@ import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
@@ -41,6 +46,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -52,13 +58,16 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class LogUploadWorkManagerInitializerTest {
+class LogReportWorkManagerInitializerTest {
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
 
   @Inject
-  lateinit var logUploadWorkManagerInitializer: LogUploadWorkManagerInitializer
+  lateinit var metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
+
+  @Inject
+  lateinit var logReportWorkManagerInitializer: LogReportWorkManagerInitializer
 
   @Inject
   lateinit var exceptionsController: ExceptionsController
@@ -82,6 +91,9 @@ class LogUploadWorkManagerInitializerTest {
   lateinit var fakeLogUploader: FakeLogUploader
 
   @Inject
+  lateinit var fakeLogScheduler: FakeLogScheduler
+
+  @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private lateinit var context: Context
@@ -90,25 +102,46 @@ class LogUploadWorkManagerInitializerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    val delegatingWorkerFactory = DelegatingWorkerFactory()
+    delegatingWorkerFactory.addFactory(logUploadWorkerFactory)
+    delegatingWorkerFactory.addFactory(metricLogSchedulingWorkerFactory)
+
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
+      .setWorkerFactory(delegatingWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logUploadWorkManagerInitializer.onCreate()
+    logReportWorkManagerInitializer.onCreate()
     testCoroutineDispatchers.runCurrent()
 
-    val enqueuedEventWorkRequestId = logUploadWorkManagerInitializer.getWorkRequestForEventsId()
+    val enqueuedEventWorkRequestId = logReportWorkManagerInitializer.getWorkRequestForEventsId()
     val enqueuedExceptionWorkRequestId =
-      logUploadWorkManagerInitializer.getWorkRequestForExceptionsId()
+      logReportWorkManagerInitializer.getWorkRequestForExceptionsId()
+    val enqueuedSchedulingStorageUsageMetricWorkRequestId =
+      logReportWorkManagerInitializer.getWorkRequestForSchedulingStorageUsageMetricLogsId()
+    val enqueuedSchedulingPeriodicUiMetricWorkRequestId =
+      logReportWorkManagerInitializer.getWorkRequestForSchedulingPeriodicUiMetricLogsId()
+    val enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId =
+      logReportWorkManagerInitializer
+        .getWorkRequestForSchedulingPeriodicBackgroundPerformanceMetricLogsId()
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
       enqueuedExceptionWorkRequestId
+    )
+    assertThat(fakeLogScheduler.getMostRecentStorageUsageMetricLoggingRequestId()).isEqualTo(
+      enqueuedSchedulingStorageUsageMetricWorkRequestId
+    )
+    assertThat(fakeLogScheduler.getMostRecentPeriodicUiMetricLoggingRequestId()).isEqualTo(
+      enqueuedSchedulingPeriodicUiMetricWorkRequestId
+    )
+    assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
+      enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
     )
   }
 
@@ -120,7 +153,7 @@ class LogUploadWorkManagerInitializerTest {
       .build()
 
     val logUploadingWorkRequestConstraints =
-      logUploadWorkManagerInitializer.getLogUploadWorkerConstraints()
+      logReportWorkManagerInitializer.getLogReportWorkerConstraints()
 
     assertThat(logUploadingWorkRequestConstraints).isEqualTo(workerConstraints)
   }
@@ -134,7 +167,7 @@ class LogUploadWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
+    assertThat(logReportWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
       workerCaseForUploadingEvents
     )
   }
@@ -148,13 +181,56 @@ class LogUploadWorkManagerInitializerTest {
       )
       .build()
 
-    assertThat(logUploadWorkManagerInitializer.getWorkRequestDataForExceptions()).isEqualTo(
-      workerCaseForUploadingExceptions
-    )
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForExceptions()
+    ).isEqualTo(workerCaseForUploadingExceptions)
+  }
+
+  @Test
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingStorageUsageMetricLogs() {
+    val workerCaseForSchedulingStorageUsageMetricLogs: Data = Data.Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
+      )
+      .build()
+
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
+    ).isEqualTo(workerCaseForSchedulingStorageUsageMetricLogs)
+  }
+
+  @Test
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicBackgroundPerformanceMetricLogs() {
+    val workerCaseForSchedulingPeriodicPerformanceMetricLogs: Data = Data.Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
+      )
+      .build()
+
+    assertThat(
+      logReportWorkManagerInitializer
+        .getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs()
+    ).isEqualTo(workerCaseForSchedulingPeriodicPerformanceMetricLogs)
+  }
+
+  @Test
+  fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicUiMetricLogs() {
+    val workerCaseForSchedulingMemoryUsageMetricLogs: Data = Data.Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
+      )
+      .build()
+
+    assertThat(
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicUiMetricLogs()
+    ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLogUploadWorkManagerInitializerTest_TestApplicationComponent.builder()
+    DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -180,6 +256,10 @@ class LogUploadWorkManagerInitializerTest {
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -187,6 +267,9 @@ class LogUploadWorkManagerInitializerTest {
 
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
+
+    @Binds
+    fun bindsFakeLogScheduler(fakeLogScheduler: FakeLogScheduler): MetricLogScheduler
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -195,7 +278,7 @@ class LogUploadWorkManagerInitializerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestLogStorageModule::class, TestDispatcherModule::class,
-      LogUploadWorkerModule::class, TestFirebaseLogUploaderModule::class,
+      LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
@@ -210,6 +293,6 @@ class LogUploadWorkManagerInitializerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(logUploadWorkRequestTest: LogUploadWorkManagerInitializerTest)
+    fun inject(logUploadWorkRequestTest: LogReportWorkManagerInitializerTest)
   }
 }
