@@ -51,7 +51,8 @@ class FAQSingleActivityPresenter @Inject constructor(
       resourceBucketName,
       entityType = "faq",
       entityId = "oppia",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      displayLocale = resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
       answer,
       answerTextView
