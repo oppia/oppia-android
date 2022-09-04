@@ -57,6 +57,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 
 /**
  * Root Dagger component for the test application. All application-scoped modules should be included
@@ -92,7 +93,7 @@ import javax.inject.Singleton
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
-    TestingBuildFlavorModule::class
+    TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

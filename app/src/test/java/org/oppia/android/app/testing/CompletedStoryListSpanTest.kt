@@ -23,6 +23,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment.Companion.COMPLETED_STORY_LIST_FRAGMENT_TAG
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
@@ -177,7 +178,8 @@ class CompletedStoryListSpanTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, TestingBuildFlavorModule::class
+      SyncStatusModule::class, TestingBuildFlavorModule::class, 
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

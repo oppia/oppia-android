@@ -112,7 +112,6 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
-    "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
     "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",

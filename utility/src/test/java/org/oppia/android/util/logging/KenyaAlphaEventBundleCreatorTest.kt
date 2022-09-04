@@ -70,24 +70,20 @@ import org.robolectric.Shadows
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
+// TODO(#4419): Remove this test suite post-Kenya user study.
 /**
- * Tests for [EventBundleCreator].
- *
- * Note that some of the properties of [EventLog]s logged via [EventBundleCreator] will 'namespace'
- * their property names (for cases when properties are nested). The tests of this suite include
- * verification for property names (based on the fact that certain properties need to be present in
- * the filled [Bundle] in order for the test to pass since it's verifying values corresponding to
- * those property names).
+ * Variant of [EventBundleCreatorTest] but for testing behaviors specific to alpha builds of the app
+ * intended for users in the Kenya user study.
  */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = EventBundleCreatorTest.TestApplication::class,
+  application = KenyaAlphaEventBundleCreatorTest.TestApplication::class,
   sdk = [TEST_ANDROID_SDK_VERSION]
 )
-class EventBundleCreatorTest {
+class KenyaAlphaEventBundleCreatorTest {
   private companion object {
     private const val TEST_TIMESTAMP_1 = 1556094120000
     private const val TEST_TIMESTAMP_2 = 1234567898765
@@ -129,7 +125,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(EventLog.getDefaultInstance(), bundle)
 
-    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(typeName).isEqualTo("unknown_activity_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(0)
     assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
@@ -147,7 +143,7 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
 
-    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(typeName).isEqualTo("unknown_activity_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -187,7 +183,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenExplorationActivity())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_exploration_player_screen")
+    assertThat(typeName).isEqualTo("open_exploration_activity")
     assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -211,7 +207,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenExplorationActivity())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_exploration_player_screen")
+    assertThat(typeName).isEqualTo("open_exploration_activity")
     assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -237,7 +233,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenInfoTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("select_topic_info_tab")
+    assertThat(typeName).isEqualTo("open_info_tab")
     assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -256,7 +252,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenLessonsTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("select_topic_lessons_tab")
+    assertThat(typeName).isEqualTo("open_lessons_tab")
     assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -275,7 +271,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenPracticeTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("select_topic_practice_tab")
+    assertThat(typeName).isEqualTo("open_practice_tab")
     assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -294,7 +290,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenRevisionTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("select_topic_revision_tab")
+    assertThat(typeName).isEqualTo("open_revision_tab")
     assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -313,7 +309,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenQuestionPlayer())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_question_player_screen")
+    assertThat(typeName).isEqualTo("open_question_player")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -322,7 +318,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("question_id").isEqualTo(TEST_QUESTION_ID)
-    assertThat(bundle).string("skill_ids").isEqualTo("${TEST_SKILL_ID_1},${TEST_SKILL_ID_2}")
+    assertThat(bundle).string("skill_ids").isEqualTo("$TEST_SKILL_ID_1,$TEST_SKILL_ID_2")
   }
 
   @Test
@@ -333,7 +329,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenStoryActivity())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_story_chapter_list_screen")
+    assertThat(typeName).isEqualTo("open_story_activity")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -392,7 +388,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("start_exploration_card")
+    assertThat(typeName).isEqualTo("start_card_context")
     assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -417,7 +413,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("start_exploration_card")
+    assertThat(typeName).isEqualTo("start_card_context")
     assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -444,7 +440,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createEndCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("end_exploration_card")
+    assertThat(typeName).isEqualTo("end_card_context")
     assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -469,7 +465,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createEndCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("end_exploration_card")
+    assertThat(typeName).isEqualTo("end_card_context")
     assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -496,7 +492,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createHintOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_hint_offer")
+    assertThat(typeName).isEqualTo("hint_offered_context")
     assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -521,7 +517,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createHintOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_hint_offer")
+    assertThat(typeName).isEqualTo("hint_offered_context")
     assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -548,7 +544,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("reveal_hint")
+    assertThat(typeName).isEqualTo("access_hint_context")
     assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -573,7 +569,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("reveal_hint")
+    assertThat(typeName).isEqualTo("access_hint_context")
     assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -600,7 +596,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSolutionOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_solution_offer")
+    assertThat(typeName).isEqualTo("solution_offered_context")
     assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -624,7 +620,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSolutionOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("receive_solution_offer")
+    assertThat(typeName).isEqualTo("solution_offered_context")
     assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -650,7 +646,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("reveal_solution")
+    assertThat(typeName).isEqualTo("access_solution_context")
     assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -674,7 +670,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("reveal_solution")
+    assertThat(typeName).isEqualTo("access_solution_context")
     assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -700,7 +696,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSubmitAnswerContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("submit_answer")
+    assertThat(typeName).isEqualTo("submit_answer_context")
     assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -726,7 +722,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSubmitAnswerContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("submit_answer")
+    assertThat(typeName).isEqualTo("submit_answer_context")
     assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -754,7 +750,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createPlayVoiceOverContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("click_play_voiceover_button")
+    assertThat(typeName).isEqualTo("play_voice_over_context")
     assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -779,7 +775,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createPlayVoiceOverContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("click_play_voiceover_button")
+    assertThat(typeName).isEqualTo("play_voice_over_context")
     assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -806,7 +802,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInBackgroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("send_app_to_background")
+    assertThat(typeName).isEqualTo("app_in_background_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -824,7 +820,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInBackgroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("send_app_to_background")
+    assertThat(typeName).isEqualTo("app_in_background_context")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -844,7 +840,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInForegroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("bring_app_to_foreground")
+    assertThat(typeName).isEqualTo("app_in_foreground_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -862,7 +858,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInForegroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("bring_app_to_foreground")
+    assertThat(typeName).isEqualTo("app_in_foreground_context")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -882,7 +878,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createExitExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("leave_exploration")
+    assertThat(typeName).isEqualTo("exit_exploration_context")
     assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -906,7 +902,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createExitExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("leave_exploration")
+    assertThat(typeName).isEqualTo("exit_exploration_context")
     assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -932,7 +928,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createFinishExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("complete_exploration")
+    assertThat(typeName).isEqualTo("finish_exploration_context")
     assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -956,7 +952,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createFinishExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("complete_exploration")
+    assertThat(typeName).isEqualTo("finish_exploration_context")
     assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -982,7 +978,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createResumeExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("resume_in_progress_exploration")
+    assertThat(typeName).isEqualTo("resume_exploration_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1000,7 +996,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createResumeExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("resume_in_progress_exploration")
+    assertThat(typeName).isEqualTo("resume_exploration_context")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1020,7 +1016,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartOverExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("restart_in_progress_exploration")
+    assertThat(typeName).isEqualTo("start_over_exploration_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1038,7 +1034,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartOverExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("restart_in_progress_exploration")
+    assertThat(typeName).isEqualTo("start_over_exploration_context")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1058,7 +1054,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createDeleteProfileContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("delete_profile")
+    assertThat(typeName).isEqualTo("delete_profile_context")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1076,7 +1072,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createDeleteProfileContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("delete_profile")
+    assertThat(typeName).isEqualTo("delete_profile_context")
     assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1096,7 +1092,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenHomeContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_home_screen")
+    assertThat(typeName).isEqualTo("open_home")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1114,7 +1110,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenProfileChooserContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_profile_chooser_screen")
+    assertThat(typeName).isEqualTo("open_profile_chooser")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1132,7 +1128,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(typeName).isEqualTo("failed_analytics_log")
     assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1150,7 +1146,7 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(typeName).isEqualTo("failed_analytics_log")
     assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
@@ -1422,7 +1418,7 @@ class EventBundleCreatorTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, EventLoggingConfigurationModule::class])
+  @Component(modules = [TestModule::class, KenyaAlphaEventLoggingConfigurationModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -1432,17 +1428,17 @@ class EventBundleCreatorTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: EventBundleCreatorTest)
+    fun inject(test: KenyaAlphaEventBundleCreatorTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
+      DaggerKenyaAlphaEventBundleCreatorTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: EventBundleCreatorTest) {
+    fun inject(test: KenyaAlphaEventBundleCreatorTest) {
       component.inject(test)
     }
   }
