@@ -48,7 +48,7 @@ enum SpotlightViewState {
   SPOTLIGHT_NOT_SEEN = 2;
 }
 
-// Top level proto for storing SpotlightsViewStates.
+// Top level proto that will be used to store SpotlightsViewStates per user profile.
 message SpotlightStateDatabase {
   // Corresponds to the onboarding screen's next button.
   SpotlightViewState onboarding_next_button = 1;
@@ -74,8 +74,3 @@ message SpotlightStateDatabase {
   // Corresponds to the voice-over language option in audio player.
   SpotlightViewState voiceover_language_icon = 8;
 }
-
-
-
-
-
