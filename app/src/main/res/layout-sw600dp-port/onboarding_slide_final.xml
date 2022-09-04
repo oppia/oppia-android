@@ -82,6 +82,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slide_description_text_view" />
+
+      <TextView
+        android:id="@+id/slide_terms_of_service_and_privacy_policy_links_text_view"
+        style="@style/Heading4ViewCenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="192dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="192dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/get_started_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>

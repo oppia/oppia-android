@@ -70,54 +70,63 @@
                 "imagePath": "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png",
                 "labeledRegions": [{
                   "label": "Mercury",
+                  "contentDescription": "You have selected planet Mercury",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.010981758125126362, 0.09856376051902771], [0.04871760681271553, 0.17073357105255127]]
                   }
                 }, {
                   "label": "Venus",
+                  "contentDescription": "You have selected planet Venus",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.03692515566945076, 0.1755448877811432], [0.10060440003871918, 0.2958278954029083]]
                   }
                 }, {
                   "label": "Earth",
+                  "contentDescription": "You have selected planet Earth",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.08645345270633698, 0.10818640142679214], [0.15484967827796936, 0.22846941649913788]]
                   }
                 }, {
                   "label": "Mars",
+                  "contentDescription": "You have selected planet Mars",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.14777420461177826, 0.1755448877811432], [0.1925855278968811, 0.27177131175994873]]
                   }
                 }, {
                   "label": "Jupiter",
+                  "contentDescription": "You have selected planet Jupiter",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.19022704660892487, 0.060073189437389374], [0.572302520275116, 0.8154505491256714]]
                   }
                 }, {
                   "label": "Saturn",
+                  "contentDescription": "You have selected planet Saturn",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.24918930232524872, 0.3679977059364319], [0.9968308210372925, 0.9934694170951843]]
                   }
                 }, {
                   "label": "Uranus",
+                  "contentDescription": "You have selected planet Uranus",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.6642836332321167, 0.05045054852962494], [0.8152270317077637, 0.35356375575065613]]
                   }
                 }, {
                   "label": "Neptune",
+                  "contentDescription": "You have selected planet Neptune",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.8246610164642334, 0.021582625806331635], [0.9402270317077637, 0.25252601504325867]]
                   }
                 }, {
                   "label": "Pluto",
+                  "contentDescription": "You have selected planet Pluto",
                   "region": {
                     "regionType": "Rectangle",
                     "area": [[0.9402270317077637, 0.22365809977054596], [0.9779629111289978, 0.2958278954029083]]
