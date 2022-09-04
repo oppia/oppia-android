@@ -104,6 +104,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -124,13 +125,11 @@ class TopicPracticeFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @JvmField
-  @field:[Inject EnablePracticeTab]
-  var enablePracticeTab: Boolean = false
+  private var enableExtraTopicTabsUiValue: Boolean = false
 
   @Before
   fun setUp() {
+    enableExtraTopicTabs()
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -146,6 +145,11 @@ class TopicPracticeFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun enableExtraTopicTabs() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    enableExtraTopicTabsUiValue = true
   }
 
   @Test
@@ -382,7 +386,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 2, enablePracticeTab).name),
+        withText(TopicTab.getTabForPosition(position = 2, enableExtraTopicTabsUiValue).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

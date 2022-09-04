@@ -53,7 +53,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
-import org.oppia.android.app.topic.EnablePracticeTab
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
@@ -124,6 +123,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -154,9 +154,7 @@ class TopicLessonsFragmentTest {
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
-  @JvmField
-  @field:[Inject EnablePracticeTab]
-  var enablePracticeTab: Boolean = false
+  var enableExtraTopicTabsUiValue: Boolean = false
 
   private val internalProfileId = 0
 
@@ -164,6 +162,7 @@ class TopicLessonsFragmentTest {
 
   @Before
   fun setUp() {
+    enableExtraTopicTabs()
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -179,6 +178,11 @@ class TopicLessonsFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun enableExtraTopicTabs() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    enableExtraTopicTabsUiValue = true
   }
 
   @Test
@@ -907,7 +911,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 1, enablePracticeTab).name),
+        withText(TopicTab.getTabForPosition(position = 1, enableExtraTopicTabsUiValue).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
