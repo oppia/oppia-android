@@ -553,7 +553,7 @@ class EventBundleCreator @Inject constructor(
     OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
   }
 
-  private fun ScreenName.toAnalyticsName() = when(this) {
+  private fun ScreenName.toAnalyticsName() = when (this) {
     ScreenName.SCREEN_NAME_UNSPECIFIED -> "screen_name_unspecified"
     ScreenName.SPLASH_ACTIVITY -> "splash_activity"
     ScreenName.PROFILE_CHOOSER_ACTIVITY -> "profile_chooser_activity"

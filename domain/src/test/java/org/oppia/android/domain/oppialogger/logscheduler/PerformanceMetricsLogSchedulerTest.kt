@@ -96,7 +96,6 @@ class PerformanceMetricsLogSchedulerTest {
       .setWorkerFactory(metricLogSchedulingWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-
   }
 
   @Test
