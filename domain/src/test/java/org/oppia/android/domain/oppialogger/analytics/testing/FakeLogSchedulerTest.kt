@@ -19,9 +19,14 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -32,18 +37,13 @@ import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
-import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 
 /** Tests for [FakeLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
