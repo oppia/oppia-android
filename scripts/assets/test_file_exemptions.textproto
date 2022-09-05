@@ -828,4 +828,3 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/perfor
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/MetricLogScheduler.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsEventLogger.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorkerFactory.kt"
-exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/ActivityLifecycleObserverModule.kt"

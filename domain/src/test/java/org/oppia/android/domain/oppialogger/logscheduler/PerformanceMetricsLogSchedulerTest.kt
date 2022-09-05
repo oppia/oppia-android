@@ -25,6 +25,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -35,8 +36,6 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.firebase.LogReportingModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -177,10 +176,9 @@ class PerformanceMetricsLogSchedulerTest {
       TestDispatcherModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      PerformanceMetricsAssessorModule::class, ApplicationLifecycleModule::class,
-      LogReportingModule::class, PerformanceMetricsConfigurationsModule::class,
-      LogStorageModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
+      PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
+      ApplicationLifecycleModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
