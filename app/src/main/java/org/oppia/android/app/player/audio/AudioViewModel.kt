@@ -1,12 +1,15 @@
 package org.oppia.android.app.player.audio
 
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.Voiceover
 import org.oppia.android.app.model.VoiceoverMapping
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.audio.AudioPlayerController
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
@@ -14,6 +17,7 @@ import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.Locale
 import javax.inject.Inject
 
 /** [ObservableViewModel] for audio-player state. */
@@ -21,7 +25,8 @@ import javax.inject.Inject
 class AudioViewModel @Inject constructor(
   private val audioPlayerController: AudioPlayerController,
   @DefaultResourceBucketName private val gcsResource: String,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private lateinit var state: State
@@ -29,13 +34,15 @@ class AudioViewModel @Inject constructor(
   private var voiceoverMap = mapOf<String, Voiceover>()
   private var currentContentId: String? = null
   private val defaultLanguage = "en"
-  private var languageSelectionShown = false
   private var autoPlay = false
   private var reloadingMainContent = false
   private var hasFeedback = false
 
   var selectedLanguageCode: String = ""
+  private var fallbackLanguageCode: String = defaultLanguage
   var languages = listOf<String>()
+  var selectedLanguageUnavailable = ObservableBoolean()
+  var selectedLanguageName = ObservableField<String>("")
 
   /** Mirrors PlayStatus in AudioPlayerController except adds LOADING state */
   enum class UiAudioPlayStatus {
@@ -90,22 +97,28 @@ class AudioViewModel @Inject constructor(
     voiceoverMap = voiceoverMapping.voiceoverMappingMap
     currentContentId = targetContentId
     languages = voiceoverMap.keys.toList().map { machineLocale.run { it.toMachineLowerCase() } }
+    selectedLanguageUnavailable.set(false)
+
+    val localeLanguageCode =
+      if (selectedLanguageCode.isEmpty()) defaultLanguage else selectedLanguageCode
+    // TODO(#3791): Remove this dependency.
+    val locale = Locale(localeLanguageCode)
+    selectedLanguageName.set(locale.getDisplayLanguage(locale))
+
     when {
       selectedLanguageCode.isEmpty() && languages.any {
         it == defaultLanguage
       } -> setAudioLanguageCode(defaultLanguage)
-      languages.any { it == selectedLanguageCode } ->
-        setAudioLanguageCode(selectedLanguageCode)
+      languages.any { it == selectedLanguageCode } -> setAudioLanguageCode(selectedLanguageCode)
       languages.isNotEmpty() -> {
         autoPlay = false
         this.reloadingMainContent = false
-        languageSelectionShown = true
-        val languageCode = if (languages.contains("en")) {
-          "en"
-        } else {
-          languages.first()
-        }
-        setAudioLanguageCode(languageCode)
+        selectedLanguageUnavailable.set(true)
+        val ensuredLanguageCode = if (languages.contains("en")) "en" else languages.first()
+        fallbackLanguageCode = ensuredLanguageCode
+        audioPlayerController.changeDataSource(
+          voiceOverToUri(voiceoverMap[ensuredLanguageCode]), currentContentId
+        )
       }
     }
   }
@@ -131,6 +144,12 @@ class AudioViewModel @Inject constructor(
   fun pauseAudio() = audioPlayerController.pause()
   fun handleSeekTo(position: Int) = audioPlayerController.seekTo(position)
   fun handleRelease() = audioPlayerController.releaseMediaPlayer()
+
+  fun computeAudioUnavailabilityString(languageName: String): String {
+    return resourceHandler.getStringInLocaleWithWrapping(
+      R.string.audio_unavailable_in_selected_language, languageName
+    )
+  }
 
   private val playProgressResultLiveData: LiveData<AsyncResult<PlayProgress>> by lazy {
     audioPlayerController.initializeMediaPlayer()

@@ -10,7 +10,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif-medium"
-      android:text="@string/all_topics"
+      android:text="@string/select_a_topic_to_start"
       android:padding="10dp"
       android:background="@color/color_def_oppia_stroke_blue"
       android:textColor="@color/oppia_primary_text"
