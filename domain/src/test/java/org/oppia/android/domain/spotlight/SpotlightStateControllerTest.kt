@@ -8,8 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -43,7 +41,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -63,6 +60,12 @@ import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.testing.assertThrows
+import org.oppia.android.testing.threading.TestCoroutineDispatcher
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 
 @Suppress("SameParameterValue", "FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -73,9 +76,11 @@ class SpotlightStateControllerTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-
   @Inject
   lateinit var dataProviderTestMonitor: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var testCoroutineDispatcher: TestCoroutineDispatchers
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -89,22 +94,36 @@ class SpotlightStateControllerTest {
   }
 
   @Test
-  fun retrieveSpotlightViewState_spotlightStatesNeverMarked_returnsSpotlightViewStateUnspecified() {
-    val spotlightStateProvider = spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
+  fun retrieveSpotlightViewState_spotlightStatesNeverMarked_returnsSpotlightViewStateNotSeen() {
+    val spotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
     val state = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
-    assertEquals(state, SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED)
-
+    assertEquals(state, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
   fun markSpotlightStateViewed_returnsSuccess() {
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    testCoroutineDispatcher.runCurrent()
+    val spotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
+    val state = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
+    assertEquals(state, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
 
+  @Test
+  fun markSpotlightViewStateOnInvalidSpotlightFeature_throwsException() {
+    val invalidSpotlightFeature = Spotlight.FeatureCase.FEATURE_NOT_SET
+    assertThrows(SpotlightStateController.SpotlightFeatureNotFoundException::class) {
+        spotlightStateController.markSpotlightViewed(profileId, invalidSpotlightFeature)
+    }
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<SpotlightStateControllerTest.TestApplication>()
+    ApplicationProvider.getApplicationContext<TestApplication>()
       .inject(this)
   }
+
   @Module
   class TestModule {
     @Provides
@@ -145,10 +164,11 @@ class SpotlightStateControllerTest {
       return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
+
   @Singleton
   @Component(
     modules = [
-      TestModule::class ,ContinueModule::class, FractionInputModule::class,
+      TestModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
@@ -168,14 +188,14 @@ class SpotlightStateControllerTest {
       @BindsInstance
       fun setApplication(application: Application): Builder
 
-      fun build(): SpotlightStateControllerTest.TestApplicationComponent
+      fun build(): TestApplicationComponent
     }
 
     fun inject(spotlightStateControllerTest: SpotlightStateControllerTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: SpotlightStateControllerTest.TestApplicationComponent by lazy {
+    private val component: TestApplicationComponent by lazy {
       DaggerSpotlightStateControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
