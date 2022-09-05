@@ -25,6 +25,26 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "performance_metrics_controller",
+    srcs = [
+        "PerformanceMetricsController.kt",
+    ],
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/oppialogger:__subpackages__"],
+    deps = [
+        ":dagger",
+        "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/data:data_provider",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging:exception_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
+        "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+    ],
+)
+
+kt_android_library(
     name = "learner_analytics_logger",
     srcs = [
         "LearnerAnalyticsLogger.kt",
@@ -36,6 +56,37 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "performance_metrics_logger",
+    srcs = [
+        "PerformanceMetricsLogger.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        ":performance_metrics_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
+    ],
+)
+
+kt_android_library(
+    name = "performance_metrics_logger_module",
+    srcs = [
+        "PerformanceMetricsLoggerModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":dagger",
+        ":performance_metrics_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )
 
@@ -59,6 +110,7 @@ kt_android_library(
     deps = [
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
+        ":performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",

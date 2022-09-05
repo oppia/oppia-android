@@ -725,6 +725,7 @@ class StateRetriever @Inject constructor() {
   private fun parseLabeledRegion(jsonObject: JSONObject): LabeledRegion {
     return LabeledRegion.newBuilder()
       .setLabel(jsonObject.getStringFromObject("label"))
+      .setContentDescription(jsonObject.getStringFromObject("contentDescription"))
       .setRegion(parseRegion(jsonObject.getJSONObject("region")))
       .build()
   }

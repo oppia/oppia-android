@@ -55,6 +55,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "com.google.android.material:material": "1.3.0",
     "com.google.errorprone:error_prone_annotations": "2.11.0",
     "com.google.firebase:firebase-analytics": "17.5.0",
+    "com.google.firebase:firebase-common": "19.3.0",
     "com.google.firebase:firebase-crashlytics": "17.1.1",
     "com.google.gms:google-services": "4.3.3",
     "com.google.guava:failureaccess": "1.0.1",

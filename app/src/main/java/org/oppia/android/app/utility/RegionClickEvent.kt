@@ -6,9 +6,12 @@ sealed class RegionClickedEvent
 /**
  * Class to be used in case when [OnClickableAreaClickedListener] is called with an specified region.
  *
- * @param regionLabel region name for the which [OnClickableAreaClickedListener] was called for.
+ * @property regionLabel region name for the which [OnClickableAreaClickedListener] was called for.
+ * @property contentDescription content description for which [OnClickableAreaClickedListener] was
+ * called for.
  */
-data class NamedRegionClickedEvent(val regionLabel: String) : RegionClickedEvent()
+data class NamedRegionClickedEvent(val regionLabel: String, val contentDescription: String) :
+  RegionClickedEvent()
 
 /**
  * Class to be used in case when [OnClickableAreaClickedListener] is called with an unspecified
