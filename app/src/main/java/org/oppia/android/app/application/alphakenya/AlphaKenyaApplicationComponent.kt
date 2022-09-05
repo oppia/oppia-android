@@ -98,7 +98,7 @@ import javax.inject.Singleton
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
-      KenyaAlphaEventLoggingConfigurationModule::class
+    KenyaAlphaEventLoggingConfigurationModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {
