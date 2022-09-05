@@ -36,7 +36,7 @@ class HomeActivity :
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-        decorateWithScreenName(ScreenName.HOME_ACTIVITY)
+        decorateWithScreenName(HOME_ACTIVITY)
       }
     }
   }
