@@ -36,7 +36,8 @@ class MathExpressionParserViewModel @Inject constructor(
       gcsResourceName = "",
       entityType = "",
       entityId = "",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      displayLocale = appLanguageResourceHandler.getDisplayLocale()
     )
   }
   private lateinit var parseResultTextView: TextView
@@ -89,7 +90,10 @@ class MathExpressionParserViewModel @Inject constructor(
     val newText = computeParseResult()
     // Only parse HTML if there is HTML to preserve formatting.
     parseResultTextView.text = if ("oppia-noninteractive-math" in newText) {
-      htmlParser.parseOppiaHtml(newText.replace("\n", "<br />"), parseResultTextView)
+      htmlParser.parseOppiaHtml(
+        newText.replace("\n", "<br />"),
+        parseResultTextView
+      )
     } else newText
   }
 

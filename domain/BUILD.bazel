@@ -107,6 +107,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker_factory",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//domain/src/main/java/org/oppia/android/domain/state:state_deck",
@@ -135,18 +136,6 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/parser/html:exploration_html_parser_entity_type",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
         "//utility/src/main/java/org/oppia/android/util/profile:directory_management_util",
-    ],
-)
-
-android_library(
-    name = "test_resources",
-    testonly = True,
-    custom_package = "org.oppia.android.domain",
-    manifest = ":test_manifest",
-    resource_files = glob(["src/test/res/**"]),
-    visibility = [
-        ":domain_testing_visibility",
-        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
     ],
 )
 
@@ -194,8 +183,10 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/testing:fake_log_scheduler",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
     "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
@@ -224,6 +215,9 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
     "//utility/src/main/java/org/oppia/android/util/system:prod_module",

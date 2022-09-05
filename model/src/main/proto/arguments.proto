@@ -188,3 +188,27 @@ message ReadingTextSizeFragmentStateBundle {
   // The ReadingTextSize selected by the user.
   ReadingTextSize selected_reading_text_size = 1;
 }
+
+// Activity Parameters needed to open the policy page.
+message PoliciesActivityParams {
+  // The specific policy page that should be displayed.
+  PolicyPage policy_page = 1;
+}
+
+// Fragment arguments needed to open the policy page.
+message PoliciesFragmentArguments {
+  // The specific policy page that should be displayed.
+  PolicyPage policy_page = 1;
+}
+
+// Represents the type of policy page.
+enum PolicyPage {
+  // The policy page is unknown.
+  POLICY_PAGE_UNSPECIFIED = 0;
+
+  // Corresponds to the Privacy Policy page.
+  PRIVACY_POLICY = 1;
+
+  // Corresponds to the Terms of Service page.
+  TERMS_OF_SERVICE = 2;
+}
