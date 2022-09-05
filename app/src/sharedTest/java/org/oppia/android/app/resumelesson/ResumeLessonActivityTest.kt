@@ -36,7 +36,9 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -110,8 +112,6 @@ import javax.inject.Singleton
 class ResumeLessonActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  private val internalProfileId: Int = 1
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -190,12 +190,12 @@ class ResumeLessonActivityTest {
   private fun createResumeLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      internalProfileId,
+      ProfileId.newBuilder().apply { internalId = 1 }.build(),
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
-      backflowScreen = null,
-      explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+      parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
+      checkpoint = ExplorationCheckpoint.getDefaultInstance()
     )
   }
 

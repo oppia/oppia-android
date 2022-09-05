@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 /** Utility to change the scale of font for the entire app. */
 class FontScaleConfigurationUtil @Inject constructor() {
-  // TODO: Improve tests?
   /**
    * Updates the specified [context]'s current configuration to scale text size according to the
    * provided [readingTextSize].

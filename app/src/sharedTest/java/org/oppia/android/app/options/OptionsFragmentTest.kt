@@ -24,8 +24,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +45,8 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -88,6 +94,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -423,12 +430,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.reading_text_size_text_view
         )
       ).perform(click())
+
+      val expectedParams = ReadingTextSizeActivityParams.newBuilder().apply {
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
-            "Medium"
-          ),
+          hasProtoExtra("ReadingTextSizeActivity.params", expectedParams),
           hasComponent(ReadingTextSizeActivity::class.java.name)
         )
       )
@@ -451,16 +459,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.reading_text_size_text_view
         )
       ).perform(click())
+
+      val expectedParams = ReadingTextSizeActivityParams.newBuilder().apply {
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceTitle(),
-            READING_TEXT_SIZE
-          ),
-          hasExtra(
-            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
-            "Medium"
-          ),
+          hasProtoExtra("ReadingTextSizeActivity.params", expectedParams),
           hasComponent(ReadingTextSizeActivity::class.java.name)
         )
       )
@@ -625,6 +630,20 @@ class OptionsFragmentTest {
     // Wait for the drawer to fully open (mostly for Espresso since Robolectric should synchronously
     // stabilize the drawer layout after the previous logic completes).
     testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
