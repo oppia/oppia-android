@@ -12,8 +12,10 @@ import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
+import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** The central activity for all users entering the app. */
@@ -32,9 +34,10 @@ class HomeActivity :
 
   companion object {
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
-      val intent = Intent(context, HomeActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-      return intent
+      return Intent(context, HomeActivity::class.java).apply {
+        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+        decorateWithScreenName(ScreenName.HOME_ACTIVITY)
+      }
     }
   }
 

@@ -96,11 +96,12 @@ class PerformanceMetricsLogSchedulerTest {
       .setWorkerFactory(metricLogSchedulingWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-    workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
   }
 
   @Test
   fun testScheduler_enqueueRequestForPeriodicBackgroundMetrics_workRequestGetsEnqueued() {
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
     val request = PeriodicWorkRequest
       .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
       .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
@@ -118,6 +119,8 @@ class PerformanceMetricsLogSchedulerTest {
 
   @Test
   fun testScheduler_enqueueRequestForPeriodicUiMetric_workRequestGetsEnqueued() {
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
     val request = PeriodicWorkRequest
       .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
       .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
@@ -135,6 +138,8 @@ class PerformanceMetricsLogSchedulerTest {
 
   @Test
   fun testScheduler_enqueueRequestForStorageMetric_workRequestGetsEnqueued() {
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
     val request = PeriodicWorkRequest
       .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
       .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)

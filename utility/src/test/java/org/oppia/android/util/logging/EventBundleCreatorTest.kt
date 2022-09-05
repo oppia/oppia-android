@@ -136,7 +136,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("unspecified_memory_tier")
     assertThat(bundle).string("storage_tier").isEqualTo("unspecified_storage_tier")
     assertThat(bundle).string("network_type").isEqualTo("unspecified_network_type")
-    assertThat(bundle).string("current_screen").isEmpty()
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
   }
 
   @Test
