@@ -33,8 +33,10 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
@@ -51,6 +53,8 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.LogReportingModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -78,7 +82,7 @@ import javax.inject.Singleton
     LogStorageModule::class, IntentFactoryShimModule::class, ViewBindingShimModule::class,
     PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
     RatioInputModule::class, UncaughtExceptionLoggerModule::class,
-    ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+    ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
@@ -90,7 +94,9 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, AlphaBuildFlavorModule::class,
+    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
+    PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
+    PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class
   ]
 )

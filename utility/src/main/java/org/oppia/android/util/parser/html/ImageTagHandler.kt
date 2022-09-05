@@ -21,7 +21,7 @@ class ImageTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     if (source != null) {
@@ -33,16 +33,17 @@ class ImageTagHandler(
         append('\uFFFC')
         return@run startIndex to length
       }
-      val drawable =
-        imageRetriever.loadDrawable(
+      imageRetriever?.let {
+        val drawable = imageRetriever.loadDrawable(
           source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
         )
-      output.setSpan(
-        ImageSpan(drawable, source),
-        startIndex,
-        endIndex,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
+        output.setSpan(
+          ImageSpan(drawable, source),
+          startIndex,
+          endIndex,
+          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+      }
     } else consoleLogger.e("ImageTagHandler", "Failed to parse image tag")
   }
 }
