@@ -16,18 +16,18 @@ class RatioInputInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private val hintText: CharSequence
+  private var hintText: CharSequence = ""
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
     // Assume multi-line for the purpose of properly showing long hints.
     setSingleLine(hint != null)
-    hintText = (hint ?: "")
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
+    hintText = hint
     hideHint()
     KeyboardHelper.showSoftKeyboard(v, context)
   } else {
