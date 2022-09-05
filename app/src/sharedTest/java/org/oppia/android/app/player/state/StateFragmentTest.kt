@@ -128,7 +128,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -1581,7 +1582,8 @@ class StateFragmentTest {
       // Verify that fraction input uses the standard text software keyboard.
       scenario.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.fraction_input_interaction_view)
-        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(textView.inputType)
+          .isEqualTo(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
       }
     }
   }
@@ -1602,7 +1604,8 @@ class StateFragmentTest {
       // Verify that ratio input uses the standard text software keyboard.
       scenario.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.ratio_input_interaction_view)
-        assertThat(textView.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(textView.inputType)
+          .isEqualTo(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
       }
     }
   }
@@ -4306,7 +4309,7 @@ class StateFragmentTest {
       ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
-      WorkManagerConfigurationModule::class, LogUploadWorkerModule::class,
+      WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
@@ -4316,7 +4319,7 @@ class StateFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

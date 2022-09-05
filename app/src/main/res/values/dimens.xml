@@ -442,6 +442,13 @@
   <dimen name="faq_single_padding_bottom">60dp</dimen>
   <dimen name="faq_single_activity_scroll_padding_bottom">80dp</dimen>
 
+  <!-- Privacy Policy -->
+  <dimen name="policies_fragment_page_padding_start">24dp</dimen>
+  <dimen name="policies_fragment_page_padding_top">22dp</dimen>
+  <dimen name="policies_fragment_page_padding_end">28dp</dimen>
+  <dimen name="policies_fragment_page_padding_bottom">60dp</dimen>
+  <dimen name="policies_fragment_page_scroll_padding_bottom">80dp</dimen>
+
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">80dp</dimen>
   <dimen name="faq_list_padding_bottom">60dp</dimen>
@@ -683,7 +690,10 @@
   <!-- Hints and Solution Fragment -->
   <dimen name="hints_and_solution_recycler_view_padding_top">20dp</dimen>
   <dimen name="hints_and_solution_recycler_view_padding_bottom">168dp</dimen>
-  
+  <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+
   <!-- AdministratorControlDownloadPermissionsView -->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_end">16dp</dimen>
