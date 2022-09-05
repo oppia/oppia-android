@@ -580,7 +580,9 @@ class ExplorationProgressController @Inject constructor(
         explorationProgress.stateDeck.submitAnswer(
           userAnswer, answerOutcome.feedback, answerOutcome.labelledAsCorrectAnswer
         )
-        stateAnalyticsLogger?.logSubmitAnswer(answerOutcome.labelledAsCorrectAnswer)
+        stateAnalyticsLogger?.logSubmitAnswer(
+          topPendingState.interaction, userAnswer, answerOutcome.labelledAsCorrectAnswer
+        )
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()

@@ -13,6 +13,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -823,7 +825,11 @@ class LearnerAnalyticsLoggerTest {
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
-    stateLogger.logSubmitAnswer(isCorrect = false)
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = UserAnswer.getDefaultInstance(),
+      isCorrect = false
+    )
 
     val eventLog = fakeEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -850,7 +856,11 @@ class LearnerAnalyticsLoggerTest {
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration5)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
-    stateLogger.logSubmitAnswer(isCorrect = true)
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = UserAnswer.getDefaultInstance(),
+      isCorrect = true
+    )
 
     val eventLog = fakeEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
@@ -1283,7 +1293,11 @@ class LearnerAnalyticsLoggerTest {
       )
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logSubmitAnswer(isCorrect = true)
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = UserAnswer.getDefaultInstance(),
+      isCorrect = true
+    )
 
     val eventLog = fakeEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasSubmitAnswerContextThat {
@@ -1303,7 +1317,11 @@ class LearnerAnalyticsLoggerTest {
       learnerAnalyticsLogger.beginExploration(exploration5, learnerId = null, installationId = null)
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
 
-    stateLogger.logSubmitAnswer(isCorrect = true)
+    stateLogger.logSubmitAnswer(
+      interaction = Interaction.getDefaultInstance(),
+      userAnswer = UserAnswer.getDefaultInstance(),
+      isCorrect = true
+    )
 
     // See testExpLogger_logExitExploration_noInstallOrLearnerIds_logsEventAndConsoleErrors.
     val eventLog = fakeEventLogger.getMostRecentEvent()
