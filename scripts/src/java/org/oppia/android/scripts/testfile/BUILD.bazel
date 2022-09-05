@@ -3,7 +3,7 @@ Libraries corresponding to test file-related checks, such as ensuring that all t
 (all Kotlin files) files have a corresponding test file present.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "test_file_check_lib",

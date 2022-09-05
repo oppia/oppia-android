@@ -207,7 +207,7 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
       override fun onActivityStopped(activity: Activity) {}
       override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!dialogDismissed.get()) {
-          activity.let {
+          activity?.let {
             val appCompatActivity = it as AppCompatActivity
             primeDownloadStatus.observe(
               appCompatActivity,

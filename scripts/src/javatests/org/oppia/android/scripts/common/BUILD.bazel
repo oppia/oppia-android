@@ -3,7 +3,7 @@ Tests corresponding to common libraries that potentially support multiple script
 common or generic operations.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "BazelClientTest",

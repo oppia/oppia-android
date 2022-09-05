@@ -11,7 +11,7 @@ order to build with Bazel.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("@tools_android//tools/crashlytics:defs.bzl", "crashlytics_android_library")
 load("@tools_android//tools/googleservices:defs.bzl", "google_services_xml")
 load("//app:app_test.bzl", "app_test")
@@ -860,7 +860,7 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/threading:glide_test_executor",
+    "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
     "//third_party:androidx_annotation_annotation",

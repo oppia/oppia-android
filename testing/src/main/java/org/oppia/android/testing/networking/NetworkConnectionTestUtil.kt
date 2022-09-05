@@ -2,6 +2,7 @@ package org.oppia.android.testing.networking
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowNetworkInfo
 import javax.inject.Inject
@@ -19,8 +20,7 @@ class NetworkConnectionTestUtil @Inject constructor(private val context: Context
    * @param status the type of network
    * @param networkState state of the network connection
    */
-  @Suppress("DEPRECATION") // Deprecated NetworkInfo is used for older SDK interoperability.
-  fun setNetworkInfo(status: Int, networkState: android.net.NetworkInfo.State) {
+  fun setNetworkInfo(status: Int, networkState: NetworkInfo.State) {
     shadowOf(connectivityManager).setActiveNetworkInfo(
       ShadowNetworkInfo.newInstance(
         /* detailedState= */ null,

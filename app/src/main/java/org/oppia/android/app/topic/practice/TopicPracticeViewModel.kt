@@ -78,6 +78,7 @@ class TopicPracticeViewModel @Inject constructor(
     )
 
     itemViewModelList.add(TopicPracticeFooterViewModel() as TopicPracticeItemViewModel)
+
     return itemViewModelList
   }
 }

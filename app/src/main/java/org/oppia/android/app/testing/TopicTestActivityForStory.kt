@@ -84,7 +84,7 @@ class TopicTestActivityForStory :
   }
 
   override fun routeToExploration(
-    internalProfileId: Int,
+    profileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -94,7 +94,7 @@ class TopicTestActivityForStory :
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,

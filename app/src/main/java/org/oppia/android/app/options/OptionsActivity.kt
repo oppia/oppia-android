@@ -102,6 +102,7 @@ class OptionsActivity :
     startActivityForResult(
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
+        APP_LANGUAGE,
         appLanguage
       ),
       REQUEST_CODE_APP_LANGUAGE
@@ -112,6 +113,7 @@ class OptionsActivity :
     startActivityForResult(
       AudioLanguageActivity.createAudioLanguageActivityIntent(
         this,
+        AUDIO_LANGUAGE,
         audioLanguage
       ),
       REQUEST_CODE_AUDIO_LANGUAGE

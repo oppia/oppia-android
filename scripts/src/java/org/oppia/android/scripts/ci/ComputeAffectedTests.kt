@@ -64,7 +64,7 @@ fun main(args: Array<String>) {
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
 private fun String.toBooleanStrictOrNull(): Boolean? {
-  return when (lowercase(Locale.US)) {
+  return when (toLowerCase(Locale.US)) {
     "false" -> false
     "true" -> true
     else -> null
@@ -110,7 +110,7 @@ class ComputeAffectedTests(
     println("Current branch: ${gitClient.currentBranch}")
     println("Most recent common commit: ${gitClient.branchMergeBase}")
 
-    val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
+    val currentBranch = gitClient.currentBranch.toLowerCase(Locale.US)
     val affectedTestTargets = if (computeAllTestsSetting || currentBranch == "develop") {
       computeAllTestTargets(bazelClient)
     } else computeAffectedTargetsForNonDevelopBranch(gitClient, bazelClient, rootDirectory)

@@ -4,7 +4,7 @@ This library contains the frontend controller and business service logic for the
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 load("//domain:domain_assets.bzl", "generate_assets_list_from_text_protos")
 load("//domain:domain_test.bzl", "domain_test")
 

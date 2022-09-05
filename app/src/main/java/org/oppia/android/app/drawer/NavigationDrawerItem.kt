@@ -17,7 +17,7 @@ enum class NavigationDrawerItem(val value: Int) {
       for (item: NavigationDrawerItem in values()) {
         if (item.value == id) return item
       }
-      throw IllegalArgumentException("NavigationDrawerItem not found by $id")
+      return throw IllegalArgumentException("NavigationDrawerItem not found by $id")
     }
   }
 }

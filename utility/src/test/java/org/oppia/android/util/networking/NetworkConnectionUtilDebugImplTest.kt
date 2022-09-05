@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION") // Deprecated Android SDK components are needed in this test suite.
-
 package org.oppia.android.util.networking
 
 import android.app.Application

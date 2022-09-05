@@ -3,7 +3,7 @@ Utilities corresponding to data.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "async_data_subscription_manager",
@@ -50,7 +50,6 @@ kt_android_library(
         ":async_result",
         ":dagger",
         ":data_provider",
-        ":in_memory_blocking_cache",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:javax_inject_javax_inject",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
@@ -66,10 +65,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//third_party:com_google_guava_guava",
         "//third_party:javax_inject_javax_inject",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
-        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
         "//utility/src/main/java/org/oppia/android/util/threading:annotations",
     ],
 )

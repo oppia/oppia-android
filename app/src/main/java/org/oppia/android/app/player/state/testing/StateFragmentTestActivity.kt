@@ -100,13 +100,13 @@ class StateFragmentTestActivity :
   override fun dismiss() {}
 
   override fun routeToHintsAndSolution(
-    id: String,
+    explorationId: String,
     helpIndex: HelpIndex
   ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
         HintsAndSolutionDialogFragment.newInstance(
-          id,
+          explorationId,
           state,
           helpIndex,
           writtenTranslationContext

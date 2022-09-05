@@ -74,9 +74,6 @@ class ExplorationCheckpointTestHelper @Inject constructor(
 ) {
 
   init {
-    // Deprecation rationale: since this isn't a test, this is the only way to initialize mocks
-    // without creating a custom rule.
-    @Suppress("DEPRECATION")
     MockitoAnnotations.initMocks(this)
   }
 

@@ -133,7 +133,7 @@ import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.GlideTestExecutor
+import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -161,7 +161,6 @@ import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import java.util.Locale
-import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -198,10 +197,6 @@ class StateFragmentLocalTest {
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   @Inject
-  @field:GlideTestExecutor
-  lateinit var glideTestExecutor: ScheduledExecutorService
-
-  @Inject
   lateinit var editTextInputAction: EditTextInputAction
 
   @Inject
@@ -223,7 +218,9 @@ class StateFragmentLocalTest {
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
-    val executorService = MockGlideExecutor.newTestExecutor(glideTestExecutor)
+    val executorService = MockGlideExecutor.newTestExecutor(
+      CoroutineExecutorService(backgroundCoroutineDispatcher)
+    )
     Glide.init(
       context,
       GlideBuilder().setDiskCacheExecutor(executorService)

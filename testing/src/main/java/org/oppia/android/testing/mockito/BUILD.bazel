@@ -3,7 +3,7 @@
 Package for Mockito-specific test utilities and helpers.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # Library for general-purpose testing fakes.
 kt_android_library(

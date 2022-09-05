@@ -10,6 +10,7 @@ import org.oppia.android.app.model.MathExpression
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.ComparableOperationSubject.Companion.assertThat
@@ -1448,10 +1449,12 @@ class ExpressionToComparableOperationConverterTest {
    */
 
   @Test
-  @Iteration(name = "(1+2)*sqrt(3)", "op1=(1+2)", "op2=sqrt(3)")
-  @Iteration(name = "sqrt(3)*(1+2)", "op1=sqrt(3)", "op2=(1+2)")
-  @Iteration(name = "(1+2)*(3^4)", "op1=(1+2)", "op2=(3^4)")
-  @Iteration(name = "(3^4)*(1+2)", "op1=(3^4)", "op2=(1+2)")
+  @RunParameterized(
+    Iteration(name = "(1+2)*sqrt(3)", "op1=(1+2)", "op2=sqrt(3)"),
+    Iteration(name = "sqrt(3)*(1+2)", "op1=sqrt(3)", "op2=(1+2)"),
+    Iteration(name = "(1+2)*(3^4)", "op1=(1+2)", "op2=(3^4)"),
+    Iteration(name = "(3^4)*(1+2)", "op1=(3^4)", "op2=(1+2)")
+  )
   fun testConvert_additionAndNonCommutativeOp_samePrecedence_returnsOpWithSummationFirst() {
     val expression = parseNumericExpression("$op1 * $op2")
 
@@ -1472,10 +1475,12 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "2+sqrt(3)", "op1=2", "op2=sqrt(3)")
-  @Iteration(name = "sqrt(3)+2", "op1=sqrt(3)", "op2=2")
-  @Iteration(name = "2+3^4", "op1=2", "op2=3^4")
-  @Iteration(name = "3^4+2", "op1=3^4", "op2=2")
+  @RunParameterized(
+    Iteration(name = "2+sqrt(3)", "op1=2", "op2=sqrt(3)"),
+    Iteration(name = "sqrt(3)+2", "op1=sqrt(3)", "op2=2"),
+    Iteration(name = "2+3^4", "op1=2", "op2=3^4"),
+    Iteration(name = "3^4+2", "op1=3^4", "op2=2")
+  )
   fun testConvert_constantAndNonCommutativeOp_samePrecedence_returnsOpWithNonCommutativeFirst() {
     val expression = parseNumericExpression("$op1 + $op2")
 
@@ -1496,8 +1501,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "2*x", "op1=2", "op2=x")
-  @Iteration(name = "x*2", "op1=x", "op2=2")
+  @RunParameterized(
+    Iteration(name = "2*x", "op1=2", "op2=x"),
+    Iteration(name = "x*2", "op1=x", "op2=2")
+  )
   fun testConvert_constantAndVariable_samePrecedence_returnsOpWithConstantFirst() {
     val expression = parseAlgebraicExpression("$op1 * $op2")
 
@@ -1518,8 +1525,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "x+(-y)", "op1=x", "op2=(-y)")
-  @Iteration(name = "(-y)+x", "op1=(-y)", "op2=x")
+  @RunParameterized(
+    Iteration(name = "x+(-y)", "op1=x", "op2=(-y)"),
+    Iteration(name = "(-y)+x", "op1=(-y)", "op2=x")
+  )
   fun testConvert_positiveAndNegativeVariables_returnsOpWithNegatedLast() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
@@ -1542,8 +1551,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "x*(1/y)", "op1=x", "op2=(1/y)")
-  @Iteration(name = "(1/y)*x", "op1=(1/y)", "op2=x")
+  @RunParameterized(
+    Iteration(name = "x*(1/y)", "op1=x", "op2=(1/y)"),
+    Iteration(name = "(1/y)*x", "op1=(1/y)", "op2=x")
+  )
   fun testConvert_invertedAndNonInvertedVariables_returnsOpWithInvertedLast() {
     val expression = parseAlgebraicExpression("$op1 * $op2")
 
@@ -1570,14 +1581,16 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "(1+2)*(2+3)", "op1=1+2", "op2=2+3")
-  @Iteration(name = "(2+1)*(2+3)", "op1=2+1", "op2=2+3")
-  @Iteration(name = "(1+2)*(3+2)", "op1=1+2", "op2=3+2")
-  @Iteration(name = "(2+1)*(3+2)", "op1=2+1", "op2=3+2")
-  @Iteration(name = "(2+3)*(1+2)", "op1=2+3", "op2=1+2")
-  @Iteration(name = "(2+3)*(2+1)", "op1=2+3", "op2=2+1")
-  @Iteration(name = "(3+2)*(1+2)", "op1=3+2", "op2=1+2")
-  @Iteration(name = "(3+2)*(2+1)", "op1=3+2", "op2=2+1")
+  @RunParameterized(
+    Iteration(name = "(1+2)*(2+3)", "op1=1+2", "op2=2+3"),
+    Iteration(name = "(2+1)*(2+3)", "op1=2+1", "op2=2+3"),
+    Iteration(name = "(1+2)*(3+2)", "op1=1+2", "op2=3+2"),
+    Iteration(name = "(2+1)*(3+2)", "op1=2+1", "op2=3+2"),
+    Iteration(name = "(2+3)*(1+2)", "op1=2+3", "op2=1+2"),
+    Iteration(name = "(2+3)*(2+1)", "op1=2+3", "op2=2+1"),
+    Iteration(name = "(3+2)*(1+2)", "op1=3+2", "op2=1+2"),
+    Iteration(name = "(3+2)*(2+1)", "op1=3+2", "op2=2+1")
+  )
   fun testConvert_twoAdditionsInProduct_smallerSumIsFirst() {
     val expression = parseNumericExpression("($op1)*($op2)")
 
@@ -1613,14 +1626,16 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "(2*3)+(4*5)", "op1=2*3", "op2=4*5")
-  @Iteration(name = "(3*2)+(4*5)", "op1=3*2", "op2=4*5")
-  @Iteration(name = "(2*3)+(5*4)", "op1=2*3", "op2=5*4")
-  @Iteration(name = "(3*2)+(5*4)", "op1=3*2", "op2=5*4")
-  @Iteration(name = "(4*5)+(2*3)", "op1=4*5", "op2=2*3")
-  @Iteration(name = "(4*5)+(3*2)", "op1=4*5", "op2=3*2")
-  @Iteration(name = "(5*4)+(2*3)", "op1=5*4", "op2=2*3")
-  @Iteration(name = "(5*4)+(3*2)", "op1=5*4", "op2=3*2")
+  @RunParameterized(
+    Iteration(name = "(2*3)+(4*5)", "op1=2*3", "op2=4*5"),
+    Iteration(name = "(3*2)+(4*5)", "op1=3*2", "op2=4*5"),
+    Iteration(name = "(2*3)+(5*4)", "op1=2*3", "op2=5*4"),
+    Iteration(name = "(3*2)+(5*4)", "op1=3*2", "op2=5*4"),
+    Iteration(name = "(4*5)+(2*3)", "op1=4*5", "op2=2*3"),
+    Iteration(name = "(4*5)+(3*2)", "op1=4*5", "op2=3*2"),
+    Iteration(name = "(5*4)+(2*3)", "op1=5*4", "op2=2*3"),
+    Iteration(name = "(5*4)+(3*2)", "op1=5*4", "op2=3*2")
+  )
   fun testConvert_twoMultiplicationsInSum_smallerProductIsFirst() {
     val expression = parseNumericExpression("($op1)+($op2)")
 
@@ -1658,8 +1673,10 @@ class ExpressionToComparableOperationConverterTest {
   /* Non-commutative sorting */
 
   @Test
-  @Iteration(name = "(2^3)+sqrt(2)", "op1=(2^3)", "op2=sqrt(2)")
-  @Iteration(name = "sqrt(2)+(2^3)", "op1=sqrt(2)", "op2=(2^3)")
+  @RunParameterized(
+    Iteration(name = "(2^3)+sqrt(2)", "op1=(2^3)", "op2=sqrt(2)"),
+    Iteration(name = "sqrt(2)+(2^3)", "op1=sqrt(2)", "op2=(2^3)")
+  )
   fun testConvert_expAndSqrt_samePrecedence_returnsOpWithExpThenSqrt() {
     val expression = parseNumericExpression("$op1+$op2")
 
@@ -1684,21 +1701,23 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  // const^const + const^const
-  @Iteration(name = "(2^3)+(4^5)", "op1=2^3", "op2=4^5")
-  @Iteration(name = "(2^5)+(4^3)", "op1=2^5", "op2=4^3")
-  @Iteration(name = "(4^3)+(2^5)", "op1=4^3", "op2=2^5")
-  @Iteration(name = "(4^5)+(2^3)", "op1=4^5", "op2=2^3")
-  // const^var + const^var
-  @Iteration(name = "(2^x)+(4^5)", "op1=2^x", "op2=4^5")
-  @Iteration(name = "(2^5)+(4^x)", "op1=2^5", "op2=4^x")
-  @Iteration(name = "(4^x)+(2^5)", "op1=4^x", "op2=2^5")
-  @Iteration(name = "(4^5)+(2^x)", "op1=4^5", "op2=2^x")
-  // const^(var or const) + const^(const or var)
-  @Iteration(name = "(2^x)+(4^y)", "op1=2^x", "op2=4^y")
-  @Iteration(name = "(2^y)+(4^x)", "op1=2^y", "op2=4^x")
-  @Iteration(name = "(4^x)+(2^y)", "op1=4^x", "op2=2^y")
-  @Iteration(name = "(4^y)+(2^x)", "op1=4^y", "op2=2^x")
+  @RunParameterized(
+    // const^const + const^const
+    Iteration(name = "(2^3)+(4^5)", "op1=2^3", "op2=4^5"),
+    Iteration(name = "(2^5)+(4^3)", "op1=2^5", "op2=4^3"),
+    Iteration(name = "(4^3)+(2^5)", "op1=4^3", "op2=2^5"),
+    Iteration(name = "(4^5)+(2^3)", "op1=4^5", "op2=2^3"),
+    // const^var + const^var
+    Iteration(name = "(2^x)+(4^5)", "op1=2^x", "op2=4^5"),
+    Iteration(name = "(2^5)+(4^x)", "op1=2^5", "op2=4^x"),
+    Iteration(name = "(4^x)+(2^5)", "op1=4^x", "op2=2^5"),
+    Iteration(name = "(4^5)+(2^x)", "op1=4^5", "op2=2^x"),
+    // const^(var or const) + const^(const or var)
+    Iteration(name = "(2^x)+(4^y)", "op1=2^x", "op2=4^y"),
+    Iteration(name = "(2^y)+(4^x)", "op1=2^y", "op2=4^x"),
+    Iteration(name = "(4^x)+(2^y)", "op1=4^x", "op2=2^y"),
+    Iteration(name = "(4^y)+(2^x)", "op1=4^y", "op2=2^x")
+  )
   fun testConvert_addTwoExps_lhs1Const_rhs1Any_lhs2Const_rhs2Any_returnsOpWithLhsSizeBasedOrder() {
     // Note that optional errors need to be disabled as part of testing exponents as powers.
     val expression =
@@ -1737,21 +1756,23 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  // var^const + var^const
-  @Iteration(name = "(u^3)+(v^5)", "op1=u^3", "op2=v^5")
-  @Iteration(name = "(u^5)+(v^3)", "op1=u^5", "op2=v^3")
-  @Iteration(name = "(v^3)+(u^5)", "op1=v^3", "op2=u^5")
-  @Iteration(name = "(v^5)+(u^3)", "op1=v^5", "op2=u^3")
-  // var^var + var^var
-  @Iteration(name = "(u^x)+(v^5)", "op1=u^x", "op2=v^5")
-  @Iteration(name = "(u^5)+(v^x)", "op1=u^5", "op2=v^x")
-  @Iteration(name = "(v^x)+(u^5)", "op1=v^x", "op2=u^5")
-  @Iteration(name = "(v^5)+(u^x)", "op1=v^5", "op2=u^x")
-  // var^(var or const) + var^(const or var)
-  @Iteration(name = "(u^x)+(v^y)", "op1=u^x", "op2=v^y")
-  @Iteration(name = "(u^y)+(v^x)", "op1=u^y", "op2=v^x")
-  @Iteration(name = "(v^x)+(u^y)", "op1=v^x", "op2=u^y")
-  @Iteration(name = "(v^y)+(u^x)", "op1=v^y", "op2=u^x")
+  @RunParameterized(
+    // var^const + var^const
+    Iteration(name = "(u^3)+(v^5)", "op1=u^3", "op2=v^5"),
+    Iteration(name = "(u^5)+(v^3)", "op1=u^5", "op2=v^3"),
+    Iteration(name = "(v^3)+(u^5)", "op1=v^3", "op2=u^5"),
+    Iteration(name = "(v^5)+(u^3)", "op1=v^5", "op2=u^3"),
+    // var^var + var^var
+    Iteration(name = "(u^x)+(v^5)", "op1=u^x", "op2=v^5"),
+    Iteration(name = "(u^5)+(v^x)", "op1=u^5", "op2=v^x"),
+    Iteration(name = "(v^x)+(u^5)", "op1=v^x", "op2=u^5"),
+    Iteration(name = "(v^5)+(u^x)", "op1=v^5", "op2=u^x"),
+    // var^(var or const) + var^(const or var)
+    Iteration(name = "(u^x)+(v^y)", "op1=u^x", "op2=v^y"),
+    Iteration(name = "(u^y)+(v^x)", "op1=u^y", "op2=v^x"),
+    Iteration(name = "(v^x)+(u^y)", "op1=v^x", "op2=u^y"),
+    Iteration(name = "(v^y)+(u^x)", "op1=v^y", "op2=u^x")
+  )
   fun testConvert_addTwoExps_lhs1Var_rhs1Any_lhs2Var_rhs2Any_returnsOpWithLhsLetterBasedOrder() {
     // Note that optional errors need to be disabled as part of testing exponents as powers.
     val expression =
@@ -1795,8 +1816,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "sqrt(2)+sqrt(3)", "op1=2", "op2=3")
-  @Iteration(name = "sqrt(3)+sqrt(2)", "op1=3", "op2=2")
+  @RunParameterized(
+    Iteration(name = "sqrt(2)+sqrt(3)", "op1=2", "op2=3"),
+    Iteration(name = "sqrt(3)+sqrt(2)", "op1=3", "op2=2")
+  )
   fun testConvert_addTwoSqrts_leftConst_rightConst_returnsOpWithSqrtsByArgSize() {
     val expression = parseNumericExpression("sqrt($op1)+sqrt($op2)")
 
@@ -1829,8 +1852,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "sqrt(x)+sqrt(y)", "op1=x", "op2=y")
-  @Iteration(name = "sqrt(y)+sqrt(x)", "op1=y", "op2=x")
+  @RunParameterized(
+    Iteration(name = "sqrt(x)+sqrt(y)", "op1=x", "op2=y"),
+    Iteration(name = "sqrt(y)+sqrt(x)", "op1=y", "op2=x")
+  )
   fun testConvert_addTwoSqrts_leftVar_rightVar_returnsOpWithSqrtsByVariableOrder() {
     val expression = parseAlgebraicExpression("sqrt($op1)+sqrt($op2)")
 
@@ -1863,8 +1888,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "sqrt(2)+sqrt(x)", "op1=2", "op2=x")
-  @Iteration(name = "sqrt(x)+sqrt(2)", "op1=x", "op2=2")
+  @RunParameterized(
+    Iteration(name = "sqrt(2)+sqrt(x)", "op1=2", "op2=x"),
+    Iteration(name = "sqrt(x)+sqrt(2)", "op1=x", "op2=2")
+  )
   fun testConvert_addTwoSqrts_oneConst_oneVar_returnsOpWithSqrtsByConstFirst() {
     val expression = parseAlgebraicExpression("sqrt($op1)+sqrt($op2)")
 
@@ -1899,8 +1926,10 @@ class ExpressionToComparableOperationConverterTest {
   /* Constant & variable sorting */
 
   @Test
-  @Iteration(name = "2+3", "op1=2", "op2=3")
-  @Iteration(name = "3+2", "op1=3", "op2=2")
+  @RunParameterized(
+    Iteration(name = "2+3", "op1=2", "op2=3"),
+    Iteration(name = "3+2", "op1=3", "op2=2")
+  )
   fun testConvert_addTwoConstants_leftInteger_rightInteger_returnsOpSortedByValues() {
     val expression = parseNumericExpression("$op1 + $op2")
 
@@ -1925,8 +1954,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "3.2+6.3", "op1=3.2", "op2=6.3")
-  @Iteration(name = "6.3+3.2", "op1=6.3", "op2=3.2")
+  @RunParameterized(
+    Iteration(name = "3.2+6.3", "op1=3.2", "op2=6.3"),
+    Iteration(name = "6.3+3.2", "op1=6.3", "op2=3.2")
+  )
   fun testConvert_addTwoConstants_leftDouble_rightDouble_returnsOpSortedByValues() {
     val expression = parseNumericExpression("$op1 + $op2")
 
@@ -1951,8 +1982,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "3+6.3", "op1=3", "op2=6.3")
-  @Iteration(name = "6.3+3", "op1=6.3", "op2=3")
+  @RunParameterized(
+    Iteration(name = "3+6.3", "op1=3", "op2=6.3"),
+    Iteration(name = "6.3+3", "op1=6.3", "op2=3")
+  )
   fun testConvert_addTwoConstants_smallInt_largeDouble_returnsOpWithIntFirst() {
     val expression = parseNumericExpression("$op1 + $op2")
 
@@ -1977,8 +2010,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "8+6.3", "op1=8", "op2=6.3")
-  @Iteration(name = "6.3+8", "op1=6.3", "op2=8")
+  @RunParameterized(
+    Iteration(name = "8+6.3", "op1=8", "op2=6.3"),
+    Iteration(name = "6.3+8", "op1=6.3", "op2=8")
+  )
   fun testConvert_addTwoConstants_largeInt_smallDouble_returnsOpWithDoubleFirst() {
     val expression = parseNumericExpression("$op1 + $op2")
 
@@ -2003,8 +2038,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "x+6", "op1=x", "op2=6")
-  @Iteration(name = "6+x", "op1=6", "op2=x")
+  @RunParameterized(
+    Iteration(name = "x+6", "op1=x", "op2=6"),
+    Iteration(name = "6+x", "op1=6", "op2=x")
+  )
   fun testConvert_addVarAndIntConstant_returnsOpWithConstantFirst() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
@@ -2029,8 +2066,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "3.6+x", "op1=3.6", "op2=x")
-  @Iteration(name = "x+3.6", "op1=x", "op2=3.6")
+  @RunParameterized(
+    Iteration(name = "3.6+x", "op1=3.6", "op2=x"),
+    Iteration(name = "x+3.6", "op1=x", "op2=3.6")
+  )
   fun testConvert_addVarAndDoubleConstant_returnsOpWithConstantFirst() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 
@@ -2078,8 +2117,10 @@ class ExpressionToComparableOperationConverterTest {
   }
 
   @Test
-  @Iteration(name = "x+y", "op1=x", "op2=y")
-  @Iteration(name = "y+x", "op1=y", "op2=x")
+  @RunParameterized(
+    Iteration(name = "x+y", "op1=x", "op2=y"),
+    Iteration(name = "y+x", "op1=y", "op2=x")
+  )
   fun testConvert_addTwoVariables_oneX_oneY_returnsOpWithXThenY() {
     val expression = parseAlgebraicExpression("$op1 + $op2")
 

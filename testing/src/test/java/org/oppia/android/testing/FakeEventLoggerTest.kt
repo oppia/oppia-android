@@ -43,8 +43,6 @@ class FakeEventLoggerTest {
     setUpTestApplicationComponent()
   }
 
-  // TODO: Update tests to verify timestamp.
-
   @Test
   fun testFakeEventLogger_logEvent_returnsEvent() {
     eventLogger.logEvent(eventLog1)

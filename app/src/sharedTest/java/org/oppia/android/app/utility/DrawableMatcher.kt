@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.res.ResourcesCompat
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
@@ -32,7 +31,7 @@ class DrawableMatcher constructor(
       return target.drawable != null
     }
     val resources = target.getContext().resources
-    val expectedDrawable = ResourcesCompat.getDrawable(resources, expectedId, /* theme= */ null)
+    val expectedDrawable = resources.getDrawable(expectedId)
     resourceName = resources.getResourceEntryName(expectedId)
 
     if (expectedDrawable == null) {

@@ -2,7 +2,7 @@
 Kotlin-based scripts to help developers or perform continuous integration tasks.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_binary", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary")
 load(
     "//scripts:script_assets.bzl",

@@ -8,6 +8,7 @@ import org.oppia.android.app.model.MathExpression
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
@@ -171,15 +172,17 @@ class MathExpressionExtensionsTest {
   }
 
   @Test
-  @Iteration("2==2", "exp1=2", "exp2=2")
-  @Iteration("2==2.000000000000001", "exp1=2", "exp2=2.000000000000001")
-  @Iteration("x+1==x+1", "exp1=x+1", "exp2=x+1")
-  @Iteration("x-1==x-1", "exp1=x-1", "exp2=x-1")
-  @Iteration("x*2==x*2", "exp1=x*2", "exp2=x*2")
-  @Iteration("x/2==x/2", "exp1=x/2", "exp2=x/2")
-  @Iteration("x^2==x^2", "exp1=x^2", "exp2=x^2")
-  @Iteration("-x==-x", "exp1=-x", "exp2=-x")
-  @Iteration("sqrt(x)==sqrt(x)", "exp1=sqrt(x)", "exp2=sqrt(x)")
+  @RunParameterized(
+    Iteration("2==2", "exp1=2", "exp2=2"),
+    Iteration("2==2.000000000000001", "exp1=2", "exp2=2.000000000000001"),
+    Iteration("x+1==x+1", "exp1=x+1", "exp2=x+1"),
+    Iteration("x-1==x-1", "exp1=x-1", "exp2=x-1"),
+    Iteration("x*2==x*2", "exp1=x*2", "exp2=x*2"),
+    Iteration("x/2==x/2", "exp1=x/2", "exp2=x/2"),
+    Iteration("x^2==x^2", "exp1=x^2", "exp2=x^2"),
+    Iteration("-x==-x", "exp1=-x", "exp2=-x"),
+    Iteration("sqrt(x)==sqrt(x)", "exp1=sqrt(x)", "exp2=sqrt(x)")
+  )
   fun testIsApproximatelyEqualTo_bothAreSingleTermsOrOperations_andSame_returnsTrue() {
     val first = parseAlgebraicExpression(exp1)
     val second = parseAlgebraicExpression(exp2)
@@ -192,34 +195,36 @@ class MathExpressionExtensionsTest {
   }
 
   @Test
-  @Iteration("2!=3", "exp1=2", "exp2=3")
-  @Iteration("2!=3/2", "exp1=2", "exp2=3/2")
-  @Iteration("2!=3.14", "exp1=2", "exp2=3.14")
-  @Iteration("x!=y", "exp1=x", "exp2=y")
-  @Iteration("x!=2", "exp1=x", "exp2=2")
-  // The number of terms must match.
-  @Iteration("1+x!=1", "exp1=1+x", "exp2=1")
-  @Iteration("1+x!=x", "exp1=1+x", "exp2=x")
-  @Iteration("1+1+x!=2+x", "exp1=1+1+x", "exp2=2+x")
-  // Term order must match.
-  @Iteration("1+x!=2+x", "exp1=1+x", "exp2=2+x")
-  @Iteration("1+x!=x+1", "exp1=1+x", "exp2=x+1")
-  @Iteration("1-x!=2-x", "exp1=1-x", "exp2=2-x")
-  @Iteration("1-x!=x-1", "exp1=1-x", "exp2=x-1")
-  @Iteration("2*x!=3*x", "exp1=2*x", "exp2=3*x")
-  @Iteration("2*x!=x*2", "exp1=2*x", "exp2=x*2")
-  @Iteration("x/2!=x/3", "exp1=x/2", "exp2=x/3")
-  @Iteration("x/2!=2/x", "exp1=x/2", "exp2=2/x")
-  @Iteration("x^2!=x^3", "exp1=x^2", "exp2=x^3")
-  @Iteration("x^2!=2^x", "exp1=x^2", "exp2=2^x")
-  @Iteration("x!=-2", "exp1=x", "exp2=-2")
-  @Iteration("x!=-x", "exp1=x", "exp2=-x")
-  @Iteration("sqrt(x)!=sqrt(2)", "exp1=sqrt(x)", "exp2=sqrt(2)")
-  // These checks are numerically equivalent but fail due to the expression structure not
-  // matching.
-  @Iteration("2==2/1", "exp1=2", "exp2=2/1")
-  @Iteration("1/3==0.33333333", "exp1=1/3", "exp2=0.33333333")
-  @Iteration("1.5==3/2", "exp1=1.5", "exp2=3/2")
+  @RunParameterized(
+    Iteration("2!=3", "exp1=2", "exp2=3"),
+    Iteration("2!=3/2", "exp1=2", "exp2=3/2"),
+    Iteration("2!=3.14", "exp1=2", "exp2=3.14"),
+    Iteration("x!=y", "exp1=x", "exp2=y"),
+    Iteration("x!=2", "exp1=x", "exp2=2"),
+    // The number of terms must match.
+    Iteration("1+x!=1", "exp1=1+x", "exp2=1"),
+    Iteration("1+x!=x", "exp1=1+x", "exp2=x"),
+    Iteration("1+1+x!=2+x", "exp1=1+1+x", "exp2=2+x"),
+    // Term order must match.
+    Iteration("1+x!=2+x", "exp1=1+x", "exp2=2+x"),
+    Iteration("1+x!=x+1", "exp1=1+x", "exp2=x+1"),
+    Iteration("1-x!=2-x", "exp1=1-x", "exp2=2-x"),
+    Iteration("1-x!=x-1", "exp1=1-x", "exp2=x-1"),
+    Iteration("2*x!=3*x", "exp1=2*x", "exp2=3*x"),
+    Iteration("2*x!=x*2", "exp1=2*x", "exp2=x*2"),
+    Iteration("x/2!=x/3", "exp1=x/2", "exp2=x/3"),
+    Iteration("x/2!=2/x", "exp1=x/2", "exp2=2/x"),
+    Iteration("x^2!=x^3", "exp1=x^2", "exp2=x^3"),
+    Iteration("x^2!=2^x", "exp1=x^2", "exp2=2^x"),
+    Iteration("x!=-2", "exp1=x", "exp2=-2"),
+    Iteration("x!=-x", "exp1=x", "exp2=-x"),
+    Iteration("sqrt(x)!=sqrt(2)", "exp1=sqrt(x)", "exp2=sqrt(2)"),
+    // These checks are numerically equivalent but fail due to the expression structure not
+    // matching.
+    Iteration("2==2/1", "exp1=2", "exp2=2/1"),
+    Iteration("1/3==0.33333333", "exp1=1/3", "exp2=0.33333333"),
+    Iteration("1.5==3/2", "exp1=1.5", "exp2=3/2")
+  )
   fun testIsApproximatelyEqualTo_bothAreSingleTermsOrOperations_butDifferent_returnsFalse() {
     // Some expressions may attempt normally disallowed expressions (such as '2^x').
     val first = parseAlgebraicExpression(exp1, errorCheckingMode = REQUIRED_ONLY)

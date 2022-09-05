@@ -14,7 +14,6 @@ oppia_android_test(
     deps = [
         ":dagger",
         "//testing",
-        "//testing/src/main/java/org/oppia/android/testing/mockito",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//third_party:androidx_test_ext_junit",

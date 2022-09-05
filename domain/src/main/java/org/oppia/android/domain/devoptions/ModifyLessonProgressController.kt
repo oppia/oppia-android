@@ -8,7 +8,10 @@ import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,6 +21,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformDynamic
 
 private const val GET_ALL_TOPICS_PROVIDER_ID = "get_all_topics_provider_id"
+private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"
 private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 
 // TODO(#3423): Remove ModifyLessonProgressController from prod build of the app.
@@ -29,6 +33,7 @@ class ModifyLessonProgressController @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaClock: OppiaClock
 ) {
+
   /**
    * Fetches a list of topics given a profile ID.
    *
@@ -62,8 +67,8 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Checks if a topic is completed or not.
    *
-   * @param topicWithProgress the topic for which progress needs to be fetched
-   * @return a [Boolean] indicating whether the topic is completed or not
+   * @param topicWithProgress: the topic for which progress needs to be fetched.
+   * @return a [Boolean] indicating whether the topic is completed or not.
    */
   fun checkIfTopicIsCompleted(topicWithProgress: EphemeralTopic): Boolean {
     topicWithProgress.topic.storyList.forEach { storySummary ->
@@ -77,8 +82,8 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Checks if a story is completed or not.
    *
-   * @param storyWithProgress the story for which progress needs to be fetched
-   * @return a [Boolean] indicating whether the story is completed or not
+   * @param storyWithProgress: the story for which progress needs to be fetched.
+   * @return a [Boolean] indicating whether the story is completed or not.
    */
   fun checkIfStoryIsCompleted(storyWithProgress: EphemeralStorySummary): Boolean {
     storyWithProgress.storySummary.chapterList.forEach { chapterSummary ->
@@ -90,8 +95,8 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Modifies lesson progress by marking multiple topics as completed for the current user profile.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs modified
-   * @param topicIdList the list of topic IDs for which progress needs modified
+   * @param profileId: the ID corresponding to the profile for which progress needs modified.
+   * @param topicIdList: the list of topic IDs for which progress needs modified.
    */
   fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
     topicIdList.forEach { topicId ->
@@ -115,9 +120,9 @@ class ModifyLessonProgressController @Inject constructor(
   /**
    * Modifies lesson progress by marking multiple stories as completed for the current user profile.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs modified
-   * @param storyMap the list of topic IDs mapped to corresponding story IDs for which progress
-   *     needs modified
+   * @param profileId: the ID corresponding to the profile for which progress needs modified.
+   * @param storyMap: the list of topic IDs mapped to corresponding story IDs for which progress
+   * needs modified.
    */
   fun markMultipleStoriesCompleted(profileId: ProfileId, storyMap: Map<String, String>) {
     storyMap.forEach {
@@ -135,12 +140,11 @@ class ModifyLessonProgressController @Inject constructor(
   }
 
   /**
-   * Modifies lesson progress by marking multiple chapters as completed for the current user
-   * profile.
+   * Modifies lesson progress by marking multiple chapters as completed for the current user profile.
    *
-   * @param profileId the ID corresponding to the profile for which progress needs modified
-   * @param chapterMap the list of [Pair] of topic IDs and story IDs mapped to corresponding
-   *     exploration IDs for which progress needs modified
+   * @param profileId: the ID corresponding to the profile for which progress needs modified.
+   * @param chapterMap: the list of [Pair] of topic IDs and story IDs mapped to corresponding
+   * exploration IDs for which progress needs modified.
    */
   fun markMultipleChaptersCompleted(
     profileId: ProfileId,
@@ -155,5 +159,23 @@ class ModifyLessonProgressController @Inject constructor(
         completionTimestamp = oppiaClock.getCurrentTimeMs()
       )
     }
+  }
+
+  /** Combines list of topics without progress and list of [TopicProgress] into a list of [Topic]. */
+  private fun combineTopicListAndTopicProgressList(
+    allTopics: List<Topic>,
+    topicProgressList: List<TopicProgress>
+  ): List<Topic> {
+    val topicProgressMap = topicProgressList.associateBy({ it.topicId }, { it })
+    val allTopicsWithProgress = mutableListOf<Topic>()
+    allTopics.forEach { topic ->
+      allTopicsWithProgress.add(
+        topicController.combineTopicAndTopicProgress(
+          topic = topic,
+          topicProgress = topicProgressMap[topic.topicId] ?: TopicProgress.getDefaultInstance()
+        )
+      )
+    }
+    return allTopicsWithProgress
   }
 }

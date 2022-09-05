@@ -260,6 +260,7 @@ class TextViewBindingAdaptersTest {
   fun testSetProfileLastVisitedText_forTimeZero_setsLastUsedRecently() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
+    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
@@ -274,6 +275,7 @@ class TextViewBindingAdaptersTest {
   fun testSetProfileLastVisitedText_forNegativeTime_setsLastUsedRecently() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TIMESTAMP)
+    val getCurrentTimeMs = fakeOppiaClock.getCurrentTimeMs()
     activityRule.scenario.onActivity {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(

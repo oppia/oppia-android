@@ -214,6 +214,7 @@ class AppLanguageFragmentTest {
   private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
+      APP_LANGUAGE,
       summaryValue
     )
   }

@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.utility.getVersionName
@@ -22,10 +23,8 @@ import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /** Worker class that fetches and caches the latest platform parameters from the remote service. */
-@OptIn(ExperimentalCoroutinesApi::class)
 class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
@@ -54,6 +53,7 @@ class PlatformParameterSyncUpWorker private constructor(
     const val WORKER_TYPE_KEY = "worker_type_key"
   }
 
+  @ExperimentalCoroutinesApi
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     val result = backgroundScope.async {
@@ -71,7 +71,7 @@ class PlatformParameterSyncUpWorker private constructor(
         future.set(result.getCompleted())
       }
     }
-    // TODO(#4463): Add withTimeout() to avoid potential hanging.
+    // TODO(#3715): Add withTimeout() to avoid potential hanging.
     return future
   }
 
@@ -114,7 +114,7 @@ class PlatformParameterSyncUpWorker private constructor(
         }
         val cachingResult = platformParameterController
           .updatePlatformParameterDatabase(platformParameterList)
-          .retrieveData(originNotificationIds = setOf())
+          .retrieveData()
         if (cachingResult is AsyncResult.Failure) {
           throw IllegalStateException(cachingResult.error)
         }

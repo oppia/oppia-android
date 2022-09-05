@@ -2,7 +2,7 @@
 Libraries corresponding to developer scripts that help with continuous integration workflows.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "compute_affected_tests_lib",

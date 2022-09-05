@@ -42,7 +42,6 @@ class SplashActivityPresenter @Inject constructor(
 
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_activity)
-    @Suppress("DEPRECATION") // Constant was deprecated in SDK 30, but is needed for older SDKs.
     activity.window.setFlags(
       WindowManager.LayoutParams.FLAG_FULLSCREEN,
       WindowManager.LayoutParams.FLAG_FULLSCREEN

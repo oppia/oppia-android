@@ -34,15 +34,13 @@ class MachineLocaleImpl @Inject constructor(
   override fun String.formatForMachines(vararg args: Any?): String =
     format(machineAndroidLocale, *args)
 
-  override fun String.toMachineLowerCase(): String = lowercase(machineAndroidLocale)
+  override fun String.toMachineLowerCase(): String = toLowerCase(machineAndroidLocale)
 
-  override fun String.toMachineUpperCase(): String = uppercase(machineAndroidLocale)
+  override fun String.toMachineUpperCase(): String = toUpperCase(machineAndroidLocale)
 
-  override fun String.capitalizeForMachines(): String =
-    replaceFirstChar { if (it.isLowerCase()) it.titlecase(machineAndroidLocale) else it.toString() }
+  override fun String.capitalizeForMachines(): String = capitalize(machineAndroidLocale)
 
-  override fun String.decapitalizeForMachines(): String =
-    replaceFirstChar { it.lowercase(machineAndroidLocale) }
+  override fun String.decapitalizeForMachines(): String = decapitalize(machineAndroidLocale)
 
   override fun String.endsWithIgnoreCase(suffix: String): Boolean =
     toMachineLowerCase().endsWith(suffix.toMachineLowerCase())

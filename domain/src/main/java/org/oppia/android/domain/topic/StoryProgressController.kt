@@ -15,7 +15,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.data.DataProviders.Companion.transform
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_2 = "test_story_id_2"
@@ -37,8 +36,8 @@ const val UPCOMING_TOPIC_ID_1 = "test_topic_id_2"
 private const val CACHE_NAME = "topic_progress_database"
 private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
   "retrieve_topic_progress_list_data_provider_id"
-private const val RETRIEVE_TOPICS_PROGRESS_DATA_PROVIDER_ID =
-  "retrieve_topics_progress_data_provider_id"
+private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
+  "retrieve_topic_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_story_progress_data_provider_id"
 private const val RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID =
@@ -326,15 +325,13 @@ class StoryProgressController @Inject constructor(
   }
 
   /** Returns a [TopicProgress] [DataProvider] for a specific topicId, per-profile basis. */
-  internal fun retrieveTopicsProgressDataProvider(
+  internal fun retrieveTopicProgressDataProvider(
     profileId: ProfileId,
-    topicIds: List<String>
-  ): DataProvider<Map<String, TopicProgress>> {
+    topicId: String
+  ): DataProvider<TopicProgress> {
     return retrieveCacheStore(profileId)
-      .transform(RETRIEVE_TOPICS_PROGRESS_DATA_PROVIDER_ID) {
-        topicIds.associateWith { topicId ->
-          it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance()
-        }
+      .transformAsync(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) {
+        AsyncResult.Success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
       }
   }
 
@@ -344,10 +341,9 @@ class StoryProgressController @Inject constructor(
     topicId: String,
     storyId: String
   ): DataProvider<StoryProgress> {
-    return retrieveTopicsProgressDataProvider(profileId, listOf(topicId))
-      .transform(RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID) { topicsProgress ->
-        topicsProgress.getValue(topicId).storyProgressMap[storyId]
-          ?: StoryProgress.getDefaultInstance()
+    return retrieveTopicProgressDataProvider(profileId, topicId)
+      .transformAsync(RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID) {
+        AsyncResult.Success(it.storyProgressMap[storyId] ?: StoryProgress.getDefaultInstance())
       }
   }
 
@@ -376,7 +372,7 @@ class StoryProgressController @Inject constructor(
     }
 
     cacheStore.primeInMemoryCacheAsync().invokeOnCompletion {
-      it?.let {
+      it?.let { it ->
         oppiaLogger.e(
           "StoryProgressController",
           "Failed to prime cache ahead of data retrieval for StoryProgressController.",

@@ -19,7 +19,7 @@ class UncaughtExceptionLoggerStartupListener @Inject constructor(
   }
 
   /** Logs an uncaught exception to the [exceptionsController]. */
-  override fun uncaughtException(thread: Thread, throwable: Throwable) {
+  override fun uncaughtException(thread: Thread?, throwable: Throwable?) {
     try {
       exceptionsController.logFatalException(Exception(throwable))
     } catch (e: Exception) {

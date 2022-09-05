@@ -42,9 +42,6 @@ import java.io.IOException
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.locale.testing.LocaleTestModule
-import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.system.OppiaClockModule
 
 private const val CACHE_NAME_1 = "test_cache_1"
 private const val CACHE_NAME_2 = "test_cache_2"
@@ -79,7 +76,7 @@ class PersistentCacheStoreTest {
   // TODO(#59): Create a test-only proto for this test rather than needing to reuse a
   //  production-facing proto.
   @Test
-  @OptIn(ExperimentalCoroutinesApi::class)
+  @ExperimentalCoroutinesApi
   fun testCache_initialState_isPending() {
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -91,7 +88,7 @@ class PersistentCacheStoreTest {
     // timing model in tests is a bit too different from production to properly simulate this case.
     // This seems like a reasonable workaround to verify the same effective behavior.
     val deferredResult = backgroundDispatcherScope.async {
-      cacheStore.retrieveData(originNotificationIds = setOf())
+      cacheStore.retrieveData()
     }
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -666,9 +663,10 @@ class PersistentCacheStoreTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestDispatcherModule::class, TestModule::class,
-      TestLogReportingModule::class, LocaleTestModule::class, OppiaClockModule::class,
-      LoggerModule::class
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class,
+      TestLogReportingModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

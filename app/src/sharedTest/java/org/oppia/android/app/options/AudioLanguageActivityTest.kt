@@ -130,6 +130,7 @@ class AudioLanguageActivityTest {
   private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
     return AudioLanguageActivity.createAudioLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
+      AUDIO_LANGUAGE,
       summaryValue
     )
   }

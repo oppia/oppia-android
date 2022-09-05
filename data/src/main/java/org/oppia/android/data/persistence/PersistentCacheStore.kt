@@ -18,7 +18,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import org.oppia.android.util.logging.ConsoleLogger
 
 /**
  * An on-disk persistent cache for proto messages that ensures reads and writes happen in a
@@ -38,7 +37,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   cacheName: String,
   private val initialValue: T,
-  private val consoleLogger: ConsoleLogger,
   directory: File = context.filesDir
 ) : DataProvider<T>(context) {
   private val cacheFileName = "$cacheName.cache"
@@ -52,14 +50,8 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     cacheFactory.create(CachePayload(state = CacheState.UNLOADED, value = initialValue))
 
   init {
-    cache.observeChangesAsync {
-      asyncDataSubscriptionManager.notifyChangeAsync(providerId)
-    }.invokeOnCompletion {
-      if (it != null) {
-        consoleLogger.e(
-          "PersistentCacheStore", "Failed to register observer for internal cache.", it
-        )
-      }
+    cache.observeChanges {
+      asyncDataSubscriptionManager.notifyChange(providerId)
     }
   }
 
@@ -67,7 +59,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     return providerId
   }
 
-  override suspend fun retrieveData(originNotificationIds: Set<Any>): AsyncResult<T> {
+  override suspend fun retrieveData(): AsyncResult<T> {
     cache.readIfPresentAsync().await().let { cachePayload ->
       // First, determine whether the current cache has been attempted to be retrieved from disk.
       if (cachePayload.state == CacheState.UNLOADED) {
@@ -210,9 +202,10 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   ): Deferred<V> {
     return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
-      if (updateInMemoryCache) {
-        Pair(updatedPayload, customResult)
-      } else Pair(cachedPayload, customResult)
+      if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(
+        cachedPayload,
+        customResult
+      )
     }
   }
 
@@ -322,8 +315,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     private val context: Context,
     private val cacheFactory: InMemoryBlockingCache.Factory,
     private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-    private val directoryManagementUtil: DirectoryManagementUtil,
-    private val consoleLogger: ConsoleLogger
+    private val directoryManagementUtil: DirectoryManagementUtil
   ) {
     /**
      * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
@@ -337,8 +329,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
         cacheFactory,
         asyncDataSubscriptionManager,
         cacheName,
-        initialValue,
-        consoleLogger
+        initialValue
       )
     }
 
@@ -358,7 +349,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
         asyncDataSubscriptionManager,
         cacheName,
         initialValue,
-        consoleLogger,
         profileDirectory
       )
     }

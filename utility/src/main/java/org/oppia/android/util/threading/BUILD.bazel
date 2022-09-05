@@ -3,27 +3,15 @@ General purpose utilities for multi-threading and concurrency.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
     name = "annotations",
     srcs = [
         "BackgroundDispatcher.kt",
+        "BlockingDispatcher.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "implementation_annotations",
-    srcs = [
-        "BackgroundExecutor.kt",
-    ],
-    visibility = [
-        "//testing/src/main/java/org/oppia/android/testing/threading:__pkg__",
-    ],
     deps = [
         "//third_party:javax_inject_javax_inject",
     ],
@@ -65,7 +53,6 @@ kt_android_library(
     deps = [
         ":annotations",
         ":dagger",
-        ":implementation_annotations",
         "//third_party:javax_inject_javax_inject",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-android",
     ],

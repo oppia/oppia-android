@@ -3,7 +3,7 @@ Tests corresponding to regex pattern based validation checks which ensures that 
 file path/name and content are used in the codebase.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "RegexPatternValidationCheckTest",

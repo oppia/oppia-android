@@ -34,7 +34,6 @@ TEST_DEPS = [
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
     "//utility",
-    "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

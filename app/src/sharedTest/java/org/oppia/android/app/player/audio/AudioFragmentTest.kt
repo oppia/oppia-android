@@ -399,17 +399,15 @@ class AudioFragmentTest {
   /** Calls Robolectric's Shadows.shadowOf() using reflection. */
   private fun shadowOf(mediaPlayer: MediaPlayer): Any {
     val shadowsClass = Class.forName("org.robolectric.Shadows")
-    return shadowsClass.getMethod(
-      "shadowOf", MediaPlayer::class.java
-    ).invoke(/* obj= */ null, mediaPlayer)!!
+    return shadowsClass.getMethod("shadowOf", MediaPlayer::class.java)
+      .invoke(/* obj= */ null, mediaPlayer)
   }
 
   /** Calls ShadowMediaPlayer.setDataSource() using reflection. */
   private fun setDataSource(shadowMediaPlayer: Any, dataSource: Any) {
     val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    shadowMediaPlayer.javaClass.getMethod(
-      "setDataSource", dataSourceClass
-    ).invoke(shadowMediaPlayer, dataSource)
+    shadowMediaPlayer.javaClass.getMethod("setDataSource", dataSourceClass)
+      .invoke(shadowMediaPlayer, dataSource)
   }
 
   /** Calls ShadowMediaPlayer.invokePreparedListener() using reflection. */
@@ -447,7 +445,7 @@ class AudioFragmentTest {
     val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
     val toDataSourceMethod =
       dataSourceClass.getMethod("toDataSource", Context::class.java, Uri::class.java)
-    return toDataSourceMethod.invoke(/* obj= */ null, context, uri)!!
+    return toDataSourceMethod.invoke(/* obj= */ null, context, uri)
   }
 
   private fun isOnRobolectric(): Boolean {

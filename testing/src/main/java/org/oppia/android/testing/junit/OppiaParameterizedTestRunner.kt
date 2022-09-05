@@ -8,6 +8,7 @@ import org.junit.runner.manipulation.Sortable
 import org.junit.runner.manipulation.Sorter
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.Suite
+import java.lang.annotation.Repeatable
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
@@ -27,7 +28,7 @@ import kotlin.reflect.KClass
  * necessary Bazel dependencies). However, it will only support the platform(s) selected.
  *
  * To introduce parameterized tests, add this runner along with one or more [Parameter]-annotated
- * fields and one or more [Iteration]-annotated methods (where each method should have
+ * fields and one or more [RunParameterized]-annotated methods (where each method should have
  * multiple [Iteration]s defined to describe each test iteration). Note that only strings and
  * primitive types (e.g. [Int], [Long], [Float], [Double], and [Boolean]) are supported for
  * parameter injection. Here's a simple example:
@@ -40,9 +41,11 @@ import kotlin.reflect.KClass
  *   @Parameter var intParam: Int = Int.MIN_VALUE // Inited because primitives can't be lateinit.
  *
  *   @Test
- *   @Iteration("first", "strParam=first value", "intParam=12")
- *   @Iteration("second", "strParam=second value", "intParam=-72")
- *   @Iteration("third", "strParam=third value", "intParam=15")
+ *   @RunParameterized(
+ *     Iteration("first", "strParam=first value", "intParam=12"),
+ *     Iteration("second", "strParam=second value", "intParam=-72"),
+ *     Iteration("third", "strParam=third value", "intParam=15")
+ *   )
  *   fun testParams_multipleVals_isConsistent() {
  *     val result = performOperation(strParam, intParam)
  *     assertThat(result).isEqualTo(consistentExpectedValue)
@@ -68,7 +71,7 @@ import kotlin.reflect.KClass
  * ```
  *
  * Finally, regular tests can be added by simply using the JUnit ``Test`` annotation without also
- * annotating with [Iteration]. Such tests should not ever read from the
+ * annotating with [RunParameterized]. Such tests should not ever read from the
  * [Parameter]-annotated fields since there's no way to ensure what values those fields will
  * contain (thus they should be treated as undefined outside of tests that specific define their
  * value via [Iteration]).
@@ -239,7 +242,17 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
   @Target(AnnotationTarget.FIELD) annotation class Parameter
 
   /**
-   * Defines an iteration to run as part of a parameterized test method.
+   * Specifies that a method in a test that uses a [OppiaParameterizedTestRunner] runner should be
+   * run multiple times for each [Iteration] specified in the [value] iterations list.
+   *
+   * See the KDoc for the runner for example code.
+   */
+  @Target(AnnotationTarget.FUNCTION) annotation class RunParameterized(vararg val value: Iteration)
+
+  // TODO(#4120): Migrate to Kotlin @Repeatable once Kotlin 1.6 is used (see:
+  //  https://youtrack.jetbrains.com/issue/KT-12794).
+  /**
+   * Defines an iteration to run as part of a [RunParameterized]-annotated test method.
    *
    * See the KDoc for the runner for example code.
    *
@@ -249,7 +262,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    *     a [Parameter]-annotated field and 'value' is a stringified conforming value based on the
    *     type of that field (incompatible values will result in test failures)
    */
-  @Repeatable
+  @Repeatable(RunParameterized::class)
   @Target(AnnotationTarget.FUNCTION)
   annotation class Iteration(val name: String, vararg val keyValuePairs: String)
 

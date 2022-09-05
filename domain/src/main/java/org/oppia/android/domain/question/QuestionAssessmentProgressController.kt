@@ -2,7 +2,6 @@ package org.oppia.android.domain.question
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
@@ -360,7 +359,6 @@ class QuestionAssessmentProgressController @Inject constructor(
     return scoresResultFlow.convertToSessionProvider(CALCULATE_SCORES_PROVIDER_ID)
   }
 
-  @OptIn(ObsoleteCoroutinesApi::class)
   private fun createControllerCommandActor(): SendChannel<ControllerMessage<*>> {
     lateinit var controllerState: ControllerState
     // Use an unlimited capacity buffer so that commands can be sent asynchronously without blocking
@@ -432,17 +430,20 @@ class QuestionAssessmentProgressController @Inject constructor(
     message: ControllerMessage<T>,
     lazyFailureMessage: () -> String
   ) {
-    val sendResult = mostRecentCommandQueue?.trySend(message)
-    val failure = sendResult?.exceptionOrNull()
-    val flowResult: AsyncResult<T> = when {
-      sendResult == null ->
-        AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
-      sendResult.isFailure && failure != null -> AsyncResult.Failure(failure)
-      !sendResult.isSuccess -> AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
-      // Ensure that the result is first reset since there will be a delay before the message is
-      // processed (if there's a flow).
-      else -> AsyncResult.Pending()
-    }
+    // TODO(#4119): Switch this to use trySend(), instead, which is much cleaner and doesn't require
+    //  catching an exception.
+    val flowResult: AsyncResult<T> = try {
+      val commandQueue = mostRecentCommandQueue
+      when {
+        commandQueue == null ->
+          AsyncResult.Failure(IllegalStateException("Session isn't initialized yet."))
+        !commandQueue.offer(message) ->
+          AsyncResult.Failure(IllegalStateException(lazyFailureMessage()))
+        // Ensure that the result is first reset since there will be a delay before the message is
+        // processed (if there's a flow).
+        else -> AsyncResult.Pending()
+      }
+    } catch (e: Exception) { AsyncResult.Failure(e) }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.

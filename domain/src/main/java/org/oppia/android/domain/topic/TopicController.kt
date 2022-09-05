@@ -28,7 +28,6 @@ import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.domain.question.QuestionRetriever
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
-import org.oppia.android.domain.util.getStringFromArray
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -84,7 +83,6 @@ private const val GET_COMPLETED_STORY_LIST_PROVIDER_ID =
 private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
-private const val GET_TOPICS_PROVIDER_ID = "get_topics_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
 private const val GET_CHAPTER_PROVIDER_ID = "get_chapter_provider_id"
 private const val GET_LOCALIZABLE_CHAPTER_PROVIDER_ID = "get_localizable_chapter_provider_id"
@@ -146,8 +144,8 @@ class TopicController @Inject constructor(
         }
         AsyncResult.Success(topics)
       }
-    val topicsProgressDataProvider =
-      storyProgressController.retrieveTopicsProgressDataProvider(profileId, topicIds)
+    val topicProgressDataProvider =
+      storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
 
     val topicsCombinedProvider = topicsDataProvider.combineWith(
       topicsProgressDataProvider,
@@ -404,33 +402,28 @@ class TopicController @Inject constructor(
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
-  private fun combineTopicsAndTopicsProgress(
-    topics: List<Topic>, topicsProgressMap: Map<String, TopicProgress>
-  ): List<Topic> {
-    return topics.map { topic ->
-      val topicProgress = topicsProgressMap.getValue(topic.topicId)
-      val topicBuilder = topic.toBuilder()
-      if (topicProgress.storyProgressMap.isNotEmpty()) {
-        topic.storyList.forEachIndexed { storyIndex, storySummary ->
-          val updatedStorySummary =
-            if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
-              combineStorySummaryAndStoryProgress(
-                storySummary,
-                topicProgress.storyProgressMap[storySummary.storyId]!!
-              )
-            } else {
-              setFirstChapterAsNotStarted(storySummary)
-            }
-          topicBuilder.setStory(storyIndex, updatedStorySummary)
-        }
-      } else {
-        topic.storyList.forEachIndexed { storyIndex, storySummary ->
-          val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
-          topicBuilder.setStory(storyIndex, updatedStorySummary)
-        }
+  internal fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
+    val topicBuilder = topic.toBuilder()
+    if (topicProgress.storyProgressMap.isNotEmpty()) {
+      topic.storyList.forEachIndexed { storyIndex, storySummary ->
+        val updatedStorySummary =
+          if (topicProgress.storyProgressMap.containsKey(storySummary.storyId)) {
+            combineStorySummaryAndStoryProgress(
+              storySummary,
+              topicProgress.storyProgressMap[storySummary.storyId]!!
+            )
+          } else {
+            setFirstChapterAsNotStarted(storySummary)
+          }
+        topicBuilder.setStory(storyIndex, updatedStorySummary)
       }
-      return@map topicBuilder.build()
+    } else {
+      topic.storyList.forEachIndexed { storyIndex, storySummary ->
+        val updatedStorySummary = setFirstChapterAsNotStarted(storySummary)
+        topicBuilder.setStory(storyIndex, updatedStorySummary)
+      }
     }
+    return topicBuilder.build()
   }
 
   /** Combines the specified story-summary without progress and story-progress into a new topic. */
@@ -515,7 +508,7 @@ class TopicController @Inject constructor(
   }
 
   /**
-   * Helper function for [combineTopicsAndTopicsProgress] to set first chapter as NOT_STARTED in
+   * Helper function for [combineTopicAndTopicProgress] to set first chapter as NOT_STARTED in
    * [StorySummary].
    */
   private fun setFirstChapterAsNotStarted(storySummary: StorySummary): StorySummary {
@@ -596,11 +589,11 @@ class TopicController @Inject constructor(
     for (i in 0 until subtopicJsonArray!!.length()) {
       val skillIdList = ArrayList<String>()
 
-      val currentSubtopicJsonObject = subtopicJsonArray.getJSONObject(i)
-      val skillJsonArray = currentSubtopicJsonObject.getJSONArray("skill_ids")
+      val currentSubtopicJsonObject = subtopicJsonArray.optJSONObject(i)
+      val skillJsonArray = currentSubtopicJsonObject.optJSONArray("skill_ids")
 
       for (j in 0 until skillJsonArray.length()) {
-        skillIdList.add(skillJsonArray.getStringFromArray(j))
+        skillIdList.add(skillJsonArray.optString(j))
       }
       val subtopicTitle = SubtitledHtml.newBuilder().apply {
         contentId = "title"
@@ -652,25 +645,28 @@ class TopicController @Inject constructor(
     assetFileNameList.add("skills.json")
     assetFileNameList.add("$topicId.json")
 
-    val topicJsonObject = jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!
-    val storySummaryJsonArray = topicJsonObject.getJSONArray("canonical_story_dicts")
+    val topicJsonObject = jsonAssetRetriever
+      .loadJsonFromAsset("$topicId.json")!!
+    val storySummaryJsonArray = topicJsonObject
+      .optJSONArray("canonical_story_dicts")
     for (i in 0 until storySummaryJsonArray.length()) {
-      val storySummaryJsonObject = storySummaryJsonArray.getJSONObject(i)
-      val storyId = storySummaryJsonObject.getStringFromObject("id")
+      val storySummaryJsonObject = storySummaryJsonArray.optJSONObject(i)
+      val storyId = storySummaryJsonObject.optString("id")
       assetFileNameList.add("$storyId.json")
 
-      val storyJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")!!
-      val storyNodeJsonArray = storyJsonObject.getJSONArray("story_nodes")
+      val storyJsonObject = jsonAssetRetriever
+        .loadJsonFromAsset("$storyId.json")!!
+      val storyNodeJsonArray = storyJsonObject.optJSONArray("story_nodes")
       for (j in 0 until storyNodeJsonArray.length()) {
-        val storyNodeJsonObject = storyNodeJsonArray.getJSONObject(j)
-        val explorationId = storyNodeJsonObject.getStringFromObject("exploration_id")
+        val storyNodeJsonObject = storyNodeJsonArray.optJSONObject(j)
+        val explorationId = storyNodeJsonObject.optString("exploration_id")
         assetFileNameList.add("$explorationId.json")
       }
     }
-    val subtopicJsonArray = topicJsonObject.getJSONArray("subtopics")
+    val subtopicJsonArray = topicJsonObject.optJSONArray("subtopics")
     for (i in 0 until subtopicJsonArray.length()) {
-      val subtopicJsonObject = subtopicJsonArray.getJSONObject(i)
-      val subtopicId = subtopicJsonObject.getInt("id")
+      val subtopicJsonObject = subtopicJsonArray.optJSONObject(i)
+      val subtopicId = subtopicJsonObject.optInt("id")
       assetFileNameList.add(topicId + "_" + subtopicId + ".json")
     }
     return assetFileNameList

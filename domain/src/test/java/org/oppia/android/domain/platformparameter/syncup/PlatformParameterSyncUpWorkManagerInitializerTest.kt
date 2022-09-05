@@ -81,7 +81,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
 
   private val testVersionName = "1.0"
 
-  private val testVersionCode = 1L
+  private val testVersionCode = 1
 
   @Before
   fun setup() {
@@ -166,7 +166,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
         .setApplicationInfo(applicationInfo)
         .build()
     packageInfo.versionName = testVersionName
-    packageInfo.longVersionCode = testVersionCode
+    packageInfo.versionCode = testVersionCode
     packageManager.installPackage(packageInfo)
   }
 

@@ -11,7 +11,6 @@ fun Context.getVersionName(): String {
 
 /** Returns the current app version code. */
 fun Context.getVersionCode(): Int {
-  @Suppress("DEPRECATION") // versionCode was deprecated in SDK 28, but is needed for older SDKs.
   return this.packageManager.getPackageInfo(this.packageName, /* flags= */ 0).versionCode
 }
 

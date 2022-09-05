@@ -8,7 +8,6 @@ load("//app:test_with_resources.bzl", "test_with_resources")
 
 app_test(
     name = "StateFragmentTest",
-    size = "enormous",
     processed_src = test_with_resources("StateFragmentTest.kt"),
     test_class = "org.oppia.android.app.player.state.StateFragmentTest",
     deps = [
@@ -28,7 +27,7 @@ app_test(
         "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
-        "//testing/src/main/java/org/oppia/android/testing/threading:glide_test_executor",
+        "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",

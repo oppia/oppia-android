@@ -82,16 +82,16 @@ class OppiaTestRunner : AndroidJUnitRunner() {
     setPrivateFieldFromObject(packageInfo, "mApplication", application)
   }
 
-  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any? {
-    return retrieveAccessibleFieldFromObject(container, fieldName)?.get(container)
+  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any {
+    return retrieveAccessibleFieldFromObject(container, fieldName).get(container)
   }
 
-  private fun setPrivateFieldFromObject(container: Any?, fieldName: String, newValue: Any) {
-    retrieveAccessibleFieldFromObject(container, fieldName)?.set(container, newValue)
+  private fun setPrivateFieldFromObject(container: Any, fieldName: String, newValue: Any) {
+    retrieveAccessibleFieldFromObject(container, fieldName).set(container, newValue)
   }
 
-  private fun retrieveAccessibleFieldFromObject(container: Any?, fieldName: String): Field? {
-    return container?.javaClass?.getDeclaredField(fieldName)?.apply {
+  private fun retrieveAccessibleFieldFromObject(container: Any, fieldName: String): Field {
+    return container.javaClass.getDeclaredField(fieldName).apply {
       isAccessible = true
     }
   }

@@ -23,7 +23,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.Mockito.verifyZeroInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.mockito.capture
@@ -238,7 +238,7 @@ class ConceptCardTagHandlerTest {
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     assertThat(clickableSpans).hasLength(2)
     clickableSpans[1].onClick(testView)
-    verifyNoMoreInteractions(mockConceptCardLinkClickListener)
+    verifyZeroInteractions(mockConceptCardLinkClickListener)
   }
 
   @Test

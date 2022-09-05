@@ -195,7 +195,7 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    assertThrows(Exception::class) {
+    val exception = assertThrows(Exception::class) {
       main(retrieveTestFilesDirectoryPath(), "169877", "abmzuyt")
     }
     val fileContentList =

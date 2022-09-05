@@ -494,7 +494,7 @@ class StoryFragmentTest {
           position = 2,
           targetViewId = R.id.chapter_thumbnail
         )
-      ).check { view, _ ->
+      ).check { view, noViewFoundException ->
         var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
           R.id.chapter_thumbnail
         )

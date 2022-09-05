@@ -27,8 +27,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
+import org.mockito.MockitoAnnotations
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -118,10 +117,6 @@ class ImageRegionSelectionInteractionViewTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
   @Inject
   lateinit var context: Context
 
@@ -137,6 +132,7 @@ class ImageRegionSelectionInteractionViewTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    MockitoAnnotations.initMocks(this)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -9,6 +9,7 @@ import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedJunitTestRunner
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
@@ -328,10 +329,12 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsInt=0", "rhsInt=0")
-  @Iteration("1==1", "lhsInt=1", "rhsInt=1")
-  @Iteration("2==2", "lhsInt=2", "rhsInt=2")
-  @Iteration("-2==-2", "lhsInt=-2", "rhsInt=-2")
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsInt=0"),
+    Iteration("1==1", "lhsInt=1", "rhsInt=1"),
+    Iteration("2==2", "lhsInt=2", "rhsInt=2"),
+    Iteration("-2==-2", "lhsInt=-2", "rhsInt=-2")
+  )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsSameInt_returnsTrue() {
     val first = createIntegerReal(lhsInt)
     val second = createIntegerReal(rhsInt)
@@ -345,10 +348,12 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0!=1", "lhsInt=0", "rhsInt=1")
-  @Iteration("0!=2", "lhsInt=0", "rhsInt=2")
-  @Iteration("-2!=2", "lhsInt=-2", "rhsInt=2")
-  @Iteration("-2!=-1", "lhsInt=-2", "rhsInt=-1")
+  @RunParameterized(
+    Iteration("0!=1", "lhsInt=0", "rhsInt=1"),
+    Iteration("0!=2", "lhsInt=0", "rhsInt=2"),
+    Iteration("-2!=2", "lhsInt=-2", "rhsInt=2"),
+    Iteration("-2!=-1", "lhsInt=-2", "rhsInt=-1")
+  )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsDifferentInt_returnsFalse() {
     val first = createIntegerReal(lhsInt)
     val second = createIntegerReal(rhsInt)
@@ -361,13 +366,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsInt=0", "rhsFrac=0")
-  @Iteration("2==2", "lhsInt=2", "rhsFrac=2")
-  @Iteration("2==2/1", "lhsInt=2", "rhsFrac=2/1")
-  @Iteration("2==4/2", "lhsInt=2", "rhsFrac=4/2")
-  @Iteration("-2==-2", "lhsInt=-2", "rhsFrac=-2")
-  @Iteration("-2==-2/1", "lhsInt=-2", "rhsFrac=-2/1")
-  @Iteration("-2==-4/2", "lhsInt=-2", "rhsFrac=-4/2")
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsFrac=0"),
+    Iteration("2==2", "lhsInt=2", "rhsFrac=2"),
+    Iteration("2==2/1", "lhsInt=2", "rhsFrac=2/1"),
+    Iteration("2==4/2", "lhsInt=2", "rhsFrac=4/2"),
+    Iteration("-2==-2", "lhsInt=-2", "rhsFrac=-2"),
+    Iteration("-2==-2/1", "lhsInt=-2", "rhsFrac=-2/1"),
+    Iteration("-2==-4/2", "lhsInt=-2", "rhsFrac=-4/2")
+  )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsSameFraction_returnsTrue() {
     val first = createIntegerReal(lhsInt)
     val second = createRationalReal(rhsFrac)
@@ -381,10 +388,12 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0!=2", "lhsInt=0", "rhsFrac=2")
-  @Iteration("2!=4", "lhsInt=2", "rhsFrac=4")
-  @Iteration("2!=3/2", "lhsInt=2", "rhsFrac=3/2")
-  @Iteration("2!=-2", "lhsInt=2", "rhsFrac=-2")
+  @RunParameterized(
+    Iteration("0!=2", "lhsInt=0", "rhsFrac=2"),
+    Iteration("2!=4", "lhsInt=2", "rhsFrac=4"),
+    Iteration("2!=3/2", "lhsInt=2", "rhsFrac=3/2"),
+    Iteration("2!=-2", "lhsInt=2", "rhsFrac=-2"),
+  )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsDifferentFraction_returnsFalse() {
     val first = createIntegerReal(lhsInt)
     val second = createRationalReal(rhsFrac)
@@ -397,14 +406,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0.0", "lhsInt=0", "rhsDouble=0.0")
-  @Iteration("1==1.0", "lhsInt=1", "rhsDouble=1.0")
-  @Iteration("2==2.0", "lhsInt=2", "rhsDouble=2.0")
-  @Iteration("2==2.000000000000001", "lhsInt=2", "rhsDouble=2.000000000000001")
-  @Iteration("2==1.999999999999999", "lhsInt=2", "rhsDouble=1.999999999999999")
-  @Iteration("-2==-2.0", "lhsInt=-2", "rhsDouble=-2.0")
-  @Iteration("-2==-2.00000000000001", "lhsInt=-2", "rhsDouble=-2.00000000000001")
-  @Iteration("-2==-1.999999999999999", "lhsInt=-2", "rhsDouble=-1.999999999999999")
+  @RunParameterized(
+    Iteration("0==0.0", "lhsInt=0", "rhsDouble=0.0"),
+    Iteration("1==1.0", "lhsInt=1", "rhsDouble=1.0"),
+    Iteration("2==2.0", "lhsInt=2", "rhsDouble=2.0"),
+    Iteration("2==2.000000000000001", "lhsInt=2", "rhsDouble=2.000000000000001"),
+    Iteration("2==1.999999999999999", "lhsInt=2", "rhsDouble=1.999999999999999"),
+    Iteration("-2==-2.0", "lhsInt=-2", "rhsDouble=-2.0"),
+    Iteration("-2==-2.00000000000001", "lhsInt=-2", "rhsDouble=-2.00000000000001"),
+    Iteration("-2==-1.999999999999999", "lhsInt=-2", "rhsDouble=-1.999999999999999")
+  )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsSimilarDouble_returnsTrue() {
     val first = createIntegerReal(lhsInt)
     val second = createIrrationalReal(rhsDouble)
@@ -418,16 +429,18 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0!=2.0", "lhsInt=0", "rhsDouble=2.0")
-  @Iteration("2!=0.0", "lhsInt=2", "rhsDouble=0.0")
-  @Iteration("2!=4.0", "lhsInt=2", "rhsDouble=4.0")
-  @Iteration("3!=3.14", "lhsInt=3", "rhsDouble=3.14")
-  @Iteration("2!=2.001", "lhsInt=2", "rhsDouble=2.001")
-  @Iteration("2!=1.999", "lhsInt=2", "rhsDouble=1.999")
-  @Iteration("2!=-2.0", "lhsInt=2", "rhsDouble=-2.0")
-  @Iteration("-2!=2.0", "lhsInt=-2", "rhsDouble=2.0")
-  @Iteration("-2!=-2.001", "lhsInt=-2", "rhsDouble=-2.001")
-  @Iteration("-2!=-1.999", "lhsInt=-2", "rhsDouble=-1.999")
+  @RunParameterized(
+    Iteration("0!=2.0", "lhsInt=0", "rhsDouble=2.0"),
+    Iteration("2!=0.0", "lhsInt=2", "rhsDouble=0.0"),
+    Iteration("2!=4.0", "lhsInt=2", "rhsDouble=4.0"),
+    Iteration("3!=3.14", "lhsInt=3", "rhsDouble=3.14"),
+    Iteration("2!=2.001", "lhsInt=2", "rhsDouble=2.001"),
+    Iteration("2!=1.999", "lhsInt=2", "rhsDouble=1.999"),
+    Iteration("2!=-2.0", "lhsInt=2", "rhsDouble=-2.0"),
+    Iteration("-2!=2.0", "lhsInt=-2", "rhsDouble=2.0"),
+    Iteration("-2!=-2.001", "lhsInt=-2", "rhsDouble=-2.001"),
+    Iteration("-2!=-1.999", "lhsInt=-2", "rhsDouble=-1.999")
+  )
   fun testIsApproximatelyEqualTo_oneIsInt_otherIsDifferentDouble_returnsFalse() {
     val first = createIntegerReal(lhsInt)
     val second = createIrrationalReal(rhsDouble)
@@ -440,14 +453,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsFrac=0", "rhsFrac=0")
-  @Iteration("2==2", "lhsFrac=2", "rhsFrac=2")
-  @Iteration("2==4/2", "lhsFrac=2", "rhsFrac=4/2")
-  @Iteration("3/2==1 1/2", "lhsFrac=3/2", "rhsFrac=1 1/2")
-  @Iteration("-2==-2", "lhsFrac=-2", "rhsFrac=-2")
-  @Iteration("-2==-4/2", "lhsFrac=-2", "rhsFrac=-4/2")
-  @Iteration("-3/2==-1 1/2", "lhsFrac=-3/2", "rhsFrac=-1 1/2")
-  @Iteration("1/3==3/9", "lhsFrac=1/3", "rhsFrac=3/9")
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsFrac=0"),
+    Iteration("2==2", "lhsFrac=2", "rhsFrac=2"),
+    Iteration("2==4/2", "lhsFrac=2", "rhsFrac=4/2"),
+    Iteration("3/2==1 1/2", "lhsFrac=3/2", "rhsFrac=1 1/2"),
+    Iteration("-2==-2", "lhsFrac=-2", "rhsFrac=-2"),
+    Iteration("-2==-4/2", "lhsFrac=-2", "rhsFrac=-4/2"),
+    Iteration("-3/2==-1 1/2", "lhsFrac=-3/2", "rhsFrac=-1 1/2"),
+    Iteration("1/3==3/9", "lhsFrac=1/3", "rhsFrac=3/9")
+  )
   fun testIsApproximatelyEqualTo_oneIsFraction_otherIsSameFraction_returnsTrue() {
     val first = createRationalReal(lhsFrac)
     val second = createRationalReal(rhsFrac)
@@ -461,13 +476,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0!=2", "lhsFrac=0", "rhsFrac=2")
-  @Iteration("3/2!=1/2", "lhsFrac=3/2", "rhsFrac=1/2")
-  @Iteration("3/2!=1", "lhsFrac=3/2", "rhsFrac=1")
-  @Iteration("3/2!=-1 1/2", "lhsFrac=3/2", "rhsFrac=-1 1/2")
-  @Iteration("-3/2!=1 1/2", "lhsFrac=-3/2", "rhsFrac=1 1/2")
-  @Iteration("-3/2!=-1/2", "lhsFrac=-3/2", "rhsFrac=-1/2")
-  @Iteration("1/3!=2/3", "lhsFrac=1/3", "rhsFrac=2/3")
+  @RunParameterized(
+    Iteration("0!=2", "lhsFrac=0", "rhsFrac=2"),
+    Iteration("3/2!=1/2", "lhsFrac=3/2", "rhsFrac=1/2"),
+    Iteration("3/2!=1", "lhsFrac=3/2", "rhsFrac=1"),
+    Iteration("3/2!=-1 1/2", "lhsFrac=3/2", "rhsFrac=-1 1/2"),
+    Iteration("-3/2!=1 1/2", "lhsFrac=-3/2", "rhsFrac=1 1/2"),
+    Iteration("-3/2!=-1/2", "lhsFrac=-3/2", "rhsFrac=-1/2"),
+    Iteration("1/3!=2/3", "lhsFrac=1/3", "rhsFrac=2/3")
+  )
   fun testIsApproximatelyEqualTo_oneIsFraction_otherIsDifferentFraction_returnsFalse() {
     val first = createRationalReal(lhsFrac)
     val second = createRationalReal(rhsFrac)
@@ -480,14 +497,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0.0", "lhsFrac=0", "rhsDouble=0.0")
-  @Iteration("2==2.0", "lhsFrac=2", "rhsDouble=2.0")
-  @Iteration("2/1==2.0", "lhsFrac=2/1", "rhsDouble=2.0")
-  @Iteration("3/2==1.5", "lhsFrac=3/2", "rhsDouble=1.5")
-  @Iteration("1/3==0.33333333333333333", "lhsFrac=1/3", "rhsDouble=0.33333333333333333")
-  @Iteration("1 2/3==1.66666666666666666", "lhsFrac=1 2/3", "rhsDouble=1.66666666666666666")
-  @Iteration("-2==-2.0", "lhsFrac=-2", "rhsDouble=-2.0")
-  @Iteration("-3/2==-1.5", "lhsFrac=-3/2", "rhsDouble=-1.5")
+  @RunParameterized(
+    Iteration("0==0.0", "lhsFrac=0", "rhsDouble=0.0"),
+    Iteration("2==2.0", "lhsFrac=2", "rhsDouble=2.0"),
+    Iteration("2/1==2.0", "lhsFrac=2/1", "rhsDouble=2.0"),
+    Iteration("3/2==1.5", "lhsFrac=3/2", "rhsDouble=1.5"),
+    Iteration("1/3==0.33333333333333333", "lhsFrac=1/3", "rhsDouble=0.33333333333333333"),
+    Iteration("1 2/3==1.66666666666666666", "lhsFrac=1 2/3", "rhsDouble=1.66666666666666666"),
+    Iteration("-2==-2.0", "lhsFrac=-2", "rhsDouble=-2.0"),
+    Iteration("-3/2==-1.5", "lhsFrac=-3/2", "rhsDouble=-1.5")
+  )
   fun testIsApproximatelyEqualTo_oneIsFraction_otherIsSimilarDouble_returnsTrue() {
     val first = createRationalReal(lhsFrac)
     val second = createIrrationalReal(rhsDouble)
@@ -501,17 +520,19 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0!=2.0", "lhsFrac=0", "rhsDouble=2.0")
-  @Iteration("2!=0.0", "lhsFrac=2", "rhsDouble=0.0")
-  @Iteration("2/2!=2.0", "lhsFrac=2/2", "rhsDouble=2.0")
-  @Iteration("1/3!=0.333", "lhsFrac=1/3", "rhsDouble=0.333")
-  @Iteration("1 2/3!=1.667", "lhsFrac=1 2/3", "rhsDouble=1.667")
-  @Iteration("22/7!=3.14", "lhsFrac=22/7", "rhsDouble=3.14")
-  @Iteration("-2!=2.0", "lhsFrac=-2", "rhsDouble=2.0")
-  @Iteration("2!=-2.0", "lhsFrac=2", "rhsDouble=-2.0")
-  @Iteration("-2/2!=-2.0", "lhsFrac=-2/2", "rhsDouble=-2.0")
-  @Iteration("-1/3!=-0.333", "lhsFrac=-1/3", "rhsDouble=-0.333")
-  @Iteration("-1 2/3!=-1.667", "lhsFrac=-1 2/3", "rhsDouble=-1.667")
+  @RunParameterized(
+    Iteration("0!=2.0", "lhsFrac=0", "rhsDouble=2.0"),
+    Iteration("2!=0.0", "lhsFrac=2", "rhsDouble=0.0"),
+    Iteration("2/2!=2.0", "lhsFrac=2/2", "rhsDouble=2.0"),
+    Iteration("1/3!=0.333", "lhsFrac=1/3", "rhsDouble=0.333"),
+    Iteration("1 2/3!=1.667", "lhsFrac=1 2/3", "rhsDouble=1.667"),
+    Iteration("22/7!=3.14", "lhsFrac=22/7", "rhsDouble=3.14"),
+    Iteration("-2!=2.0", "lhsFrac=-2", "rhsDouble=2.0"),
+    Iteration("2!=-2.0", "lhsFrac=2", "rhsDouble=-2.0"),
+    Iteration("-2/2!=-2.0", "lhsFrac=-2/2", "rhsDouble=-2.0"),
+    Iteration("-1/3!=-0.333", "lhsFrac=-1/3", "rhsDouble=-0.333"),
+    Iteration("-1 2/3!=-1.667", "lhsFrac=-1 2/3", "rhsDouble=-1.667")
+  )
   fun testIsApproximatelyEqualTo_oneIsFraction_firstIsDifferentDouble_returnsFalse() {
     val first = createRationalReal(lhsFrac)
     val second = createIrrationalReal(rhsDouble)
@@ -524,21 +545,23 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0.0==0.0", "lhsDouble=0.0", "rhsDouble=0.0")
-  @Iteration("2.0==2.0", "lhsDouble=2.0", "rhsDouble=2.0")
-  @Iteration(
-    "2.000000000000001==1.999999999999999",
-    "lhsDouble=2.000000000000001",
-    "rhsDouble=1.999999999999999"
+  @RunParameterized(
+    Iteration("0.0==0.0", "lhsDouble=0.0", "rhsDouble=0.0"),
+    Iteration("2.0==2.0", "lhsDouble=2.0", "rhsDouble=2.0"),
+    Iteration(
+      "2.000000000000001==1.999999999999999",
+      "lhsDouble=2.000000000000001",
+      "rhsDouble=1.999999999999999"
+    ),
+    Iteration("3.14==3.14", "lhsDouble=3.14", "rhsDouble=3.14"),
+    Iteration("-2.0==-2.0", "lhsDouble=-2.0", "rhsDouble=-2.0"),
+    Iteration(
+      "-2.000000000000001==-1.999999999999999",
+      "lhsDouble=-2.000000000000001",
+      "rhsDouble=-1.999999999999999"
+    ),
+    Iteration("-3.14==-3.14", "lhsDouble=-3.14", "rhsDouble=-3.14")
   )
-  @Iteration("3.14==3.14", "lhsDouble=3.14", "rhsDouble=3.14")
-  @Iteration("-2.0==-2.0", "lhsDouble=-2.0", "rhsDouble=-2.0")
-  @Iteration(
-    "-2.000000000000001==-1.999999999999999",
-    "lhsDouble=-2.000000000000001",
-    "rhsDouble=-1.999999999999999"
-  )
-  @Iteration("-3.14==-3.14", "lhsDouble=-3.14", "rhsDouble=-3.14")
   fun testIsApproximatelyEqualTo_oneIsDouble_otherIsSimilarDouble_returnsTrue() {
     val first = createIrrationalReal(lhsDouble)
     val second = createIrrationalReal(rhsDouble)
@@ -552,13 +575,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0.0!=2.0", "lhsDouble=0.0", "rhsDouble=2.0")
-  @Iteration("2.001!=1.999", "lhsDouble=2.001", "rhsDouble=1.999")
-  @Iteration("2.7!=3.14", "lhsDouble=2.7", "rhsDouble=3.14")
-  @Iteration("2.7!=-3.14", "lhsDouble=2.7", "rhsDouble=-3.14")
-  @Iteration("-2.7!=3.14", "lhsDouble=-2.7", "rhsDouble=3.14")
-  @Iteration("-2.0!=2.0", "lhsDouble=-2.0", "rhsDouble=2.0")
-  @Iteration("-3.14!=3.14", "lhsDouble=-3.14", "rhsDouble=3.14")
+  @RunParameterized(
+    Iteration("0.0!=2.0", "lhsDouble=0.0", "rhsDouble=2.0"),
+    Iteration("2.001!=1.999", "lhsDouble=2.001", "rhsDouble=1.999"),
+    Iteration("2.7!=3.14", "lhsDouble=2.7", "rhsDouble=3.14"),
+    Iteration("2.7!=-3.14", "lhsDouble=2.7", "rhsDouble=-3.14"),
+    Iteration("-2.7!=3.14", "lhsDouble=-2.7", "rhsDouble=3.14"),
+    Iteration("-2.0!=2.0", "lhsDouble=-2.0", "rhsDouble=2.0"),
+    Iteration("-3.14!=3.14", "lhsDouble=-3.14", "rhsDouble=3.14")
+  )
   fun testIsApproximatelyEqualTo_oneIsDouble_otherIsDifferentDouble_returnsFalse() {
     val first = createIrrationalReal(lhsDouble)
     val second = createIrrationalReal(rhsDouble)
@@ -1008,13 +1033,15 @@ class RealExtensionsTest {
   // Addition tests.
 
   @Test
-  @Iteration("identity+identity", "lhsInt=0", "rhsInt=0", "expInt=0")
-  @Iteration("int+identity", "lhsInt=1", "rhsInt=0", "expInt=1")
-  @Iteration("int+int", "lhsInt=1", "rhsInt=2", "expInt=3")
-  @Iteration("commutativity", "lhsInt=2", "rhsInt=1", "expInt=3")
-  @Iteration("int+-int", "lhsInt=1", "rhsInt=-2", "expInt=-1")
-  @Iteration("-int+int", "lhsInt=-1", "rhsInt=2", "expInt=1")
-  @Iteration("-int+-int", "lhsInt=-1", "rhsInt=-2", "expInt=-3")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsInt=0", "rhsInt=0", "expInt=0"),
+    Iteration("int+identity", "lhsInt=1", "rhsInt=0", "expInt=1"),
+    Iteration("int+int", "lhsInt=1", "rhsInt=2", "expInt=3"),
+    Iteration("commutativity", "lhsInt=2", "rhsInt=1", "expInt=3"),
+    Iteration("int+-int", "lhsInt=1", "rhsInt=-2", "expInt=-1"),
+    Iteration("-int+int", "lhsInt=-1", "rhsInt=2", "expInt=1"),
+    Iteration("-int+-int", "lhsInt=-1", "rhsInt=-2", "expInt=-3")
+  )
   fun testPlus_intAndInt_returnsInt() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1025,14 +1052,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsInt=0", "rhsFrac=0/1", "expFrac=0/1")
-  @Iteration("int+identity", "lhsInt=1", "rhsFrac=0/1", "expFrac=1")
-  @Iteration("int+fraction", "lhsInt=2", "rhsFrac=1/3", "expFrac=2 1/3")
-  @Iteration("int+wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=5")
-  @Iteration("commutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=5")
-  @Iteration("int+-fraction", "lhsInt=2", "rhsFrac=-1/3", "expFrac=1 2/3")
-  @Iteration("-int+fraction", "lhsInt=-2", "rhsFrac=1/3", "expFrac=-1 2/3")
-  @Iteration("-int+-fraction", "lhsInt=-2", "rhsFrac=-1/3", "expFrac=-2 1/3")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsInt=0", "rhsFrac=0/1", "expFrac=0/1"),
+    Iteration("int+identity", "lhsInt=1", "rhsFrac=0/1", "expFrac=1"),
+    Iteration("int+fraction", "lhsInt=2", "rhsFrac=1/3", "expFrac=2 1/3"),
+    Iteration("int+wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=5"),
+    Iteration("commutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=5"),
+    Iteration("int+-fraction", "lhsInt=2", "rhsFrac=-1/3", "expFrac=1 2/3"),
+    Iteration("-int+fraction", "lhsInt=-2", "rhsFrac=1/3", "expFrac=-1 2/3"),
+    Iteration("-int+-fraction", "lhsInt=-2", "rhsFrac=-1/3", "expFrac=-2 1/3")
+  )
   fun testPlus_intAndFraction_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1044,14 +1073,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsInt=0", "rhsDouble=0.0", "expDouble=0.0")
-  @Iteration("int+identity", "lhsInt=1", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("int+double", "lhsInt=1", "rhsDouble=3.14", "expDouble=4.14")
-  @Iteration("int+wholeNumberDouble", "lhsInt=1", "rhsDouble=3.0", "expDouble=4.0")
-  @Iteration("commutativity", "lhsInt=3", "rhsDouble=1.0", "expDouble=4.0")
-  @Iteration("int+-double", "lhsInt=1", "rhsDouble=-3.14", "expDouble=-2.14")
-  @Iteration("-int+double", "lhsInt=-1", "rhsDouble=3.14", "expDouble=2.14")
-  @Iteration("-int+-double", "lhsInt=-1", "rhsDouble=-3.14", "expDouble=-4.14")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsInt=0", "rhsDouble=0.0", "expDouble=0.0"),
+    Iteration("int+identity", "lhsInt=1", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("int+double", "lhsInt=1", "rhsDouble=3.14", "expDouble=4.14"),
+    Iteration("int+wholeNumberDouble", "lhsInt=1", "rhsDouble=3.0", "expDouble=4.0"),
+    Iteration("commutativity", "lhsInt=3", "rhsDouble=1.0", "expDouble=4.0"),
+    Iteration("int+-double", "lhsInt=1", "rhsDouble=-3.14", "expDouble=-2.14"),
+    Iteration("-int+double", "lhsInt=-1", "rhsDouble=3.14", "expDouble=2.14"),
+    Iteration("-int+-double", "lhsInt=-1", "rhsDouble=-3.14", "expDouble=-4.14")
+  )
   fun testPlus_intAndDouble_returnsDouble() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1062,14 +1093,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsFrac=0/1", "rhsInt=0", "expFrac=0/1")
-  @Iteration("fraction+identity", "lhsFrac=1/1", "rhsInt=0", "expFrac=1")
-  @Iteration("fraction+int", "lhsFrac=1/3", "rhsInt=2", "expFrac=2 1/3")
-  @Iteration("wholeNumberFraction+int", "lhsFrac=3/1", "rhsInt=2", "expFrac=5")
-  @Iteration("commutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=5")
-  @Iteration("fraction+-int", "lhsFrac=1/3", "rhsInt=-2", "expFrac=-1 2/3")
-  @Iteration("-fraction+int", "lhsFrac=-1/3", "rhsInt=2", "expFrac=1 2/3")
-  @Iteration("-fraction+-int", "lhsFrac=-1/3", "rhsInt=-2", "expFrac=-2 1/3")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsFrac=0/1", "rhsInt=0", "expFrac=0/1"),
+    Iteration("fraction+identity", "lhsFrac=1/1", "rhsInt=0", "expFrac=1"),
+    Iteration("fraction+int", "lhsFrac=1/3", "rhsInt=2", "expFrac=2 1/3"),
+    Iteration("wholeNumberFraction+int", "lhsFrac=3/1", "rhsInt=2", "expFrac=5"),
+    Iteration("commutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=5"),
+    Iteration("fraction+-int", "lhsFrac=1/3", "rhsInt=-2", "expFrac=-1 2/3"),
+    Iteration("-fraction+int", "lhsFrac=-1/3", "rhsInt=2", "expFrac=1 2/3"),
+    Iteration("-fraction+-int", "lhsFrac=-1/3", "rhsInt=-2", "expFrac=-2 1/3")
+  )
   fun testPlus_fractionAndInt_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1081,13 +1114,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsFrac=0/1", "rhsFrac=0/1", "expFrac=0/1")
-  @Iteration("fraction+identity", "lhsFrac=3/2", "rhsFrac=0/1", "expFrac=1 1/2")
-  @Iteration("fraction+fraction", "lhsFrac=3/2", "rhsFrac=1/3", "expFrac=1 5/6")
-  @Iteration("commutativity", "lhsFrac=1/3", "rhsFrac=3/2", "expFrac=1 5/6")
-  @Iteration("fraction+-fraction", "lhsFrac=1/2", "rhsFrac=-1/3", "expFrac=1/6")
-  @Iteration("-fraction+fraction", "lhsFrac=-1/2", "rhsFrac=1/3", "expFrac=-1/6")
-  @Iteration("-fraction+-fraction", "lhsFrac=-1/2", "rhsFrac=-1/3", "expFrac=-5/6")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsFrac=0/1", "rhsFrac=0/1", "expFrac=0/1"),
+    Iteration("fraction+identity", "lhsFrac=3/2", "rhsFrac=0/1", "expFrac=1 1/2"),
+    Iteration("fraction+fraction", "lhsFrac=3/2", "rhsFrac=1/3", "expFrac=1 5/6"),
+    Iteration("commutativity", "lhsFrac=1/3", "rhsFrac=3/2", "expFrac=1 5/6"),
+    Iteration("fraction+-fraction", "lhsFrac=1/2", "rhsFrac=-1/3", "expFrac=1/6"),
+    Iteration("-fraction+fraction", "lhsFrac=-1/2", "rhsFrac=1/3", "expFrac=-1/6"),
+    Iteration("-fraction+-fraction", "lhsFrac=-1/2", "rhsFrac=-1/3", "expFrac=-5/6")
+  )
   fun testPlus_fractionAndFraction_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1099,14 +1134,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsFrac=0/1", "rhsDouble=0.0", "expDouble=0.0")
-  @Iteration("fraction+identity", "lhsFrac=3/2", "rhsDouble=0.0", "expDouble=1.5")
-  @Iteration("fraction+double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=4.64")
-  @Iteration("wholeNumberFraction+double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=5.0")
-  @Iteration("commutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=5.0")
-  @Iteration("fraction+-double", "lhsFrac=3/2", "rhsDouble=-3.14", "expDouble=-1.64")
-  @Iteration("-fraction+double", "lhsFrac=-3/2", "rhsDouble=3.14", "expDouble=1.64")
-  @Iteration("-fraction+-double", "lhsFrac=-3/2", "rhsDouble=-3.14", "expDouble=-4.64")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsFrac=0/1", "rhsDouble=0.0", "expDouble=0.0"),
+    Iteration("fraction+identity", "lhsFrac=3/2", "rhsDouble=0.0", "expDouble=1.5"),
+    Iteration("fraction+double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=4.64"),
+    Iteration("wholeNumberFraction+double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=5.0"),
+    Iteration("commutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=5.0"),
+    Iteration("fraction+-double", "lhsFrac=3/2", "rhsDouble=-3.14", "expDouble=-1.64"),
+    Iteration("-fraction+double", "lhsFrac=-3/2", "rhsDouble=3.14", "expDouble=1.64"),
+    Iteration("-fraction+-double", "lhsFrac=-3/2", "rhsDouble=-3.14", "expDouble=-4.64")
+  )
   fun testPlus_fractionAndDouble_returnsDouble() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1117,14 +1154,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsDouble=0.0", "rhsInt=0", "expDouble=0.0")
-  @Iteration("double+identity", "lhsDouble=1.0", "rhsInt=0", "expDouble=1.0")
-  @Iteration("double+int", "lhsDouble=3.14", "rhsInt=1", "expDouble=4.14")
-  @Iteration("wholeNumberDouble+int", "lhsDouble=3.0", "rhsInt=1", "expDouble=4.0")
-  @Iteration("commutativity", "lhsDouble=1.0", "rhsInt=3", "expDouble=4.0")
-  @Iteration("double+-int", "lhsDouble=3.14", "rhsInt=-1", "expDouble=2.14")
-  @Iteration("-double+int", "lhsDouble=-3.14", "rhsInt=1", "expDouble=-2.14")
-  @Iteration("-double+-int", "lhsDouble=-3.14", "rhsInt=-1", "expDouble=-4.14")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsDouble=0.0", "rhsInt=0", "expDouble=0.0"),
+    Iteration("double+identity", "lhsDouble=1.0", "rhsInt=0", "expDouble=1.0"),
+    Iteration("double+int", "lhsDouble=3.14", "rhsInt=1", "expDouble=4.14"),
+    Iteration("wholeNumberDouble+int", "lhsDouble=3.0", "rhsInt=1", "expDouble=4.0"),
+    Iteration("commutativity", "lhsDouble=1.0", "rhsInt=3", "expDouble=4.0"),
+    Iteration("double+-int", "lhsDouble=3.14", "rhsInt=-1", "expDouble=2.14"),
+    Iteration("-double+int", "lhsDouble=-3.14", "rhsInt=1", "expDouble=-2.14"),
+    Iteration("-double+-int", "lhsDouble=-3.14", "rhsInt=-1", "expDouble=-4.14")
+  )
   fun testPlus_doubleAndInt_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1135,14 +1174,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsDouble=0.0", "rhsFrac=0/1", "expDouble=0.0")
-  @Iteration("double+identity", "lhsDouble=3.14", "rhsFrac=0/1", "expDouble=3.14")
-  @Iteration("double+fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=4.64")
-  @Iteration("double+wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=5.0")
-  @Iteration("commutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=5.0")
-  @Iteration("double+-fraction", "lhsDouble=3.14", "rhsFrac=-3/2", "expDouble=1.64")
-  @Iteration("-double+fraction", "lhsDouble=-3.14", "rhsFrac=3/2", "expDouble=-1.64")
-  @Iteration("-double+-fraction", "lhsDouble=-3.14", "rhsFrac=-3/2", "expDouble=-4.64")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsDouble=0.0", "rhsFrac=0/1", "expDouble=0.0"),
+    Iteration("double+identity", "lhsDouble=3.14", "rhsFrac=0/1", "expDouble=3.14"),
+    Iteration("double+fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=4.64"),
+    Iteration("double+wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=5.0"),
+    Iteration("commutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=5.0"),
+    Iteration("double+-fraction", "lhsDouble=3.14", "rhsFrac=-3/2", "expDouble=1.64"),
+    Iteration("-double+fraction", "lhsDouble=-3.14", "rhsFrac=3/2", "expDouble=-1.64"),
+    Iteration("-double+-fraction", "lhsDouble=-3.14", "rhsFrac=-3/2", "expDouble=-4.64")
+  )
   fun testPlus_doubleAndFraction_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1153,13 +1194,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity+identity", "lhsDouble=0.0", "rhsDouble=0.0", "expDouble=0.0")
-  @Iteration("double+identity", "lhsDouble=1.0", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("double+double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=5.84")
-  @Iteration("commutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=5.84")
-  @Iteration("double+-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=0.44")
-  @Iteration("-double+double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-0.44")
-  @Iteration("-double+-double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=-5.84")
+  @RunParameterized(
+    Iteration("identity+identity", "lhsDouble=0.0", "rhsDouble=0.0", "expDouble=0.0"),
+    Iteration("double+identity", "lhsDouble=1.0", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("double+double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=5.84"),
+    Iteration("commutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=5.84"),
+    Iteration("double+-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=0.44"),
+    Iteration("-double+double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-0.44"),
+    Iteration("-double+-double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=-5.84")
+  )
   fun testPlus_doubleAndDouble_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1172,13 +1215,15 @@ class RealExtensionsTest {
   // Subtraction tests.
 
   @Test
-  @Iteration("identity-identity", "lhsInt=0", "rhsInt=0", "expInt=0")
-  @Iteration("int-identity", "lhsInt=1", "rhsInt=0", "expInt=1")
-  @Iteration("int-int", "lhsInt=1", "rhsInt=2", "expInt=-1")
-  @Iteration("anticommutativity", "lhsInt=2", "rhsInt=1", "expInt=1")
-  @Iteration("int--int", "lhsInt=1", "rhsInt=-2", "expInt=3")
-  @Iteration("-int-int", "lhsInt=-1", "rhsInt=2", "expInt=-3")
-  @Iteration("-int--int", "lhsInt=-1", "rhsInt=-2", "expInt=1")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsInt=0", "rhsInt=0", "expInt=0"),
+    Iteration("int-identity", "lhsInt=1", "rhsInt=0", "expInt=1"),
+    Iteration("int-int", "lhsInt=1", "rhsInt=2", "expInt=-1"),
+    Iteration("anticommutativity", "lhsInt=2", "rhsInt=1", "expInt=1"),
+    Iteration("int--int", "lhsInt=1", "rhsInt=-2", "expInt=3"),
+    Iteration("-int-int", "lhsInt=-1", "rhsInt=2", "expInt=-3"),
+    Iteration("-int--int", "lhsInt=-1", "rhsInt=-2", "expInt=1")
+  )
   fun testMinus_intAndInt_returnsInt() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1189,14 +1234,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsInt=0", "rhsFrac=0/1", "expFrac=0/1")
-  @Iteration("int-identity", "lhsInt=1", "rhsFrac=0/1", "expFrac=1")
-  @Iteration("int-fraction", "lhsInt=2", "rhsFrac=1/3", "expFrac=1 2/3")
-  @Iteration("int-wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=-1")
-  @Iteration("anticommutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=1")
-  @Iteration("int--fraction", "lhsInt=2", "rhsFrac=-1/3", "expFrac=2 1/3")
-  @Iteration("-int-fraction", "lhsInt=-2", "rhsFrac=1/3", "expFrac=-2 1/3")
-  @Iteration("-int--fraction", "lhsInt=-2", "rhsFrac=-1/3", "expFrac=-1 2/3")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsInt=0", "rhsFrac=0/1", "expFrac=0/1"),
+    Iteration("int-identity", "lhsInt=1", "rhsFrac=0/1", "expFrac=1"),
+    Iteration("int-fraction", "lhsInt=2", "rhsFrac=1/3", "expFrac=1 2/3"),
+    Iteration("int-wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=-1"),
+    Iteration("anticommutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=1"),
+    Iteration("int--fraction", "lhsInt=2", "rhsFrac=-1/3", "expFrac=2 1/3"),
+    Iteration("-int-fraction", "lhsInt=-2", "rhsFrac=1/3", "expFrac=-2 1/3"),
+    Iteration("-int--fraction", "lhsInt=-2", "rhsFrac=-1/3", "expFrac=-1 2/3")
+  )
   fun testMinus_intAndFraction_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1208,14 +1255,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsInt=0", "rhsDouble=0.0", "expDouble=0.0")
-  @Iteration("int-identity", "lhsInt=1", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("int-double", "lhsInt=1", "rhsDouble=3.14", "expDouble=-2.14")
-  @Iteration("int-wholeNumberDouble", "lhsInt=1", "rhsDouble=3.0", "expDouble=-2.0")
-  @Iteration("anticommutativity", "lhsInt=3", "rhsDouble=1.0", "expDouble=2.0")
-  @Iteration("int--double", "lhsInt=1", "rhsDouble=-3.14", "expDouble=4.14")
-  @Iteration("-int-double", "lhsInt=-1", "rhsDouble=3.14", "expDouble=-4.14")
-  @Iteration("-int--double", "lhsInt=-1", "rhsDouble=-3.14", "expDouble=2.14")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsInt=0", "rhsDouble=0.0", "expDouble=0.0"),
+    Iteration("int-identity", "lhsInt=1", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("int-double", "lhsInt=1", "rhsDouble=3.14", "expDouble=-2.14"),
+    Iteration("int-wholeNumberDouble", "lhsInt=1", "rhsDouble=3.0", "expDouble=-2.0"),
+    Iteration("anticommutativity", "lhsInt=3", "rhsDouble=1.0", "expDouble=2.0"),
+    Iteration("int--double", "lhsInt=1", "rhsDouble=-3.14", "expDouble=4.14"),
+    Iteration("-int-double", "lhsInt=-1", "rhsDouble=3.14", "expDouble=-4.14"),
+    Iteration("-int--double", "lhsInt=-1", "rhsDouble=-3.14", "expDouble=2.14")
+  )
   fun testMinus_intAndDouble_returnsDouble() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1226,14 +1275,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsFrac=0/1", "rhsInt=0", "expFrac=0/1")
-  @Iteration("fraction-identity", "lhsFrac=1/1", "rhsInt=0", "expFrac=1")
-  @Iteration("fraction-int", "lhsFrac=1/3", "rhsInt=2", "expFrac=-1 2/3")
-  @Iteration("wholeNumberFraction-int", "lhsFrac=3/1", "rhsInt=2", "expFrac=1")
-  @Iteration("anticommutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=-1")
-  @Iteration("fraction--int", "lhsFrac=1/3", "rhsInt=-2", "expFrac=2 1/3")
-  @Iteration("-fraction-int", "lhsFrac=-1/3", "rhsInt=2", "expFrac=-2 1/3")
-  @Iteration("-fraction--int", "lhsFrac=-1/3", "rhsInt=-2", "expFrac=1 2/3")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsFrac=0/1", "rhsInt=0", "expFrac=0/1"),
+    Iteration("fraction-identity", "lhsFrac=1/1", "rhsInt=0", "expFrac=1"),
+    Iteration("fraction-int", "lhsFrac=1/3", "rhsInt=2", "expFrac=-1 2/3"),
+    Iteration("wholeNumberFraction-int", "lhsFrac=3/1", "rhsInt=2", "expFrac=1"),
+    Iteration("anticommutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=-1"),
+    Iteration("fraction--int", "lhsFrac=1/3", "rhsInt=-2", "expFrac=2 1/3"),
+    Iteration("-fraction-int", "lhsFrac=-1/3", "rhsInt=2", "expFrac=-2 1/3"),
+    Iteration("-fraction--int", "lhsFrac=-1/3", "rhsInt=-2", "expFrac=1 2/3")
+  )
   fun testMinus_fractionAndInt_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1245,13 +1296,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsFrac=0/1", "rhsFrac=0/1", "expFrac=0/1")
-  @Iteration("fraction-identity", "lhsFrac=3/2", "rhsFrac=0/1", "expFrac=1 1/2")
-  @Iteration("fraction-fraction", "lhsFrac=3/2", "rhsFrac=1/3", "expFrac=1 1/6")
-  @Iteration("anticommutativity", "lhsFrac=1/3", "rhsFrac=3/2", "expFrac=-1 1/6")
-  @Iteration("fraction--fraction", "lhsFrac=1/2", "rhsFrac=-1/3", "expFrac=5/6")
-  @Iteration("-fraction-fraction", "lhsFrac=-1/2", "rhsFrac=1/3", "expFrac=-5/6")
-  @Iteration("-fraction--fraction", "lhsFrac=-1/2", "rhsFrac=-1/3", "expFrac=-1/6")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsFrac=0/1", "rhsFrac=0/1", "expFrac=0/1"),
+    Iteration("fraction-identity", "lhsFrac=3/2", "rhsFrac=0/1", "expFrac=1 1/2"),
+    Iteration("fraction-fraction", "lhsFrac=3/2", "rhsFrac=1/3", "expFrac=1 1/6"),
+    Iteration("anticommutativity", "lhsFrac=1/3", "rhsFrac=3/2", "expFrac=-1 1/6"),
+    Iteration("fraction--fraction", "lhsFrac=1/2", "rhsFrac=-1/3", "expFrac=5/6"),
+    Iteration("-fraction-fraction", "lhsFrac=-1/2", "rhsFrac=1/3", "expFrac=-5/6"),
+    Iteration("-fraction--fraction", "lhsFrac=-1/2", "rhsFrac=-1/3", "expFrac=-1/6")
+  )
   fun testMinus_fractionAndFraction_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1263,14 +1316,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsFrac=0/1", "rhsDouble=0.0", "expDouble=0.0")
-  @Iteration("fraction-identity", "lhsFrac=3/2", "rhsDouble=0.0", "expDouble=1.5")
-  @Iteration("fraction-double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=-1.64")
-  @Iteration("wholeNumberFraction-double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=1.0")
-  @Iteration("anticommutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=-1.0")
-  @Iteration("fraction--double", "lhsFrac=3/2", "rhsDouble=-3.14", "expDouble=4.64")
-  @Iteration("-fraction-double", "lhsFrac=-3/2", "rhsDouble=3.14", "expDouble=-4.64")
-  @Iteration("-fraction--double", "lhsFrac=-3/2", "rhsDouble=-3.14", "expDouble=1.64")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsFrac=0/1", "rhsDouble=0.0", "expDouble=0.0"),
+    Iteration("fraction-identity", "lhsFrac=3/2", "rhsDouble=0.0", "expDouble=1.5"),
+    Iteration("fraction-double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=-1.64"),
+    Iteration("wholeNumberFraction-double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=1.0"),
+    Iteration("anticommutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=-1.0"),
+    Iteration("fraction--double", "lhsFrac=3/2", "rhsDouble=-3.14", "expDouble=4.64"),
+    Iteration("-fraction-double", "lhsFrac=-3/2", "rhsDouble=3.14", "expDouble=-4.64"),
+    Iteration("-fraction--double", "lhsFrac=-3/2", "rhsDouble=-3.14", "expDouble=1.64")
+  )
   fun testMinus_fractionAndDouble_returnsDouble() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1281,14 +1336,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsDouble=0.0", "rhsInt=0", "expDouble=0.0")
-  @Iteration("double-identity", "lhsDouble=1.0", "rhsInt=0", "expDouble=1.0")
-  @Iteration("double-int", "lhsDouble=3.14", "rhsInt=1", "expDouble=2.14")
-  @Iteration("wholeNumberDouble-int", "lhsDouble=3.0", "rhsInt=1", "expDouble=2.0")
-  @Iteration("anticommutativity", "lhsDouble=1.0", "rhsInt=3", "expDouble=-2.0")
-  @Iteration("double--int", "lhsDouble=3.14", "rhsInt=-1", "expDouble=4.14")
-  @Iteration("-double-int", "lhsDouble=-3.14", "rhsInt=1", "expDouble=-4.14")
-  @Iteration("-double--int", "lhsDouble=-3.14", "rhsInt=-1", "expDouble=-2.14")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsDouble=0.0", "rhsInt=0", "expDouble=0.0"),
+    Iteration("double-identity", "lhsDouble=1.0", "rhsInt=0", "expDouble=1.0"),
+    Iteration("double-int", "lhsDouble=3.14", "rhsInt=1", "expDouble=2.14"),
+    Iteration("wholeNumberDouble-int", "lhsDouble=3.0", "rhsInt=1", "expDouble=2.0"),
+    Iteration("anticommutativity", "lhsDouble=1.0", "rhsInt=3", "expDouble=-2.0"),
+    Iteration("double--int", "lhsDouble=3.14", "rhsInt=-1", "expDouble=4.14"),
+    Iteration("-double-int", "lhsDouble=-3.14", "rhsInt=1", "expDouble=-4.14"),
+    Iteration("-double--int", "lhsDouble=-3.14", "rhsInt=-1", "expDouble=-2.14")
+  )
   fun testMinus_doubleAndInt_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1299,14 +1356,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsDouble=0.0", "rhsFrac=0/1", "expDouble=0.0")
-  @Iteration("double-identity", "lhsDouble=3.14", "rhsFrac=0/1", "expDouble=3.14")
-  @Iteration("double-fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=1.64")
-  @Iteration("double-wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=-1.0")
-  @Iteration("anticommutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=1.0")
-  @Iteration("double--fraction", "lhsDouble=3.14", "rhsFrac=-3/2", "expDouble=4.64")
-  @Iteration("-double-fraction", "lhsDouble=-3.14", "rhsFrac=3/2", "expDouble=-4.64")
-  @Iteration("-double--fraction", "lhsDouble=-3.14", "rhsFrac=-3/2", "expDouble=-1.64")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsDouble=0.0", "rhsFrac=0/1", "expDouble=0.0"),
+    Iteration("double-identity", "lhsDouble=3.14", "rhsFrac=0/1", "expDouble=3.14"),
+    Iteration("double-fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=1.64"),
+    Iteration("double-wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=-1.0"),
+    Iteration("anticommutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=1.0"),
+    Iteration("double--fraction", "lhsDouble=3.14", "rhsFrac=-3/2", "expDouble=4.64"),
+    Iteration("-double-fraction", "lhsDouble=-3.14", "rhsFrac=3/2", "expDouble=-4.64"),
+    Iteration("-double--fraction", "lhsDouble=-3.14", "rhsFrac=-3/2", "expDouble=-1.64")
+  )
   fun testMinus_doubleAndFraction_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1317,13 +1376,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity-identity", "lhsDouble=0.0", "rhsDouble=0.0", "expDouble=0.0")
-  @Iteration("double-identity", "lhsDouble=1.0", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("double-double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=0.44")
-  @Iteration("anticommutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=-0.44")
-  @Iteration("double--double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=5.84")
-  @Iteration("-double-double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-5.84")
-  @Iteration("-double--double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=-0.44")
+  @RunParameterized(
+    Iteration("identity-identity", "lhsDouble=0.0", "rhsDouble=0.0", "expDouble=0.0"),
+    Iteration("double-identity", "lhsDouble=1.0", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("double-double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=0.44"),
+    Iteration("anticommutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=-0.44"),
+    Iteration("double--double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=5.84"),
+    Iteration("-double-double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-5.84"),
+    Iteration("-double--double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=-0.44")
+  )
   fun testMinus_doubleAndDouble_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1336,13 +1397,15 @@ class RealExtensionsTest {
   // Multiplication tests.
 
   @Test
-  @Iteration("identity*identity", "lhsInt=1", "rhsInt=1", "expInt=1")
-  @Iteration("int*identity", "lhsInt=2", "rhsInt=1", "expInt=2")
-  @Iteration("int*int", "lhsInt=3", "rhsInt=2", "expInt=6")
-  @Iteration("commutativity", "lhsInt=2", "rhsInt=3", "expInt=6")
-  @Iteration("int*-int", "lhsInt=3", "rhsInt=-2", "expInt=-6")
-  @Iteration("-int*int", "lhsInt=-3", "rhsInt=2", "expInt=-6")
-  @Iteration("-int*-int", "lhsInt=-3", "rhsInt=-2", "expInt=6")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsInt=1", "rhsInt=1", "expInt=1"),
+    Iteration("int*identity", "lhsInt=2", "rhsInt=1", "expInt=2"),
+    Iteration("int*int", "lhsInt=3", "rhsInt=2", "expInt=6"),
+    Iteration("commutativity", "lhsInt=2", "rhsInt=3", "expInt=6"),
+    Iteration("int*-int", "lhsInt=3", "rhsInt=-2", "expInt=-6"),
+    Iteration("-int*int", "lhsInt=-3", "rhsInt=2", "expInt=-6"),
+    Iteration("-int*-int", "lhsInt=-3", "rhsInt=-2", "expInt=6")
+  )
   fun testTimes_intAndInt_returnsInt() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1353,14 +1416,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsInt=1", "rhsFrac=1", "expFrac=1")
-  @Iteration("int*identity", "lhsInt=2", "rhsFrac=1", "expFrac=2")
-  @Iteration("int*fraction", "lhsInt=2", "rhsFrac=1/3", "expFrac=2/3")
-  @Iteration("int*wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=6")
-  @Iteration("commutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=6")
-  @Iteration("int*-fraction", "lhsInt=2", "rhsFrac=-1/3", "expFrac=-2/3")
-  @Iteration("-int*fraction", "lhsInt=-2", "rhsFrac=1/3", "expFrac=-2/3")
-  @Iteration("-int*-fraction", "lhsInt=-2", "rhsFrac=-1/3", "expFrac=2/3")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsInt=1", "rhsFrac=1", "expFrac=1"),
+    Iteration("int*identity", "lhsInt=2", "rhsFrac=1", "expFrac=2"),
+    Iteration("int*fraction", "lhsInt=2", "rhsFrac=1/3", "expFrac=2/3"),
+    Iteration("int*wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=6"),
+    Iteration("commutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=6"),
+    Iteration("int*-fraction", "lhsInt=2", "rhsFrac=-1/3", "expFrac=-2/3"),
+    Iteration("-int*fraction", "lhsInt=-2", "rhsFrac=1/3", "expFrac=-2/3"),
+    Iteration("-int*-fraction", "lhsInt=-2", "rhsFrac=-1/3", "expFrac=2/3")
+  )
   fun testTimes_intAndFraction_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1372,14 +1437,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsInt=1", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("int*identity", "lhsInt=2", "rhsDouble=1.0", "expDouble=2.0")
-  @Iteration("int*double", "lhsInt=2", "rhsDouble=3.14", "expDouble=6.28")
-  @Iteration("int*wholeNumberDouble", "lhsInt=2", "rhsDouble=3.0", "expDouble=6.0")
-  @Iteration("commutativity", "lhsInt=3", "rhsDouble=2.0", "expDouble=6.0")
-  @Iteration("int*-double", "lhsInt=2", "rhsDouble=-3.14", "expDouble=-6.28")
-  @Iteration("-int*double", "lhsInt=-2", "rhsDouble=3.14", "expDouble=-6.28")
-  @Iteration("-int*-double", "lhsInt=-2", "rhsDouble=-3.14", "expDouble=6.28")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsInt=1", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("int*identity", "lhsInt=2", "rhsDouble=1.0", "expDouble=2.0"),
+    Iteration("int*double", "lhsInt=2", "rhsDouble=3.14", "expDouble=6.28"),
+    Iteration("int*wholeNumberDouble", "lhsInt=2", "rhsDouble=3.0", "expDouble=6.0"),
+    Iteration("commutativity", "lhsInt=3", "rhsDouble=2.0", "expDouble=6.0"),
+    Iteration("int*-double", "lhsInt=2", "rhsDouble=-3.14", "expDouble=-6.28"),
+    Iteration("-int*double", "lhsInt=-2", "rhsDouble=3.14", "expDouble=-6.28"),
+    Iteration("-int*-double", "lhsInt=-2", "rhsDouble=-3.14", "expDouble=6.28")
+  )
   fun testTimes_intAndDouble_returnsDouble() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1390,14 +1457,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsFrac=1/1", "rhsInt=1", "expFrac=1")
-  @Iteration("fraction*identity", "lhsFrac=2/1", "rhsInt=1", "expFrac=2")
-  @Iteration("fraction*int", "lhsFrac=1/3", "rhsInt=2", "expFrac=2/3")
-  @Iteration("wholeNumberFraction*int", "lhsFrac=3/1", "rhsInt=2", "expFrac=6")
-  @Iteration("commutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=6")
-  @Iteration("fraction*-int", "lhsFrac=1/3", "rhsInt=-2", "expFrac=-2/3")
-  @Iteration("-fraction*int", "lhsFrac=-1/3", "rhsInt=2", "expFrac=-2/3")
-  @Iteration("-fraction*-int", "lhsFrac=-1/3", "rhsInt=-2", "expFrac=2/3")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsFrac=1/1", "rhsInt=1", "expFrac=1"),
+    Iteration("fraction*identity", "lhsFrac=2/1", "rhsInt=1", "expFrac=2"),
+    Iteration("fraction*int", "lhsFrac=1/3", "rhsInt=2", "expFrac=2/3"),
+    Iteration("wholeNumberFraction*int", "lhsFrac=3/1", "rhsInt=2", "expFrac=6"),
+    Iteration("commutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=6"),
+    Iteration("fraction*-int", "lhsFrac=1/3", "rhsInt=-2", "expFrac=-2/3"),
+    Iteration("-fraction*int", "lhsFrac=-1/3", "rhsInt=2", "expFrac=-2/3"),
+    Iteration("-fraction*-int", "lhsFrac=-1/3", "rhsInt=-2", "expFrac=2/3")
+  )
   fun testTimes_fractionAndInt_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1409,13 +1478,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsFrac=1/1", "rhsFrac=1/1", "expFrac=1")
-  @Iteration("fraction*identity", "lhsFrac=3/2", "rhsFrac=1/1", "expFrac=1 1/2")
-  @Iteration("fraction*fraction", "lhsFrac=3/2", "rhsFrac=4/7", "expFrac=6/7")
-  @Iteration("commutativity", "lhsFrac=4/7", "rhsFrac=3/2", "expFrac=6/7")
-  @Iteration("fraction*-fraction", "lhsFrac=1 3/9", "rhsFrac=-8/11", "expFrac=-32/33")
-  @Iteration("-fraction*fraction", "lhsFrac=-1 3/9", "rhsFrac=8/11", "expFrac=-32/33")
-  @Iteration("-fraction*-fraction", "lhsFrac=-1 3/9", "rhsFrac=-8/11", "expFrac=32/33")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsFrac=1/1", "rhsFrac=1/1", "expFrac=1"),
+    Iteration("fraction*identity", "lhsFrac=3/2", "rhsFrac=1/1", "expFrac=1 1/2"),
+    Iteration("fraction*fraction", "lhsFrac=3/2", "rhsFrac=4/7", "expFrac=6/7"),
+    Iteration("commutativity", "lhsFrac=4/7", "rhsFrac=3/2", "expFrac=6/7"),
+    Iteration("fraction*-fraction", "lhsFrac=1 3/9", "rhsFrac=-8/11", "expFrac=-32/33"),
+    Iteration("-fraction*fraction", "lhsFrac=-1 3/9", "rhsFrac=8/11", "expFrac=-32/33"),
+    Iteration("-fraction*-fraction", "lhsFrac=-1 3/9", "rhsFrac=-8/11", "expFrac=32/33")
+  )
   fun testTimes_fractionAndFraction_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1427,14 +1498,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsFrac=1/1", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("fraction*identity", "lhsFrac=3/2", "rhsDouble=1.0", "expDouble=1.5")
-  @Iteration("fraction*double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=4.71")
-  @Iteration("wholeNumberFraction*double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=6.0")
-  @Iteration("commutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=6.0")
-  @Iteration("fraction*-double", "lhsFrac=1 3/2", "rhsDouble=-3.14", "expDouble=-7.85")
-  @Iteration("-fraction*double", "lhsFrac=-1 3/2", "rhsDouble=3.14", "expDouble=-7.85")
-  @Iteration("-fraction*-double", "lhsFrac=-1 3/2", "rhsDouble=-3.14", "expDouble=7.85")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsFrac=1/1", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("fraction*identity", "lhsFrac=3/2", "rhsDouble=1.0", "expDouble=1.5"),
+    Iteration("fraction*double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=4.71"),
+    Iteration("wholeNumberFraction*double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=6.0"),
+    Iteration("commutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=6.0"),
+    Iteration("fraction*-double", "lhsFrac=1 3/2", "rhsDouble=-3.14", "expDouble=-7.85"),
+    Iteration("-fraction*double", "lhsFrac=-1 3/2", "rhsDouble=3.14", "expDouble=-7.85"),
+    Iteration("-fraction*-double", "lhsFrac=-1 3/2", "rhsDouble=-3.14", "expDouble=7.85")
+  )
   fun testTimes_fractionAndDouble_returnsDouble() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1445,14 +1518,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsDouble=1.0", "rhsInt=1", "expDouble=1.0")
-  @Iteration("double*identity", "lhsDouble=2.0", "rhsInt=1", "expDouble=2.0")
-  @Iteration("double*int", "lhsDouble=3.14", "rhsInt=2", "expDouble=6.28")
-  @Iteration("wholeNumberDouble*int", "lhsDouble=3.0", "rhsInt=2", "expDouble=6")
-  @Iteration("commutativity", "lhsDouble=2.0", "rhsInt=3", "expDouble=6.0")
-  @Iteration("double*-int", "lhsDouble=3.14", "rhsInt=-2", "expDouble=-6.28")
-  @Iteration("-double*int", "lhsDouble=-3.14", "rhsInt=2", "expDouble=-6.28")
-  @Iteration("-double*-int", "lhsDouble=-3.14", "rhsInt=-2", "expDouble=6.28")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsDouble=1.0", "rhsInt=1", "expDouble=1.0"),
+    Iteration("double*identity", "lhsDouble=2.0", "rhsInt=1", "expDouble=2.0"),
+    Iteration("double*int", "lhsDouble=3.14", "rhsInt=2", "expDouble=6.28"),
+    Iteration("wholeNumberDouble*int", "lhsDouble=3.0", "rhsInt=2", "expDouble=6"),
+    Iteration("commutativity", "lhsDouble=2.0", "rhsInt=3", "expDouble=6.0"),
+    Iteration("double*-int", "lhsDouble=3.14", "rhsInt=-2", "expDouble=-6.28"),
+    Iteration("-double*int", "lhsDouble=-3.14", "rhsInt=2", "expDouble=-6.28"),
+    Iteration("-double*-int", "lhsDouble=-3.14", "rhsInt=-2", "expDouble=6.28")
+  )
   fun testTimes_doubleAndInt_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1463,14 +1538,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsDouble=1.0", "rhsFrac=1/1", "expDouble=1.0")
-  @Iteration("double*identity", "lhsDouble=2.0", "rhsFrac=1/1", "expDouble=2.0")
-  @Iteration("double*fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=4.71")
-  @Iteration("double*wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=6.0")
-  @Iteration("commutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=6.0")
-  @Iteration("double*-fraction", "lhsDouble=3.14", "rhsFrac=-1 3/2", "expDouble=-7.85")
-  @Iteration("-double*fraction", "lhsDouble=-3.14", "rhsFrac=1 3/2", "expDouble=-7.85")
-  @Iteration("-double*-fraction", "lhsDouble=-3.14", "rhsFrac=-1 3/2", "expDouble=7.85")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsDouble=1.0", "rhsFrac=1/1", "expDouble=1.0"),
+    Iteration("double*identity", "lhsDouble=2.0", "rhsFrac=1/1", "expDouble=2.0"),
+    Iteration("double*fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=4.71"),
+    Iteration("double*wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=6.0"),
+    Iteration("commutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=6.0"),
+    Iteration("double*-fraction", "lhsDouble=3.14", "rhsFrac=-1 3/2", "expDouble=-7.85"),
+    Iteration("-double*fraction", "lhsDouble=-3.14", "rhsFrac=1 3/2", "expDouble=-7.85"),
+    Iteration("-double*-fraction", "lhsDouble=-3.14", "rhsFrac=-1 3/2", "expDouble=7.85")
+  )
   fun testTimes_doubleAndFraction_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1481,13 +1558,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity*identity", "lhsDouble=1.0", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("double*identity", "lhsDouble=2.0", "rhsDouble=1.0", "expDouble=2.0")
-  @Iteration("double*double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=8.478")
-  @Iteration("commutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=8.478")
-  @Iteration("double*-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=-8.478")
-  @Iteration("-double*double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-8.478")
-  @Iteration("-double*-double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=8.478")
+  @RunParameterized(
+    Iteration("identity*identity", "lhsDouble=1.0", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("double*identity", "lhsDouble=2.0", "rhsDouble=1.0", "expDouble=2.0"),
+    Iteration("double*double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=8.478"),
+    Iteration("commutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=8.478"),
+    Iteration("double*-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=-8.478"),
+    Iteration("-double*double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-8.478"),
+    Iteration("-double*-double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=8.478")
+  )
   fun testTimes_doubleAndDouble_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1500,12 +1579,14 @@ class RealExtensionsTest {
   // Division tests.
 
   @Test
-  @Iteration("identity/identity", "lhsInt=1", "rhsInt=1", "expInt=1")
-  @Iteration("int/identity", "lhsInt=2", "rhsInt=1", "expInt=2")
-  @Iteration("int/int", "lhsInt=8", "rhsInt=2", "expInt=4")
-  @Iteration("int/-int", "lhsInt=8", "rhsInt=-2", "expInt=-4")
-  @Iteration("-int/int", "lhsInt=-8", "rhsInt=2", "expInt=-4")
-  @Iteration("-int/-int", "lhsInt=-8", "rhsInt=-2", "expInt=4")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsInt=1", "rhsInt=1", "expInt=1"),
+    Iteration("int/identity", "lhsInt=2", "rhsInt=1", "expInt=2"),
+    Iteration("int/int", "lhsInt=8", "rhsInt=2", "expInt=4"),
+    Iteration("int/-int", "lhsInt=8", "rhsInt=-2", "expInt=-4"),
+    Iteration("-int/int", "lhsInt=-8", "rhsInt=2", "expInt=-4"),
+    Iteration("-int/-int", "lhsInt=-8", "rhsInt=-2", "expInt=4")
+  )
   fun testDiv_intAndInt_divides_returnsInt() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1517,11 +1598,13 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("int/int", "lhsInt=7", "rhsInt=2", "expFrac=3 1/2")
-  @Iteration("anticommutativity", "lhsInt=2", "rhsInt=7", "expFrac=2/7")
-  @Iteration("int/-int", "lhsInt=7", "rhsInt=-2", "expFrac=-3 1/2")
-  @Iteration("-int/int", "lhsInt=-7", "rhsInt=2", "expFrac=-3 1/2")
-  @Iteration("-int/-int", "lhsInt=-7", "rhsInt=-2", "expFrac=3 1/2")
+  @RunParameterized(
+    Iteration("int/int", "lhsInt=7", "rhsInt=2", "expFrac=3 1/2"),
+    Iteration("anticommutativity", "lhsInt=2", "rhsInt=7", "expFrac=2/7"),
+    Iteration("int/-int", "lhsInt=7", "rhsInt=-2", "expFrac=-3 1/2"),
+    Iteration("-int/int", "lhsInt=-7", "rhsInt=2", "expFrac=-3 1/2"),
+    Iteration("-int/-int", "lhsInt=-7", "rhsInt=-2", "expFrac=3 1/2")
+  )
   fun testDiv_intAndInt_doesNotDivide_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1534,14 +1617,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsInt=1", "rhsFrac=1", "expFrac=1")
-  @Iteration("int/identity", "lhsInt=2", "rhsFrac=1", "expFrac=2")
-  @Iteration("int/fraction", "lhsInt=4", "rhsFrac=1/3", "expFrac=12")
-  @Iteration("int/wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=2/3")
-  @Iteration("anticommutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=1 1/2")
-  @Iteration("int/-fraction", "lhsInt=5", "rhsFrac=-2/3", "expFrac=-7 1/2")
-  @Iteration("-int/fraction", "lhsInt=-5", "rhsFrac=2/3", "expFrac=-7 1/2")
-  @Iteration("-int/-fraction", "lhsInt=-5", "rhsFrac=-2/3", "expFrac=7 1/2")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsInt=1", "rhsFrac=1", "expFrac=1"),
+    Iteration("int/identity", "lhsInt=2", "rhsFrac=1", "expFrac=2"),
+    Iteration("int/fraction", "lhsInt=4", "rhsFrac=1/3", "expFrac=12"),
+    Iteration("int/wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=2/3"),
+    Iteration("anticommutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=1 1/2"),
+    Iteration("int/-fraction", "lhsInt=5", "rhsFrac=-2/3", "expFrac=-7 1/2"),
+    Iteration("-int/fraction", "lhsInt=-5", "rhsFrac=2/3", "expFrac=-7 1/2"),
+    Iteration("-int/-fraction", "lhsInt=-5", "rhsFrac=-2/3", "expFrac=7 1/2")
+  )
   fun testDiv_intAndFraction_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1553,14 +1638,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsInt=1", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("int/identity", "lhsInt=2", "rhsDouble=1.0", "expDouble=2.0")
-  @Iteration("int/double", "lhsInt=2", "rhsDouble=3.14", "expDouble=0.636942675")
-  @Iteration("int/wholeNumberDouble", "lhsInt=2", "rhsDouble=3.0", "expDouble=0.666666667")
-  @Iteration("anticommutativity", "lhsInt=3", "rhsDouble=2.0", "expDouble=1.5")
-  @Iteration("int/-double", "lhsInt=2", "rhsDouble=-3.14", "expDouble=-0.636942675")
-  @Iteration("-int/double", "lhsInt=-2", "rhsDouble=3.14", "expDouble=-0.636942675")
-  @Iteration("-int/-double", "lhsInt=-2", "rhsDouble=-3.14", "expDouble=0.636942675")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsInt=1", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("int/identity", "lhsInt=2", "rhsDouble=1.0", "expDouble=2.0"),
+    Iteration("int/double", "lhsInt=2", "rhsDouble=3.14", "expDouble=0.636942675"),
+    Iteration("int/wholeNumberDouble", "lhsInt=2", "rhsDouble=3.0", "expDouble=0.666666667"),
+    Iteration("anticommutativity", "lhsInt=3", "rhsDouble=2.0", "expDouble=1.5"),
+    Iteration("int/-double", "lhsInt=2", "rhsDouble=-3.14", "expDouble=-0.636942675"),
+    Iteration("-int/double", "lhsInt=-2", "rhsDouble=3.14", "expDouble=-0.636942675"),
+    Iteration("-int/-double", "lhsInt=-2", "rhsDouble=-3.14", "expDouble=0.636942675")
+  )
   fun testDiv_intAndDouble_returnsDouble() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1571,14 +1658,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsFrac=1/1", "rhsInt=1", "expFrac=1")
-  @Iteration("fraction/identity", "lhsFrac=2/1", "rhsInt=1", "expFrac=2")
-  @Iteration("fraction/int", "lhsFrac=1/3", "rhsInt=2", "expFrac=1/6")
-  @Iteration("wholeNumberFraction/int", "lhsFrac=3/1", "rhsInt=2", "expFrac=1 1/2")
-  @Iteration("anticommutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=2/3")
-  @Iteration("fraction/-int", "lhsFrac=-1 1/3", "rhsInt=2", "expFrac=-2/3")
-  @Iteration("-fraction/int", "lhsFrac=1 1/3", "rhsInt=-2", "expFrac=-2/3")
-  @Iteration("-fraction/-int", "lhsFrac=-1 1/3", "rhsInt=-2", "expFrac=2/3")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsFrac=1/1", "rhsInt=1", "expFrac=1"),
+    Iteration("fraction/identity", "lhsFrac=2/1", "rhsInt=1", "expFrac=2"),
+    Iteration("fraction/int", "lhsFrac=1/3", "rhsInt=2", "expFrac=1/6"),
+    Iteration("wholeNumberFraction/int", "lhsFrac=3/1", "rhsInt=2", "expFrac=1 1/2"),
+    Iteration("anticommutativity", "lhsFrac=2/1", "rhsInt=3", "expFrac=2/3"),
+    Iteration("fraction/-int", "lhsFrac=-1 1/3", "rhsInt=2", "expFrac=-2/3"),
+    Iteration("-fraction/int", "lhsFrac=1 1/3", "rhsInt=-2", "expFrac=-2/3"),
+    Iteration("-fraction/-int", "lhsFrac=-1 1/3", "rhsInt=-2", "expFrac=2/3")
+  )
   fun testDiv_fractionAndInt_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1590,13 +1679,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsFrac=1/1", "rhsFrac=1/1", "expFrac=1")
-  @Iteration("fraction/identity", "lhsFrac=3/2", "rhsFrac=1/1", "expFrac=1 1/2")
-  @Iteration("fraction/fraction", "lhsFrac=3/2", "rhsFrac=4/7", "expFrac=2 5/8")
-  @Iteration("anticommutativity", "lhsFrac=4/7", "rhsFrac=3/2", "expFrac=8/21")
-  @Iteration("fraction/-fraction", "lhsFrac=1 3/9", "rhsFrac=-8/11", "expFrac=-1 5/6")
-  @Iteration("-fraction/fraction", "lhsFrac=-1 3/9", "rhsFrac=8/11", "expFrac=-1 5/6")
-  @Iteration("-fraction/-fraction", "lhsFrac=-1 3/9", "rhsFrac=-8/11", "expFrac=1 5/6")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsFrac=1/1", "rhsFrac=1/1", "expFrac=1"),
+    Iteration("fraction/identity", "lhsFrac=3/2", "rhsFrac=1/1", "expFrac=1 1/2"),
+    Iteration("fraction/fraction", "lhsFrac=3/2", "rhsFrac=4/7", "expFrac=2 5/8"),
+    Iteration("anticommutativity", "lhsFrac=4/7", "rhsFrac=3/2", "expFrac=8/21"),
+    Iteration("fraction/-fraction", "lhsFrac=1 3/9", "rhsFrac=-8/11", "expFrac=-1 5/6"),
+    Iteration("-fraction/fraction", "lhsFrac=-1 3/9", "rhsFrac=8/11", "expFrac=-1 5/6"),
+    Iteration("-fraction/-fraction", "lhsFrac=-1 3/9", "rhsFrac=-8/11", "expFrac=1 5/6")
+  )
   fun testDiv_fractionAndFraction_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1608,14 +1699,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsFrac=1/1", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("fraction/identity", "lhsFrac=3/2", "rhsDouble=1.0", "expDouble=1.5")
-  @Iteration("fraction/double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=0.477707006")
-  @Iteration("wholeNumberFraction/double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=1.5")
-  @Iteration("anticommutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=0.666666667")
-  @Iteration("fraction/-double", "lhsFrac=1 3/2", "rhsDouble=-3.14", "expDouble=-0.796178344")
-  @Iteration("-fraction/double", "lhsFrac=-1 3/2", "rhsDouble=3.14", "expDouble=-0.796178344")
-  @Iteration("-fraction/-double", "lhsFrac=-1 3/2", "rhsDouble=-3.14", "expDouble=0.796178344")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsFrac=1/1", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("fraction/identity", "lhsFrac=3/2", "rhsDouble=1.0", "expDouble=1.5"),
+    Iteration("fraction/double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=0.477707006"),
+    Iteration("wholeNumberFraction/double", "lhsFrac=3/1", "rhsDouble=2.0", "expDouble=1.5"),
+    Iteration("anticommutativity", "lhsFrac=2/1", "rhsDouble=3.0", "expDouble=0.666666667"),
+    Iteration("fraction/-double", "lhsFrac=1 3/2", "rhsDouble=-3.14", "expDouble=-0.796178344"),
+    Iteration("-fraction/double", "lhsFrac=-1 3/2", "rhsDouble=3.14", "expDouble=-0.796178344"),
+    Iteration("-fraction/-double", "lhsFrac=-1 3/2", "rhsDouble=-3.14", "expDouble=0.796178344")
+  )
   fun testDiv_fractionAndDouble_returnsDouble() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1626,14 +1719,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsDouble=1.0", "rhsInt=1", "expDouble=1.0")
-  @Iteration("double/identity", "lhsDouble=2.0", "rhsInt=1", "expDouble=2.0")
-  @Iteration("double/int", "lhsDouble=3.14", "rhsInt=2", "expDouble=1.57")
-  @Iteration("wholeNumberDouble/int", "lhsDouble=3.0", "rhsInt=2", "expDouble=1.5")
-  @Iteration("anticommutativity", "lhsDouble=2.0", "rhsInt=3", "expDouble=0.666666667")
-  @Iteration("double/-int", "lhsDouble=3.14", "rhsInt=-2", "expDouble=-1.57")
-  @Iteration("-double/int", "lhsDouble=-3.14", "rhsInt=2", "expDouble=-1.57")
-  @Iteration("-double/-int", "lhsDouble=-3.14", "rhsInt=-2", "expDouble=1.57")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsDouble=1.0", "rhsInt=1", "expDouble=1.0"),
+    Iteration("double/identity", "lhsDouble=2.0", "rhsInt=1", "expDouble=2.0"),
+    Iteration("double/int", "lhsDouble=3.14", "rhsInt=2", "expDouble=1.57"),
+    Iteration("wholeNumberDouble/int", "lhsDouble=3.0", "rhsInt=2", "expDouble=1.5"),
+    Iteration("anticommutativity", "lhsDouble=2.0", "rhsInt=3", "expDouble=0.666666667"),
+    Iteration("double/-int", "lhsDouble=3.14", "rhsInt=-2", "expDouble=-1.57"),
+    Iteration("-double/int", "lhsDouble=-3.14", "rhsInt=2", "expDouble=-1.57"),
+    Iteration("-double/-int", "lhsDouble=-3.14", "rhsInt=-2", "expDouble=1.57")
+  )
   fun testDiv_doubleAndInt_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1644,14 +1739,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsDouble=1.0", "rhsFrac=1/1", "expDouble=1.0")
-  @Iteration("double/identity", "lhsDouble=2.0", "rhsFrac=1/1", "expDouble=2.0")
-  @Iteration("double/fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=2.093333333")
-  @Iteration("double/wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=0.66666667")
-  @Iteration("anticommutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=1.5")
-  @Iteration("double/-fraction", "lhsDouble=3.14", "rhsFrac=-1 3/2", "expDouble=-1.256")
-  @Iteration("-double/fraction", "lhsDouble=-3.14", "rhsFrac=1 3/2", "expDouble=-1.256")
-  @Iteration("-double/-fraction", "lhsDouble=-3.14", "rhsFrac=-1 3/2", "expDouble=1.256")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsDouble=1.0", "rhsFrac=1/1", "expDouble=1.0"),
+    Iteration("double/identity", "lhsDouble=2.0", "rhsFrac=1/1", "expDouble=2.0"),
+    Iteration("double/fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=2.093333333"),
+    Iteration("double/wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=0.66666667"),
+    Iteration("anticommutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=1.5"),
+    Iteration("double/-fraction", "lhsDouble=3.14", "rhsFrac=-1 3/2", "expDouble=-1.256"),
+    Iteration("-double/fraction", "lhsDouble=-3.14", "rhsFrac=1 3/2", "expDouble=-1.256"),
+    Iteration("-double/-fraction", "lhsDouble=-3.14", "rhsFrac=-1 3/2", "expDouble=1.256")
+  )
   fun testDiv_doubleAndFraction_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1662,13 +1759,15 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("identity/identity", "lhsDouble=1.0", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("double/identity", "lhsDouble=2.0", "rhsDouble=1.0", "expDouble=2.0")
-  @Iteration("double/double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=1.162962963")
-  @Iteration("anticommutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=0.859872611")
-  @Iteration("double/-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=-1.162962963")
-  @Iteration("-double/double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-1.162962963")
-  @Iteration("-double/-double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=1.162962963")
+  @RunParameterized(
+    Iteration("identity/identity", "lhsDouble=1.0", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("double/identity", "lhsDouble=2.0", "rhsDouble=1.0", "expDouble=2.0"),
+    Iteration("double/double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=1.162962963"),
+    Iteration("anticommutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=0.859872611"),
+    Iteration("double/-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=-1.162962963"),
+    Iteration("-double/double", "lhsDouble=-3.14", "rhsDouble=2.7", "expDouble=-1.162962963"),
+    Iteration("-double/-double", "lhsDouble=-3.14", "rhsDouble=-2.7", "expDouble=1.162962963")
+  )
   fun testDiv_doubleAndDouble_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1763,15 +1862,17 @@ class RealExtensionsTest {
   // Exponentiation tests.
 
   @Test
-  @Iteration("0^0", "lhsInt=0", "rhsInt=0", "expInt=1")
-  @Iteration("identity^0", "lhsInt=1", "rhsInt=0", "expInt=1")
-  @Iteration("identity^identity", "lhsInt=1", "rhsInt=1", "expInt=1")
-  @Iteration("int^0", "lhsInt=2", "rhsInt=0", "expInt=1")
-  @Iteration("int^identity", "lhsInt=2", "rhsInt=1", "expInt=2")
-  @Iteration("int^int", "lhsInt=2", "rhsInt=3", "expInt=8")
-  @Iteration("noncommutativity", "lhsInt=3", "rhsInt=2", "expInt=9")
-  @Iteration("-int^even int", "lhsInt=-2", "rhsInt=4", "expInt=16")
-  @Iteration("-int^odd int", "lhsInt=-2", "rhsInt=3", "expInt=-8")
+  @RunParameterized(
+    Iteration("0^0", "lhsInt=0", "rhsInt=0", "expInt=1"),
+    Iteration("identity^0", "lhsInt=1", "rhsInt=0", "expInt=1"),
+    Iteration("identity^identity", "lhsInt=1", "rhsInt=1", "expInt=1"),
+    Iteration("int^0", "lhsInt=2", "rhsInt=0", "expInt=1"),
+    Iteration("int^identity", "lhsInt=2", "rhsInt=1", "expInt=2"),
+    Iteration("int^int", "lhsInt=2", "rhsInt=3", "expInt=8"),
+    Iteration("noncommutativity", "lhsInt=3", "rhsInt=2", "expInt=9"),
+    Iteration("-int^even int", "lhsInt=-2", "rhsInt=4", "expInt=16"),
+    Iteration("-int^odd int", "lhsInt=-2", "rhsInt=3", "expInt=-8")
+  )
   fun testPow_intAndInt_positivePower_returnsInt() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1783,9 +1884,11 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("int^-int", "lhsInt=2", "rhsInt=-3", "expFrac=1/8")
-  @Iteration("-int^-even int", "lhsInt=-2", "rhsInt=-4", "expFrac=1/16")
-  @Iteration("-int^-odd int", "lhsInt=-2", "rhsInt=-3", "expFrac=-1/8")
+  @RunParameterized(
+    Iteration("int^-int", "lhsInt=2", "rhsInt=-3", "expFrac=1/8"),
+    Iteration("-int^-even int", "lhsInt=-2", "rhsInt=-4", "expFrac=1/16"),
+    Iteration("-int^-odd int", "lhsInt=-2", "rhsInt=-3", "expFrac=-1/8")
+  )
   fun testPow_intAndInt_negativePower_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1798,19 +1901,21 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsInt=0", "rhsFrac=0/1", "expFrac=1")
-  @Iteration("identity^0", "lhsInt=1", "rhsFrac=0/1", "expFrac=1")
-  @Iteration("identity^identity", "lhsInt=1", "rhsFrac=1", "expFrac=1")
-  @Iteration("int^0", "lhsInt=2", "rhsFrac=0/1", "expFrac=1")
-  @Iteration("int^identity", "lhsInt=2", "rhsFrac=1", "expFrac=2")
-  @Iteration("int^fraction", "lhsInt=16", "rhsFrac=3/2", "expFrac=64")
-  @Iteration("int^wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=8")
-  @Iteration("noncommutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=9")
-  @Iteration("int^odd fraction", "lhsInt=8", "rhsFrac=5/3", "expFrac=32")
-  @Iteration("int^-fraction", "lhsInt=8", "rhsFrac=-4/2", "expFrac=1/64")
-  @Iteration("-int^odd fraction", "lhsInt=-8", "rhsFrac=5/3", "expFrac=-32")
-  @Iteration("-int^-fraction", "lhsInt=-4", "rhsFrac=-4/2", "expFrac=1/16")
-  @Iteration("-int^-odd fraction", "lhsInt=-8", "rhsFrac=-5/3", "expFrac=-1/32")
+  @RunParameterized(
+    Iteration("0^0", "lhsInt=0", "rhsFrac=0/1", "expFrac=1"),
+    Iteration("identity^0", "lhsInt=1", "rhsFrac=0/1", "expFrac=1"),
+    Iteration("identity^identity", "lhsInt=1", "rhsFrac=1", "expFrac=1"),
+    Iteration("int^0", "lhsInt=2", "rhsFrac=0/1", "expFrac=1"),
+    Iteration("int^identity", "lhsInt=2", "rhsFrac=1", "expFrac=2"),
+    Iteration("int^fraction", "lhsInt=16", "rhsFrac=3/2", "expFrac=64"),
+    Iteration("int^wholeNumberFraction", "lhsInt=2", "rhsFrac=3/1", "expFrac=8"),
+    Iteration("noncommutativity", "lhsInt=3", "rhsFrac=2/1", "expFrac=9"),
+    Iteration("int^odd fraction", "lhsInt=8", "rhsFrac=5/3", "expFrac=32"),
+    Iteration("int^-fraction", "lhsInt=8", "rhsFrac=-4/2", "expFrac=1/64"),
+    Iteration("-int^odd fraction", "lhsInt=-8", "rhsFrac=5/3", "expFrac=-32"),
+    Iteration("-int^-fraction", "lhsInt=-4", "rhsFrac=-4/2", "expFrac=1/16"),
+    Iteration("-int^-odd fraction", "lhsInt=-8", "rhsFrac=-5/3", "expFrac=-1/32")
+  )
   fun testPow_intAndFraction_denominatorCanRootInt_returnsFraction() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1822,10 +1927,12 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("int^fraction", "lhsInt=3", "rhsFrac=2/3", "expDouble=2.080083823")
-  @Iteration("-int^fraction", "lhsInt=-4", "rhsFrac=2/3", "expDouble=2.5198421")
-  @Iteration("int^-fraction", "lhsInt=2", "rhsFrac=-2/3", "expDouble=0.629960525")
-  @Iteration("-int^-fraction", "lhsInt=-4", "rhsFrac=-2/3", "expDouble=0.396850263")
+  @RunParameterized(
+    Iteration("int^fraction", "lhsInt=3", "rhsFrac=2/3", "expDouble=2.080083823"),
+    Iteration("-int^fraction", "lhsInt=-4", "rhsFrac=2/3", "expDouble=2.5198421"),
+    Iteration("int^-fraction", "lhsInt=2", "rhsFrac=-2/3", "expDouble=0.629960525"),
+    Iteration("-int^-fraction", "lhsInt=-4", "rhsFrac=-2/3", "expDouble=0.396850263")
+  )
   fun testPow_intAndFraction_denominatorCannotRootInt_returnsDouble() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1836,15 +1943,17 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsInt=0", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("identity^0", "lhsInt=1", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("identity^identity", "lhsInt=1", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("int^0", "lhsInt=2", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("int^identity", "lhsInt=2", "rhsDouble=1.0", "expDouble=2.0")
-  @Iteration("int^double", "lhsInt=2", "rhsDouble=3.14", "expDouble=8.815240927")
-  @Iteration("int^wholeNumberDouble", "lhsInt=2", "rhsDouble=3.0", "expDouble=8.0")
-  @Iteration("noncommutativity", "lhsInt=3", "rhsDouble=2.0", "expDouble=9.0")
-  @Iteration("int^-double", "lhsInt=2", "rhsDouble=-3.14", "expDouble=0.113439894")
+  @RunParameterized(
+    Iteration("0^0", "lhsInt=0", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("identity^0", "lhsInt=1", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("identity^identity", "lhsInt=1", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("int^0", "lhsInt=2", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("int^identity", "lhsInt=2", "rhsDouble=1.0", "expDouble=2.0"),
+    Iteration("int^double", "lhsInt=2", "rhsDouble=3.14", "expDouble=8.815240927"),
+    Iteration("int^wholeNumberDouble", "lhsInt=2", "rhsDouble=3.0", "expDouble=8.0"),
+    Iteration("noncommutativity", "lhsInt=3", "rhsDouble=2.0", "expDouble=9.0"),
+    Iteration("int^-double", "lhsInt=2", "rhsDouble=-3.14", "expDouble=0.113439894")
+  )
   fun testPow_intAndDouble_returnsDouble() {
     val lhsReal = createIntegerReal(lhsInt)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1855,17 +1964,19 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsFrac=0", "rhsInt=0", "expFrac=1")
-  @Iteration("identity^0", "lhsFrac=1", "rhsInt=0", "expFrac=1")
-  @Iteration("identity^identity", "lhsFrac=1", "rhsInt=1", "expFrac=1")
-  @Iteration("fraction^0", "lhsFrac=1/3", "rhsInt=0", "expFrac=1")
-  @Iteration("fraction^identity", "lhsFrac=1/3", "rhsInt=1", "expFrac=1/3")
-  @Iteration("fraction^int", "lhsFrac=2/3", "rhsInt=3", "expFrac=8/27")
-  @Iteration("wholeNumberFraction^int", "lhsFrac=3", "rhsInt=2", "expFrac=9")
-  @Iteration("noncommutativity", "lhsFrac=2", "rhsInt=3", "expFrac=8")
-  @Iteration("fraction^-int", "lhsFrac=4/3", "rhsInt=-2", "expFrac=9/16")
-  @Iteration("-fraction^int", "lhsFrac=-4/3", "rhsInt=2", "expFrac=1 7/9")
-  @Iteration("-fraction^-int", "lhsFrac=-4/3", "rhsInt=-2", "expFrac=9/16")
+  @RunParameterized(
+    Iteration("0^0", "lhsFrac=0", "rhsInt=0", "expFrac=1"),
+    Iteration("identity^0", "lhsFrac=1", "rhsInt=0", "expFrac=1"),
+    Iteration("identity^identity", "lhsFrac=1", "rhsInt=1", "expFrac=1"),
+    Iteration("fraction^0", "lhsFrac=1/3", "rhsInt=0", "expFrac=1"),
+    Iteration("fraction^identity", "lhsFrac=1/3", "rhsInt=1", "expFrac=1/3"),
+    Iteration("fraction^int", "lhsFrac=2/3", "rhsInt=3", "expFrac=8/27"),
+    Iteration("wholeNumberFraction^int", "lhsFrac=3", "rhsInt=2", "expFrac=9"),
+    Iteration("noncommutativity", "lhsFrac=2", "rhsInt=3", "expFrac=8"),
+    Iteration("fraction^-int", "lhsFrac=4/3", "rhsInt=-2", "expFrac=9/16"),
+    Iteration("-fraction^int", "lhsFrac=-4/3", "rhsInt=2", "expFrac=1 7/9"),
+    Iteration("-fraction^-int", "lhsFrac=-4/3", "rhsInt=-2", "expFrac=9/16")
+  )
   fun testPow_fractionAndInt_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1877,15 +1988,17 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsFrac=0", "rhsFrac=0", "expFrac=1")
-  @Iteration("identity^0", "lhsFrac=1", "rhsFrac=0", "expFrac=1")
-  @Iteration("identity^identity", "lhsFrac=1", "rhsFrac=1", "expFrac=1")
-  @Iteration("fraction^0", "lhsFrac=3/2", "rhsFrac=0", "expFrac=1")
-  @Iteration("fraction^identity", "lhsFrac=3/2", "rhsFrac=1", "expFrac=1 1/2")
-  @Iteration("fraction^fraction", "lhsFrac=32/243", "rhsFrac=3/5", "expFrac=8/27")
-  @Iteration("fraction^wholeNumberFraction", "lhsFrac=3", "rhsFrac=2", "expFrac=9")
-  @Iteration("noncommutativity", "lhsFrac=2", "rhsFrac=3", "expFrac=8")
-  @Iteration("fraction^-fraction", "lhsFrac=32/243", "rhsFrac=-3/5", "expFrac=3 3/8")
+  @RunParameterized(
+    Iteration("0^0", "lhsFrac=0", "rhsFrac=0", "expFrac=1"),
+    Iteration("identity^0", "lhsFrac=1", "rhsFrac=0", "expFrac=1"),
+    Iteration("identity^identity", "lhsFrac=1", "rhsFrac=1", "expFrac=1"),
+    Iteration("fraction^0", "lhsFrac=3/2", "rhsFrac=0", "expFrac=1"),
+    Iteration("fraction^identity", "lhsFrac=3/2", "rhsFrac=1", "expFrac=1 1/2"),
+    Iteration("fraction^fraction", "lhsFrac=32/243", "rhsFrac=3/5", "expFrac=8/27"),
+    Iteration("fraction^wholeNumberFraction", "lhsFrac=3", "rhsFrac=2", "expFrac=9"),
+    Iteration("noncommutativity", "lhsFrac=2", "rhsFrac=3", "expFrac=8"),
+    Iteration("fraction^-fraction", "lhsFrac=32/243", "rhsFrac=-3/5", "expFrac=3 3/8")
+  )
   fun testPow_fractionAndFraction_denominatorCanRootFraction_returnsFraction() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1897,9 +2010,11 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("fraction^fraction", "lhsFrac=3/2", "rhsFrac=2/3", "expDouble=1.310370697")
-  @Iteration("noncommutativity", "lhsFrac=2/3", "rhsFrac=3/2", "expDouble=0.544331054")
-  @Iteration("fraction^-fraction", "lhsFrac=3/2", "rhsFrac=-2/3", "expDouble=0.763142828")
+  @RunParameterized(
+    Iteration("fraction^fraction", "lhsFrac=3/2", "rhsFrac=2/3", "expDouble=1.310370697"),
+    Iteration("noncommutativity", "lhsFrac=2/3", "rhsFrac=3/2", "expDouble=0.544331054"),
+    Iteration("fraction^-fraction", "lhsFrac=3/2", "rhsFrac=-2/3", "expDouble=0.763142828")
+  )
   fun testPow_fractionAndFraction_denominatorCannotRootFraction_returnsDouble() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1910,15 +2025,17 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsFrac=0", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("identity^0", "lhsFrac=1", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("identity^identity", "lhsFrac=1", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("fraction^0", "lhsFrac=3/2", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("fraction^identity", "lhsFrac=3/2", "rhsDouble=1.0", "expDouble=1.5")
-  @Iteration("fraction^double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=3.572124224")
-  @Iteration("wholeNumberFraction^double", "lhsFrac=3", "rhsDouble=2.0", "expDouble=9.0")
-  @Iteration("noncommutativity", "lhsFrac=2", "rhsDouble=3.0", "expDouble=8.0")
-  @Iteration("fraction^-double", "lhsFrac=1 3/2", "rhsDouble=-3.14", "expDouble=0.056294812")
+  @RunParameterized(
+    Iteration("0^0", "lhsFrac=0", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("identity^0", "lhsFrac=1", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("identity^identity", "lhsFrac=1", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("fraction^0", "lhsFrac=3/2", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("fraction^identity", "lhsFrac=3/2", "rhsDouble=1.0", "expDouble=1.5"),
+    Iteration("fraction^double", "lhsFrac=3/2", "rhsDouble=3.14", "expDouble=3.572124224"),
+    Iteration("wholeNumberFraction^double", "lhsFrac=3", "rhsDouble=2.0", "expDouble=9.0"),
+    Iteration("noncommutativity", "lhsFrac=2", "rhsDouble=3.0", "expDouble=8.0"),
+    Iteration("fraction^-double", "lhsFrac=1 3/2", "rhsDouble=-3.14", "expDouble=0.056294812")
+  )
   fun testPow_fractionAndDouble_returnsDouble() {
     val lhsReal = createRationalReal(lhsFrac)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -1929,17 +2046,19 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsDouble=0.0", "rhsInt=0", "expDouble=1.0")
-  @Iteration("identity^0", "lhsDouble=1.0", "rhsInt=0", "expDouble=1.0")
-  @Iteration("identity^identity", "lhsDouble=1.0", "rhsInt=1", "expDouble=1.0")
-  @Iteration("double^0", "lhsDouble=3.14", "rhsInt=0", "expDouble=1.0")
-  @Iteration("double^identity", "lhsDouble=3.14", "rhsInt=1", "expDouble=3.14")
-  @Iteration("double^int", "lhsDouble=3.14", "rhsInt=2", "expDouble=9.8596")
-  @Iteration("wholeNumberDouble^int", "lhsDouble=3.0", "rhsInt=2", "expDouble=9.0")
-  @Iteration("noncommutativity", "lhsDouble=2.0", "rhsInt=3", "expDouble=8.0")
-  @Iteration("double^-int", "lhsDouble=3.14", "rhsInt=-3", "expDouble=0.032300635")
-  @Iteration("-double^int", "lhsDouble=-3.14", "rhsInt=3", "expDouble=-30.959144")
-  @Iteration("-double^-int", "lhsDouble=-3.14", "rhsInt=-3", "expDouble=-0.032300635")
+  @RunParameterized(
+    Iteration("0^0", "lhsDouble=0.0", "rhsInt=0", "expDouble=1.0"),
+    Iteration("identity^0", "lhsDouble=1.0", "rhsInt=0", "expDouble=1.0"),
+    Iteration("identity^identity", "lhsDouble=1.0", "rhsInt=1", "expDouble=1.0"),
+    Iteration("double^0", "lhsDouble=3.14", "rhsInt=0", "expDouble=1.0"),
+    Iteration("double^identity", "lhsDouble=3.14", "rhsInt=1", "expDouble=3.14"),
+    Iteration("double^int", "lhsDouble=3.14", "rhsInt=2", "expDouble=9.8596"),
+    Iteration("wholeNumberDouble^int", "lhsDouble=3.0", "rhsInt=2", "expDouble=9.0"),
+    Iteration("noncommutativity", "lhsDouble=2.0", "rhsInt=3", "expDouble=8.0"),
+    Iteration("double^-int", "lhsDouble=3.14", "rhsInt=-3", "expDouble=0.032300635"),
+    Iteration("-double^int", "lhsDouble=-3.14", "rhsInt=3", "expDouble=-30.959144"),
+    Iteration("-double^-int", "lhsDouble=-3.14", "rhsInt=-3", "expDouble=-0.032300635")
+  )
   fun testPow_doubleAndInt_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIntegerReal(rhsInt)
@@ -1950,15 +2069,17 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsDouble=0.0", "rhsFrac=0/1", "expDouble=1.0")
-  @Iteration("identity^0", "lhsDouble=1.0", "rhsFrac=0/1", "expDouble=1.0")
-  @Iteration("identity^identity", "lhsDouble=1.0", "rhsFrac=1", "expDouble=1.0")
-  @Iteration("double^0", "lhsDouble=3.14", "rhsFrac=0/1", "expDouble=1.0")
-  @Iteration("double^identity", "lhsDouble=3.14", "rhsFrac=1", "expDouble=3.14")
-  @Iteration("double^fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=5.564094176")
-  @Iteration("double^wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=8.0")
-  @Iteration("noncommutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=9.0")
-  @Iteration("double^-fraction", "lhsDouble=3.14", "rhsFrac=-3/2", "expDouble=0.179723773")
+  @RunParameterized(
+    Iteration("0^0", "lhsDouble=0.0", "rhsFrac=0/1", "expDouble=1.0"),
+    Iteration("identity^0", "lhsDouble=1.0", "rhsFrac=0/1", "expDouble=1.0"),
+    Iteration("identity^identity", "lhsDouble=1.0", "rhsFrac=1", "expDouble=1.0"),
+    Iteration("double^0", "lhsDouble=3.14", "rhsFrac=0/1", "expDouble=1.0"),
+    Iteration("double^identity", "lhsDouble=3.14", "rhsFrac=1", "expDouble=3.14"),
+    Iteration("double^fraction", "lhsDouble=3.14", "rhsFrac=3/2", "expDouble=5.564094176"),
+    Iteration("double^wholeNumberFraction", "lhsDouble=2.0", "rhsFrac=3/1", "expDouble=8.0"),
+    Iteration("noncommutativity", "lhsDouble=3.0", "rhsFrac=2/1", "expDouble=9.0"),
+    Iteration("double^-fraction", "lhsDouble=3.14", "rhsFrac=-3/2", "expDouble=0.179723773")
+  )
   fun testPow_doubleAndFraction_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createRationalReal(rhsFrac)
@@ -1969,14 +2090,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0^0", "lhsDouble=0.0", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("identity^0", "lhsDouble=1.0", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("identity^identity", "lhsDouble=1.0", "rhsDouble=1.0", "expDouble=1.0")
-  @Iteration("double^0", "lhsDouble=3.14", "rhsDouble=0.0", "expDouble=1.0")
-  @Iteration("double^identity", "lhsDouble=3.14", "rhsDouble=1.0", "expDouble=3.14")
-  @Iteration("double^double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=21.963929943")
-  @Iteration("noncommutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=22.619459311")
-  @Iteration("double^-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=0.045529193")
+  @RunParameterized(
+    Iteration("0^0", "lhsDouble=0.0", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("identity^0", "lhsDouble=1.0", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("identity^identity", "lhsDouble=1.0", "rhsDouble=1.0", "expDouble=1.0"),
+    Iteration("double^0", "lhsDouble=3.14", "rhsDouble=0.0", "expDouble=1.0"),
+    Iteration("double^identity", "lhsDouble=3.14", "rhsDouble=1.0", "expDouble=3.14"),
+    Iteration("double^double", "lhsDouble=3.14", "rhsDouble=2.7", "expDouble=21.963929943"),
+    Iteration("noncommutativity", "lhsDouble=2.7", "rhsDouble=3.14", "expDouble=22.619459311"),
+    Iteration("double^-double", "lhsDouble=3.14", "rhsDouble=-2.7", "expDouble=0.045529193")
+  )
   fun testPow_doubleAndDouble_returnsDouble() {
     val lhsReal = createIrrationalReal(lhsDouble)
     val rhsReal = createIrrationalReal(rhsDouble)
@@ -2223,15 +2346,17 @@ class RealExtensionsTest {
    */
 
   @Test
-  @Iteration("0==0", "lhsInt=0", "rhsInt=0", "expInt=0")
-  @Iteration("-2<0", "lhsInt=-2", "rhsInt=0", "expInt=-1")
-  @Iteration("-5<-2", "lhsInt=-5", "rhsInt=-2", "expInt=-1")
-  @Iteration("-2>-5", "lhsInt=-2", "rhsInt=-5", "expInt=1")
-  @Iteration("2>0", "lhsInt=2", "rhsInt=0", "expInt=1")
-  @Iteration("5>2", "lhsInt=5", "rhsInt=2", "expInt=1")
-  @Iteration("2<5", "lhsInt=2", "rhsInt=5", "expInt=-1")
-  @Iteration("-2<5", "lhsInt=-2", "rhsInt=5", "expInt=-1")
-  @Iteration("5>-2", "lhsInt=5", "rhsInt=-2", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsInt=0", "expInt=0"),
+    Iteration("-2<0", "lhsInt=-2", "rhsInt=0", "expInt=-1"),
+    Iteration("-5<-2", "lhsInt=-5", "rhsInt=-2", "expInt=-1"),
+    Iteration("-2>-5", "lhsInt=-2", "rhsInt=-5", "expInt=1"),
+    Iteration("2>0", "lhsInt=2", "rhsInt=0", "expInt=1"),
+    Iteration("5>2", "lhsInt=5", "rhsInt=2", "expInt=1"),
+    Iteration("2<5", "lhsInt=2", "rhsInt=5", "expInt=-1"),
+    Iteration("-2<5", "lhsInt=-2", "rhsInt=5", "expInt=-1"),
+    Iteration("5>-2", "lhsInt=5", "rhsInt=-2", "expInt=1")
+  )
   fun testComparator_intAndInt_returnsCorrectComparisonInt() {
     val lhsValue = createIntegerReal(lhsInt)
     val rhsValue = createIntegerReal(rhsInt)
@@ -2242,21 +2367,23 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsInt=0", "rhsFrac=0", "expInt=0")
-  @Iteration("-2<0", "lhsInt=-2", "rhsFrac=0", "expInt=-1")
-  @Iteration("-5<-2", "lhsInt=-5", "rhsFrac=-2", "expInt=-1")
-  @Iteration("-5<-1/2", "lhsInt=-5", "rhsFrac=-1/2", "expInt=-1")
-  @Iteration("-2>-5", "lhsInt=-2", "rhsFrac=-5", "expInt=1")
-  @Iteration("-1>-3/2", "lhsInt=-1", "rhsFrac=-3/2", "expInt=1")
-  @Iteration("2>0", "lhsInt=2", "rhsFrac=0", "expInt=1")
-  @Iteration("5>2", "lhsInt=5", "rhsFrac=2", "expInt=1")
-  @Iteration("2<5", "lhsInt=2", "rhsFrac=5", "expInt=-1")
-  @Iteration("2<7/2", "lhsInt=2", "rhsFrac=7/2", "expInt=-1")
-  @Iteration("5>3/2", "lhsInt=5", "rhsFrac=3/2", "expInt=1")
-  @Iteration("-2<5", "lhsInt=-2", "rhsFrac=5", "expInt=-1")
-  @Iteration("-2<3/2", "lhsInt=-2", "rhsFrac=3/2", "expInt=-1")
-  @Iteration("5>-2", "lhsInt=5", "rhsFrac=-2", "expInt=1")
-  @Iteration("5>-3/2", "lhsInt=5", "rhsFrac=-3/2", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsFrac=0", "expInt=0"),
+    Iteration("-2<0", "lhsInt=-2", "rhsFrac=0", "expInt=-1"),
+    Iteration("-5<-2", "lhsInt=-5", "rhsFrac=-2", "expInt=-1"),
+    Iteration("-5<-1/2", "lhsInt=-5", "rhsFrac=-1/2", "expInt=-1"),
+    Iteration("-2>-5", "lhsInt=-2", "rhsFrac=-5", "expInt=1"),
+    Iteration("-1>-3/2", "lhsInt=-1", "rhsFrac=-3/2", "expInt=1"),
+    Iteration("2>0", "lhsInt=2", "rhsFrac=0", "expInt=1"),
+    Iteration("5>2", "lhsInt=5", "rhsFrac=2", "expInt=1"),
+    Iteration("2<5", "lhsInt=2", "rhsFrac=5", "expInt=-1"),
+    Iteration("2<7/2", "lhsInt=2", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("5>3/2", "lhsInt=5", "rhsFrac=3/2", "expInt=1"),
+    Iteration("-2<5", "lhsInt=-2", "rhsFrac=5", "expInt=-1"),
+    Iteration("-2<3/2", "lhsInt=-2", "rhsFrac=3/2", "expInt=-1"),
+    Iteration("5>-2", "lhsInt=5", "rhsFrac=-2", "expInt=1"),
+    Iteration("5>-3/2", "lhsInt=5", "rhsFrac=-3/2", "expInt=1")
+  )
   fun testComparator_intAndFraction_returnsCorrectComparisonInt() {
     val lhsValue = createIntegerReal(lhsInt)
     val rhsValue = createRationalReal(rhsFrac)
@@ -2267,15 +2394,17 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsInt=0", "rhsDouble=0.0", "expInt=0")
-  @Iteration("-2<0", "lhsInt=-2", "rhsDouble=0.0", "expInt=-1")
-  @Iteration("-5<-3.14", "lhsInt=-5", "rhsDouble=-3.14", "expInt=-1")
-  @Iteration("-2>-6.28", "lhsInt=-2", "rhsDouble=-6.28", "expInt=1")
-  @Iteration("2>0", "lhsInt=2", "rhsDouble=0.0", "expInt=1")
-  @Iteration("5>3.14", "lhsInt=5", "rhsDouble=3.14", "expInt=1")
-  @Iteration("2<6.28", "lhsInt=2", "rhsDouble=6.28", "expInt=-1")
-  @Iteration("-2<3.14", "lhsInt=-2", "rhsDouble=3.14", "expInt=-1")
-  @Iteration("2>-3.14", "lhsInt=2", "rhsDouble=-3.14", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsInt=0", "rhsDouble=0.0", "expInt=0"),
+    Iteration("-2<0", "lhsInt=-2", "rhsDouble=0.0", "expInt=-1"),
+    Iteration("-5<-3.14", "lhsInt=-5", "rhsDouble=-3.14", "expInt=-1"),
+    Iteration("-2>-6.28", "lhsInt=-2", "rhsDouble=-6.28", "expInt=1"),
+    Iteration("2>0", "lhsInt=2", "rhsDouble=0.0", "expInt=1"),
+    Iteration("5>3.14", "lhsInt=5", "rhsDouble=3.14", "expInt=1"),
+    Iteration("2<6.28", "lhsInt=2", "rhsDouble=6.28", "expInt=-1"),
+    Iteration("-2<3.14", "lhsInt=-2", "rhsDouble=3.14", "expInt=-1"),
+    Iteration("2>-3.14", "lhsInt=2", "rhsDouble=-3.14", "expInt=1")
+  )
   fun testComparator_intAndDouble_returnsCorrectComparisonInt() {
     val lhsValue = createIntegerReal(lhsInt)
     val rhsValue = createIrrationalReal(rhsDouble)
@@ -2286,15 +2415,17 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsFrac=0", "rhsInt=0", "expInt=0")
-  @Iteration("-3/2<0", "lhsFrac=-3/2", "rhsInt=0", "expInt=-1")
-  @Iteration("-7/2<-3", "lhsFrac=-7/2", "rhsInt=-3", "expInt=-1")
-  @Iteration("-3/2>-5", "lhsFrac=-3/2", "rhsInt=-5", "expInt=1")
-  @Iteration("3/2>0", "lhsFrac=3/2", "rhsInt=0", "expInt=1")
-  @Iteration("7/2>3", "lhsFrac=7/2", "rhsInt=3", "expInt=1")
-  @Iteration("3/2<5", "lhsFrac=3/2", "rhsInt=5", "expInt=-1")
-  @Iteration("-3/2<3", "lhsFrac=-3/2", "rhsInt=3", "expInt=-1")
-  @Iteration("3/2>-3", "lhsFrac=3/2", "rhsInt=-3", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsInt=0", "expInt=0"),
+    Iteration("-3/2<0", "lhsFrac=-3/2", "rhsInt=0", "expInt=-1"),
+    Iteration("-7/2<-3", "lhsFrac=-7/2", "rhsInt=-3", "expInt=-1"),
+    Iteration("-3/2>-5", "lhsFrac=-3/2", "rhsInt=-5", "expInt=1"),
+    Iteration("3/2>0", "lhsFrac=3/2", "rhsInt=0", "expInt=1"),
+    Iteration("7/2>3", "lhsFrac=7/2", "rhsInt=3", "expInt=1"),
+    Iteration("3/2<5", "lhsFrac=3/2", "rhsInt=5", "expInt=-1"),
+    Iteration("-3/2<3", "lhsFrac=-3/2", "rhsInt=3", "expInt=-1"),
+    Iteration("3/2>-3", "lhsFrac=3/2", "rhsInt=-3", "expInt=1")
+  )
   fun testComparator_fractionAndInt_returnsCorrectComparisonInt() {
     val lhsValue = createRationalReal(lhsFrac)
     val rhsValue = createIntegerReal(rhsInt)
@@ -2305,14 +2436,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsFrac=0", "rhsFrac=0", "expInt=0")
-  @Iteration("-3/2<0", "lhsFrac=-3/2", "rhsFrac=0", "expInt=-1")
-  @Iteration("-7/2<-3/2", "lhsFrac=-7/2", "rhsFrac=-3/2", "expInt=-1")
-  @Iteration("3/2>0", "lhsFrac=3/2", "rhsFrac=0", "expInt=1")
-  @Iteration("7/2>3/2", "lhsFrac=7/2", "rhsFrac=3/2", "expInt=1")
-  @Iteration("3/2<7/2", "lhsFrac=3/2", "rhsFrac=7/2", "expInt=-1")
-  @Iteration("-3/2<3/2", "lhsFrac=-3/2", "rhsFrac=3/2", "expInt=-1")
-  @Iteration("3/2>-3/2", "lhsFrac=3/2", "rhsFrac=-3/2", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsFrac=0", "expInt=0"),
+    Iteration("-3/2<0", "lhsFrac=-3/2", "rhsFrac=0", "expInt=-1"),
+    Iteration("-7/2<-3/2", "lhsFrac=-7/2", "rhsFrac=-3/2", "expInt=-1"),
+    Iteration("3/2>0", "lhsFrac=3/2", "rhsFrac=0", "expInt=1"),
+    Iteration("7/2>3/2", "lhsFrac=7/2", "rhsFrac=3/2", "expInt=1"),
+    Iteration("3/2<7/2", "lhsFrac=3/2", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("-3/2<3/2", "lhsFrac=-3/2", "rhsFrac=3/2", "expInt=-1"),
+    Iteration("3/2>-3/2", "lhsFrac=3/2", "rhsFrac=-3/2", "expInt=1")
+  )
   fun testComparator_fractionAndFraction_returnsCorrectComparisonInt() {
     val lhsValue = createRationalReal(lhsFrac)
     val rhsValue = createRationalReal(rhsFrac)
@@ -2323,14 +2456,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsFrac=0", "rhsDouble=0.0", "expInt=0")
-  @Iteration("-3/2<0", "lhsFrac=-3/2", "rhsDouble=0.0", "expInt=-1")
-  @Iteration("-7/2<-3.14", "lhsFrac=-7/2", "rhsDouble=-3.14", "expInt=-1")
-  @Iteration("3/2>0", "lhsFrac=3/2", "rhsDouble=0.0", "expInt=1")
-  @Iteration("7/2>3.14", "lhsFrac=7/2", "rhsDouble=3.14", "expInt=1")
-  @Iteration("3/2<3.14", "lhsFrac=3/2", "rhsDouble=3.14", "expInt=-1")
-  @Iteration("-3/2<3.14", "lhsFrac=-3/2", "rhsDouble=3.14", "expInt=-1")
-  @Iteration("3/2>-3.14", "lhsFrac=3/2", "rhsDouble=-3.14", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsFrac=0", "rhsDouble=0.0", "expInt=0"),
+    Iteration("-3/2<0", "lhsFrac=-3/2", "rhsDouble=0.0", "expInt=-1"),
+    Iteration("-7/2<-3.14", "lhsFrac=-7/2", "rhsDouble=-3.14", "expInt=-1"),
+    Iteration("3/2>0", "lhsFrac=3/2", "rhsDouble=0.0", "expInt=1"),
+    Iteration("7/2>3.14", "lhsFrac=7/2", "rhsDouble=3.14", "expInt=1"),
+    Iteration("3/2<3.14", "lhsFrac=3/2", "rhsDouble=3.14", "expInt=-1"),
+    Iteration("-3/2<3.14", "lhsFrac=-3/2", "rhsDouble=3.14", "expInt=-1"),
+    Iteration("3/2>-3.14", "lhsFrac=3/2", "rhsDouble=-3.14", "expInt=1")
+  )
   fun testComparator_fractionAndDouble_returnsCorrectComparisonInt() {
     val lhsValue = createRationalReal(lhsFrac)
     val rhsValue = createIrrationalReal(rhsDouble)
@@ -2341,14 +2476,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsDouble=0.0", "rhsInt=0", "expInt=0")
-  @Iteration("-3.14<0", "lhsDouble=-3.14", "rhsInt=0", "expInt=-1")
-  @Iteration("-6.28<-4", "lhsDouble=-6.28", "rhsInt=-4", "expInt=-1")
-  @Iteration("3.14>0", "lhsDouble=3.14", "rhsInt=0", "expInt=1")
-  @Iteration("6.28>4", "lhsDouble=6.28", "rhsInt=4", "expInt=1")
-  @Iteration("3.14<4", "lhsDouble=3.14", "rhsInt=4", "expInt=-1")
-  @Iteration("-3.14<4", "lhsDouble=-3.14", "rhsInt=4", "expInt=-1")
-  @Iteration("3.14>-4", "lhsDouble=3.14", "rhsInt=-4", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsDouble=0.0", "rhsInt=0", "expInt=0"),
+    Iteration("-3.14<0", "lhsDouble=-3.14", "rhsInt=0", "expInt=-1"),
+    Iteration("-6.28<-4", "lhsDouble=-6.28", "rhsInt=-4", "expInt=-1"),
+    Iteration("3.14>0", "lhsDouble=3.14", "rhsInt=0", "expInt=1"),
+    Iteration("6.28>4", "lhsDouble=6.28", "rhsInt=4", "expInt=1"),
+    Iteration("3.14<4", "lhsDouble=3.14", "rhsInt=4", "expInt=-1"),
+    Iteration("-3.14<4", "lhsDouble=-3.14", "rhsInt=4", "expInt=-1"),
+    Iteration("3.14>-4", "lhsDouble=3.14", "rhsInt=-4", "expInt=1")
+  )
   fun testComparator_doubleAndInt_returnsCorrectComparisonInt() {
     val lhsValue = createIrrationalReal(lhsDouble)
     val rhsValue = createIntegerReal(rhsInt)
@@ -2359,14 +2496,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsDouble=0.0", "rhsFrac=0", "expInt=0")
-  @Iteration("-3.14<0", "lhsDouble=-3.14", "rhsFrac=0", "expInt=-1")
-  @Iteration("-6.28<-7/2", "lhsDouble=-6.28", "rhsFrac=-7/2", "expInt=-1")
-  @Iteration("3.14>0", "lhsDouble=3.14", "rhsFrac=0", "expInt=1")
-  @Iteration("6.28>7/2", "lhsDouble=6.28", "rhsFrac=7/2", "expInt=1")
-  @Iteration("3.14<7/2", "lhsDouble=3.14", "rhsFrac=7/2", "expInt=-1")
-  @Iteration("-3.14<7/2", "lhsDouble=-3.14", "rhsFrac=7/2", "expInt=-1")
-  @Iteration("3.14>-7/2", "lhsDouble=3.14", "rhsFrac=-7/2", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsDouble=0.0", "rhsFrac=0", "expInt=0"),
+    Iteration("-3.14<0", "lhsDouble=-3.14", "rhsFrac=0", "expInt=-1"),
+    Iteration("-6.28<-7/2", "lhsDouble=-6.28", "rhsFrac=-7/2", "expInt=-1"),
+    Iteration("3.14>0", "lhsDouble=3.14", "rhsFrac=0", "expInt=1"),
+    Iteration("6.28>7/2", "lhsDouble=6.28", "rhsFrac=7/2", "expInt=1"),
+    Iteration("3.14<7/2", "lhsDouble=3.14", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("-3.14<7/2", "lhsDouble=-3.14", "rhsFrac=7/2", "expInt=-1"),
+    Iteration("3.14>-7/2", "lhsDouble=3.14", "rhsFrac=-7/2", "expInt=1")
+  )
   fun testComparator_doubleAndFraction_returnsCorrectComparisonInt() {
     val lhsValue = createIrrationalReal(lhsDouble)
     val rhsValue = createRationalReal(rhsFrac)
@@ -2377,14 +2516,16 @@ class RealExtensionsTest {
   }
 
   @Test
-  @Iteration("0==0", "lhsDouble=0.0", "rhsDouble=0.0", "expInt=0")
-  @Iteration("-3.14<0", "lhsDouble=-3.14", "rhsDouble=0.0", "expInt=-1")
-  @Iteration("-6.28<-3.14", "lhsDouble=-6.28", "rhsDouble=-3.14", "expInt=-1")
-  @Iteration("3.14>0", "lhsDouble=3.14", "rhsDouble=0.0", "expInt=1")
-  @Iteration("6.28>3.14", "lhsDouble=6.28", "rhsDouble=3.14", "expInt=1")
-  @Iteration("3.14<6.28", "lhsDouble=3.14", "rhsDouble=6.28", "expInt=-1")
-  @Iteration("-3.14<6.28", "lhsDouble=-3.14", "rhsDouble=6.28", "expInt=-1")
-  @Iteration("3.14>-6.28", "lhsDouble=3.14", "rhsDouble=-6.28", "expInt=1")
+  @RunParameterized(
+    Iteration("0==0", "lhsDouble=0.0", "rhsDouble=0.0", "expInt=0"),
+    Iteration("-3.14<0", "lhsDouble=-3.14", "rhsDouble=0.0", "expInt=-1"),
+    Iteration("-6.28<-3.14", "lhsDouble=-6.28", "rhsDouble=-3.14", "expInt=-1"),
+    Iteration("3.14>0", "lhsDouble=3.14", "rhsDouble=0.0", "expInt=1"),
+    Iteration("6.28>3.14", "lhsDouble=6.28", "rhsDouble=3.14", "expInt=1"),
+    Iteration("3.14<6.28", "lhsDouble=3.14", "rhsDouble=6.28", "expInt=-1"),
+    Iteration("-3.14<6.28", "lhsDouble=-3.14", "rhsDouble=6.28", "expInt=-1"),
+    Iteration("3.14>-6.28", "lhsDouble=3.14", "rhsDouble=-6.28", "expInt=1")
+  )
   fun testComparator_doubleAndDouble_returnsCorrectComparisonInt() {
     val lhsValue = createIrrationalReal(lhsDouble)
     val rhsValue = createIrrationalReal(rhsDouble)

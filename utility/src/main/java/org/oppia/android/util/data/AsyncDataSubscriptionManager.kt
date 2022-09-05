@@ -11,7 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
 
-typealias ObserveAsyncChange = suspend (Set<Any>) -> Unit
+typealias ObserveAsyncChange = suspend () -> Unit
 
 /**
  * A subscription manager for all [DataProvider]s. This should only be used outside of this package
@@ -25,12 +25,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
   private val subscriptionMap = mutableMapOf<Any, MutableSet<ObserveAsyncChange>>()
   private val associatedIds = mutableMapOf<Any, MutableSet<Any>>()
 
-  /**
-   * Subscribes the specified callback function to the specified [DataProvider] ID.
-   *
-   * Note that the immediate parents that have either directly or indirectly changed will be passed
-   * to [observeChange] whenever the provider corresponding to [id] may need an update.
-   */
+  /** Subscribes the specified callback function to the specified [DataProvider] ID. */
   fun subscribe(id: Any, observeChange: ObserveAsyncChange) {
     subscriptionLock.withLock {
       subscriptionMap.getOrPut(id) { mutableSetOf() } += observeChange
@@ -51,7 +46,6 @@ class AsyncDataSubscriptionManager @Inject constructor(
   fun associateIds(childId: Any, parentId: Any) {
     // TODO(#3625): Find a way to determine parent-child ID associations during subscription time to
     //  avoid needing to store long-lived references to IDs prior to subscriptions.
-    println("@@@@@ associate $childId as dependent on $parentId")
     subscriptionLock.withLock {
       // First, verify that child isn't already subscribed.
       val isSubscribed = associatedIds[parentId]?.let { childId in it } ?: false
@@ -91,7 +85,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     val subscriptions = subscriptionLock.withLock { computeSubscriptionClosure(id) }
 
     // Notify all subscribers (both directly for this parent & all child IDs).
-    subscriptions.forEach { (affectedParentIds, observeChange) -> observeChange(affectedParentIds) }
+    subscriptions.forEach { observeChange -> observeChange() }
   }
 
   /**
@@ -159,25 +153,18 @@ class AsyncDataSubscriptionManager @Inject constructor(
    *
    * This should only be called within a lock to [subscriptionLock].
    */
-  private fun computeSubscriptionClosure(parentId: Any): Set<TrackableObserveAsyncChange> {
-    val subscriptions = mutableSetOf<CombinedId>()
-
-    // Represent direct subscriptions (which have no affected parent in this case).
-    subscriptions += CombinedId(parentId = parentId, childId = parentId)
-
-    // Add indirect subscriptions.
-    subscriptions += computeNotificationClosure(parentId)
-
-    // The 'group by' here ensures that children which can be reached multiple ways are only
-    // notified once, but that all of their affected parents are included in the notification.
-    // Finally, collect all changes into a single set (maintaining the general order of the
-    // subscriptions from earliest to latest).
-    return subscriptions.groupBy { it.childId }.mapValues { (childId, combinedIds) ->
-      val parentIds = combinedIds.map { it.parentId }.toSet()
-      subscriptionMap[childId]?.let { directSubs ->
-        directSubs.map { TrackableObserveAsyncChange(parentIds, it) }
-      } ?: listOf()
-    }.flatMap(Map.Entry<Any, List<TrackableObserveAsyncChange>>::value).toSet()
+  private fun computeSubscriptionClosure(parentId: Any): Set<ObserveAsyncChange> {
+    // Use a LinkedHashSet to retain order.
+    val subscriptions = LinkedHashSet<ObserveAsyncChange>()
+    subscriptionMap[parentId]?.let { directSubscriptions ->
+      subscriptions.addAll(directSubscriptions)
+    }
+    computeNotificationClosure(parentId).forEach { childId ->
+      subscriptionMap[childId]?.let { indirectSubscriptions ->
+        subscriptions.addAll(indirectSubscriptions)
+      }
+    }
+    return subscriptions
   }
 
   /**
@@ -187,17 +174,15 @@ class AsyncDataSubscriptionManager @Inject constructor(
    *
    * This should only be called within a lock to [subscriptionLock].
    */
-  private fun computeNotificationClosure(parentId: Any): Set<CombinedId> {
-    return mutableSetOf<CombinedId>().also { idsToNotify ->
+  private fun computeNotificationClosure(parentId: Any): Set<Any> {
+    return mutableSetOf<Any>().also { idsToNotify ->
       computeNotificationClosureAux(parentId, idsToNotify)
     }
   }
 
-  private fun computeNotificationClosureAux(
-    nextParentId: Any, idsToNotify: MutableSet<CombinedId>
-  ) {
+  private fun computeNotificationClosureAux(nextParentId: Any, idsToNotify: MutableSet<Any>) {
     associatedIds[nextParentId]?.let { childIds ->
-      idsToNotify += childIds.map { CombinedId(nextParentId, it) }
+      idsToNotify.addAll(childIds)
       childIds.forEach { childId -> computeNotificationClosureAux(childId, idsToNotify) }
     }
   }
@@ -226,10 +211,4 @@ class AsyncDataSubscriptionManager @Inject constructor(
   }
 
   private fun StringBuilder.appendSpacing(indent: Int): StringBuilder = append(" ".repeat(indent))
-
-  private data class CombinedId(val parentId: Any, val childId: Any)
-
-  private data class TrackableObserveAsyncChange(
-    val originParentIds: Set<Any>, val observeAsyncChange: ObserveAsyncChange
-  )
 }

@@ -789,7 +789,6 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun saveImageToInternalStorage(avatarImagePath: Uri, profileDir: File): String? {
-    @Suppress("DEPRECATION") // getBitmap was deprecated in SDK 29, but is needed for older SDKs.
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
     val fileName = avatarImagePath.pathSegments.last()
     val imageFile = File(profileDir, fileName)

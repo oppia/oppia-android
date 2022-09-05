@@ -13,7 +13,7 @@ import javax.inject.Inject
 class AppLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var prefSummaryValue: String
 
-  fun handleOnCreate(prefValue: String) {
+  fun handleOnCreate(prefKey: String, prefValue: String) {
     val binding: AppLanguageActivityBinding = DataBindingUtil.setContentView(
       activity,
       R.layout.app_language_activity,
@@ -27,7 +27,7 @@ class AppLanguageActivityPresenter @Inject constructor(private val activity: App
     }
     setLanguageSelected(prefValue)
     if (getAppLanguageFragment() == null) {
-      val appLanguageFragment = AppLanguageFragment.newInstance(prefValue)
+      val appLanguageFragment = AppLanguageFragment.newInstance(prefKey, prefValue)
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.app_language_fragment_container, appLanguageFragment).commitNow()
     }

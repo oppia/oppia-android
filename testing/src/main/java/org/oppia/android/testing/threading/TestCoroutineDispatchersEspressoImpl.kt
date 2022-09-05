@@ -3,7 +3,7 @@ package org.oppia.android.testing.threading
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import java.util.concurrent.atomic.AtomicBoolean
+import org.oppia.android.testing.threading.TestCoroutineDispatcher.TaskIdleListener
 import javax.inject.Inject
 
 /**
@@ -13,15 +13,17 @@ import javax.inject.Inject
  * to monitor background coroutines being run as part of the application.
  */
 class TestCoroutineDispatchersEspressoImpl @Inject constructor(
-  private val monitoredTaskCoordinators: Set<@JvmSuppressWildcards MonitoredTaskCoordinator>
+  @BackgroundTestDispatcher private val backgroundTestDispatcher: TestCoroutineDispatcher,
+  @BlockingTestDispatcher private val blockingTestDispatcher: TestCoroutineDispatcher
 ) : TestCoroutineDispatchers {
   private val idlingResource by lazy { TestCoroutineDispatcherIdlingResource() }
-  private val monitoredExecutorIdlenessTracker =
-    MonitoredExecutorIdlenessTracker(monitoredTaskCoordinators)
+  private val dispatcherIdlenessTracker = DispatcherIdlenessTracker(
+    arrayOf(backgroundTestDispatcher, blockingTestDispatcher)
+  )
 
   override fun registerIdlingResource() {
     IdlingRegistry.getInstance().register(idlingResource)
-    monitoredExecutorIdlenessTracker.initialize()
+    dispatcherIdlenessTracker.initialize()
   }
 
   override fun unregisterIdlingResource() {
@@ -44,10 +46,11 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
   }
 
   /** Returns whether any of the dispatchers have tasks that can be run now. */
-  private fun hasPendingCompletableTasks(): Boolean =
-    monitoredTaskCoordinators.any(MonitoredTaskCoordinator::hasPendingCompletableTasks)
+  private fun hasPendingCompletableTasks(): Boolean {
+    return backgroundTestDispatcher.hasPendingCompletableTasks() ||
+      blockingTestDispatcher.hasPendingCompletableTasks()
+  }
 
-  /** [IdlingResource] used to communicate task execution state to Espresso. */
   private inner class TestCoroutineDispatcherIdlingResource : IdlingResource {
     private var resourceCallback: IdlingResource.ResourceCallback? = null
 
@@ -63,36 +66,25 @@ class TestCoroutineDispatchersEspressoImpl @Inject constructor(
       resourceCallback = callback
     }
 
-    /** Notifies Espresso that the executors coordinated by this implementation are now idle. */
     fun setToIdle() {
       resourceCallback?.onTransitionToIdle()
     }
   }
 
-  /**
-   * Helper class to track idleness among a group of [MonitoredTaskCoordinator]s.
-   *
-   * 'Idleness' here is defined as all of the coordinators being idle per their own contracts for
-   * idleness.
-   */
-  private inner class MonitoredExecutorIdlenessTracker(
-    private val executors: Collection<MonitoredTaskCoordinator>
+  private inner class DispatcherIdlenessTracker(
+    private val dispatchers: Array<TestCoroutineDispatcher>
   ) {
-    private val dispatcherRunningStates = Array(executors.size) { AtomicBoolean() }
+    private val dispatcherRunningStates = Array(dispatchers.size) { false }
 
-    /**
-     * Registers idle listeners among all provided [executors] to begin tracking whether they're
-     * idle.
-     */
     fun initialize() {
-      executors.forEachIndexed { index, dispatcher ->
-        dispatcher.setTaskIdleListener(object : MonitoredTaskCoordinator.TaskIdleListener {
-          override fun onCoordinatorRunning() {
-            dispatcherRunningStates[index].set(true)
+      dispatchers.forEachIndexed { index, dispatcher ->
+        dispatcher.setTaskIdleListener(object : TaskIdleListener {
+          override fun onDispatcherRunning() {
+            dispatcherRunningStates[index] = true
           }
 
-          override fun onCoordinatorIdle() {
-            dispatcherRunningStates[index].set(false)
+          override fun onDispatcherIdle() {
+            dispatcherRunningStates[index] = false
             notifyIfDispatchersAreIdle()
           }
         })

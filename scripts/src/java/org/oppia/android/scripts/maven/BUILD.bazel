@@ -2,7 +2,7 @@
 Libraries corresponding to attributing third-party library copyright licenses in Oppia Android.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "generate_maven_dependencies_list_lib",

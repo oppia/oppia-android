@@ -92,7 +92,7 @@ class ExceptionsController @Inject constructor(
     this.cause?.let {
       exceptionLogBuilder.cause = it.toExceptionLog(timestampInMillis, exceptionType)
     }
-    this.stackTrace.let {
+    this.stackTrace?.let {
       exceptionLogBuilder.addAllStacktraceElement(
         it.map(this@ExceptionsController::convertStackTraceElementToLog)
       )
@@ -160,13 +160,13 @@ class ExceptionsController @Inject constructor(
   private fun getLeastRecentExceptionIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
       .filter { it.value.exceptionType == ExceptionType.NON_FATAL }
-      .minByOrNull { it.value.timestampInMillis }?.index
+      .minBy { it.value.timestampInMillis }?.index
       ?: getLeastRecentGeneralEventIndex(oppiaExceptionLogs)
 
   /** Returns the index of the least recent exception regardless of their exception type. */
   private fun getLeastRecentGeneralEventIndex(oppiaExceptionLogs: OppiaExceptionLogs): Int? =
     oppiaExceptionLogs.exceptionLogList.withIndex()
-      .minByOrNull { it.value.timestampInMillis }?.index
+      .minBy { it.value.timestampInMillis }?.index
 
   /** Returns a data provider for exception log reports that have been recorded for upload. */
   fun getExceptionLogStore(): DataProvider<OppiaExceptionLogs> {

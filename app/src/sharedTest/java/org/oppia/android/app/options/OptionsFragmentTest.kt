@@ -486,6 +486,10 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
+            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
+            APP_LANGUAGE
+          ),
+          hasExtra(
             AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
@@ -514,6 +518,10 @@ class OptionsFragmentTest {
       intended(
         allOf(
           hasExtra(
+            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
+            APP_LANGUAGE
+          ),
+          hasExtra(
             AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
             "English"
           ),
@@ -541,6 +549,10 @@ class OptionsFragmentTest {
       ).perform(click())
       intended(
         allOf(
+          hasExtra(
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
+            AUDIO_LANGUAGE
+          ),
           hasExtra(
             AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
             "English"
@@ -572,6 +584,10 @@ class OptionsFragmentTest {
           hasExtra(
             AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
             "English"
+          ),
+          hasExtra(
+            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
+            AUDIO_LANGUAGE
           ),
           hasComponent(AudioLanguageActivity::class.java.name)
         )

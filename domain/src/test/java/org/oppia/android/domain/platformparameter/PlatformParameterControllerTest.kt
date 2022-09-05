@@ -30,8 +30,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.LocaleProdModule
 
 private const val STRING_PLATFORM_PARAMETER_NAME = "string_platform_parameter_name"
 private const val STRING_PLATFORM_PARAMETER_VALUE = "string_platform_parameter_value"
@@ -222,8 +220,7 @@ class PlatformParameterControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

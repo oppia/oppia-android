@@ -26,7 +26,7 @@ class ClickableAreasImage(
   private val bindingInterface: ViewBindingShim
 ) {
   init {
-    imageView.setOnTouchListener { _, motionEvent ->
+    imageView.setOnTouchListener { view, motionEvent ->
       if (motionEvent.action == MotionEvent.ACTION_DOWN) {
         onPhotoTap(motionEvent.x, motionEvent.y)
       }
