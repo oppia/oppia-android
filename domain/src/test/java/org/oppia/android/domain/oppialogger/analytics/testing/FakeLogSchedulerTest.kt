@@ -15,6 +15,7 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,6 +38,12 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 
 /** Tests for [FakeLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -145,6 +152,22 @@ class FakeLogSchedulerTest {
     fun bindMetricLogScheduler(fakeLogScheduler: FakeLogScheduler): MetricLogScheduler
   }
 
+  @Module
+  class TestLogStorageModule {
+
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -152,7 +175,8 @@ class FakeLogSchedulerTest {
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
-      OppiaClockModule::class
+      OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
