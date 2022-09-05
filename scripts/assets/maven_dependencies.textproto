@@ -568,6 +568,17 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "com.google.firebase:firebase-common:19.3.0"
+  artifact_version: "19.3.0"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "com.google.firebase:firebase-crashlytics:17.1.1"
   artifact_version: "17.1.1"
   license {

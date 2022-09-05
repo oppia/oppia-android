@@ -168,10 +168,9 @@ class StoryFragmentPresenter @Inject constructor(
               resourceBucketName,
               entityType,
               storyItemViewModel.storyId,
-              imageCenterAlign = true
-            ).parseOppiaHtml(
-              storyItemViewModel.description, binding.chapterSummary
-            )
+              imageCenterAlign = true,
+              displayLocale = resourceHandler.getDisplayLocale()
+            ).parseOppiaHtml(storyItemViewModel.description, binding.chapterSummary)
           if (storyItemViewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {

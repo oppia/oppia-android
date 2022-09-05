@@ -32,15 +32,6 @@ class TopicInfoFragmentPresenter @Inject constructor(
   private lateinit var binding: TopicInfoFragmentBinding
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
-  private val htmlParser: HtmlParser by lazy {
-    htmlParserFactory
-      .create(
-        resourceBucketName,
-        /* entityType= */ "topic",
-        topicId,
-        /* imageCenterAlign= */ true
-      )
-  }
 
   fun handleCreateView(
     inflater: LayoutInflater,

@@ -71,7 +71,6 @@ android {
 // generate a test application component). Note that this must exist in tandem with the sourceSet
 // exclusion in order to properly work.
 def filesToExclude = [
-    '**/*DisplayLocaleImplTest*.kt',
     '**/*LanguageConfigRetrieverTest*.kt',
     '**/*LocaleControllerTest*.kt',
     '**/*TranslationControllerTest*.kt'

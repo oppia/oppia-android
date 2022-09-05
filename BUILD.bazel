@@ -70,7 +70,6 @@ package_group(
     ],
 )
 
-# TODO: Add docs.
 [
     define_oppia_apk_binary_flavor(flavor = flavor)
     for flavor in AVAILABLE_APK_FLAVORS

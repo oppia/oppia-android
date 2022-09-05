@@ -120,6 +120,7 @@ kt_android_library(
     ],
     visibility = [
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/application:__pkg__",
     ],
     deps = [
         ":app_language_locale_handler",
@@ -133,6 +134,7 @@ kt_android_library(
     ],
     visibility = [
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
+        "//app/src/main/java/org/oppia/android/app/application:__pkg__",
     ],
     deps = [
         ":app_language_application_injector",

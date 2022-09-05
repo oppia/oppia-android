@@ -31,7 +31,6 @@
       android:layout_height="16dp"
       android:layout_marginStart="16dp"
       android:layout_marginEnd="8dp"
-      android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
       app:srcCompat="@{viewModel.chapterPlayState == ChapterPlayState.COMPLETED?@drawable/ic_check_24dp:@drawable/ic_pending_24dp}"
       android:visibility="@{(viewModel.chapterPlayState == ChapterPlayState.COMPLETED || viewModel.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED)?View.VISIBLE : View.INVISIBLE}" />
 
@@ -57,6 +56,7 @@
       android:layout_marginBottom="28dp"
       android:fontFamily="sans-serif"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
+      android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
       android:text="@{viewModel.chapterTitle}"
       android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary_text : @color/oppia_primary_text_30}"
       android:textSize="14sp" />

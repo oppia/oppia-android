@@ -23,6 +23,7 @@ import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -35,7 +36,8 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController,
-  private val topicLessonViewModel: TopicLessonViewModel
+  private val topicLessonViewModel: TopicLessonViewModel,
+  private val accessibilityService: AccessibilityService
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -178,28 +180,44 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     )
     binding.chapterRecyclerView.adapter = createChapterRecyclerViewAdapter()
 
+    binding.expandListIcon.setOnClickListener {
+      expandStoryList(position)
+    }
+
     binding.root.setOnClickListener {
-      val previousIndex: Int? = currentExpandedChapterListIndex
-      currentExpandedChapterListIndex =
-        if (currentExpandedChapterListIndex != null &&
-          currentExpandedChapterListIndex == position
-        ) {
-          null
-        } else {
-          position
-        }
-      expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
-      if (previousIndex != null && currentExpandedChapterListIndex != null &&
-        previousIndex == currentExpandedChapterListIndex
+      expandStoryList(position)
+    }
+
+    if (accessibilityService.isScreenReaderEnabled()) {
+      binding.root.isClickable = false
+      binding.expandListIcon.isClickable = true
+    } else {
+      binding.root.isClickable = true
+      binding.expandListIcon.isClickable = false
+    }
+  }
+
+  private fun expandStoryList(position: Int) {
+    val previousIndex: Int? = currentExpandedChapterListIndex
+    currentExpandedChapterListIndex =
+      if (currentExpandedChapterListIndex != null &&
+        currentExpandedChapterListIndex == position
       ) {
-        bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+        null
       } else {
-        previousIndex?.let {
-          bindingAdapter.notifyItemChanged(previousIndex)
-        }
-        currentExpandedChapterListIndex?.let {
-          bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
-        }
+        position
+      }
+    expandedChapterListIndexListener.onExpandListIconClicked(currentExpandedChapterListIndex)
+    if (previousIndex != null && currentExpandedChapterListIndex != null &&
+      previousIndex == currentExpandedChapterListIndex
+    ) {
+      bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
+    } else {
+      previousIndex?.let {
+        bindingAdapter.notifyItemChanged(previousIndex)
+      }
+      currentExpandedChapterListIndex?.let {
+        bindingAdapter.notifyItemChanged(currentExpandedChapterListIndex!!)
       }
     }
   }

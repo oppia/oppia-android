@@ -10,6 +10,7 @@ import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -33,6 +34,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   private val translationController: TranslationController,
   @DefaultResourceBucketName private val resourceBucketName: String,
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger
 ) {
 
@@ -131,12 +133,19 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   private fun bindChapterDescription(description: String) {
-    binding.resumeLessonChapterDescriptionTextView.text = htmlParserFactory.create(
+    val chapterDescription = htmlParserFactory.create(
       resourceBucketName,
       resumeLessonViewModel.entityType,
       explorationId,
-      imageCenterAlign = true
+      imageCenterAlign = true,
+      displayLocale = appLanguageResourceHandler.getDisplayLocale()
     ).parseOppiaHtml(description, binding.resumeLessonChapterDescriptionTextView)
+    if (chapterDescription.isNotBlank()) {
+      binding.resumeLessonChapterDescriptionTextView.visibility = View.VISIBLE
+      binding.resumeLessonChapterDescriptionTextView.text = chapterDescription
+    } else {
+      binding.resumeLessonChapterDescriptionTextView.visibility = View.GONE
+    }
   }
 
   private fun getResumeLessonViewModel(): ResumeLessonViewModel {

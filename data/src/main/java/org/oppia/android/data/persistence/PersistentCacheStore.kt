@@ -313,8 +313,6 @@ class PersistentCacheStore<T : MessageLite> private constructor(
 
   private data class CachePayload<T>(val state: CacheState, val value: T)
 
-  // TODO(#59): Use @ApplicationContext instead of Context once package dependencies allow for
-  //  cross-module circular ependencies. Currently, the data module cannot depend on the app module.
   /**
    * An injectable factory for [PersistentCacheStore]s. The stores themselves should be retrievable
    * from central controllers since they can't be placed directly in the Dagger graph.
