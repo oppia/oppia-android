@@ -118,7 +118,7 @@ class OppiaShadowActivityManagerTest {
     oppiaShadowActivityManager.getMemoryInfo(outInfo)
     assertThat(outInfo.totalMem).isEqualTo(2)
     assertThat(outInfo.availMem).isEqualTo(1)
-    assertThat(outInfo.lowMemory).isEqualTo(true)
+    assertThat(outInfo.lowMemory).isTrue()
     assertThat(outInfo.threshold).isEqualTo(10)
   }
 

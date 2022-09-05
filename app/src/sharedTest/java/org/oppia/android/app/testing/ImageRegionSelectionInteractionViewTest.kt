@@ -157,7 +157,11 @@ class ImageRegionSelectionInteractionViewTest {
           capture(regionClickedEvent)
         )
       assertThat(regionClickedEvent.value)
-        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+        .isEqualTo(
+          NamedRegionClickedEvent(
+            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+          )
+        )
     }
   }
 
@@ -195,7 +199,11 @@ class ImageRegionSelectionInteractionViewTest {
         )
       )
       assertThat(regionClickedEvent.value)
-        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+        .isEqualTo(
+          NamedRegionClickedEvent(
+            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+          )
+        )
     }
   }
 
@@ -255,7 +263,11 @@ class ImageRegionSelectionInteractionViewTest {
         )
       )
       assertThat(regionClickedEvent.value)
-        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+        .isEqualTo(
+          NamedRegionClickedEvent(
+            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+          )
+        )
     }
   }
 
@@ -280,7 +292,11 @@ class ImageRegionSelectionInteractionViewTest {
           capture(regionClickedEvent)
         )
       assertThat(regionClickedEvent.value)
-        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+        .isEqualTo(
+          NamedRegionClickedEvent(
+            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+          )
+        )
     }
   }
 
@@ -322,7 +338,11 @@ class ImageRegionSelectionInteractionViewTest {
           capture(regionClickedEvent)
         )
       assertThat(regionClickedEvent.value)
-        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 3"))
+        .isEqualTo(
+          NamedRegionClickedEvent(
+            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+          )
+        )
     }
   }
 
@@ -361,7 +381,11 @@ class ImageRegionSelectionInteractionViewTest {
         )
       )
       assertThat(regionClickedEvent.value)
-        .isEqualTo(NamedRegionClickedEvent(regionLabel = "Region 2"))
+        .isEqualTo(
+          NamedRegionClickedEvent(
+            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+          )
+        )
     }
   }
 

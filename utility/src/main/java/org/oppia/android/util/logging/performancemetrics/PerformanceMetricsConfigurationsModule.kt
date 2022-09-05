@@ -9,7 +9,7 @@ import javax.inject.Qualifier
 private const val ONE_GIGABYTE = 1024L * 1024L * 1024L
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
 private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
-private const val THIRTY_TWO_GIGABYTES = ONE_GIGABYTE * 36L
+private const val THIRTY_TWO_GIGABYTES = ONE_GIGABYTE * 32L
 private const val SIXTY_FOUR_GIGABYTES = ONE_GIGABYTE * 64L
 
 /** Corresponds to a long value that denotes the non-inclusive upper bound of [StorageTier.LOW_STORAGE]. */

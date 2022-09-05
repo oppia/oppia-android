@@ -32,7 +32,7 @@ kt_android_library(
     srcs = [
         "PerformanceMetricsAssessorModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":performance_metrics_assessor_impl",
@@ -60,7 +60,7 @@ kt_android_library(
     srcs = [
         "PerformanceMetricsConfigurationsModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",

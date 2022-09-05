@@ -39,6 +39,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -117,6 +118,9 @@ class FAQSingleActivityTest {
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @get:Rule
   var activityTestRule: ActivityTestRule<FAQSingleActivity> = ActivityTestRule(
     FAQSingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
@@ -177,7 +181,9 @@ class FAQSingleActivityTest {
       resourceBucketName,
       entityType = "",
       entityId = "",
-      imageCenterAlign = false
+      imageCenterAlign = false,
+      customOppiaTagActionListener = null,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     val htmlResult: Spannable = htmlParser.parseOppiaHtml(
       getResources().getString(R.string.faq_answer_1),

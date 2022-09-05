@@ -24,7 +24,9 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.AndroidLocaleFactory
 import org.oppia.android.util.locale.AndroidLocaleProfile
+import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.OppiaLocale.ContentLocale

@@ -150,9 +150,6 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Global domain module code ownership.
 /domain/**/*.kt @BenHenning
 
-# Domain test resources.
-/domain/src/test/res/values/strings.xml @BenHenning
-
 # Questions support.
 /domain/src/*/java/org/oppia/android/domain/question/ @BenHenning
 
@@ -180,6 +177,9 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 
 # Global utility module code ownership.
 /utility/**/*.kt @BenHenning
+
+# Utility test resources.
+/utility/src/test/res/values/strings.xml @BenHenning
 
 # Accessibility utilities.
 /utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914

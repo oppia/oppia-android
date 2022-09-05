@@ -11,8 +11,13 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.RouteToFAQSingleListener
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
+import org.oppia.android.app.policies.PoliciesActivity
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -23,17 +28,21 @@ const val THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY =
   "HelpActivity.third_party_dependency_index"
 const val LICENSE_INDEX_SAVED_KEY = "HelpActivity.license_index"
 const val FAQ_LIST_FRAGMENT_TAG = "FAQListFragment.tag"
+const val POLICIES_ARGUMENT_PROTO = "PoliciesActivity.policy_page"
+const val POLICIES_FRAGMENT_TAG = "PoliciesFragment.tag"
 const val THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_TAG = "ThirdPartyDependencyListFragment.tag"
 const val LICENSE_LIST_FRAGMENT_TAG = "LicenseListFragment.tag"
 const val LICENSE_TEXT_FRAGMENT_TAG = "LicenseTextFragment.tag"
 
-/** The help page activity for FAQs and third-party dependencies. */
+/** The help page activity for FAQs, third-party dependencies and policies page. */
 class HelpActivity :
   InjectableAppCompatActivity(),
   RouteToFAQListListener,
   RouteToFAQSingleListener,
+  RouteToPoliciesListener,
   RouteToThirdPartyDependencyListListener,
   LoadFaqListFragmentListener,
+  LoadPoliciesFragmentListener,
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
   LoadLicenseTextViewerFragmentListener {
@@ -61,12 +70,17 @@ class HelpActivity :
     val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
       ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
+    val policiesActivityParams = savedInstanceState?.getProto(
+      POLICIES_ARGUMENT_PROTO,
+      PoliciesActivityParams.getDefaultInstance()
+    )
     helpActivityPresenter.handleOnCreate(
       selectedHelpOptionsTitle,
       isFromNavigationDrawer,
       selectedFragment,
       selectedDependencyIndex,
-      selectedLicenseIndex
+      selectedLicenseIndex,
+      policiesActivityParams
     )
     title = resourceHandler.getStringInLocale(R.string.menu_help)
   }
@@ -123,5 +137,13 @@ class HelpActivity :
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
   override fun onRouteToFAQSingle(question: String, answer: String) {
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
+  }
+
+  override fun onRouteToPolicies(policyPage: PolicyPage) {
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
+  }
+
+  override fun loadPoliciesFragment(policyPage: PolicyPage) {
+    helpActivityPresenter.handleLoadPoliciesFragment(policyPage)
   }
 }

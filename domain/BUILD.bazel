@@ -139,18 +139,6 @@ kt_android_library(
     ],
 )
 
-android_library(
-    name = "test_resources",
-    testonly = True,
-    custom_package = "org.oppia.android.domain",
-    manifest = ":test_manifest",
-    resource_files = glob(["src/test/res/**"]),
-    visibility = [
-        ":domain_testing_visibility",
-        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
-    ],
-)
-
 # TODO(#2143): Move InteractionObjectTestBuilder to a testing package outside the test folder.
 kt_android_library(
     name = "interaction_object_test_builder",
@@ -195,12 +183,12 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+    "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/testing:fake_log_scheduler",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:startup_listener",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
     "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
-    "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/logscheduler:fake_log_scheduler",
     "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",

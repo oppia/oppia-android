@@ -82,7 +82,7 @@ kt_android_library(
     srcs = [
         "ActivityLifecycleObserverModule.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":dagger",
         ":activity_lifecycle_observer",
