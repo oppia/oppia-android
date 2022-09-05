@@ -5,55 +5,72 @@ package model;
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
-// Superclass for all the SpotlightViewStates
+// Spotlights are visual elements that are shown during the initial user onboarding experience of
+// the app that highlight certain UI elements and show how/what they should be used for.
 message Spotlight {
   oneof feature {
-    // feature for onboarding screen next button
+    // Corresponds to the onboarding screen's next button.
     SpotlightViewState onboarding_next_button = 1;
 
-    // feature for topic fragment lessons tab
+    // Corresponds to the topic fragment's lessons tab.
     SpotlightViewState topic_lesson_tab = 2;
 
-    // feature for topic fragment revision tab
+    // Corresponds to the topic fragment's revision tab.
     SpotlightViewState topic_revision_tab = 3;
 
-    // feature for first lesson under lessons tab
+    // Corresponds to the first lesson under lessons tab.
     SpotlightViewState first_chapter = 4;
 
-    // feature for promoted stories
+    // Corresponds to the promoted stories.
     SpotlightViewState promoted_stories = 5;
 
-    // feature for back button in exploration screen
+    // Corresponds to the back button in exploration screen.
     SpotlightViewState lessons_back_button = 6;
 
-    // feature for voice over icon in exploration screen
+    // Corresponds to the voice-over icon in exploration screen.
     SpotlightViewState voiceover_play_icon = 7;
 
-    // feature for voice over language options in audio player
+    // Corresponds to the voice-over language option in audio player.
     SpotlightViewState voiceover_language_icon = 8;
   }
 }
 
-// Possible view States for a spotlight
+// Possible view states for a spotlight.
 enum SpotlightViewState {
+  // This is the default state for a spotlight in the beginning. In cases where the app won't be
+  // able to load a spotlight state for a feature, this state shall be reported.
   SPOTLIGHT_VIEW_STATE_UNSPECIFIED = 0;
+
+  // This corresponds to a state when the spotlight for a feature has been seen by the user.
   SPOTLIGHT_SEEN = 1;
+
+  // This corresponds to a state when the spotlight for a feature has been not seen by the user.
   SPOTLIGHT_NOT_SEEN = 2;
 }
 
-// Top level proto for storing SpotlightsViewStates
+// Top level proto that will be used to store SpotlightsViewStates per user profile.
 message SpotlightStateDatabase {
+  // Corresponds to the onboarding screen's next button.
   SpotlightViewState onboarding_next_button = 1;
+
+  // Corresponds to the topic fragment's lessons tab.
   SpotlightViewState topic_lesson_tab = 2;
+
+  // Corresponds to the topic fragment's revision tab.
   SpotlightViewState topic_revision_tab = 3;
+
+  // Corresponds to the first lesson under lessons tab.
   SpotlightViewState first_chapter = 4;
+
+  // Corresponds to the promoted stories.
   SpotlightViewState promoted_stories = 5;
+
+  // Corresponds to the back button in exploration screen.
   SpotlightViewState lessons_back_button = 6;
+
+  // Corresponds to the voice-over icon in exploration screen.
   SpotlightViewState voiceover_play_icon = 7;
+
+  // Corresponds to the voice-over language option in audio player.
   SpotlightViewState voiceover_language_icon = 8;
 }
-
-
-
-
-
