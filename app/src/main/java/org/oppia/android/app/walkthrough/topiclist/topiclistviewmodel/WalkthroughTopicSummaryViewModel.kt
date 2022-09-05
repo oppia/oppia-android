@@ -4,18 +4,27 @@ import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
+import org.oppia.android.domain.translation.TranslationController
 
 /** [ViewModel] corresponding to topic summaries in [WalkthroughTopicListFragment] RecyclerView.. */
 class WalkthroughTopicSummaryViewModel(
   val topicEntityType: String,
-  val topicSummary: TopicSummary,
+  ephemeralTopicSummary: EphemeralTopicSummary,
   private val topicSummaryClickListener: TopicSummaryClickListener,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  translationController: TranslationController
 ) : WalkthroughTopicItemViewModel() {
-  val name: String = topicSummary.name
+  val topicSummary = ephemeralTopicSummary.topicSummary
+
+  val name: String by lazy {
+    translationController.extractString(
+      topicSummary.title, ephemeralTopicSummary.writtenTranslationContext
+    )
+  }
 
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor()

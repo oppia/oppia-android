@@ -3,18 +3,26 @@ package org.oppia.android.app.topic.lessons
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import org.oppia.android.R
-import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.translation.TranslationController
 
 private const val DEFAULT_STORY_PERCENTAGE = 0
 
 /** [ViewModel] for displaying a story summary. */
 class StorySummaryViewModel(
-  val storySummary: StorySummary,
+  private val ephemeralStorySummary: EphemeralStorySummary,
   private val storySummarySelector: StorySummarySelector,
   private val chapterSummarySelector: ChapterSummarySelector,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : TopicLessonsItemViewModel() {
+  val storySummary = ephemeralStorySummary.storySummary
+  val storyTitle by lazy {
+    translationController.extractString(
+      storySummary.storyTitle, ephemeralStorySummary.writtenTranslationContext
+    )
+  }
   val storyPercentage: ObservableField<Int> = ObservableField(DEFAULT_STORY_PERCENTAGE)
   val storyProgressPercentageText: ObservableField<String> =
     ObservableField(computeStoryProgressPercentageText(DEFAULT_STORY_PERCENTAGE))
@@ -39,7 +47,7 @@ class StorySummaryViewModel(
         R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
       )
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.chapter_count_with_story_name, chapterCountText, storySummary.storyName
+      R.string.chapter_count_with_story_name, chapterCountText, storyTitle
     )
   }
 
@@ -56,11 +64,14 @@ class StorySummaryViewModel(
   }
 
   private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> {
-    return storySummary.chapterList.mapIndexed { index, chapterSummary ->
+    return ephemeralStorySummary.chaptersList.mapIndexed { index, ephemeralChapterSummary ->
       ChapterSummaryViewModel(
-        chapterPlayState = chapterSummary.chapterPlayState,
-        explorationId = chapterSummary.explorationId,
-        chapterName = chapterSummary.name,
+        chapterPlayState = ephemeralChapterSummary.chapterSummary.chapterPlayState,
+        explorationId = ephemeralChapterSummary.chapterSummary.explorationId,
+        chapterTitle = translationController.extractString(
+          ephemeralChapterSummary.chapterSummary.title,
+          ephemeralChapterSummary.writtenTranslationContext
+        ),
         storyId = storySummary.storyId,
         index = index,
         chapterSummarySelector = chapterSummarySelector,

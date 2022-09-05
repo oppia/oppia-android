@@ -6,17 +6,26 @@ import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import java.util.Objects
+import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.domain.translation.TranslationController
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(
   private val activity: AppCompatActivity,
-  val topicSummary: TopicSummary,
+  ephemeralTopicSummary: EphemeralTopicSummary,
   val entityType: String,
   private val topicSummaryClickListener: TopicSummaryClickListener,
   private val position: Int,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  translationController: TranslationController
 ) : HomeItemViewModel() {
-  val name: String = topicSummary.name
+  val topicSummary = ephemeralTopicSummary.topicSummary
+
+  val title: String by lazy {
+    translationController.extractString(
+      topicSummary.title, ephemeralTopicSummary.writtenTranslationContext
+    )
+  }
 
   private val outerMargin by lazy {
     activity.resources.getDimensionPixelSize(R.dimen.home_outer_margin)

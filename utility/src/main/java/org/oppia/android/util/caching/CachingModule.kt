@@ -17,11 +17,12 @@ class CachingModule {
   @TopicListToCache
   fun provideTopicListToCache() = listOf(FRACTIONS_TOPIC, RATIOS_TOPIC)
 
+  // TODO: Revert.
   @Provides
   @LoadLessonProtosFromAssets
-  fun provideLoadLessonProtosFromAssets(): Boolean = false
+  fun provideLoadLessonProtosFromAssets(): Boolean = true
 
   @Provides
   @LoadImagesFromAssets
-  fun provideLoadImagesFromAssets(): Boolean = false
+  fun provideLoadImagesFromAssets(): Boolean = true
 }

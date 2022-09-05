@@ -20,6 +20,8 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [WalkthroughFinalFragment]. */
 @FragmentScope
@@ -28,7 +30,8 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : WalkthroughEndPageChanger {
   private lateinit var binding: WalkthroughFinalFragmentBinding
   private lateinit var walkthroughFinalViewModel: WalkthroughFinalViewModel
@@ -61,13 +64,14 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopic() }
+  private val topicLiveData: LiveData<EphemeralTopic> by lazy { getTopic() }
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(
       activity,
-      Observer { result ->
-        topicName = result.name
+      { result ->
+        topicName =
+          translationController.extractString(result.topic.title, result.writtenTranslationContext)
         setTopicName()
       }
     )
@@ -84,22 +88,22 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
     }
   }
 
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+  private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(profileId, topicId = topicId).toLiveData()
   }
 
-  private fun getTopic(): LiveData<Topic> {
+  private fun getTopic(): LiveData<EphemeralTopic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    return when (topic) {
+  private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("WalkthroughFinalFragment", "Failed to retrieve topic", topic.error)
-        Topic.getDefaultInstance()
+        oppiaLogger.e("WalkthroughFinalFragment", "Failed to retrieve topic", ephemeralResult.error)
+        EphemeralTopic.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Topic.getDefaultInstance()
-      is AsyncResult.Success -> topic.value
+      is AsyncResult.Pending -> EphemeralTopic.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 

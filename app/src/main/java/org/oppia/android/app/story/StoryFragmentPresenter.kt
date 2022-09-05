@@ -39,6 +39,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(
@@ -169,7 +170,7 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.storyId,
               imageCenterAlign = true
             ).parseOppiaHtml(
-              storyItemViewModel.summary, binding.chapterSummary
+              storyItemViewModel.description, binding.chapterSummary
             )
           if (storyItemViewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
@@ -177,7 +178,7 @@ class StoryFragmentPresenter @Inject constructor(
             val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
               R.string.chapter_prerequisite_title_label,
               storyItemViewModel.index.toString(),
-              storyItemViewModel.missingPrerequisiteChapter.name
+              storyItemViewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
             val clickableSpan = object : ClickableSpan() {

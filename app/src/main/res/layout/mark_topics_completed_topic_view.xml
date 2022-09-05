@@ -31,7 +31,7 @@
       android:minWidth="48dp"
       android:minHeight="48dp"
       android:paddingBottom="26dp"
-      android:text="@{viewModel.topic.name}"
+      android:text="@{viewModel.topicTitle}"
       android:textAlignment="viewStart"
       android:textColor="@color/oppia_primary_text"
       android:textSize="16sp"

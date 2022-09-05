@@ -11,6 +11,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.domain.translation.TranslationController
 
 /**
  * [ViewModel] for [MarkChaptersCompletedFragment]. It populates the recyclerview with a list of
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @FragmentScope
 class MarkChaptersCompletedViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val modifyLessonProgressController: ModifyLessonProgressController
+  private val modifyLessonProgressController: ModifyLessonProgressController,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
 
   private lateinit var profileId: ProfileId
@@ -34,20 +37,22 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     Transformations.map(storyMapLiveData, ::processStoryMap)
   }
 
-  private val storyMapLiveData: LiveData<Map<String, List<StorySummary>>> by lazy { getStoryMap() }
+  private val storyMapLiveData: LiveData<Map<String, List<EphemeralStorySummary>>> by lazy {
+    getStoryMap()
+  }
 
-  private fun getStoryMap(): LiveData<Map<String, List<StorySummary>>> {
+  private fun getStoryMap(): LiveData<Map<String, List<EphemeralStorySummary>>> {
     return Transformations.map(storyMapResultLiveData, ::processStoryMapResult)
   }
 
   private val storyMapResultLiveData:
-    LiveData<AsyncResult<Map<String, List<StorySummary>>>> by lazy {
+    LiveData<AsyncResult<Map<String, List<EphemeralStorySummary>>>> by lazy {
       modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
     }
 
   private fun processStoryMapResult(
-    storyMap: AsyncResult<Map<String, List<StorySummary>>>
-  ): Map<String, List<StorySummary>> {
+    storyMap: AsyncResult<Map<String, List<EphemeralStorySummary>>>
+  ): Map<String, List<EphemeralStorySummary>> {
     return when (storyMap) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
@@ -61,24 +66,30 @@ class MarkChaptersCompletedViewModel @Inject constructor(
   }
 
   private fun processStoryMap(
-    storyMap: Map<String, List<StorySummary>>
+    storyMap: Map<String, List<EphemeralStorySummary>>
   ): List<MarkChaptersCompletedItemViewModel> {
     itemList.clear()
     var nextStoryIndex: Int
     var chapterIndex = 0
     storyMap.forEach { storyMapItem ->
-      storyMapItem.value.forEach { storySummary ->
-        itemList.add(StorySummaryViewModel(storyName = storySummary.storyName))
+      storyMapItem.value.forEach { ephemeralStorySummary ->
+        val storySummary = ephemeralStorySummary.storySummary
+        val storyTitle =
+          translationController.extractString(
+            storySummary.storyTitle, ephemeralStorySummary.writtenTranslationContext
+          )
+        itemList.add(StorySummaryViewModel(storyTitle))
         chapterIndex++
         nextStoryIndex = chapterIndex + storySummary.chapterCount
-        storySummary.chapterList.forEach { chapterSummary ->
+        ephemeralStorySummary.chaptersList.forEach { ephemeralChapterSummary ->
           itemList.add(
             ChapterSummaryViewModel(
               chapterIndex = chapterIndex,
-              chapterSummary = chapterSummary,
+              ephemeralChapterSummary = ephemeralChapterSummary,
               nextStoryIndex = nextStoryIndex,
               storyId = storySummary.storyId,
-              topicId = storyMapItem.key
+              topicId = storyMapItem.key,
+              translationController
             )
           )
           chapterIndex++

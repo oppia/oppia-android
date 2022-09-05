@@ -14,6 +14,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralTopic
+import org.oppia.android.domain.translation.TranslationController
 
 /** [ObservableViewModel] for [TopicRevisionFragment]. */
 @FragmentScope
@@ -21,6 +23,7 @@ class TopicRevisionViewModel @Inject constructor(
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
   val fragment: Fragment,
+  private val translationController: TranslationController,
   @TopicHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
@@ -29,38 +32,40 @@ class TopicRevisionViewModel @Inject constructor(
   private val revisionSubtopicSelector: RevisionSubtopicSelector =
     fragment as RevisionSubtopicSelector
 
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+  private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(profileId, topicId).toLiveData()
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+  private val topicLiveData: LiveData<EphemeralTopic> by lazy { getTopicList() }
 
   val subtopicLiveData: LiveData<List<TopicRevisionItemViewModel>> by lazy {
     Transformations.map(topicLiveData, ::processTopic)
   }
 
-  private fun processTopic(topic: Topic): List<TopicRevisionItemViewModel> {
+  private fun processTopic(ephemeralTopic: EphemeralTopic): List<TopicRevisionItemViewModel> {
     subtopicList.clear()
     subtopicList.addAll(
-      topic.subtopicList.map {
-        TopicRevisionItemViewModel(topicId, it, entityType, revisionSubtopicSelector)
+      ephemeralTopic.subtopicsList.map {
+        TopicRevisionItemViewModel(
+          topicId, it, entityType, revisionSubtopicSelector, translationController
+        )
       }
     )
     return subtopicList
   }
 
-  private fun getTopicList(): LiveData<Topic> {
+  private fun getTopicList(): LiveData<EphemeralTopic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    return when (topic) {
+  private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("TopicRevisionFragment", "Failed to retrieve topic", topic.error)
-        Topic.getDefaultInstance()
+        oppiaLogger.e("TopicRevisionFragment", "Failed to retrieve topic", ephemeralResult.error)
+        EphemeralTopic.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Topic.getDefaultInstance()
-      is AsyncResult.Success -> topic.value
+      is AsyncResult.Pending -> EphemeralTopic.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 

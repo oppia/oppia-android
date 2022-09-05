@@ -15,11 +15,15 @@ message Topic {
   // The ID corresponding to the topic.
   string topic_id = 1;
 
-  // The topic's name.
-  string name = 2;
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this topic that has a
+  // corresponding translation.
+  map<string, TranslationMapping> written_translations = 9;
+
+  // The topic's title.
+  SubtitledHtml title = 10;
 
   // A brief description of the topic.
-  string description = 3;
+  SubtitledHtml description = 11;
 
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
@@ -35,6 +39,27 @@ message Topic {
 
   // Specifics about whether this topic is playable.
   TopicPlayAvailability topic_play_availability = 8;
+
+  // The old name of the topic (as a string).
+  reserved 2;
+
+  // The old description of the topic (as a string).
+  reserved 3;
+}
+
+// Corresponds to a topic that is currently being viewed.
+message EphemeralTopic {
+  // The topic to view.
+  Topic topic = 1;
+
+  // The translation context that should be used for this topic.
+  WrittenTranslationContext written_translation_context = 2;
+
+  // The EphemeralStorySummarys corresponding to the stories contained within this topic.
+  repeated EphemeralStorySummary stories = 3;
+
+  // The EphemeralSubtopics corresponding to the subtopics contained within this topic.
+  repeated EphemeralSubtopic subtopics = 4;
 }
 
 // Corresponds to details around whether a particular topic is playable.
@@ -65,11 +90,11 @@ message ConceptCard {
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that
   // has corresponding recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceover = 5;
+  map<string, VoiceoverMapping> recorded_voiceovers = 5;
 
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card
-  // that has corresponding translations.
-  map<string, TranslationMapping> written_translation = 6;
+  // that has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 6;
 }
 
 // Corresponds to a concept card that is currently being viewed.
@@ -86,14 +111,33 @@ message StorySummary {
   // The ID of the story.
   string story_id = 1;
 
-  // The name of the story.
-  string story_name = 2;
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this story that has a
+  // corresponding translation.
+  map<string, TranslationMapping> written_translations = 5;
+
+  // The title of the story.
+  SubtitledHtml story_title = 6;
 
   // The thumbnail corresponding to this story.
   LessonThumbnail story_thumbnail = 3;
 
   // A list of summarized chapters/explorations that can be played within the story.
   repeated ChapterSummary chapter = 4;
+
+  // The old name of the story (as a string).
+  reserved 2;
+}
+
+// Corresponds to a story summary that is currently being viewed.
+message EphemeralStorySummary {
+  // The story summary to view.
+  StorySummary story_summary = 1;
+
+  // The translation context that should be used for this story summary.
+  WrittenTranslationContext written_translation_context = 2;
+
+  // The EphemeralChapterSummarys corresponding to the story summary.
+  repeated EphemeralChapterSummary chapters = 3;
 }
 
 // A summary of a chapter/exploration that can be played.
@@ -101,11 +145,15 @@ message ChapterSummary {
   // The exploration ID associated with this chapter.
   string exploration_id = 1;
 
-  // The chapter's name (which is the same as the exploration's title).
-  string name = 2;
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this chapter that has
+  // a corresponding translation.
+  map<string, TranslationMapping> written_translations = 7;
 
-  // Summary of this chapter.
-  string summary = 3;
+  // The chapter's title (which is the same as the exploration's title).
+  SubtitledHtml title = 8;
+
+  // The summary/outline/description of this chapter.
+  SubtitledHtml description = 9;
 
   // Indicates the playable state of the current chapter, including whether it's already been
   // completed.
@@ -117,6 +165,25 @@ message ChapterSummary {
   // Prerequisite chapter to unlock this chapter. It is only defined when the play state of this
   // chapter is NOT_PLAYABLE_MISSING_PREREQUISITES.
   ChapterSummary missing_prerequisite_chapter = 6;
+
+  // The old name of the chapter (as a string).
+  reserved 2;
+
+  // The old summary of the chapter (as a string).
+  reserved 3;
+}
+
+// Corresponds to a chapter summary that is currently being viewed.
+message EphemeralChapterSummary {
+  // The chapter summary to view.
+  ChapterSummary chapter_summary = 1;
+
+  // The translation context that should be used for this chapter summary.
+  WrittenTranslationContext written_translation_context = 2;
+
+  // The EphemeralChapterSummary corresponding to this chapter's missing prerequisite (see
+  // ChapterSummary for more context).
+  EphemeralChapterSummary missing_prerequisite_chapter = 3;
 }
 
 // A summary of a skill that can be trained or reviewed by the player.
@@ -140,14 +207,13 @@ message Classroom {
 // Corresponds to the list of topics that are currently being played and are not fully finished.
 message OngoingTopicList {
   // All topics that are currently being played and have not finished.
-  repeated Topic topic = 1;
+  repeated EphemeralTopic topic = 1;
 }
 
 // Corresponds to the list of topics that can be shown on the homescreen.
 message TopicList {
-
   // All topics that are available to the player.
-  repeated TopicSummary topic_summary = 2;
+  repeated EphemeralTopicSummary topic_summary = 2;
 }
 
 // Corresponds to the list of stories that have been completed across all topics.
@@ -161,17 +227,29 @@ message CompletedStory {
   // The ID of the story being completed.
   string story_id = 1;
 
-  // The name of the story being completed.
-  string story_name = 2;
+  // The written translation context for this story's strings.
+  WrittenTranslationContext story_written_translation_context = 6;
+
+  // The written translation context for this story's topic strings.
+  WrittenTranslationContext topic_written_translation_context = 7;
+
+  // The title of the story being completed.
+  SubtitledHtml story_title = 8;
 
   // The ID of the topic which contains this story.
   string topic_id = 3;
 
-  // The name of the topic this story is part of.
-  string topic_name = 4;
+  // The title of the topic this story is part of.
+  SubtitledHtml topic_title = 9;
 
   // The thumbnail that should be displayed for this completed story.
   LessonThumbnail lesson_thumbnail = 5;
+
+  // The old name of the story (as a string).
+  reserved 2;
+
+  // The old name of the story's topic (as a string).
+  reserved 4;
 }
 
 // Corresponds to the list of stories the player is currently playing across all topics.
@@ -190,17 +268,26 @@ message PromotedStory {
   // The ID of the story being promoted.
   string story_id = 1;
 
-  // The name of the story being promoted.
-  string story_name = 2;
+  // The written translation context for story strings.
+  WrittenTranslationContext story_written_translation_context = 12;
+
+  // The written translation context for the story's topic strings.
+  WrittenTranslationContext topic_written_translation_context = 13;
+
+  // The written translation context strings corresponding to the next chapter of this story.
+  WrittenTranslationContext next_chapter_written_translation_context = 14;
+
+  // The title of the story being promoted.
+  SubtitledHtml story_title = 15;
 
   // The ID of the topic this story is part of.
   string topic_id = 3;
 
-  // The name of the topic this story is part of.
-  string topic_name = 4;
+  // The title of the topic this story is part of.
+  SubtitledHtml topic_title = 16;
 
-  // The name of the next chapter (exploration title) to complete.
-  string next_chapter_name = 5;
+  // The title of the next chapter (exploration title) to complete.
+  SubtitledHtml next_chapter_title = 17;
 
   // The exploration id next chapter to complete.
   string exploration_id = 6;
@@ -221,6 +308,15 @@ message PromotedStory {
 
   // The ChapterPlayState of the promoted lesson.
   ChapterPlayState chapter_play_state = 11;
+
+  // The old name of the story (as a string).
+  reserved 2;
+
+  // The old name of the story's topic (as a string).
+  reserved 4;
+
+  // The old name of the story's next chapter (as a string).
+  reserved 5;
 }
 
 // A homescreen summary of a topic.
@@ -228,8 +324,12 @@ message TopicSummary {
   // The ID of the topic.
   string topic_id = 1;
 
-  // The name of the topic.
-  string name = 2;
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this topic that has a
+  // corresponding translation.
+  map<string, TranslationMapping> written_translations = 7;
+
+  // The title of the topic.
+  SubtitledHtml title = 8;
 
   // The structural version of the topic.
   int32 version = 3;
@@ -242,6 +342,18 @@ message TopicSummary {
 
   // Specifics about whether this topic is playable.
   TopicPlayAvailability topic_play_availability = 6;
+
+  // The old name corresponding to the topic (as a string).
+  reserved 2;
+}
+
+// Corresponds to a topic summary that is currently being viewed.
+message EphemeralTopicSummary {
+  // The topic summary to view.
+  TopicSummary topic_summary = 1;
+
+  // The translation context that should be used for this topic summary.
+  WrittenTranslationContext written_translation_context = 2;
 }
 
 // Represents the play state of a single chapter.
@@ -320,8 +432,11 @@ message UpcomingTopic {
   // The ID of the topic.
   string topic_id = 1;
 
-  // The name of the topic.
-  string name = 2;
+  // The written translation context for this topic view.
+  WrittenTranslationContext written_translation_context = 6;
+
+  // The title of the topic.
+  SubtitledHtml title = 7;
 
   // The structural version of the topic.
   int32 version = 3;
@@ -331,6 +446,9 @@ message UpcomingTopic {
 
   // Specifics about whether this topic is playable.
   TopicPlayAvailability topic_play_availability = 5;
+
+  // The old name corresponding to the topic (as a string).
+  reserved 2;
 }
 
 // Represents the story progress.
@@ -368,31 +486,50 @@ message Subtopic {
   // The ID of the subtopic.
   int32 subtopic_id = 1;
 
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this subtopic that
+  // has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 5;
+
   // The title of the subtopic.
-  string title = 2;
+  SubtitledHtml title = 6;
 
   // The list of skill ids associated with the subtopic.
   repeated string skill_ids = 3;
 
   // The thumbnail corresponding to this subtopic.
   LessonThumbnail subtopic_thumbnail = 4;
+
+  // The old title corresponding to the subtopic (as a string).
+  reserved 2;
+}
+
+// Corresponds to a subtopic card that is currently being at least partially viewed.
+message EphemeralSubtopic {
+  // The subtopic to view.
+  Subtopic subtopic = 1;
+
+  // The translation context that should be used for this subtopic.
+  WrittenTranslationContext written_translation_context = 2;
 }
 
 // Corresponds to a revision card that can be displayed for a specific subtopic.
 message RevisionCard {
   // The title corresponding to the subtopic.
-  string subtopic_title = 1;
+  SubtitledHtml subtopic_title = 5;
 
   // The core explanation of the subtopic being revised.
   SubtitledHtml page_contents = 2;
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that
   // has corresponding recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceover = 3;
+  map<string, VoiceoverMapping> recorded_voiceovers = 3;
 
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card
-  // that has corresponding translations.
-  map<string, TranslationMapping> written_translation = 4;
+  // that has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 4;
+
+  // The old title corresponding to the revision card (as a string).
+  reserved 1;
 }
 
 // Corresponds to a revision card that is currently being viewed.
@@ -422,11 +559,15 @@ message TopicRecord {
   // The topic's ID.
   string id = 1;
 
-  // The name of the topic.
-  string name = 2;
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this topic that has a
+  // corresponding translation.
+  map<string, TranslationMapping> written_translations = 8;
+
+  // The title of the topic.
+  SubtitledHtml title = 9;
 
   // The topic's description.
-  string description = 3;
+  SubtitledHtml description = 10;
 
   // The list of canonical story IDs that can be used to load stories from the local filesystem.
   repeated string canonical_story_ids = 4;
@@ -439,15 +580,35 @@ message TopicRecord {
 
   // The thumbnail corresponding to this topic.
   LessonThumbnail topic_thumbnail = 7;
+
+  // The old name corresponding to the topic (as a string).
+  reserved 2;
+
+  // The old description corresponding to the topic (as a string).
+  reserved 3;
 }
 
 // Corresponds to a record of a story available to be loaded from the local filesystem. This, along
 // with other local assets, can be used to constitute a StorySummary message.
 message StoryRecord {
+  // The globally-unique ID of this story.
   string story_id = 1;
-  string story_name = 2;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this story that has a
+  // corresponding translation.
+  map<string, TranslationMapping> written_translations = 5;
+
+  // The human-readable title of the story.
+  SubtitledHtml story_title = 6;
+
+  // The thumbnail that should be associated with the story.
   LessonThumbnail story_thumbnail = 3;
+
+  // Each of the chapters that make up this story.
   repeated ChapterRecord chapters = 4;
+
+  // The old name corresponding to the story (as a string).
+  reserved 2;
 }
 
 // Corresponds to a record of a chapter & exploration available to be loaded from the local
@@ -460,11 +621,21 @@ message ChapterRecord {
   // The thumbnail of the chapter.
   LessonThumbnail chapter_thumbnail = 2;
 
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this chapter summary
+  // that has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 5;
+
   // The title of the chapter.
-  string title = 3;
+  SubtitledHtml title = 6;
 
   // The outline/description that is used to provide an initial summary of the chapter's contents.
-  string description = 4;
+  SubtitledHtml description = 7;
+
+  // The old title corresponding to the chapter (as a string).
+  reserved 3;
+
+  // The old description corresponding to the chapter (as a string).
+  reserved 4;
 }
 
 // Corresponds to a record of a subtopic/revision card available to be loaded from the local
@@ -472,22 +643,25 @@ message ChapterRecord {
 // RevisionCard message.
 message SubtopicRecord {
   // The title corresponding to the subtopic.
-  string subtopic_title = 1;
+  SubtitledHtml title = 7;
 
   // The core explanation of the subtopic being revised.
   SubtitledHtml page_contents = 2;
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that
   // has corresponding recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceover = 3;
+  map<string, VoiceoverMapping> recorded_voiceovers = 3;
 
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card
-  // that has corresponding translations.
-  map<string, TranslationMapping> written_translation = 4;
+  // that has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 4;
 
   // The list of skill ids associated with the subtopic.
   repeated string skill_ids = 5;
 
   // The thumbnail corresponding to this subtopic.
   LessonThumbnail subtopic_thumbnail = 6;
+
+  // The old title corresponding to the subtopic (as a string).
+  reserved 1;
 }

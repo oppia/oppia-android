@@ -22,7 +22,7 @@ import javax.inject.Inject
 class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<TopicRevisionViewModel>
+  private val viewModel: TopicRevisionViewModel
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
   private var internalProfileId: Int = -1
@@ -35,8 +35,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-    val viewModel = getTopicRevisionViewModel()
-
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     binding = TopicRevisionFragmentBinding.inflate(
@@ -55,7 +53,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       layoutManager = GridLayoutManager(context, spanCount)
     }
     binding.apply {
-      this.viewModel = viewModel
+      this.viewModel = this@TopicRevisionFragmentPresenter.viewModel
       lifecycleOwner = fragment
     }
     return binding.root
@@ -63,10 +61,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
     routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
-  }
-
-  private fun getTopicRevisionViewModel(): TopicRevisionViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicRevisionViewModel::class.java)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {

@@ -22,7 +22,7 @@ import javax.inject.Inject
 class TopicFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<TopicViewModel>,
+  private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
@@ -61,7 +61,6 @@ class TopicFragmentPresenter @Inject constructor(
       binding.topicToolbarTitle.isSelected = true
     }
 
-    val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
@@ -87,10 +86,6 @@ class TopicFragmentPresenter @Inject constructor(
     if (!isConfigChanged && topicId.isNotEmpty()) {
       setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
     }
-  }
-
-  private fun getTopicViewModel(): TopicViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicViewModel::class.java)
   }
 
   private fun logTopicEvents(tab: TopicTab) {

@@ -15,6 +15,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.domain.translation.TranslationController
 
 /** The ObservableViewModel for [OngoingTopicListFragment]. */
 @FragmentScope
@@ -24,7 +25,8 @@ class OngoingTopicListViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val intentFactoryShim: IntentFactoryShim,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -69,9 +71,15 @@ class OngoingTopicListViewModel @Inject constructor(
   ): List<OngoingTopicItemViewModel> {
     val itemViewModelList: MutableList<OngoingTopicItemViewModel> = mutableListOf()
     itemViewModelList.addAll(
-      ongoingTopicList.topicList.map { topic ->
+      ongoingTopicList.topicList.map { ephemeralTopic ->
         OngoingTopicItemViewModel(
-          activity, internalProfileId, topic, entityType, intentFactoryShim, resourceHandler
+          activity,
+          internalProfileId,
+          ephemeralTopic,
+          entityType,
+          intentFactoryShim,
+          resourceHandler,
+          translationController
         )
       }
     )

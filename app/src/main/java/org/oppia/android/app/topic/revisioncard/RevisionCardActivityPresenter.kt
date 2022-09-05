@@ -20,13 +20,15 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope
 class RevisionCardActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val translationController: TranslationController
 ) {
 
   private lateinit var revisionCardToolbar: Toolbar
@@ -129,7 +131,10 @@ class RevisionCardActivityPresenter @Inject constructor(
         is AsyncResult.Pending -> EphemeralRevisionCard.getDefaultInstance()
         is AsyncResult.Success -> revisionCardResult.value
       }
-    return ephemeralRevisionCard.revisionCard.subtopicTitle
+    return translationController.extractString(
+      ephemeralRevisionCard.revisionCard.subtopicTitle,
+      ephemeralRevisionCard.writtenTranslationContext
+    )
   }
 
   private fun getReviewCardFragment(): RevisionCardFragment? {

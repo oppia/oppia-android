@@ -14,6 +14,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.domain.translation.TranslationController
 
 /** The ObservableViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
@@ -22,6 +23,7 @@ class CompletedStoryListViewModel @Inject constructor(
   private val intentFactoryShim: IntentFactoryShim,
   private val topicController: TopicController,
   private val oppiaLogger: OppiaLogger,
+  private val translationController: TranslationController,
   @StoryHtmlParserEntityType private val entityType: String
 ) : ObservableViewModel() {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
@@ -73,7 +75,8 @@ class CompletedStoryListViewModel @Inject constructor(
           internalProfileId,
           completedStory,
           entityType,
-          intentFactoryShim
+          intentFactoryShim,
+          translationController
         )
       }
     )

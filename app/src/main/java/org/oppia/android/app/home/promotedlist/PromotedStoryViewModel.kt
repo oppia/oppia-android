@@ -10,6 +10,7 @@ import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import java.util.Objects
+import org.oppia.android.domain.translation.TranslationController
 
 // TODO(#283): Add download status information to promoted-story-card.
 
@@ -19,8 +20,25 @@ class PromotedStoryViewModel(
   private val internalProfileId: Int,
   private val totalStoryCount: Int,
   val entityType: String,
-  val promotedStory: PromotedStory
+  val promotedStory: PromotedStory,
+  translationController: TranslationController
 ) : ObservableViewModel() {
+  val storyTitle by lazy {
+    translationController.extractString(
+      promotedStory.storyTitle, promotedStory.storyWrittenTranslationContext
+    )
+  }
+  val topicTitle by lazy {
+    translationController.extractString(
+      promotedStory.topicTitle, promotedStory.topicWrittenTranslationContext
+    )
+  }
+  val nextChapterTitle by lazy {
+    translationController.extractString(
+      promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
+    )
+  }
+
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
 
   /**

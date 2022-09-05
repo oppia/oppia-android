@@ -108,7 +108,7 @@
               android:onClick="@{(v) -> viewModel.clickOnStorySummaryTitle()}"
               android:paddingTop="24dp"
               android:paddingBottom="4dp"
-              android:text="@{viewModel.storySummary.storyName}"
+              android:text="@{viewModel.storyTitle}"
               android:textColor="@color/oppia_primary_text"
               android:textSize="18sp" />
 

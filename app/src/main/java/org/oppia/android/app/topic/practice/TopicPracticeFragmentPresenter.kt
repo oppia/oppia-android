@@ -27,7 +27,7 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
+  private val viewModel: TopicPracticeViewModel
 ) : SubtopicSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -45,7 +45,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-    val viewModel = getTopicPracticeViewModel()
     this.topicId = topicId
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(internalProfileId)
@@ -58,6 +57,11 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
+    binding.apply {
+      this.viewModel = this@TopicPracticeFragmentPresenter.viewModel
+      lifecycleOwner = fragment
+    }
+
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     binding.topicPracticeSkillList.apply {
@@ -65,10 +69,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
 
-    binding.apply {
-      this.viewModel = viewModel
-      lifecycleOwner = fragment
-    }
     return binding.root
   }
 
@@ -132,10 +132,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
         skillIdList.flatten() as ArrayList<String>
       )
     }
-  }
-
-  private fun getTopicPracticeViewModel(): TopicPracticeViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicPracticeViewModel::class.java)
   }
 
   private enum class ViewType {

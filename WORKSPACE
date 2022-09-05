@@ -136,6 +136,7 @@ git_repository(
 #    remote = "https://github.com/oppia/kotlitex",
 #    shallow_since = "1658115608 -0700",
 #)
+# TODO: Revert.
 local_repository(
     name = "kotlitex",
     path = "/home/ben/opensource/kotlitex",

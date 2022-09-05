@@ -20,20 +20,27 @@ import org.oppia.android.databinding.WalkthroughTopicHeaderViewBinding
 import org.oppia.android.databinding.WalkthroughTopicListFragmentBinding
 import org.oppia.android.databinding.WalkthroughTopicSummaryViewBinding
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.walkthrough.WalkthroughActivity
 
 /** The presenter for [WalkthroughTopicListFragment]. */
 @FragmentScope
 class WalkthroughTopicListFragmentPresenter @Inject constructor(
   val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<WalkthroughTopicViewModel>
+  private val viewModel: WalkthroughTopicViewModel
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
   private val orientation = Resources.getSystem().configuration.orientation
 
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val viewModel = getWalkthroughTopicViewModel()
+    val profileId = ProfileId.newBuilder().apply {
+      internalId = activity.intent.getIntExtra(
+        WalkthroughActivity.WALKTHROUGH_ACTIVITY_INTERNAL_PROFILE_ID_KEY, /* defaultValue= */ -1
+      )
+    }.build()
+    viewModel.initialize(profileId)
 
     binding =
       WalkthroughTopicListFragmentBinding.inflate(
@@ -94,10 +101,6 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
         transformViewModel = { it as WalkthroughTopicSummaryViewModel }
       )
       .build()
-  }
-
-  private fun getWalkthroughTopicViewModel(): WalkthroughTopicViewModel {
-    return viewModelProvider.getForFragment(fragment, WalkthroughTopicViewModel::class.java)
   }
 
   private enum class ViewType {

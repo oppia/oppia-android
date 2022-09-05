@@ -24,6 +24,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.domain.translation.TranslationController
 
 /** The [ObservableViewModel] for [ProfileProgressFragment]. */
 @FragmentScope
@@ -36,7 +37,8 @@ class ProfileProgressViewModel @Inject constructor(
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
   @StoryHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) {
   /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
   private var internalProfileId: Int = -1
@@ -146,7 +148,13 @@ class ProfileProgressViewModel @Inject constructor(
       itemViewModelList.addAll(
         itemList.map { story ->
           RecentlyPlayedStorySummaryViewModel(
-            activity, internalProfileId, story, entityType, intentFactoryShim, resourceHandler
+            activity,
+            internalProfileId,
+            story,
+            entityType,
+            intentFactoryShim,
+            resourceHandler,
+            translationController
           )
         }
       )

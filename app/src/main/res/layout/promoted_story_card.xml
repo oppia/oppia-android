@@ -65,7 +65,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif-medium"
           android:maxLines="1"
-          android:text="@{viewModel.promotedStory.nextChapterName}"
+          android:text="@{viewModel.nextChapterTitle}"
           android:textColor="@color/oppia_primary_text"
           android:textSize="18sp" />
 
@@ -79,7 +79,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:maxLines="1"
-          android:text="@{viewModel.promotedStory.storyName}"
+          android:text="@{viewModel.storyTitle}"
           android:textColor="@color/oppia_primary_text"
           android:textSize="@dimen/promoted_story_card_text_size" />
 
@@ -94,7 +94,7 @@
           android:fontFamily="sans-serif-light"
           android:maxLines="1"
           android:paddingBottom="8dp"
-          android:text="@{viewModel.promotedStory.topicName}"
+          android:text="@{viewModel.topicTitle}"
           android:textAllCaps="true"
           android:textColor="@color/oppia_primary_text"
           android:textSize="14sp" />

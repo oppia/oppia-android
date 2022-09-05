@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.RouteToExplorationListener
-import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -22,6 +20,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralChapterSummary
+import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [ResumeLessonFragment]. */
 class ResumeLessonFragmentPresenter @Inject constructor(
@@ -31,6 +31,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private val topicController: TopicController,
   private val explorationDataController: ExplorationDataController,
   private val htmlParserFactory: HtmlParser.Factory,
+  private val translationController: TranslationController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val oppiaLogger: OppiaLogger
 ) {
@@ -44,11 +45,13 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private lateinit var storyId: String
   private lateinit var explorationId: String
 
-  private val chapterSummaryResultLiveData: LiveData<AsyncResult<ChapterSummary>> by lazy {
-    topicController.retrieveChapter(topicId, storyId, explorationId).toLiveData()
+  private val chapterSummaryResultLiveData: LiveData<AsyncResult<EphemeralChapterSummary>> by lazy {
+    topicController.retrieveChapter(profileId, topicId, storyId, explorationId).toLiveData()
   }
 
-  private val chapterSummaryLiveData: LiveData<ChapterSummary> by lazy { getChapterSummary() }
+  private val chapterSummaryLiveData: LiveData<EphemeralChapterSummary> by lazy {
+    getChapterSummary()
+  }
 
   /** Handles onCreateView() method of the [ResumeLessonFragment]. */
   fun handleOnCreate(
@@ -109,47 +112,55 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   private fun subscribeToChapterSummary() {
     chapterSummaryLiveData.observe(
       fragment,
-      Observer<ChapterSummary> { chapterSummary ->
-        resumeLessonViewModel.chapterSummary.set(chapterSummary)
-        updateChapterDescription()
+      { ephemeralChapterSummary ->
+        val chapterTitle =
+          translationController.extractString(
+            ephemeralChapterSummary.chapterSummary.title,
+            ephemeralChapterSummary.writtenTranslationContext
+          )
+        val chapterDescription =
+          translationController.extractString(
+            ephemeralChapterSummary.chapterSummary.description,
+            ephemeralChapterSummary.writtenTranslationContext
+          )
+        resumeLessonViewModel.chapterSummary.set(ephemeralChapterSummary.chapterSummary)
+        resumeLessonViewModel.chapterTitle.set(chapterTitle)
+        bindChapterDescription(chapterDescription)
       }
     )
   }
 
-  private fun updateChapterDescription() {
+  private fun bindChapterDescription(description: String) {
     binding.resumeLessonChapterDescriptionTextView.text = htmlParserFactory.create(
       resourceBucketName,
       resumeLessonViewModel.entityType,
       explorationId,
       imageCenterAlign = true
-    ).parseOppiaHtml(
-      resumeLessonViewModel.chapterSummary.get()!!.summary,
-      binding.resumeLessonChapterDescriptionTextView
-    )
+    ).parseOppiaHtml(description, binding.resumeLessonChapterDescriptionTextView)
   }
 
   private fun getResumeLessonViewModel(): ResumeLessonViewModel {
     return viewModelProvider.getForFragment(fragment, ResumeLessonViewModel::class.java)
   }
 
-  private fun getChapterSummary(): LiveData<ChapterSummary> {
+  private fun getChapterSummary(): LiveData<EphemeralChapterSummary> {
     return Transformations.map(chapterSummaryResultLiveData, ::processChapterSummaryResult)
   }
 
   private fun processChapterSummaryResult(
-    chapterSummaryResult: AsyncResult<ChapterSummary>
-  ): ChapterSummary {
-    return when (chapterSummaryResult) {
+    ephemeralResult: AsyncResult<EphemeralChapterSummary>
+  ): EphemeralChapterSummary {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
           "ResumeLessonFragment",
           "Failed to retrieve chapter summary for the explorationId $explorationId: ",
-          chapterSummaryResult.error
+          ephemeralResult.error
         )
-        ChapterSummary.getDefaultInstance()
+        EphemeralChapterSummary.getDefaultInstance()
       }
-      is AsyncResult.Pending -> ChapterSummary.getDefaultInstance()
-      is AsyncResult.Success -> chapterSummaryResult.value
+      is AsyncResult.Pending -> EphemeralChapterSummary.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 

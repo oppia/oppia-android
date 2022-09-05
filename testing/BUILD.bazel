@@ -101,7 +101,6 @@ TEST_DEPS = [
     "//third_party:com_squareup_retrofit2_retrofit-mock",
     "//third_party:junit_junit",
     "//third_party:moshi",
-    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",
@@ -134,7 +133,6 @@ kt_android_library(
     visibility = ["//visibility:public"],
     deps = [
         "//third_party:junit_junit",
-        "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     ],
 )
 

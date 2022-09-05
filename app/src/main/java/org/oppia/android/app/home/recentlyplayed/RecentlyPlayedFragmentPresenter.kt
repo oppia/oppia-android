@@ -29,6 +29,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [RecentlyPlayedFragment]. */
 @FragmentScope
@@ -40,7 +41,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val explorationCheckpointController: ExplorationCheckpointController,
   @StoryHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -123,12 +125,12 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(recentSectionTitleViewModel)
     recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
-      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
+      val ongoingStoryViewModel = createOngoingStoryViewModel(promotedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
 
-  private fun getOngoingStoryViewModel(
+  private fun createOngoingStoryViewModel(
     promotedStory: PromotedStory,
     index: Int
   ): RecentlyPlayedItemViewModel {
@@ -138,7 +140,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       entityType,
       fragment as OngoingStoryClickListener,
       index,
-      resourceHandler
+      resourceHandler,
+      translationController
     )
   }
 
@@ -151,7 +154,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(olderSectionTitleViewModel)
     olderPlayedStoryList.forEachIndexed { index, promotedStory ->
-      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
+      val ongoingStoryViewModel = createOngoingStoryViewModel(promotedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
@@ -165,7 +168,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(recommendedSectionTitleViewModel)
     suggestedStoryList.forEachIndexed { index, suggestedStory ->
-      val ongoingStoryViewModel = getOngoingStoryViewModel(suggestedStory, index)
+      val ongoingStoryViewModel = createOngoingStoryViewModel(suggestedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }

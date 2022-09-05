@@ -12,6 +12,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformDynamic
 
@@ -31,12 +33,14 @@ class ModifyLessonProgressController @Inject constructor(
    * Fetches a list of topics given a profile ID.
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched
-   * @return a [DataProvider] for [List] of [Topic] combined with [TopicProgress]
+   * @return a [DataProvider] for [List] of [EphemeralTopic] combined with [TopicProgress]
    */
-  fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<Topic>> {
-    val topicListProvider = topicListController.getTopicList()
+  fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<EphemeralTopic>> {
+    val topicListProvider = topicListController.getTopicList(profileId)
     return topicListProvider.transformDynamic(GET_ALL_TOPICS_PROVIDER_ID) { topicList ->
-      topicController.getTopics(profileId, topicList.topicSummaryList.map { it.topicId })
+      topicController.getTopics(
+        profileId, topicList.topicSummaryList.map { it.topicSummary.topicId }
+      )
     }
   }
 
@@ -44,14 +48,14 @@ class ModifyLessonProgressController @Inject constructor(
    * Fetches a list of stories mapped to their corresponding topic ids given a profile ID.
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched
-   * @return a [DataProvider] for [Map] of topic id mapped to list of [StorySummary] combined with
-   *     [StoryProgress]
+   * @return a [DataProvider] for [Map] of topic id mapped to list of [EphemeralStorySummary]
+   *     combined with [StoryProgress]
    */
   fun getStoryMapWithProgress(
     profileId: ProfileId
-  ): DataProvider<Map<String, List<StorySummary>>> {
+  ): DataProvider<Map<String, List<EphemeralStorySummary>>> {
     return getAllTopicsWithProgress(profileId).transform(GET_ALL_STORIES_PROVIDER_ID) { topics ->
-      topics.associate { it.topicId to it.storyList }
+      topics.associate { it.topic.topicId to it.storiesList }
     }
   }
 
@@ -61,8 +65,8 @@ class ModifyLessonProgressController @Inject constructor(
    * @param topicWithProgress the topic for which progress needs to be fetched
    * @return a [Boolean] indicating whether the topic is completed or not
    */
-  fun checkIfTopicIsCompleted(topicWithProgress: Topic): Boolean {
-    topicWithProgress.storyList.forEach { storySummary ->
+  fun checkIfTopicIsCompleted(topicWithProgress: EphemeralTopic): Boolean {
+    topicWithProgress.topic.storyList.forEach { storySummary ->
       storySummary.chapterList.forEach { chapterSummary ->
         if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
       }
@@ -76,8 +80,8 @@ class ModifyLessonProgressController @Inject constructor(
    * @param storyWithProgress the story for which progress needs to be fetched
    * @return a [Boolean] indicating whether the story is completed or not
    */
-  fun checkIfStoryIsCompleted(storyWithProgress: StorySummary): Boolean {
-    storyWithProgress.chapterList.forEach { chapterSummary ->
+  fun checkIfStoryIsCompleted(storyWithProgress: EphemeralStorySummary): Boolean {
+    storyWithProgress.storySummary.chapterList.forEach { chapterSummary ->
       if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
     }
     return true

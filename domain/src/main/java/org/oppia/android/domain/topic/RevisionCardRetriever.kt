@@ -31,10 +31,10 @@ class RevisionCardRetriever @Inject constructor(
         baseMessage = SubtopicRecord.getDefaultInstance()
       )
       RevisionCard.newBuilder().apply {
-        subtopicTitle = subtopicRecord.subtopicTitle
+        subtopicTitle = subtopicRecord.title
         pageContents = subtopicRecord.pageContents
-        putAllRecordedVoiceover(subtopicRecord.recordedVoiceoverMap)
-        putAllWrittenTranslation(subtopicRecord.writtenTranslationMap)
+        putAllRecordedVoiceovers(subtopicRecord.recordedVoiceoversMap)
+        putAllWrittenTranslations(subtopicRecord.writtenTranslationsMap)
       }.build()
     } else loadRevisionCardFromJson(topicId, subtopicId)
   }
@@ -44,7 +44,10 @@ class RevisionCardRetriever @Inject constructor(
       jsonAssetRetriever.loadJsonFromAsset(topicId + "_" + subtopicId + ".json")
         ?: return RevisionCard.getDefaultInstance()
     val subtopicData = subtopicJsonObject.getJSONObject("page_contents")
-    val subtopicTitle = subtopicJsonObject.getStringFromObject("subtopic_title")
+    val subtopicTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "title"
+      html = subtopicJsonObject.getStringFromObject("subtopic_title")
+    }.build()
     return RevisionCard.newBuilder()
       .setSubtopicTitle(subtopicTitle)
       .setPageContents(
@@ -57,7 +60,7 @@ class RevisionCardRetriever @Inject constructor(
           )
           .build()
       )
-      .putAllWrittenTranslation(
+      .putAllWrittenTranslations(
         createWrittenTranslationMappingsFromJson(subtopicData.getJSONObject("written_translations"))
       )
       .build()
