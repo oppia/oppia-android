@@ -16,6 +16,7 @@ def generate_regex_assets_list_from_text_protos(
         name: str. The name of this generation instance. This will be a prefix for derived targets.
         filepath_pattern_validation_file_names: list of str. The list of prohibited filepath pattern file names.
         file_content_validation_file_names: list of str. The list of prohibited file contents file names.
+        screen_name_presence_validation_file_names: list of str. The list of all relevant files where screen name or its test is missing.
 
     Returns:
         list of str. The list of new proto binary asset files that were generated.

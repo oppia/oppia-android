@@ -37,9 +37,7 @@ kt_android_library(
     srcs = [
         "ConsoleLoggerInjector.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":console_logger",
     ],
@@ -50,9 +48,7 @@ kt_android_library(
     srcs = [
         "ConsoleLoggerInjectorProvider.kt",
     ],
-    visibility = [
-        "//:oppia_api_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":console_logger_injector",
     ],
@@ -167,9 +163,7 @@ kt_android_library(
     srcs = [
         "SyncStatusManagerImpl.kt",
     ],
-    visibility = [
-        "//testing/src/main/java/org/oppia/android/testing/logging:__pkg__",
-    ],
+    visibility = ["//testing/src/main/java/org/oppia/android/testing/logging:__pkg__"],
     deps = [
         ":sync_status_manager",
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
