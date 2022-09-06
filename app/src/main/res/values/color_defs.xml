@@ -53,6 +53,7 @@
   <color name="color_def_oppia_grayish_black">#32363B</color>
   <color name="color_def_dark_blue">#395FD0</color>
   <color name="color_def_oppia_grey_border">#DDDDDD</color>
+  <color name="color_def_oppia_grey_background">#EEEEEE</color>
   <color name="color_def_dark_silver">#707070</color>
   <color name="color_def_yellow_ivory">#FFFFF0</color>
   <color name="color_def_chooser_grey">#999999</color>
@@ -68,4 +69,9 @@
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_start">#23272A00</color>
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_center">#23272A</color>
   <color name="color_def_dark_mode_question_player_progress_bar_gradient_end">#00C7B6</color>
+  <color name="color_def_whitish_grey">#E5E5E5</color>
+  <color name="color_def_checkbox_green">#008577</color>
+  <color name="color_def_stroke_silver">#777777</color>
+  <color name="color_def_drag_drop_single_item_gradient_center">#F7F7F7</color>
+  <color name="color_def_drag_drop_single_item_gradient_end">#DCDCDC</color>
 </resources>

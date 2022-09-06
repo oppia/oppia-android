@@ -16,7 +16,7 @@ import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY =
+private const val CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY =
   "HintsAndSolutionDialogFragment.current_expanded_list_index"
 private const val HINT_INDEX_SAVED_KEY = "HintsAndSolutionDialogFragment.hint_index"
 private const val IS_HINT_REVEALED_SAVED_KEY = "HintsAndSolutionDialogFragment.is_hint_revealed"
@@ -33,7 +33,7 @@ class HintsAndSolutionDialogFragment :
   @Inject
   lateinit var hintsAndSolutionDialogFragmentPresenter: HintsAndSolutionDialogFragmentPresenter
 
-  private var currentExpandedHintListIndex: Int? = null
+  private var expandedItemsList = ArrayList<Int>()
 
   private var index: Int? = null
   private var isHintRevealed: Boolean? = null
@@ -90,13 +90,10 @@ class HintsAndSolutionDialogFragment :
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     if (savedInstanceState != null) {
-      currentExpandedHintListIndex =
-        savedInstanceState.getInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, -1)
-      if (currentExpandedHintListIndex == -1) {
-        currentExpandedHintListIndex = null
-      }
+      expandedItemsList =
+        savedInstanceState.getIntegerArrayList(CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY) ?: ArrayList()
       index = savedInstanceState.getInt(HINT_INDEX_SAVED_KEY, -1)
       if (index == -1) index = null
       isHintRevealed = savedInstanceState.getBoolean(IS_HINT_REVEALED_SAVED_KEY, false)
@@ -125,7 +122,7 @@ class HintsAndSolutionDialogFragment :
       helpIndex,
       writtenTranslationContext,
       id,
-      currentExpandedHintListIndex,
+      expandedItemsList,
       this as ExpandedHintListIndexListener,
       index,
       isHintRevealed,
@@ -141,9 +138,7 @@ class HintsAndSolutionDialogFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    if (currentExpandedHintListIndex != null) {
-      outState.putInt(CURRENT_EXPANDED_LIST_INDEX_SAVED_KEY, currentExpandedHintListIndex!!)
-    }
+    outState.putIntegerArrayList(CURRENT_EXPANDED_ITEMS_LIST_SAVED_KEY, expandedItemsList)
     if (index != null) {
       outState.putInt(HINT_INDEX_SAVED_KEY, index!!)
     }
@@ -158,9 +153,8 @@ class HintsAndSolutionDialogFragment :
     }
   }
 
-  override fun onExpandListIconClicked(index: Int?) {
-    currentExpandedHintListIndex = index
-    hintsAndSolutionDialogFragmentPresenter.onExpandClicked(index)
+  override fun onExpandListIconClicked(expandedItemsList: ArrayList<Int>) {
+    this.expandedItemsList = expandedItemsList
   }
 
   override fun revealSolution() {
