@@ -157,6 +157,8 @@ class RegexPatternValidationCheckTest {
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
+  private val doesNotContainScreenName = "Screen Name not added."
+  private val doesNotContainScreenNameTest = "Screen Name test not added."
 
   @Rule
   @JvmField
@@ -175,8 +177,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInAppModule_fileNamePatternIsCorrect() {
+    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
     tempFolder.newFolder("testfiles", "app", "src", "main")
-    tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
+    val tempFile = tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
+    tempFile.writeText(acceptedContent)
 
     runScript()
 
@@ -207,7 +211,8 @@ class RegexPatternValidationCheckTest {
       """
       File name/path violation: $activitiesPlacementErrorMessage
       - data/src/main/TestActivity.kt
-
+      
+      data/src/main/TestActivity.kt: $doesNotContainScreenName
       $wikiReferenceNote
       """.trimIndent()
     )
@@ -1372,6 +1377,7 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $subclassedActivityErrorMessage
+        $stringFilePath: $doesNotContainScreenName
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -1393,6 +1399,7 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         $stringFilePath:1: $subclassedAppCompatActivityErrorMessage
+        $stringFilePath: $doesNotContainScreenName
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -1710,10 +1717,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
+    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
     val prohibitedContent = "import android.support.v7.app"
-    prohibitedFile.writeText(prohibitedContent)
+    prohibitedFile.writeText(acceptedContent + prohibitedContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -2157,6 +2165,71 @@ class RegexPatternValidationCheckTest {
         $wikiReferenceNote
         """.trimIndent()
       )
+  }
+
+  @Test
+  fun testScreenNamePresence_emptyActivityFile_screenNameIsNotPresent() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
+    val stringFilePath = "app/src/main/activity/HomeActivity.kt"
+    tempFolder.newFile("testfiles/$stringFilePath")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $doesNotContainScreenName
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testScreenNamePresence_activityFileWithAcceptedContent_screenNameIsPresent() {
+    val acceptedContent = "import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
+    val stringFilePath = "app/src/main/activity/HomeActivity.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(acceptedContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testScreenNameTestPresence_activityTestWithoutScreenNameTest_screenNameTestIsNotPresent(){
+    tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
+    val stringFilePath = "app/src/main/activity/HomeActivityTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $doesNotContainScreenNameTest
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent(){
+    val acceptedContent = "testActivity_createIntent_verifyScreenNameInIntent()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/HomeActivityTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(acceptedContent)
+
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   /** Runs the regex_pattern_validation_check. */
