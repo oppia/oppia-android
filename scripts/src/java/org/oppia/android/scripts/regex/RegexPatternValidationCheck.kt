@@ -55,6 +55,7 @@ fun main(vararg args: String) {
       return@fold hasFailingFile || fileFails
     }
 
+  // TODO(#4557): Introduction of a robust approach to verify proper screen name usage in activities.
   val screenNamePresenceChecks = retrieveScreenNamePresenceChecks().map {
     MatchableScreenNamePresenceCheck.createFrom(it)
   }
