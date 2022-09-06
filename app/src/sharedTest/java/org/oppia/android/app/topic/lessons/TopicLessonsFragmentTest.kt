@@ -608,7 +608,8 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.not_started_chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.not_started_chapter_container))))
+      onView(withId(R.id.not_started_chapter_container)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(
         allOf(
