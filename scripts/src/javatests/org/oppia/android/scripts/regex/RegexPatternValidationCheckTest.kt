@@ -2200,7 +2200,7 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testScreenNameTestPresence_activityTestWithoutScreenNameTest_screenNameTestIsNotPresent(){
+  fun testScreenNameTestPresence_activityTestWithoutScreenNameTest_screenNameTestIsNotPresent() {
     tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
     val stringFilePath = "app/src/main/activity/HomeActivityTest.kt"
     tempFolder.newFile("testfiles/$stringFilePath")
@@ -2220,12 +2220,11 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent(){
+  fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent() {
     val acceptedContent = "testActivity_createIntent_verifyScreenNameInIntent()"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/HomeActivityTest.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(acceptedContent)
-
 
     runScript()
 
