@@ -21,7 +21,7 @@ class ConceptCardTagHandler(
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val skillId = attributes.getJsonStringValue("skill_id-with-value")

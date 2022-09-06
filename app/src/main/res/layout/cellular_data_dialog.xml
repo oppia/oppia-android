@@ -11,10 +11,10 @@
     android:layout_height="wrap_content"
     android:fontFamily="sans-serif"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:paddingTop="@dimen/cellular_data_dialog_padding"
+    android:paddingEnd="16dp"
     android:paddingBottom="@dimen/cellular_data_dialog_padding"
     android:text="@string/cellular_data_alert_dialog_checkbox"
-    android:textColor="@color/color_def_black_54"
+    android:textColor="@color/component_color_cellular_data_dialog_checkbox_color"
     android:textSize="16sp" />
 </RelativeLayout>

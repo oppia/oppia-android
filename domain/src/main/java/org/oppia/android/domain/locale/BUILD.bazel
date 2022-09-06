@@ -14,42 +14,13 @@ kt_android_library(
     deps = [
         ":content_locale_impl",
         ":dagger",
-        ":display_locale_impl",
         ":language_config_retriever",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//model/src/main/proto:languages_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/data:async_result",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
-        "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
-    ],
-)
-
-kt_android_library(
-    name = "android_locale_factory",
-    srcs = [
-        "AndroidLocaleFactory.kt",
-    ],
-    visibility = [
-        "//domain:domain_testing_visibility",
-    ],
-    deps = [
-        ":dagger",
         "//utility/src/main/java/org/oppia/android/util/locale:android_locale_profile",
-    ],
-)
-
-kt_android_library(
-    name = "display_locale_impl",
-    srcs = [
-        "DisplayLocaleImpl.kt",
-    ],
-    visibility = [
-        "//domain:domain_testing_visibility",
-    ],
-    deps = [
-        ":android_locale_factory",
-        "//third_party:androidx_core_core",
-        "//utility/src/main/java/org/oppia/android/util/data:data_providers",
+        "//utility/src/main/java/org/oppia/android/util/locale:impl",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_bidi_formatter",
         "//utility/src/main/java/org/oppia/android/util/locale:oppia_locale",
     ],
