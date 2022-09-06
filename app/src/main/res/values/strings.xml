@@ -341,6 +341,7 @@
   <string name="profile_edit_delete">Profile Deletion</string>
   <string name="profile_edit_delete_dialog_title">Permanently delete this profile?</string>
   <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
+  <string name="profile_edit_delete_successful_message">Profile deleted successfully.</string>
   <string name="profile_edit_delete_dialog_positive">Delete</string>
   <string name="profile_edit_delete_dialog_negative">Cancel</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
