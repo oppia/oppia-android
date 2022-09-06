@@ -17,7 +17,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
   deviceSettings: DeviceSettings,
-  automaticallyUpdateTopic: Boolean,
+  private val automaticallyUpdateTopic: Boolean,
 ) : AdministratorControlsItemViewModel() {
 
   val isVisible = ObservableField(automaticallyUpdateTopic)

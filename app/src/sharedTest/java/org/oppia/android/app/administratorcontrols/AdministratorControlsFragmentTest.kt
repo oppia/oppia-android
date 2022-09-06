@@ -3,6 +3,7 @@ package org.oppia.android.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
@@ -189,6 +190,7 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
+    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -211,6 +213,49 @@ class AdministratorControlsFragmentTest {
       )
     }
   }
+
+  @Test
+  fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsNotDisplayed() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.download_permissions_text_view,
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
+      )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.topic_update_on_wifi_constraint_layout
+      )
+      scrollToPosition(position = 2)
+      verifyItemNotDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.auto_update_topic_constraint_layout
+      )
+    }
+  }
+
+  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(
+      matches(
+        ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+      )
+    )
+  }
+
 
   @Test
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {

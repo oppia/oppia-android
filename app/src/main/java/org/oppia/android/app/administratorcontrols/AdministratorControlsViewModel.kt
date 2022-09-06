@@ -94,16 +94,29 @@ class AdministratorControlsViewModel @Inject constructor(
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
 
-    itemViewModelList.add(
-      AdministratorControlsDownloadPermissionsViewModel(
-        fragment,
-        oppiaLogger,
-        profileManagementController,
-        userProfileId,
-        deviceSettings,
-        automaticallyUpdateTopic.value
+    if (automaticallyUpdateTopic.value){
+      itemViewModelList.add(
+        AdministratorControlsDownloadPermissionsViewModel(
+          fragment,
+          oppiaLogger,
+          profileManagementController,
+          userProfileId,
+          deviceSettings,
+         true
+        )
       )
-    )
+    } else {
+      itemViewModelList.add(
+        AdministratorControlsDownloadPermissionsViewModel(
+          fragment,
+          oppiaLogger,
+          profileManagementController,
+          userProfileId,
+          deviceSettings,
+          false
+        )
+      )
+    }
 
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(
