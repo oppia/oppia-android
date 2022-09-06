@@ -3,7 +3,6 @@ Central macros pertaining to setting up tests across the codebase.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
-load("//domain:domain_assets.bzl", "copy_files", "retrieve_domain_assets")
 
 # TODO(#1620): Remove module-specific test macros once Gradle is removed
 def oppia_android_module_level_test(
@@ -50,8 +49,8 @@ def oppia_android_test(
         test_class,
         deps,
         enable_data_binding = False,
-        test_assets = None,
-        test_asset_dir = None,
+        assets = None,
+        assets_dir = None,
         **kwargs):
     """
     Creates a local Oppia test target with Kotlin support.
@@ -67,18 +66,11 @@ def oppia_android_test(
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
       enable_data_binding: boolean. Indicates whether the test enables data-binding.
       deps: list of str. The list of dependencies needed to run the tests.
-      test_assets: list of str. A list of assets needed to run the tests.
-      test_asset_dir: str. The relative root of test assets (to control whether files or directories
-          are included as assets).
+      assets: list of str. A list of assets needed to run the tests.
+      assets_dir: str. The path to the assets directory.
       **kwargs: additional parameters to pass to android_local_test.
     """
 
-    copied_test_assets = copy_files(
-        name = "copy_test_assets_%s" % name,
-        input_files = test_assets,
-        input_base_path = test_asset_dir,
-        output_file_path = "assets/",
-    ) if test_assets else []
     kt_android_library(
         name = name + "_lib",
         custom_package = custom_package,
@@ -86,11 +78,8 @@ def oppia_android_test(
         deps = deps,
         testonly = True,
         manifest = test_manifest,
-        assets = retrieve_domain_assets(
-            name,
-            dest_assets_dir = "assets/",
-        ) + copied_test_assets,
-        assets_dir = "assets/",
+        assets = assets,
+        assets_dir = assets_dir,
         enable_data_binding = enable_data_binding,
     )
     native.android_local_test(

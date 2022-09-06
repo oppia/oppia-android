@@ -21,7 +21,7 @@ def data_test(name, filtered_tests, deps, **kwargs):
         deps = deps,
         custom_package = "org.oppia.android.data",
         test_manifest = "src/test/AndroidManifest.xml",
-        test_assets = native.glob(["src/test/assets/**"]),
-        test_asset_dir = "data/src/test/assets/",
+        assets = native.glob(["src/test/assets/**"]),
+        assets_dir = "src/test/assets/",
         **kwargs
     )

@@ -98,26 +98,19 @@ filegroup(
     ],
 )
 
-# TODO: Remove.
-filegroup(
-    name = "domain_assets",
-    srcs = glob(
-        ["src/main/assets/**"],
-        exclude = ["src/main/assets/**/*.textproto"],
-    ) + DOMAIN_ASSETS,
-    visibility = [
-        "//:oppia_binary_visibility",
-        "//:oppia_testing_visibility",
-    ],
-)
-
 kt_android_library(
     name = "domain",
     srcs = glob(
         ["src/main/java/org/oppia/android/domain/**/*.kt"],
         exclude = MIGRATED_PROD_FILES + ["src/main/java/org/oppia/android/domain/testing/**/*.kt"],
     ),
+    assets = glob(
+        ["src/main/assets/**"],
+        exclude = ["src/main/assets/**/*.textproto"],
+    ) + DOMAIN_ASSETS,
+    assets_dir = "src/main/assets/",
     custom_package = "org.oppia.android.domain",
+    manifest = "src/main/AndroidManifest.xml",
     visibility = ["//visibility:public"],
     deps = [
         ":dagger",
@@ -228,6 +221,7 @@ TEST_DEPS = [
     "//third_party:androidx_work_work-testing",
     "//third_party:com_google_truth_extensions_truth-liteproto-extension",
     "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:robolectric_android-all",
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
