@@ -9,11 +9,11 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.domain.classify.InteractionsModule
@@ -38,9 +38,11 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -62,10 +64,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.Spotlight
-import org.oppia.android.testing.assertThrows
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import kotlin.test.assertEquals
 
 @Suppress("SameParameterValue", "FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -115,7 +114,7 @@ class SpotlightStateControllerTest {
   fun markSpotlightViewStateOnInvalidSpotlightFeature_throwsException() {
     val invalidSpotlightFeature = Spotlight.FeatureCase.FEATURE_NOT_SET
     assertThrows(SpotlightStateController.SpotlightFeatureNotFoundException::class) {
-        spotlightStateController.markSpotlightViewed(profileId, invalidSpotlightFeature)
+      spotlightStateController.markSpotlightViewed(profileId, invalidSpotlightFeature)
     }
   }
 
@@ -174,7 +173,8 @@ class SpotlightStateControllerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ExplorationProgressControllerTest.TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
+      ExplorationProgressControllerTest.TestExplorationStorageModule::class,
+      HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
