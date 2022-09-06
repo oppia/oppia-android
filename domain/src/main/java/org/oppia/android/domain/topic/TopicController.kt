@@ -124,7 +124,6 @@ class TopicController @Inject constructor(
     return getTopics(profileId, listOf(topicId)).transform(GET_TOPIC_PROVIDER_ID) { it.single() }
   }
 
-  // TODO: Add tests.
   /**
    * Fetches a list of topics given by [topicIds] in the same way as [getTopic].
    *
@@ -244,7 +243,7 @@ class TopicController @Inject constructor(
         conceptCard = conceptCardRetriever.loadConceptCard(skillId)
         writtenTranslationContext =
           translationController.computeWrittenTranslationContext(
-            conceptCard.writtenTranslationsMap, contentLocale
+            conceptCard.writtenTranslationMap, contentLocale
           )
       }.build()
     }
@@ -471,8 +470,8 @@ class TopicController @Inject constructor(
         return Topic.newBuilder().apply {
           this.topicId = topicId
           putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
-          title = topicRecord.title
-          description = topicRecord.description
+          title = topicRecord.translatableTitle
+          description = topicRecord.translatableDescription
           addAllStory(stories)
           topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
           diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
@@ -578,7 +577,7 @@ class TopicController @Inject constructor(
     )
     return Subtopic.newBuilder().apply {
       this.subtopicId = subtopicId
-      putAllWrittenTranslations(subtopicRecord.writtenTranslationsMap)
+      putAllWrittenTranslations(subtopicRecord.writtenTranslationMap)
       title = subtopicRecord.title
       addAllSkillIds(subtopicRecord.skillIdsList)
       subtopicThumbnail = subtopicRecord.subtopicThumbnail
@@ -725,7 +724,7 @@ class TopicController @Inject constructor(
       )
     return StorySummary.newBuilder().apply {
       this.storyId = storyId
-      storyTitle = storyRecord.storyTitle
+      storyTitle = storyRecord.translatableStoryName
       putAllWrittenTranslations(storyRecord.writtenTranslationsMap)
       storyThumbnail = storyRecord.storyThumbnail
       addAllChapter(
@@ -733,8 +732,8 @@ class TopicController @Inject constructor(
           ChapterSummary.newBuilder().apply {
             explorationId = chapterRecord.explorationId
             putAllWrittenTranslations(chapterRecord.writtenTranslationsMap)
-            title = chapterRecord.title
-            description = chapterRecord.description
+            title = chapterRecord.translatableTitle
+            description = chapterRecord.translatableDescription
             chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
             chapterThumbnail = chapterRecord.chapterThumbnail
           }.build()

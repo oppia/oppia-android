@@ -9,6 +9,7 @@ import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
+import org.oppia.android.app.model.SubtitledHtml
 
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
@@ -39,10 +40,20 @@ class ExplorationRetriever @Inject constructor(
     val innerExplorationObject = explorationObject.getJSONObject("exploration")
     return Exploration.newBuilder()
       .setId(explorationObject.getStringFromObject("exploration_id"))
-      .setTitle(innerExplorationObject.getStringFromObject("title"))
+      .setTranslatableTitle(
+        SubtitledHtml.newBuilder().apply {
+          contentId = "title"
+          html = innerExplorationObject.getStringFromObject("title")
+        }.build()
+      )
       .setLanguageCode(innerExplorationObject.getStringFromObject("language_code"))
       .setInitStateName(innerExplorationObject.getStringFromObject("init_state_name"))
-      .setObjective(innerExplorationObject.getStringFromObject("objective"))
+      .setDescription(
+        SubtitledHtml.newBuilder().apply {
+          contentId = "description"
+          html = innerExplorationObject.getStringFromObject("objective")
+        }.build()
+      )
       .putAllStates(createStatesFromJsonObject(innerExplorationObject.getJSONObject("states")))
       .setVersion(explorationObject.getInt("version"))
       .build()

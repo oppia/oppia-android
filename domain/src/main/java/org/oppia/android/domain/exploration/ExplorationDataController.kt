@@ -9,9 +9,14 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralExploration
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.locale.OppiaLocale
 
-private const val GET_EXPLORATION_BY_ID_PROVIDER_ID =
-  "get_exploration_by_id_provider_id"
+private const val GET_EXPLORATION_BY_ID_PROVIDER_ID = "get_exploration_by_id_provider_id"
+private const val GET_LOCALIZABLE_EXPLORATION_BY_ID_PROVIDER_ID =
+  "get_localizable_exploration_by_id_provider_id"
 
 /**
  * Controller for loading explorations by ID, or beginning to play an exploration. This controller
@@ -26,15 +31,19 @@ class ExplorationDataController @Inject constructor(
   private val explorationRetriever: ExplorationRetriever,
   private val dataProviders: DataProviders,
   private val exceptionsController: ExceptionsController,
-  private val explorationCheckpointController: ExplorationCheckpointController
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val translationController: TranslationController
 ) {
-  /** Returns an [Exploration] given an ID. */
-  fun getExplorationById(id: String): DataProvider<Exploration> {
-    return dataProviders.createInMemoryDataProviderAsync(
+  /** Returns an [EphemeralExploration] given an ID. */
+  fun getExplorationById(profileId: ProfileId, id: String): DataProvider<EphemeralExploration> {
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    val explorationProvider = dataProviders.createInMemoryDataProviderAsync(
       GET_EXPLORATION_BY_ID_PROVIDER_ID
-    ) {
-      retrieveExplorationById(id)
-    }
+    ) { retrieveExplorationById(id) }
+    return explorationProvider.combineWith(
+      translationLocaleProvider, GET_LOCALIZABLE_EXPLORATION_BY_ID_PROVIDER_ID
+    ) { exploration, locale -> exploration.toEphemeral(locale) }
   }
 
   /**
@@ -265,5 +274,17 @@ class ExplorationDataController @Inject constructor(
       exceptionsController.logNonFatalException(e)
       AsyncResult.Failure(e)
     }
+  }
+
+  private fun Exploration.toEphemeral(
+    contentLocale: OppiaLocale.ContentLocale
+  ): EphemeralExploration {
+    return EphemeralExploration.newBuilder().apply {
+      exploration = this@toEphemeral
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          exploration.writtenTranslationsMap, contentLocale
+        )
+    }.build()
   }
 }

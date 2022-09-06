@@ -113,6 +113,8 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EphemeralExploration
+import org.oppia.android.app.model.Exploration
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -2672,8 +2674,11 @@ class ExplorationProgressControllerTest {
   private fun retrieveCheckpointHelpIndex(explorationId: String) =
     retrieveExplorationCheckpoint(explorationId).helpIndex
 
-  private fun loadExploration(expId: String) =
-    monitorFactory.waitForNextSuccessfulResult(explorationDataController.getExplorationById(expId))
+  private fun loadExploration(expId: String): Exploration {
+    return monitorFactory.waitForNextSuccessfulResult(
+      explorationDataController.getExplorationById(profileId, expId)
+    ).exploration
+  }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
     val rootProfileId = ProfileId.getDefaultInstance()

@@ -84,12 +84,12 @@ class ConceptCardRetriever @Inject constructor(
             ).build()
         )
         .addAllWorkedExample(workedExamplesList)
-        .putAllWrittenTranslations(
+        .putAllWrittenTranslation(
           createWrittenTranslationMappingsFromJson(
             skillContents.optJSONObject("written_translations")
           )
         )
-        .putAllRecordedVoiceovers(recordedVoiceoverMapping)
+        .putAllRecordedVoiceover(recordedVoiceoverMapping)
         .build()
     } catch (e: JSONException) {
       return null

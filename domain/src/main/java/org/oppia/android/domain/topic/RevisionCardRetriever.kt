@@ -33,8 +33,8 @@ class RevisionCardRetriever @Inject constructor(
       RevisionCard.newBuilder().apply {
         subtopicTitle = subtopicRecord.title
         pageContents = subtopicRecord.pageContents
-        putAllRecordedVoiceovers(subtopicRecord.recordedVoiceoversMap)
-        putAllWrittenTranslations(subtopicRecord.writtenTranslationsMap)
+        putAllRecordedVoiceovers(subtopicRecord.recordedVoiceoverMap)
+        putAllWrittenTranslations(subtopicRecord.writtenTranslationMap)
       }.build()
     } else loadRevisionCardFromJson(topicId, subtopicId)
   }

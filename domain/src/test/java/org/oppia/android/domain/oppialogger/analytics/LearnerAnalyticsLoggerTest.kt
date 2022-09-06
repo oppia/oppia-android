@@ -65,6 +65,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
 
 /** Tests for [LearnerAnalyticsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -99,6 +100,8 @@ class LearnerAnalyticsLoggerTest {
   private val installIdParameter: String? get() = iid.takeIf { it != "null" }
   private val expectedLearnerIdParameter: String get() = elid
   private val expectedInstallIdParameter: String get() = eid
+
+  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   @Before
   fun setUp() {
@@ -1399,8 +1402,8 @@ class LearnerAnalyticsLoggerTest {
 
   private fun loadExploration(expId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(expId)
-    )
+      explorationDataController.getExplorationById(profileId, expId)
+    ).exploration
   }
 
   private fun Exploration.getStateByName(name: String) = statesMap.getValue(name)

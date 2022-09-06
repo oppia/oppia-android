@@ -214,7 +214,7 @@ class TopicListController @Inject constructor(
       TopicSummary.newBuilder().apply {
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
-        title = topicRecord.title
+        title = topicRecord.translatableTitle
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
         topicPlayAvailability = if (topicRecord.isPublished) {
@@ -709,9 +709,9 @@ class TopicListController @Inject constructor(
           translationController.computeWrittenTranslationContext(
             topicRecord.writtenTranslationsMap, contentLocale
           )
-        storyTitle = storyRecord.storyTitle
+        storyTitle = storyRecord.translatableStoryName
         this.topicId = topicId
-        topicTitle = topicRecord.title
+        topicTitle = topicRecord.translatableTitle
         completedChapterCount = 0
         totalChapterCount = storyRecord.chaptersCount
         lessonThumbnail = storyRecord.storyThumbnail
@@ -722,7 +722,7 @@ class TopicListController @Inject constructor(
             translationController.computeWrittenTranslationContext(
               it.writtenTranslationsMap, contentLocale
             )
-          nextChapterTitle = it.title
+          nextChapterTitle = it.translatableTitle
           explorationId = it.explorationId
         }
         // ChapterPlayState will be NOT_STARTED because this function only recommends the first

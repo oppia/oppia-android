@@ -90,11 +90,11 @@ message ConceptCard {
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that
   // has corresponding recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceovers = 5;
+  map<string, VoiceoverMapping> recorded_voiceover = 5;
 
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this concept card
   // that has a corresponding translation.
-  map<string, TranslationMapping> written_translations = 6;
+  map<string, TranslationMapping> written_translation = 6;
 }
 
 // Corresponds to a concept card that is currently being viewed.
@@ -564,10 +564,10 @@ message TopicRecord {
   map<string, TranslationMapping> written_translations = 8;
 
   // The title of the topic.
-  SubtitledHtml title = 9;
+  SubtitledHtml translatable_title = 9;
 
   // The topic's description.
-  SubtitledHtml description = 10;
+  SubtitledHtml translatable_description = 10;
 
   // The list of canonical story IDs that can be used to load stories from the local filesystem.
   repeated string canonical_story_ids = 4;
@@ -599,7 +599,7 @@ message StoryRecord {
   map<string, TranslationMapping> written_translations = 5;
 
   // The human-readable title of the story.
-  SubtitledHtml story_title = 6;
+  SubtitledHtml translatable_story_name = 6;
 
   // The thumbnail that should be associated with the story.
   LessonThumbnail story_thumbnail = 3;
@@ -626,10 +626,10 @@ message ChapterRecord {
   map<string, TranslationMapping> written_translations = 5;
 
   // The title of the chapter.
-  SubtitledHtml title = 6;
+  SubtitledHtml translatable_title = 6;
 
   // The outline/description that is used to provide an initial summary of the chapter's contents.
-  SubtitledHtml description = 7;
+  SubtitledHtml translatable_description = 7;
 
   // The old title corresponding to the chapter (as a string).
   reserved 3;
@@ -650,11 +650,11 @@ message SubtopicRecord {
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this revision card that
   // has corresponding recorded audio to play.
-  map<string, VoiceoverMapping> recorded_voiceovers = 3;
+  map<string, VoiceoverMapping> recorded_voiceover = 3;
 
   // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this revision card
   // that has a corresponding translation.
-  map<string, TranslationMapping> written_translations = 4;
+  map<string, TranslationMapping> written_translation = 4;
 
   // The list of skill ids associated with the subtopic.
   repeated string skill_ids = 5;

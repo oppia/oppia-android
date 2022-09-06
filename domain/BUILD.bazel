@@ -34,67 +34,53 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/state/*.kt",
 ])
 
-# TODO: Revert.
-DOMAIN_ASSETS = []  #generate_assets_list_from_text_protos(
-#    name = "domain_assets",
-#    exploration_file_names = [
-#        "test_exp_id_2",
-#        "13",
-#        "test_exp_id_4",
-#        "test_exp_id_5",
-#        "umPkwp0L1M0-",
-#        "MjZzEVOG47_1",
-#        "2mzzFVDLuAj8",
-#        "5NWuolNcwH6e",
-#        "k2bQ7z5XHNbK",
-#        "tIoSb3HZFN6e",
-#        "test_single_interactive_state_exp_no_hints_no_solution",
-#        "test_single_interactive_state_exp_with_hints_and_solution",
-#        "test_single_interactive_state_exp_with_one_hint_and_solution",
-#        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
-#        "test_single_interactive_state_exp_with_only_solution",
-#        "test_single_interactive_state_exp_with_solution_missing_answer",
-#    ],
-#    skills_file_names = [
-#        "skills",
-#    ],
-#    story_file_names = [
-#        "test_story_id_0",
-#        "test_story_id_2",
-#        "wANbh4oOClga",
-#        "wAMdg4oOClga",
-#        "xBSdg4oOClga",
-#    ],
-#    subtopic_file_names = [
-#        "GJ2rLXRKD5hw_1",
-#        "GJ2rLXRKD5hw_2",
-#        "GJ2rLXRKD5hw_3",
-#        "GJ2rLXRKD5hw_4",
-#        "omzF4oqgeTXd_1",
-#        "test_topic_id_0_1",
-#    ],
-#    topic_file_names = [
-#        "test_topic_id_0",
-#        "test_topic_id_1",
-#        "test_topic_id_2",
-#        "GJ2rLXRKD5hw",
-#        "omzF4oqgeTXd",
-#    ],
-#    topic_list_file_names = [
-#        "topics",
-#    ],
-#)
-
-# TODO: Remove.
-filegroup(
+DOMAIN_ASSETS = generate_assets_list_from_text_protos(
     name = "domain_assets",
-    srcs = glob(
-        ["src/main/assets/**"],
-        exclude = ["src/main/assets/**/*.textproto"],
-    ) + DOMAIN_ASSETS,
-    visibility = [
-        "//:oppia_binary_visibility",
-        "//:oppia_testing_visibility",
+    exploration_file_names = [
+        "test_exp_id_2",
+        "13",
+        "test_exp_id_4",
+        "test_exp_id_5",
+        "umPkwp0L1M0-",
+        "MjZzEVOG47_1",
+        "2mzzFVDLuAj8",
+        "5NWuolNcwH6e",
+        "k2bQ7z5XHNbK",
+        "tIoSb3HZFN6e",
+        "test_single_interactive_state_exp_no_hints_no_solution",
+        "test_single_interactive_state_exp_with_hints_and_solution",
+        "test_single_interactive_state_exp_with_one_hint_and_solution",
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
+        "test_single_interactive_state_exp_with_only_solution",
+        "test_single_interactive_state_exp_with_solution_missing_answer",
+    ],
+    skills_file_names = [
+        "skills",
+    ],
+    story_file_names = [
+        "test_story_id_0",
+        "test_story_id_2",
+        "wANbh4oOClga",
+        "wAMdg4oOClga",
+        "xBSdg4oOClga",
+    ],
+    subtopic_file_names = [
+        "GJ2rLXRKD5hw_1",
+        "GJ2rLXRKD5hw_2",
+        "GJ2rLXRKD5hw_3",
+        "GJ2rLXRKD5hw_4",
+        "omzF4oqgeTXd_1",
+        "test_topic_id_0_1",
+    ],
+    topic_file_names = [
+        "test_topic_id_0",
+        "test_topic_id_1",
+        "test_topic_id_2",
+        "GJ2rLXRKD5hw",
+        "omzF4oqgeTXd",
+    ],
+    topic_list_file_names = [
+        "topics",
     ],
 )
 
