@@ -26,6 +26,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -209,6 +210,48 @@ class AdministratorControlsFragmentTest {
         targetView = R.id.auto_update_topic_constraint_layout
       )
     }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_autoUpdateSettingsIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.download_permissions_text_view,
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
+      )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.topic_update_on_wifi_constraint_layout
+      )
+      scrollToPosition(position = 2)
+      verifyItemNotDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.auto_update_topic_constraint_layout
+      )
+    }
+  }
+
+  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(
+      matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+      )
+    )
   }
 
   @Test
