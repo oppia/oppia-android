@@ -98,6 +98,19 @@ filegroup(
     ],
 )
 
+# TODO: Remove.
+filegroup(
+    name = "domain_assets",
+    srcs = glob(
+        ["src/main/assets/**"],
+        exclude = ["src/main/assets/**/*.textproto"],
+    ) + DOMAIN_ASSETS,
+    visibility = [
+        "//:oppia_binary_visibility",
+        "//:oppia_testing_visibility",
+    ],
+)
+
 kt_android_library(
     name = "domain",
     srcs = glob(
