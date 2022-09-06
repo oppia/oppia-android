@@ -83,6 +83,7 @@ private const val GET_COMPLETED_STORY_LIST_PROVIDER_ID =
 private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
+private const val GET_TOPICS_PROVIDER_ID = "get_topics_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
 private const val GET_CHAPTER_PROVIDER_ID = "get_chapter_provider_id"
 private const val GET_LOCALIZABLE_CHAPTER_PROVIDER_ID = "get_localizable_chapter_provider_id"
@@ -144,8 +145,8 @@ class TopicController @Inject constructor(
         }
         AsyncResult.Success(topics)
       }
-    val topicProgressDataProvider =
-      storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
+    val topicsProgressDataProvider =
+      storyProgressController.retrieveTopicsProgressDataProvider(profileId, topicIds)
 
     val topicsCombinedProvider = topicsDataProvider.combineWith(
       topicsProgressDataProvider,
@@ -402,7 +403,7 @@ class TopicController @Inject constructor(
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
-  internal fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
+  private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
       topic.storyList.forEachIndexed { storyIndex, storySummary ->
@@ -425,6 +426,10 @@ class TopicController @Inject constructor(
     }
     return topicBuilder.build()
   }
+
+  private fun combineTopicsAndTopicsProgress(
+    topics: List<Topic>, topicsProgress: List<TopicProgress>
+  ): List<Topic> = topics.zip(topicsProgress, ::combineTopicAndTopicProgress)
 
   /** Combines the specified story-summary without progress and story-progress into a new topic. */
   private fun combineStorySummaryAndStoryProgress(

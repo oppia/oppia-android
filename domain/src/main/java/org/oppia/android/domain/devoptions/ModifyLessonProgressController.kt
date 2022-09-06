@@ -18,9 +18,7 @@ import javax.inject.Singleton
 import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.data.DataProviders.Companion.transformDynamic
 
-private const val GET_ALL_TOPICS_PROVIDER_ID = "get_all_topics_provider_id"
 private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"
 private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"
 
@@ -42,10 +40,12 @@ class ModifyLessonProgressController @Inject constructor(
    */
   fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<EphemeralTopic>> {
     val topicListProvider = topicListController.getTopicList(profileId)
-    return topicListProvider.transformDynamic(GET_ALL_TOPICS_PROVIDER_ID) { topicList ->
+    // TODO(#4484): Migrate this to use transformDynamic to avoid the awkward force-retrieve
+    //  mechanism (which also breaks notifications for downstream topics changing).
+    return topicListProvider.transformAsync(GET_ALL_TOPICS_COMBINED_PROVIDER_ID) { topicList ->
       topicController.getTopics(
         profileId, topicList.topicSummaryList.map { it.topicSummary.topicId }
-      )
+      ).retrieveData()
     }
   }
 
@@ -159,23 +159,5 @@ class ModifyLessonProgressController @Inject constructor(
         completionTimestamp = oppiaClock.getCurrentTimeMs()
       )
     }
-  }
-
-  /** Combines list of topics without progress and list of [TopicProgress] into a list of [Topic]. */
-  private fun combineTopicListAndTopicProgressList(
-    allTopics: List<Topic>,
-    topicProgressList: List<TopicProgress>
-  ): List<Topic> {
-    val topicProgressMap = topicProgressList.associateBy({ it.topicId }, { it })
-    val allTopicsWithProgress = mutableListOf<Topic>()
-    allTopics.forEach { topic ->
-      allTopicsWithProgress.add(
-        topicController.combineTopicAndTopicProgress(
-          topic = topic,
-          topicProgress = topicProgressMap[topic.topicId] ?: TopicProgress.getDefaultInstance()
-        )
-      )
-    }
-    return allTopicsWithProgress
   }
 }

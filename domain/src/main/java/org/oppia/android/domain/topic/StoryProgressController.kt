@@ -15,6 +15,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.data.DataProviders.Companion.transform
 
 const val TEST_STORY_ID_0 = "test_story_id_0"
 const val TEST_STORY_ID_2 = "test_story_id_2"
@@ -38,6 +39,8 @@ private const val RETRIEVE_TOPIC_PROGRESS_LIST_DATA_PROVIDER_ID =
   "retrieve_topic_progress_list_data_provider_id"
 private const val RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_topic_progress_data_provider_id"
+private const val RETRIEVE_TOPICS_PROGRESS_DATA_PROVIDER_ID =
+  "retrieve_topics_progress_data_provider_id"
 private const val RETRIEVE_STORY_PROGRESS_DATA_PROVIDER_ID =
   "retrieve_story_progress_data_provider_id"
 private const val RETRIEVE_CHAPTER_PLAY_STATE_DATA_PROVIDER_ID =
@@ -325,13 +328,29 @@ class StoryProgressController @Inject constructor(
   }
 
   /** Returns a [TopicProgress] [DataProvider] for a specific topicId, per-profile basis. */
-  internal fun retrieveTopicProgressDataProvider(
+  private fun retrieveTopicProgressDataProvider(
     profileId: ProfileId,
     topicId: String
   ): DataProvider<TopicProgress> {
+    return retrieveTopicsProgressDataProvider(profileId, listOf(topicId))
+      .transform(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) { it.single() }
+  }
+
+  /**
+   * Returns a [DataProvider] of [TopicProgress]es for the specified topic Ids, on a per-profile
+   * basis, in the same order as the list of IDs.
+   *
+   * The provider defaults the progress for any IDs that don't have progress corresponding to them.
+   */
+  internal fun retrieveTopicsProgressDataProvider(
+    profileId: ProfileId,
+    topicIds: List<String>
+  ): DataProvider<List<TopicProgress>> {
     return retrieveCacheStore(profileId)
-      .transformAsync(RETRIEVE_TOPIC_PROGRESS_DATA_PROVIDER_ID) {
-        AsyncResult.Success(it.topicProgressMap[topicId] ?: TopicProgress.getDefaultInstance())
+      .transformAsync(RETRIEVE_TOPICS_PROGRESS_DATA_PROVIDER_ID) { progressDb ->
+        return@transformAsync AsyncResult.Success(
+          topicIds.map { progressDb.topicProgressMap[it] ?: TopicProgress.getDefaultInstance() }
+        )
       }
   }
 

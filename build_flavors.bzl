@@ -17,7 +17,9 @@ AVAILABLE_BUNDLE_FLAVORS = [
     "alpha_kenya",
 ]
 
-# TODO: Add docs.
+# Defines the list of top-level APK flavors available to build the Oppia app in. Note to developers:
+# new flavors generally shouldn't be added to this list; prefer adding bundle flavors in the list
+# above, instead.
 AVAILABLE_APK_FLAVORS = [
     "oppia",
     "oppia_kitkat",
@@ -128,6 +130,7 @@ _APK_FLAVOR_METADATA = {
             "//app",
         ],
         "version_code": OPPIA_DEV_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "oppia_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -139,6 +142,7 @@ _APK_FLAVOR_METADATA = {
             "//app",
         ],
         "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
 }
 
@@ -207,12 +211,24 @@ _transform_android_manifest = rule(
     implementation = _transform_android_manifest_impl,
 )
 
-# TODO: Add docs.
 def define_oppia_apk_binary_flavor(flavor):
+    """
+    Defines a new APK flavor of the Oppia Android app.
+
+    Flavors are defined through properties defined within _APK_FLAVOR_METADATA.
+
+    This will define one new target: //:<flavor> (the APK)
+
+    Args:
+        flavor: str. The name of the flavor of the app. Must correspond to an entry in
+            _APK_FLAVOR_METADATA.
+    """
+
     # TODO(#1640): Move binary manifest to top-level package post-Gradle.
     _transform_android_manifest(
         name = "oppia_apk_%s_transformed_manifest" % flavor,
         build_flavor = flavor,
+        application_relative_qualified_class = _APK_FLAVOR_METADATA[flavor]["application_class"],
         input_file = _APK_FLAVOR_METADATA[flavor]["manifest"],
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
