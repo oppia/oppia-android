@@ -17,10 +17,10 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.databinding.RevisionCardActivityBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [RevisionCardActivity]. */
 @ActivityScope

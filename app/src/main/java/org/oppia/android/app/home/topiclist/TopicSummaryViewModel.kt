@@ -3,11 +3,10 @@ package org.oppia.android.app.home.topiclist
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
-import org.oppia.android.app.model.TopicSummary
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import java.util.Objects
 import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
+import java.util.Objects
 
 /** The view model corresponding to individual topic summaries in the topic summary RecyclerView. */
 class TopicSummaryViewModel(

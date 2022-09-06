@@ -26,10 +26,10 @@ import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope

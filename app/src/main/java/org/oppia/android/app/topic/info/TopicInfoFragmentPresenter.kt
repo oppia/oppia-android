@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -17,7 +18,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralTopic
 
 /** The presenter for [TopicInfoFragment]. */
 @FragmentScope

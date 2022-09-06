@@ -6,6 +6,7 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ComingSoonTopicList
+import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
@@ -15,6 +16,7 @@ import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicIdList
 import org.oppia.android.app.model.TopicList
@@ -25,21 +27,19 @@ import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EphemeralTopicSummary
-import org.oppia.android.app.model.SubtitledHtml
-import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
-import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.locale.OppiaLocale
 
 private const val ONE_WEEK_IN_DAYS = 7
 
@@ -186,7 +186,8 @@ class TopicListController @Inject constructor(
   }
 
   private fun createEphemeralTopicSummary(
-    topicId: String, contentLocale: OppiaLocale.ContentLocale
+    topicId: String,
+    contentLocale: OppiaLocale.ContentLocale
   ): EphemeralTopicSummary {
     val topicSummary = createTopicSummary(topicId)
     return EphemeralTopicSummary.newBuilder().apply {
@@ -309,7 +310,8 @@ class TopicListController @Inject constructor(
   }
 
   private fun computePromotedStoryList(
-    topicProgressList: List<TopicProgress>, contentLocale: OppiaLocale.ContentLocale
+    topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): PromotedStoryList {
     return PromotedStoryList.newBuilder()
       .addAllRecentlyPlayedStory(
@@ -680,7 +682,8 @@ class TopicListController @Inject constructor(
   }
 
   private fun loadRecommendedStory(
-    topicId: String, contentLocale: OppiaLocale.ContentLocale
+    topicId: String,
+    contentLocale: OppiaLocale.ContentLocale
   ): PromotedStory? {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =

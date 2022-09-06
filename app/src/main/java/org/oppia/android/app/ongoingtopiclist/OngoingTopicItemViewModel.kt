@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel

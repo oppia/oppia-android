@@ -5,9 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
@@ -15,12 +14,11 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralStorySummary
-import org.oppia.android.domain.translation.TranslationController
 
 /** The ViewModel for StoryFragment. */
 @FragmentScope

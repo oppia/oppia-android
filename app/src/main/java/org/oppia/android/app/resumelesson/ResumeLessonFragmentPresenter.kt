@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -16,13 +17,12 @@ import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralChapterSummary
-import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [ResumeLessonFragment]. */
 class ResumeLessonFragmentPresenter @Inject constructor(

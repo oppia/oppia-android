@@ -3,16 +3,15 @@ package org.oppia.android.app.devoptions.markstoriescompleted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralStorySummary
-import org.oppia.android.domain.translation.TranslationController
 
 /**
  * [ViewModel] for [MarkStoriesCompletedFragment]. It populates the recyclerview with a list of

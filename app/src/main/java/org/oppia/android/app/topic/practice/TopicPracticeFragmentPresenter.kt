@@ -13,7 +13,6 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeF
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicPracticeFooterViewBinding
 import org.oppia.android.databinding.TopicPracticeFragmentBinding
 import org.oppia.android.databinding.TopicPracticeHeaderViewBinding

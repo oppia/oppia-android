@@ -1,7 +1,6 @@
 package org.oppia.android.app.devoptions.markchapterscompleted
 
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.domain.translation.TranslationController
 
@@ -14,8 +13,10 @@ class ChapterSummaryViewModel(
   val topicId: String,
   translationController: TranslationController
 ) : MarkChaptersCompletedItemViewModel() {
+  /** The summary of the chapter being displayed. */
   val chapterSummary = ephemeralChapterSummary.chapterSummary
 
+  /** The localized title of the chapter being displayed. */
   val chapterTitle by lazy {
     translationController.extractString(
       chapterSummary.title, ephemeralChapterSummary.writtenTranslationContext

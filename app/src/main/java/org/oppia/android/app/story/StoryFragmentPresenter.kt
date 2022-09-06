@@ -39,7 +39,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.domain.translation.TranslationController
 
 /** The presenter for [StoryFragment]. */
 class StoryFragmentPresenter @Inject constructor(

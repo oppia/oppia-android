@@ -12,7 +12,6 @@ import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.databinding.TopicRevisionSummaryViewBinding
 import javax.inject.Inject

@@ -8,8 +8,12 @@ import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.EphemeralConceptCard
 import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.EphemeralSubtopic
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
@@ -19,6 +23,7 @@ import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.SubtopicRecord
 import org.oppia.android.app.model.Topic
@@ -37,14 +42,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EphemeralChapterSummary
-import org.oppia.android.app.model.EphemeralStorySummary
-import org.oppia.android.app.model.EphemeralSubtopic
-import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.app.model.SubtitledHtml
-import org.oppia.android.util.locale.OppiaLocale
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
@@ -427,7 +427,8 @@ class TopicController @Inject constructor(
   }
 
   private fun combineTopicsAndTopicsProgress(
-    topics: List<Topic>, topicsProgress: List<TopicProgress>
+    topics: List<Topic>,
+    topicsProgress: List<TopicProgress>
   ): List<Topic> = topics.zip(topicsProgress, ::combineTopicAndTopicProgress)
 
   /** Combines the specified story-summary without progress and story-progress into a new topic. */

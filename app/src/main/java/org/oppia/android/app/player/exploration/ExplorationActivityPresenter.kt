@@ -15,7 +15,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
-import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
@@ -27,11 +27,10 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralExploration
-import org.oppia.android.domain.translation.TranslationController
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -107,7 +106,6 @@ class ExplorationActivityPresenter @Inject constructor(
       getExplorationFragment()?.handlePlayAudio()
     }
 
-    updateToolbarTitle(explorationId)
     profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     this.topicId = topicId
     this.storyId = storyId
@@ -115,6 +113,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.context = context
     this.backflowScreen = backflowScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
+    updateToolbarTitle(explorationId)
 
     // Retrieve oldest saved checkpoint details.
     subscribeToOldestSavedExplorationDetails()

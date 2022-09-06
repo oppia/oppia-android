@@ -1,18 +1,18 @@
 package org.oppia.android.domain.exploration
 
+import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralExploration
-import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 private const val GET_EXPLORATION_BY_ID_PROVIDER_ID = "get_exploration_by_id_provider_id"
 private const val GET_LOCALIZABLE_EXPLORATION_BY_ID_PROVIDER_ID =

@@ -3,8 +3,8 @@ package org.oppia.android.app.topic.practice
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
@@ -12,11 +12,10 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeS
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.model.EphemeralTopic
-import org.oppia.android.domain.translation.TranslationController
 
 /** [ObservableViewModel] for [TopicPracticeFragment]. */
 @FragmentScope

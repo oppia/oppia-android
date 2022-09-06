@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -65,7 +66,6 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ProfileId
 
 /** Tests for [LearnerAnalyticsLogger]. */
 // FunctionName: test names are conventionally named with underscores.

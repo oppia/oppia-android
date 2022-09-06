@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail

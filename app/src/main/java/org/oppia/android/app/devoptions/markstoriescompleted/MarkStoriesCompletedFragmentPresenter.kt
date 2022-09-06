@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkStoriesCompletedFragmentBinding
 import org.oppia.android.databinding.MarkStoriesCompletedStorySummaryViewBinding
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.EphemeralTopicSummary
-import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
 import org.oppia.android.domain.translation.TranslationController
