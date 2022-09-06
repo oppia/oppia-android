@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
+import org.oppia.android.app.settings.profile.DeleteProfileSuccessDialogFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
@@ -126,6 +127,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(licenseListFragment: LicenseListFragment)
   fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
   fun inject(logoutDialogFragment: LogoutDialogFragment)
+  fun inject(deleteProfileSuccessFragment: DeleteProfileSuccessDialogFragment)
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
   fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
