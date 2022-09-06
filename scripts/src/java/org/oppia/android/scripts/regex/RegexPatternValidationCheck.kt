@@ -338,8 +338,8 @@ private data class MatchableScreenNamePresenceCheck(
    * content or not.
    */
   fun computeIfFileIsAffected(lines: Iterable<String>): Boolean {
-    lines.forEach{ line ->
-      if(line.contains(acceptedContentRegex))
+    lines.forEach { line ->
+      if (line.contains(acceptedContentRegex))
         return false
     }
     return true
@@ -355,7 +355,9 @@ private data class MatchableScreenNamePresenceCheck(
      * Returns a new [MatchableScreenNamePresenceCheck] based on the specified
      * [ScreenNamePresenceCheck].
      */
-    fun createFrom(screenNamePresenceCheck: ScreenNamePresenceCheck): MatchableScreenNamePresenceCheck {
+    fun createFrom(
+      screenNamePresenceCheck: ScreenNamePresenceCheck
+    ): MatchableScreenNamePresenceCheck {
       return MatchableScreenNamePresenceCheck(
         filePathRegex = screenNamePresenceCheck.filePathRegex.toRegex(),
         acceptedContentRegex = screenNamePresenceCheck.acceptedContentRegex.toRegex(),

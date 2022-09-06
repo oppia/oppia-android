@@ -70,6 +70,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -81,7 +82,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [PoliciesActivity]. */
 @RunWith(AndroidJUnit4::class)
