@@ -13,7 +13,7 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
-    const val TAG_DELETE_DIALOG_FRAGMENT = "TAG_DELETE_DIALOG_FRAGMENT"
+    const val TAG = "TAG_DELETE_DIALOG_FRAGMENT"
 
     fun newInstance(): DeleteProfileSuccessDialogFragment {
       return DeleteProfileSuccessDialogFragment()

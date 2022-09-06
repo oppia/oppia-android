@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.administratorcontrols.AdministratorControlsFragment
-import org.oppia.android.app.settings.profile.DeleteProfileSuccessDialogFragment
 import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
@@ -54,6 +53,7 @@ import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfilePictureEditDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
 import org.oppia.android.app.resumelesson.ResumeLessonFragment
+import org.oppia.android.app.settings.profile.DeleteProfileSuccessDialogFragment
 import org.oppia.android.app.settings.profile.ProfileEditDeletionDialogFragment
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment

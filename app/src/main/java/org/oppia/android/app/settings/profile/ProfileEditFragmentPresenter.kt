@@ -132,7 +132,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
         if (it is AsyncResult.Success) {
           // show alert dialog
           DeleteProfileSuccessDialogFragment.newInstance()
-            .showNow(fragment.childFragmentManager, DeleteProfileSuccessDialogFragment.TAG_DELETE_DIALOG_FRAGMENT)
+            .showNow(fragment.childFragmentManager, DeleteProfileSuccessDialogFragment.TAG)
         }
       }
   }
