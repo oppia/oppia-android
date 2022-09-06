@@ -105,6 +105,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.properties.Delegates
 
 /** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -125,7 +126,7 @@ class TopicPracticeFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  private var enableExtraTopicTabsUiValue: Boolean = false
+  private var enableExtraTopicTabsUiValue by Delegates.notNull<Boolean>()
 
   @Before
   fun setUp() {
