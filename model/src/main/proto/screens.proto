@@ -149,6 +149,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when the admin pin activity is visible to the user.
   ADMIN_PIN_ACTIVITY = 46;
+
+  // Screen name value for the scenario when the policies activity is visible to the user.
+  POLICIES_ACTIVITY = 47;
 }
 
 // Defines the current visible UI screen of the application.

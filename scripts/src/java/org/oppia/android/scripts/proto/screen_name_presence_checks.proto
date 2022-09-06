@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Checks to ensure the usage of screen names in the activity and activityTest files of the codebase.
+message ScreenNamePresenceChecks {
+  // List of all the screen name presence checks.
+  repeated ScreenNamePresenceCheck screen_name_presence_checks = 1;
+}
+
+// Check to ensure that screen names are used in the activity and activityTest files of the codebase.
+message ScreenNamePresenceCheck {
+  // Matches to filename in which to do the presence check.
+  string file_path_regex = 1;
+
+  // Regex which should be present in the file.
+  string accepted_content_regex = 2;
+
+  // Error to show if any activity file has content not matching the accepted content regex.
+  string failure_message = 3;
+
+  // Names of all the files which should be exempted for this check.
+  repeated string exempted_file_name = 4;
+
+  // Regex patterns for all file/file paths that should be exempted for this check.
+  repeated string exempted_file_patterns = 5;
+}

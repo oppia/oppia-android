@@ -601,6 +601,7 @@ class EventBundleCreator @Inject constructor(
     ScreenName.MARK_STORIES_COMPLETED_ACTIVITY -> "mark_stories_completed_activity"
     ScreenName.FORCE_NETWORK_TYPE_ACTIVITY -> "force_network_type_activity"
     ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
+    ScreenName.POLICIES_ACTIVITY -> "policies_activity"
     ScreenName.UNRECOGNIZED -> "unrecognized"
   }
 }

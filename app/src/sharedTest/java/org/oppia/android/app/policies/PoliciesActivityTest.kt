@@ -24,6 +24,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -80,6 +81,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 
 /** Tests for [PoliciesActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -98,6 +100,16 @@ class PoliciesActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = PoliciesActivity.createPoliciesActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      PolicyPage.PRIVACY_POLICY
+    ).extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.POLICIES_ACTIVITY)
   }
 
   @Test

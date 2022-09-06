@@ -7,7 +7,8 @@ load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
 def generate_regex_assets_list_from_text_protos(
         name,
         filepath_pattern_validation_file_names,
-        file_content_validation_file_names):
+        file_content_validation_file_names,
+        screen_name_presence_validation_file_names):
     """
     Converts multiple lists of text proto assets to binary.
 
@@ -34,6 +35,15 @@ def generate_regex_assets_list_from_text_protos(
         proto_dep_name = "file_content_validation_checks",
         proto_type_name = "FileContentChecks",
         name_prefix = "file_content_checks",
+        asset_dir = "assets",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
+        proto_package = "proto",
+    ) + generate_proto_binary_assets(
+        name = name,
+        names = screen_name_presence_validation_file_names,
+        proto_dep_name = "screen_name_presence_validation_checks",
+        proto_type_name = "ScreenNamePresenceChecks",
+        name_prefix = "screen_name_presence_checks",
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",

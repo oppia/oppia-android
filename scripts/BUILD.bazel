@@ -61,6 +61,7 @@ REGEX_PATTERN_CHECK_ASSETS = generate_regex_assets_list_from_text_protos(
     name = "regex_asset_files",
     file_content_validation_file_names = ["file_content_validation_checks"],
     filepath_pattern_validation_file_names = ["filename_pattern_validation_checks"],
+    screen_name_presence_validation_file_names = ["screen_name_presence_validation_checks"],
 )
 
 MAVEN_ASSETS = generate_maven_assets_list_from_text_protos(
