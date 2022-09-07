@@ -28,6 +28,23 @@ import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen
+import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.HOME_SCREEN
+import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
+import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
+import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
+import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+import org.oppia.android.app.model.OppiaMetricLog.NetworkType
+import org.oppia.android.app.model.OppiaMetricLog.NetworkType.CELLULAR
+import org.oppia.android.app.model.OppiaMetricLog.NetworkType.WIFI
+import org.oppia.android.app.model.OppiaMetricLog.Priority
+import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
+import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
+import org.oppia.android.app.model.OppiaMetricLog.StorageTier
+import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
+import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -74,6 +91,12 @@ class EventBundleCreatorTest {
     private const val TEST_IS_ANSWER_CORRECT = true
     private const val TEST_IS_ANSWER_CORRECT_STR = "true"
     private const val TEST_CONTENT_ID = "test_content_id"
+    private const val TEST_CPU_USAGE = Long.MAX_VALUE
+    private const val TEST_APK_SIZE = Long.MAX_VALUE
+    private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
+    private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
+    private const val TEST_NETWORK_USAGE = Long.MAX_VALUE
+    private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
   }
 
   @Inject
@@ -95,6 +118,26 @@ class EventBundleCreatorTest {
     assertThat(bundle).hasSize(2)
     assertThat(bundle).longInt("timestamp").isEqualTo(0)
     assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
+  }
+
+  @Test
+  fun testFillPerformanceMetricsBundle_defaultEvent_defaultsBundleAndRetsUnknownActivityContext() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      OppiaMetricLog.getDefaultInstance(), bundle
+    )
+
+    assertThat(typeName).isEqualTo("unknown_loggable_metric")
+    assertThat(bundle).hasSize(7)
+    assertThat(bundle).longInt("timestamp").isEqualTo(0)
+    assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("false")
+    assertThat(bundle).string("memory_tier").isEqualTo("unspecified_memory_tier")
+    assertThat(bundle).string("storage_tier").isEqualTo("unspecified_storage_tier")
+    assertThat(bundle).string("network_type").isEqualTo("unspecified_network_type")
+    assertThat(bundle).string("current_screen").isEqualTo("unspecified_current_screen")
   }
 
   @Test
@@ -131,6 +174,118 @@ class EventBundleCreatorTest {
     eventBundleCreator.fillEventBundle(eventLog, bundle)
 
     assertThat(bundle).string("priority").isEqualTo("optional")
+  }
+
+  @Test
+  fun testFillMetricsBundle_eventWithDefaultLoggableMetric_fillsDetailsAndRetsUnknownLog() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog = createPerformanceMetricLog(
+      timestamp = TEST_TIMESTAMP_1,
+      priority = HIGH_PRIORITY,
+      currentScreen = HOME_SCREEN,
+      memoryTier = HIGH_MEMORY_TIER,
+      storageTier = HIGH_STORAGE,
+      networkType = WIFI,
+      isAppInForeground = true
+    )
+
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetricLog,
+      bundle
+    )
+
+    assertThat(typeName).isEqualTo("unknown_loggable_metric")
+    assertThat(bundle).hasSize(7)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDiffTimestamp_savesDifferentTimestampInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog = createPerformanceMetricLog(timestamp = TEST_TIMESTAMP_2)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_2)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDifferentPriority_savesDifferentPriorityInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog =
+      createPerformanceMetricLog(priority = MEDIUM_PRIORITY)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("priority").isEqualTo("medium_priority")
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDiffMemoryTier_savesDiffMemoryTierInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog =
+      createPerformanceMetricLog(memoryTier = MEDIUM_MEMORY_TIER)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("memory_tier").isEqualTo("medium_memory")
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDiffStorageTier_savesDiffStorageTierInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog =
+      createPerformanceMetricLog(storageTier = MEDIUM_STORAGE)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("storage_tier").isEqualTo("medium_storage")
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDiffCurrentScreen_savesDiffCurrentScreenInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog =
+      createPerformanceMetricLog(currentScreen = SCREEN_UNSPECIFIED)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("current_screen").isEqualTo("unspecified_current_screen")
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDiffNetworkType_savesDiffNetworkTypeInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog =
+      createPerformanceMetricLog(networkType = CELLULAR)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("network_type").isEqualTo("cellular")
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_eventWithDiffAppInForeground_savesDiffValueInBundle() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog = createPerformanceMetricLog(isAppInForeground = false)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("false")
   }
 
   @Test
@@ -203,6 +358,151 @@ class EventBundleCreatorTest {
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_createApkSizeLoggableMetric_bundlesAllDetailsCorrectly() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val performanceMetric = createPerformanceMetricLog(
+      loggableMetric = createApkSizeLoggableMetric()
+    )
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetric, bundle
+    )
+
+    assertThat(typeName).isEqualTo("apk_size_metric")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).longInt("apk_size_bytes").isEqualTo(TEST_APK_SIZE)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_createStorageUsageLogMetric_bundlesAllDetailsCorrectly() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val performanceMetric = createPerformanceMetricLog(
+      loggableMetric = createStorageUsageLoggableMetric()
+    )
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetric, bundle
+    )
+
+    assertThat(typeName).isEqualTo("storage_usage_metric")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).longInt("storage_usage_bytes").isEqualTo(TEST_STORAGE_USAGE)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_createStartupLatencyMetric_bundlesAllDetailsCorrectly() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val performanceMetric = createPerformanceMetricLog(
+      loggableMetric = createStartupLatencyLoggableMetric()
+    )
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetric, bundle
+    )
+
+    assertThat(typeName).isEqualTo("startup_latency_metric")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).longInt("startup_latency_millis").isEqualTo(TEST_STARTUP_LATENCY)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_createMemoryUsageMetric_fillsAllDetailsInBundleCorrectly() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val performanceMetric = createPerformanceMetricLog(
+      loggableMetric = createMemoryUsageLoggableMetric()
+    )
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetric, bundle
+    )
+
+    assertThat(typeName).isEqualTo("memory_usage_metric")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).longInt("total_pss_bytes").isEqualTo(TEST_MEMORY_USAGE)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_createNetworkUsageMetric_fillsAllDetailsInBundleCorrectly() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val performanceMetric = createPerformanceMetricLog(
+      loggableMetric = createNetworkUsageTestLoggableMetric()
+    )
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetric, bundle
+    )
+
+    assertThat(typeName).isEqualTo("network_usage_metric")
+    assertThat(bundle).hasSize(9)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).longInt("bytes_received").isEqualTo(TEST_NETWORK_USAGE)
+    assertThat(bundle).longInt("bytes_sent").isEqualTo(TEST_NETWORK_USAGE)
+  }
+
+  @Test
+  fun testFillPerformanceMetricBundle_createCpuUsageLogMetric_fillsAllDetailsInBundleCorrectly() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val performanceMetric = createPerformanceMetricLog(
+      loggableMetric = createCpuUsageLoggableMetric()
+    )
+    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
+      performanceMetric, bundle
+    )
+
+    assertThat(typeName).isEqualTo("cpu_usage_metric")
+    assertThat(bundle).hasSize(8)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("high_priority")
+    assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
+    assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
+    assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
+    assertThat(bundle).string("network_type").isEqualTo("wifi")
+    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).longInt("cpu_usage").isEqualTo(TEST_CPU_USAGE)
   }
 
   @Test
@@ -949,6 +1249,26 @@ class EventBundleCreatorTest {
     this.context = context
   }.build()
 
+  private fun createPerformanceMetricLog(
+    timestamp: Long = TEST_TIMESTAMP_1,
+    priority: Priority = HIGH_PRIORITY,
+    currentScreen: CurrentScreen = HOME_SCREEN,
+    memoryTier: MemoryTier = HIGH_MEMORY_TIER,
+    storageTier: StorageTier = HIGH_STORAGE,
+    isAppInForeground: Boolean = true,
+    networkType: NetworkType = WIFI,
+    loggableMetric: LoggableMetric = LoggableMetric.getDefaultInstance()
+  ) = OppiaMetricLog.newBuilder().apply {
+    this.timestampMillis = timestamp
+    this.priority = priority
+    this.currentScreen = currentScreen
+    this.memoryTier = memoryTier
+    this.storageTier = storageTier
+    this.isAppInForeground = isAppInForeground
+    this.networkType = networkType
+    this.loggableMetric = loggableMetric
+  }.build()
+
   private fun createOpenExplorationActivity(
     explorationContext: ExplorationContext = createExplorationContext()
   ) = createEventContext(explorationContext, EventContextBuilder::setOpenExplorationActivity)
@@ -1137,6 +1457,49 @@ class EventBundleCreatorTest {
     this.explorationDetails = explorationDetails
     this.contentId = contentId
   }.build()
+
+  private fun createApkSizeLoggableMetric() = OppiaMetricLog.LoggableMetric.newBuilder()
+    .setApkSizeMetric(
+      OppiaMetricLog.ApkSizeMetric.newBuilder()
+        .setApkSizeBytes(TEST_APK_SIZE)
+        .build()
+    ).build()
+
+  private fun createStorageUsageLoggableMetric() = LoggableMetric.newBuilder()
+    .setStorageUsageMetric(
+      OppiaMetricLog.StorageUsageMetric.newBuilder()
+        .setStorageUsageBytes(TEST_STORAGE_USAGE)
+        .build()
+    ).build()
+
+  private fun createStartupLatencyLoggableMetric() = LoggableMetric.newBuilder()
+    .setStartupLatencyMetric(
+      OppiaMetricLog.StartupLatencyMetric.newBuilder()
+        .setStartupLatencyMillis(TEST_STARTUP_LATENCY)
+        .build()
+    ).build()
+
+  private fun createCpuUsageLoggableMetric() = LoggableMetric.newBuilder()
+    .setCpuUsageMetric(
+      OppiaMetricLog.CpuUsageMetric.newBuilder()
+        .setCpuUsageMetric(TEST_CPU_USAGE)
+        .build()
+    ).build()
+
+  private fun createNetworkUsageTestLoggableMetric() = LoggableMetric.newBuilder()
+    .setNetworkUsageMetric(
+      OppiaMetricLog.NetworkUsageMetric.newBuilder()
+        .setBytesReceived(TEST_NETWORK_USAGE)
+        .setBytesSent(TEST_NETWORK_USAGE)
+        .build()
+    ).build()
+
+  private fun createMemoryUsageLoggableMetric() = LoggableMetric.newBuilder()
+    .setMemoryUsageMetric(
+      OppiaMetricLog.MemoryUsageMetric.newBuilder()
+        .setTotalPssBytes(TEST_MEMORY_USAGE)
+        .build()
+    ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
     setUpTestApplicationComponent()
