@@ -149,7 +149,7 @@ class MetricLogSchedulingWorkerTest {
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(NETWORK_USAGE_METRIC)
-    // TODO(#4340): Verify functionality to log cpu usage performance metrics.
+    // TODO(#4466): Verify functionality to log cpu usage performance metrics.
   }
 
   @Test
