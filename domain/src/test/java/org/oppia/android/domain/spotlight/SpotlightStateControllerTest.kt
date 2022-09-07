@@ -11,13 +11,20 @@ import dagger.Provides
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
+import org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
+import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
+import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -84,18 +91,6 @@ class SpotlightStateControllerTest {
     setUpTestApplicationComponent()
   }
 
-  @After
-  fun tearDown() {
-  }
-
-  @Test
-  fun retrieveSpotlightViewState_spotlightStatesNeverMarked_returnsSpotlightViewStateUnspecified() {
-    val spotlightStateProvider =
-      spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
-    val state = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
-    assertEquals(state, SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED)
-  }
-
   @Test
   fun testMarkSpotlightState_validFeature_notYetMarked_returnsSuccess() {
     val markSpotlightProvider =
@@ -105,11 +100,8 @@ class SpotlightStateControllerTest {
 
   @Test
   fun testMarkSpotlightState_validFeature_alreadyMarked_returnsSuccess() {
-    var markSpotlightProvider =
-      spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
-    dataProviderTestMonitor.waitForNextSuccessfulResult(markSpotlightProvider)
-
-    markSpotlightProvider = spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    markSpotlightSeen(FIRST_CHAPTER)
+    val markSpotlightProvider = spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     dataProviderTestMonitor.waitForNextSuccessfulResult(markSpotlightProvider)
   }
 
@@ -118,8 +110,7 @@ class SpotlightStateControllerTest {
     val invalidFeature = Spotlight.FeatureCase.FEATURE_NOT_SET
     val markSpotlightProvider =
       spotlightStateController.markSpotlightViewed(profileId, invalidFeature)
-    val result = dataProviderTestMonitor.waitForNextFailureResult(markSpotlightProvider)
-    assertThrows(SpotlightStateController.SpotlightFeatureNotFoundException::class, )
+    dataProviderTestMonitor.waitForNextFailureResult(markSpotlightProvider)
   }
 
   @Test
@@ -130,16 +121,184 @@ class SpotlightStateControllerTest {
   }
 
   @Test
-  fun testRetrieveSpotlightViewState_onboardingNext_notMarked_returnsViewNotSeen() {
-    val retrieveSpotlightStateProvider = spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
+  fun testRetrieveSpotlightViewState_firstChapter_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
     assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_firstChapter_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(FIRST_CHAPTER)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, FIRST_CHAPTER)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_onboardingNext_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, ONBOARDING_NEXT_BUTTON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_onboardingNext_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(ONBOARDING_NEXT_BUTTON)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, ONBOARDING_NEXT_BUTTON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_topicLessonTab_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, TOPIC_LESSON_TAB)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_topicLessonTab_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, TOPIC_LESSON_TAB)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_topicRevisionTab_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, TOPIC_REVISION_TAB)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_topicRevisionTab_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(TOPIC_REVISION_TAB)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, TOPIC_REVISION_TAB)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_promotedStories_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, PROMOTED_STORIES)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_promotedStories_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(PROMOTED_STORIES)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, PROMOTED_STORIES)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_lessonsBackButton_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, LESSONS_BACK_BUTTON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_lessonsBackButton_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(LESSONS_BACK_BUTTON)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, LESSONS_BACK_BUTTON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_voiceoverPlayIcon_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, VOICEOVER_PLAY_ICON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_voiceoverPlayIcon_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(VOICEOVER_PLAY_ICON)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, VOICEOVER_PLAY_ICON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_voiceoverLanguageIcon_notMarked_returnsSpotlightStateNotSeen() {
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, VOICEOVER_LANGUAGE_ICON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_voiceoverLanguageIcon_marked_returnsSpotlightStateSeen() {
+    markSpotlightSeen(VOICEOVER_LANGUAGE_ICON)
+    val retrieveSpotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, VOICEOVER_LANGUAGE_ICON)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_invalidFeature_returnsFailure() {
+    val invalidFeature = Spotlight.FeatureCase.FEATURE_NOT_SET
+    val spotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId, invalidFeature)
+    dataProviderTestMonitor.waitForNextFailureResult(spotlightStateProvider)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_validFeature_marked_differentProfile_returnsSpotlightSeen() {
+    dataProviderTestMonitor.waitForNextSuccessfulResult(
+      spotlightStateController.markSpotlightViewed(
+        profileId1,
+        FIRST_CHAPTER
+      )
+    )
+
+    val spotlightStateProvider = spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_validFeature_notMarked_differentProfile_returnsSpotlightNotSeen() {
+    val spotlightStateProvider = spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
+    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  private fun markSpotlightSeen(spotlightFeature: Spotlight.FeatureCase) {
+    dataProviderTestMonitor.waitForNextSuccessfulResult(
+      spotlightStateController.markSpotlightViewed(
+        profileId,
+        spotlightFeature
+      )
+    )
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>()
       .inject(this)
   }
+
   @Module
   class TestModule {
     @Provides
@@ -180,6 +339,7 @@ class SpotlightStateControllerTest {
       return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
+
   @Singleton
   @Component(
     modules = [
@@ -203,14 +363,14 @@ class SpotlightStateControllerTest {
       @BindsInstance
       fun setApplication(application: Application): Builder
 
-      fun build(): SpotlightStateControllerTest.TestApplicationComponent
+      fun build(): TestApplicationComponent
     }
 
     fun inject(spotlightStateControllerTest: SpotlightStateControllerTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: SpotlightStateControllerTest.TestApplicationComponent by lazy {
+    private val component: TestApplicationComponent by lazy {
       DaggerSpotlightStateControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()

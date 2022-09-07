@@ -60,7 +60,11 @@ class SpotlightStateController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
+      try {
+        return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
+      } catch (e: SpotlightFeatureNotFoundException){
+        return@createInMemoryDataProviderAsync AsyncResult.Failure(e)
+      }
     }
   }
 
