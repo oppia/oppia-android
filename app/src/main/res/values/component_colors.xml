@@ -239,5 +239,8 @@
   <color name="component_color_cellular_data_dialog_checkbox_color">@color/color_palette_dark_text_color</color>
   <!-- Profile Picture Edit Dialog -->
   <color name="component_color_profile_picture_edit_dialog_text_color">@color/color_palette_dark_text_color</color>
+  <!-- Topic Activity -->
+  <color name="component_color_topic_fragment_primary_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_topic_fragment_primary_tab_color">@color/color_palette_secondary_toolbar_color</color>
 
 </resources>

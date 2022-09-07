@@ -1124,7 +1124,7 @@ class PinPasswordActivityTest {
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
-    context.resources.getString(R.string.pin_password_forgot_message, getAppName())
+    context.resources.getString(R.string.admin_forgot_pin_message, getAppName())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
