@@ -1,5 +1,7 @@
 package org.oppia.android.domain.spotlight
 
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
@@ -20,8 +22,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val CACHE_NAME = "spotlight_checkpoint_database"
 private const val RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
@@ -79,14 +79,14 @@ class SpotlightStateController @Inject constructor(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
       ) {
         val viewState = when (feature) {
-          ONBOARDING_NEXT_BUTTON -> it.onboardingNextButton
-          TOPIC_LESSON_TAB -> it.topicLessonTab
-          TOPIC_REVISION_TAB -> it.topicRevisionTab
-          FIRST_CHAPTER -> it.firstChapter
-          PROMOTED_STORIES -> it.promotedStories
-          LESSONS_BACK_BUTTON -> it.lessonsBackButton
-          VOICEOVER_PLAY_ICON -> it.voiceoverPlayIcon
-          VOICEOVER_LANGUAGE_ICON -> it.voiceoverLanguageIcon
+          ONBOARDING_NEXT_BUTTON -> spotlightStateRetrieverHelper(it.onboardingNextButton)
+          TOPIC_LESSON_TAB -> spotlightStateRetrieverHelper(it.topicLessonTab)
+          TOPIC_REVISION_TAB -> spotlightStateRetrieverHelper(it.topicRevisionTab)
+          FIRST_CHAPTER -> spotlightStateRetrieverHelper(it.firstChapter)
+          PROMOTED_STORIES -> spotlightStateRetrieverHelper(it.promotedStories)
+          LESSONS_BACK_BUTTON -> spotlightStateRetrieverHelper(it.lessonsBackButton)
+          VOICEOVER_PLAY_ICON -> spotlightStateRetrieverHelper(it.voiceoverPlayIcon)
+          VOICEOVER_LANGUAGE_ICON -> spotlightStateRetrieverHelper(it.voiceoverLanguageIcon)
           FEATURE_NOT_SET -> {
             return@transformAsync AsyncResult.Failure(
               SpotlightFeatureNotFoundException("Spotlight feature was not found")
@@ -95,6 +95,12 @@ class SpotlightStateController @Inject constructor(
         }
         AsyncResult.Success(viewState)
       }
+  }
+
+  private fun spotlightStateRetrieverHelper(spotlightViewState: SpotlightViewState): SpotlightViewState {
+    return if (spotlightViewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED) {
+      SpotlightViewState.SPOTLIGHT_NOT_SEEN
+    } else spotlightViewState
   }
 
   private fun recordSpotlightStateAsync(
