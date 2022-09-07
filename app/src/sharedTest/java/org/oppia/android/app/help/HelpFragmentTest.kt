@@ -17,7 +17,9 @@ import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtras
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -28,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.hamcrest.Matchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,7 +48,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -75,7 +81,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -1084,6 +1091,254 @@ class HelpFragmentTest {
   }
 
   @Test
+  fun testHelpFragment_configChanged_privacyPolicyTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(matches(withText(R.string.privacy_policy_title)))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_configChanged_termsOfServiceTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(matches(withText(R.string.terms_of_service_title)))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_defaultTabletConfig_displaysTermsOfService() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 3,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.terms_of_service_title)
+        )
+      )
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_tabletConfigChanged_displaysTermsOfService() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 3,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.terms_of_service_title)
+        )
+      )
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testHelpFragment_privacyPolicyTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(
+        matches(withText(R.string.privacy_policy_title))
+      )
+    }
+  }
+
+  @Test
+  fun testHelpFragment_termsOfServiceTitleIsDisplayed() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(withId(R.id.help_fragment_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(0)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3,
+          targetViewId = R.id.help_item_text_view
+        )
+      ).check(
+        matches(withText(R.string.terms_of_service_title))
+      )
+    }
+  }
+
+  @Test
+  fun testHelpFragment_selectPolicyActivity_openPoliciesActivityLoadPrivacyPolicy() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2
+        )
+      ).perform(click())
+      val policiesArguments =
+        PoliciesActivityParams
+          .newBuilder()
+          .setPolicyPage(PolicyPage.PRIVACY_POLICY)
+          .build()
+
+      intended(hasComponent(PoliciesActivity::class.java.name))
+      hasExtras(
+        hasEntry(
+          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
+          equalTo(policiesArguments)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testHelpFragment_selectPoliciesActivity_openPoliciesActivityLoadTermsOfServicePage() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 3
+        )
+      ).perform(click())
+      intended(hasComponent(PoliciesActivity::class.java.name))
+      val policiesArguments =
+        PoliciesActivityParams
+          .newBuilder()
+          .setPolicyPage(PolicyPage.TERMS_OF_SERVICE)
+          .build()
+      intended(hasComponent(PoliciesActivity::class.java.name))
+      hasExtras(
+        hasEntry(
+          equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
+          equalTo(policiesArguments)
+        )
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectPolicies_displaysPolicy() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2
+        )
+      ).perform(click())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.privacy_policy_title)
+        )
+      )
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testHelpFragment_selectPolicies_tabletConfigChanged_displaysPolicy() {
+    launch<HelpActivity>(
+      createHelpActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      onView(
+        atPosition(
+          recyclerViewId = R.id.help_fragment_recycler_view,
+          position = 2
+        )
+      ).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.help_multipane_options_title_textview)).check(
+        matches(
+          withText(R.string.privacy_policy_title)
+        )
+      )
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun openHelpActivity_openNavigationDrawer_navigationDrawerOpeningIsVerifiedSuccessfully() {
     launch<HelpActivity>(
       createHelpActivityIntent(
@@ -1177,7 +1432,7 @@ class HelpFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
@@ -1187,7 +1442,7 @@ class HelpFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

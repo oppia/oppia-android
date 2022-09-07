@@ -7,11 +7,11 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** Provides [LogUploadWorker] related dependencies. */
 @Module
-interface LogUploadWorkerModule {
+interface LogReportWorkerModule {
 
   @Binds
   @IntoSet
-  fun bindLogUploadWorkRequest(
-    logUploadWorkManagerInitializer: LogUploadWorkManagerInitializer
+  fun bindLogReportWorkRequest(
+    logReportWorkManagerInitializer: LogReportWorkManagerInitializer
   ): ApplicationStartupListener
 }
