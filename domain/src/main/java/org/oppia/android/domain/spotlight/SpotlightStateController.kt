@@ -1,7 +1,5 @@
 package org.oppia.android.domain.spotlight
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
@@ -22,6 +20,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val CACHE_NAME = "spotlight_checkpoint_database"
 private const val RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
@@ -62,7 +62,7 @@ class SpotlightStateController @Inject constructor(
     ) {
       try {
         return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
-      } catch (e: SpotlightFeatureNotFoundException){
+      } catch (e: SpotlightFeatureNotFoundException) {
         return@createInMemoryDataProviderAsync AsyncResult.Failure(e)
       }
     }
@@ -101,11 +101,12 @@ class SpotlightStateController @Inject constructor(
       }
   }
 
-  private fun spotlightStateRetrieverHelper(spotlightViewState: SpotlightViewState): SpotlightViewState {
-    return if (spotlightViewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED) {
-      SpotlightViewState.SPOTLIGHT_NOT_SEEN
-    } else spotlightViewState
-  }
+  private fun spotlightStateRetrieverHelper(spotlightViewState: SpotlightViewState):
+    SpotlightViewState {
+      return if (spotlightViewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED) {
+        SpotlightViewState.SPOTLIGHT_NOT_SEEN
+      } else spotlightViewState
+    }
 
   private fun recordSpotlightStateAsync(
     profileId: ProfileId,

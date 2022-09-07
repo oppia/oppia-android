@@ -8,9 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -70,6 +67,8 @@ import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Suppress("SameParameterValue", "FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -101,7 +100,8 @@ class SpotlightStateControllerTest {
   @Test
   fun testMarkSpotlightState_validFeature_alreadyMarked_returnsSuccess() {
     markSpotlightSeen(FIRST_CHAPTER)
-    val markSpotlightProvider = spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    val markSpotlightProvider =
+      spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     dataProviderTestMonitor.waitForNextSuccessfulResult(markSpotlightProvider)
   }
 
@@ -240,7 +240,7 @@ class SpotlightStateControllerTest {
   }
 
   @Test
-  fun testRetrieveSpotlightViewState_voiceoverLanguageIcon_notMarked_returnsSpotlightStateNotSeen() {
+  fun testRetrieveSpotlightViewState_voiceoverLanguageIcon_notMarked_returnsSpotlightStateNotSeen() { // ktlint-disable max-line-length
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId, VOICEOVER_LANGUAGE_ICON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
@@ -273,14 +273,16 @@ class SpotlightStateControllerTest {
       )
     )
 
-    val spotlightStateProvider = spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
+    val spotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
     assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
-  fun testRetrieveSpotlightViewState_validFeature_notMarked_differentProfile_returnsSpotlightNotSeen() {
-    val spotlightStateProvider = spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
+  fun testRetrieveSpotlightViewState_validFeature_notMarked_differentProfile_returnsSpotlightNotSeen() { // ktlint-disable max-line-length
+    val spotlightStateProvider =
+      spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
     assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
@@ -343,13 +345,14 @@ class SpotlightStateControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class ,ContinueModule::class, FractionInputModule::class,
+      TestModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ExplorationProgressControllerTest.TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
+      ExplorationProgressControllerTest.TestExplorationStorageModule::class,
+      HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
