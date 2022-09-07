@@ -3,7 +3,6 @@ package org.oppia.android.app.administratorcontrols
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.view.ViewParent
 import android.widget.FrameLayout
@@ -28,6 +27,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -190,7 +190,6 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -215,7 +214,8 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsNotDisplayed() {
+  fun testAdministratorControlsFragment_autoUpdateSettingsIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -250,12 +250,10 @@ class AdministratorControlsFragmentTest {
         targetViewId = targetView
       )
     ).check(
-      matches(
-        ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+      matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)
       )
     )
   }
-
 
   @Test
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
