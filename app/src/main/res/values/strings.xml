@@ -422,7 +422,7 @@
   <string name="what_do_you_want_to_learn">What do you want to learn?</string>
   <!-- WalkthroughEndFragment -->
   <string name="great">Great</string>
-  <string name="lets_get_started">Let’s get \nstarted.</string>
+  <string name="lets_get_started">Let’s get started.</string>
   <string name="yes">Yes</string>
   <string name="no">No…</string>
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
@@ -484,6 +484,17 @@
   <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
+  <string name="splash_screen_developer_label">Developer Build</string>
+  <string name="splash_screen_alpha_label">Alpha</string>
+  <string name="splash_screen_beta_label">Beta</string>
+  <string name="beta_notice_dialog_title">Beta Notice</string>
+  <string name="beta_notice_dialog_message">Hello! Your app is now being updated to the Beta version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
+  <string name="beta_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
+  <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="general_availability_notice_dialog_title">General Availability Notice</string>
+  <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
+  <string name="general_availability_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
+  <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
     \u0020to\u0020
   </string>

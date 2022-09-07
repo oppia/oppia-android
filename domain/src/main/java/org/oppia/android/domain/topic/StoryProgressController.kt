@@ -8,6 +8,8 @@ import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicProgressDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -390,8 +392,11 @@ class StoryProgressController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion {
-      it?.let { it ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion {
+      if (it != null) {
         oppiaLogger.e(
           "StoryProgressController",
           "Failed to prime cache ahead of data retrieval for StoryProgressController.",
