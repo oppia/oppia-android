@@ -187,7 +187,7 @@ class TopicListController @Inject constructor(
           baseMessage = StoryRecord.getDefaultInstance()
         )
       }
-      val firstStoryId = storyRecords.first().storyId
+      val firstStoryId = storyRecords.getOrNull(0)?.storyId
       TopicSummary.newBuilder().apply {
         this.topicId = topicId
         name = topicRecord.name
