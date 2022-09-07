@@ -37,12 +37,15 @@ message Spotlight {
 
 // Possible view states for a spotlight.
 enum SpotlightViewState {
-  // This corresponds to a state when the spotlight for a feature has been not seen by the user. For
-  // a new user, this will be the default spotlight state for all spotlight features.
-  SPOTLIGHT_NOT_SEEN = 0;
+  // This is the default state for a spotlight in the beginning. In cases where the app won't be
+  // able to load a spotlight state for a feature, this state shall be reported.
+  SPOTLIGHT_VIEW_STATE_UNSPECIFIED = 0;
 
   // This corresponds to a state when the spotlight for a feature has been seen by the user.
   SPOTLIGHT_SEEN = 1;
+
+  // This corresponds to a state when the spotlight for a feature has been not seen by the user.
+  SPOTLIGHT_NOT_SEEN = 2;
 }
 
 // Top level proto that will be used to store SpotlightsViewStates per user profile.
