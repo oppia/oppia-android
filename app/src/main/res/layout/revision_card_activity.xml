@@ -29,17 +29,19 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <org.oppia.android.app.customview.MarqueeView
+        <asia.ivity.android.marqueeview.MarqueeView
           android:id="@+id/revision_card_marquee_view"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="wrap_content"
+          app:speed ="10"
+          app:pause="500">
         <TextView
           android:id="@+id/revision_card_toolbar_title"
           style="@style/MarqueeToolbarTitleTextView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"/>
-        </org.oppia.android.app.customview.MarqueeView>
+        </asia.ivity.android.marqueeview.MarqueeView>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
