@@ -258,6 +258,9 @@ message EphemeralState {
 
   // The identifier of the current session that'd be used for analytics logging.
   string session_id = 9;
+
+  // A flag that denotes whether the continue button for the current card should be animated or not.
+  bool animate_continue_button = 10;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
