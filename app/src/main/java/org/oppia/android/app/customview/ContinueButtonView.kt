@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
-import android.view.animation.Interpolator
-import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
 import org.oppia.android.R
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -21,9 +19,9 @@ class ContinueButtonView @JvmOverloads constructor(
 //  @Inject
 //  private lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
 
-   fun setViewModel(viewModel: ContinueInteractionViewModel) {
+  fun setViewModel(viewModel: ContinueInteractionViewModel) {
     this.viewModel = viewModel
-     startAnimating()
+    startAnimating()
   }
 
   fun startAnimating() {
@@ -33,9 +31,7 @@ class ContinueButtonView @JvmOverloads constructor(
     this.startAnimation(animation)
   }
 
-
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
   }
-
 }
