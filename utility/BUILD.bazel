@@ -124,6 +124,7 @@ TEST_DEPS = [
     "//third_party:androidx_work_work-testing",
     "//third_party:com_google_truth_extensions_truth-liteproto-extension",
     "//third_party:com_google_truth_truth",
+    "//third_party:org_jetbrains_kotlin_kotlin-reflect",
     "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     "//third_party:org_mockito_mockito-core",
     "//third_party:robolectric_android-all",

@@ -36,7 +36,7 @@ class ModifyLessonProgressController @Inject constructor(
    */
   fun getAllTopicsWithProgress(profileId: ProfileId): DataProvider<List<EphemeralTopic>> {
     val topicListProvider = topicListController.getTopicList(profileId)
-    // TODO(#4484): Migrate this to use transformDynamic to avoid the awkward force-retrieve
+    // TODO(#4564): Migrate this to use transformDynamic to avoid the awkward force-retrieve
     //  mechanism (which also breaks notifications for downstream topics changing).
     return topicListProvider.transformAsync(GET_ALL_TOPICS_COMBINED_PROVIDER_ID) { topicList ->
       topicController.getTopics(

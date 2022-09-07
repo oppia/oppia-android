@@ -24,6 +24,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.model.PromotedStoryList
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -59,6 +60,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -92,31 +94,28 @@ import javax.inject.Singleton
   manifest = Config.NONE
 )
 class PromotedStoryListViewModelTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var translationController: TranslationController
 
   private val promotedStory1 = PromotedStory.newBuilder()
     .setStoryId("id_1")
-    .setStoryName("Story 1")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 1"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
   private val promotedStory2 = PromotedStory.newBuilder()
     .setStoryId("id_2")
-    .setStoryName("Story 2")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 2"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
   private val promotedStory3 = PromotedStory.newBuilder()
     .setStoryId("id_3")
-    .setStoryName("Story 3")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 3"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
 
@@ -326,7 +325,8 @@ class PromotedStoryListViewModelTest {
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
-        promotedStory = promotedStory
+        promotedStory = promotedStory,
+        translationController
       )
     }
   }
