@@ -249,10 +249,7 @@ class AdministratorControlsFragmentTest {
         position = itemPosition,
         targetViewId = targetView
       )
-    ).check(
-      matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)
-      )
-    )
+    ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
   }
 
   @Test

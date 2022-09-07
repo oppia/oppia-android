@@ -99,7 +99,6 @@ class TestPlatformParameterModule {
     )
   }
 
-
   @Provides
   @EnableLanguageSelectionUi
   fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
