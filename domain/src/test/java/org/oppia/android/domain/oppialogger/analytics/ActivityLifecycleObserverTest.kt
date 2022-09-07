@@ -67,7 +67,7 @@ class ActivityLifecycleObserverTest {
   var activityRule =
     ActivityScenarioRule<TextInputActionTestActivity>(
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()).apply {
-        decorateWithScreenName(ScreenName.BACKGROUND_SCREEN)
+        decorateWithScreenName(ScreenName.HOME_ACTIVITY)
       }
     )
 
@@ -126,7 +126,7 @@ class ActivityLifecycleObserverTest {
     activityRule.scenario.onActivity { activity ->
       activityLifecycleObserver.onActivityResumed(activity)
       val currentScreenValue = activityLifecycleObserver.getCurrentScreen()
-      assertThat(currentScreenValue).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+      assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
     }
   }
 
@@ -137,7 +137,6 @@ class ActivityLifecycleObserverTest {
     activityRule.scenario.onActivity { activity ->
       val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
       activityLifecycleObserver.onActivityResumed(activity)
-      val currentScreen = activityLifecycleObserver.getCurrentScreen()
       val startupLatencyEvents =
         fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
       val startupLatencyEvent = startupLatencyEvents[1]
@@ -146,7 +145,7 @@ class ActivityLifecycleObserverTest {
         STARTUP_LATENCY_METRIC
       )
       assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
-      assertThat(startupLatencyEvent.currentScreen).isEqualTo(currentScreen)
+      assertThat(startupLatencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
       assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
         .isEqualTo(expectedStartupLatency)
     }
@@ -182,7 +181,6 @@ class ActivityLifecycleObserverTest {
     activityRule.scenario.onActivity { activity ->
       activityLifecycleObserver.onActivityResumed(activity)
 
-      val currentScreen = activityLifecycleObserver.getCurrentScreen()
       val memoryUsageEvent =
         fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
@@ -190,7 +188,7 @@ class ActivityLifecycleObserverTest {
         MEMORY_USAGE_METRIC
       )
       assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
-      assertThat(memoryUsageEvent.currentScreen).isEqualTo(currentScreen)
+      assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
     }
   }
 

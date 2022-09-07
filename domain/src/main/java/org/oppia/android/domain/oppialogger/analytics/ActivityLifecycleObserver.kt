@@ -27,7 +27,7 @@ class ActivityLifecycleObserver @Inject constructor(
    * We're using a large Long value such that the time difference based on any timestamp will be
    * negative and thus ignored until the app records initial time during [onCreate].
    */
-  private var initialTimestamp: Long = Long.MAX_VALUE
+  private var appStartTimeMillis: Long = Long.MAX_VALUE
 
   /**
    * Returns a boolean flag that makes sure that startup latency is logged only once in the entire
@@ -38,13 +38,14 @@ class ActivityLifecycleObserver @Inject constructor(
   private var currentScreen: ScreenName = SCREEN_NAME_UNSPECIFIED
 
   /**
-   * Returns the current active UI screen that's visible to the user. If UI is in-active or the app
-   * is in background, this value returns [SCREEN_NAME_UNSPECIFIED].
+   * Returns the current active UI screen that's visible to the user.
+   *
+   * If the UI is inactive or the app backgrounded, [BACKGROUND_SCREEN] is returned.
    */
   fun getCurrentScreen(): ScreenName = currentScreen
 
   override fun onCreate() {
-    initialTimestamp = oppiaClock.getCurrentTimeMs()
+    appStartTimeMillis = oppiaClock.getCurrentTimeMs()
     application.registerActivityLifecycleCallbacks(this)
     performanceMetricsLogger.logApkSize(currentScreen)
     performanceMetricsLogger.logStorageUsage(currentScreen)
@@ -54,7 +55,7 @@ class ActivityLifecycleObserver @Inject constructor(
     currentScreen = activity.intent.extractCurrentAppScreenName()
     if (!isStartupLatencyLogged) {
       performanceMetricsLogger.logStartupLatency(
-        getStartupLatency(initialTimestamp),
+        getStartupLatencyMillis(appStartTimeMillis),
         currentScreen
       )
       isStartupLatencyLogged = true
@@ -76,6 +77,6 @@ class ActivityLifecycleObserver @Inject constructor(
 
   override fun onActivityDestroyed(activity: Activity) {}
 
-  private fun getStartupLatency(initialTimestamp: Long): Long =
-    oppiaClock.getCurrentTimeMs() - initialTimestamp
+  private fun getStartupLatencyMillis(initialTimestampMillis: Long): Long =
+    oppiaClock.getCurrentTimeMs() - initialTimestampMillis
 }

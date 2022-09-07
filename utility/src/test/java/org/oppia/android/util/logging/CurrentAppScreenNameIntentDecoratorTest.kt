@@ -26,14 +26,6 @@ class CurrentAppScreenNameIntentDecoratorTest {
   }
 
   @Test
-  fun testDecorator_withNullScreenName_returnsIntentWithUnspecifiedScreenName() {
-    val intent = Intent().apply { decorateWithScreenName(null) }
-
-    val currentScreen = intent.extractCurrentAppScreenName()
-    assertThat(currentScreen).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
-  }
-
-  @Test
   fun testDecorator_withoutScreenName_returnsIntentWithUnspecifiedScreenName() {
     val currentScreen = Intent().extractCurrentAppScreenName()
 

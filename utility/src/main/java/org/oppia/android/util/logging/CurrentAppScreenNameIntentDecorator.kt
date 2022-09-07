@@ -6,24 +6,24 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 
-private var CURRENT_APP_SCREEN_NAME_KEY = "CURRENT_APP_SCREEN_NAME_KEY"
+private const val CURRENT_APP_SCREEN_NAME_KEY = "CURRENT_APP_SCREEN_NAME_KEY"
 
-/** Utility to provide utilities related to wrapping the current app-screen name in an intent. */
+/** Decorator for wrapping an activity's [ScreenName] within its intent. */
 object CurrentAppScreenNameIntentDecorator {
   /**
    * Packs the intent with a [CurrentAppScreen] proto object that sets [screenName] as the current
    * screen.
+   *
+   * [extractCurrentAppScreenName] should be used for retrieving the screen name later.
    */
-  fun Intent.decorateWithScreenName(screenName: ScreenName?) {
-    if (screenName != null) {
-      this.putProtoExtra(
-        CURRENT_APP_SCREEN_NAME_KEY,
-        CurrentAppScreen.newBuilder().setScreenName(screenName).build()
-      )
-    }
+  fun Intent.decorateWithScreenName(screenName: ScreenName) {
+    putProtoExtra(
+      CURRENT_APP_SCREEN_NAME_KEY,
+      CurrentAppScreen.newBuilder().setScreenName(screenName).build()
+    )
   }
 
-  /** Returns [ScreenName] after unpacking intent. */
+  /** Returns the [ScreenName] packed in the intent via [decorateWithScreenName]. */
   fun Intent.extractCurrentAppScreenName(): ScreenName {
     return this.getProtoExtra(
       CURRENT_APP_SCREEN_NAME_KEY,
