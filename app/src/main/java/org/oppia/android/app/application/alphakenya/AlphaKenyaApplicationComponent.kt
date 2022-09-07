@@ -4,6 +4,7 @@ import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.alpha.AlphaBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -95,7 +96,7 @@ import javax.inject.Singleton
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
-    PerformanceMetricsConfigurationsModule::class
+    PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {

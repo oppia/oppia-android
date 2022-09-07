@@ -22,6 +22,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/application:abstract_application",
         "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
+        "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
         "//domain",
         "//utility",

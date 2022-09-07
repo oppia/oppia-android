@@ -4,6 +4,7 @@ import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -96,7 +97,8 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
     MetricLogSchedulerModule::class, PerformanceMetricsLoggerModule::class,
-    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class
+    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
+    TestingBuildFlavorModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

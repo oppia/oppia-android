@@ -82,7 +82,9 @@ class AsyncDataSubscriptionManager @Inject constructor(
    */
   suspend fun notifyChange(id: Any) {
     // First, retrieve subscribers & the closure of child IDs to notify.
-    val subscriptions = subscriptionLock.withLock { computeSubscriptionClosure(id) }
+    val subscriptions = subscriptionLock.withLock {
+      computeSubscriptionClosure(id)
+    }
 
     // Notify all subscribers (both directly for this parent & all child IDs).
     subscriptions.forEach { observeChange -> observeChange() }

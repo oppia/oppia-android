@@ -8,6 +8,8 @@ import org.oppia.android.app.model.ExplorationCheckpointDatabase
 import org.oppia.android.app.model.ExplorationCheckpointDetails
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -282,7 +284,10 @@ class ExplorationCheckpointController @Inject constructor(
       cacheStore
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "ExplorationCheckpointController",
