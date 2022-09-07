@@ -132,7 +132,7 @@ class ProfileManagementController @Inject constructor(
     profileDataStore.primeInMemoryCacheAsync().invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
-          "DOMAIN",
+          "ProfileManagementController",
           "Failed to prime cache ahead of data retrieval for ProfileManagementController.",
           it
         )
@@ -664,9 +664,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this delete operation.
    */
   fun deleteProfile(profileId: ProfileId): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       }
@@ -680,6 +678,30 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Deletes all profiles installed on the device (and logs out the current user).
+   *
+   * Note that this will not update the in-memory cache as the app is expected to be forcibly closed
+   * after deletion (since there's no mechanism to notify existing cache stores that they need to
+   * reload/reset from their on-disk copies).
+   *
+   * Finally, this method attempts to never fail by forcibly deleting all profiles even if some are
+   * in a bad state (and would normally failed if attempted to be deleted via [deleteProfile]).
+   */
+  fun deleteAllProfiles(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync {
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      it.profilesMap.forEach { (internalProfileId, profile) ->
+        directoryManagementUtil.deleteDir(internalProfileId.toString())
+        learnerAnalyticsLogger.logDeleteProfile(installationId, profile.learnerId)
+      }
+      Pair(ProfileDatabase.getDefaultInstance(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
+      getDeferredResult(profileId = null, name = null, deferred)
     }
   }
 
