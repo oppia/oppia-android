@@ -1,13 +1,8 @@
 package org.oppia.android.scripts.xml
 
-import java.io.File
-import javax.xml.parsers.DocumentBuilderFactory
-import org.oppia.android.scripts.common.RepositoryFile
 import org.oppia.android.scripts.xml.StringResourceParser.StringFile
 import org.oppia.android.scripts.xml.StringResourceParser.TranslationLanguage
-import org.w3c.dom.Document
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
+import java.io.File
 
 /**
  * Script for validating consistency between translated and base string resources.
@@ -49,7 +44,7 @@ fun main(vararg args: String) {
       val (language, file) = context
       println(
         "${errorLines.size} consistency error(s) were found for ${language.name} strings (file:" +
-          " ${file.relativeTo(repoRoot)}):"
+          " ${file.toRelativeString(repoRoot)}):"
       )
       errorLines.forEach { println("- $it") }
       println()
@@ -59,7 +54,8 @@ fun main(vararg args: String) {
 }
 
 private fun computeInconsistenciesBetween(
-  baseFile: StringFile, translatedFile: StringFile
+  baseFile: StringFile,
+  translatedFile: StringFile
 ): List<String> {
   val commonTranslations = baseFile.strings.intersectWith(translatedFile.strings)
 

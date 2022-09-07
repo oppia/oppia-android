@@ -1,6 +1,6 @@
 """
 Libraries corresponding to XML syntax based check to ensure that all the XML files in the codebase
-are syntactically correct.
+are syntactically correct and consistent.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
@@ -19,6 +19,7 @@ kt_jvm_library(
     name = "string_resource_parser",
     testonly = True,
     srcs = ["StringResourceParser.kt"],
+    visibility = ["//scripts:oppia_script_test_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
     ],

@@ -33,11 +33,13 @@ fun main(vararg args: String) {
     println()
     println("Missing translations:")
     missingTranslations.forEach { (language, translations) ->
-      println("${language.name} (${translations.size}/$missingTranslationCount):")
-      translations.forEach { translation ->
-        println("- $translation")
+      if (translations.isNotEmpty()) {
+        println("${language.name} (${translations.size}/$missingTranslationCount):")
+        translations.forEach { translation ->
+          println("- $translation")
+        }
+        println()
       }
-      println()
     }
   }
 }

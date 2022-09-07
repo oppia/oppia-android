@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.common
 
 import java.io.File
-import java.nio.file.FileVisitOption
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.streams.asSequence
