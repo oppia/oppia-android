@@ -3,6 +3,9 @@ package org.oppia.android.app.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AnimationUtils
+import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
+import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
 import org.oppia.android.R
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -11,7 +14,7 @@ class ContinueButtonView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyleAttr: Int = R.style.StateButtonActive
-) : AppCompatButton(context, attrs, defStyleAttr) {
+) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
 
   private lateinit var viewModel: ContinueInteractionViewModel
 
@@ -24,7 +27,8 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   fun startAnimating() {
-    val animation = AnimationUtils.loadAnimation(context, R.anim.fade_in)
+    val animation = AnimationUtils.loadAnimation(context, R.anim.expand)
+    animation.interpolator = BounceInterpolator()
     animation.repeatCount = Int.MAX_VALUE
     this.startAnimation(animation)
   }

@@ -36,7 +36,7 @@
     app:questionViewMarginStart="@{@dimen/general_button_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/general_button_item_margin_top}">
 
-  <ImageButton
+    <ImageButton
       android:id="@+id/previous_state_navigation_button"
       style="@style/PreviousButton"
       android:elevation="2dp"
@@ -47,14 +47,14 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <org.oppia.android.app.customview.ContinueButtonView
-      app:viewModel="@{viewModel}"
       android:id="@+id/continue_button"
       style="@style/StateButtonActive"
-      android:layout_width="wrap_content"
+      android:gravity="center"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:viewModel="@{viewModel}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
