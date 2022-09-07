@@ -73,7 +73,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -1124,7 +1125,7 @@ class PinPasswordActivityTest {
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
-    context.resources.getString(R.string.pin_password_forgot_message, getAppName())
+    context.resources.getString(R.string.admin_forgot_pin_message, getAppName())
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -1140,7 +1141,7 @@ class PinPasswordActivityTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
@@ -1151,7 +1152,7 @@ class PinPasswordActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
