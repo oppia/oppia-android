@@ -3,7 +3,6 @@ package org.oppia.android.testing.platformparameter
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING
 import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
 import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
@@ -72,15 +71,6 @@ class TestPlatformParameterModule {
   }
 
   @Provides
-  @AutomaticUpdateTopicSetting
-  fun provideAutomaticUpdateTopicSettingParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(AUTOMATIC_UPDATE_TOPIC_SETTING)
-      ?: PlatformParameterValue.createDefaultParameter(AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE)
-  }
-
-  @Provides
   @SplashScreenWelcomeMsg
   fun provideSplashScreenWelcomeMsgParam(
     platformParameterSingleton: PlatformParameterSingleton
@@ -100,6 +90,15 @@ class TestPlatformParameterModule {
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
     )
   }
+
+  @Provides
+  @AutomaticUpdateTopicSetting
+  fun provideAutomaticUpdateTopicSettingParam(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableAutomaticUpdateTopicSettingUi
+    )
+  }
+
 
   @Provides
   @EnableLanguageSelectionUi
