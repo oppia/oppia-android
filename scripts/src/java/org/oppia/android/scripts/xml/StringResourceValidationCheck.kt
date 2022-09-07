@@ -69,9 +69,9 @@ private fun computeInconsistenciesBetween(
     val baseLines = baseString.split("\\n")
     val translatedLines = translatedString.split("\\n")
     return@mapNotNull if (baseLines.size != translatedLines.size) {
-      "string $stringName: original translation uses ${baseLines.size + 1} line(s) but" +
-        " translation uses ${translatedLines.size + 1} line(s). Please remove any extra lines or" +
-        " add any that are missing."
+      "string $stringName: original translation uses ${baseLines.size} line(s) but translation" +
+        " uses ${translatedLines.size} line(s). Please remove any extra lines or add any that are" +
+        " missing."
     } else null // The number of lines match.
   }
 }
