@@ -6,6 +6,35 @@ are syntactically correct.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
+    name = "string_language_translation_check_lib",
+    testonly = True,
+    srcs = ["StringLanguageTranslationCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":string_resource_parser",
+    ],
+)
+
+kt_jvm_library(
+    name = "string_resource_parser",
+    testonly = True,
+    srcs = ["StringResourceParser.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
+    ],
+)
+
+kt_jvm_library(
+    name = "string_resource_validation_check_lib",
+    testonly = True,
+    srcs = ["StringResourceValidationCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":string_resource_parser",
+    ],
+)
+
+kt_jvm_library(
     name = "xml_syntax_error_handler",
     testonly = True,
     srcs = ["XmlSyntaxErrorHandler.kt"],
