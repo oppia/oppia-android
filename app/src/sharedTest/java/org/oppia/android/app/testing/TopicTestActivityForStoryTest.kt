@@ -90,6 +90,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.properties.Delegates
 
 /** Tests for [TopicTestActivityForStory]. */
 @RunWith(AndroidJUnit4::class)
@@ -108,7 +109,7 @@ class TopicTestActivityForStoryTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private var enableExtraTopicTabsUiValue = false
+  private var enableExtraTopicTabsUiValue by Delegates.notNull<Boolean>()
 
   @Before
   fun setUp() {
