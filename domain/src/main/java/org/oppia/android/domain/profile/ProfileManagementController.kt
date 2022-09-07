@@ -684,16 +684,15 @@ class ProfileManagementController @Inject constructor(
   /**
    * Deletes all profiles installed on the device (and logs out the current user).
    *
-   * Note that this will update the in-memory cache out of necessity so that callers can create new
-   * profiles after deletion, so some care may need to be taken to avoid transient failures until
-   * calling code has a chance to reset the UI. It's recommended to block all user actions until the
-   * provider completes, then to restart the app UI.
+   * Note that this will not update the in-memory cache as the app is expected to be forcibly closed
+   * after deletion (since there's no mechanism to notify existing cache stores that they need to
+   * reload/reset from their on-disk copies).
    *
    * Finally, this method attempts to never fail by forcibly deleting all profiles even if some are
    * in a bad state (and would normally failed if attempted to be deleted via [deleteProfile]).
    */
   fun deleteAllProfiles(): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync() {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync {
       val installationId = loggingIdentifierController.fetchInstallationId()
       it.profilesMap.forEach { (internalProfileId, profile) ->
         directoryManagementUtil.deleteDir(internalProfileId.toString())

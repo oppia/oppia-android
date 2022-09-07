@@ -1,6 +1,5 @@
 package org.oppia.android.app.profile
 
-import android.content.Intent
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
@@ -10,7 +9,6 @@ import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -20,6 +18,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import kotlin.system.exitProcess
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -37,6 +36,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
+  private var confirmedDeletion = false
 
   fun handleOnCreate() {
     val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
@@ -209,8 +209,8 @@ class PinPasswordActivityPresenter @Inject constructor(
           activity,
           {
             // Regardless of the result of the operation, always restart the app.
-            activity.startActivity(Intent(activity, SplashActivity::class.java))
-            activity.finish()
+            confirmedDeletion = true
+            activity.finishAffinity()
           }
         )
       }.create()
@@ -218,9 +218,17 @@ class PinPasswordActivityPresenter @Inject constructor(
     alertDialog.show()
   }
 
-  fun dismissAlertDialog() {
+  fun handleOnDestroy() {
     if (::alertDialog.isInitialized && alertDialog.isShowing) {
       alertDialog.dismiss()
+    }
+
+    if (confirmedDeletion) {
+      confirmedDeletion = false
+
+      // End the process forcibly since the app is not designed to recover from major on-disk state
+      // changes that happen from underneath it (like deleting all profiles).
+      exitProcess(0)
     }
   }
 
