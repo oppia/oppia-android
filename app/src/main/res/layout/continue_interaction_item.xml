@@ -46,7 +46,8 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <org.oppia.android.app.customview.ContinueButtonView
+      app:viewModel="@{viewModel}"
       android:id="@+id/continue_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
