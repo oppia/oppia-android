@@ -171,17 +171,14 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.storyId,
               imageCenterAlign = true,
               displayLocale = resourceHandler.getDisplayLocale()
-            ).parseOppiaHtml(
-              storyItemViewModel.summary,
-              binding.chapterSummary
-            )
+            ).parseOppiaHtml(storyItemViewModel.description, binding.chapterSummary)
           if (storyItemViewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
             val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
               R.string.chapter_prerequisite_title_label,
               storyItemViewModel.index.toString(),
-              storyItemViewModel.missingPrerequisiteChapter.name
+              storyItemViewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
             val clickableSpan = object : ClickableSpan() {

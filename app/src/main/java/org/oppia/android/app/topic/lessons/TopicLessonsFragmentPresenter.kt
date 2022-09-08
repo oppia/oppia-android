@@ -36,18 +36,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
-  private val explorationCheckpointController: ExplorationCheckpointController
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val topicLessonViewModel: TopicLessonViewModel,
+  private val accessibilityService: AccessibilityService
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
-
-  @Inject
-  lateinit var topicLessonViewModel: TopicLessonViewModel
-
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
 
   private var currentExpandedChapterListIndex: Int? = null
 

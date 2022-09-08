@@ -14,7 +14,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
-import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
@@ -27,6 +27,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -45,6 +46,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
@@ -269,19 +271,21 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun updateToolbarTitle(explorationId: String) {
-    subscribeToExploration(explorationDataController.getExplorationById(explorationId).toLiveData())
+    subscribeToExploration(
+      explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
+    )
   }
 
   private fun subscribeToExploration(
-    explorationResultLiveData: LiveData<AsyncResult<Exploration>>
+    explorationResultLiveData: LiveData<AsyncResult<EphemeralExploration>>
   ) {
-    val explorationLiveData = getExploration(explorationResultLiveData)
-    explorationLiveData.observe(
-      activity,
-      Observer<Exploration> {
-        explorationToolbarTitle.text = it.title
-      }
-    )
+    val explorationLiveData = getEphemeralExploration(explorationResultLiveData)
+    explorationLiveData.observe(activity) {
+      explorationToolbarTitle.text =
+        translationController.extractString(
+          it.exploration.translatableTitle, it.writtenTranslationContext
+        )
+    }
   }
 
   private fun getExplorationViewModel(): ExplorationViewModel {
@@ -289,23 +293,25 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToExploration. */
-  private fun getExploration(
-    exploration: LiveData<AsyncResult<Exploration>>
-  ): LiveData<Exploration> {
-    return Transformations.map(exploration, ::processExploration)
+  private fun getEphemeralExploration(
+    exploration: LiveData<AsyncResult<EphemeralExploration>>
+  ): LiveData<EphemeralExploration> {
+    return Transformations.map(exploration, ::processEphemeralExploration)
   }
 
   /** Helper for subscribeToExploration. */
-  private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
-    return when (ephemeralStateResult) {
+  private fun processEphemeralExploration(
+    ephemeralExpResult: AsyncResult<EphemeralExploration>
+  ): EphemeralExploration {
+    return when (ephemeralExpResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralStateResult.error
+          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralExpResult.error
         )
-        Exploration.getDefaultInstance()
+        EphemeralExploration.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Exploration.getDefaultInstance()
-      is AsyncResult.Success -> ephemeralStateResult.value
+      is AsyncResult.Pending -> EphemeralExploration.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralExpResult.value
     }
   }
 
