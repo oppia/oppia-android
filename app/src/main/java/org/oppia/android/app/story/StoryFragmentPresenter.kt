@@ -185,7 +185,7 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
-            if(!accessibilityService.isScreenReaderEnabled()) {
+            if (!accessibilityService.isScreenReaderEnabled()) {
               val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
                   smoothScrollToPosition(storyItemViewModel.index - 1)
