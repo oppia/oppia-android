@@ -7,9 +7,9 @@ Thanks for your interest in contributing to the Oppia Android project, and makin
 * [Install oppia-android](#install-oppia-android)
 * [Run the app from Android Studio](#run-the-app-from-android-studio)
 * [Finding something to do](#finding-something-to-do)
+* [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
 * [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
-* [Notes](#notes)
-* [Developing skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
+* [Installing the Oppia web app](#installing-the-oppia-web-app)
 * [Communication channels](#communication-channels)
 
 ## Onboarding instructions
