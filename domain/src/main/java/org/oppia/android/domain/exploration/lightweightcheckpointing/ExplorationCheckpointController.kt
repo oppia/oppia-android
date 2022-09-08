@@ -286,7 +286,7 @@ class ExplorationCheckpointController @Inject constructor(
 
     cacheStore.primeInMemoryAndDiskCacheAsync(
       updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
-      publishMode = PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+      publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
     ).invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
