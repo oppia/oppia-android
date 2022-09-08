@@ -32,8 +32,6 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-import org.oppia.android.app.utility.getVersionCode
-import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
@@ -43,6 +41,8 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.utility.getVersionCode
+import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
