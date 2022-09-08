@@ -4,6 +4,7 @@ Thanks for your interest in contributing to the Oppia Android project, and makin
 ## Table of Contents
 
 * [Onboarding instructions](#onboarding-instructions)
+  * [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
 * [Install oppia-android](#install-oppia-android)
 * [Run the app from Android Studio](#run-the-app-from-android-studio)
 * [Finding something to do](#finding-something-to-do)
