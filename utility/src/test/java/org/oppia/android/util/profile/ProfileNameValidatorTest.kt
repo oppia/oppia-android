@@ -38,9 +38,9 @@ class ProfileNameValidatorTest {
   }
 
   @Test
-  fun testIsNameValid_nameWithSpaces_returnsFalse() {
+  fun testIsNameValid_nameWithSpaces_returnsTrue() {
     val nameWithSpaces = "Ben Henning"
-    assertThat(profileNameValidator.isNameValid(nameWithSpaces)).isFalse()
+    assertThat(profileNameValidator.isNameValid(nameWithSpaces)).isTrue()
   }
 
   @Test
@@ -73,7 +73,8 @@ class ProfileNameValidatorTest {
   @Test
   @RunParameterized(
     Iteration("Ben-.Henning", "name=Ben-.Henning"),
-    Iteration("Rajat..T", "name=Rajat..T")
+    Iteration("Rajat..T", "name=Rajat..T"),
+    Iteration("Name   WithTooManySpaces", "name=Name   WithTooManySpaces")
   )
   fun testIsNameValid_nameWithRepeatedAllowedSymbols_returnsFalse() {
     assertThat(profileNameValidator.isNameValid(name)).isFalse()
