@@ -3,6 +3,8 @@ syntax = "proto3";
 package model;
 
 import "exploration.proto";
+import "exploration_checkpoint.proto";
+import "profile.proto";
 import "translation.proto";
 
 option java_package = "org.oppia.android.app.model";
@@ -62,6 +64,129 @@ message InputInteractionViewTestActivityParams {
     // Indicates that the math equation input interaction will be used for testing.
     MATH_EQUATION = 3;
   }
+}
+
+// Params required when creating a new ExplorationActivity.
+message ExplorationActivityParams {
+  // The ID of the profile that wants to start an exploration play session.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the opening exploration belongs.
+  string topic_id = 2;
+
+  // The ID of the story to which the opening exploration belongs.
+  string story_id = 3;
+
+  // The exploration being opened for a new play session.
+  string exploration_id = 4;
+
+  // The screen from which this activity was opened.
+  ParentScreen parent_screen = 5;
+
+  // Indicates whether checkpointing is enabled to story partial completion state for this session.
+  bool is_checkpointing_enabled = 6;
+
+  // Different parent screens that can open a new exploration activity instance.
+  enum ParentScreen {
+    // Indicates that the originating screen isn't actually known.
+    PARENT_SCREEN_UNSPECIFIED = 0;
+
+    // Corresponds to the lessons tab on the topic viewer screen.
+    TOPIC_SCREEN_LESSONS_TAB = 1;
+
+    // Corresponds to the story viewer screen.
+    STORY_SCREEN = 2;
+  }
+}
+
+// Arguments that must be passed to a new ExplorationFragment.
+message ExplorationFragmentArguments {
+  // The ID of the profile that wants to start an exploration play session.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the opening exploration belongs.
+  string topic_id = 2;
+
+  // The ID of the story to which the opening exploration belongs.
+  string story_id = 3;
+
+  // The exploration being opened for a new play session.
+  string exploration_id = 4;
+
+  // The text size at which content in the exploration should be rendered.
+  ReadingTextSize reading_text_size = 5;
+}
+
+// Params required when creating a new ResumeLessonActivity.
+message ResumeLessonActivityParams {
+  // The ID of the profile that wants to start an exploration play session.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the opening exploration belongs.
+  string topic_id = 2;
+
+  // The ID of the story to which the opening exploration belongs.
+  string story_id = 3;
+
+  // The exploration being opened for a new play session.
+  string exploration_id = 4;
+
+  // The screen from which this activity was opened.
+  ExplorationActivityParams.ParentScreen parent_screen = 5;
+
+  // The checkpoint that may be used to resume the exploration play session.
+  ExplorationCheckpoint checkpoint = 6;
+}
+
+// Arguments that must be passed to a new ResumeLessonFragment.
+message ResumeLessonFragmentArguments {
+  // The ID of the profile that wants to start an exploration play session.
+  ProfileId profile_id = 1;
+
+  // The ID of the topic to which the opening exploration belongs.
+  string topic_id = 2;
+
+  // The ID of the story to which the opening exploration belongs.
+  string story_id = 3;
+
+  // The exploration being opened for a new play session.
+  string exploration_id = 4;
+
+  // The screen from which this activity was opened.
+  ExplorationActivityParams.ParentScreen parent_screen = 5;
+
+  // The checkpoint that may be used to resume the exploration play session.
+  ExplorationCheckpoint checkpoint = 6;
+}
+
+// Params required when creating a new ReadingTextSizeActivity.
+message ReadingTextSizeActivityParams {
+  // The ReadingTextSize previously selected by the user (upon opening the activity).
+  ReadingTextSize reading_text_size = 1;
+}
+
+// The bundle of properties that are saved upon configuration changes in ReadingTextSizeActivity.
+message ReadingTextSizeActivityStateBundle {
+  // The ReadingTextSize selected by the user.
+  ReadingTextSize selected_reading_text_size = 1;
+}
+
+// The bundle of properties that are returned by ReadingTextSizeActivity after it's finished.
+message ReadingTextSizeActivityResultBundle {
+  // The ReadingTextSize selected by the user.
+  ReadingTextSize selected_reading_text_size = 1;
+}
+
+// Arguments required when creating a new ReadingTextSizeFragment.
+message ReadingTextSizeFragmentArguments {
+  // The ReadingTextSize previously selected by the user (upon opening the fragment).
+  ReadingTextSize reading_text_size = 1;
+}
+
+// The bundle of properties that are saved upon configuration changes in ReadingTextSizeFragment.
+message ReadingTextSizeFragmentStateBundle {
+  // The ReadingTextSize selected by the user.
+  ReadingTextSize selected_reading_text_size = 1;
 }
 
 // Activity Parameters needed to open the policy page.

@@ -75,7 +75,7 @@
           android:gravity="top"
           android:maxLines="2"
           android:minLines="2"
-          android:text="@{viewModel.name}"
+          android:text="@{viewModel.topicTitle}"
           android:textColor="@color/color_def_white"
           android:textSize="14sp"
           android:textStyle="bold"

@@ -13,9 +13,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StorySummary
-import org.oppia.android.app.model.Topic
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -106,42 +106,42 @@ class ModifyLessonProgressControllerTest {
   fun testRetrieveAllTopics_firstTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
 
-    val firstTopic = allTopics[0]
+    val firstTopic = allTopics[0].topic
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
-    assertThat(firstTopic.name).isEqualTo("First Test Topic")
+    assertThat(firstTopic.title.html).isEqualTo("First Test Topic")
   }
 
   @Test
   fun testRetrieveAllTopics_secondTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
 
-    val secondTopic = allTopics[1]
+    val secondTopic = allTopics[1].topic
     assertThat(secondTopic.topicId).isEqualTo(TEST_TOPIC_ID_1)
-    assertThat(secondTopic.name).isEqualTo("Second Test Topic")
+    assertThat(secondTopic.title.html).isEqualTo("Second Test Topic")
   }
 
   @Test
   fun testRetrieveAllTopics_fractionsTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
 
-    val fractionsTopic = allTopics[2]
+    val fractionsTopic = allTopics[2].topic
     assertThat(fractionsTopic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(fractionsTopic.name).isEqualTo("Fractions")
+    assertThat(fractionsTopic.title.html).isEqualTo("Fractions")
   }
 
   @Test
   fun testRetrieveAllTopics_ratiosTopic_hasCorrectTopicInfo() {
     val allTopics = retrieveAllTopics()
 
-    val ratiosTopic = allTopics[3]
+    val ratiosTopic = allTopics[3].topic
     assertThat(ratiosTopic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(ratiosTopic.name).isEqualTo("Ratios and Proportional Reasoning")
+    assertThat(ratiosTopic.title.html).isEqualTo("Ratios and Proportional Reasoning")
   }
 
   @Test
   fun testRetrieveAllTopics_doesNotContainUnavailableTopic() {
     val allTopics = retrieveAllTopics()
-    val topicIds = allTopics.map(Topic::getTopicId)
+    val topicIds = allTopics.map { it.topic.topicId }
     assertThat(topicIds).doesNotContain(TEST_TOPIC_ID_2)
   }
 
@@ -149,14 +149,14 @@ class ModifyLessonProgressControllerTest {
   fun testRetrieveAllTopics_firstTopic_withoutAnyProgress_correctProgressFound() {
     val allTopics = retrieveAllTopics()
 
-    val firstTopic = allTopics[0]
+    val firstTopic = allTopics[0].topic
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(firstTopic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(firstTopic.storyList[0].chapterList[1].missingPrerequisiteChapter.name)
-      .isEqualTo(firstTopic.storyList[0].chapterList[0].name)
+    assertThat(firstTopic.storyList[0].chapterList[1].missingPrerequisiteChapter.title.html)
+      .isEqualTo(firstTopic.storyList[0].chapterList[0].title.html)
   }
 
   @Test
@@ -165,7 +165,7 @@ class ModifyLessonProgressControllerTest {
 
     val allTopics = retrieveAllTopics()
 
-    val firstTopic = allTopics[0]
+    val firstTopic = allTopics[0].topic
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
@@ -189,7 +189,7 @@ class ModifyLessonProgressControllerTest {
     val allTopics = retrieveAllTopics()
 
     val topicsProgress =
-      allTopics.associateBy(Topic::getTopicId).mapValues { (_, topic) ->
+      allTopics.associateBy { it.topic.topicId }.mapValues { (_, topic) ->
         modifyLessonProgressController.checkIfTopicIsCompleted(topic)
       }
 
@@ -217,58 +217,58 @@ class ModifyLessonProgressControllerTest {
   fun testRetrieveAllStories_firstStory_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
 
-    val firstStory = allStories[0]
+    val firstStory = allStories[0].storySummary
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
-    assertThat(firstStory.storyName).isEqualTo("First Story")
+    assertThat(firstStory.storyTitle.html).isEqualTo("First Story")
   }
 
   @Test
   fun testRetrieveAllStories_otherStory_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
 
-    val secondStory = allStories[1]
+    val secondStory = allStories[1].storySummary
     assertThat(secondStory.storyId).isEqualTo(TEST_STORY_ID_2)
-    assertThat(secondStory.storyName).isEqualTo("Other Interesting Story")
+    assertThat(secondStory.storyTitle.html).isEqualTo("Other Interesting Story")
   }
 
   @Test
   fun testRetrieveAllStories_fractionsStory_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
 
-    val fractionsStory = allStories[2]
+    val fractionsStory = allStories[2].storySummary
     assertThat(fractionsStory.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
-    assertThat(fractionsStory.storyName).isEqualTo("Matthew Goes to the Bakery")
+    assertThat(fractionsStory.storyTitle.html).isEqualTo("Matthew Goes to the Bakery")
   }
 
   @Test
   fun testRetrieveAllStories_ratiosStory1_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
 
-    val ratiosStory1 = allStories[3]
+    val ratiosStory1 = allStories[3].storySummary
     assertThat(ratiosStory1.storyId).isEqualTo(RATIOS_STORY_ID_0)
-    assertThat(ratiosStory1.storyName).isEqualTo("Ratios: Part 1")
+    assertThat(ratiosStory1.storyTitle.html).isEqualTo("Ratios: Part 1")
   }
 
   @Test
   fun testRetrieveAllStories_ratiosStory2_hasCorrectStoryInfo() {
     val allStories = retrieveAllStories()
 
-    val ratiosStory2 = allStories[4]
+    val ratiosStory2 = allStories[4].storySummary
     assertThat(ratiosStory2.storyId).isEqualTo(RATIOS_STORY_ID_1)
-    assertThat(ratiosStory2.storyName).isEqualTo("Ratios: Part 2")
+    assertThat(ratiosStory2.storyTitle.html).isEqualTo("Ratios: Part 2")
   }
 
   @Test
   fun testRetrieveAllStories_firstStory_withoutAnyProgress_correctProgressFound() {
     val allStories = retrieveAllStories()
 
-    val firstStory = allStories[0]
+    val firstStory = allStories[0].storySummary
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(firstStory.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(firstStory.chapterList[1].missingPrerequisiteChapter.name)
-      .isEqualTo(firstStory.chapterList[0].name)
+    assertThat(firstStory.chapterList[1].missingPrerequisiteChapter.title.html)
+      .isEqualTo(firstStory.chapterList[0].title.html)
   }
 
   @Test
@@ -277,7 +277,7 @@ class ModifyLessonProgressControllerTest {
 
     val allStories = retrieveAllStories()
 
-    val firstStory = allStories[0]
+    val firstStory = allStories[0].storySummary
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(firstStory.chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -299,7 +299,7 @@ class ModifyLessonProgressControllerTest {
     val allStories = retrieveAllStories()
 
     val storiesProgress =
-      allStories.associateBy(StorySummary::getStoryId).mapValues { (_, storySummary) ->
+      allStories.associateBy { it.storySummary.storyId }.mapValues { (_, storySummary) ->
         modifyLessonProgressController.checkIfStoryIsCompleted(storySummary)
       }
 
@@ -317,8 +317,8 @@ class ModifyLessonProgressControllerTest {
     )
 
     val allTopics = retrieveAllTopics()
-    val firstTopic = allTopics[0]
-    val fractionsTopic = allTopics[2]
+    val firstTopic = allTopics[0].topic
+    val fractionsTopic = allTopics[2].topic
     assertThat(firstTopic.topicId).isEqualTo(TEST_TOPIC_ID_0)
     assertThat(firstTopic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
@@ -339,8 +339,8 @@ class ModifyLessonProgressControllerTest {
     )
 
     val allStories = retrieveAllStories()
-    val firstStory = allStories[0]
-    val ratios2Story = allStories[4]
+    val firstStory = allStories[0].storySummary
+    val ratios2Story = allStories[4].storySummary
     assertThat(firstStory.storyId).isEqualTo(TEST_STORY_ID_0)
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(firstStory.chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -361,8 +361,8 @@ class ModifyLessonProgressControllerTest {
     )
 
     val allStories = retrieveAllStories()
-    val firstStory = allStories[0]
-    val fractionsStory = allStories[2]
+    val firstStory = allStories[0].storySummary
+    val fractionsStory = allStories[2].storySummary
     assertThat(firstStory.chapterList[0].explorationId).isEqualTo(TEST_EXPLORATION_ID_2)
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(fractionsStory.chapterList[0].explorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_0)
@@ -389,12 +389,12 @@ class ModifyLessonProgressControllerTest {
     )
   }
 
-  private fun retrieveAllTopics(): List<Topic> {
+  private fun retrieveAllTopics(): List<EphemeralTopic> {
     val topicsProvider = modifyLessonProgressController.getAllTopicsWithProgress(profileId)
     return monitorFactory.waitForNextSuccessfulResult(topicsProvider)
   }
 
-  private fun retrieveAllStories(): List<StorySummary> {
+  private fun retrieveAllStories(): List<EphemeralStorySummary> {
     val storyProgressProvider = modifyLessonProgressController.getStoryMapWithProgress(profileId)
     return monitorFactory.waitForNextSuccessfulResult(storyProgressProvider).values.flatten()
   }

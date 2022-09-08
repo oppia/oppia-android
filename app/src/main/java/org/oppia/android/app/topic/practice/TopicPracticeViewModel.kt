@@ -3,8 +3,8 @@ package org.oppia.android.app.topic.practice
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeFooterViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
@@ -12,6 +12,7 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeS
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -20,22 +21,23 @@ import javax.inject.Inject
 @FragmentScope
 class TopicPracticeViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val topicController: TopicController
+  private val topicController: TopicController,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
   private lateinit var topicId: String
   private var internalProfileId: Int = -1
 
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+  private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId
     ).toLiveData()
   }
 
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+  private val topicLiveData: LiveData<EphemeralTopic> by lazy { getTopicList() }
 
-  private fun getTopicList(): LiveData<Topic> {
+  private fun getTopicList(): LiveData<EphemeralTopic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
@@ -51,24 +53,26 @@ class TopicPracticeViewModel @Inject constructor(
     this.internalProfileId = internalProfileId
   }
 
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    return when (topic) {
+  private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("TopicPracticeFragment", "Failed to retrieve topic", topic.error)
-        Topic.getDefaultInstance()
+        oppiaLogger.e("TopicPracticeFragment", "Failed to retrieve topic", ephemeralResult.error)
+        EphemeralTopic.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Topic.getDefaultInstance()
-      is AsyncResult.Success -> topic.value
+      is AsyncResult.Pending -> EphemeralTopic.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 
-  private fun processTopicPracticeSkillList(topic: Topic): List<TopicPracticeItemViewModel> {
+  private fun processTopicPracticeSkillList(
+    ephemeralTopic: EphemeralTopic
+  ): List<TopicPracticeItemViewModel> {
     itemViewModelList.clear()
     itemViewModelList.add(TopicPracticeHeaderViewModel() as TopicPracticeItemViewModel)
 
     itemViewModelList.addAll(
-      topic.subtopicList.map { subtopic ->
-        TopicPracticeSubtopicViewModel(subtopic) as TopicPracticeItemViewModel
+      ephemeralTopic.subtopicsList.map { ephemeralSubtopic ->
+        TopicPracticeSubtopicViewModel(ephemeralSubtopic, translationController)
       }
     )
 
