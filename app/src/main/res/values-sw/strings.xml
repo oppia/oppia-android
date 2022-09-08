@@ -245,15 +245,14 @@
   <string name="pin_password_user_enter">Tafadhali weka Nambari yako ya Siri.</string>
   <string name="input_pin_password_as_admin">Nambari ya Siri ya Tarakimu 5 ya Msimamizi.</string>
   <string name="input_pin_password_as_user">Nambari ya Siri ya Tarakimu 3 ya Mtumiaji.</string>
-  <string name="pin_password_forgot_pin">Nilisahau nambari yangu.</string>
+  <string name="pin_password_forgot_pin" fuzzy="true">Nilisahau nambari yangu.</string>
   <string name="pin_password_incorrect_pin">Nambari ya Siri si sahihi.</string>
   <string name="pin_password_show">Onyesha</string>
   <string name="pin_password_hide">ficha</string>
   <string name="pin_password_close">Funga</string>
   <string name="pin_password_success">Mabadiliko ya Nambari ya Siri yamefaulu</string>
   <string name="pin_password_forgot_title">Je, umesahau Nambari ya Siri?</string>
-  <string name="pin_password_forgot_message">Ili kuweka upya Nambari yako ya Siri, tafadhali ondoa %s kisha uisakinishe upya.\n\nKumbuka kwamba ikiwa kifaa hakijakuwa mtandaoni, unaweza kupoteza maendeleo ya mtumiaji kwenye akaunti nyingi.</string>
-  <string name="pin_password_play_store">Nenda kwenye hifadhi ya Google play.</string>
+  <string name="admin_forgot_pin_message" fuzzy="true">Ili kuweka upya Nambari yako ya Siri, tafadhali ondoa %s kisha uisakinishe upya.\n\nKumbuka kwamba ikiwa kifaa hakijakuwa mtandaoni, unaweza kupoteza maendeleo ya mtumiaji kwenye akaunti nyingi.</string>
   <string name="show_hide_password_icon">Onyesha/Ficha ishara ya nenosiri</string>
   <string name="password_shown_icon">Ishara ya nenosiri iliyoonyeshwa</string>
   <string name="password_hidden_icon">Ishara ya nenosiri iliyofichwa</string>
@@ -352,7 +351,7 @@
   <string name="welcome">\"Karibu %s!\"</string>
   <string name="what_do_you_want_to_learn">Unataka kujifunza nini?</string>
   <string name="great">Makuu</string>
-  <string name="lets_get_started">Hebu tuanze.</string>
+  <string name="lets_get_started" fuzzy="true">Hebu tuanze.</string>
   <string name="yes">Ndiyo</string>
   <string name="no">Hapana…</string>
   <string name="pick_a_different_topic">Chagua \nmada tofauti.</string>
