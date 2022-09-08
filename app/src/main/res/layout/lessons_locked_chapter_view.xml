@@ -62,7 +62,7 @@
         android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:text="@{viewModel.chapterName}"
+        android:text="@{viewModel.chapterTitle}"
         android:textColor="@color/color_def_accessible_light_grey_2"
         android:textSize="14sp" />
     </LinearLayout>

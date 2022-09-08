@@ -224,7 +224,7 @@ class TopicListController @Inject constructor(
         } else {
           TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
         }
-        this.firstStoryId = firstStoryId
+        storyRecords.firstOrNull()?.storyId?.let { this.firstStoryId = it }
       }.build()
     } else {
       createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)

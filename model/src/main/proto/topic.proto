@@ -345,6 +345,9 @@ message TopicSummary {
 
   // The old name corresponding to the topic (as a string).
   reserved 2;
+
+
+  string first_story_id = 9;
 }
 
 // Corresponds to a topic summary that is currently being viewed.
