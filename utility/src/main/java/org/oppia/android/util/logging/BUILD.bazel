@@ -67,6 +67,7 @@ kt_android_library(
     deps = [
         ":event_type_to_human_readable_name_converter",
         "//model/src/main/proto:event_logger_java_proto_lite",
+        "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
