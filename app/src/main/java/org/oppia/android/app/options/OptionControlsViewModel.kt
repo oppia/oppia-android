@@ -12,7 +12,7 @@ import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -28,7 +28,8 @@ class OptionControlsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
-  @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>
+  @EnableLanguageSelectionUi private val enableLanguageSelectionUi: PlatformParameterValue<Boolean>,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : OptionsItemViewModel() {
   private val itemViewModelList: ObservableList<OptionsItemViewModel> = ObservableArrayList()
   private lateinit var profileId: ProfileId
@@ -84,11 +85,12 @@ class OptionControlsViewModel @Inject constructor(
   }
 
   private fun processProfileList(profile: Profile): List<OptionsItemViewModel> {
-
     itemViewModelList.clear()
 
     val optionsReadingTextSizeViewModel =
-      OptionsReadingTextSizeViewModel(routeToReadingTextSizeListener, loadReadingTextSizeListener)
+      OptionsReadingTextSizeViewModel(
+        routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
+      )
     val optionsAppLanguageViewModel =
       OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
     val optionAudioViewViewModel =
@@ -97,7 +99,7 @@ class OptionControlsViewModel @Inject constructor(
         loadAudioLanguageListListener
       )
 
-    optionsReadingTextSizeViewModel.readingTextSize.set(getReadingTextSize(profile.readingTextSize))
+    optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
     optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
@@ -124,15 +126,6 @@ class OptionControlsViewModel @Inject constructor(
    */
   fun isFirstOpen(isFirstOpen: Boolean) {
     this.isFirstOpen = isFirstOpen
-  }
-
-  fun getReadingTextSize(readingTextSize: ReadingTextSize): String {
-    return when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE -> "Small"
-      ReadingTextSize.MEDIUM_TEXT_SIZE -> "Medium"
-      ReadingTextSize.LARGE_TEXT_SIZE -> "Large"
-      else -> "Extra Large"
-    }
   }
 
   fun getAppLanguage(appLanguage: AppLanguage): String {

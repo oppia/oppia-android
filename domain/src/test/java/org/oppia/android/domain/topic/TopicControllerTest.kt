@@ -17,11 +17,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.EphemeralStorySummary
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_IN_FUTURE
 import org.oppia.android.app.model.TopicPlayAvailability.AvailabilityCase.AVAILABLE_TO_PLAY_NOW
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -31,6 +31,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.topic.TopicController.ChapterNotFoundException
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeExceptionLogger
@@ -49,6 +50,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
+import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -100,7 +102,7 @@ class TopicControllerTest {
   fun testRetrieveTopic_validSecondTopic_returnsCorrectTopic() {
     val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_1)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(TEST_TOPIC_ID_1)
   }
 
@@ -108,7 +110,7 @@ class TopicControllerTest {
   fun testRetrieveTopic_validSecondTopic_returnsTopicWithThumbnail() {
     val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_1)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
@@ -116,7 +118,7 @@ class TopicControllerTest {
   fun testRetrieveTopic_fractionsTopic_returnsCorrectTopic() {
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyCount).isEqualTo(1)
   }
@@ -125,16 +127,16 @@ class TopicControllerTest {
   fun testRetrieveTopic_fractionsTopic_hasCorrectDescription() {
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
-    assertThat(topic.description).contains("You'll often need to talk about")
+    assertThat(topic.description.html).contains("You'll often need to talk about")
   }
 
   @Test
   fun testRetrieveTopic_ratiosTopic_returnsCorrectTopic() {
     val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(topic.storyCount).isEqualTo(2)
   }
@@ -143,9 +145,9 @@ class TopicControllerTest {
   fun testRetrieveTopic_ratiosTopic_hasCorrectDescription() {
     val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
-    assertThat(topic.description).contains(
+    assertThat(topic.description.html).contains(
       "Many everyday problems involve thinking about proportions"
     )
   }
@@ -161,7 +163,7 @@ class TopicControllerTest {
   fun testRetrieveTopic_testTopic_published_returnsAsAvailable() {
     val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_0)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_NOW)
   }
 
@@ -169,7 +171,7 @@ class TopicControllerTest {
   fun testRetrieveTopic_testTopic_unpublished_returnsAsAvailableInFuture() {
     val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_2)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicPlayAvailability.availabilityCase).isEqualTo(AVAILABLE_TO_PLAY_IN_FUTURE)
   }
 
@@ -184,7 +186,7 @@ class TopicControllerTest {
   fun testRetrieveStory_validStory_returnsCorrectStory() {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     assertThat(story.storyId).isEqualTo(TEST_STORY_ID_2)
   }
 
@@ -192,8 +194,8 @@ class TopicControllerTest {
   fun testRetrieveStory_validStory_returnsStoryWithName() {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
-    assertThat(story.storyName).isEqualTo("Other Interesting Story")
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
+    assertThat(story.storyTitle.html).isEqualTo("Other Interesting Story")
   }
 
   @Test
@@ -201,7 +203,7 @@ class TopicControllerTest {
     val storyProvider =
       topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     assertThat(story.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
   }
 
@@ -210,17 +212,17 @@ class TopicControllerTest {
     val storyProvider =
       topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
-    assertThat(story.storyName).isEqualTo("Matthew Goes to the Bakery")
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
+    assertThat(story.storyTitle.html).isEqualTo("Matthew Goes to the Bakery")
   }
 
   @Test
   fun testRetrieveStory_ratiosFirstStory_returnsCorrectStory() {
     val storyProvider = topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_0)
-    assertThat(story.storyName).isEqualTo("Ratios: Part 1")
+    assertThat(story.storyTitle.html).isEqualTo("Ratios: Part 1")
   }
 
   @Test
@@ -235,9 +237,9 @@ class TopicControllerTest {
   fun testRetrieveStory_ratiosSecondStory_returnsCorrectStory() {
     val storyProvider = topicController.getStory(profileId1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_1)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     assertThat(story.storyId).isEqualTo(RATIOS_STORY_ID_1)
-    assertThat(story.storyName).isEqualTo("Ratios: Part 2")
+    assertThat(story.storyTitle.html).isEqualTo("Ratios: Part 2")
   }
 
   @Test
@@ -252,16 +254,16 @@ class TopicControllerTest {
   fun testRetrieveStory_validStory_returnsStoryWithChapter() {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
-    assertThat(getExplorationIds(story)).containsExactly(TEST_EXPLORATION_ID_4)
+    val ephemeralSummary = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    assertThat(getExplorationIds(ephemeralSummary)).containsExactly(TEST_EXPLORATION_ID_4)
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterName() {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
-    assertThat(story.getChapter(0).name).isEqualTo("Fifth Exploration")
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
+    assertThat(story.getChapter(0).title.html).isEqualTo("Fifth Exploration")
   }
 
   @Test
@@ -269,16 +271,15 @@ class TopicControllerTest {
     val storyProvider =
       topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
-    assertThat(story.getChapter(0).summary)
-      .isEqualTo("Matthew learns about fractions.")
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
+    assertThat(story.getChapter(0).description.html).isEqualTo("Matthew learns about fractions.")
   }
 
   @Test
   fun testRetrieveStory_validStory_returnsStoryWithChapterThumbnail() {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
-    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val story = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     val chapter = story.getChapter(0)
     assertThat(chapter.chapterThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
@@ -294,23 +295,24 @@ class TopicControllerTest {
   fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
     val chapterProvider =
       topicController.retrieveChapter(
-        FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
+        profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
       )
 
-    val chapterSummary = monitorFactory.waitForNextSuccessfulResult(chapterProvider)
-    assertThat(chapterSummary.name).isEqualTo("What is a Fraction?")
-    assertThat(chapterSummary.summary).isEqualTo("Matthew learns about fractions.")
+    val chapterSummary = monitorFactory.waitForNextSuccessfulResult(chapterProvider).chapterSummary
+    assertThat(chapterSummary.title.html).isEqualTo("What is a Fraction?")
+    assertThat(chapterSummary.description.html).isEqualTo("Matthew learns about fractions.")
   }
 
   @Test
   fun testRetrieveChapter_invalidChapter_returnsFailure() {
     val chapterProvider =
       topicController.retrieveChapter(
-        FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
       )
 
     val error = monitorFactory.waitForNextFailureResult(chapterProvider)
-    assertThat(error).isInstanceOf(TopicController.ChapterNotFoundException::class.java)
+    assertThat(error).isInstanceOf(AsyncResult.ChainedFailureException::class.java)
+    assertThat(error).hasCauseThat().isInstanceOf(ChapterNotFoundException::class.java)
   }
 
   @Test
@@ -563,7 +565,7 @@ class TopicControllerTest {
   fun testRetrieveSubtopicTopic_validSubtopic_returnsSubtopicWithThumbnail() {
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.subtopicList[0].subtopicThumbnail.backgroundColorRgb).isNotEqualTo(0)
   }
 
@@ -675,14 +677,14 @@ class TopicControllerTest {
   fun testGetTopic_validTopicId_withoutAnyProgress_getTopicSucceedsWithCorrectProgress() {
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter.name)
-      .isEqualTo(topic.storyList[0].chapterList[0].name)
+    assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter.title)
+      .isEqualTo(topic.storyList[0].chapterList[0].title)
   }
 
   @Test
@@ -691,7 +693,7 @@ class TopicControllerTest {
 
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
@@ -711,14 +713,14 @@ class TopicControllerTest {
     val storyProvider =
       topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     assertThat(storySummary.storyId).isEqualTo(FRACTIONS_STORY_ID_0)
     assertThat(storySummary.chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(storySummary.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.name)
-      .isEqualTo(storySummary.chapterList[0].name)
+    assertThat(storySummary.chapterList[1].missingPrerequisiteChapter.title)
+      .isEqualTo(storySummary.chapterList[0].title)
   }
 
   @Test
@@ -727,7 +729,7 @@ class TopicControllerTest {
 
     val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
 
-    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider)
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
     assertThat(topic.storyList[0].chapterList[0].chapterPlayState)
       .isEqualTo(ChapterPlayState.COMPLETED)
@@ -751,7 +753,7 @@ class TopicControllerTest {
 
     val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(1)
-    assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(FRACTIONS_TOPIC_ID)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(FRACTIONS_TOPIC_ID)
   }
 
   @Test
@@ -776,7 +778,7 @@ class TopicControllerTest {
 
     val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(1)
-    assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
   }
 
   @Test
@@ -800,7 +802,7 @@ class TopicControllerTest {
 
     val ongoingTopicList = monitorFactory.waitForNextSuccessfulResult(topicListProvider)
     assertThat(ongoingTopicList.topicCount).isEqualTo(1)
-    assertThat(ongoingTopicList.topicList[0].topicId).isEqualTo(RATIOS_TOPIC_ID)
+    assertThat(ongoingTopicList.topicList[0].topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
   }
 
   @Test
@@ -842,7 +844,7 @@ class TopicControllerTest {
     val storyProvider =
       topicController.getStory(profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0)
 
-    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider)
+    val storySummary = monitorFactory.waitForNextSuccessfulResult(storyProvider).storySummary
     assertThat(storySummary.chapterCount).isEqualTo(2)
     assertThat(storySummary.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
     assertThat(storySummary.chapterList[1].chapterPlayState).isEqualTo(ChapterPlayState.COMPLETED)
@@ -1111,8 +1113,8 @@ class TopicControllerTest {
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
-  private fun getExplorationIds(story: StorySummary): List<String> {
-    return story.chapterList.map(ChapterSummary::getExplorationId)
+  private fun getExplorationIds(ephemeralSummary: EphemeralStorySummary): List<String> {
+    return ephemeralSummary.storySummary.chapterList.map(ChapterSummary::getExplorationId)
   }
 
   // TODO(#89): Move this to a common test application component.
