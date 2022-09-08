@@ -5,7 +5,7 @@
 Here are the steps for making a PR to the Oppia Android codebase:
 1. [Make a local code change](#step-1-making-a-local-code-change)
 2. [Create a PR on GitHub](#step-2-create-a-pr-on-github)
-3. [Address review comments until all reviewers give LGTM](#step-3-address-review-comments-until-all-reviewers-give-lgtm)
+3. [Address review comments until all reviewers give LGTM](#step-3-address-review-comments-until-all-reviewers-give-lgtm) (this section is important, please read it carefully)
 4. [Tidy up and celebrate!](#step-4-tidy-up-and-celebrate-confetti_ball)
 
 Note: If your change involves more than around 500 lines of code, we recommend first creating a [design doc](https://github.com/oppia/oppia/wiki/Writing-design-docs). This helps avoid duplication of effort, and allows us to offer advice and suggestions on the implementation approach.
@@ -147,29 +147,29 @@ You have successfully created a pull request! Now, wait for your code to get rev
 
 ## Step 3: Address review comments until all reviewers give LGTM 
 
-When your reviewer has reviewed the code, you'll get an email. You'll need to respond in two ways:
+When your reviewer has reviewed the code, you'll get an email. You'll need to respond both to the comments and within the code:
+
 1. Make a new commit addressing the comments you agree with, and push it to the same branch. (Continue to use descriptive commit messages. If your commit addresses lots of disparate review comments, it's fine to refer to the original commit message and add something like "(address review comments)".)
 
     - **Always make commits locally, and then push to GitHub.** Don't make changes using the online GitHub editor -- this bypasses lint/presubmit checks, and will cause the code on GitHub to diverge from the code on your machine.
 
     - **Never force-push changes to GitHub, especially after reviews have started.** This is disallowed and may result in your PR being closed, because it overwrites history on GitHub and makes the incremental changes harder to review.
 
-    In addition, reply to each comment via the Files Changed tab, choosing the “Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. When you’ve responded to all comments, submit the review to add all your messages to the main thread. All comments must be responded to and resolved before LGTM can be given.
+    - If you encounter merge conflicts, make sure to resolve them using [the terminal](#Resolving-merge-conflicts-using-the-terminal) or [Android Studio](#Resolving-merge-conflicts-using-Android-Studio). (Click the links for more details on how to do this.)
 
-2. Resolve any merge conflicts that arise using [the terminal](#Resolving-merge-conflicts-using-the-terminal) or [Android Studio](#Resolving-merge-conflicts-using-Android-Studio). (Click the links for more details on how to do this.)
+2. **Reply to each comment** via the Files Changed tab, choosing the “Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. 
 
-Once you've finished addressing everything, and would like the reviewer to take another look, write a top-level comment** explicitly asking the reviewer to take another look (e.g. "@XXX PTAL"), and set them as the assignee for the PR.
+3. When you’ve responded to all comments, submit the review to add all your messages to the main thread. **All comments must be responded to** and fully addressed before LGTM can be given.
 
-At the end, the reviewer will merge the pull request.
+    - If you would like the reviewer to take another look, (a) write a top-level comment** explicitly asking the reviewer to take another look (e.g. "@XXX PTAL"), and (b) set them as the assignee for the PR.
 
+At the end, the reviewer will merge the pull request. Note however PRs will only be merged if there are no more requested changes, and all conversation threads have been brought to a conclusion.
 
 ### Tips for getting your PR merged
-1. Keep track of the **Assignees** section, and reply to comments in the PR itself.
-2. PRs will not be merged if there are any requested changes, or if there are any unresolved conversation threads.
-3. Do not resolve a conversation if you didn't open it, unless the author explicitly says that you can. You should re-assign the PR to the author once you address all of the comments so that they can verify & mark the conversations as resolved.
-4. Make sure that the assignee list always reflects the contributors who have actionable items left on the PR (either to make requested changes, merge the PR, review it, or resolve open comment threads). Note that it's perfectly fine if sometimes both the author and reviewer of a PR are both assigned to it (one reviewer may have finished a review pass and requested changes--in this situation both another reviewer and author might have actionable work items to complete).
-5. Address all comments before sending a PR back to a reviewer. 'Address' can mean implementing a code change, asking a clarifying question, or providing an explanation why you don't think a suggestion should implemented. Make sure each comment thread has at a reply from you before sending the PR back to that reviewer.
-6. Once the PR is ready to merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them in the PR via a comment.
+1. Keep track of the **Assignees** section, and make sure it's always up to date -- it should always reflect the "next person(s)" who have actionable items left on the PR. If you're ever the assignee, do whatever is currently needed on your end so that you can take yourself off the list (usually, this means addressing open review comments).
+2. Make sure to **address all comments** before sending a PR back to a reviewer. Each comment thread should have a reply from you before you send the PR back. This can be either "Done", a follow-up clarifying question, or an explanation for why you don't think a suggestion should be implemented.
+3. Do not "resolve" a thread conversation if you didn't open it. Just re-assign the PR to the reviewer once you address all of the comments. This helps with keeping track of which comments are still "in play".
+4. Once the PR is ready to merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them in the PR via a comment.
 
 
 ### Resolving merge conflicts using the terminal
