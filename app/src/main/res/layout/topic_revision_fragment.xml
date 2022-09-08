@@ -12,7 +12,7 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppia_background">
+    android:background="@color/component_color_topic_revision_activity_background_color">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/revision_recycler_view"
