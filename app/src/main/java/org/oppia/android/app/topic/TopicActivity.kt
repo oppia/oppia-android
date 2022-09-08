@@ -86,8 +86,7 @@ class TopicActivity :
     topicId: String,
     storyId: String,
     explorationId: String,
-    parentScreen:
-      ExplorationActivityParams.ParentScreen,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
