@@ -53,4 +53,7 @@ kt_jvm_library(
     testonly = True,
     srcs = ["RepositoryFile.kt"],
     visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
+    ],
 )
