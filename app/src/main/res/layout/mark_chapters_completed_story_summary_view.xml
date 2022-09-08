@@ -23,7 +23,7 @@
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
-      android:text="@{viewModel.storyName}"
+      android:text="@{viewModel.storyTitle}"
       android:textColor="@color/component_color_mark_chapters_completed_subtext_heading_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
