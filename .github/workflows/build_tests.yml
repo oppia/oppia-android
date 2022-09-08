@@ -443,10 +443,24 @@ jobs:
         run: |
           bazel build --compilation_mode=opt -- //:oppia_alpha_kitkat
 
+      # Note that caching only works on non-forks.
+      - name: Build Oppia alpha Kenya-specific AAB (with caching, non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: |
+          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_alpha_kenya
+
+      - name: Build Oppia alpha Kenya-specific AAB (without caching, or on a fork)
+        if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+        run: |
+          bazel build --compilation_mode=opt -- //:oppia_alpha_kenya
+
       - name: Copy Oppia alpha AABs for uploading
         run: |
           cp $GITHUB_WORKSPACE/bazel-bin/oppia_alpha.aab /home/runner/work/oppia-android/oppia-android/
           cp $GITHUB_WORKSPACE/bazel-bin/oppia_alpha_kitkat.aab /home/runner/work/oppia-android/oppia-android/
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia_alpha_kenya.aab /home/runner/work/oppia-android/oppia-android/
 
       - uses: actions/upload-artifact@v2
         with:
@@ -457,3 +471,268 @@ jobs:
         with:
           name: oppia_alpha_kitkat.aab
           path: /home/runner/work/oppia-android/oppia-android/oppia_alpha_kitkat.aab
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia_alpha_kenya.aab
+          path: /home/runner/work/oppia-android/oppia-android/oppia_alpha_kenya.aab
+
+  build_oppia_beta_aab:
+    name: Build Oppia AAB (beta flavor)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    env:
+      ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # For reference on this & the later cache actions, see:
+      # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
+      # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
+      # with Bazel since Bazel can share the most recent cache from an unrelated build and still
+      # benefit from incremental build performance (assuming that actions/cache aggressively removes
+      # older caches due to the 5GB cache limit size & Bazel's large cache size).
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Check Bazel environment
+        run: bazel info
+
+      # See https://git-secret.io/installation for details on installing git-secret. Note that the
+      # apt-get method isn't used since it's much slower to update & upgrade apt before installation
+      # versus just directly cloning & installing the project. Further, the specific version
+      # shouldn't matter since git-secret relies on a future-proof storage mechanism for secrets.
+      # This also uses a different directory to install git-secret to avoid requiring root access
+      # when running the git secret command.
+      - name: Install git-secret (non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        shell: bash
+        run: |
+          cd $HOME
+          mkdir -p $HOME/gitsecret
+          git clone https://github.com/sobolevn/git-secret.git git-secret
+          cd git-secret && make build
+          PREFIX="$HOME/gitsecret" make install
+          echo "$HOME/gitsecret" >> $GITHUB_PATH
+          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
+
+      - name: Decrypt secrets (non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+        run: |
+          cd $HOME
+          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
+          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
+          cd $GITHUB_WORKSPACE
+          git secret reveal
+
+      # Note that caching only works on non-forks.
+      - name: Build Oppia beta AAB (with caching, non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: |
+          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_beta
+
+      - name: Build Oppia beta AAB (without caching, or on a fork)
+        if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+        run: |
+          bazel build --compilation_mode=opt -- //:oppia_beta
+
+      - name: Copy Oppia beta AAB for uploading
+        run: |
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia_beta.aab /home/runner/work/oppia-android/oppia-android/
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia_beta.aab
+          path: /home/runner/work/oppia-android/oppia-android/oppia_beta.aab
+
+  build_oppia_ga_aab:
+    name: Build Oppia AAB (GA flavor)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+    env:
+      ENABLE_CACHING: false
+      CACHE_DIRECTORY: ~/.bazel_cache
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 4.0.0
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      # For reference on this & the later cache actions, see:
+      # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
+      # https://github.com/actions/cache/issues/109#issuecomment-558771281. Note that these work
+      # with Bazel since Bazel can share the most recent cache from an unrelated build and still
+      # benefit from incremental build performance (assuming that actions/cache aggressively removes
+      # older caches due to the 5GB cache limit size & Bazel's large cache size).
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          path: ${{ env.CACHE_DIRECTORY }}
+          key: ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-binary-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-tests-
+            ${{ runner.os }}-${{ env.CACHE_DIRECTORY }}-bazel-
+
+      # This check is needed to ensure that Bazel's unbounded cache growth doesn't result in a
+      # situation where the cache never updates (e.g. due to exceeding GitHub's cache size limit)
+      # thereby only ever using the last successful cache version. This solution will result in a
+      # few slower CI actions around the time cache is detected to be too large, but it should
+      # incrementally improve thereafter.
+      - name: Ensure cache size
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          # See https://stackoverflow.com/a/27485157 for reference.
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          CACHE_SIZE_MB=$(du -smc $EXPANDED_BAZEL_CACHE_PATH | grep total | cut -f1)
+          echo "Total size of Bazel cache (rounded up to MBs): $CACHE_SIZE_MB"
+          # Use a 4.5GB threshold since actions/cache compresses the results, and Bazel caches seem
+          # to only increase by a few hundred megabytes across changes for unrelated branches. This
+          # is also a reasonable upper-bound (local tests as of 2021-03-31 suggest that a full build
+          # of the codebase (e.g. //...) from scratch only requires a ~2.1GB uncompressed/~900MB
+          # compressed cache).
+          if [[ "$CACHE_SIZE_MB" -gt 4500 ]]; then
+            echo "Cache exceeds cut-off; resetting it (will result in a slow build)"
+            rm -rf $EXPANDED_BAZEL_CACHE_PATH
+          fi
+
+      - name: Configure Bazel to use a local cache
+        env:
+          BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
+        run: |
+          EXPANDED_BAZEL_CACHE_PATH="${BAZEL_CACHE_DIR/#\~/$HOME}"
+          echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
+          echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
+        shell: bash
+
+      - name: Check Bazel environment
+        run: bazel info
+
+      # See https://git-secret.io/installation for details on installing git-secret. Note that the
+      # apt-get method isn't used since it's much slower to update & upgrade apt before installation
+      # versus just directly cloning & installing the project. Further, the specific version
+      # shouldn't matter since git-secret relies on a future-proof storage mechanism for secrets.
+      # This also uses a different directory to install git-secret to avoid requiring root access
+      # when running the git secret command.
+      - name: Install git-secret (non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        shell: bash
+        run: |
+          cd $HOME
+          mkdir -p $HOME/gitsecret
+          git clone https://github.com/sobolevn/git-secret.git git-secret
+          cd git-secret && make build
+          PREFIX="$HOME/gitsecret" make install
+          echo "$HOME/gitsecret" >> $GITHUB_PATH
+          echo "$HOME/gitsecret/bin" >> $GITHUB_PATH
+
+      - name: Decrypt secrets (non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          GIT_SECRET_GPG_PRIVATE_KEY: ${{ secrets.GIT_SECRET_GPG_PRIVATE_KEY }}
+        run: |
+          cd $HOME
+          # NOTE TO DEVELOPERS: Make sure to never print this key directly to stdout!
+          echo $GIT_SECRET_GPG_PRIVATE_KEY | base64 --decode > ./git_secret_private_key.gpg
+          gpg --import ./git_secret_private_key.gpg
+          cd $GITHUB_WORKSPACE
+          git secret reveal
+
+      # Note that caching only works on non-forks.
+      - name: Build Oppia GA AAB (with caching, non-fork only)
+        if: ${{ env.ENABLE_CACHING == 'true' && github.event.pull_request.head.repo.full_name == 'oppia/oppia-android' }}
+        env:
+          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+        run: |
+          bazel build --compilation_mode=opt --remote_http_cache=$BAZEL_REMOTE_CACHE_URL --google_credentials=./config/oppia-dev-workflow-remote-cache-credentials.json -- //:oppia_ga
+
+      - name: Build Oppia GA AAB (without caching, or on a fork)
+        if: ${{ env.ENABLE_CACHING == 'false' || github.event.pull_request.head.repo.full_name != 'oppia/oppia-android' }}
+        run: |
+          bazel build --compilation_mode=opt -- //:oppia_ga
+
+      - name: Copy Oppia GA AAB for uploading
+        run: |
+          cp $GITHUB_WORKSPACE/bazel-bin/oppia_ga.aab /home/runner/work/oppia-android/oppia-android/
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: oppia_ga.aab
+          path: /home/runner/work/oppia-android/oppia-android/oppia_ga.aab

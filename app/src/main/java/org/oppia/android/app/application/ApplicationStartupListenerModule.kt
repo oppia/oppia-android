@@ -7,7 +7,6 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 /** Binds multiple dependencies that implement [ApplicationStartupListener] into a set. */
 @Module
 interface ApplicationStartupListenerModule {
-
   @Multibinds
   fun bindStartupListenerSet(): Set<ApplicationStartupListener>
 }

@@ -132,6 +132,7 @@ class AppLanguageResourceHandler @Inject constructor(
   /** See [OppiaLocale.DisplayLocale.getLayoutDirection]. */
   fun getLayoutDirection(): Int = getDisplayLocale().getLayoutDirection()
 
-  private fun getDisplayLocale(): OppiaLocale.DisplayLocale =
+  /** Returns the current [OppiaLocale.DisplayLocale] used for resource processing. */
+  fun getDisplayLocale(): OppiaLocale.DisplayLocale =
     appLanguageLocaleHandler.getDisplayLocale()
 }

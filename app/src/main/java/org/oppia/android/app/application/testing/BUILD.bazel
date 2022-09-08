@@ -1,0 +1,22 @@
+"""
+This package contains testing utilities that may be needed to set up the root application for
+testing environments.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "testing_build_flavor_module",
+    testonly = True,
+    srcs = [
+        "TestingBuildFlavorModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//model/src/main/proto:version_java_proto_lite",
+    ],
+)
+
+dagger_rules()
