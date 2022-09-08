@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
+import asia.ivity.android.marqueeview.MarqueeView;
 import java.util.concurrent.TimeUnit;
 import org.oppia.android.R;
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
@@ -65,6 +66,24 @@ public final class TextViewBindingAdapters {
     imageView.setCompoundDrawablesRelativeWithIntrinsicBounds(
         /* start= */ null, /* top= */ null, /* end= */ drawable, /* bottom= */ null
     );
+  }
+
+  /** Binds speed to the specified MarqueeView. */
+  @BindingAdapter("app:speed")
+  public static void setMarqueeSpeed(
+      @NonNull MarqueeView marqueeView,
+      int speed
+  ) {
+    marqueeView.setSpeed(speed);
+  }
+
+  /** Binds end animation pause to the specified MarqueeView. */
+  @BindingAdapter("app:pause")
+  public static void setAnimationPause(
+      @NonNull MarqueeView marqueeView,
+      int speed
+  ) {
+    marqueeView.setPauseBetweenAnimations(speed);
   }
 
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
