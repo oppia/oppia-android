@@ -23,6 +23,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.PromotedStory
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -58,6 +59,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -92,25 +94,22 @@ import javax.inject.Singleton
   manifest = Config.NONE
 )
 class PromotedStoryViewModelTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var translationController: TranslationController
 
   private val promotedStory1 = PromotedStory.newBuilder()
     .setStoryId("id_1")
-    .setStoryName("Story 1")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 1"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
   private val promotedStory2 = PromotedStory.newBuilder()
     .setStoryId("id_2")
-    .setStoryName("Story 2")
-    .setTopicName("topic_name")
+    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 2"))
+    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
     .setTotalChapterCount(1)
     .build()
 
@@ -211,14 +210,16 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
         val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 2,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
 
         assertThat(promotedStoryViewModelProfile1).isNotEqualTo(promotedStoryViewModelProfile2)
@@ -237,14 +238,16 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 2,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
         val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
 
         assertThat(promotedStoryViewModelStoryCount2)
@@ -264,14 +267,16 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity_1",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
         val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity_2",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
 
         assertThat(promotedStoryViewModelEntity1).isNotEqualTo(promotedStoryViewModelEntity2)
@@ -292,14 +297,16 @@ class PromotedStoryViewModelTest {
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory1
+          promotedStory = promotedStory1,
+          translationController
         )
         val promotedStoryViewModelStory2 = PromotedStoryViewModel(
           activity = homeFragmentTestActivity,
           internalProfileId = 1,
           totalStoryCount = 3,
           entityType = "entity",
-          promotedStory = promotedStory2
+          promotedStory = promotedStory2,
+          translationController
         )
 
         assertThat(promotedStoryViewModelStory1).isNotEqualTo(promotedStoryViewModelStory2)
@@ -352,7 +359,8 @@ class PromotedStoryViewModelTest {
       internalProfileId = 1,
       totalStoryCount = 3,
       entityType = "entity",
-      promotedStory = promotedStory1
+      promotedStory = promotedStory1,
+      translationController
     )
   }
 

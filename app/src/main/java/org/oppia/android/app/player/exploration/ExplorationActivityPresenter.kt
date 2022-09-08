@@ -15,7 +15,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.CheckpointState
-import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
@@ -27,6 +27,7 @@ import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -45,11 +46,12 @@ class ExplorationActivityPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var explorationId: String
@@ -104,14 +106,14 @@ class ExplorationActivityPresenter @Inject constructor(
       getExplorationFragment()?.handlePlayAudio()
     }
 
-    updateToolbarTitle(explorationId)
-    this.internalProfileId = internalProfileId
+    profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
     this.context = context
     this.backflowScreen = backflowScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
+    updateToolbarTitle(explorationId)
 
     // Retrieve oldest saved checkpoint details.
     subscribeToOldestSavedExplorationDetails()
@@ -138,7 +140,7 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
           topicId = topicId,
-          internalProfileId = internalProfileId,
+          internalProfileId = profileId.internalId,
           storyId = storyId,
           readingTextSize = readingTextSize.name,
           explorationId = explorationId
@@ -162,7 +164,7 @@ class ExplorationActivityPresenter @Inject constructor(
       R.id.action_preferences -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          internalProfileId,
+          profileId.internalId,
           /* isFromNavigationDrawer= */ false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
@@ -171,7 +173,7 @@ class ExplorationActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, internalProfileId,
+          activity, profileId.internalId,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE.name)
@@ -215,10 +217,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   /** Deletes the saved progress for the current exploration and then stops the exploration. */
   fun deleteCurrentProgressAndStopExploration(isCompletion: Boolean) {
-    explorationDataController.deleteExplorationProgressById(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      explorationId
-    )
+    explorationDataController.deleteExplorationProgressById(profileId, explorationId)
     stopExploration(isCompletion)
   }
 
@@ -229,8 +228,7 @@ class ExplorationActivityPresenter @Inject constructor(
     // without deleting the any checkpoints.
     oldestCheckpointExplorationId.let {
       explorationDataController.deleteExplorationProgressById(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-        oldestCheckpointExplorationId
+        profileId, oldestCheckpointExplorationId
       )
     }
     stopExploration(isCompletion = false)
@@ -289,19 +287,21 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   private fun updateToolbarTitle(explorationId: String) {
-    subscribeToExploration(explorationDataController.getExplorationById(explorationId).toLiveData())
+    subscribeToExploration(
+      explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
+    )
   }
 
   private fun subscribeToExploration(
-    explorationResultLiveData: LiveData<AsyncResult<Exploration>>
+    explorationResultLiveData: LiveData<AsyncResult<EphemeralExploration>>
   ) {
-    val explorationLiveData = getExploration(explorationResultLiveData)
-    explorationLiveData.observe(
-      activity,
-      Observer<Exploration> {
-        explorationToolbarTitle.text = it.title
-      }
-    )
+    val explorationLiveData = getEphemeralExploration(explorationResultLiveData)
+    explorationLiveData.observe(activity) {
+      explorationToolbarTitle.text =
+        translationController.extractString(
+          it.exploration.translatableTitle, it.writtenTranslationContext
+        )
+    }
   }
 
   private fun getExplorationViewModel(): ExplorationViewModel {
@@ -309,23 +309,25 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Helper for subscribeToExploration. */
-  private fun getExploration(
-    exploration: LiveData<AsyncResult<Exploration>>
-  ): LiveData<Exploration> {
-    return Transformations.map(exploration, ::processExploration)
+  private fun getEphemeralExploration(
+    exploration: LiveData<AsyncResult<EphemeralExploration>>
+  ): LiveData<EphemeralExploration> {
+    return Transformations.map(exploration, ::processEphemeralExploration)
   }
 
   /** Helper for subscribeToExploration. */
-  private fun processExploration(ephemeralStateResult: AsyncResult<Exploration>): Exploration {
-    return when (ephemeralStateResult) {
+  private fun processEphemeralExploration(
+    ephemeralExpResult: AsyncResult<EphemeralExploration>
+  ): EphemeralExploration {
+    return when (ephemeralExpResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralStateResult.error
+          "ExplorationActivity", "Failed to retrieve answer outcome", ephemeralExpResult.error
         )
-        Exploration.getDefaultInstance()
+        EphemeralExploration.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Exploration.getDefaultInstance()
-      is AsyncResult.Success -> ephemeralStateResult.value
+      is AsyncResult.Pending -> EphemeralExploration.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralExpResult.value
     }
   }
 
@@ -336,7 +338,7 @@ class ExplorationActivityPresenter @Inject constructor(
       else -> activity.startActivity(
         TopicActivity.createTopicActivityIntent(
           context,
-          internalProfileId,
+          profileId.internalId,
           topicId
         )
       )
@@ -415,7 +417,7 @@ class ExplorationActivityPresenter @Inject constructor(
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      profileId
     ).toLiveData().observe(
       activity,
       Observer {
