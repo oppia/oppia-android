@@ -101,7 +101,6 @@ class ExplorationActivityPresenter @Inject constructor(
       getExplorationFragment()?.handlePlayAudio()
     }
 
-    updateToolbarTitle(explorationId)
     this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
@@ -109,6 +108,7 @@ class ExplorationActivityPresenter @Inject constructor(
     this.context = context
     this.parentScreen = parentScreen
     this.isCheckpointingEnabled = isCheckpointingEnabled
+    updateToolbarTitle(explorationId)
 
     // Retrieve oldest saved checkpoint details.
     subscribeToOldestSavedExplorationDetails()
