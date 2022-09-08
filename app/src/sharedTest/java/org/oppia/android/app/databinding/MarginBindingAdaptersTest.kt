@@ -32,6 +32,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginEnd
 import org.oppia.android.app.databinding.MarginBindingAdapters.setLayoutMarginStart
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
@@ -313,7 +314,7 @@ class MarginBindingAdaptersTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      MetricLogSchedulerModule::class
+      MetricLogSchedulerModule::class, TestingBuildFlavorModule::class
     ]
   )
   /** Create a TestApplicationComponent. */

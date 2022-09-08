@@ -96,7 +96,8 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, MetricLogSchedulerModule::class, PerformanceMetricsLoggerModule::class,
-    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class
+    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
+    DeveloperBuildFlavorModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

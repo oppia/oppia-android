@@ -112,6 +112,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "onboarding_proto",
     srcs = ["onboarding.proto"],
+    deps = [":version_proto"],
 )
 
 java_lite_proto_library(
@@ -189,6 +190,18 @@ java_lite_proto_library(
     name = "translation_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":translation_proto"],
+)
+
+oppia_proto_library(
+    name = "version_proto",
+    srcs = ["version.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "version_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":version_proto"],
 )
 
 oppia_proto_library(

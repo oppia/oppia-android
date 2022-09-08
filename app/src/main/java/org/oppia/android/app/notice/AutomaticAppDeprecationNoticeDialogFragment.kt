@@ -1,4 +1,4 @@
-package org.oppia.android.app.deprecation
+package org.oppia.android.app.notice
 
 import android.app.Dialog
 import android.content.Context
