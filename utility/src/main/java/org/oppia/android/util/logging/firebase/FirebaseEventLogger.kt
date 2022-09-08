@@ -38,7 +38,18 @@ class FirebaseEventLogger private constructor(
    * Logs a performance metric to Firebase Analytics with [NETWORK_USER_PROPERTY] and [COUNTRY_USER_PROPERTY].
    */
   override fun logPerformanceMetric(oppiaMetricLog: OppiaMetricLog) {
-    // TODO(#4335): Add implementation to upload performance metrics logs to firebase.
+    Bundle().let {
+      firebaseAnalytics.logEvent(
+        eventBundleCreator.fillPerformanceMetricsEventBundle(
+          oppiaMetricLog,
+          it
+        ),
+        it
+      )
+    }
+    // TODO(#3792): Remove this usage of Locale.
+    firebaseAnalytics.setUserProperty(COUNTRY_USER_PROPERTY, Locale.getDefault().displayCountry)
+    firebaseAnalytics.setUserProperty(NETWORK_USER_PROPERTY, getNetworkStatus())
   }
 
   private fun getNetworkStatus(): String {
