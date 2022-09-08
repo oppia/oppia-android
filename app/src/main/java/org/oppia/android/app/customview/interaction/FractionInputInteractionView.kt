@@ -38,6 +38,7 @@ class FractionInputInteractionView @JvmOverloads constructor(
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
+  //TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
     hintText = hint
     hideHint()
