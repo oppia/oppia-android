@@ -159,7 +159,7 @@ When your reviewer has reviewed the code, you'll get an email. You'll need to re
 
 2. **Reply to each comment** via the Files Changed tab, choosing the “Start a review” option for the first comment. Each reply should be either “Done” or a response explaining why the corresponding suggestion wasn’t implemented. 
 
-3. When you’ve responded to all comments, submit the review to add all your messages to the main thread. **All comments must be responded to** and fully addressed before LGTM can be given.
+3. When you’ve responded to all comments, submit the review to add all your messages to the main thread. **All comments must be responded to** and fully addressed before LGTM can be given. You can use the green button in the top right of the "Files Changed" tab to submit any pending comments.
 
     - If you would like the reviewer to take another look, (a) write a top-level comment** explicitly asking the reviewer to take another look (e.g. "@XXX PTAL"), and (b) set them as the assignee for the PR.
 
@@ -167,7 +167,7 @@ At the end, the reviewer will merge the pull request. Note however PRs will only
 
 ### Tips for getting your PR submitted
 1. Keep track of the **Assignees** section, and make sure it's always up to date -- it should always reflect the "next person(s)" who have actionable items left on the PR. If you're ever the assignee, do whatever is currently needed on your end so that you can take yourself off the list (usually, this means addressing open review comments).
-2. Make sure to **address all comments** before sending a PR back to a reviewer. Each comment thread should have a reply from you before you send the PR back. This can be either "Done", a follow-up clarifying question, or an explanation for why you don't think a suggestion should be implemented.
+2. Make sure to **address all comments** before sending a PR back to a reviewer. Each comment thread should have a reply from you before you send the PR back. This can be either "Done", a follow-up clarifying question, or an explanation for why you don't think a suggestion should be implemented. Don't forget to actually submit your replies (using the green button at the top right of the "Files Changed" tab), otherwise reviewers won't be able to see them!
 3. Do not "resolve" a thread conversation if you didn't open it. Just re-assign the PR to the reviewer once you address all of the comments. This helps with keeping track of which comments are still "in play".
 4. Once the PR is ready to merge, add a top-level comment confirming the merge decision, and merge the PR. If any issues need to be filed subsequently, file them and refer to them in the PR via a comment.
 
