@@ -133,7 +133,7 @@ class ProfileManagementController @Inject constructor(
   init {
     profileDataStore.primeInMemoryAndDiskCacheAsync(
       updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
-      publishMode = PublishMode.DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+      publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
     ).invokeOnCompletion {
       it?.let {
         oppiaLogger.e(

@@ -13,7 +13,7 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         ":dagger",
-        "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
+        "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_build_flavor_module",
         "//model/src/main/proto:version_java_proto_lite",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
