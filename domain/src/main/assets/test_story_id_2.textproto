@@ -1,5 +1,4 @@
 story_id: "test_story_id_2"
-story_name: "Other Interesting Story"
 story_thumbnail {
   background_color_rgb: 11761905
 }
@@ -8,5 +7,30 @@ chapters {
   chapter_thumbnail {
     background_color_rgb: 14061432
   }
-  title: "Fifth Exploration"
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Fifth Exploration"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+translatable_story_name {
+  html: "Other Interesting Story"
+  content_id: "title"
 }

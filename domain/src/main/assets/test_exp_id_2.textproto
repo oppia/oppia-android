@@ -2320,6 +2320,22 @@ states {
   }
 }
 init_state_name: "Continue"
-objective: "Demonstrate core interactions used in the Oppia prototype."
-title: "Prototype Exploration"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Prototype Exploration"
+  content_id: "title"
+}
+description {
+  html: "Demonstrate core interactions used in the Oppia prototype."
+  content_id: "description"
+}

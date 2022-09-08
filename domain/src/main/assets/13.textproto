@@ -477,6 +477,7 @@ states {
               image_path: "Screen Shot 2015-02-18 at 3.51.49 AM_height_400_width_816.png"
               label_regions {
                 label: "Mercury"
+                content_description: "You have selected planet Mercury"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -493,6 +494,7 @@ states {
               }
               label_regions {
                 label: "Venus"
+                content_description: "You have selected planet Venus"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -509,6 +511,7 @@ states {
               }
               label_regions {
                 label: "Earth"
+                content_description: "You have selected planet Earth"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -525,6 +528,7 @@ states {
               }
               label_regions {
                 label: "Mars"
+                content_description: "You have selected planet Mars"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -541,6 +545,7 @@ states {
               }
               label_regions {
                 label: "Jupiter"
+                content_description: "You have selected planet Jupiter"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -557,6 +562,7 @@ states {
               }
               label_regions {
                 label: "Saturn"
+                content_description: "You have selected planet Saturn"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -573,6 +579,7 @@ states {
               }
               label_regions {
                 label: "Uranus"
+                content_description: "You have selected planet Uranus"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -589,6 +596,7 @@ states {
               }
               label_regions {
                 label: "Neptune"
+                content_description: "You have selected planet Neptune"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -605,6 +613,7 @@ states {
               }
               label_regions {
                 label: "Pluto"
+                content_description: "You have selected planet Pluto"
                 region {
                   region_type: RECTANGLE
                   area {
@@ -628,6 +637,22 @@ states {
   }
 }
 init_state_name: "ImageClickInput"
-objective: "learn how to arrange the sentence"
-title: "Image Click Input Test Exploration"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Image Click Input Test Exploration"
+  content_id: "title"
+}
+description {
+  html: "learn how to arrange the sentence"
+  content_id: "description"
+}

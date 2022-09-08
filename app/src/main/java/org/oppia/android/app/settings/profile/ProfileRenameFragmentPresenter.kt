@@ -18,7 +18,6 @@ import org.oppia.android.databinding.ProfileRenameFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.profile.ProfileNameValidator
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameFragment]. */
@@ -28,8 +27,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<ProfileRenameViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val profileNameValidator: ProfileNameValidator
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private val renameViewModel: ProfileRenameViewModel by lazy {
     getProfileRenameViewModel()
@@ -54,7 +52,7 @@ class ProfileRenameFragmentPresenter @Inject constructor(
     }
     binding.profileRenameSaveButton.setOnClickListener {
       renameViewModel.nameErrorMsg.set("")
-      if (!profileNameValidator.isNameValid(binding.profileRenameInputEditText.text.toString())) {
+      if (binding.profileRenameInputEditText.text.toString().isEmpty()) {
         renameViewModel
           .nameErrorMsg
           .set(

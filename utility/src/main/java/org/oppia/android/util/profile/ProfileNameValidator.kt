@@ -4,7 +4,10 @@ import javax.inject.Inject
 
 /** Utility to validate that profile names are correctly formatted. */
 class ProfileNameValidator @Inject constructor() {
-  private val noRepeatedAllowedSymbolsRegex by lazy { Regex("[.'-]{2}") }
+  private val repeatableSymbols = listOf('.', '\'', '-', ' ')
+  private val noRepeatedAllowedSymbolsRegex by lazy {
+    Regex("[${repeatableSymbols.joinToString(separator = "") { "\\$it" } }]{2}")
+  }
 
   /**
    * Validates a profile name to ensure that it isn't confusingly formatted or contains invalid
@@ -21,7 +24,7 @@ class ProfileNameValidator @Inject constructor() {
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
   private fun containsOnlyLettersAndAllowedSymbols(name: String): Boolean {
     name.forEach {
-      if (!(it.isAlphabetic() || isAllowedSymbol(it))) {
+      if (!(it.isAlphabetic() || it in repeatableSymbols)) {
         return false
       }
     }
@@ -30,10 +33,6 @@ class ProfileNameValidator @Inject constructor() {
 
   private fun containsNoRepeatedUseOfAllowedSymbols(name: String): Boolean {
     return !name.contains(noRepeatedAllowedSymbolsRegex)
-  }
-
-  private fun isAllowedSymbol(symbol: Char): Boolean {
-    return symbol == '.' || symbol == '-' || symbol == '\''
   }
 
   private fun Char.isAlphabetic(): Boolean {
