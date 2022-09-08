@@ -81,9 +81,9 @@ public final class TextViewBindingAdapters {
   @BindingAdapter("app:pause")
   public static void setAnimationPause(
       @NonNull MarqueeView marqueeView,
-      int speed
+      int pause
   ) {
-    marqueeView.setPauseBetweenAnimations(speed);
+    marqueeView.setPauseBetweenAnimations(pause);
   }
 
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
