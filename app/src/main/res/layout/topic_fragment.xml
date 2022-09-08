@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:marquee="http://schemas.android.com/tools">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -39,8 +38,8 @@
           android:id="@+id/topic_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          marquee:speed ="10"
-          marquee:pause="500">
+          app:speed ="10"
+          app:pause="500">
         <TextView
           android:id="@+id/topic_toolbar_title"
           android:layout_width="match_parent"

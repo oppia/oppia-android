@@ -3,7 +3,6 @@
 
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:marquee="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -29,8 +28,8 @@
           android:id="@+id/license_text_viewer_activity_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          marquee:speed ="10"
-          marquee:pause="500">
+          app:speed ="10"
+          app:pause="500">
         <TextView
           android:id="@+id/license_text_viewer_activity_toolbar_title"
           style="@style/MarqueeToolbarTitleTextView"
