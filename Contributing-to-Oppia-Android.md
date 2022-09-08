@@ -77,6 +77,32 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 3. Finally, click the "Run" button.
 
+
+## Finding something to do
+**Starter projects for new contributors**
+
+Welcome! Please make sure to follow the onboarding instructions above if you haven’t already.
+
+Also, read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). 
+
+After that, we’d strongly recommend tackling some part of one of the following starter issues.
+
+**Testing**
+
+ - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
+
+**UI**
+
+ - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
+ - [Supporting dark mode](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+in%3Atitle+add+dark+mode+is%3Aopen) (see also [these instructions](https://github.com/oppia/oppia-android/wiki/Dark-Mode)).
+
+**Bazel**
+
+**Accessibility**
+
+ - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y+no%3Aassignee)
+
+
 ## Important: Ongoing Bazel migration
 
 The team is currently using two build systems for the project: Gradle and Bazel. We're in the process of actively migrating to Bazel.
@@ -121,26 +147,6 @@ For now, you generally won't need to do this, until the Android app supports on-
   git mv old_file_path new_file_path
   ```
   By using this command git will detect the file as a renamed file.
-
-## Finding something to do
-**Starter projects for new contributors**
-
-Welcome! Please make sure to follow the onboarding instructions above if you haven’t already, and also read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). After that, we’d strongly recommend tackling some part of one of the following starter issues.
-
-**Testing**
-
- - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
-
-**UI**
-
- - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
- - [Supporting dark mode](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+in%3Atitle+add+dark+mode+is%3Aopen) (see also [these instructions](https://github.com/oppia/oppia-android/wiki/Dark-Mode)).
-
-**Bazel**
-
-**Accessibility**
-
- - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y+no%3Aassignee)
 
 
 ## Communication channels
