@@ -28,7 +28,7 @@ If you'd like to help out with the Android project, please follow the following 
 
    Then, click "Apply" to download and install these two SDKs/Tools.
 
-6. Read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) carefully. You'll need to understand this process well in order to create PRs to the project!
+6. Read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR) carefully. You'll need to understand this process well in order to submit PRs to the project!
 
 
 **Note:** Make sure you have good Internet connectivity when developing on Oppia Android, since this project uses third party libraries which will be needed to build the app.
