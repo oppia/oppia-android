@@ -9,7 +9,7 @@
 
   <!-- TODO(#56): Reenable landscape support. -->
   <application
-    android:name=".app.application.OppiaApplication"
+    android:name=".app.application.dev.DeveloperOppiaApplication"
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
@@ -84,6 +84,14 @@
       android:name=".app.mydownloads.MyDownloadsActivity"
       android:label="@string/my_downloads_activity_title"
       android:screenOrientation="portrait"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.BetaNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+      android:name=".app.notice.testing.GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity"
+      android:label="@string/test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -194,10 +202,12 @@
     <activity android:name=".app.testing.InputInteractionViewTestActivity" />
     <activity android:name=".app.testing.ImageRegionSelectionTestActivity" />
     <activity android:name=".app.testing.ImageViewBindingAdaptersTestActivity" />
+    <activity android:name=".app.testing.ListItemLeadingMarginSpanTestActivity" />
     <activity android:name=".app.testing.MarginBindingAdaptersTestActivity" />
     <activity
       android:name=".app.testing.NavigationDrawerTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.testing.PoliciesFragmentTestActivity" />
     <activity
       android:name=".app.testing.ProfileChooserFragmentTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
@@ -275,6 +285,9 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity android:name=".app.policies.PoliciesActivity"
+      android:label="@string/policy_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.devoptions.mathexpressionparser.MathExpressionParserActivity"

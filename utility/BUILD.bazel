@@ -18,6 +18,7 @@ MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/util/datetime/*.kt",
     "src/main/java/org/oppia/android/util/extensions/*.kt",
     "src/main/java/org/oppia/android/util/gcsresource/*.kt",
+    "src/main/java/org/oppia/android/util/locale/*.kt",
     "src/main/java/org/oppia/android/util/logging/*.kt",
     "src/main/java/org/oppia/android/util/math/**/*.kt",
     "src/main/java/org/oppia/android/util/networking/*.kt",
@@ -39,6 +40,18 @@ package_group(
     name = "utility_testing_visibility",
     packages = [
         "//utility/src/test/...",
+    ],
+)
+
+android_library(
+    name = "test_resources",
+    testonly = True,
+    custom_package = "org.oppia.android.util",
+    manifest = ":test_manifest",
+    resource_files = glob(["src/test/res/**"]),
+    visibility = [
+        ":utility_testing_visibility",
+        "//app/src/test/java/org/oppia/android/app/translation:__pkg__",
     ],
 )
 
@@ -89,18 +102,26 @@ filegroup(
 # keep sorted
 TEST_DEPS = [
     ":dagger",
+    ":test_resources",
     ":utility",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//model/src/main/proto:test_models",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+    "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+    "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
     "//testing/src/main/java/org/oppia/android/testing/mockito",
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
+    "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
     "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+    "//third_party:androidx_arch_core_core-testing",
     "//third_party:androidx_test_ext_junit",
     "//third_party:androidx_test_ext_truth",
+    "//third_party:androidx_work_work-testing",
     "//third_party:com_google_truth_extensions_truth-liteproto-extension",
     "//third_party:com_google_truth_truth",
     "//third_party:org_jetbrains_kotlin_kotlin-reflect",
@@ -112,6 +133,9 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
     "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+    "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
     "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",
@@ -123,6 +147,7 @@ TEST_DEPS = [
 # shouldn't be defined as module-level tests.
 # keep sorted
 MIGRATED_TESTS = [
+    "src/test/java/org/oppia/android/util/locale/DisplayLocaleImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugImplTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilDebugModuleTest.kt",
     "src/test/java/org/oppia/android/util/networking/NetworkConnectionUtilProdImplTest.kt",

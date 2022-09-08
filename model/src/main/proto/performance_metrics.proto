@@ -1,0 +1,185 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "org.oppia.android.app.model";
+option java_multiple_files = true;
+
+// Structure for an oppia metric log.
+message OppiaMetricLog {
+  // The UTC timestamp of the event in long/millis.
+  int64 timestamp_millis = 1;
+
+  // The priority of the event.
+  Priority priority = 2;
+
+  // Indicates whether the application is in the foreground.
+  bool is_app_in_foreground = 3;
+
+  // The memory tier of the current device.
+  MemoryTier memory_tier = 4;
+
+  // The storage tier of the current device.
+  StorageTier storage_tier = 5;
+
+  // The current network type of the device.
+  NetworkType network_type = 6;
+
+  // The metric log of the event.
+  LoggableMetric loggable_metric = 7;
+
+  // The current screen where the event is getting logged.
+  CurrentScreen current_screen = 8;
+
+  // Structure of a loggable metric.
+  message LoggableMetric {
+    oneof loggable_metric_type {
+      // The metric being logged is related to the apk size of the application.
+      ApkSizeMetric apk_size_metric = 1;
+
+      // The metric being logged is related to the storage usage of the application.
+      StorageUsageMetric storage_usage_metric = 2;
+
+      // The metric being logged is related to the startup latency of the application.
+      StartupLatencyMetric startup_latency_metric = 3;
+
+      // The metric being logged is related to the memory usage of the application.
+      MemoryUsageMetric memory_usage_metric = 4;
+
+      // The metric being logged is related to the network usage of the application.
+      NetworkUsageMetric network_usage_metric = 5;
+
+      // The metric being logged is related to the cpu usage of the application.
+      CpuUsageMetric cpu_usage_metric = 6;
+    }
+  }
+
+  // Structure of the apk size metric.
+  message ApkSizeMetric {
+    // Size of the app's installed APK file, in bytes.
+    int64 apk_size_bytes = 1;
+  }
+
+  // Structure of the storage usage metric.
+  message StorageUsageMetric {
+    // Amount of storage usage by the app on user's device in bytes. This storage size is the cumulative
+    // size of app-specific files which include the application cache but not the apk size.
+    int64 storage_usage_bytes = 1;
+  }
+
+  // Structure of the startup latency metric.
+  message StartupLatencyMetric {
+    // Number of milliseconds required to start up the application from a cold start.
+    int64 startup_latency_millis = 1;
+  }
+
+  // Structure of the memory usage metric.
+  message MemoryUsageMetric {
+    // Amount of memory used by the application on the device in bytes.
+    // Here, PSS refers to Proportional Set Size which is the number of non-shared pages used by the
+    // app. It is majorly useful when we want to know how much memory is used by all processes since
+    // processes don't get counted multiple times. For more information, refer to the following link:
+    // https://developer.android.com/topic/performance/memory-management#calculating_memory_footprint
+    int64 total_pss_bytes = 1;
+  }
+
+  // Structure of the network usage metric.
+  message NetworkUsageMetric {
+    // Both metrics count the packets across all network interfaces, and always increases
+    // monotonically since device reboot. Statistics are measured at the network layer, so they
+    // include both TCP and UDP usage.
+
+    //  This field denotes the number of bytes received by the application since device reboot.
+    int64 bytes_received = 1;
+
+    // This field denotes the number of bytes sent by the application since device reboot.
+    int64 bytes_sent = 2;
+  }
+
+  // Structure of the cpu usage metric.
+  message CpuUsageMetric {
+    // Amount of cpu used by the application.
+    // TODO(#4466): Add correct proto definitions and comments for cpu usage metric logging.
+    int64 cpu_usage_metric = 1;
+  }
+
+  // Supported priority of events for performance metric logging.
+  enum Priority {
+    // The undefined priority of an event.
+    PRIORITY_UNSPECIFIED = 0;
+
+    // The priority of events whose logs will be the first to be removed from the storage if the
+    // size exceeds a certain limit
+    LOW_PRIORITY = 1;
+
+    // The priority of events whose logs will be the ones to be removed from the storage if the
+    // size exceeds a certain limit and no low priority logs exist.
+    MEDIUM_PRIORITY = 2;
+
+    // The priority of events whose logs should not be removed from the storage on most occasions
+    // but can be removed if they're the only ones there and size limit exceeds.
+    HIGH_PRIORITY = 3;
+  }
+
+  // Supported screens for indicating the current screen where the event logging is occurring.
+  enum CurrentScreen {
+    // The undefined current screen of an event.
+    SCREEN_UNSPECIFIED = 0;
+
+    // The metric log was taken when home screen was opened.
+    HOME_SCREEN = 1;
+    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
+  }
+
+  // Supported memory tiers for indicating the total memory of user's device.
+  enum MemoryTier {
+    // The undefined memory tier of a device.
+    MEMORY_TIER_UNSPECIFIED = 0;
+
+    // The memory tier where the amount of memory is less than 2GB.
+    LOW_MEMORY_TIER = 1; // <2GB
+
+    // The memory tier where the amount of memory is less than or equal to 3GB and more than or
+    // equal to 2GB.
+    MEDIUM_MEMORY_TIER = 2; // =<3GB && >2GB
+
+    // The memory tier where the amount of memory is greater than 3GB.
+    HIGH_MEMORY_TIER = 3; // >3GB
+  }
+
+  // Supported storage tiers for indicating the total storage space on user's device.
+  enum StorageTier {
+    // The undefined storage tier of a device.
+    STORAGE_TIER_UNSPECIFIED = 0;
+
+    // The storage tier where the amount of storage is less than 32GB.
+    LOW_STORAGE = 1; // <32GB
+
+    // The storage tier where the amount of storage is less than or equal to 64GB and more than or
+    // equal to 32GB.
+    MEDIUM_STORAGE = 2; // =<64GB && >=32GB
+
+    // The storage tier where the amount of storage is greater than 64GB.
+    HIGH_STORAGE = 3; // >64GB
+  }
+
+  // Supported network types for indicating the current network situation on user's device.
+  enum NetworkType {
+    // The undefined network type of a device.
+    NETWORK_UNSPECIFIED = 0;
+
+    // Indicates that the device is not connected to any network.
+    NONE = 1;
+
+    // Indicates that the device is connected to wifi or ethernet.
+    WIFI = 2;
+
+    // Indicates that the device is connected to mobile or WiMax.
+    CELLULAR = 3;
+  }
+}
+
+// Structure for a container that contains metric log reports.
+message OppiaMetricLogs {
+  repeated OppiaMetricLog oppia_metric_log = 1;
+}
