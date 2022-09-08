@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.EphemeralChapterSummary
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -59,21 +60,20 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   fun handleOnCreate(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
-    explorationCheckpoint: ExplorationCheckpoint
+    parentScreen: ExplorationActivityParams.ParentScreen,
+    checkpoint: ExplorationCheckpoint
   ): View? {
-
     binding = ResumeLessonFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
 
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
     this.explorationId = explorationId
@@ -83,28 +83,28 @@ class ResumeLessonFragmentPresenter @Inject constructor(
       it.viewModel = resumeLessonViewModel
     }
 
-    resumeLessonViewModel.explorationCheckpoint.set(explorationCheckpoint)
+    resumeLessonViewModel.explorationCheckpoint.set(checkpoint)
     subscribeToChapterSummary()
 
     binding.resumeLessonContinueButton.setOnClickListener {
       playExploration(
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
         resumeLessonViewModel.explorationCheckpoint.get()!!,
-        backflowScreen
+        parentScreen
       )
     }
 
     binding.resumeLessonStartOverButton.setOnClickListener {
       playExploration(
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
         ExplorationCheckpoint.getDefaultInstance(),
-        backflowScreen
+        parentScreen
       )
     }
 
@@ -174,20 +174,20 @@ class ResumeLessonFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
     checkpoint: ExplorationCheckpoint,
-    backflowScreen: Int?
+    parentScreen: ExplorationActivityParams.ParentScreen
   ) {
     val startPlayingProvider = if (checkpoint == ExplorationCheckpoint.getDefaultInstance()) {
       explorationDataController.restartExploration(
-        internalProfileId, topicId, storyId, explorationId
+        profileId.internalId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.resumeExploration(
-        internalProfileId, topicId, storyId, explorationId, checkpoint
+        profileId.internalId, topicId, storyId, explorationId, checkpoint
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -198,11 +198,11 @@ class ResumeLessonFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            internalProfileId,
+            profileId,
             topicId,
             storyId,
             explorationId,
-            backflowScreen,
+            parentScreen,
             // Checkpointing is enabled be default because stating lesson from
             // ResumeLessonFragment implies that learner has not completed the lesson.
             isCheckpointingEnabled = true

@@ -25,6 +25,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -178,11 +180,11 @@ class ExplorationActivityLocalTest {
   ): Intent {
     return ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       topicId,
       storyId,
       explorationId,
-      backflowScreen = null,
+      parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
       isCheckpointingEnabled = false
     )
   }

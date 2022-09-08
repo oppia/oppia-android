@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralChapterSummary
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
@@ -45,6 +46,9 @@ class StoryChapterSummaryViewModel(
     )
   }
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
+  private val profileId by lazy {
+    ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+  }
 
   fun onExplorationClicked() {
     val canHavePartialProgressSaved =
@@ -71,25 +75,25 @@ class StoryChapterSummaryViewModel(
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
-                internalProfileId,
+                profileId,
                 topicId,
                 storyId,
                 explorationId,
                 canExplorationBeResumed = true,
                 canHavePartialProgressSaved,
-                backflowId = 1,
+                parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
                 explorationCheckpoint = it.value
               )
             } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
-                internalProfileId,
+                profileId,
                 topicId,
                 storyId,
                 explorationId,
                 canExplorationBeResumed = false,
                 canHavePartialProgressSaved,
-                backflowId = 1,
+                parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
                 explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
               )
             }
@@ -98,13 +102,13 @@ class StoryChapterSummaryViewModel(
       )
     } else {
       explorationSelectionListener.selectExploration(
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
         canExplorationBeResumed = false,
         canHavePartialProgressSaved,
-        backflowId = 1,
+        parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
