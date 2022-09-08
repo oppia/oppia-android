@@ -35,6 +35,7 @@ import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -62,6 +63,9 @@ class StoryFragmentPresenter @Inject constructor(
 
   @Inject
   lateinit var storyViewModel: StoryViewModel
+
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -181,28 +185,30 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
-            val clickableSpan = object : ClickableSpan() {
-              override fun onClick(widget: View) {
-                smoothScrollToPosition(storyItemViewModel.index - 1)
-              }
+            if(!accessibilityService.isScreenReaderEnabled()) {
+              val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                  smoothScrollToPosition(storyItemViewModel.index - 1)
+                }
 
-              override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
+                override fun updateDrawState(ds: TextPaint) {
+                  super.updateDrawState(ds)
+                  ds.isUnderlineText = false
+                }
               }
+              chapterLockedSpannable.setSpan(
+                clickableSpan,
+                /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+                /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+              )
+              chapterLockedSpannable.setSpan(
+                TypefaceSpan("sans-serif-medium"),
+                /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+                /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+              )
             }
-            chapterLockedSpannable.setSpan(
-              clickableSpan,
-              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
-              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
-              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            chapterLockedSpannable.setSpan(
-              TypefaceSpan("sans-serif-medium"),
-              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
-              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
-              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
             binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }
