@@ -49,6 +49,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -96,7 +97,8 @@ import javax.inject.Singleton
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
-    PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class
+    PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
+    KenyaAlphaEventLoggingConfigurationModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {
