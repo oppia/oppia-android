@@ -121,8 +121,11 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun processInitState(initState: SplashInitState) {
-    // First, initialize the app's initial locale.
-    appLanguageLocaleHandler.initializeLocale(initState.displayLocale)
+    // First, initialize the app's initial locale. Note that since the activity can be
+    // reopened, it's possible for this to be initialized more than once.
+    if (!appLanguageLocaleHandler.isInitialized()) {
+      appLanguageLocaleHandler.initializeLocale(initState.displayLocale)
+    }
 
     // Second, prepare to route the user to the correct destination.
     startupMode = initState.appStartupState.startupMode
