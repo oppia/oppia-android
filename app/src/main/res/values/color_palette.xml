@@ -88,4 +88,5 @@
   <color name="color_palette_drag_drop_single_item_gradient_start_color">@color/color_def_white</color>
   <color name="color_palette_drag_drop_single_item_stroke_color">@color/color_def_stroke_silver</color>
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_white</color>
 </resources>
