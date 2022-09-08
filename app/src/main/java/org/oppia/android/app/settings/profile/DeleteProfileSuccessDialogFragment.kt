@@ -5,16 +5,23 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 
+/** [DialogFragment] that notifies user after profile is successfully deleted. */
 class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
-    const val TAG = "TAG_DELETE_DIALOG_FRAGMENT"
+    const val TAG = "DELETE_SUCCESS_DIALOG_FRAGMENT"
 
+    /**
+     * This function is responsible for displaying content in DialogFragment.
+     *
+     * @return [DeleteProfileSuccessDialogFragment]: DialogFragment
+     */
     fun newInstance(): DeleteProfileSuccessDialogFragment {
       return DeleteProfileSuccessDialogFragment()
     }
