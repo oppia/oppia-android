@@ -8,9 +8,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Topic
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicInfoFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
@@ -24,14 +23,13 @@ import javax.inject.Inject
 @FragmentScope
 class TopicInfoFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<TopicInfoViewModel>,
+  private val viewModel: TopicInfoViewModel,
   private val oppiaLogger: OppiaLogger,
   private val topicController: TopicController,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
-  private val topicInfoViewModel = getTopicInfoViewModel()
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
 
@@ -51,48 +49,43 @@ class TopicInfoFragmentPresenter @Inject constructor(
     subscribeToTopicLiveData()
     binding.let {
       it.lifecycleOwner = fragment
-      it.viewModel = topicInfoViewModel
+      it.viewModel = viewModel
     }
     return binding.root
   }
 
-  private fun getTopicInfoViewModel(): TopicInfoViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicInfoViewModel::class.java)
-  }
-
-  private val topicLiveData: LiveData<Topic> by lazy { getTopicList() }
+  private val topicLiveData: LiveData<EphemeralTopic> by lazy { getTopicList() }
 
   private fun subscribeToTopicLiveData() {
     topicLiveData.observe(
       fragment,
-      { topic ->
-        topicInfoViewModel.setTopic(topic)
-        topicInfoViewModel.topicDescription.set(topic.description)
-        topicInfoViewModel.calculateTopicSizeWithUnit()
+      { ephemeralTopic ->
+        viewModel.setTopic(ephemeralTopic)
+        viewModel.calculateTopicSizeWithUnit()
         controlSeeMoreTextVisibility()
       }
     )
   }
 
-  private val topicResultLiveData: LiveData<AsyncResult<Topic>> by lazy {
+  private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     topicController.getTopic(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicId
     ).toLiveData()
   }
 
-  private fun getTopicList(): LiveData<Topic> {
+  private fun getTopicList(): LiveData<EphemeralTopic> {
     return Transformations.map(topicResultLiveData, ::processTopicResult)
   }
 
-  private fun processTopicResult(topic: AsyncResult<Topic>): Topic {
-    return when (topic) {
+  private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("TopicInfoFragment", "Failed to retrieve topic", topic.error)
-        Topic.getDefaultInstance()
+        oppiaLogger.e("TopicInfoFragment", "Failed to retrieve topic", ephemeralResult.error)
+        EphemeralTopic.getDefaultInstance()
       }
-      is AsyncResult.Pending -> Topic.getDefaultInstance()
-      is AsyncResult.Success -> topic.value
+      is AsyncResult.Pending -> EphemeralTopic.getDefaultInstance()
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 
@@ -100,11 +93,11 @@ class TopicInfoFragmentPresenter @Inject constructor(
     val minimumNumberOfLines = fragment.resources.getInteger(R.integer.topic_description_collapsed)
     binding.topicDescriptionTextView.post {
       if (binding.topicDescriptionTextView.lineCount > minimumNumberOfLines) {
-        getTopicInfoViewModel().isDescriptionExpanded.set(false)
-        getTopicInfoViewModel().isSeeMoreVisible.set(true)
+        viewModel.isDescriptionExpanded.set(false)
+        viewModel.isSeeMoreVisible.set(true)
       } else {
-        getTopicInfoViewModel().isDescriptionExpanded.set(true)
-        getTopicInfoViewModel().isSeeMoreVisible.set(false)
+        viewModel.isDescriptionExpanded.set(true)
+        viewModel.isSeeMoreVisible.set(false)
       }
     }
   }

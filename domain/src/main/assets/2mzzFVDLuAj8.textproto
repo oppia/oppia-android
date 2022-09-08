@@ -5998,7 +5998,23 @@ states {
   }
 }
 init_state_name: "Introduction"
-objective: "Learn about how ratios can be used to show the relative relationship between quantities."
-title: "What is a Ratio?"
 language_code: "en"
 version: 123
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "What is a Ratio?"
+  content_id: "title"
+}
+description {
+  html: "Learn about how ratios can be used to show the relative relationship between quantities."
+  content_id: "description"
+}
