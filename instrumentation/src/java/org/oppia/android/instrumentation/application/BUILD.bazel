@@ -26,6 +26,7 @@ kt_android_library(
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
         "//domain",
         "//utility",
+        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],

@@ -305,13 +305,14 @@ file_content_checks {
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLoggerTest.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorImplTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionExtensionsTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionParserTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathTokenizerTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/PolynomialExtensionsTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/RealExtensionsTest.kt"
-  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorImplTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/profile/ProfileNameValidatorTest.kt"
   exempted_file_patterns: "testing/src/main/java/org/oppia/android/testing/junit/.+?\\.kt"
 }
 file_content_checks {

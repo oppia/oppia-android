@@ -1,5 +1,7 @@
 package org.oppia.android.util.logging
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
@@ -39,6 +41,8 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.utility.getVersionCode
+import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
@@ -61,6 +65,7 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
@@ -88,9 +93,16 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
  * This class is only expected to be used by internal logging mechanisms and should not be called
  * directly.
  */
+@Singleton
 class EventBundleCreator @Inject constructor(
+  private val context: Context,
+  private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
+  private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
+  private val appVersionCode by lazy { context.getVersionCode() }
+  private val appVersionName by lazy { context.getVersionName() }
+
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
    * string representation of the high-level type of event logged (per
@@ -99,10 +111,14 @@ class EventBundleCreator @Inject constructor(
   fun fillEventBundle(eventLog: EventLog, bundle: Bundle): String {
     bundle.putLong("timestamp", eventLog.timestamp)
     bundle.putString("priority", eventLog.priority.toAnalyticsName())
-    return eventLog.context.convertToActivityContext()?.also { eventContext ->
+    bundle.putInt("event_type", eventLog.context.activityContextCase.number)
+    bundle.putInt("android_sdk", androidSdkVersion)
+    bundle.putString("app_version_name", appVersionName)
+    bundle.putInt("app_version_code", appVersionCode)
+    return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
       eventContext.storeValue(PropertyStore(bundle, allowUserIds = learnerStudyAnalytics.value))
-    }?.activityName ?: "unknown_activity_context"
+    }.activityName
   }
 
   /**
@@ -124,48 +140,39 @@ class EventBundleCreator @Inject constructor(
     }?.metricName ?: "unknown_loggable_metric"
   }
 
-  private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*>? {
+  private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*> {
+    val activityName = eventTypeNameConverter.convertToHumanReadableName(activityContextCase)
     return when (activityContextCase) {
-      OPEN_EXPLORATION_ACTIVITY ->
-        ExplorationContext("open_exploration_activity", openExplorationActivity)
-      OPEN_INFO_TAB -> TopicContext("open_info_tab", openInfoTab)
-      OPEN_LESSONS_TAB -> TopicContext("open_lessons_tab", openLessonsTab)
-      OPEN_PRACTICE_TAB -> TopicContext("open_practice_tab", openPracticeTab)
-      OPEN_REVISION_TAB -> TopicContext("open_revision_tab", openRevisionTab)
-      OPEN_QUESTION_PLAYER -> QuestionContext("open_question_player", openQuestionPlayer)
-      OPEN_STORY_ACTIVITY -> StoryContext("open_story_activity", openStoryActivity)
-      OPEN_CONCEPT_CARD -> ConceptCardContext("open_concept_card", openConceptCard)
-      OPEN_REVISION_CARD -> RevisionCardContext("open_revision_card", openRevisionCard)
-      START_CARD_CONTEXT -> CardContext("start_card_context", startCardContext)
-      END_CARD_CONTEXT -> CardContext("end_card_context", endCardContext)
-      HINT_OFFERED_CONTEXT -> HintContext("hint_offered_context", hintOfferedContext)
-      ACCESS_HINT_CONTEXT -> HintContext("access_hint_context", accessHintContext)
-      SOLUTION_OFFERED_CONTEXT ->
-        ExplorationContext("solution_offered_context", solutionOfferedContext)
-      ACCESS_SOLUTION_CONTEXT ->
-        ExplorationContext("access_solution_context", accessSolutionContext)
-      SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext("submit_answer_context", submitAnswerContext)
-      PLAY_VOICE_OVER_CONTEXT ->
-        PlayVoiceOverContext("play_voice_over_context", playVoiceOverContext)
-      APP_IN_BACKGROUND_CONTEXT ->
-        LearnerDetailsContext("app_in_background_context", appInBackgroundContext)
-      APP_IN_FOREGROUND_CONTEXT ->
-        LearnerDetailsContext("app_in_foreground_context", appInForegroundContext)
-      EXIT_EXPLORATION_CONTEXT ->
-        ExplorationContext("exit_exploration_context", exitExplorationContext)
-      FINISH_EXPLORATION_CONTEXT ->
-        ExplorationContext("finish_exploration_context", finishExplorationContext)
-      RESUME_EXPLORATION_CONTEXT ->
-        LearnerDetailsContext("resume_exploration_context", resumeExplorationContext)
+      OPEN_EXPLORATION_ACTIVITY -> ExplorationContext(activityName, openExplorationActivity)
+      OPEN_INFO_TAB -> TopicContext(activityName, openInfoTab)
+      OPEN_LESSONS_TAB -> TopicContext(activityName, openLessonsTab)
+      OPEN_PRACTICE_TAB -> TopicContext(activityName, openPracticeTab)
+      OPEN_REVISION_TAB -> TopicContext(activityName, openRevisionTab)
+      OPEN_QUESTION_PLAYER -> QuestionContext(activityName, openQuestionPlayer)
+      OPEN_STORY_ACTIVITY -> StoryContext(activityName, openStoryActivity)
+      OPEN_CONCEPT_CARD -> ConceptCardContext(activityName, openConceptCard)
+      OPEN_REVISION_CARD -> RevisionCardContext(activityName, openRevisionCard)
+      START_CARD_CONTEXT -> CardContext(activityName, startCardContext)
+      END_CARD_CONTEXT -> CardContext(activityName, endCardContext)
+      HINT_OFFERED_CONTEXT -> HintContext(activityName, hintOfferedContext)
+      ACCESS_HINT_CONTEXT -> HintContext(activityName, accessHintContext)
+      SOLUTION_OFFERED_CONTEXT -> ExplorationContext(activityName, solutionOfferedContext)
+      ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
+      SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
+      PLAY_VOICE_OVER_CONTEXT -> PlayVoiceOverContext(activityName, playVoiceOverContext)
+      APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
+      APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
+      EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
+      FINISH_EXPLORATION_CONTEXT -> ExplorationContext(activityName, finishExplorationContext)
+      RESUME_EXPLORATION_CONTEXT -> LearnerDetailsContext(activityName, resumeExplorationContext)
       START_OVER_EXPLORATION_CONTEXT ->
-        LearnerDetailsContext("start_over_exploration_context", startOverExplorationContext)
-      DELETE_PROFILE_CONTEXT ->
-        LearnerDetailsContext("delete_profile_context", deleteProfileContext)
-      OPEN_HOME -> EmptyContext("open_home")
-      OPEN_PROFILE_CHOOSER -> EmptyContext("open_profile_chooser")
+        LearnerDetailsContext(activityName, startOverExplorationContext)
+      DELETE_PROFILE_CONTEXT -> LearnerDetailsContext(activityName, deleteProfileContext)
+      OPEN_HOME -> EmptyContext(activityName)
+      OPEN_PROFILE_CHOOSER -> EmptyContext(activityName)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
-        SensitiveStringContext("failed_analytics_log", installIdForFailedAnalyticsLog, "install_id")
-      ACTIVITYCONTEXT_NOT_SET, null -> null // No context to create here.
+        SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
+      ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
     }
   }
 

@@ -29,18 +29,19 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
 ) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private var hintText: CharSequence
+  private var hintText: CharSequence = ""
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
     // Assume multi-line for the purpose of properly showing long hints.
     setSingleLine(hint != null)
-    hintText = (hint ?: "")
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
+  // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
   override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
+    hintText = hint
     hideHint()
     showSoftKeyboard(v, context)
   } else {
