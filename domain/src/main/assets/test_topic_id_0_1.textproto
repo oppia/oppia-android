@@ -1,4 +1,3 @@
-subtopic_title: "Test subtopic"
 page_contents {
   html: "<p>Description of subtopic is here.</p><p>This is sample subtopic with dummy content not related to anything in particular. Note that this is multiple paragraphs to simulate more realistic subtopic content. <oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_0&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_0 concept card&amp;quot;\"></oppia-noninteractive-skillreview>.</p><p><oppia-noninteractive-skillreview skill_id-with-value=\"&amp;quot;test_skill_id_1&amp;quot;\" text-with-value=\"&amp;quot;test_skill_id_1 concept card&amp;quot;\"></oppia-noninteractive-skillreview></p>"
   content_id: "content"
@@ -25,9 +24,18 @@ written_translation {
     }
   }
 }
+written_translation {
+  key: "title"
+  value {
+  }
+}
 skill_ids: "test_skill_id_0"
 skill_ids: "test_skill_id_1"
 skill_ids: "test_skill_id_2"
 subtopic_thumbnail {
   background_color_rgb: 16741119
+}
+title {
+  html: "Test subtopic"
+  content_id: "title"
 }
