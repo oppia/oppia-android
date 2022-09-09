@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.topic.RouteToRevisionCardListener
@@ -19,7 +21,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -35,7 +36,6 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
-  private var previousSubtopicId = Subtopic.getDefaultInstance().subtopicId
   private val routeToReviewListener = activity as RouteToRevisionCardListener
 
   fun handleCreateView(
@@ -64,31 +64,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    binding.nextSubtopicImageView?.setEntityType(entityType)
-    binding.prevSubtopicImageView?.setEntityType(entityType)
-
-    binding.prev?.setOnClickListener {
-      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId - 1)
-    }
-
-    binding.next?.setOnClickListener {
-      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId + 1)
-    }
-
-    viewModel.nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
-      if (nextSubtopic == Subtopic.getDefaultInstance()) binding.next?.visibility = View.INVISIBLE
-      binding.nextSubtopicImageView?.setLessonThumbnail(nextSubtopic.subtopicThumbnail)
-      binding.nextSubtopicTitle?.text = nextSubtopic.title
-    }
-
-    viewModel.previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
-      if (previousSubtopic.equals(Subtopic.getDefaultInstance())) {
-        binding.prev?.visibility = View.INVISIBLE
-      }
-      binding.prevSubtopicImageView?.setLessonThumbnail(previousSubtopic.subtopicThumbnail)
-      binding.prevSubtopicTitle?.text = previousSubtopic.title
-      this.previousSubtopicId = previousSubtopic.subtopicId
-    }
+    setupRevisionNavigationCards(binding, topicId, subtopicId)
 
     viewModel.revisionCardLiveData.observe(
       fragment,
@@ -109,6 +85,40 @@ class RevisionCardFragmentPresenter @Inject constructor(
     )
 
     return binding.root
+  }
+
+  private fun setupRevisionNavigationCards(binding: RevisionCardFragmentBinding, topicId: String, subtopicId: Int) {
+    binding.nextSubtopicImageView?.setEntityType(entityType)
+    binding.prevSubtopicImageView?.setEntityType(entityType)
+
+    binding.prev?.setOnClickListener {
+      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId - 1)
+    }
+
+    binding.next?.setOnClickListener {
+      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId + 1)
+    }
+
+    getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
+      if (nextSubtopic == EphemeralSubtopic.getDefaultInstance()) binding.next?.visibility =
+        View.INVISIBLE
+      binding.nextSubtopicImageView?.setLessonThumbnail(nextSubtopic.subtopic.subtopicThumbnail)
+      binding.nextSubtopicTitle?.text = translationController.extractString(
+        nextSubtopic.subtopic.title,
+        nextSubtopic.writtenTranslationContext
+      )
+    }
+
+    getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
+      if (previousSubtopic.equals(EphemeralSubtopic.getDefaultInstance())) {
+        binding.prev?.visibility = View.INVISIBLE
+      }
+      binding.prevSubtopicImageView?.setLessonThumbnail(previousSubtopic.subtopic.subtopicThumbnail)
+      binding.prevSubtopicTitle?.text = translationController.extractString(
+        previousSubtopic.subtopic.title,
+        previousSubtopic.writtenTranslationContext
+      )
+    }
   }
 
   /** Dismisses the concept card fragment if it's currently active in this fragment. */

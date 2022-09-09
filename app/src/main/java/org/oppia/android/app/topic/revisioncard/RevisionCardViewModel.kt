@@ -15,6 +15,8 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralSubtopic
+import org.oppia.android.app.model.EphemeralTopic
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
@@ -34,46 +36,46 @@ class RevisionCardViewModel @Inject constructor(
     processRevisionCardLiveData()
   }
 
-  val topicLiveData: LiveData<AsyncResult<Topic>> by lazy {
+  private val topicLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
     getTopicResultLiveData()
   }
 
-  private fun getTopicResultLiveData(): LiveData<AsyncResult<Topic>> {
+  private fun getTopicResultLiveData(): LiveData<AsyncResult<EphemeralTopic>> {
     return topicController.getTopic(profileId, topicId).toLiveData()
   }
 
-  val nextSubtopicLiveData: LiveData<Subtopic> by lazy {
+  val nextSubtopicLiveData: LiveData<EphemeralSubtopic> by lazy {
     Transformations.map(topicLiveData, ::processNextSubtopicData)
   }
 
-  val previousSubtopicLiveData: LiveData<Subtopic> by lazy {
+  val previousSubtopicLiveData: LiveData<EphemeralSubtopic> by lazy {
     Transformations.map(topicLiveData, ::processPreviousSubtopicData)
   }
 
-  private fun processPreviousSubtopicData(topicLiveData: AsyncResult<Topic>): Subtopic? {
-    return if (subtopicId == 0) Subtopic.getDefaultInstance()
+  private fun processPreviousSubtopicData(topicLiveData: AsyncResult<EphemeralTopic>): EphemeralSubtopic? {
+    return if (subtopicId == 0) EphemeralSubtopic.getDefaultInstance()
     else {
       when (topicLiveData) {
         is AsyncResult.Success -> {
           val topic = topicLiveData.value
-          topic.subtopicList.find {
-            it.subtopicId == subtopicId - 1
-          } ?: Subtopic.getDefaultInstance()
+          topic.subtopicsList.find {
+            it.subtopic.subtopicId == subtopicId - 1
+          } ?: EphemeralSubtopic.getDefaultInstance()
         }
-        else -> Subtopic.getDefaultInstance()
+        else -> EphemeralSubtopic.getDefaultInstance()
       }
     }
   }
 
-  private fun processNextSubtopicData(topicLiveData: AsyncResult<Topic>): Subtopic {
+  private fun processNextSubtopicData(topicLiveData: AsyncResult<EphemeralTopic>): EphemeralSubtopic? {
     return when (topicLiveData) {
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
-        topic.subtopicList.find {
-          it.subtopicId == subtopicId + 1
-        } ?: Subtopic.getDefaultInstance()
+        topic.subtopicsList.find {
+          it.subtopic.subtopicId == subtopicId + 1
+        } ?: EphemeralSubtopic.getDefaultInstance()
       }
-      else -> Subtopic.getDefaultInstance()
+      else -> EphemeralSubtopic.getDefaultInstance()
     }
   }
 
