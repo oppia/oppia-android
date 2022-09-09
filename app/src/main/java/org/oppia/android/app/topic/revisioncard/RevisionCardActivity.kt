@@ -2,9 +2,12 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
@@ -22,6 +25,7 @@ class RevisionCardActivity :
   @Inject
   lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
 
+  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -33,6 +37,8 @@ class RevisionCardActivity :
       val subtopicId = intent.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)
       revisionCardActivityPresenter.handleOnCreate(internalProfileId, topicId, subtopicId)
     }
+    supportActionBar?.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, R.color.color_def_oppia_brown_dark, theme))
+    window.statusBarColor = ResourcesCompat.getColor(resources, R.color.color_def_oppia_brown_dark2, theme)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
