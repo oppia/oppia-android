@@ -137,7 +137,6 @@ class AppLanguageResourceHandler @Inject constructor(
   /** Returns the current [OppiaLocale.DisplayLocale] used for resource processing. */
   fun getDisplayLocale(): OppiaLocale.DisplayLocale = appLanguageLocaleHandler.getDisplayLocale()
 
-  // TODO: Add tests?
   // TODO(#3793): Remove this once OppiaLanguage is used as the source of truth.
   /**
    * Returns a human-readable, localized representation of the specified [AudioLanguage].
