@@ -236,8 +236,8 @@
   <string name="add_profile_pin_info">Com um PIN, ninguém mais pode acessar um perfil além deste usuário atribuído.</string>
   <string name="add_profile_error_image_failed_store">Falha ao armazenar sua imagem de avatar. Por favor, tente novamente.</string>
   <string name="add_profile_error_name_not_unique">Este nome já está em uso por outro perfil.</string>
-  <string name="add_profile_error_name_empty">Por favor, insira um nome para este perfil.</string>
-  <string name="add_profile_error_name_only_letters">Os nomes podem ter apenas letras. Tente outro nome.</string>
+  <string name="add_profile_error_name_empty">Por favor, insira um nome válido para este perfil.</string>
+  <string name="add_profile_error_name_only_letters">Por favor, escolha um nome de perfil que não inclua números ou símbolos.</string>
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>

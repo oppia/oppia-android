@@ -33,7 +33,7 @@ class ProfileNameValidatorTest {
   lateinit var name: String
 
   @Before
-  fun setup() {
+  fun setUp() {
     setUpTestApplicationComponent()
   }
 
