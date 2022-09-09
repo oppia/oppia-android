@@ -88,5 +88,8 @@
   <color name="color_palette_drag_drop_single_item_gradient_start_color">@color/color_def_white</color>
   <color name="color_palette_drag_drop_single_item_stroke_color">@color/color_def_stroke_silver</color>
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_confetti_red_color">@color/color_def_confetti_ruby_red</color>
+  <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_light_gold</color>
+  <color name="color_palette_confetti_blue_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_white_background</color>
 </resources>
