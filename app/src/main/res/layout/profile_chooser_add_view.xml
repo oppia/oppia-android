@@ -15,11 +15,10 @@
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:gravity="center_horizontal">
 
     <LinearLayout
       android:id="@+id/add_profile_item"
@@ -29,14 +28,19 @@
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_end_profile_already_added : @dimen/profile_view_not_added_margin}"
       app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_start_profile_already_added : @dimen/profile_view_not_added_margin}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
-      
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
       <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_add_button"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        app:srcCompat="@{@drawable/ic_add_profile}"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+        app:srcCompat="@{@drawable/ic_add_profile}"
         app:strokeColor="@color/avatar_border"
         app:strokeWidth="1dp" />
 
@@ -45,9 +49,9 @@
         android:layout_height="wrap_content"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
+        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}"
         android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
-        android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}">
 
         <TextView
           android:id="@+id/add_profile_text"
@@ -72,5 +76,5 @@
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
