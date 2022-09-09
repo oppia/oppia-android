@@ -105,7 +105,6 @@ class ExplorationActivityPresenter @Inject constructor(
       bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
     }
 
-    updateToolbarTitle(explorationId)
     this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
