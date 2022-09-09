@@ -31,19 +31,24 @@ class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return AlertDialog.Builder(requireContext(), R.style.OppiaAlertDialogTheme)
-      .setMessage(R.string.profile_edit_delete_successful_message)
-      .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
-        if (requireContext().resources.getBoolean(R.bool.isTablet)) {
-          val intent =
-            Intent(requireContext(), AdministratorControlsActivity::class.java)
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-          startActivity(intent)
-        } else {
-          val intent = Intent(requireContext(), ProfileListActivity::class.java)
-          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-          startActivity(intent)
+
+    val alertDialog = AlertDialog
+      .Builder(requireContext(), R.style.OppiaAlertDialogTheme).apply {
+        setMessage(R.string.profile_edit_delete_successful_message)
+        setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
+          if (requireContext().resources.getBoolean(R.bool.isTablet)) {
+            val intent =
+              Intent(requireContext(), AdministratorControlsActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+          } else {
+            val intent = Intent(requireContext(), ProfileListActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+          }
         }
       }.create()
+    alertDialog.setCanceledOnTouchOutside(false)
+    return alertDialog
   }
 }
