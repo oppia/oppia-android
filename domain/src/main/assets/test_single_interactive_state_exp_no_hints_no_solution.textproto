@@ -118,6 +118,22 @@ states {
   }
 }
 init_state_name: "Text"
-objective: "Test exploration."
-title: "Prototype exploration without hints or a solution"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Prototype exploration without hints or a solution"
+  content_id: "title"
+}
+description {
+  html: "Test exploration."
+  content_id: "description"
+}

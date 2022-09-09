@@ -4,6 +4,7 @@ import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.alpha.AlphaBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -48,6 +49,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -95,7 +97,8 @@ import javax.inject.Singleton
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
-    PerformanceMetricsConfigurationsModule::class
+    PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
+    KenyaAlphaEventLoggingConfigurationModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {

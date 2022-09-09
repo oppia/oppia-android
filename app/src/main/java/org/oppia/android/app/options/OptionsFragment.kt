@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
-const val MESSAGE_READING_TEXT_SIZE_ARGUMENT_KEY = "OptionsFragment.message_reading_text_size"
+const val MESSAGE_READING_TEXT_SIZE_RESULTS_KEY = "OptionsFragment.message_reading_text_size"
 const val MESSAGE_APP_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_app_language"
 const val MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY = "OptionsFragment.message_audio_language"
 const val REQUEST_CODE_TEXT_SIZE = 1
@@ -66,7 +67,7 @@ class OptionsFragment : InjectableFragment() {
     )
   }
 
-  fun updateReadingTextSize(textSize: String) {
+  fun updateReadingTextSize(textSize: ReadingTextSize) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateReadingTextSize(textSize)
     }
