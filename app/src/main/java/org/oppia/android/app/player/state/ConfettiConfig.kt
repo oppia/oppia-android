@@ -70,9 +70,9 @@ enum class ConfettiConfig(
   companion object {
     /** Primary colors to use for the confetti. */
     val primaryColors: List<Int> = listOf(
-      R.color.confetti_red,
-      R.color.confetti_yellow,
-      R.color.confetti_blue
+      R.color.component_color_confetti_red_color,
+      R.color.component_color_confetti_yellow_color,
+      R.color.component_color_confetti_blue_color
     )
   }
 }
