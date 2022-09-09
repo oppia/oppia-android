@@ -21,6 +21,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.HelpIndex
@@ -2672,8 +2673,11 @@ class ExplorationProgressControllerTest {
   private fun retrieveCheckpointHelpIndex(explorationId: String) =
     retrieveExplorationCheckpoint(explorationId).helpIndex
 
-  private fun loadExploration(expId: String) =
-    monitorFactory.waitForNextSuccessfulResult(explorationDataController.getExplorationById(expId))
+  private fun loadExploration(expId: String): Exploration {
+    return monitorFactory.waitForNextSuccessfulResult(
+      explorationDataController.getExplorationById(profileId, expId)
+    ).exploration
+  }
 
   private fun logIntoAnalyticsReadyAdminProfile() {
     val rootProfileId = ProfileId.getDefaultInstance()

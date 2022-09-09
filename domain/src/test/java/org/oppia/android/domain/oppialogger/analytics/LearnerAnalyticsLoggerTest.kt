@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -99,6 +100,8 @@ class LearnerAnalyticsLoggerTest {
   private val installIdParameter: String? get() = iid.takeIf { it != "null" }
   private val expectedLearnerIdParameter: String get() = elid
   private val expectedInstallIdParameter: String get() = eid
+
+  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
 
   @Before
   fun setUp() {
@@ -1399,8 +1402,8 @@ class LearnerAnalyticsLoggerTest {
 
   private fun loadExploration(expId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(expId)
-    )
+      explorationDataController.getExplorationById(profileId, expId)
+    ).exploration
   }
 
   private fun Exploration.getStateByName(name: String) = statesMap.getValue(name)

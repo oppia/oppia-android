@@ -74,7 +74,7 @@ private const val COMBINED_STR_VALUE_02 = "I used to be indecisive. At least I t
 class DataProvidersTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Inject lateinit var context: Context
+  @Inject lateinit var application: Application
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -111,7 +111,7 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_fakeDataProvider_noObserver_doesNotCallRetrieve() {
-    val fakeDataProvider = object : DataProvider<Int>(context) {
+    val fakeDataProvider = object : DataProvider<Int>(application) {
       var hasRetrieveBeenCalled = false
 
       override fun getId(): Any = "fake_data_provider"
@@ -130,7 +130,7 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_fakeDataProvider_withObserver_callsRetrieve() {
-    val fakeDataProvider = object : DataProvider<Int>(context) {
+    val fakeDataProvider = object : DataProvider<Int>(application) {
       var hasRetrieveBeenCalled = false
 
       override fun getId(): Any = "fake_data_provider"
@@ -149,7 +149,7 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_trivialDataProvider_withObserver_observerReceivesValue() {
-    val simpleDataProvider = object : DataProvider<Int>(context) {
+    val simpleDataProvider = object : DataProvider<Int>(application) {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
@@ -165,7 +165,7 @@ class DataProvidersTest {
   @Test
   fun testConvertToLiveData_dataProviderChanges_withObserver_observerReceivesUpdatedValue() {
     var providerValue = 123
-    val simpleDataProvider = object : DataProvider<Int>(context) {
+    val simpleDataProvider = object : DataProvider<Int>(application) {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
@@ -183,7 +183,7 @@ class DataProvidersTest {
   @Test
   fun testConvertToLiveData_providerChanges_withoutObserver_newObserver_newObserverReceivesValue() {
     var providerValue = 123
-    val simpleDataProvider = object : DataProvider<Int>(context) {
+    val simpleDataProvider = object : DataProvider<Int>(application) {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
@@ -203,7 +203,7 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_dataProviderNotified_sameValue_withObserver_observerNotCalledAgain() {
-    val simpleDataProvider = object : DataProvider<Int>(context) {
+    val simpleDataProvider = object : DataProvider<Int>(application) {
       override fun getId(): Any = "simple_data_provider"
 
       override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
@@ -225,7 +225,7 @@ class DataProvidersTest {
     val providerOldResult = AsyncResult.Success(123)
     testCoroutineDispatchers.advanceTimeBy(10)
     val providerNewResult = AsyncResult.Success(456)
-    val simpleDataProvider = object : DataProvider<Int>(context) {
+    val simpleDataProvider = object : DataProvider<Int>(application) {
       var callCount = 0
 
       override fun getId(): Any = "simple_data_provider"
@@ -257,7 +257,7 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_dataProvider_providesPendingResultTwice_doesNotRedeliver() {
-    val simpleDataProvider = object : DataProvider<Int>(context) {
+    val simpleDataProvider = object : DataProvider<Int>(application) {
       override fun getId(): Any = "simple_data_provider"
 
       // Return a new pending result for each call.
