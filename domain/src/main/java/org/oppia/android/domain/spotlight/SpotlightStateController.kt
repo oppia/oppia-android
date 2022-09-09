@@ -13,6 +13,7 @@ import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
 import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
 import org.oppia.android.app.model.SpotlightStateDatabase
+import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.model.SpotlightViewState.SPOTLIGHT_NOT_SEEN
 import org.oppia.android.app.model.SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED
 import org.oppia.android.data.persistence.PersistentCacheStore
@@ -23,7 +24,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.SpotlightViewState
 
 private const val CACHE_NAME = "spotlight_checkpoint_database"
 private const val RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
@@ -36,9 +36,9 @@ private const val RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
 class SpotlightStateController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
-  private val dataProviders: DataProviders,
+  private val dataProviders: DataProviders
 ) {
-  // thrown when spotlight feature is not set while retrieving or marking spotlight view states
+  /** Thrown when spotlight feature is not set while retrieving or marking spotlight view states. */
   class SpotlightFeatureNotFoundException(message: String) : IllegalArgumentException(message)
 
   private val cacheStoreMap =
@@ -136,14 +136,14 @@ class SpotlightStateController @Inject constructor(
   private fun retrieveCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<SpotlightStateDatabase> {
-      val cacheStore = cacheStoreMap.getOrPut(profileId) {
-        cacheStoreFactory.createPerProfile(
-          CACHE_NAME,
-          SpotlightStateDatabase.getDefaultInstance(),
-          profileId
-        )
-      }
-      cacheStoreMap[profileId] = cacheStore
+    val cacheStore = cacheStoreMap.getOrPut(profileId) {
+      cacheStoreFactory.createPerProfile(
+        CACHE_NAME,
+        SpotlightStateDatabase.getDefaultInstance(),
+        profileId
+      )
+    }
+    cacheStoreMap[profileId] = cacheStore
 
     cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
       throwable?.let {
