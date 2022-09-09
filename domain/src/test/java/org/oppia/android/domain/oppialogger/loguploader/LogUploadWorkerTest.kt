@@ -97,7 +97,8 @@ class LogUploadWorkerTest {
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-  @field:[Inject MockAnalyticsEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @field:[Inject MockAnalyticsEventLogger]
+  lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
 
   private lateinit var context: Context
 
@@ -317,7 +318,8 @@ class LogUploadWorkerTest {
     // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
     // to remove the default stubbing for the mock so that it can properly trigger a failure.
     reset(mockAnalyticsEventLogger)
-    `when`(mockAnalyticsEventLogger.logEvent(anyOrNull())).thenThrow(IllegalStateException("Failure."))
+    `when`(mockAnalyticsEventLogger.logEvent(anyOrNull())).
+    thenThrow(IllegalStateException("Failure."))
   }
 
   /**
@@ -363,7 +365,8 @@ class LogUploadWorkerTest {
     }
 
     @Provides
-    fun bindFakeAnalyticsEventLogger(@MockAnalyticsEventLogger delegate: AnalyticsEventLogger): AnalyticsEventLogger = delegate
+    fun bindFakeAnalyticsEventLogger(@MockAnalyticsEventLogger delegate: AnalyticsEventLogger):
+      AnalyticsEventLogger = delegate
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger

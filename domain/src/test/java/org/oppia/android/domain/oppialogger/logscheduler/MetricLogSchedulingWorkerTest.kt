@@ -217,7 +217,8 @@ class MetricLogSchedulingWorkerTest {
     fun provideContext(application: Application): Context = application
 
     @Provides
-    fun bindFakeAnalyticsEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger = fakeAnalyticsEventLogger
+    fun bindFakeAnalyticsEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
+      AnalyticsEventLogger = fakeAnalyticsEventLogger
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
