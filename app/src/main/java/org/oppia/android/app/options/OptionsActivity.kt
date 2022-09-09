@@ -8,6 +8,8 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -100,8 +102,10 @@ class OptionsActivity :
         val appLanguage = data.getStringExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY) as String
         optionActivityPresenter.updateAppLanguage(appLanguage)
       }
-      else -> {
-        val audioLanguage = data.getStringExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY) as String
+      REQUEST_CODE_AUDIO_LANGUAGE -> {
+        val audioLanguage = data.getProtoExtra(
+          MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
+        ).audioLanguage
         optionActivityPresenter.updateAudioLanguage(audioLanguage)
       }
     }
@@ -118,13 +122,9 @@ class OptionsActivity :
     )
   }
 
-  override fun routeAudioLanguageList(audioLanguage: String?) {
+  override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
     startActivityForResult(
-      AudioLanguageActivity.createAudioLanguageActivityIntent(
-        this,
-        AUDIO_LANGUAGE,
-        audioLanguage
-      ),
+      AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage),
       REQUEST_CODE_AUDIO_LANGUAGE
     )
   }
@@ -152,7 +152,7 @@ class OptionsActivity :
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
   }
 
-  override fun loadAudioLanguageFragment(audioLanguage: String) {
+  override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
     selectedFragment = AUDIO_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.audio_language)

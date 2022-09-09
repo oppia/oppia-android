@@ -4,7 +4,9 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.util.locale.OppiaLocale
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -133,6 +135,30 @@ class AppLanguageResourceHandler @Inject constructor(
   fun getLayoutDirection(): Int = getDisplayLocale().getLayoutDirection()
 
   /** Returns the current [OppiaLocale.DisplayLocale] used for resource processing. */
-  fun getDisplayLocale(): OppiaLocale.DisplayLocale =
-    appLanguageLocaleHandler.getDisplayLocale()
+  fun getDisplayLocale(): OppiaLocale.DisplayLocale = appLanguageLocaleHandler.getDisplayLocale()
+
+  // TODO(#3793): Remove this once OppiaLanguage is used as the source of truth.
+  /**
+   * Returns a human-readable, localized representation of the specified [AudioLanguage].
+   *
+   * Note that the returned string is not expected to be localized to the user's current locale.
+   * Instead, it will be localized for that specific language (i.e. each language will be
+   * represented within that language to make it easier to identify when choosing a language).
+   */
+  fun computeLocalizedDisplayName(audioLanguage: AudioLanguage): String {
+    return when (audioLanguage) {
+      AudioLanguage.HINDI_AUDIO_LANGUAGE -> getLocalizedDisplayName("hi")
+      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> getLocalizedDisplayName("fr")
+      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> getLocalizedDisplayName("zh")
+      AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
+      AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
+      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
+    }
+  }
+
+  private fun getLocalizedDisplayName(languageCode: String, regionCode: String = ""): String {
+    // TODO(#3791): Remove this dependency.
+    val locale = Locale(languageCode, regionCode)
+    return locale.getDisplayLanguage(locale).capitalize(locale)
+  }
 }

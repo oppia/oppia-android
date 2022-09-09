@@ -46,6 +46,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -554,16 +556,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.audio_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
-            AUDIO_LANGUAGE
-          ),
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
-            "English"
-          ),
+          hasProtoExtra("AudioLanguageActivity.params", expectedParams),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
       )
@@ -586,16 +585,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.audio_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
-            "English"
-          ),
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
-            AUDIO_LANGUAGE
-          ),
+          hasProtoExtra("AudioLanguageActivity.params", expectedParams),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
       )
