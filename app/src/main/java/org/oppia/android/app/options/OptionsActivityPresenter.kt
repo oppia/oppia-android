@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
 /** The presenter for [OptionsActivity]. */
@@ -79,7 +80,7 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
-  fun updateReadingTextSize(textSize: String) {
+  fun updateReadingTextSize(textSize: ReadingTextSize) {
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
@@ -91,7 +92,7 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
-  fun loadReadingTextSizeFragment(textSize: String) {
+  fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
       .beginTransaction()

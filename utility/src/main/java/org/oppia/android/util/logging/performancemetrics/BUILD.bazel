@@ -46,7 +46,7 @@ kt_android_library(
     srcs = [
         "PerformanceMetricsAssessorImpl.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":performance_metrics_assessor",
         ":performance_metrics_configurations_module",

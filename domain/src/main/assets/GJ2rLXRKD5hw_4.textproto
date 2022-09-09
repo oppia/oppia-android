@@ -1,4 +1,3 @@
-subtopic_title: "Adding Fractions"
 page_contents {
   html: "<p>Description of subtopic is here.</p>"
   content_id: "content"
@@ -13,9 +12,18 @@ written_translation {
   value {
   }
 }
+written_translation {
+  key: "title"
+  value {
+  }
+}
 skill_ids: "B39yK4cbHZYI"
 skill_ids: "5RM9KPfQxobH"
 skill_ids: "UxTGIJqaHMLa"
 subtopic_thumbnail {
   background_color_rgb: 16741119
+}
+title {
+  html: "Adding Fractions"
+  content_id: "title"
 }

@@ -14,7 +14,7 @@
     android:background="@drawable/general_item_background_border_light"
     android:gravity="center_vertical"
     android:minHeight="48dp"
-    android:onClick="@{() -> viewModel.textSizeRadioButtonListener.onTextSizeSelected(viewModel.textSizeName)}"
+    android:onClick="@{() -> viewModel.textSizeRadioButtonListener.onTextSizeSelected(viewModel.readingTextSize)}"
     android:importantForAccessibility="yes"
     android:orientation="horizontal">
 
