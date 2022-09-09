@@ -11,9 +11,8 @@
   <application
     android:name=".app.application.dev.DeveloperOppiaApplication"
     android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
+    android:icon="@mipmap/launcher_icon"
     android:label="@string/app_name"
-    android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/OppiaTheme">
     <!-- NOTE TO DEVELOPER: You can enable debug logs for fast upload & better inspection in Firebase console using https://support.google.com/analytics/answer/7201382. -->
