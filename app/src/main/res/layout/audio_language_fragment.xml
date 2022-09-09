@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.options.LanguageSelectionViewModel" />
+      type="org.oppia.android.app.options.AudioLanguageSelectionViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
