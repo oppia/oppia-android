@@ -11,18 +11,16 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 
-/** [DialogFragment] that notifies user after profile is successfully deleted. */
+/** [DialogFragment] that notifies the user after a profile is successfully deleted. */
 class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
     const val TAG = "DELETE_SUCCESS_DIALOG_FRAGMENT"
 
     /**
-     * This function is responsible for displaying content in DialogFragment.
-     *
-     * @return [DeleteProfileSuccessDialogFragment]: DialogFragment
+     * This function returns a new instance of [DeleteProfileSuccessDialogFragment]
      */
-    fun newInstance(): DeleteProfileSuccessDialogFragment {
+    fun createNewInstance(): DeleteProfileSuccessDialogFragment {
       return DeleteProfileSuccessDialogFragment()
     }
   }
