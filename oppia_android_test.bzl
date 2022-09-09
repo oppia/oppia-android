@@ -62,7 +62,7 @@ def oppia_android_test(
       srcs: list of str. The name of the Kotlin test files to be run.
       test_manifest: str. The path to the test manifest file.
       custom_package: str. The module's package. Example: 'org.oppia.utility'.
-      test_class: The package of the src file. For example, if the src is 'FakeEventLoggerTest.kt',
+      test_class: The package of the src file. For example, if the src is 'FakeAnalyticsEventLoggerTest.kt',
           then the test_class would be "org.oppia.testing.FakeEventLoggerTest".
       enable_data_binding: boolean. Indicates whether the test enables data-binding.
       deps: list of str. The list of dependencies needed to run the tests.

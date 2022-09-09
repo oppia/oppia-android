@@ -34,7 +34,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -76,7 +76,7 @@ class LogReportWorkManagerInitializerTest {
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
