@@ -72,6 +72,7 @@ class SpotlightStateController @Inject constructor(
 
   /**
    * Retrieves the current [SpotlightViewState] of a spotlit feature for a given profile.
+   *
    * @param profileId the ID of the profile that will be viewing the spotlight
    * @param feature the spotlight feature to be spotlit
    * @return DataProvider containing the current [SpotlightViewState] corresponding to the specified [feature]
@@ -135,9 +136,6 @@ class SpotlightStateController @Inject constructor(
   private fun retrieveCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<SpotlightStateDatabase> {
-    val cacheStore = if (profileId in cacheStoreMap) {
-      cacheStoreMap[profileId]!!
-    } else {
       val cacheStore = cacheStoreMap.getOrPut(profileId) {
         cacheStoreFactory.createPerProfile(
           CACHE_NAME,
@@ -146,8 +144,6 @@ class SpotlightStateController @Inject constructor(
         )
       }
       cacheStoreMap[profileId] = cacheStore
-      cacheStore
-    }
 
     cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
       throwable?.let {
