@@ -124,7 +124,8 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/android/app/onboarding/RouteToProfileListListener.kt",
-    "src/main/java/org/oppia/android/app/options/LanguageRadioButtonListener.kt",
+    "src/main/java/org/oppia/android/app/options/AppLanguageRadioButtonListener.kt",
+    "src/main/java/org/oppia/android/app/options/AudioLanguageRadioButtonListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadAppLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadAudioLanguageListListener.kt",
     "src/main/java/org/oppia/android/app/options/LoadReadingTextSizeListener.kt",
@@ -293,8 +294,10 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt",
     "src/main/java/org/oppia/android/app/onboarding/ViewPagerSlide.kt",
     "src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicListViewModel.kt",
-    "src/main/java/org/oppia/android/app/options/LanguageItemViewModel.kt",
-    "src/main/java/org/oppia/android/app/options/LanguageSelectionViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/AppLanguageItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/AppLanguageSelectionViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/AudioLanguageItemViewModel.kt",
+    "src/main/java/org/oppia/android/app/options/AudioLanguageSelectionViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionControlsViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsAppLanguageViewModel.kt",
     "src/main/java/org/oppia/android/app/options/OptionsAudioLanguageViewModel.kt",
@@ -906,6 +909,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
     "//utility/src/main/java/org/oppia/android/util/parser/image:image_transformation",
     "//utility/src/main/java/org/oppia/android/util/parser/image:test_glide_image_loader",
+    "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
 ]
 
 # App module tests. Note that all tests are assumed to be tests with resources (even though not all
