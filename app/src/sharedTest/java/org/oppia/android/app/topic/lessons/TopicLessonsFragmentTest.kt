@@ -91,7 +91,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -703,7 +702,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
+  fun   testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
@@ -964,7 +963,7 @@ class TopicLessonsFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
