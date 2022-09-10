@@ -96,7 +96,7 @@ class SpotlightStateController @Inject constructor(
           VOICEOVER_LANGUAGE_ICON -> it.voiceoverLanguageIcon
           FEATURE_NOT_SET -> {
             return@transformAsync AsyncResult.Failure(
-              SpotlightFeatureNotFoundException("Spotlight feature was not found")
+              SpotlightFeatureNotFoundException("Spotlight feature requested was not found")
             )
           }
         }
@@ -143,7 +143,6 @@ class SpotlightStateController @Inject constructor(
         profileId
       )
     }
-    cacheStoreMap[profileId] = cacheStore
 
     cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
       throwable?.let {

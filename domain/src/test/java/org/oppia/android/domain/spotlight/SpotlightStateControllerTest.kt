@@ -4,11 +4,13 @@ import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Assert.assertEquals
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,7 +47,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -67,8 +68,6 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Suppress("SameParameterValue", "FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -117,11 +116,10 @@ class SpotlightStateControllerTest {
     val invalidFeature = Spotlight.FeatureCase.FEATURE_NOT_SET
     val markSpotlightProvider =
       spotlightStateController.markSpotlightViewed(profileId0, invalidFeature)
-    assertThrows(SpotlightStateController.SpotlightFeatureNotFoundException::class) {
-      val monitor = dataProviderTestMonitor.createMonitor(markSpotlightProvider)
-      testCoroutineDispatchers.runCurrent()
-      monitor.ensureNextResultIsFailing()
-    }
+    val monitor = dataProviderTestMonitor.createMonitor(markSpotlightProvider)
+    testCoroutineDispatchers.runCurrent()
+    val exception = monitor.ensureNextResultIsFailing()
+    assertThat(exception).hasMessageThat().contains("Spotlight feature was not found")
   }
 
   @Test
@@ -138,7 +136,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -147,7 +145,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -155,7 +153,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, ONBOARDING_NEXT_BUTTON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -164,7 +162,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, ONBOARDING_NEXT_BUTTON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -172,7 +170,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, TOPIC_LESSON_TAB)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -181,7 +179,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, TOPIC_LESSON_TAB)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -189,7 +187,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, TOPIC_REVISION_TAB)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -198,7 +196,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, TOPIC_REVISION_TAB)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -206,7 +204,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, PROMOTED_STORIES)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -215,7 +213,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, PROMOTED_STORIES)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -223,7 +221,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, LESSONS_BACK_BUTTON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -232,7 +230,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, LESSONS_BACK_BUTTON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -240,7 +238,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, VOICEOVER_PLAY_ICON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -249,7 +247,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, VOICEOVER_PLAY_ICON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -257,7 +255,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, VOICEOVER_LANGUAGE_ICON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -266,7 +264,7 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, VOICEOVER_LANGUAGE_ICON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -276,7 +274,8 @@ class SpotlightStateControllerTest {
       spotlightStateController.retrieveSpotlightViewState(profileId0, invalidFeature)
     val monitor = dataProviderTestMonitor.createMonitor(spotlightStateProvider)
     testCoroutineDispatchers.runCurrent()
-    monitor.ensureNextResultIsFailing()
+    val exception = monitor.ensureNextResultIsFailing()
+    assertThat(exception).hasMessageThat().contains("Spotlight feature requested was not found")
   }
 
   @Test
@@ -291,7 +290,7 @@ class SpotlightStateControllerTest {
     val spotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 
   @Test
@@ -299,7 +298,7 @@ class SpotlightStateControllerTest {
     val spotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -308,7 +307,7 @@ class SpotlightStateControllerTest {
     val spotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, PROMOTED_STORIES)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   @Test
@@ -317,7 +316,7 @@ class SpotlightStateControllerTest {
     val spotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId1, FIRST_CHAPTER)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(spotlightStateProvider)
-    assertEquals(result, SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
   }
 
   private fun markSpotlightSeen(spotlightFeature: Spotlight.FeatureCase) {

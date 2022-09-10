@@ -8,7 +8,7 @@ option java_multiple_files = true;
 // Spotlights are visual elements that are shown during the initial user onboarding experience of
 // the app that highlight certain UI elements and show how/what they should be used for.
 message Spotlight {
-  // Determines the UI element being spotlit
+  // Determines the UI element being spotlit.
   oneof feature {
     // Corresponds to the onboarding screen's next button.
     SpotlightViewState onboarding_next_button = 1;
