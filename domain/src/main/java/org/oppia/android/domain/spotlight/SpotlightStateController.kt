@@ -144,7 +144,10 @@ class SpotlightStateController @Inject constructor(
       )
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "SpotlightCheckpointController",
