@@ -26,7 +26,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
@@ -239,19 +238,6 @@ class AdministratorControlsFragmentTest {
         targetView = R.id.auto_update_topic_constraint_layout
       )
     }
-  }
-
-  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
-    itemPosition: Int,
-    targetView: Int
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.administrator_controls_list,
-        position = itemPosition,
-        targetViewId = targetView
-      )
-    ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
   }
 
   @Test
@@ -601,6 +587,19 @@ class AdministratorControlsFragmentTest {
         targetViewId = targetView
       )
     ).check(matches(isDisplayed()))
+  }
+
+  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(matches(not(isDisplayed())))
   }
 
   private fun verifyTextOnAdministratorListItemAtPosition(
