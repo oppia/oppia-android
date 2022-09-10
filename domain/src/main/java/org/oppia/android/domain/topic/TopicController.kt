@@ -8,8 +8,12 @@ import org.oppia.android.app.model.ChapterRecord
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.CompletedStory
 import org.oppia.android.app.model.CompletedStoryList
+import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.EphemeralConceptCard
 import org.oppia.android.app.model.EphemeralRevisionCard
+import org.oppia.android.app.model.EphemeralStorySummary
+import org.oppia.android.app.model.EphemeralSubtopic
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.OngoingTopicList
@@ -19,6 +23,7 @@ import org.oppia.android.app.model.RevisionCard
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.model.SubtopicRecord
 import org.oppia.android.app.model.Topic
@@ -37,6 +42,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,10 +83,14 @@ private const val GET_COMPLETED_STORY_LIST_PROVIDER_ID =
 private const val GET_ONGOING_TOPIC_LIST_PROVIDER_ID =
   "get_ongoing_topic_list_provider_id"
 private const val GET_TOPIC_PROVIDER_ID = "get_topic_provider_id"
+private const val GET_TOPICS_PROVIDER_ID = "get_topics_provider_id"
 private const val GET_STORY_PROVIDER_ID = "get_story_provider_id"
 private const val GET_CHAPTER_PROVIDER_ID = "get_chapter_provider_id"
-private const val GET_TOPIC_COMBINED_PROVIDER_ID = "get_topic_combined_provider_id"
+private const val GET_LOCALIZABLE_CHAPTER_PROVIDER_ID = "get_localizable_chapter_provider_id"
+private const val GET_TOPICS_COMBINED_PROVIDER_ID = "get_topics_combined_provider_id"
+private const val GET_LOCALIZABLE_TOPICS_PROVIDER_ID = "get_localizable_topics_provider_id"
 private const val GET_STORY_COMBINED_PROVIDER_ID = "get_story_combined_provider_id"
+private const val GET_LOCALIZABLE_STORY_PROVIDER_ID = "get_localizable_story_provider_id"
 private const val GET_CONCEPT_CARD_PROVIDER_ID = "get_concept_card_provider_id"
 private const val GET_REVISION_CARD_PROVIDER_ID = "get_revision_card_provider_id"
 
@@ -108,22 +118,47 @@ class TopicController @Inject constructor(
    *
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @param topicId the ID corresponding to the topic which needs to be returned.
-   * @return a [DataProvider] for [Topic] combined with [TopicProgress].
+   * @return a [DataProvider] for [EphemeralTopic] combined with [TopicProgress].
    */
-  fun getTopic(profileId: ProfileId, topicId: String): DataProvider<Topic> {
-    val topicDataProvider =
-      dataProviders.createInMemoryDataProviderAsync(GET_TOPIC_PROVIDER_ID) {
-        retrieveTopic(topicId)?.let { AsyncResult.Success(it) }
-          ?: AsyncResult.Failure(IllegalStateException("Topic doesn't exist: $topicId"))
-      }
-    val topicProgressDataProvider =
-      storyProgressController.retrieveTopicProgressDataProvider(profileId, topicId)
+  fun getTopic(profileId: ProfileId, topicId: String): DataProvider<EphemeralTopic> {
+    return getTopics(profileId, listOf(topicId)).transform(GET_TOPIC_PROVIDER_ID) { it.single() }
+  }
 
-    return topicDataProvider.combineWith(
-      topicProgressDataProvider,
-      GET_TOPIC_COMBINED_PROVIDER_ID,
-      ::combineTopicAndTopicProgress
+  /**
+   * Fetches a list of topics given by [topicIds] in the same way as [getTopic].
+   *
+   * Note that the provided list of [Topic]s will match the order of the provided [topicIds],
+   * including duplicates, so it can be assumed that there's a 1:1 mapping between the IDs and
+   * returned topics list.
+   *
+   * All IDs must correspond to a valid topic, otherwise the returned provider will fail.
+   */
+  fun getTopics(profileId: ProfileId, topicIds: List<String>): DataProvider<List<EphemeralTopic>> {
+    val topicsDataProvider =
+      dataProviders.createInMemoryDataProviderAsync(GET_TOPICS_PROVIDER_ID) {
+        val topics = topicIds.map { topicId ->
+          retrieveTopic(topicId)
+            ?: return@createInMemoryDataProviderAsync AsyncResult.Failure(
+              IllegalStateException("Topic doesn't exist: $topicId")
+            )
+        }
+        AsyncResult.Success(topics)
+      }
+    val topicsProgressDataProvider =
+      storyProgressController.retrieveTopicsProgressDataProvider(profileId, topicIds)
+
+    val topicsCombinedProvider = topicsDataProvider.combineWith(
+      topicsProgressDataProvider,
+      GET_TOPICS_COMBINED_PROVIDER_ID,
+      ::combineTopicsAndTopicsProgress
     )
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return topicsCombinedProvider.combineWith(
+      translationLocaleProvider, GET_LOCALIZABLE_TOPICS_PROVIDER_ID
+    ) { topics, locale ->
+      topics.map { it.toEphemeral(locale) }
+    }
   }
 
   /**
@@ -132,13 +167,13 @@ class TopicController @Inject constructor(
    * @param profileId the ID corresponding to the profile for which progress needs fetched.
    * @param topicId the ID corresponding to the topic which contains this story.
    * @param storyId the ID corresponding to the story which needs to be returned.
-   * @return a [DataProvider] for [StorySummary] combined with [StoryProgress].
+   * @return a [DataProvider] for [EphemeralStorySummary] combined with [StoryProgress].
    */
   fun getStory(
     profileId: ProfileId,
     topicId: String,
     storyId: String
-  ): DataProvider<StorySummary> {
+  ): DataProvider<EphemeralStorySummary> {
     val storyDataProvider =
       dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
         return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
@@ -146,11 +181,16 @@ class TopicController @Inject constructor(
     val storyProgressDataProvider =
       storyProgressController.retrieveStoryProgressDataProvider(profileId, topicId, storyId)
 
-    return storyDataProvider.combineWith(
+    val storyCombinedProvider = storyDataProvider.combineWith(
       storyProgressDataProvider,
       GET_STORY_COMBINED_PROVIDER_ID,
       ::combineStorySummaryAndStoryProgress
     )
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return storyCombinedProvider.combineWith(
+      translationLocaleProvider, GET_LOCALIZABLE_STORY_PROVIDER_ID
+    ) { storySummary, locale -> storySummary.toEphemeral(locale) }
   }
 
   /**
@@ -159,14 +199,17 @@ class TopicController @Inject constructor(
    * @param topicId the ID corresponding to the topic which contains this story
    * @param storyId the ID corresponding to the story which needs to be returned
    * @param explorationId the ID corresponding to the exploration which needs to be returned
-   * @return a [DataProvider] for [ChapterSummary]
+   * @return a [DataProvider] for [EphemeralChapterSummary]
    */
   fun retrieveChapter(
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String
-  ): DataProvider<ChapterSummary> {
-    return dataProviders.createInMemoryDataProviderAsync(GET_STORY_PROVIDER_ID) {
+  ): DataProvider<EphemeralChapterSummary> {
+    val chapterCombinedProvider = dataProviders.createInMemoryDataProviderAsync(
+      GET_STORY_PROVIDER_ID
+    ) {
       return@createInMemoryDataProviderAsync AsyncResult.Success(retrieveStory(topicId, storyId))
     }.transformAsync(GET_CHAPTER_PROVIDER_ID) { storySummary ->
       val chapterSummary = fetchChapter(storySummary, explorationId)
@@ -180,6 +223,12 @@ class TopicController @Inject constructor(
         )
       }
     }
+
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return chapterCombinedProvider.combineWith(
+      translationLocaleProvider, GET_LOCALIZABLE_CHAPTER_PROVIDER_ID
+    ) { chapterSummary, locale -> chapterSummary.toEphemeral(locale) }
   }
 
   /**
@@ -216,7 +265,7 @@ class TopicController @Inject constructor(
         revisionCard = retrieveReviewCard(topicId, subtopicId)
         writtenTranslationContext =
           translationController.computeWrittenTranslationContext(
-            revisionCard.writtenTranslationMap, contentLocale
+            revisionCard.writtenTranslationsMap, contentLocale
           )
       }.build()
     }
@@ -227,20 +276,24 @@ class TopicController @Inject constructor(
    * profile.
    */
   fun getCompletedStoryList(profileId: ProfileId): DataProvider<CompletedStoryList> {
-    return storyProgressController.retrieveTopicProgressListDataProvider(
-      profileId
-    ).transformAsync(GET_COMPLETED_STORY_LIST_PROVIDER_ID) { progressList ->
+    val retrieveTopicProgressListProvider =
+      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return retrieveTopicProgressListProvider.combineWith(
+      translationLocaleProvider, GET_COMPLETED_STORY_LIST_PROVIDER_ID
+    ) { progressList, contentLocale ->
       val completedStories = progressList.flatMap { topicProgress ->
         val topic = retrieveTopic(topicProgress.topicId)
         return@flatMap topic?.let {
-          createCompletedStoryListFromProgress(it, topicProgress.storyProgressMap.values.toList())
+          createCompletedStoryListFromProgress(
+            it, topicProgress.storyProgressMap.values.toList(), contentLocale
+          )
         } ?: listOf() // Ignore topics that are no longer on the device.
       }
-      return@transformAsync AsyncResult.Success(
-        CompletedStoryList.newBuilder().apply {
-          addAllCompletedStory(completedStories)
-        }.build()
-      )
+      return@combineWith CompletedStoryList.newBuilder().apply {
+        addAllCompletedStory(completedStories)
+      }.build()
     }
   }
 
@@ -248,12 +301,15 @@ class TopicController @Inject constructor(
    * Returns the list of ongoing topics in the form on [OngoingTopicList] for a specific profile.
    */
   fun getOngoingTopicList(profileId: ProfileId): DataProvider<OngoingTopicList> {
-    return storyProgressController.retrieveTopicProgressListDataProvider(
-      profileId
-    ).transformAsync(GET_ONGOING_TOPIC_LIST_PROVIDER_ID) {
-      val ongoingTopicList = createOngoingTopicListFromProgress(it)
-      AsyncResult.Success(ongoingTopicList)
-    }
+    val retrieveTopicProgressListProvider =
+      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return retrieveTopicProgressListProvider.combineWith(
+      translationLocaleProvider,
+      GET_ONGOING_TOPIC_LIST_PROVIDER_ID,
+      ::createOngoingTopicListFromProgress
+    )
   }
 
   fun retrieveQuestionsForSkillIds(skillIdsList: List<String>): DataProvider<List<Question>> {
@@ -263,7 +319,8 @@ class TopicController @Inject constructor(
   }
 
   private fun createOngoingTopicListFromProgress(
-    topicProgressList: List<TopicProgress>
+    topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): OngoingTopicList {
     // Ignore progress from topics no longer on the device.
     val inProgressTopics = topicProgressList.mapNotNull { topicProgress ->
@@ -273,8 +330,9 @@ class TopicController @Inject constructor(
         } else null
       }
     }
+    val inProgressEphemeralTopics = inProgressTopics.map { it.toEphemeral(contentLocale) }
     return OngoingTopicList.newBuilder().apply {
-      addAllTopic(inProgressTopics)
+      addAllTopic(inProgressEphemeralTopics)
     }.build()
   }
 
@@ -310,7 +368,8 @@ class TopicController @Inject constructor(
 
   private fun createCompletedStoryListFromProgress(
     topic: Topic,
-    storyProgressList: List<StoryProgress>
+    storyProgressList: List<StoryProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
     storyProgressList.forEach { storyProgress ->
@@ -320,11 +379,21 @@ class TopicController @Inject constructor(
         storyProgress.chapterProgressMap[lastChapterSummary.explorationId]!!.chapterPlayState ==
         ChapterPlayState.COMPLETED
       ) {
+        val storyTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            storySummary.writtenTranslationsMap, contentLocale
+          )
+        val topicTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            topic.writtenTranslationsMap, contentLocale
+          )
         val completedStoryBuilder = CompletedStory.newBuilder()
           .setStoryId(storySummary.storyId)
-          .setStoryName(storySummary.storyName)
+          .setStoryWrittenTranslationContext(storyTranslationContext)
+          .setTopicWrittenTranslationContext(topicTranslationContext)
+          .setStoryTitle(storySummary.storyTitle)
           .setTopicId(topic.topicId)
-          .setTopicName(topic.name)
+          .setTopicTitle(topic.title)
           .setLessonThumbnail(storySummary.storyThumbnail)
         completedStoryList.add(completedStoryBuilder.build())
       }
@@ -333,7 +402,7 @@ class TopicController @Inject constructor(
   }
 
   /** Combines the specified topic without progress and topic-progress into a topic. */
-  internal fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
+  private fun combineTopicAndTopicProgress(topic: Topic, topicProgress: TopicProgress): Topic {
     val topicBuilder = topic.toBuilder()
     if (topicProgress.storyProgressMap.isNotEmpty()) {
       topic.storyList.forEachIndexed { storyIndex, storySummary ->
@@ -356,6 +425,11 @@ class TopicController @Inject constructor(
     }
     return topicBuilder.build()
   }
+
+  private fun combineTopicsAndTopicsProgress(
+    topics: List<Topic>,
+    topicsProgress: List<TopicProgress>
+  ): List<Topic> = topics.zip(topicsProgress, ::combineTopicAndTopicProgress)
 
   /** Combines the specified story-summary without progress and story-progress into a new topic. */
   private fun combineStorySummaryAndStoryProgress(
@@ -396,8 +470,9 @@ class TopicController @Inject constructor(
         val stories = topicRecord.canonicalStoryIdsList.map { loadStorySummary(it) }
         return Topic.newBuilder().apply {
           this.topicId = topicId
-          name = topicRecord.name
-          description = topicRecord.description
+          putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
+          title = topicRecord.translatableTitle
+          description = topicRecord.translatableDescription
           addAllStory(stories)
           topicThumbnail = createTopicThumbnailFromProto(topicId, topicRecord.topicThumbnail)
           diskSizeBytes = computeTopicSizeBytes(getProtoAssetFileNameList(topicId)).toLong()
@@ -475,10 +550,19 @@ class TopicController @Inject constructor(
     } else {
       TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
     }
+    val topicTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "title"
+      html = topicData.getStringFromObject("topic_name")
+    }.build()
+    val topicDescription = SubtitledHtml.newBuilder().apply {
+      contentId = "description"
+      html = topicData.getStringFromObject("topic_description")
+    }.build()
+    // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
-      .setName(topicData.getStringFromObject("topic_name"))
-      .setDescription(topicData.getStringFromObject("topic_description"))
+      .setTitle(topicTitle)
+      .setDescription(topicDescription)
       .addAllStory(storySummaryList)
       .setTopicThumbnail(createTopicThumbnailFromJson(topicData))
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
@@ -494,7 +578,8 @@ class TopicController @Inject constructor(
     )
     return Subtopic.newBuilder().apply {
       this.subtopicId = subtopicId
-      title = subtopicRecord.subtopicTitle
+      putAllWrittenTranslations(subtopicRecord.writtenTranslationMap)
+      title = subtopicRecord.title
       addAllSkillIds(subtopicRecord.skillIdsList)
       subtopicThumbnail = subtopicRecord.subtopicThumbnail
     }.build()
@@ -515,12 +600,15 @@ class TopicController @Inject constructor(
       for (j in 0 until skillJsonArray.length()) {
         skillIdList.add(skillJsonArray.optString(j))
       }
+      val subtopicTitle = SubtitledHtml.newBuilder().apply {
+        contentId = "title"
+        html = currentSubtopicJsonObject.optString("title") ?: ""
+      }.build()
+      // No written translations are included since none are retrieved from JSON.
       val subtopic = Subtopic.newBuilder()
-        .setSubtopicId(currentSubtopicJsonObject.optInt("id"))
-        .setTitle(currentSubtopicJsonObject.optString("title"))
-        .setSubtopicThumbnail(
-          createSubtopicThumbnail(currentSubtopicJsonObject)
-        )
+        .setSubtopicId(currentSubtopicJsonObject.getInt("id"))
+        .setTitle(subtopicTitle)
+        .setSubtopicThumbnail(createSubtopicThumbnail(currentSubtopicJsonObject))
         .addAllSkillIds(skillIdList).build()
       subtopicList.add(subtopic)
     }
@@ -613,15 +701,19 @@ class TopicController @Inject constructor(
    */
   private fun createStorySummaryFromJson(topicId: String, storyId: String): StorySummary {
     val storyDataJsonObject = jsonAssetRetriever.loadJsonFromAsset("$storyId.json")
+    val storyTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "title"
+      html = storyDataJsonObject?.optString("story_title") ?: ""
+    }.build()
+    val chapterList = storyDataJsonObject?.getJSONArray("story_nodes")?.let {
+      createChaptersFromJson(it)
+    } ?: listOf()
+    // No written translations are included since none are retrieved from JSON.
     return StorySummary.newBuilder()
       .setStoryId(storyId)
-      .setStoryName(storyDataJsonObject?.optString("story_title"))
+      .setStoryTitle(storyTitle)
       .setStoryThumbnail(createStoryThumbnail(topicId, storyId))
-      .addAllChapter(
-        createChaptersFromJson(
-          storyDataJsonObject!!.optJSONArray("story_nodes")
-        )
-      )
+      .addAllChapter(chapterList)
       .build()
   }
 
@@ -633,14 +725,16 @@ class TopicController @Inject constructor(
       )
     return StorySummary.newBuilder().apply {
       this.storyId = storyId
-      storyName = storyRecord.storyName
+      storyTitle = storyRecord.translatableStoryName
+      putAllWrittenTranslations(storyRecord.writtenTranslationsMap)
       storyThumbnail = storyRecord.storyThumbnail
       addAllChapter(
         storyRecord.chaptersList.map { chapterRecord ->
           ChapterSummary.newBuilder().apply {
             explorationId = chapterRecord.explorationId
-            name = chapterRecord.title
-            summary = chapterRecord.description
+            putAllWrittenTranslations(chapterRecord.writtenTranslationsMap)
+            title = chapterRecord.translatableTitle
+            description = chapterRecord.translatableDescription
             chapterPlayState = ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
             chapterThumbnail = chapterRecord.chapterThumbnail
           }.build()
@@ -655,11 +749,20 @@ class TopicController @Inject constructor(
     for (i in 0 until chapterData.length()) {
       val chapter = chapterData.getJSONObject(i)
       val explorationId = chapter.getStringFromObject("exploration_id")
+      val chapterTitle = SubtitledHtml.newBuilder().apply {
+        contentId = "title"
+        html = chapter.optString("title") ?: ""
+      }.build()
+      val chapterDescription = SubtitledHtml.newBuilder().apply {
+        contentId = "description"
+        html = chapter.optString("description") ?: ""
+      }.build()
+      // No written translations are included since none are retrieved from JSON.
       chapterList.add(
         ChapterSummary.newBuilder()
           .setExplorationId(explorationId)
-          .setName(chapter.optString("title"))
-          .setSummary(chapter.optString("description"))
+          .setTitle(chapterTitle)
+          .setDescription(chapterDescription)
           .setChapterPlayState(ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED)
           .setChapterThumbnail(createChapterThumbnail(chapter))
           .build()
@@ -762,5 +865,58 @@ class TopicController @Inject constructor(
           .setBackgroundColorRgb(Color.parseColor(SUBTOPIC_BG_COLOR))
           .build()
     }
+  }
+
+  private fun Topic.toEphemeral(
+    contentLocale: OppiaLocale.ContentLocale
+  ): EphemeralTopic {
+    return EphemeralTopic.newBuilder().apply {
+      topic = this@toEphemeral
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          topic.writtenTranslationsMap, contentLocale
+        )
+      addAllStories(topic.storyList.map { it.toEphemeral(contentLocale) })
+      addAllSubtopics(topic.subtopicList.map { it.toEphemeral(contentLocale) })
+    }.build()
+  }
+
+  private fun StorySummary.toEphemeral(
+    contentLocale: OppiaLocale.ContentLocale
+  ): EphemeralStorySummary {
+    return EphemeralStorySummary.newBuilder().apply {
+      storySummary = this@toEphemeral
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          storySummary.writtenTranslationsMap, contentLocale
+        )
+      addAllChapters(storySummary.chapterList.map { it.toEphemeral(contentLocale) })
+    }.build()
+  }
+
+  private fun ChapterSummary.toEphemeral(
+    contentLocale: OppiaLocale.ContentLocale
+  ): EphemeralChapterSummary {
+    return EphemeralChapterSummary.newBuilder().apply {
+      chapterSummary = this@toEphemeral
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          chapterSummary.writtenTranslationsMap, contentLocale
+        )
+      if (this@toEphemeral.hasMissingPrerequisiteChapter()) {
+        missingPrerequisiteChapter =
+          this@toEphemeral.missingPrerequisiteChapter.toEphemeral(contentLocale)
+      }
+    }.build()
+  }
+
+  private fun Subtopic.toEphemeral(contentLocale: OppiaLocale.ContentLocale): EphemeralSubtopic {
+    return EphemeralSubtopic.newBuilder().apply {
+      subtopic = this@toEphemeral
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          subtopic.writtenTranslationsMap, contentLocale
+        )
+    }.build()
   }
 }

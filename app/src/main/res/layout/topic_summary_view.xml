@@ -62,7 +62,7 @@
           android:minLines="2"
           android:paddingStart="8dp"
           android:paddingEnd="8dp"
-          android:text="@{viewModel.name}"
+          android:text="@{viewModel.title}"
           android:textColor="@color/color_def_white"
           android:textSize="14sp"
           android:textStyle="bold"

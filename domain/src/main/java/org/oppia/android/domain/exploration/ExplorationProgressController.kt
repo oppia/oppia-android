@@ -870,7 +870,7 @@ class ExplorationProgressController @Inject constructor(
     val checkpoint: ExplorationCheckpoint =
       explorationProgress.stateDeck.createExplorationCheckpoint(
         explorationProgress.currentExploration.version,
-        explorationProgress.currentExploration.title,
+        explorationProgress.currentExploration.translatableTitle.html,
         oppiaClock.getCurrentTimeMs(),
         retrieveCurrentHelpIndex()
       )

@@ -20,6 +20,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -120,7 +121,8 @@ class LogReportingModuleTest {
       TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class
+      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
