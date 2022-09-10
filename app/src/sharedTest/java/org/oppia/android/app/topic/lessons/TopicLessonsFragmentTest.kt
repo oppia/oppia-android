@@ -702,7 +702,7 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun   testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
+  fun testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
