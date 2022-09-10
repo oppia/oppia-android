@@ -386,7 +386,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 2, enableExtraTopicTabsUiValue).name),
+        withText(R.string.practice),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
