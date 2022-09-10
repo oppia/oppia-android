@@ -9673,7 +9673,23 @@ states {
   }
 }
 init_state_name: "Introduction"
-objective: "Learn the fundamentals of fractions"
-title: "What is a Fraction?"
 language_code: "en"
 version: 85
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "What is a Fraction?"
+  content_id: "title"
+}
+description {
+  html: "Learn the fundamentals of fractions"
+  content_id: "description"
+}

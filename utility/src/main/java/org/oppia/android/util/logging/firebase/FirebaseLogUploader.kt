@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 private const val OPPIA_EVENT_WORK = "OPPIA_EVENT_WORK_REQUEST"
 private const val OPPIA_EXCEPTION_WORK = "OPPIA_EXCEPTION_WORK_REQUEST"
+private const val OPPIA_PERFORMANCE_METRICS_WORK = "OPPIA_PERFORMANCE_METRICS_WORK"
 
 /** Enqueues work requests for uploading stored event/exception logs to the remote service. */
 class FirebaseLogUploader @Inject constructor() :
@@ -30,6 +31,17 @@ class FirebaseLogUploader @Inject constructor() :
   ) {
     workManager.enqueueUniquePeriodicWork(
       OPPIA_EXCEPTION_WORK,
+      ExistingPeriodicWorkPolicy.KEEP,
+      workRequest
+    )
+  }
+
+  override fun enqueueWorkRequestForPerformanceMetrics(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest
+  ) {
+    workManager.enqueueUniquePeriodicWork(
+      OPPIA_PERFORMANCE_METRICS_WORK,
       ExistingPeriodicWorkPolicy.KEEP,
       workRequest
     )

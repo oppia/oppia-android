@@ -49,7 +49,7 @@
     <Button
       android:id="@+id/continue_button"
       style="@style/StateButtonActive"
-      android:maxWidth="@dimen/continue_submit_button_width"
+      android:layout_width="wrap_content"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
       app:layout_constraintBottom_toBottomOf="parent"

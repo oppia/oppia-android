@@ -4,13 +4,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.model.ChapterPlayState
-import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.EphemeralChapterSummary
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.story.ExplorationSelectionListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
@@ -24,17 +26,29 @@ class StoryChapterSummaryViewModel(
   val internalProfileId: Int,
   val topicId: String,
   val storyId: String,
-  val chapterSummary: ChapterSummary,
+  private val ephemeralChapterSummary: EphemeralChapterSummary,
   val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : StoryItemViewModel() {
-
+  val chapterSummary = ephemeralChapterSummary.chapterSummary
   val explorationId: String = chapterSummary.explorationId
-  private val name: String = chapterSummary.name
-  val summary: String = chapterSummary.summary
+  val description: String by lazy {
+    translationController.extractString(
+      chapterSummary.description, ephemeralChapterSummary.writtenTranslationContext
+    )
+  }
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
-  val missingPrerequisiteChapter: ChapterSummary = chapterSummary.missingPrerequisiteChapter
+  val missingPrerequisiteChapterTitle by lazy {
+    translationController.extractString(
+      ephemeralChapterSummary.missingPrerequisiteChapter.chapterSummary.title,
+      ephemeralChapterSummary.missingPrerequisiteChapter.writtenTranslationContext
+    )
+  }
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
+  private val profileId by lazy {
+    ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+  }
 
   fun onExplorationClicked() {
     val canHavePartialProgressSaved =
@@ -61,25 +75,25 @@ class StoryChapterSummaryViewModel(
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
-                internalProfileId,
+                profileId,
                 topicId,
                 storyId,
                 explorationId,
                 canExplorationBeResumed = true,
                 canHavePartialProgressSaved,
-                backflowId = 1,
+                parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
                 explorationCheckpoint = it.value
               )
             } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
               explorationSelectionListener.selectExploration(
-                internalProfileId,
+                profileId,
                 topicId,
                 storyId,
                 explorationId,
                 canExplorationBeResumed = false,
                 canHavePartialProgressSaved,
-                backflowId = 1,
+                parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
                 explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
               )
             }
@@ -88,21 +102,25 @@ class StoryChapterSummaryViewModel(
       )
     } else {
       explorationSelectionListener.selectExploration(
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
         canExplorationBeResumed = false,
         canHavePartialProgressSaved,
-        backflowId = 1,
+        parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
         explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
       )
     }
   }
 
   fun computeChapterTitleText(): String {
+    val title =
+      translationController.extractString(
+        chapterSummary.title, ephemeralChapterSummary.writtenTranslationContext
+      )
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.chapter_name, (index + 1).toString(), name
+      R.string.chapter_name, (index + 1).toString(), title
     )
   }
 }
