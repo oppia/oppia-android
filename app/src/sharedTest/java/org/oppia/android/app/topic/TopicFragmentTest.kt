@@ -635,6 +635,7 @@ class TopicFragmentTest {
 
   private fun initializeApplicationComponent(enableExtraTabsUi: Boolean = false) {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(enableExtraTabsUi)
+    enableExtraTopicTabsUi = enableExtraTabsUi
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
