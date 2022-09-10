@@ -333,8 +333,7 @@ class FakePerformanceMetricsAnalyticsEventLoggerTest {
     }
 
     fun inject(
-      fakePerformanceMetricsAnalyticsEventLoggerTest
-      : FakePerformanceMetricsAnalyticsEventLoggerTest
+      fakePerformanceMetricsAnalyticsEventLoggerTest: FakePerformanceMetricsAnalyticsEventLoggerTest
     )
   }
 }
