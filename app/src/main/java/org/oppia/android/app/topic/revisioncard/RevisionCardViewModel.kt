@@ -4,7 +4,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralSubtopic
@@ -15,6 +14,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
 @FragmentScope
@@ -67,7 +67,9 @@ class RevisionCardViewModel @Inject constructor(
     }
   }
 
-  private fun processNextSubtopicData(topicLiveData: AsyncResult<EphemeralTopic>): EphemeralSubtopic? {
+  private fun processNextSubtopicData(
+    topicLiveData: AsyncResult<EphemeralTopic>
+  ): EphemeralSubtopic? {
     return when (topicLiveData) {
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
