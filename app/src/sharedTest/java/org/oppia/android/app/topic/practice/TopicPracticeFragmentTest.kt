@@ -74,7 +74,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -131,8 +130,8 @@ class TopicPracticeFragmentTest {
 
   @Before
   fun setUp() {
-    enableExtraTopicTabs()
     Intents.init()
+    enableExtraTopicTabs()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     skillIdList.add("5RM9KPfQxobH")
@@ -388,7 +387,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(R.string.practice),
+        withText(TopicTab.getTabForPosition(position = 2, enableExtraTopicTabsUiValue).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -419,7 +418,7 @@ class TopicPracticeFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

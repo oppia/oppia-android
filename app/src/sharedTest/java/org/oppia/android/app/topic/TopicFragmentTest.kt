@@ -26,6 +26,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.allOf
@@ -74,6 +76,9 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0

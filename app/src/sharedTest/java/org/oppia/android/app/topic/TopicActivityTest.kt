@@ -99,6 +99,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [TopicActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -139,6 +140,7 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
@@ -152,6 +154,7 @@ class TopicActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use { scenario ->
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
@@ -190,7 +193,7 @@ class TopicActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
