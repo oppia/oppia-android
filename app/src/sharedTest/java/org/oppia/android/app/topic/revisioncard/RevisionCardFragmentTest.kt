@@ -30,6 +30,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -58,6 +59,7 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.SUBTOPIC_ID_EXTRA_KEY
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -91,8 +93,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_0
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_1
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_3
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -128,10 +132,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hamcrest.CoreMatchers.not
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.SUBTOPIC_ID_EXTRA_KEY
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_0
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_3
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -338,7 +338,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId1_clickPrevNavCard_opensRevisionCardActivity() {
+  fun testRevisionCardTestActivity_fracSubtopicId1_clickPrevNavCard_opensRevisionCardActivity() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
@@ -357,7 +357,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId1_clickNextNavCard_opensRevisionCardActivity() {
+  fun testRevisionCardTestActivity_fracSubtopicId1_clickNextNavCard_opensRevisionCardActivity() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.ProfileId
@@ -20,6 +19,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -86,7 +86,11 @@ class RevisionCardFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun setupRevisionNavigationCards(binding: RevisionCardFragmentBinding, topicId: String, subtopicId: Int) {
+  private fun setupRevisionNavigationCards(
+    binding: RevisionCardFragmentBinding,
+    topicId: String,
+    subtopicId: Int
+  ) {
     binding.nextSubtopicImageView.setEntityType(entityType)
     binding.prevSubtopicImageView.setEntityType(entityType)
 

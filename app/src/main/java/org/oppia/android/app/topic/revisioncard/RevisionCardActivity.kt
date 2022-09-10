@@ -8,12 +8,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
-import javax.inject.Inject
 
 /** Activity for revision card. */
 class RevisionCardActivity :
@@ -37,8 +37,15 @@ class RevisionCardActivity :
       val subtopicId = intent.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)
       revisionCardActivityPresenter.handleOnCreate(internalProfileId, topicId, subtopicId)
     }
-    supportActionBar?.setBackgroundDrawable(ResourcesCompat.getDrawable(resources, R.color.color_def_oppia_brown_dark, theme))
-    window.statusBarColor = ResourcesCompat.getColor(resources, R.color.color_def_oppia_brown_dark2, theme)
+    supportActionBar?.setBackgroundDrawable(
+      ResourcesCompat.getDrawable(
+        resources,
+        R.color.color_def_oppia_brown_dark,
+        theme
+      )
+    )
+    window.statusBarColor =
+      ResourcesCompat.getColor(resources, R.color.color_def_oppia_brown_dark2, theme)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
