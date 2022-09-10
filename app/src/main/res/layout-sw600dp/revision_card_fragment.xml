@@ -55,7 +55,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
           <com.google.android.material.card.MaterialCardView
-            android:id="@+id/prev"
+            android:id="@+id/previous_navigation_card"
             android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
@@ -106,7 +106,7 @@
           </com.google.android.material.card.MaterialCardView>
 
           <com.google.android.material.card.MaterialCardView
-            android:id="@+id/next"
+            android:id="@+id/next_navigation_card"
             android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
