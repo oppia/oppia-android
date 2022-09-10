@@ -3476,6 +3476,22 @@ states {
   }
 }
 init_state_name: "Introduction"
-objective: "Learn how to reduce ratios to simplest form, and use that to check if two ratios are equivalent."
-title: "Writing Ratios in Simplest Form"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Writing Ratios in Simplest Form"
+  content_id: "title"
+}
+description {
+  html: "Learn how to reduce ratios to simplest form, and use that to check if two ratios are equivalent."
+  content_id: "description"
+}

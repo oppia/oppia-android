@@ -33,7 +33,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
-        android:text="@{viewModel.chapterSummary.name}"
+        android:text="@{viewModel.chapterTitle}"
         android:textColor="@color/component_color_resume_lesson_activity_text_color"
         android:textDirection="locale"
         android:textSize="24sp"
