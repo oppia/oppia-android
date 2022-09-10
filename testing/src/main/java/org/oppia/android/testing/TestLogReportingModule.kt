@@ -15,7 +15,9 @@ interface TestLogReportingModule {
   fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
   @Binds
-  fun bindFakeAnalyticsEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger
+  fun bindFakeAnalyticsEventLogger(
+    fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  ): AnalyticsEventLogger
 
   @Binds
   fun bindFakePerformanceMetricsEventLogger(
