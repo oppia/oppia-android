@@ -27,10 +27,10 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/hints_and_solution_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/color_def_oppia_dark_blue"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         app:title="@string/hints_toolbar_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/color_def_white" />

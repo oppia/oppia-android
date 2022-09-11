@@ -27,9 +27,9 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/exploration_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_exploration_activity_toolbar_color"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp">
 
@@ -53,8 +53,8 @@
             android:layout_gravity="end"
             android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
             android:scaleType="center"
-            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}"
-            android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
+            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

@@ -27,10 +27,10 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/admin_auth_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_admin_auth_activity_toolbar_color"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         app:navigationContentDescription="@string/admin_auth_close"
         app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/admin_auth_toolbar"

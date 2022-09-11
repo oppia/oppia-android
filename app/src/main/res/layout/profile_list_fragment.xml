@@ -26,10 +26,10 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/profile_list_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/profile_list_activity_title"

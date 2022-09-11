@@ -16,10 +16,10 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/license_text_viewer_activity_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
@@ -29,7 +29,8 @@
           style="@style/MarqueeToolbarTitleTextView"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="20dp" />
+          android:layout_marginEnd="20dp"
+          android:minHeight="48dp" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

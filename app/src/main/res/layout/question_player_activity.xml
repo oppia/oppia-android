@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@color/component_color_question_player_activity_toolbar_color"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/question_player_title"

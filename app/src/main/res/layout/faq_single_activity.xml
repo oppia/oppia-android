@@ -19,10 +19,10 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/faq_single_activity_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_faq_single_activity_toolbar_color"
         android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:titleTextAppearance="@style/ToolbarTextAppearance"

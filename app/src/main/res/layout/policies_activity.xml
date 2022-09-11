@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@color/oppia_primary"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="48dp"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="@drawable/ic_arrow_back_white_24dp"

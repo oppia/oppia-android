@@ -19,8 +19,9 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_downloads_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/oppia_primary"
+        android:minHeight="48dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/my_downloads_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"

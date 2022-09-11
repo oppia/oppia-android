@@ -18,8 +18,9 @@
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/app_version_toolbar"
       android:layout_width="match_parent"
-      android:layout_height="?attr/actionBarSize"
+      android:layout_height="wrap_content"
       android:background="@color/oppia_primary"
+      android:minHeight="48dp"
       android:textSize="20sp"
       app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator"
@@ -35,8 +36,8 @@
     android:layout_height="4dp"
     android:layout_gravity="top"
     android:background="@drawable/toolbar_drop_shadow"
-    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/app_version_app_bar_layout" />
 
   <FrameLayout
