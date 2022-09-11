@@ -57,7 +57,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_1
+import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -111,7 +111,7 @@ class RevisionCardActivityLocalTest {
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        SUBTOPIC_TOPIC_ID
       )
     ).use {
       val event = fakeEventLogger.getMostRecentEvent()

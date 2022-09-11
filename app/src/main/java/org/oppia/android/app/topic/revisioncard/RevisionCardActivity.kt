@@ -45,7 +45,7 @@ class RevisionCardActivity :
       )
     )
     window.statusBarColor =
-      ResourcesCompat.getColor(resources, R.color.color_def_oppia_brown_dark2, theme)
+      ResourcesCompat.getColor(resources, R.color.color_def_oppia_reddish_brown, theme)
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {

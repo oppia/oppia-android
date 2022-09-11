@@ -41,7 +41,7 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="28dp"
           android:layout_marginEnd="28dp"
-          android:text="@string/continue_studying"
+          android:text="@string/revision_navigation_cards_header"
           android:textColor="@color/color_def_black"
           android:textSize="20sp"
           android:textStyle="bold"

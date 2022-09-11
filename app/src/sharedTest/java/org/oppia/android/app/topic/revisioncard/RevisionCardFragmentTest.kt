@@ -59,7 +59,6 @@ import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
-import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.SUBTOPIC_ID_EXTRA_KEY
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -93,10 +92,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_0
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_1
+import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
-import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_3
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -133,6 +130,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 0
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 1
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 2
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 3
+
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -161,6 +163,8 @@ class RevisionCardFragmentTest {
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
+  private val SUBTOPIC_ID_EXTRA_KEY = "RevisionCardActivity.subtopic_id"
+
   @Before
   fun setUp() {
     Intents.init()
@@ -181,7 +185,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        SUBTOPIC_TOPIC_ID
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -202,7 +206,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        SUBTOPIC_TOPIC_ID
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -229,7 +233,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        SUBTOPIC_TOPIC_ID
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -256,7 +260,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        SUBTOPIC_TOPIC_ID
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -290,13 +294,11 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_0
+        FRACTIONS_SUBTOPIC_TOPIC_ID_0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.previous_navigation_card))
-        .check(matches(not((isDisplayed()))))
+      onView(withId(R.id.previous_navigation_card)).check(matches(not((isDisplayed()))))
     }
   }
 
@@ -307,16 +309,12 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        FRACTIONS_SUBTOPIC_TOPIC_ID_0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.previous_navigation_card))
-        .check(matches(isDisplayed()))
-
-      onView(withId(R.id.next_navigation_card))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
+      onView(withId(R.id.next_navigation_card)).check(matches(isDisplayed()))
     }
   }
 
@@ -327,13 +325,11 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_3
+        FRACTIONS_SUBTOPIC_TOPIC_ID_3
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.next_navigation_card))
-        .check(matches(not(isDisplayed())))
+      onView(withId(R.id.next_navigation_card)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -344,15 +340,14 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        FRACTIONS_SUBTOPIC_TOPIC_ID_1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, SUBTOPIC_TOPIC_ID_1 - 1))
+      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, SUBTOPIC_TOPIC_ID - 1))
     }
   }
 
@@ -363,15 +358,14 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        FRACTIONS_SUBTOPIC_TOPIC_ID_0
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, SUBTOPIC_TOPIC_ID_1 + 1))
+      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, SUBTOPIC_TOPIC_ID + 1))
     }
   }
 
@@ -382,7 +376,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_1
+        SUBTOPIC_TOPIC_ID
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

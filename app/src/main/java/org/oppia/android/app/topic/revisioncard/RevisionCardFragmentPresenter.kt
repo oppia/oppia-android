@@ -63,7 +63,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    setupRevisionNavigationCards(binding, topicId, subtopicId)
+    setUpRevisionNavigationCards(binding, topicId, subtopicId)
 
     viewModel.revisionCardLiveData.observe(
       fragment,
@@ -86,7 +86,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun setupRevisionNavigationCards(
+  private fun setUpRevisionNavigationCards(
     binding: RevisionCardFragmentBinding,
     topicId: String,
     subtopicId: Int
