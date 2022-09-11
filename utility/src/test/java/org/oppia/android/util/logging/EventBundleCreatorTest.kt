@@ -1253,52 +1253,236 @@ class EventBundleCreatorTest {
   @Test
   @RunParameterized(
     Iteration("forHomeScreen", "screenNameCase=HOME_ACTIVITY", "screenNameCaseValue=home_activity"),
-    Iteration("forSplashScreen", "screenNameCase=SPLASH_ACTIVITY", "screenNameCaseValue=splash_activity"),
-    Iteration("forProfileChooserScreen", "screenNameCase=PROFILE_CHOOSER_ACTIVITY", "screenNameCaseValue=profile_chooser_activity"),
-    Iteration("forAddProfileScreen", "screenNameCase=ADD_PROFILE_ACTIVITY", "screenNameCaseValue=add_profile_activity"),
-    Iteration("forBackgroundScreen", "screenNameCase=BACKGROUND_SCREEN", "screenNameCaseValue=background_screen"),
-    Iteration("forAppVersionScreen", "screenNameCase=APP_VERSION_ACTIVITY", "screenNameCaseValue=app_version_activity"),
-    Iteration("forAdministratorControlsScreen", "screenNameCase=ADMINISTRATOR_CONTROLS_ACTIVITY", "screenNameCaseValue=administrator_controls_activity"),
-    Iteration("forProfileAndDeviceIdScreen", "screenNameCase=PROFILE_AND_DEVICE_ID_ACTIVITY", "screenNameCaseValue=profile_and_device_id_activity"),
-    Iteration("forCompletedStoryListActivity", "screenNameCase=COMPLETED_STORY_LIST_ACTIVITY", "screenNameCaseValue=completed_story_list_activity"),
-    Iteration("forFaqSingleActivity", "screenNameCase=FAQ_SINGLE_ACTIVITY", "screenNameCaseValue=faq_single_activity"),
-    Iteration("forFaqListActivity", "screenNameCase=FAQ_LIST_ACTIVITY", "screenNameCaseValue=faq_list_activity"),
-    Iteration("forLicenseListActivity", "screenNameCase=LICENSE_LIST_ACTIVITY", "screenNameCaseValue=license_list_activity"),
-    Iteration("forLicenseTextViewerActivity", "screenNameCase=LICENSE_TEXT_VIEWER_ACTIVITY", "screenNameCaseValue=license_text_viewer_activity"),
-    Iteration("forThirdPartyDependencyListActivity", "screenNameCase=THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY", "screenNameCaseValue=third_party_dependency_list_activity"),
-    Iteration("forHelpActivity", "screenNameCase=HELP_ACTIVITY", "screenNameCaseValue=help_activity"),
-    Iteration("forRecentlyPlayedActivity", "screenNameCase=RECENTLY_PLAYED_ACTIVITY", "screenNameCaseValue=recently_played_activity"),
-    Iteration("forMyDownloadsActivity", "screenNameCase=MY_DOWNLOADS_ACTIVITY", "screenNameCaseValue=my_downloads_activity"),
-    Iteration("forOnboardingActivity", "screenNameCase=ONBOARDING_ACTIVITY", "screenNameCaseValue=onboarding_activity"),
-    Iteration("forOngoingTopicListActivity", "screenNameCase=ONGOING_TOPIC_LIST_ACTIVITY", "screenNameCaseValue=ongoing_topic_list_activity"),
-    Iteration("forAudioLanguageActivity", "screenNameCase=AUDIO_LANGUAGE_ACTIVITY", "screenNameCaseValue=audio_language_activity"),
-    Iteration("forAppLanguageActivity", "screenNameCase=APP_LANGUAGE_ACTIVITY", "screenNameCaseValue=app_language_activity"),
-    Iteration("forOptionsActivity", "screenNameCase=OPTIONS_ACTIVITY", "screenNameCaseValue=options_activity"),
-    Iteration("forReadingTextSizeActivity", "screenNameCase=READING_TEXT_SIZE_ACTIVITY", "screenNameCaseValue=reading_text_size_activity"),
-    Iteration("forExplorationActivity", "screenNameCase=EXPLORATION_ACTIVITY", "screenNameCaseValue=exploration_activity"),
-    Iteration("forAdminAuthActivity", "screenNameCase=ADMIN_AUTH_ACTIVITY", "screenNameCaseValue=admin_auth_activity"),
-    Iteration("forPinPasswordActivity", "screenNameCase=PIN_PASSWORD_ACTIVITY", "screenNameCaseValue=pin_password_activity"),
-    Iteration("forProfilePictureActivity", "screenNameCase=PROFILE_PICTURE_ACTIVITY", "screenNameCaseValue=profile_picture_activity"),
-    Iteration("forProfileProgressActivity", "screenNameCase=PROFILE_PROGRESS_ACTIVITY", "screenNameCaseValue=profile_progress_activity"),
-    Iteration("forResumeLessonActivity", "screenNameCase=RESUME_LESSON_ACTIVITY", "screenNameCaseValue=resume_lesson_activity"),
-    Iteration("forProfileEditActivity", "screenNameCase=PROFILE_EDIT_ACTIVITY", "screenNameCaseValue=profile_edit_activity"),
-    Iteration("forProfileResetPinActivity", "screenNameCase=PROFILE_RESET_PIN_ACTIVITY", "screenNameCaseValue=profile_reset_pin_activity"),
-    Iteration("forProfileRenameActivity", "screenNameCase=PROFILE_RENAME_ACTIVITY", "screenNameCaseValue=profile_rename_activity"),
-    Iteration("forProfileListActivity", "screenNameCase=PROFILE_LIST_ACTIVITY", "screenNameCaseValue=profile_list_activity"),
-    Iteration("forStoryActivity", "screenNameCase=STORY_ACTIVITY", "screenNameCaseValue=story_activity"),
-    Iteration("forTopicActivity", "screenNameCase=TOPIC_ACTIVITY", "screenNameCaseValue=topic_activity"),
-    Iteration("forRevisionCardActivity", "screenNameCase=REVISION_CARD_ACTIVITY", "screenNameCaseValue=revision_card_activity"),
-    Iteration("forQuestionPlayerActivity", "screenNameCase=QUESTION_PLAYER_ACTIVITY", "screenNameCaseValue=question_player_activity"),
-    Iteration("forWalkthroughActivity", "screenNameCase=WALKTHROUGH_ACTIVITY", "screenNameCaseValue=walkthrough_activity"),
-    Iteration("forDeveloperOptionsActivity", "screenNameCase=DEVELOPER_OPTIONS_ACTIVITY", "screenNameCaseValue=developer_options_activity"),
-    Iteration("forViewEventLogsActivity", "screenNameCase=VIEW_EVENT_LOGS_ACTIVITY", "screenNameCaseValue=view_event_logs_activity"),
-    Iteration("forMarkTopicsCompletedActivity", "screenNameCase=MARK_TOPICS_COMPLETED_ACTIVITY", "screenNameCaseValue=mark_topics_completed_activity"),
-    Iteration("forMathExpressionParserActivity", "screenNameCase=MATH_EXPRESSION_PARSER_ACTIVITY", "screenNameCaseValue=math_expression_parser_activity"),
-    Iteration("forMarkChaptersCompletedActivity", "screenNameCase=MARK_CHAPTERS_COMPLETED_ACTIVITY", "screenNameCaseValue=mark_chapters_completed_activity"),
-    Iteration("forMarkStoriesCompletedActivity", "screenNameCase=MARK_STORIES_COMPLETED_ACTIVITY", "screenNameCaseValue=mark_stories_completed_activity"),
-    Iteration("forForceNetworkTypeActivity", "screenNameCase=FORCE_NETWORK_TYPE_ACTIVITY", "screenNameCaseValue=force_network_type_activity"),
-    Iteration("forAdminPinActivity", "screenNameCase=ADMIN_PIN_ACTIVITY", "screenNameCaseValue=admin_pin_activity"),
-    Iteration("forPoliciesActivity", "screenNameCase=POLICIES_ACTIVITY", "screenNameCaseValue=policies_activity"),
+    Iteration(
+      "forSplashScreen",
+      "screenNameCase=SPLASH_ACTIVITY",
+      "screenNameCaseValue=splash_activity"
+    ),
+    Iteration(
+      "forProfileChooserScreen",
+      "screenNameCase=PROFILE_CHOOSER_ACTIVITY",
+      "screenNameCaseValue=profile_chooser_activity"
+    ),
+    Iteration(
+      "forAddProfileScreen",
+      "screenNameCase=ADD_PROFILE_ACTIVITY",
+      "screenNameCaseValue=add_profile_activity"
+    ),
+    Iteration(
+      "forBackgroundScreen",
+      "screenNameCase=BACKGROUND_SCREEN",
+      "screenNameCaseValue=background_screen"
+    ),
+    Iteration(
+      "forAppVersionScreen",
+      "screenNameCase=APP_VERSION_ACTIVITY",
+      "screenNameCaseValue=app_version_activity"
+    ),
+    Iteration(
+      "forAdministratorControlsScreen",
+      "screenNameCase=ADMINISTRATOR_CONTROLS_ACTIVITY",
+      "screenNameCaseValue=administrator_controls_activity"
+    ),
+    Iteration(
+      "forProfileAndDeviceIdScreen",
+      "screenNameCase=PROFILE_AND_DEVICE_ID_ACTIVITY",
+      "screenNameCaseValue=profile_and_device_id_activity"
+    ),
+    Iteration(
+      "forCompletedStoryListActivity",
+      "screenNameCase=COMPLETED_STORY_LIST_ACTIVITY",
+      "screenNameCaseValue=completed_story_list_activity"
+    ),
+    Iteration(
+      "forFaqSingleActivity",
+      "screenNameCase=FAQ_SINGLE_ACTIVITY",
+      "screenNameCaseValue=faq_single_activity"
+    ),
+    Iteration(
+      "forFaqListActivity",
+      "screenNameCase=FAQ_LIST_ACTIVITY",
+      "screenNameCaseValue=faq_list_activity"
+    ),
+    Iteration(
+      "forLicenseListActivity",
+      "screenNameCase=LICENSE_LIST_ACTIVITY",
+      "screenNameCaseValue=license_list_activity"
+    ),
+    Iteration(
+      "forLicenseTextViewerActivity",
+      "screenNameCase=LICENSE_TEXT_VIEWER_ACTIVITY",
+      "screenNameCaseValue=license_text_viewer_activity"
+    ),
+    Iteration(
+      "forThirdPartyDependencyListActivity",
+      "screenNameCase=THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY",
+      "screenNameCaseValue=third_party_dependency_list_activity"
+    ),
+    Iteration(
+      "forHelpActivity",
+      "screenNameCase=HELP_ACTIVITY",
+      "screenNameCaseValue=help_activity"
+    ),
+    Iteration(
+      "forRecentlyPlayedActivity",
+      "screenNameCase=RECENTLY_PLAYED_ACTIVITY",
+      "screenNameCaseValue=recently_played_activity"
+    ),
+    Iteration(
+      "forMyDownloadsActivity",
+      "screenNameCase=MY_DOWNLOADS_ACTIVITY",
+      "screenNameCaseValue=my_downloads_activity"
+    ),
+    Iteration(
+      "forOnboardingActivity",
+      "screenNameCase=ONBOARDING_ACTIVITY",
+      "screenNameCaseValue=onboarding_activity"
+    ),
+    Iteration(
+      "forOngoingTopicListActivity",
+      "screenNameCase=ONGOING_TOPIC_LIST_ACTIVITY",
+      "screenNameCaseValue=ongoing_topic_list_activity"
+    ),
+    Iteration(
+      "forAudioLanguageActivity",
+      "screenNameCase=AUDIO_LANGUAGE_ACTIVITY",
+      "screenNameCaseValue=audio_language_activity"
+    ),
+    Iteration(
+      "forAppLanguageActivity",
+      "screenNameCase=APP_LANGUAGE_ACTIVITY",
+      "screenNameCaseValue=app_language_activity"
+    ),
+    Iteration(
+      "forOptionsActivity",
+      "screenNameCase=OPTIONS_ACTIVITY",
+      "screenNameCaseValue=options_activity"
+    ),
+    Iteration(
+      "forReadingTextSizeActivity",
+      "screenNameCase=READING_TEXT_SIZE_ACTIVITY",
+      "screenNameCaseValue=reading_text_size_activity"
+    ),
+    Iteration(
+      "forExplorationActivity",
+      "screenNameCase=EXPLORATION_ACTIVITY",
+      "screenNameCaseValue=exploration_activity"
+    ),
+    Iteration(
+      "forAdminAuthActivity",
+      "screenNameCase=ADMIN_AUTH_ACTIVITY",
+      "screenNameCaseValue=admin_auth_activity"
+    ),
+    Iteration(
+      "forPinPasswordActivity",
+      "screenNameCase=PIN_PASSWORD_ACTIVITY",
+      "screenNameCaseValue=pin_password_activity"
+    ),
+    Iteration(
+      "forProfilePictureActivity",
+      "screenNameCase=PROFILE_PICTURE_ACTIVITY",
+      "screenNameCaseValue=profile_picture_activity"
+    ),
+    Iteration(
+      "forProfileProgressActivity",
+      "screenNameCase=PROFILE_PROGRESS_ACTIVITY",
+      "screenNameCaseValue=profile_progress_activity"
+    ),
+    Iteration(
+      "forResumeLessonActivity",
+      "screenNameCase=RESUME_LESSON_ACTIVITY",
+      "screenNameCaseValue=resume_lesson_activity"
+    ),
+    Iteration(
+      "forProfileEditActivity",
+      "screenNameCase=PROFILE_EDIT_ACTIVITY",
+      "screenNameCaseValue=profile_edit_activity"
+    ),
+    Iteration(
+      "forProfileResetPinActivity",
+      "screenNameCase=PROFILE_RESET_PIN_ACTIVITY",
+      "screenNameCaseValue=profile_reset_pin_activity"
+    ),
+    Iteration(
+      "forProfileRenameActivity",
+      "screenNameCase=PROFILE_RENAME_ACTIVITY",
+      "screenNameCaseValue=profile_rename_activity"
+    ),
+    Iteration(
+      "forProfileListActivity",
+      "screenNameCase=PROFILE_LIST_ACTIVITY",
+      "screenNameCaseValue=profile_list_activity"
+    ),
+    Iteration(
+      "forStoryActivity",
+      "screenNameCase=STORY_ACTIVITY",
+      "screenNameCaseValue=story_activity"
+    ),
+    Iteration(
+      "forTopicActivity",
+      "screenNameCase=TOPIC_ACTIVITY",
+      "screenNameCaseValue=topic_activity"
+    ),
+    Iteration(
+      "forRevisionCardActivity",
+      "screenNameCase=REVISION_CARD_ACTIVITY",
+      "screenNameCaseValue=revision_card_activity"
+    ),
+    Iteration(
+      "forQuestionPlayerActivity",
+      "screenNameCase=QUESTION_PLAYER_ACTIVITY",
+      "screenNameCaseValue=question_player_activity"
+    ),
+    Iteration(
+      "forWalkthroughActivity",
+      "screenNameCase=WALKTHROUGH_ACTIVITY",
+      "screenNameCaseValue=walkthrough_activity"
+    ),
+    Iteration(
+      "forDeveloperOptionsActivity",
+      "screenNameCase=DEVELOPER_OPTIONS_ACTIVITY",
+      "screenNameCaseValue=developer_options_activity"
+    ),
+    Iteration(
+      "forViewEventLogsActivity",
+      "screenNameCase=VIEW_EVENT_LOGS_ACTIVITY",
+      "screenNameCaseValue=view_event_logs_activity"
+    ),
+    Iteration(
+      "forMarkTopicsCompletedActivity",
+      "screenNameCase=MARK_TOPICS_COMPLETED_ACTIVITY",
+      "screenNameCaseValue=mark_topics_completed_activity"
+    ),
+    Iteration(
+      "forMathExpressionParserActivity",
+      "screenNameCase=MATH_EXPRESSION_PARSER_ACTIVITY",
+      "screenNameCaseValue=math_expression_parser_activity"
+    ),
+    Iteration(
+      "forMarkChaptersCompletedActivity",
+      "screenNameCase=MARK_CHAPTERS_COMPLETED_ACTIVITY",
+      "screenNameCaseValue=mark_chapters_completed_activity"
+    ),
+    Iteration(
+      "forMarkStoriesCompletedActivity",
+      "screenNameCase=MARK_STORIES_COMPLETED_ACTIVITY",
+      "screenNameCaseValue=mark_stories_completed_activity"
+    ),
+    Iteration(
+      "forForceNetworkTypeActivity",
+      "screenNameCase=FORCE_NETWORK_TYPE_ACTIVITY",
+      "screenNameCaseValue=force_network_type_activity"
+    ),
+    Iteration(
+      "forAdminPinActivity",
+      "screenNameCase=ADMIN_PIN_ACTIVITY",
+      "screenNameCaseValue=admin_pin_activity"
+    ),
+    Iteration(
+      "forPoliciesActivity",
+      "screenNameCase=POLICIES_ACTIVITY",
+      "screenNameCaseValue=policies_activity"
+    ),
     Iteration("forUnspecified", "screenNameCase=", "screenNameCaseValue=screen_name_unspecified"),
   )
   fun testMetricsBundle_addScreenName_verifyConversionToCorrectAnalyticalName() {
@@ -1314,8 +1498,8 @@ class EventBundleCreatorTest {
   }
 
   private fun getScreenName(string: String): ScreenName {
-    for(screenName in ScreenName.values()){
-      if(string == screenName.name){
+    for (screenName in ScreenName.values()) {
+      if (string == screenName.name) {
         return screenName
       }
     }
