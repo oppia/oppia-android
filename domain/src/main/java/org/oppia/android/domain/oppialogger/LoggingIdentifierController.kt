@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.app.model.DeviceContextDatabase
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
@@ -36,10 +38,11 @@ class LoggingIdentifierController @Inject constructor(
     persistentCacheStoreFactory.create(
       cacheName = "device_context_database", DeviceContextDatabase.getDefaultInstance()
     ).also {
-      it.primeInMemoryAndDiskCacheAsync { database ->
-        database.toBuilder().apply {
-          installationId = computeInstallationId()
-        }.build()
+      it.primeInMemoryAndDiskCacheAsync(
+        updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+        publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+      ) { database ->
+        database.toBuilder().apply { installationId = computeInstallationId() }.build()
       }.invokeOnCompletion { failure ->
         if (failure != null) {
           oppiaLogger.e(
