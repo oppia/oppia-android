@@ -288,7 +288,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId0_checkPreviousNavCardIsNotDisplayed() {
+  fun testRevisionCardTestActivity_fractionSubtopicId0_checkOnlyPreviousNavCardIsNotDisplayed() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
@@ -298,6 +298,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.next_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.previous_navigation_card)).check(matches(not((isDisplayed()))))
     }
   }
@@ -309,7 +310,7 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_0
+        FRACTIONS_SUBTOPIC_TOPIC_ID_1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -319,7 +320,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTestActivity_fractionSubtopicId3_checkNextNavCardIsNotDisplayed() {
+  fun testRevisionCardTestActivity_fractionSubtopicId3_checkOnlyNextNavCardIsNotDisplayed() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
@@ -328,6 +329,8 @@ class RevisionCardFragmentTest {
         FRACTIONS_SUBTOPIC_TOPIC_ID_3
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.next_navigation_card)).check(matches(not(isDisplayed())))
     }
@@ -347,7 +350,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, SUBTOPIC_TOPIC_ID - 1))
+      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_TOPIC_ID_0))
     }
   }
 
@@ -358,14 +361,14 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_0
+        FRACTIONS_SUBTOPIC_TOPIC_ID_1
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
-      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, SUBTOPIC_TOPIC_ID + 1))
+      intended(hasExtra(SUBTOPIC_ID_EXTRA_KEY, FRACTIONS_SUBTOPIC_TOPIC_ID_2))
     }
   }
 

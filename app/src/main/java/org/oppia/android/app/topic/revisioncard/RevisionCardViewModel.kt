@@ -53,9 +53,7 @@ class RevisionCardViewModel @Inject constructor(
   private fun processPreviousSubtopicData(
     topicLiveData: AsyncResult<EphemeralTopic>
   ): EphemeralSubtopic? {
-    return if (subtopicId == 0) EphemeralSubtopic.getDefaultInstance()
-    else {
-      when (topicLiveData) {
+      return when (topicLiveData) {
         is AsyncResult.Success -> {
           val topic = topicLiveData.value
           topic.subtopicsList.find {
@@ -64,7 +62,6 @@ class RevisionCardViewModel @Inject constructor(
         }
         else -> EphemeralSubtopic.getDefaultInstance()
       }
-    }
   }
 
   private fun processNextSubtopicData(
@@ -79,10 +76,6 @@ class RevisionCardViewModel @Inject constructor(
       }
       else -> EphemeralSubtopic.getDefaultInstance()
     }
-  }
-
-  fun clickReturnToTopic(@Suppress("UNUSED_PARAMETER") v: View) {
-    returnToTopicClickListener.onReturnToTopicClicked()
   }
 
   /** Initializes this view model with necessary identifiers. */
