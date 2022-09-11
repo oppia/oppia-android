@@ -1,6 +1,10 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
+import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
@@ -9,7 +13,11 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
-import javax.inject.Inject
+import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.domain.exploration.ExplorationProgressController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.system.OppiaClock
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts
@@ -27,7 +35,11 @@ class ContinueInteractionViewModel private constructor(
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val isSplitView: Boolean,
-  private val writtenTranslationContext: WrittenTranslationContext
+  private val writtenTranslationContext: WrittenTranslationContext,
+  private val explorationProgressController: ExplorationProgressController,
+  private val fragment: Fragment,
+  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+  private val oppiaClock: OppiaClock
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
@@ -45,9 +57,49 @@ class ContinueInteractionViewModel private constructor(
     interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
   }
 
+  val animateContinueButton = MutableLiveData(false)
+
+  private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
+    explorationProgressController.getCurrentState().toLiveData()
+  }
+
+  fun subscribeToCurrentState() {
+    ephemeralStateLiveData.observe(fragment) { result ->
+      processEphemeralStateResult(result)
+    }
+  }
+
+  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
+    when (result) {
+      is AsyncResult.Failure -> {
+      }
+//        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
+      is AsyncResult.Pending -> {
+      } // Display nothing until a valid result is available.
+      is AsyncResult.Success -> processEphemeralState(result.value)
+    }
+  }
+
+  private fun processEphemeralState(ephemeralState: EphemeralState) {
+    if (!ephemeralState.hasPreviousState) {
+      val timeLeftToAnimate =
+        ephemeralState.continueButtonAnimationTimestamp - oppiaClock.getCurrentTimeMs()
+      if (timeLeftToAnimate < 0) {
+        animateContinueButton.value = true
+      } else {
+        lifecycleSafeTimerFactory.createTimer(timeLeftToAnimate).observe(fragment) {
+          animateContinueButton.value = true
+        }
+      }
+    }
+  }
+
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
-    private val fragment: Fragment
+    private val fragment: Fragment,
+    private val explorationProgressController: ExplorationProgressController,
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+    private val oppiaClock: OppiaClock
   ) : InteractionItemFactory {
     override fun create(
       entityId: String,
@@ -65,7 +117,11 @@ class ContinueInteractionViewModel private constructor(
         hasPreviousButton,
         fragment as PreviousNavigationButtonListener,
         isSplitView,
-        writtenTranslationContext
+        writtenTranslationContext,
+        explorationProgressController,
+        fragment,
+        lifecycleSafeTimerFactory,
+        oppiaClock
       )
     }
   }

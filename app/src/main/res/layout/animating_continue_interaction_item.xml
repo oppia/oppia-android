@@ -7,10 +7,6 @@
     <import type="android.view.View" />
 
     <variable
-      name="animateContinueButtonLiveData"
-      type="androidx.lifecycle.LiveData&lt;Boolean>" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
   </data>
@@ -51,16 +47,14 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <org.oppia.android.app.customview.ContinueButtonView
-      android:id="@+id/animation_continue_button"
+      android:id="@+id/continue_button"
       style="@style/StateButtonActive"
       android:gravity="center"
-      app:viewModel="@{viewModel}"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-
+      app:layout_constraintTop_toTopOf="parent"
+      app:viewModel="@{viewModel}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,5 +1,6 @@
 package org.oppia.android.domain.state
 
+import javax.inject.Inject
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
@@ -10,14 +11,16 @@ import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.util.system.OppiaClock
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
+ private const val THREE_SECONDS_IN_MS = 3000L
 
 /**
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
  * treats the learner's progress like a deck of cards to simplify forward/backward navigation.
  */
-class StateDeck constructor(
+class StateDeck @Inject constructor(
   initialState: State,
   private val isTopOfDeckTerminalChecker: (State) -> Boolean
 ) {
@@ -25,6 +28,8 @@ class StateDeck constructor(
   private val previousStates: MutableList<EphemeralState> = ArrayList()
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
   private var stateIndex: Int = 0
+  private val continueButtonAnimationDelay = THREE_SECONDS_IN_MS
+
 
   /** Resets this deck to a new, specified initial [State]. */
   fun resetDeck(initialState: State) {
@@ -91,14 +96,14 @@ class StateDeck constructor(
   }
 
   /** Returns the current [EphemeralState] the learner is viewing. */
-  fun getCurrentEphemeralState(helpIndex: HelpIndex): EphemeralState {
+  fun getCurrentEphemeralState(helpIndex: HelpIndex, oppiaClock: OppiaClock): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current
     // state is the top of the deck, and that state is the terminal one. Otherwise the terminal
     // check would never be triggered since the second case assumes the top of the deck must be
     // pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex)
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex, oppiaClock)
       else -> getPreviousState()
     }
   }
@@ -186,7 +191,7 @@ class StateDeck constructor(
     }.build()
   }
 
-  private fun getCurrentPendingState(helpIndex: HelpIndex): EphemeralState {
+  private fun getCurrentPendingState(helpIndex: HelpIndex, oppiaClock: OppiaClock): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
@@ -195,6 +200,7 @@ class StateDeck constructor(
           .addAllWrongAnswer(currentDialogInteractions)
           .setHelpIndex(helpIndex)
       )
+      .setContinueButtonAnimationTimestamp(oppiaClock.getCurrentTimeMs() + continueButtonAnimationDelay)
       .build()
   }
 

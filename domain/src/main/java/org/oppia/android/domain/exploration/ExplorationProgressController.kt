@@ -1,5 +1,7 @@
 package org.oppia.android.domain.exploration
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -117,6 +119,8 @@ class ExplorationProgressController @Inject constructor(
   // TODO(#606): Replace this with a profile scope to avoid this hacky workaround (which is needed
   //  for getCurrentState).
   private lateinit var profileId: ProfileId
+  var timestampToAnimate: Long = -1
+  val isContinueButtonAnimating = MutableLiveData(false)
 
   private var mostRecentSessionId = MutableStateFlow<String?>(null)
   private val activeSessionId: String
@@ -321,6 +325,8 @@ class ExplorationProgressController @Inject constructor(
    */
   fun moveToNextState(): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
+    timestampToAnimate = -1
+    isContinueButtonAnimating.value = false
     val message = ControllerMessage.MoveToNextState(activeSessionId, moveResultFlow)
     sendCommandForOperation(message) { "Failed to schedule command for moving to the next state." }
     return moveResultFlow.convertToSessionProvider(MOVE_TO_NEXT_STATE_RESULT_PROVIDER_ID)
@@ -835,7 +841,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
-    explorationProgress.stateDeck.getCurrentEphemeralState(retrieveCurrentHelpIndex())
+    explorationProgress.stateDeck.getCurrentEphemeralState(retrieveCurrentHelpIndex(), oppiaClock)
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {

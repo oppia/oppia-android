@@ -35,6 +35,7 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.system.OppiaClock
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.begin_session_result"
@@ -96,6 +97,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val hintHandlerFactory: HintHandler.Factory,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
+  private val oppiaClock: OppiaClock,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
@@ -615,7 +617,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   }
 
   private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
-    progress.stateDeck.getCurrentEphemeralState(hintHandler.getCurrentHelpIndex().value)
+    progress.stateDeck.getCurrentEphemeralState(hintHandler.getCurrentHelpIndex().value, oppiaClock)
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>

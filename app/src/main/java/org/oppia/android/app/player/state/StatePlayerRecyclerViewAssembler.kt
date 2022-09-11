@@ -94,6 +94,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.databinding.AnimatingContinueInteractionItemBinding
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -1222,7 +1223,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.CONTINUE_INTERACTION,
         inflateDataBinding = ContinueInteractionItemBinding::inflate,
-        setViewModel = ContinueInteractionItemBinding::setViewModel,
+        setViewModel = { continueInteractionItemBinding, viewModel ->
+          continueInteractionItemBinding.setViewModel(
+            viewModel
+          )
+        },
         transformViewModel = { it as ContinueInteractionViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON,

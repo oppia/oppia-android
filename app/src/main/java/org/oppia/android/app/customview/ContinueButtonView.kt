@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
-import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
 
@@ -16,22 +16,24 @@ class ContinueButtonView @JvmOverloads constructor(
 
   private lateinit var viewModel: ContinueInteractionViewModel
 
-//  @Inject
-//  private lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-
   fun setViewModel(viewModel: ContinueInteractionViewModel) {
     this.viewModel = viewModel
-    startAnimating()
+    viewModel.subscribeToCurrentState()
+    viewModel.animateContinueButton.observeForever(myObserver)
   }
 
-  fun startAnimating() {
-    val animation = AnimationUtils.loadAnimation(context, R.anim.expand)
-    animation.interpolator = BounceInterpolator()
-    animation.repeatCount = Int.MAX_VALUE
-    this.startAnimation(animation)
+  private val myObserver = Observer<Boolean> {
+    if (it) {
+      val animation = AnimationUtils.loadAnimation(context, R.anim.fade_out)
+//      animation.interpolator = BounceInterpolator()
+      animation.repeatCount = Int.MAX_VALUE
+      this.startAnimation(animation)
+    }
   }
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    viewModel.animateContinueButton.removeObserver(myObserver)
   }
+
 }
