@@ -43,7 +43,7 @@
       android:layout_marginBottom="4dp"
       android:fontFamily="sans-serif-light"
       android:text="@{viewModel.selectedItemText}"
-      android:textColor="@color/oppia_primary_text"
+      android:textColor="@color/component_color_shared_selection_interaction_item_text_color"
       android:textSize="14sp"
       android:textStyle="italic"
       android:visibility="@{viewModel.getSelectionItemInputType() == SelectionItemInputType.RADIO_BUTTONS ? View.GONE : View. VISIBLE}" />
