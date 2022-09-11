@@ -247,7 +247,7 @@ class TopicListController @Inject constructor(
         .length()
     }
     val firstStoryId =
-      if (storyData.length() == 0) "" else storyData.getJSONObject(0).getString("id")
+      if (storyData.length() == 0) "" else storyData.getJSONObject(0).getStringFromObject("id")
 
     val topicPlayAvailability = if (jsonObject.getBoolean("published")) {
       TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
