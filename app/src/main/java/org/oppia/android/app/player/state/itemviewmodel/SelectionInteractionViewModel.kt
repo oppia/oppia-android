@@ -16,7 +16,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
-import org.oppia.android.R
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -152,7 +151,7 @@ class SelectionInteractionViewModel private constructor(
     }
   }
 
-  private fun updateSelectionText(){
+  private fun updateSelectionText() {
     if (selectedItems.size < maxAllowableSelectionCount) {
       selectedItemText.set("You may select more choices")
     }
@@ -161,9 +160,6 @@ class SelectionInteractionViewModel private constructor(
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
       selectedItemText.set("No more than $maxAllowableSelectionCount choices may be selected.")
-      if(areCheckboxesBound()) {
-
-      }
     }
   }
 
