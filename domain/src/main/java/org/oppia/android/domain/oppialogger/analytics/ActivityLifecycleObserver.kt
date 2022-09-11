@@ -3,12 +3,17 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.system.OppiaClock
+import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +22,9 @@ import javax.inject.Singleton
 class ActivityLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val application: Application,
-  private val performanceMetricsLogger: PerformanceMetricsLogger
+  private val performanceMetricsLogger: PerformanceMetricsLogger,
+  private val oppiaLogger: OppiaLogger,
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : Application.ActivityLifecycleCallbacks, ApplicationStartupListener {
 
   /**
@@ -47,8 +54,19 @@ class ActivityLifecycleObserver @Inject constructor(
   override fun onCreate() {
     appStartTimeMillis = oppiaClock.getCurrentTimeMs()
     application.registerActivityLifecycleCallbacks(this)
-    performanceMetricsLogger.logApkSize(currentScreen)
-    performanceMetricsLogger.logStorageUsage(currentScreen)
+
+    CoroutineScope(backgroundDispatcher).launch {
+      performanceMetricsLogger.logApkSize(currentScreen)
+      performanceMetricsLogger.logStorageUsage(currentScreen)
+    }.invokeOnCompletion { failure ->
+      if (failure != null) {
+        oppiaLogger.e(
+          "ActivityLifecycleObserver",
+          "Encountered error while trying to log app's performance metrics.",
+          failure
+        )
+      }
+    }
   }
 
   override fun onActivityResumed(activity: Activity) {

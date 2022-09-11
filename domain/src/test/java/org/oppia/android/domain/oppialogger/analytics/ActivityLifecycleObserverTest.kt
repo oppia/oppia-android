@@ -26,6 +26,7 @@ import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -86,6 +87,9 @@ class ActivityLifecycleObserverTest {
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -111,6 +115,7 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_onCreate_verifyPerformanceMetricsLoggingWithCorrectDetails() {
     activityLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
 
     val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
     assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase).isEqualTo(APK_SIZE_METRIC)
@@ -133,6 +138,7 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_onFirstActivityResume_verifyLogsStartupLatency() {
     activityLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
     activityRule.scenario.onActivity { activity ->
       val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
@@ -154,6 +160,7 @@ class ActivityLifecycleObserverTest {
   @Test
   fun testObserver_onSecondActivityResume_verifyStartupLatencyIsLoggedOnce() {
     activityLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
     activityRule.scenario.onActivity { activity ->
       activityLifecycleObserver.onActivityResumed(activity)
