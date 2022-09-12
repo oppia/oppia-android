@@ -14,8 +14,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
-import javax.inject.Inject
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
