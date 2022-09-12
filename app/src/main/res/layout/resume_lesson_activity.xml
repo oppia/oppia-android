@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@color/component_color_resume_lesson_activity_toolbar_color"
-        android:minHeight="48dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"

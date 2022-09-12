@@ -31,7 +31,7 @@
         android:background="@color/component_color_story_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
-        android:minHeight="48dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">

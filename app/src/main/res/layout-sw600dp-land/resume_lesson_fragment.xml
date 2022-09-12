@@ -14,8 +14,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="0dp"
@@ -47,8 +47,8 @@
     <ScrollView
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:background="@color/component_color_resume_lesson_activity_background_color"
-      android:layout_weight="1">
+      android:layout_weight="1"
+      android:background="@color/component_color_resume_lesson_activity_background_color">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -99,7 +99,11 @@
           <Button
             android:id="@+id/resume_lesson_start_over_button"
             style="@style/StartOverLessonButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
+            android:minWidth="128dp"
+            android:minHeight="48dp"
             android:text="@string/start_over_lesson_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
@@ -109,7 +113,11 @@
           <Button
             android:id="@+id/resume_lesson_continue_button"
             style="@style/ContinueLessonButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:minWidth="128dp"
+            android:minHeight="48dp"
             android:text="@string/resume_lesson_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -117,6 +125,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
   </LinearLayout>
 </layout>

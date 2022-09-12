@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@color/oppia_primary"
-        android:minHeight="48dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/color_def_white" />

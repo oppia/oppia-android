@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:background="@color/color_def_oppia_dark_blue"
         android:fontFamily="sans-serif"
-        android:minHeight="48dp"
+        android:minHeight="?attr/actionBarSize"
         app:title="@string/hints_toolbar_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/color_def_white" />
