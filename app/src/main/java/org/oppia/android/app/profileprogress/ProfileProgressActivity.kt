@@ -15,6 +15,7 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Activity to display profile progress. */
 class ProfileProgressActivity :
@@ -31,6 +32,9 @@ class ProfileProgressActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -45,10 +49,10 @@ class ProfileProgressActivity :
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(
           when (title) {
-            getString(R.string.stories_for_you) -> {
+            resourceHandler.getStringInLocale(R.string.stories_for_you) -> {
               RecentlyPlayedActivityTitle.STORIES_FOR_YOU
             }
-            getString(R.string.recently_played_activity) -> {
+            resourceHandler.getStringInLocale(R.string.recently_played_activity) -> {
               RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
             }
             else -> {

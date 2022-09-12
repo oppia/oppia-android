@@ -79,10 +79,10 @@ class NavigationDrawerTestActivity :
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(
           when (title) {
-            getString(R.string.stories_for_you) -> {
+            resourceHandler.getStringInLocale(R.string.stories_for_you) -> {
               RecentlyPlayedActivityTitle.STORIES_FOR_YOU
             }
-            getString(R.string.recently_played_activity) -> {
+            resourceHandler.getStringInLocale(R.string.recently_played_activity) -> {
               RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
             }
             else -> {
