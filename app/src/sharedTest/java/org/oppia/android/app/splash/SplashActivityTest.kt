@@ -3,23 +3,30 @@ package org.oppia.android.app.splash
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Context
+import android.content.Intent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -35,6 +42,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
@@ -86,6 +94,13 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedAutoAndroidTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -96,6 +111,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -112,6 +128,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -119,29 +136,33 @@ import javax.inject.Singleton
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
  * https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/.
  */
-@RunWith(AndroidJUnit4::class)
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedAutoAndroidTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SplashActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class SplashActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var appStartupStateController: AppStartupStateController
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Parameter lateinit var firstOpen: String
+  @Parameter lateinit var secondOpen: String
 
   private val expirationDateFormat by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+  private val firstOpenFlavor by lazy { BuildFlavor.valueOf(firstOpen) }
+  private val secondOpenFlavor by lazy { BuildFlavor.valueOf(secondOpen) }
 
   @Before
   fun setUp() {
+    TestModule.buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
     Intents.init()
   }
 
@@ -151,23 +172,13 @@ class SplashActivityTest {
     Intents.release()
   }
 
-  // The initialTouchMode enables the activity to be launched in touch mode. The launchActivity is
-  // disabled to launch Activity explicitly within each test case.
-  @get:Rule
-  var activityTestRule: ActivityTestRule<SplashActivity> = ActivityTestRule(
-    SplashActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
   @Test
   fun testSplashActivity_initialOpen_routesToOnboardingActivity() {
     initializeTestApplication()
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    intended(hasComponent(OnboardingActivity::class.java.name))
+    launchSplashActivityFully {
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
   }
 
   @Test
@@ -175,10 +186,9 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    intended(hasComponent(ProfileChooserActivity::class.java.name))
+    launchSplashActivityFully {
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
   }
 
   @Test
@@ -187,26 +197,24 @@ class SplashActivityTest {
     setAutoAppExpirationEnabled(enabled = true)
     setAutoAppExpirationDate(dateStringAfterToday())
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // App deprecation is enabled, but this app hasn't yet expired.
-    intended(hasComponent(OnboardingActivity::class.java.name))
+    launchSplashActivityFully {
+      // App deprecation is enabled, but this app hasn't yet expired.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
   }
 
   @Test
-  fun testOpenApp_initial_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
+  fun testOpenApp_initial_expirationEnabled_afterExpDate_showsDeprecationDialog() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
     setAutoAppExpirationDate(dateStringBeforeToday())
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // The current app is expired.
-    onView(withText(R.string.unsupported_app_version_dialog_title))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
+    launchSplashActivityFully {
+      // The current app is expired.
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
   }
 
   @Test
@@ -214,61 +222,60 @@ class SplashActivityTest {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
     setAutoAppExpirationDate(dateStringBeforeToday())
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
 
-    onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
-      .inRoot(isDialog())
-      .perform(click())
-    testCoroutineDispatchers.advanceUntilIdle()
+    launchSplashActivityFully { scenario ->
+      onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.advanceUntilIdle()
 
-    // Closing the dialog should close the activity (and thus, the app).
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+      scenario.onActivity { activity ->
+        // Closing the dialog should close the activity (and thus, the app).
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
   }
 
   @Test
-  fun testOpenApp_initial_expirationDisabled_afterExpDate_intentsToOnboardingFlow() {
+  fun testOpenApp_initial_expirationDisabled_afterExpDate_showsOnboardingFlow() {
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = false)
     setAutoAppExpirationDate(dateStringBeforeToday())
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // The app is technically deprecated, but because the deprecation check is disabled the
-    // onboarding flow should be shown, instead.
-    intended(hasComponent(OnboardingActivity::class.java.name))
+    launchSplashActivityFully {
+      // The app is technically deprecated, but because the deprecation check is disabled the
+      // onboarding flow should be shown, instead.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
   }
 
   @Test
-  fun testOpenApp_reopen_onboarded_expirationEnabled_beforeExpDate_intentsToProfileChooser() {
+  fun testOpenApp_reopen_onboarded_expirationEnabled_beforeExpDate_routesToProfileChooser() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
     setAutoAppExpirationDate(dateStringAfterToday())
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Reopening the app before it's expired should result in the profile activity showing since the
-    // user has already been onboarded.
-    intended(hasComponent(ProfileChooserActivity::class.java.name))
+    launchSplashActivityFully {
+      // Reopening the app before it's expired should result in the profile activity showing since
+      // the user has already been onboarded.
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
   }
 
   @Test
-  fun testOpenApp_reopen_onboarded_expirationEnabled_afterExpDate_intentsToDeprecationDialog() {
+  fun testOpenApp_reopen_onboarded_expirationEnabled_afterExpDate_showsToDeprecationDialog() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
     setAutoAppExpirationEnabled(enabled = true)
     setAutoAppExpirationDate(dateStringBeforeToday())
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Reopening the app after it expires should prevent further access.
-    onView(withText(R.string.unsupported_app_version_dialog_title))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
+    launchSplashActivityFully {
+      // Reopening the app after it expires should prevent further access.
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
   }
 
   @Test
@@ -277,20 +284,19 @@ class SplashActivityTest {
     initializeTestApplication()
     forceDefaultLocale(Locale.ENGLISH)
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
-    // that the correct display locale is defined per the system locale.
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val context = displayLocale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
-    assertThat(context.languageDefinition.minAndroidSdkVersion).isEqualTo(1)
-    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
-    assertThat(context.hasFallbackLanguageDefinition()).isFalse()
-    assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.REGION_UNSPECIFIED)
-    assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("")
-    assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
+    launchSplashActivityFully {
+      // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+      // that the correct display locale is defined per the system locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+      assertThat(context.languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+      assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
+      assertThat(context.hasFallbackLanguageDefinition()).isFalse()
+      assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.REGION_UNSPECIFIED)
+      assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("")
+      assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
+    }
   }
 
   @Test
@@ -299,14 +305,13 @@ class SplashActivityTest {
     initializeTestApplication()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
-    // that the correct display locale is defined per the system locale.
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val context = displayLocale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(ARABIC)
+    launchSplashActivityFully {
+      // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+      // that the correct display locale is defined per the system locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(ARABIC)
+    }
   }
 
   @Test
@@ -315,14 +320,13 @@ class SplashActivityTest {
     initializeTestApplication()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
-    // that the correct display locale is defined per the system locale.
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val context = displayLocale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    launchSplashActivityFully {
+      // Verify that the locale is initialized (i.e. getDisplayLocale doesn't throw an exception) &
+      // that the correct display locale is defined per the system locale.
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    }
   }
 
   @Test
@@ -330,50 +334,34 @@ class SplashActivityTest {
     initializeTestApplication()
     forceDefaultLocale(TURKEY_TURKISH_LOCALE)
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify that the context is the default state (due to the unsupported locale).
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val languageDefinition = displayLocale.localeContext.languageDefinition
-    assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
-    assertThat(languageDefinition.minAndroidSdkVersion).isEqualTo(1)
-    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("tr-TR")
+    launchSplashActivityFully {
+      // Verify that the context is the default state (due to the unsupported locale).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val languageDefinition = displayLocale.localeContext.languageDefinition
+      assertThat(languageDefinition.language).isEqualTo(LANGUAGE_UNSPECIFIED)
+      assertThat(languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+      assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("tr-TR")
+    }
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
+  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testSplashActivity_initializationFailure_initializesLocaleHandlerWithDefaultContext() {
     corruptCacheFile()
     initializeTestApplication()
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify that the context is the default state (due to the unsupported locale).
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    val context = displayLocale.localeContext
-    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
-    assertThat(context.languageDefinition.minAndroidSdkVersion).isEqualTo(1)
-    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
-    assertThat(context.hasFallbackLanguageDefinition()).isFalse()
-    assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.UNITED_STATES)
-    assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("US")
-    assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
-  }
-
-  @Test
-  @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testSplashActivity_initializationFailure_logsError() {
-    // Simulate a corrupted cache file to trigger an initialization failure.
-    corruptCacheFile()
-    initializeTestApplication()
-
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    val logs = getShadowLogsOnRobolectric()
-    assertThat(logs.any { it.contains("Failed to compute initial state") }).isTrue()
+    launchSplashActivityFully {
+      // Verify that the context is the default state (due to the unsupported locale).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val context = displayLocale.localeContext
+      assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+      assertThat(context.languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+      assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
+      assertThat(context.hasFallbackLanguageDefinition()).isFalse()
+      assertThat(context.regionDefinition.region).isEqualTo(OppiaRegion.UNITED_STATES)
+      assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("US")
+      assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
+    }
   }
 
   @Test
@@ -381,22 +369,666 @@ class SplashActivityTest {
     corruptCacheFile()
     initializeTestApplication()
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    // Verify that an initialization failure leads to the onboarding activity by default.
-    intended(hasComponent(OnboardingActivity::class.java.name))
+    launchSplashActivityFully {
+      // Verify that an initialization failure leads to the onboarding activity by default.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
   }
 
   @Test
   fun testSplashActivity_hasCorrectActivityLabel() {
     initializeTestApplication()
 
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
+    launchSplashActivityFully { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    val title = activityTestRule.activity.title
-    assertThat(title).isEqualTo(context.getString(R.string.app_name))
+        assertThat(title).isEqualTo(context.getString(R.string.app_name))
+      }
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_firstTimeOpeningBetaFlavor_doesNotShowBetaNotice() {
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+
+    launchSplashActivityFully {
+      // Verify that the beta notice does not open (since there wasn't a version change).
+      onView(withId(R.id.beta_notice_dialog_message)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
+    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
+    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
+    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
+  )
+  fun testSplashActivity_newUser_betaFlavorTransitions_showsBetaNotice() {
+    simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
+
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
+    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
+    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
+    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
+  )
+  fun testSplashActivity_newUser_betaFlavorTransitions_closeNotice_routesToOnboardingFlow() {
+    simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      // Close the notice.
+      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // The user should be routed to the onboarding flow after seeing the beta notice.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
+    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
+    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
+    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA")
+  )
+  fun testSplashActivity_newUser_betaFlavorTransitions_doNotShowAgain_routesToOnboardingFlow() {
+    simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      // Close the notice after selecting to never show it again.
+      onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // The user should be routed to the onboarding flow after seeing the beta notice.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_dismissBetaNotice_reopenApp_doesNotShowNotice() {
+    // Open the app in beta notice mode, then dismiss the notice.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // Note this is a different "recreation" than other tests since the same instrumentation
+    // process needs to be preserved for Espresso to work correctly.
+    recreateExistingApplication()
+
+    launchSplashActivityFully {
+      // The user should be routed to the onboarding flow after seeing the beta notice.
+      onView(withId(R.id.beta_notice_dialog_message)).check(doesNotExist())
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_dismissBetaNotice_retriggerNotice_showsBetaNotice() {
+    // Open the app in beta notice mode, then dismiss the notice.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // "Retrigger" the notice by switching flavors again, then "recreate" the existing application
+    // so that new states can be observed.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    recreateExistingApplicationWithFlavor(BuildFlavor.BETA)
+
+    launchSplashActivityFully {
+      // The user should see the beta notice again despite dismissing it since the beta notice
+      // condition again occurred.
+      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_dismissBetaNoticeForever_retriggerNotice_doesNotShowNotice() {
+    // Open the app in beta notice mode, then dismiss the notice permanently.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+    launchSplashActivityFully {
+      onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // "Retrigger" the notice by switching flavors again, then "recreate" the existing application
+    // so that new states can be observed.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    recreateExistingApplicationWithFlavor(BuildFlavor.BETA)
+
+    launchSplashActivityFully {
+      // The user should not see the beta notice again even though they changed flavors since they
+      // opted to permanently disable the notice.
+      onView(withId(R.id.beta_notice_dialog_message)).check(doesNotExist())
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_firstTimeOpeningGaFlavor_doesNotShowGaUpgradeNotice() {
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    launchSplashActivityFully {
+      // Verify that the GA notice does not open (since there wasn't an upgrade).
+      onView(withId(R.id.ga_update_notice_dialog_message)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
+  )
+  fun testSplashActivity_onboarded_gaFlavorTransitions_showsGaUpgradeNotice() {
+    simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
+
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.general_availability_notice_dialog_title))
+        .check(matches(isDisplayed()))
+      onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
+  )
+  fun testSplashActivity_onboarded_gaFlavorTransitions_closeNotice_routesToProfileChooser() {
+    simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      // Close the notice.
+      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // The user should be routed to the profile chooser after seeing the GA upgrade notice.
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY")
+  )
+  fun testSplashActivity_onboarded_gaFlavorTransitions_doNotShowAgain_routesToProfileChooser() {
+    simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      // Close the notice after selecting to never show it again.
+      onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).perform(click())
+      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // The user should be routed to the profile chooser after seeing the GA upgrade notice.
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_dismissGaNotice_reopenApp_doesNotShowNotice() {
+    // Open the app in GA upgrade mode, then dismiss the notice.
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // Note this is a different "recreation" than other tests since the same instrumentation
+    // process needs to be preserved for Espresso to work correctly.
+    recreateExistingApplication()
+
+    launchSplashActivityFully {
+      // The user should be routed to the profile chooser after seeing the GA upgrade notice.
+      onView(withId(R.id.ga_update_notice_dialog_message)).check(doesNotExist())
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_dismissGaNotice_retriggerNotice_showsGaNotice() {
+    // Open the app in GA upgrade mode, then dismiss the notice.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // "Retrigger" the notice by switching flavors again, then "recreate" the existing application
+    // so that new states can be observed.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    recreateExistingApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    launchSplashActivityFully {
+      // The user should see the GA upgrade notice again despite dismissing it since the notice
+      // condition again occurred.
+      onDialogView(withText(R.string.general_availability_notice_dialog_title))
+        .check(matches(isDisplayed()))
+      onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_dismissGaNoticeForever_retriggerNotice_doesNotShowNotice() {
+    // Open the app in GA upgrade mode, then dismiss the notice permanently.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.BETA)
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+    launchSplashActivityFully {
+      onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).perform(click())
+      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    // "Retrigger" the notice by switching flavors again, then "recreate" the existing application
+    // so that new states can be observed.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    recreateExistingApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    launchSplashActivityFully {
+      // The user should not see the GA upgrade notice again even though they changed flavors since
+      // they opted to permanently disable the notice.
+      onView(withId(R.id.ga_update_notice_dialog_message)).check(doesNotExist())
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_betaNoticeConditionsThenGa_showsGaNotice() {
+    // Simulate a beta notice first.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.BETA)
+
+    // Then simulate the GA upgrade notice.
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    // The GA upgrade notice should be the one to show since it's more recent.
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.general_availability_notice_dialog_title))
+        .check(matches(isDisplayed()))
+      onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_betaNoticeConditionsThenGa_gaDisabled_showsNoNotice() {
+    // First, disable the GA notice, then trigger a beta notice.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+    launchSplashActivityFully {
+      onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).perform(click())
+      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+    reopenAppWithNewFlavor(BuildFlavor.BETA)
+
+    // Then simulate the GA upgrade notice.
+    reopenAppWithNewFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    // No notice should show since the GA upgrade notice would normally show, but it's been
+    // permanently disabled.
+    launchSplashActivityFully {
+      onView(withId(R.id.beta_notice_dialog_message)).check(doesNotExist())
+      onView(withId(R.id.ga_update_notice_dialog_message)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_gaNoticeConditionsThenBeta_showsBetaNotice() {
+    // Simulate a GA upgrade notice first.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.BETA)
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    // Then simulate the beta notice.
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+
+    // The beta notice should be the one to show since it's more recent.
+    launchSplashActivityFully {
+      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_newUser_gaNoticeConditionsThenBeta_betaDisabled_showsNoNotice() {
+    // First, disable the beta notice, then trigger a GA upgrade notice.
+    simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+    launchSplashActivityFully {
+      onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+    reopenAppWithNewFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    // Then simulate the beta notice.
+    reopenAppWithNewFlavor(BuildFlavor.BETA)
+
+    // No notice should show since the beta notice would normally show, but it's been permanently
+    // disabled.
+    launchSplashActivityFully {
+      onView(withId(R.id.beta_notice_dialog_message)).check(doesNotExist())
+      onView(withId(R.id.ga_update_notice_dialog_message)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING"),
+    Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER"),
+    Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA"),
+    Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING"),
+    Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER"),
+    Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA"),
+    Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING"),
+    Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER"),
+    Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA"),
+    Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING"),
+    Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER"),
+    Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA"),
+    Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA"),
+    Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING"),
+    Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER"),
+    Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA"),
+    Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
+  )
+  fun testSplashActivity_newUser_ignoredFlavorTransitions_routesToOnboardingFlow() {
+    simulateAppAlreadyOpenedWithFlavor(firstOpenFlavor)
+
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      // The user should be immediately routed to the onboarding flow since this flavor transition
+      // does not trigger a notice.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING"),
+    Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER"),
+    Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA"),
+    Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING"),
+    Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER"),
+    Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA"),
+    Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING"),
+    Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER"),
+    Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA"),
+    Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING"),
+    Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER"),
+    Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA"),
+    Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA"),
+    Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING"),
+    Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER"),
+    Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA"),
+    Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
+  )
+  fun testSplashActivity_onboarded_ignoredFlavorTransitions_routesToProfileChooser() {
+    simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
+
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+
+    launchSplashActivityFully {
+      // The user should be immediately routed to the profile chooser since this flavor transition
+      // does not trigger a notice.
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration("testing_to_testing", "firstOpen=TESTING", "secondOpen=TESTING"),
+    Iteration("testing_to_dev", "firstOpen=TESTING", "secondOpen=DEVELOPER"),
+    Iteration("testing_to_alpha", "firstOpen=TESTING", "secondOpen=ALPHA"),
+    Iteration("testing_to_beta", "firstOpen=TESTING", "secondOpen=BETA"),
+    Iteration("testing_to_ga", "firstOpen=TESTING", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("dev_to_testing", "firstOpen=DEVELOPER", "secondOpen=TESTING"),
+    Iteration("dev_to_dev", "firstOpen=DEVELOPER", "secondOpen=DEVELOPER"),
+    Iteration("dev_to_alpha", "firstOpen=DEVELOPER", "secondOpen=ALPHA"),
+    Iteration("dev_to_beta", "firstOpen=DEVELOPER", "secondOpen=BETA"),
+    Iteration("dev_to_ga", "firstOpen=DEVELOPER", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("alpha_to_testing", "firstOpen=ALPHA", "secondOpen=TESTING"),
+    Iteration("alpha_to_dev", "firstOpen=ALPHA", "secondOpen=DEVELOPER"),
+    Iteration("alpha_to_alpha", "firstOpen=ALPHA", "secondOpen=ALPHA"),
+    Iteration("alpha_to_beta", "firstOpen=ALPHA", "secondOpen=BETA"),
+    Iteration("alpha_to_ga", "firstOpen=ALPHA", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("beta_to_testing", "firstOpen=BETA", "secondOpen=TESTING"),
+    Iteration("beta_to_dev", "firstOpen=BETA", "secondOpen=DEVELOPER"),
+    Iteration("beta_to_alpha", "firstOpen=BETA", "secondOpen=ALPHA"),
+    Iteration("beta_to_beta", "firstOpen=BETA", "secondOpen=BETA"),
+    Iteration("beta_to_ga", "firstOpen=BETA", "secondOpen=GENERAL_AVAILABILITY"),
+    Iteration("ga_to_testing", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=TESTING"),
+    Iteration("ga_to_dev", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=DEVELOPER"),
+    Iteration("ga_to_alpha", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=ALPHA"),
+    Iteration("ga_to_beta", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=BETA"),
+    Iteration("ga_to_ga", "firstOpen=GENERAL_AVAILABILITY", "secondOpen=GENERAL_AVAILABILITY")
+  )
+  fun testSplashActivity_appDeprecated_allFlavorTransitions_showsDeprecationNotice() {
+    simulateAppAlreadyOnboardedWithFlavor(firstOpenFlavor)
+
+    initializeTestApplicationWithFlavor(secondOpenFlavor)
+    setAutoAppExpirationEnabled(enabled = true)
+    setAutoAppExpirationDate(dateStringBeforeToday())
+
+    // The current app is expired, so the deprecation notice should show regardless of the build
+    // flavor notices that would normally show.
+    launchSplashActivityFully {
+      onView(withText(R.string.unsupported_app_version_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_testingFlavor_showsNoFlavorText() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.TESTING)
+
+    initializeTestApplicationWithFlavor(BuildFlavor.TESTING)
+
+    // No label should show for this version of the app since it's meant to simulate the GA flavor.
+    launchSplashActivityFully {
+      onView(withId(R.id.build_flavor_label)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_devFlavor_showsDevFlavorText() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.DEVELOPER)
+
+    initializeTestApplicationWithFlavor(BuildFlavor.DEVELOPER)
+
+    // The developer label should be showing.
+    launchSplashActivityFully {
+      onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.build_flavor_label))
+        .check(matches(withText(R.string.splash_screen_developer_label)))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_alphaFlavor_showsAlphaFlavorText() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.ALPHA)
+
+    initializeTestApplicationWithFlavor(BuildFlavor.ALPHA)
+
+    // The alpha label should be showing.
+    launchSplashActivityFully {
+      onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.build_flavor_label))
+        .check(matches(withText(R.string.splash_screen_alpha_label)))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_betaFlavor_showsBetaFlavorText() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
+
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+
+    // The beta label should be showing.
+    launchSplashActivityFully {
+      onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
+      onView(withId(R.id.build_flavor_label))
+        .check(matches(withText(R.string.splash_screen_beta_label)))
+    }
+  }
+
+  @Test
+  fun testSplashActivity_onboarded_generalAvailabilityFlavor_showsNoFlavorText() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    // No label should show for this version of the app.
+    launchSplashActivityFully {
+      onView(withId(R.id.build_flavor_label)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_testingFlavor_doesNotWaitToStart() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.TESTING)
+    initializeTestApplicationWithFlavor(BuildFlavor.TESTING)
+
+    // The profile chooser opens immediately for the testing flavor since it has no delay.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_devFlavor_doesNotWaitToStart() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.DEVELOPER)
+    initializeTestApplicationWithFlavor(BuildFlavor.DEVELOPER)
+
+    // The profile chooser opens immediately for the developer flavor since it has no delay.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_alphaFlavor_doNotWait_doesNotStart() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.ALPHA)
+
+    // Nothing opens without waiting for the alpha startup notice to finish.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.runCurrent()
+
+      Intents.assertNoUnverifiedIntents()
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_alphaFlavor_waitTwoSeconds_intentsToProfileChooser() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.ALPHA)
+    initializeTestApplicationWithFlavor(BuildFlavor.ALPHA)
+
+    // The profile chooser should appear after the 2 seconds wait for the alpha splash screen.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(2))
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_betaFlavor_doNotWait_doesNotStart() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+
+    // Nothing opens without waiting for the beta startup notice to finish.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.runCurrent()
+
+      Intents.assertNoUnverifiedIntents()
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_betaFlavor_waitTwoSeconds_intentsToProfileChooser() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
+    initializeTestApplicationWithFlavor(BuildFlavor.BETA)
+
+    // The profile chooser should appear after the 2 seconds wait for the beta splash screen.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(2))
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testSplashActivity_onboarded_gaFlavor_doesNotWaitToStart() {
+    simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+    initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
+
+    // The profile chooser opens immediately for the GA flavor since it has no delay.
+    launchSplashActivityPartially {
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
+    }
+  }
+
+  private fun simulateAppAlreadyOpened() {
+    runInNewTestApplication {
+      val monitor = monitorFactory.createMonitor(appStartupStateController.getAppStartupState())
+      testCoroutineDispatchers.advanceUntilIdle()
+      monitor.ensureNextResultIsSuccess()
+    }
   }
 
   @Test
@@ -417,18 +1049,101 @@ class SplashActivityTest {
     // to be done in an isolated test application since the test application of this class shares
     // state with production code under test. The isolated test application must be created through
     // Instrumentation to ensure it's properly attached.
-    val testApplication = Instrumentation.newApplication(
+    runInNewTestApplication {
+      appStartupStateController.markOnboardingFlowCompleted()
+      testCoroutineDispatchers.advanceUntilIdle()
+    }
+  }
+
+  private fun runInNewTestApplication(block: TestApplication.() -> Unit) {
+    val newApplication = Instrumentation.newApplication(
       TestApplication::class.java,
       InstrumentationRegistry.getInstrumentation().targetContext
     ) as TestApplication
-    testApplication.getAppStartupStateController().markOnboardingFlowCompleted()
-    testApplication.getTestCoroutineDispatchers().advanceUntilIdle()
+    newApplication.testCoroutineDispatchers.registerIdlingResource()
+    newApplication.block()
+    newApplication.testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  /**
+   * Allows the existing [TestApplication] to be treated as though it was recreated.
+   *
+   * This should only be used when Espresso needs to run operations in a "previous" application
+   * instance (since Espresso can only use the current instrumentation and not a new one). For all
+   * other cases, prefer [runInNewTestApplication] since it actually creates an entirely new
+   * application in isolation, and is closer to a separate app instance than what this method
+   * produces.
+   */
+  private fun recreateExistingApplication() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+    ApplicationProvider.getApplicationContext<TestApplication>().recreateDaggerGraph()
+    initializeTestApplication()
+
+    // Reset any intents previously recorded.
+    Intents.release()
+    Intents.init()
+  }
+
+  private fun recreateExistingApplicationWithFlavor(buildFlavor: BuildFlavor) {
+    TestModule.buildFlavor = buildFlavor
+    recreateExistingApplication()
+  }
+
+  /** See [recreateExistingApplication] for when to use this. */
+  private fun reopenAppWithNewFlavor(buildFlavor: BuildFlavor) {
+    TestModule.buildFlavor = buildFlavor
+    recreateExistingApplication()
+    val monitor = monitorFactory.createMonitor(appStartupStateController.getAppStartupState())
+    testCoroutineDispatchers.advanceUntilIdle()
+    monitor.ensureNextResultIsSuccess()
+  }
+
+  private fun simulateAppAlreadyOpenedWithFlavor(buildFlavor: BuildFlavor) {
+    TestModule.buildFlavor = buildFlavor
+    simulateAppAlreadyOpened()
+  }
+
+  private fun simulateAppAlreadyOnboardedWithFlavor(buildFlavor: BuildFlavor) {
+    TestModule.buildFlavor = buildFlavor
+    simulateAppAlreadyOnboarded()
   }
 
   private fun initializeTestApplication() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
+  }
+
+  private fun initializeTestApplicationWithFlavor(buildFlavor: BuildFlavor) {
+    TestModule.buildFlavor = buildFlavor
+    initializeTestApplication()
+  }
+
+  /**
+   * Launches [SplashActivity] and waits for all initial time-based operations to complete before
+   * executing [testBlock].
+   */
+  private fun launchSplashActivityFully(testBlock: (ActivityScenario<SplashActivity>) -> Unit) {
+    launchSplashActivity {
+      testCoroutineDispatchers.advanceUntilIdle()
+      testBlock(it)
+    }
+  }
+
+  /** Launches [SplashActivity] and waits for initial time-based operations to start. */
+  private fun launchSplashActivityPartially(testBlock: (ActivityScenario<SplashActivity>) -> Unit) {
+    launchSplashActivity {
+      testCoroutineDispatchers.runCurrent()
+      testBlock(it)
+    }
+  }
+
+  private fun launchSplashActivity(testBlock: (ActivityScenario<SplashActivity>) -> Unit) {
+    val openFromLauncher = Intent(context, SplashActivity::class.java).also {
+      it.action = Intent.ACTION_MAIN
+      it.addCategory(Intent.CATEGORY_LAUNCHER)
+    }
+    ActivityScenario.launch<SplashActivity>(openFromLauncher).use(testBlock)
   }
 
   private fun setAutoAppExpirationEnabled(enabled: Boolean) {
@@ -462,26 +1177,26 @@ class SplashActivityTest {
     Locale.setDefault(locale)
   }
 
-  private fun getShadowLogsOnRobolectric(): List<String> {
-    val shadowLogClass = Class.forName("org.robolectric.shadows.ShadowLog")
-    val shadowLogItem = Class.forName("org.robolectric.shadows.ShadowLog\$LogItem")
-    val msgField = shadowLogItem.getDeclaredField("msg")
-    val logItems = shadowLogClass.getDeclaredMethod("getLogs").invoke(/* obj= */ null) as? List<*>
-    return logItems?.map { logItem ->
-      msgField.get(logItem) as String
-    } ?: listOf()
-  }
-
   private fun corruptCacheFile() {
     // Statically retrieve the application context since injection may not have yet occurred.
     val applicationContext = ApplicationProvider.getApplicationContext<Context>()
     File(applicationContext.filesDir, "on_boarding_flow.cache").writeText("broken")
   }
 
+  @Module
+  class TestModule {
+    companion object {
+      var buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
+    }
+
+    @Provides
+    fun provideTestingBuildFlavor(): BuildFlavor = buildFlavor
+  }
+
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class, PlatformParameterModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -503,7 +1218,8 @@ class SplashActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -519,34 +1235,47 @@ class SplashActivityTest {
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
 
+    fun getMonitorFactory(): DataProviderTestMonitor.Factory
+
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
-      DaggerSplashActivityTest_TestApplicationComponent.builder()
-        .setApplication(this)
-        .build()
-    }
+    private var component: TestApplicationComponent = createTestApplicationComponent()
+
+    val appStartupStateController: AppStartupStateController
+      get() = component.getAppStartupStateController()
+    val testCoroutineDispatchers: TestCoroutineDispatchers
+      get() = component.getTestCoroutineDispatchers()
+    val monitorFactory: DataProviderTestMonitor.Factory
+      get() = component.getMonitorFactory()
 
     fun inject(splashActivityTest: SplashActivityTest) {
       component.inject(splashActivityTest)
     }
-
-    fun getAppStartupStateController() = component.getAppStartupStateController()
-
-    fun getTestCoroutineDispatchers() = component.getTestCoroutineDispatchers()
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    fun recreateDaggerGraph() {
+      component = createTestApplicationComponent()
+    }
+
+    private fun createTestApplicationComponent(): TestApplicationComponent {
+      return DaggerSplashActivityTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
   }
 
   private companion object {
     private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
     private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
+
+    private fun onDialogView(matcher: Matcher<View>) = onView(matcher).inRoot(isDialog())
   }
 }

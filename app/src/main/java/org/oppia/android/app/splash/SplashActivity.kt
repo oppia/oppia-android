@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.deprecation.DeprecationNoticeExitAppListener
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
+import org.oppia.android.app.notice.BetaNoticeClosedListener
+import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
+import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
 import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -23,7 +25,12 @@ import javax.inject.Inject
  * through their intents).
  */
 class SplashActivity :
-  AppCompatActivity(), FragmentComponentFactory, DeprecationNoticeExitAppListener {
+  AppCompatActivity(),
+  FragmentComponentFactory,
+  DeprecationNoticeExitAppListener,
+  BetaNoticeClosedListener,
+  GeneralAvailabilityUpgradeNoticeClosedListener {
+
   private lateinit var activityComponent: ActivityComponent
 
   @Inject
@@ -38,10 +45,16 @@ class SplashActivity :
     intent.decorateWithScreenName(SPLASH_ACTIVITY)
   }
 
-  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
-
   override fun createFragmentComponent(fragment: Fragment): FragmentComponent {
     val builderInjector = activityComponent as FragmentComponentBuilderInjector
     return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
   }
+
+  override fun onCloseAppButtonClicked() = splashActivityPresenter.handleOnCloseAppButtonClicked()
+
+  override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
+    splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)
+
+  override fun onGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
+    splashActivityPresenter.handleOnGaUpgradeNoticeOkayButtonClicked(permanentlyDismiss)
 }

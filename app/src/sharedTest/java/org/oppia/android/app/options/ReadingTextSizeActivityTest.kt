@@ -2,7 +2,6 @@ package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,8 +20,10 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -70,6 +71,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -102,10 +104,7 @@ class ReadingTextSizeActivityTest {
     ReadingTextSizeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-  @Inject
-  lateinit var context: Context
-
-  private val summaryValue = "Medium"
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -125,24 +124,16 @@ class ReadingTextSizeActivityTest {
 
   @Test
   fun testReadingTextSizeActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createReadingTextSizeActivityIntent(
-        summaryValue
-      )
-    )
+    activityTestRule.launchActivity(createReadingTextSizeActivityIntent())
+
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.reading_text_size_activity_title))
   }
 
-  private fun createReadingTextSizeActivityIntent(summaryValue: String): Intent {
-    return ReadingTextSizeActivity.createReadingTextSizeActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      READING_TEXT_SIZE,
-      summaryValue
-    )
-  }
+  private fun createReadingTextSizeActivityIntent() =
+    ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, MEDIUM_TEXT_SIZE)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -170,7 +161,8 @@ class ReadingTextSizeActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

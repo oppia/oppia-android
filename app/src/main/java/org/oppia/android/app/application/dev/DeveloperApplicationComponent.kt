@@ -49,6 +49,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.DebugLogReportingModule
@@ -95,9 +96,9 @@ import javax.inject.Singleton
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
-    SyncStatusModule::class, MetricLogSchedulerModule::class,
+    SyncStatusModule::class, MetricLogSchedulerModule::class, ActivityLifecycleObserverModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-    ActivityLifecycleObserverModule::class,
+    DeveloperBuildFlavorModule::class, EventLoggingConfigurationModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.core.content.pm.ApplicationInfoBuilder
+import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.truth.os.BundleSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -16,6 +18,34 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PRACTICE_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_QUESTION_PLAYER
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_CARD
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -52,11 +82,14 @@ import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
+
+private const val TEST_ANDROID_SDK_VERSION = 30
 
 /**
  * Tests for [EventBundleCreator].
@@ -72,7 +105,10 @@ import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuild
 @RunWith(OppiaParameterizedTestRunner::class)
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = EventBundleCreatorTest.TestApplication::class)
+@Config(
+  application = EventBundleCreatorTest.TestApplication::class,
+  sdk = [TEST_ANDROID_SDK_VERSION]
+)
 class EventBundleCreatorTest {
   private companion object {
     private const val TEST_TIMESTAMP_1 = 1556094120000
@@ -96,6 +132,8 @@ class EventBundleCreatorTest {
     private const val TEST_IS_ANSWER_CORRECT = true
     private const val TEST_IS_ANSWER_CORRECT_STR = "true"
     private const val TEST_CONTENT_ID = "test_content_id"
+    private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
+    private const val TEST_APP_VERSION_CODE = 125
     private const val TEST_CPU_USAGE = Long.MAX_VALUE
     private const val TEST_APK_SIZE = Long.MAX_VALUE
     private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
@@ -104,8 +142,8 @@ class EventBundleCreatorTest {
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
   }
 
-  @Inject
-  lateinit var eventBundleCreator: EventBundleCreator
+  @Inject lateinit var context: Context
+  @Inject lateinit var eventBundleCreator: EventBundleCreator
 
   @Parameter
   lateinit var screenNameCase: String
@@ -125,10 +163,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(EventLog.getDefaultInstance(), bundle)
 
-    assertThat(typeName).isEqualTo("unknown_activity_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(0)
     assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
+    assertThat(bundle).integer("event_type").isEqualTo(ACTIVITYCONTEXT_NOT_SET.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -159,10 +201,14 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
 
-    assertThat(typeName).isEqualTo("unknown_activity_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(ACTIVITYCONTEXT_NOT_SET.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -307,10 +353,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenExplorationActivity())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_exploration_activity")
-    assertThat(bundle).hasSize(8)
+    assertThat(typeName).isEqualTo("open_exploration_player_screen")
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -327,10 +377,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenExplorationActivity())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_exploration_activity")
-    assertThat(bundle).hasSize(10)
+    assertThat(typeName).isEqualTo("open_exploration_player_screen")
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_EXPLORATION_ACTIVITY.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -349,10 +403,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenInfoTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_info_tab")
-    assertThat(bundle).hasSize(3)
+    assertThat(typeName).isEqualTo("select_topic_info_tab")
+    assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_INFO_TAB.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
   }
 
@@ -364,10 +422,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenLessonsTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_lessons_tab")
-    assertThat(bundle).hasSize(3)
+    assertThat(typeName).isEqualTo("select_topic_lessons_tab")
+    assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_LESSONS_TAB.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
   }
 
@@ -524,10 +586,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenPracticeTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_practice_tab")
-    assertThat(bundle).hasSize(3)
+    assertThat(typeName).isEqualTo("select_topic_practice_tab")
+    assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_PRACTICE_TAB.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
   }
 
@@ -539,10 +605,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenRevisionTab())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_revision_tab")
-    assertThat(bundle).hasSize(3)
+    assertThat(typeName).isEqualTo("select_topic_revision_tab")
+    assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_REVISION_TAB.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
   }
 
@@ -554,10 +624,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenQuestionPlayer())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_question_player")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("open_question_player_screen")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_QUESTION_PLAYER.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("question_id").isEqualTo(TEST_QUESTION_ID)
     assertThat(bundle).string("skill_ids").isEqualTo("$TEST_SKILL_ID_1,$TEST_SKILL_ID_2")
   }
@@ -570,10 +644,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenStoryActivity())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_story_activity")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("open_story_chapter_list_screen")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_STORY_ACTIVITY.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
   }
@@ -587,9 +665,13 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_concept_card")
-    assertThat(bundle).hasSize(3)
+    assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_CONCEPT_CARD.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("skill_id").isEqualTo(TEST_SKILL_ID_1)
   }
 
@@ -602,9 +684,13 @@ class EventBundleCreatorTest {
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
     assertThat(typeName).isEqualTo("open_revision_card")
-    assertThat(bundle).hasSize(4)
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_REVISION_CARD.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("subtopic_index").isEqualTo(TEST_SUB_TOPIC_INDEX_STR)
   }
@@ -617,10 +703,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("start_card_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(typeName).isEqualTo("start_exploration_card")
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -638,10 +728,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("start_card_context")
-    assertThat(bundle).hasSize(11)
+    assertThat(typeName).isEqualTo("start_exploration_card")
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(START_CARD_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -661,10 +755,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createEndCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("end_card_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(typeName).isEqualTo("end_exploration_card")
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -682,10 +780,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createEndCardContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("end_card_context")
-    assertThat(bundle).hasSize(11)
+    assertThat(typeName).isEqualTo("end_exploration_card")
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(END_CARD_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -705,10 +807,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createHintOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("hint_offered_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(typeName).isEqualTo("receive_hint_offer")
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(HINT_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -726,10 +832,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createHintOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("hint_offered_context")
-    assertThat(bundle).hasSize(11)
+    assertThat(typeName).isEqualTo("receive_hint_offer")
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(HINT_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -749,10 +859,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("access_hint_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(typeName).isEqualTo("reveal_hint")
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -770,10 +884,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessHintContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("access_hint_context")
-    assertThat(bundle).hasSize(11)
+    assertThat(typeName).isEqualTo("reveal_hint")
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_HINT_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -793,10 +911,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSolutionOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("solution_offered_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(typeName).isEqualTo("receive_solution_offer")
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -813,10 +935,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSolutionOfferedContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("solution_offered_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(typeName).isEqualTo("receive_solution_offer")
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(SOLUTION_OFFERED_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -835,10 +961,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("access_solution_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(typeName).isEqualTo("reveal_solution")
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -855,10 +985,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAccessSolutionContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("access_solution_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(typeName).isEqualTo("reveal_solution")
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(ACCESS_SOLUTION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -877,10 +1011,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSubmitAnswerContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("submit_answer_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(typeName).isEqualTo("submit_answer")
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -899,10 +1037,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createSubmitAnswerContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("submit_answer_context")
-    assertThat(bundle).hasSize(12)
+    assertThat(typeName).isEqualTo("submit_answer")
+    assertThat(bundle).hasSize(16)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(SUBMIT_ANSWER_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -923,10 +1065,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createPlayVoiceOverContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("play_voice_over_context")
-    assertThat(bundle).hasSize(9)
+    assertThat(typeName).isEqualTo("click_play_voiceover_button")
+    assertThat(bundle).hasSize(13)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -944,10 +1090,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createPlayVoiceOverContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("play_voice_over_context")
-    assertThat(bundle).hasSize(11)
+    assertThat(typeName).isEqualTo("click_play_voiceover_button")
+    assertThat(bundle).hasSize(15)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(PLAY_VOICE_OVER_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("ed_topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("ed_story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("ed_exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -967,10 +1117,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInBackgroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("app_in_background_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("send_app_to_background")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(APP_IN_BACKGROUND_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -981,10 +1135,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInBackgroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("app_in_background_context")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("send_app_to_background")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(APP_IN_BACKGROUND_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
@@ -997,10 +1155,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInForegroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("app_in_foreground_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("bring_app_to_foreground")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(APP_IN_FOREGROUND_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1011,10 +1173,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createAppInForegroundContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("app_in_foreground_context")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("bring_app_to_foreground")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(APP_IN_FOREGROUND_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
@@ -1027,10 +1193,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createExitExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("exit_exploration_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(typeName).isEqualTo("leave_exploration")
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1047,10 +1217,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createExitExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("exit_exploration_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(typeName).isEqualTo("leave_exploration")
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(EXIT_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1069,10 +1243,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createFinishExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("finish_exploration_context")
-    assertThat(bundle).hasSize(8)
+    assertThat(typeName).isEqualTo("complete_exploration")
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1089,10 +1267,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createFinishExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("finish_exploration_context")
-    assertThat(bundle).hasSize(10)
+    assertThat(typeName).isEqualTo("complete_exploration")
+    assertThat(bundle).hasSize(14)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(FINISH_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
     assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
     assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
@@ -1111,10 +1293,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createResumeExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("resume_exploration_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("resume_in_progress_exploration")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(RESUME_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1125,10 +1311,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createResumeExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("resume_exploration_context")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("resume_in_progress_exploration")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(RESUME_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
@@ -1141,10 +1331,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartOverExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("start_over_exploration_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("restart_in_progress_exploration")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(START_OVER_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1155,10 +1349,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createStartOverExplorationContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("start_over_exploration_context")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("restart_in_progress_exploration")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(START_OVER_EXPLORATION_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
@@ -1171,10 +1369,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createDeleteProfileContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("delete_profile_context")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("delete_profile")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(DELETE_PROFILE_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1185,10 +1387,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createDeleteProfileContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("delete_profile_context")
-    assertThat(bundle).hasSize(4)
+    assertThat(typeName).isEqualTo("delete_profile")
+    assertThat(bundle).hasSize(8)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(DELETE_PROFILE_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("learner_id").isEqualTo(TEST_LEARNER_ID)
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
@@ -1201,10 +1407,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenHomeContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_home")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("open_home_screen")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_HOME.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1215,10 +1425,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createOpenProfileChooserContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("open_profile_chooser")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("open_profile_chooser_screen")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(OPEN_PROFILE_CHOOSER.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1229,10 +1443,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("failed_analytics_log")
-    assertThat(bundle).hasSize(2)
+    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(bundle).hasSize(6)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(INSTALL_ID_FOR_FAILED_ANALYTICS_LOG.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1243,10 +1461,14 @@ class EventBundleCreatorTest {
     val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
 
     val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
-    assertThat(typeName).isEqualTo("failed_analytics_log")
-    assertThat(bundle).hasSize(3)
+    assertThat(typeName).isEqualTo("ERROR_internal_logging_failure")
+    assertThat(bundle).hasSize(7)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(INSTALL_ID_FOR_FAILED_ANALYTICS_LOG.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
@@ -1725,6 +1947,22 @@ class EventBundleCreatorTest {
     this.contentId = contentId
   }.build()
 
+  private fun registerTestApplication() {
+    val packageManager = Shadows.shadowOf(context.packageManager)
+    val applicationInfo =
+      ApplicationInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .build()
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .setApplicationInfo(applicationInfo)
+        .build()
+    packageInfo.versionName = TEST_APP_VERSION_NAME
+    packageInfo.versionCode = TEST_APP_VERSION_CODE
+    packageManager.installPackage(packageInfo)
+  }
+
   private fun createApkSizeLoggableMetric() = OppiaMetricLog.LoggableMetric.newBuilder()
     .setApkSizeMetric(
       OppiaMetricLog.ApkSizeMetric.newBuilder()
@@ -1769,6 +2007,7 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
+    TestModule.enableLearnerStudyAnalytics = false
     setUpTestApplicationComponent()
   }
 
@@ -1779,6 +2018,7 @@ class EventBundleCreatorTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    registerTestApplication()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1812,7 +2052,7 @@ class EventBundleCreatorTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(modules = [TestModule::class, EventLoggingConfigurationModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

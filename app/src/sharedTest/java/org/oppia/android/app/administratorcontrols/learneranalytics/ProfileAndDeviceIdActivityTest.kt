@@ -28,6 +28,7 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ScreenName
@@ -81,6 +82,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.SyncStatusModule
@@ -210,7 +212,8 @@ class ProfileAndDeviceIdActivityTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       SyncStatusModule::class, SplitScreenInteractionModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, MetricLogSchedulerModule::class
+      MathEquationInputModule::class, MetricLogSchedulerModule::class,
+      TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

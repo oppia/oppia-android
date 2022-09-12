@@ -93,6 +93,20 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:xml_syntax_check_lib"],
 )
 
+kt_jvm_binary(
+    name = "string_language_translation_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.xml.StringLanguageTranslationCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:string_language_translation_check_lib"],
+)
+
+kt_jvm_binary(
+    name = "string_resource_validation_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.xml.StringResourceValidationCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:string_resource_validation_check_lib"],
+)
+
 TEST_FILE_EXEMPTION_ASSETS = generate_test_file_assets_list_from_text_protos(
     name = "test_file_exemption_assets",
     test_file_exemptions_name = ["test_file_exemptions"],
