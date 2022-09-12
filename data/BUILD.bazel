@@ -6,6 +6,12 @@ This library provides data to the rest of the application.
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//data:data_test.bzl", "data_test")
 
+filegroup(
+    name = "test_manifest",
+    srcs = ["src/test/AndroidManifest.xml"],
+    visibility = ["//:oppia_testing_visibility"],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":dagger",
