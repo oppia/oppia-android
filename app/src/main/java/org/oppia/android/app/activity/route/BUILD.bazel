@@ -21,7 +21,7 @@ kt_android_library(
     deps = [
         ":dagger",
         "//model/src/main/proto:arguments_java_proto_lite",
-    ]
+    ],
 )
 
 dagger_rules()
