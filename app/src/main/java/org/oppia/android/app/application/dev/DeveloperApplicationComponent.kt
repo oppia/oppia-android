@@ -96,9 +96,10 @@ import javax.inject.Singleton
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
-    SyncStatusModule::class, MetricLogSchedulerModule::class, ActivityLifecycleObserverModule::class,
+    SyncStatusModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-    DeveloperBuildFlavorModule::class, EventLoggingConfigurationModule::class
+    DeveloperBuildFlavorModule::class, EventLoggingConfigurationModule::class,
+    ActivityLifecycleObserverModule::class,
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {
