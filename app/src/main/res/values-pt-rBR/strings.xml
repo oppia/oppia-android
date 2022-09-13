@@ -236,8 +236,8 @@
   <string name="add_profile_pin_info">Com um PIN, ninguém mais pode acessar um perfil além deste usuário atribuído.</string>
   <string name="add_profile_error_image_failed_store">Falha ao armazenar sua imagem de avatar. Por favor, tente novamente.</string>
   <string name="add_profile_error_name_not_unique">Este nome já está em uso por outro perfil.</string>
-  <string name="add_profile_error_name_empty">Por favor, insira um nome para este perfil.</string>
-  <string name="add_profile_error_name_only_letters">Os nomes podem ter apenas letras. Tente outro nome.</string>
+  <string name="add_profile_error_name_empty">Por favor, insira um nome válido para este perfil.</string>
+  <string name="add_profile_error_name_only_letters">Por favor, escolha um nome de perfil que não inclua números ou símbolos.</string>
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
@@ -261,14 +261,17 @@
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
   <string name="input_pin_password_as_admin">PIN de 5 dígitos do administrador.</string>
   <string name="input_pin_password_as_user">PIN de 3 dígitos do usuário.</string>
-  <string name="pin_password_forgot_pin" fuzzy="true">Eu esqueci meu pin.</string>
+  <string name="pin_password_forgot_pin">Esqueceu o PIN?</string>
   <string name="pin_password_incorrect_pin">PIN incorreto.</string>
   <string name="pin_password_show">Mostrar</string>
   <string name="pin_password_hide">Esconder</string>
   <string name="pin_password_close">Fechar</string>
   <string name="pin_password_success">A alteração do PIN foi bem-sucedida</string>
   <string name="pin_password_forgot_title">Esqueceu o PIN?</string>
-  <string name="admin_forgot_pin_message" fuzzy="true">Para redefinir seu PIN, desinstale %s e reinstale-o.\n\nLembre-se de que, se o dispositivo não estiver online, você pode perder o progresso do usuário em várias contas.</string>
+  <string name="admin_forgot_pin_message">Para redefinir seu PIN, você precisará limpar todos os dados salvos de %s.\n\nLembre-se de que essa ação fará com que todos os perfis e o progresso do usuário sejam excluídos e não pode ser desfeito. Além disso, o aplicativo será fechado quando isso for concluído e precisará ser reaberto.</string>
+  <string name="admin_forgot_pin_reset_app_data_button_text">Redefinir dados de %s.</string>
+  <string name="admin_confirm_app_wipe_title">Confirmar redefinição de dados de %s</string>
+  <string name="admin_confirm_app_wipe_message">Tem certeza de que deseja excluir todos os perfis %s neste dispositivo? Esta ação não poderá ser desfeita.</string>
   <string name="admin_confirm_app_wipe_positive_button_text">Sim</string>
   <string name="admin_confirm_app_wipe_negative_button_text">Não</string>
   <string name="show_hide_password_icon">Mostrar/Esconder ícone da senha</string>
@@ -369,7 +372,7 @@
   <string name="welcome">\"Bem-vindo %s!\"</string>
   <string name="what_do_you_want_to_learn">O que você quer aprender?</string>
   <string name="great">Ótimo</string>
-  <string name="lets_get_started" fuzzy="true">Vamos começar.</string>
+  <string name="lets_get_started">Vamos começar.</string>
   <string name="yes">Sim</string>
   <string name="no">Não...</string>
   <string name="pick_a_different_topic">Escolha um\ntópico diferente.</string>
@@ -420,8 +423,16 @@
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
+  <string name="splash_screen_developer_label">Versão do desenvolvedor</string>
+  <string name="splash_screen_alpha_label">Alfa</string>
   <string name="splash_screen_beta_label">Beta</string>
+  <string name="beta_notice_dialog_title">Aviso Beta</string>
+  <string name="beta_notice_dialog_message">Olá! Seu aplicativo está sendo atualizado para a versão Beta. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
+  <string name="beta_notice_dialog_do_not_show_again_text">Não exibir esta mensagem novamente</string>
   <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="general_availability_notice_dialog_title">Aviso de disponibilidade geral</string>
+  <string name="general_availability_notice_dialog_message">Olá! Seu aplicativo está sendo atualizado para a versão de disponibilidade geral. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
+  <string name="general_availability_notice_dialog_do_not_show_again_text">Não exibir esta mensagem novamente</string>
   <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator">para</string>
   <string name="ratio_default_hint_text">Insira uma razão no formato x:y.</string>

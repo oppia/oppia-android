@@ -11,7 +11,6 @@
   <color name="concept_card_background">#FFFFF0</color>
   <color name="concept_toolbar_background">#BE563C</color>
   <color name="concept_toolbar_heading">#A6503A</color>
-  <color name="ic_launcher_background">#26A69A</color>
   <!-- OPPIA COLORS -->
   <color name="oppia_primary_text">#333333</color>
   <color name="oppia_primary_light">#009688</color>
