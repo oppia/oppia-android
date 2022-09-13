@@ -48,7 +48,7 @@ class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
           }
         }
       }.create()
-    alertDialog.setCanceledOnTouchOutside(false)
+    alertDialog.setCanceledOnTouchOutside(true)
     return alertDialog
   }
 }
