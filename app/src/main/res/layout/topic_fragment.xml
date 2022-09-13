@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:background="@color/component_color_topic_fragment_primary_toolbar_color"
         android:fontFamily="sans-serif"
-        android:minHeight="48dp"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
