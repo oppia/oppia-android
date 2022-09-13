@@ -31,6 +31,7 @@
         android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/navigation_card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp">

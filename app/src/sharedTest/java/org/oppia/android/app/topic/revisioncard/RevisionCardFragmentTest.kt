@@ -15,6 +15,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -29,6 +30,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -127,8 +130,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 0
 const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 1
@@ -282,6 +283,9 @@ class RevisionCardFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
+      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("Description of subtopic is here."))))
     }
@@ -298,6 +302,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.next_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.previous_navigation_card)).check(matches(not((isDisplayed()))))
     }
@@ -314,6 +319,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.next_navigation_card)).check(matches(isDisplayed()))
     }
@@ -330,6 +336,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.next_navigation_card)).check(matches(not(isDisplayed())))
@@ -347,6 +354,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
@@ -365,6 +373,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
