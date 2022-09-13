@@ -138,7 +138,7 @@ class TopicFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private var enableExtraTopicTabsUi by Delegates.notNull<Boolean>()
+  private var enableExtraTopicTabsUi: Boolean? = null
 
   private val internalProfileId = 0
 
@@ -240,7 +240,7 @@ class TopicFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = INFO_TAB_POSITION,
-            enableExtraTopicTabsUi
+            enableExtraTopicTabsUi!!
           ).name
         )
       ).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
@@ -310,7 +310,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableExtraTabsUi = true)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi)
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi!!)
       onView(withText(practiceTab.name)).check(
         matches(
           isDescendantOfA(
@@ -608,7 +608,7 @@ class TopicFragmentTest {
   private fun clickTabAtPosition(position: Int) {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi).name),
+        withText(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi!!).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -618,7 +618,7 @@ class TopicFragmentTest {
     onView(withId(R.id.topic_tabs_container)).check(
       matches(
         matchCurrentTabTitle(
-          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi).name
+          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi!!).name
         )
       )
     )
