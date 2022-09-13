@@ -43,7 +43,6 @@
         android:layout_marginEnd="160dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:maxLines="2"
         android:text="@string/onboarding_slide_3_title"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
