@@ -2,8 +2,8 @@ package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -11,6 +11,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import dagger.Module
@@ -30,6 +31,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -94,28 +98,24 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val ENGLISH = 1
-private const val FRENCH = 2
-
 /** Tests for [AudioLanguageFragment]. */
+// Function name: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioLanguageFragmentTest.TestApplication::class)
 class AudioLanguageFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  private companion object {
+    private const val ENGLISH_BUTTON_INDEX = 0
+    private const val PORTUGUESE_BUTTON_INDEX = 4
+  }
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -124,65 +124,103 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguage_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
+  fun testOpenFragment_withEnglish_selectedLanguageIsEnglish() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      verifyEnglishIsSelected()
+    }
+  }
+
+  @Test
+  fun testOpenFragment_withPortuguese_selectedLanguageIsPortuguese() {
+    launchActivityWithLanguage(BRAZILIAN_PORTUGUESE_LANGUAGE).use {
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
   fun testAudioLanguage_configChange_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
       rotateToLandscape()
-      checkSelectedLanguage(ENGLISH)
+
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAudioLanguage_tabletConfig_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
       testCoroutineDispatchers.runCurrent()
-      checkSelectedLanguage(ENGLISH)
+
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
-  fun testAudioLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
-      checkSelectedLanguage(FRENCH)
+  fun testAudioLanguage_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      selectPortuguese()
+
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
-  fun testAudioLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
+  fun testAudioLanguage_changeLanguageToPortuguese_configChange_selectedLanguageIsPortuguese() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      selectPortuguese()
+
       rotateToLandscape()
-      checkSelectedLanguage(FRENCH)
+
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAudioLanguage_configChange_changeLanguageToFrench_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createDefaultAudioActivityIntent("English")).use {
-      testCoroutineDispatchers.runCurrent()
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
-      checkSelectedLanguage(FRENCH)
+  fun testAudioLanguage_configChange_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      rotateToLandscape()
+
+      selectPortuguese()
+
+      verifyPortugueseIsSelected()
     }
   }
 
-  private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
-    return AudioLanguageActivity.createAudioLanguageActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      AUDIO_LANGUAGE,
-      summaryValue
-    )
+  @Test
+  fun testAudioLanguage_selectPortuguese_thenEnglish_selectedLanguageIsPortuguese() {
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      selectPortuguese()
+
+      selectEnglish()
+
+      verifyEnglishIsSelected()
+    }
+  }
+
+  private fun launchActivityWithLanguage(
+    audioLanguage: AudioLanguage
+  ): ActivityScenario<AppLanguageActivity> {
+    return launch<AppLanguageActivity>(createDefaultAudioActivityIntent(audioLanguage)).also {
+      testCoroutineDispatchers.runCurrent()
+    }
+  }
+
+  private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
+    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+
+  private fun rotateToLandscape() {
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun selectEnglish() {
+    selectLanguage(ENGLISH_BUTTON_INDEX)
+  }
+
+  private fun selectPortuguese() {
+    selectLanguage(PORTUGUESE_BUTTON_INDEX)
   }
 
   private fun selectLanguage(index: Int) {
@@ -192,18 +230,19 @@ class AudioLanguageFragmentTest {
         position = index,
         targetViewId = R.id.language_radio_button
       )
-    ).perform(
-      click()
-    )
+    ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun rotateToLandscape() {
-    onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
+  private fun verifyEnglishIsSelected() {
+    verifyLanguageIsSelected(index = ENGLISH_BUTTON_INDEX, expectedLanguageName = "English")
   }
 
-  private fun checkSelectedLanguage(index: Int) {
+  private fun verifyPortugueseIsSelected() {
+    verifyLanguageIsSelected(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
+  }
+
+  private fun verifyLanguageIsSelected(index: Int, expectedLanguageName: String) {
     onView(
       atPositionOnView(
         R.id.audio_language_recycler_view,
@@ -211,7 +250,13 @@ class AudioLanguageFragmentTest {
         R.id.language_radio_button
       )
     ).check(matches(isChecked()))
-    testCoroutineDispatchers.runCurrent()
+    onView(
+      atPositionOnView(
+        R.id.audio_language_recycler_view,
+        index,
+        R.id.language_text_view
+      )
+    ).check(matches(withText(expectedLanguageName)))
   }
 
   private fun setUpTestApplicationComponent() {
