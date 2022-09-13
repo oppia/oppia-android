@@ -91,4 +91,7 @@
   <color name="color_palette_confetti_red_color">@color/color_def_confetti_ruby_red</color>
   <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_light_gold</color>
   <color name="color_palette_confetti_blue_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_topic_practice_background_color">@color/color_def_oppia_white_background</color>
+  <color name="color_palette_topic_practice_header_description_color">@color/color_def_accessible_light_grey_2</color>
+  <color name="color_palette_topic_practice_subtopic_text_color">@color/color_def_accessible_grey</color>
 </resources>
