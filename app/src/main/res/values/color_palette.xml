@@ -91,4 +91,5 @@
   <color name="color_palette_profile_view_designation_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_primary_toolbar_color">@color/color_def_oppia_green</color>
   <color name="color_palette_secondary_text_color">@color/color_def_accessible_light_grey_2</color>
+  <color name="color_palette_save_button_border_color">@color/color_def_black_grey</color>
 </resources>

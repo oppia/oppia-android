@@ -91,7 +91,5 @@
   <color name="color_palette_profile_view_designation_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_primary_toolbar_color">@color/color_def_forest_green</color>
   <color name="color_palette_secondary_text_color">@color/color_def_oppia_silver</color>
-
-
-
+  <color name="color_palette_save_button_border_color">@color/color_def_oppia_turquoise</color>
 </resources>
