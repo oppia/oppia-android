@@ -115,7 +115,8 @@ class AudioLanguageActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createDefaultAudioActivityIntent(summaryValue).extractCurrentAppScreenName()
+    val screenName =
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.AUDIO_LANGUAGE_ACTIVITY)
   }

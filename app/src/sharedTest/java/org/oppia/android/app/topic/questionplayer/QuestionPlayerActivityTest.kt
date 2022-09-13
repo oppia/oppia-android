@@ -228,7 +228,7 @@ class QuestionPlayerActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-      context, listOf(SKILL_ID_LIST), profileId
+      context, ArrayList(SKILL_ID_LIST), profileId
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.QUESTION_PLAYER_ACTIVITY)

@@ -1034,13 +1034,13 @@ class SplashActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     initializeTestApplication()
-
-    activityTestRule.launchActivity(null)
-    testCoroutineDispatchers.advanceUntilIdle()
-
-    val currentScreenName = activityTestRule.activity.intent.extractCurrentAppScreenName()
-
-    assertThat(currentScreenName).isEqualTo(ScreenName.SPLASH_ACTIVITY)
+    launchSplashActivity { activityScenario ->
+      testCoroutineDispatchers.advanceUntilIdle()
+      activityScenario.onActivity { activity ->
+        val currentScreenName = activity.intent.extractCurrentAppScreenName()
+        assertThat(currentScreenName).isEqualTo(ScreenName.SPLASH_ACTIVITY)
+      }
+    }
   }
 
   private fun simulateAppAlreadyOnboarded() {
