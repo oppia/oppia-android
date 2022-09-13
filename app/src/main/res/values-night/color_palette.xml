@@ -95,4 +95,5 @@
   <color name="color_palette_primary_toolbar_color">@color/color_def_forest_green</color>
   <color name="color_palette_secondary_text_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_save_button_border_color">@color/color_def_oppia_turquoise</color>
+  <color name="Color_palette_stroke_color">@color/color_def_black_12</color>
 </resources>

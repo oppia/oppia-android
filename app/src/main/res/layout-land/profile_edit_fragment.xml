@@ -141,7 +141,7 @@
         android:id="@+id/profile_edit_allow_download_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_profile_edit_activity_profile_edit_allow_download_container"
+        android:background="@color/component_color_profile_edit_activity_profile_edit_allow_download_container_color"
         android:focusable="true"
         android:importantForAccessibility="yes"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
