@@ -1700,9 +1700,9 @@ class AddProfileActivityTest {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
       ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-        resources.getResourcePackageName(R.mipmap.ic_launcher) + '/' +
-        resources.getResourceTypeName(R.mipmap.ic_launcher) + '/' +
-        resources.getResourceEntryName(R.mipmap.ic_launcher)
+        resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
+        resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
+        resources.getResourceEntryName(R.mipmap.launcher_icon)
     )
     val resultIntent = Intent()
     resultIntent.data = imageUri

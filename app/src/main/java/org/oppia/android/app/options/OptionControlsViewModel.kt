@@ -9,7 +9,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AppLanguage
-import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -96,12 +95,13 @@ class OptionControlsViewModel @Inject constructor(
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(
         routeToAudioLanguageListListener,
-        loadAudioLanguageListListener
+        loadAudioLanguageListListener,
+        profile.audioLanguage,
+        resourceHandler.computeLocalizedDisplayName(profile.audioLanguage)
       )
 
     optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
     optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
-    optionAudioViewViewModel.audioLanguage.set(getAudioLanguage(profile.audioLanguage))
 
     itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
@@ -135,17 +135,6 @@ class OptionControlsViewModel @Inject constructor(
       AppLanguage.FRENCH_APP_LANGUAGE -> "French"
       AppLanguage.CHINESE_APP_LANGUAGE -> "Chinese"
       else -> "English"
-    }
-  }
-
-  fun getAudioLanguage(audioLanguage: AudioLanguage): String {
-    return when (audioLanguage) {
-      AudioLanguage.NO_AUDIO -> "No Audio"
-      AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> "English"
-      AudioLanguage.HINDI_AUDIO_LANGUAGE -> "Hindi"
-      AudioLanguage.FRENCH_AUDIO_LANGUAGE -> "French"
-      AudioLanguage.CHINESE_AUDIO_LANGUAGE -> "Chinese"
-      else -> "No Audio"
     }
   }
 }

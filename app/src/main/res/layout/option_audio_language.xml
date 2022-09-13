@@ -44,7 +44,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:text="@{viewModel.audioLanguage}"
+      android:text="@{viewModel.audioLanguageDisplayName}"
       android:textColor="@color/component_color_option_activity_sub_heading_text_color"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
