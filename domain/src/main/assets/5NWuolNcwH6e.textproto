@@ -3905,6 +3905,22 @@ states {
   }
 }
 init_state_name: "Introduction"
-objective: "Learn why the order of the numbers in a ratio is important."
-title: "Order is Important"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Order is Important"
+  content_id: "title"
+}
+description {
+  html: "Learn why the order of the numbers in a ratio is important."
+  content_id: "description"
+}

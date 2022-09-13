@@ -99,67 +99,74 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_providesInitialStateForFractions0Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_0)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, FRACTIONS_EXPLORATION_ID_0)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("What is a Fraction?")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("What is a Fraction?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(25)
   }
 
   @Test
   fun testController_providesInitialStateForFractions1Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(FRACTIONS_EXPLORATION_ID_1)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, FRACTIONS_EXPLORATION_ID_1)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("The Meaning of \"Equal Parts\"")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("The Meaning of \"Equal Parts\"")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(18)
   }
 
   @Test
   fun testController_providesInitialStateForRatios0Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_0)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_0)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("What is a Ratio?")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("What is a Ratio?")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(26)
   }
 
   @Test
   fun testController_providesInitialStateForRatios1Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_1)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_1)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("Order is Important")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("Order is Important")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(22)
   }
 
   @Test
   fun testController_providesInitialStateForRatios2Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_2)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_2)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("Equivalent Ratios")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("Equivalent Ratios")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(24)
   }
 
   @Test
   fun testController_providesInitialStateForRatios3Exploration() {
-    val explorationResult = explorationDataController.getExplorationById(RATIOS_EXPLORATION_ID_3)
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, RATIOS_EXPLORATION_ID_3)
 
-    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult)
-    assertThat(exploration.title).isEqualTo("Writing Ratios in Simplest Form")
+    val exploration = monitorFactory.waitForNextSuccessfulResult(explorationResult).exploration
+    assertThat(exploration.translatableTitle.html).isEqualTo("Writing Ratios in Simplest Form")
     assertThat(exploration.languageCode).isEqualTo("en")
     assertThat(exploration.statesCount).isEqualTo(21)
   }
 
   @Test
   fun testController_returnsFailedForNonExistentExploration() {
-    val explorationResult = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, "NON_EXISTENT_TEST")
 
     monitorFactory.waitForNextFailureResult(explorationResult)
     val exception = fakeExceptionLogger.getMostRecentException()
@@ -169,7 +176,8 @@ class ExplorationDataControllerTest {
 
   @Test
   fun testController_returnsFailed_logsException() {
-    val explorationResult = explorationDataController.getExplorationById("NON_EXISTENT_TEST")
+    val explorationResult =
+      explorationDataController.getExplorationById(profileId, "NON_EXISTENT_TEST")
 
     monitorFactory.waitForNextFailureResult(explorationResult)
     val exception = fakeExceptionLogger.getMostRecentException()

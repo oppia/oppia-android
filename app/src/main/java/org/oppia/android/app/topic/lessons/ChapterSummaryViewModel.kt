@@ -10,7 +10,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class ChapterSummaryViewModel(
   val chapterPlayState: ChapterPlayState,
   val explorationId: String,
-  val chapterName: String,
+  val chapterTitle: String,
   val storyId: String,
   private val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
@@ -24,11 +24,11 @@ class ChapterSummaryViewModel(
   fun computeChapterPlayStateIconContentDescription(): String {
     return if (chapterPlayState == ChapterPlayState.COMPLETED) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.chapter_completed, (index + 1).toString(), chapterName
+        R.string.chapter_completed, (index + 1).toString(), chapterTitle
       )
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.chapter_in_progress, (index + 1).toString(), chapterName
+        R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
       )
     }
   }

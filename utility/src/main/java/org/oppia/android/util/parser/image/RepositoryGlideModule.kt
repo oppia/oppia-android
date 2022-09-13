@@ -1,5 +1,6 @@
 package org.oppia.android.util.parser.image
 
+import android.app.Application
 import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
@@ -44,7 +45,9 @@ class RepositoryGlideModule : AppGlideModule() {
     registry.append(
       MathModel::class.java,
       ByteBuffer::class.java,
-      MathBitmapModelLoader.Factory(context.applicationContext)
+      MathBitmapModelLoader.Factory(
+        context as? Application ?: context.applicationContext as Application
+      )
     )
   }
 }

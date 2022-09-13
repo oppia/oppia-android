@@ -637,6 +637,22 @@ states {
   }
 }
 init_state_name: "ImageClickInput"
-objective: "learn how to arrange the sentence"
-title: "Image Click Input Test Exploration"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Image Click Input Test Exploration"
+  content_id: "title"
+}
+description {
+  html: "learn how to arrange the sentence"
+  content_id: "description"
+}

@@ -270,8 +270,8 @@
   <string name="add_profile_pin_info">With a PIN, nobody else can access a profile besides this assigned user.</string>
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
   <string name="add_profile_error_name_not_unique">This name is already in use by another profile.</string>
-  <string name="add_profile_error_name_empty">Please enter a name for this profile.</string>
-  <string name="add_profile_error_name_only_letters">Names can only have letters. Try another name?</string>
+  <string name="add_profile_error_name_empty">Please enter a valid name for this profile.</string>
+  <string name="add_profile_error_name_only_letters">Please choose a profile name that doesn\'t include numbers or symbols.</string>
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
@@ -297,15 +297,19 @@
   <string name="pin_password_user_enter">Please enter your PIN.</string>
   <string name="input_pin_password_as_admin">Administrator’s 5-Digit PIN.</string>
   <string name="input_pin_password_as_user">User’s 3-Digit PIN.</string>
-  <string name="pin_password_forgot_pin">I forgot my pin.</string>
+  <string name="pin_password_forgot_pin">Forgot PIN?</string>
   <string name="pin_password_incorrect_pin">Incorrect PIN.</string>
   <string name="pin_password_show">show</string>
   <string name="pin_password_hide">hide</string>
   <string name="pin_password_close">Close</string>
   <string name="pin_password_success">PIN change is successful</string>
   <string name="pin_password_forgot_title">Forgot PIN?</string>
-  <string name="pin_password_forgot_message">To reset your PIN, please uninstall %s and then reinstall it.\n\nKeep in mind that if the device has not been online, you may lose user progress on multiple accounts. </string>
-  <string name="pin_password_play_store">Go to the play store</string>
+  <string name="admin_forgot_pin_message">To reset your PIN, you\'ll need to clear all saved data for %s.\n\nKeep in mind that this action will cause all profiles and user progress to be deleted, and it cannot be undone. Also, the app will close when this completes and will need to be reopened.</string>
+  <string name="admin_forgot_pin_reset_app_data_button_text">Reset %s Data</string>
+  <string name="admin_confirm_app_wipe_title">Confirm %s Data Reset</string>
+  <string name="admin_confirm_app_wipe_message">Are you sure that you want to delete all %s profiles on this device? This operation cannot be undone.</string>
+  <string name="admin_confirm_app_wipe_positive_button_text">Yes</string>
+  <string name="admin_confirm_app_wipe_negative_button_text">No</string>
   <string name="show_hide_password_icon">Show/Hide password icon</string>
   <string name="password_shown_icon">Password shown icon</string>
   <string name="password_hidden_icon">Password hidden icon</string>
@@ -422,7 +426,7 @@
   <string name="what_do_you_want_to_learn">What do you want to learn?</string>
   <!-- WalkthroughEndFragment -->
   <string name="great">Great</string>
-  <string name="lets_get_started">Let’s get \nstarted.</string>
+  <string name="lets_get_started">Let’s get started.</string>
   <string name="yes">Yes</string>
   <string name="no">No…</string>
   <string name="pick_a_different_topic">Pick a \ndifferent topic.</string>
@@ -484,6 +488,17 @@
   <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
     Close app
   </string>
+  <string name="splash_screen_developer_label">Developer Build</string>
+  <string name="splash_screen_alpha_label">Alpha</string>
+  <string name="splash_screen_beta_label">Beta</string>
+  <string name="beta_notice_dialog_title">Beta Notice</string>
+  <string name="beta_notice_dialog_message">Hello! Your app is now being updated to the Beta version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
+  <string name="beta_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
+  <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="general_availability_notice_dialog_title">General Availability Notice</string>
+  <string name="general_availability_notice_dialog_message">Hello! Your app is now being updated to the General Availability version. If you experience problems while using the app, or have questions, please contact us at android-feedback@oppia.org.</string>
+  <string name="general_availability_notice_dialog_do_not_show_again_text">Don\'t show this message again</string>
+  <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
     \u0020to\u0020
   </string>

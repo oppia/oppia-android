@@ -9,6 +9,7 @@ import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -81,42 +82,42 @@ class TopicActivity :
   }
 
   override fun routeToExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
+        parentScreen,
         isCheckpointingEnabled
       )
     )
   }
 
   override fun routeToResumeLesson(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
+        parentScreen,
         explorationCheckpoint
       )
     )

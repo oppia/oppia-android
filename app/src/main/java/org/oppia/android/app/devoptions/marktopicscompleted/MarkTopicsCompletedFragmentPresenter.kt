@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkTopicsCompletedFragmentBinding
 import org.oppia.android.databinding.MarkTopicsCompletedTopicViewBinding
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
@@ -20,7 +19,7 @@ import javax.inject.Inject
 class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<MarkTopicsCompletedViewModel>,
+  private val viewModel: MarkTopicsCompletedViewModel,
   private val modifyLessonProgressController: ModifyLessonProgressController
 ) : TopicSelector {
   private lateinit var binding: MarkTopicsCompletedFragmentBinding
@@ -47,13 +46,13 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = getMarkTopicsCompletedViewModel()
+      this.viewModel = this@MarkTopicsCompletedFragmentPresenter.viewModel
     }
 
     this.selectedTopicIdList = selectedTopicIdList
 
     this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    getMarkTopicsCompletedViewModel().setProfileId(profileId)
+    viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -70,7 +69,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
 
     binding.markTopicsCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        getMarkTopicsCompletedViewModel().getTopicList().forEach { viewModel ->
+        viewModel.getTopicList().forEach { viewModel ->
           if (!viewModel.isCompleted) topicSelected(viewModel.topic.topicId)
         }
       }
@@ -103,7 +102,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     model: TopicViewModel
   ) {
     binding.viewModel = model
-    if (getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted } == 0) {
+    if (viewModel.getTopicList().count { !it.isCompleted } == 0) {
       this.binding.isAllChecked = true
     }
     if (model.isCompleted) {
@@ -121,18 +120,12 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getMarkTopicsCompletedViewModel(): MarkTopicsCompletedViewModel {
-    return viewModelProvider.getForFragment(fragment, MarkTopicsCompletedViewModel::class.java)
-  }
-
   override fun topicSelected(topicId: String) {
     if (!selectedTopicIdList.contains(topicId)) {
       selectedTopicIdList.add(topicId)
     }
 
-    if (selectedTopicIdList.size ==
-      getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted }
-    ) {
+    if (selectedTopicIdList.size == viewModel.getTopicList().count { !it.isCompleted }) {
       binding.isAllChecked = true
     }
   }
@@ -142,9 +135,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
       selectedTopicIdList.remove(topicId)
     }
 
-    if (selectedTopicIdList.size !=
-      getMarkTopicsCompletedViewModel().getTopicList().count { !it.isCompleted }
-    ) {
+    if (selectedTopicIdList.size != viewModel.getTopicList().count { !it.isCompleted }) {
       binding.isAllChecked = false
     }
   }
