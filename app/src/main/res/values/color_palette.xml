@@ -104,4 +104,3 @@
   <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
   <color name="color_palette_concept_status_bar_color">@color/color_def_dark_red</color>
 </resources>
-
