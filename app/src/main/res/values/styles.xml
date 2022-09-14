@@ -64,6 +64,7 @@
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
@@ -164,7 +165,7 @@
   </style>
 
   <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-    <item name="boxBackgroundColor">@color/component_color_shared_text_input_layout_background_color</item>
+    <item name="boxBackgroundColor">@color/component_color_shared_input_interaction_edit_text_background_color</item>
     <item name="boxCornerRadiusBottomEnd">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusBottomStart">@dimen/text_input_layout_corner_radius</item>
     <item name="boxCornerRadiusTopEnd">@dimen/text_input_layout_corner_radius</item>
@@ -256,6 +257,10 @@
     <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
   </style>
 
+  <style name="Heading4ViewCenter" parent="Heading4">
+    <item name="android:gravity">center</item>
+  </style>
+
   <style name="Heading4ViewCenterVertical" parent="Heading4">
     <item name="android:gravity">center_vertical</item>
   </style>
@@ -311,8 +316,12 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
-  <style name="Subtitle2ViewCenter" parent="Subtitle2">
+  <style name="Subtitle2ViewCenterVertical" parent="Subtitle2">
     <item name="android:gravity">center_vertical</item>
+  </style>
+
+  <style name="Subtitle2ViewCenter" parent="Subtitle2">
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="SubtitleLight" parent="TextView.Common1">
@@ -365,6 +374,7 @@
   <style name="InputInteractionEditText" parent="Widget.AppCompat.EditText">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
+    <item name="android:textCursorDrawable">@drawable/color_cursor</item>
     <item name="android:background">@drawable/edit_text_background</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:imeOptions">actionDone</item>

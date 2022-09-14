@@ -4,6 +4,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -63,32 +64,32 @@ class TopicTestActivityForStory :
   }
 
   override fun routeToResumeLesson(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
+        parentScreen,
         explorationCheckpoint
       )
     )
   }
 
   override fun routeToExploration(
-    profileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
     startActivity(
@@ -98,7 +99,7 @@ class TopicTestActivityForStory :
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
+        parentScreen,
         isCheckpointingEnabled
       )
     )
