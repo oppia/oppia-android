@@ -26,6 +26,8 @@
       <TextView
         android:id="@+id/revision_card_explanation_text"
         style="@style/Body"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
         android:layout_marginStart="@dimen/revision_card_fragment_layout_margin_start"
         android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top"
         android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end" />
