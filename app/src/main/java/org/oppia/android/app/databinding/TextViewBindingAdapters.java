@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.PluralsRes;
 import androidx.databinding.BindingAdapter;
-import asia.ivity.android.marqueeview.MarqueeView;
 import java.util.concurrent.TimeUnit;
 import org.oppia.android.R;
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
