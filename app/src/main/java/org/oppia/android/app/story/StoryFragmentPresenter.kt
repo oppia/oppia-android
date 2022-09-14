@@ -88,6 +88,8 @@ class StoryFragmentPresenter @Inject constructor(
       (activity as StoryActivity).finish()
     }
 
+    binding.storyMarqueeView?.setPauseBetweenAnimations(500)
+    binding.storyMarqueeView?.setSpeed(10)
     binding.storyToolbarTitle.setOnClickListener {
       binding.storyMarqueeView?.startMarquee()
     }

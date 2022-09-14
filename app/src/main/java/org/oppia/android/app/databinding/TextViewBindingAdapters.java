@@ -68,24 +68,6 @@ public final class TextViewBindingAdapters {
     );
   }
 
-  /** Binds speed to the specified MarqueeView. */
-  @BindingAdapter("app:speed")
-  public static void setMarqueeSpeed(
-      @NonNull MarqueeView marqueeView,
-      int speed
-  ) {
-    marqueeView.setSpeed(speed);
-  }
-
-  /** Binds end animation pause to the specified MarqueeView. */
-  @BindingAdapter("app:pause")
-  public static void setAnimationPause(
-      @NonNull MarqueeView marqueeView,
-      int pause
-  ) {
-    marqueeView.setPauseBetweenAnimations(pause);
-  }
-
   private static String getTimeAgo(View view, long lastVisitedTimestamp) {
     long timeStampMillis = ensureTimestampIsInMilliseconds(lastVisitedTimestamp);
     long currentTimeMillis = getOppiaClock(view).getCurrentTimeMs();

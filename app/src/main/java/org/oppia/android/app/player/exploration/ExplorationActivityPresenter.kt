@@ -89,6 +89,8 @@ class ExplorationActivityPresenter @Inject constructor(
     explorationToolbarTitle = binding.explorationToolbarTitle
     activity.setSupportActionBar(explorationToolbar)
 
+    binding.explorationMarqueeView.setPauseBetweenAnimations(500)
+    binding.explorationMarqueeView.setSpeed(10)
     binding.explorationToolbarTitle.setOnClickListener {
       binding.explorationMarqueeView.startMarquee()
     }

@@ -56,6 +56,8 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
+    binding.topicMarqueeView.setPauseBetweenAnimations(500)
+    binding.topicMarqueeView.setSpeed(10)
     binding.topicToolbarTitle.setOnClickListener {
       binding.topicMarqueeView.startMarquee()
     }

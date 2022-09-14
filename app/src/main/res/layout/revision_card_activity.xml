@@ -33,8 +33,7 @@
           android:id="@+id/revision_card_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:speed ="10"
-          app:pause="500">
+          >
         <TextView
           android:id="@+id/revision_card_toolbar_title"
           style="@style/MarqueeToolbarTitleTextView"

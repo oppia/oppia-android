@@ -41,8 +41,7 @@
           android:id="@+id/marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          marquee:speed ="10"
-          marquee:pause="500">
+          >
         <TextView
           android:id="@+id/story_toolbar_title"
           style="@style/MarqueeToolbarTitleTextView"

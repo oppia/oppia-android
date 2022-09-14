@@ -44,6 +44,8 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
       (activity as LicenseTextViewerActivity).finish()
     }
 
+    binding.licenseTextViewerActivityMarqueeView.setPauseBetweenAnimations(500)
+    binding.licenseTextViewerActivityMarqueeView.setSpeed(10)
     binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
       binding.licenseTextViewerActivityMarqueeView.startMarquee()
     }
