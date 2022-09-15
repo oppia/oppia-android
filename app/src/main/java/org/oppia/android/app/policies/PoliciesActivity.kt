@@ -3,16 +3,18 @@ package org.oppia.android.app.policies
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
-import javax.inject.Inject
 
 /** Activity for displaying the app policies. */
-class PoliciesActivity : InjectableAppCompatActivity() {
+class PoliciesActivity :
+  InjectableAppCompatActivity(),
+  RouteToPoliciesListener {
 
   @Inject
   lateinit var policiesActivityPresenter: PoliciesActivityPresenter
@@ -44,5 +46,9 @@ class PoliciesActivity : InjectableAppCompatActivity() {
         it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO, policiesActivityParams)
       }
     }
+  }
+
+  override fun onRouteToPolicies(policyPage: PolicyPage) {
+    startActivity(createPoliciesActivityIntent(this, policyPage))
   }
 }
