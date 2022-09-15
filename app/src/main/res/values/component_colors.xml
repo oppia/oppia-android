@@ -247,6 +247,16 @@
   <color name="component_color_confetti_red_color">@color/color_palette_confetti_red_color</color>
   <color name="component_color_confetti_yellow_color">@color/color_palette_confetti_yellow_color</color>
   <color name="component_color_confetti_blue_color">@color/color_palette_confetti_blue_color</color>
+  <!-- Topic Info Fragment -->
+  <color name="component_color_topic_info_fragment_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_topic_info_fragment_topic_name_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_topic_info_fragment_story_count_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_topic_info_fragment_thumbnail_gradient_end_color">@color/color_palette_thumbnail_gradient_end_color</color>
+  <color name="component_color_topic_info_fragment_thumbnail_gradient_start_color">@color/color_palette_thumbnail_gradient_start_color</color>
+  <color name="component_color_topic_info_fragment_see_more_text_color">@color/color_palette_primary_color</color>
+  <color name="component_color_topic_info_fragment_download_status_image_color">@color/color_palette_primary_color</color>
+  <color name="component_color_topic_info_fragment_download_story_count_text_color">@color/color_palette_show_text_color</color>
+  <color name="component_color_topic_info_fragment_download_story_size_text_color">@color/color_palette_show_text_color</color>
   <!-- Profile Edit Activity -->
   <color name="component_color_profile_edit_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_profile_edit_activity_profile_view_background_color">@color/color_palette_container_background_color</color>
