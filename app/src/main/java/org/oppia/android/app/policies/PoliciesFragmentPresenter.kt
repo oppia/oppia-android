@@ -20,7 +20,7 @@ class PoliciesFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val htmlParserFactory: HtmlParser.Factory,
   private val resourceHandler: AppLanguageResourceHandler
-): HtmlParser.PolicyOppiaTagActionListener {
+) : HtmlParser.PolicyOppiaTagActionListener {
 
   /** Handles onCreate() method of the [PoliciesFragment]. */
   fun handleCreateView(
