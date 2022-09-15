@@ -157,7 +157,7 @@ class BottomSheetOptionsMenuTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.bottom_sheet_layout)).check(doesNotExist())
+      onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }
   }
 
