@@ -128,11 +128,11 @@ kt_android_library(
     deps = [
         ":dagger",
         ":performance_metrics_controller",
-        "//model/src/main/proto:screens_java_proto_lite",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:screens_java_proto_lite",
         "//third_party:androidx_lifecycle_lifecycle-extensions",
         "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
