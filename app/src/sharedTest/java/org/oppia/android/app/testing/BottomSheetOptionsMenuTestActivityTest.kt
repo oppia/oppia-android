@@ -204,7 +204,7 @@ class BottomSheetOptionsMenuTestActivityTest {
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerBottomSheetOptionsMenuTest_TestApplicationComponent.builder()
+      DaggerBottomSheetOptionsMenuTestActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
