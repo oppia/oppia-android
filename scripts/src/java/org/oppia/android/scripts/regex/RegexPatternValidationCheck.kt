@@ -268,9 +268,9 @@ private data class MatchableFileContentCheck(
     /** Returns a new [MatchableFileContentCheck] based on the specified [FileContentCheck]. */
     fun createFrom(fileContentCheck: FileContentCheck): MatchableFileContentCheck {
       val prohibitedContentRegex = if (fileContentCheck.prohibitedContentRegex == "") null
-        else fileContentCheck.prohibitedContentRegex.toRegex()
+      else fileContentCheck.prohibitedContentRegex.toRegex()
       val requiredContentRegex = if (fileContentCheck.requiredContentRegex == "") null
-        else fileContentCheck.requiredContentRegex.toRegex()
+      else fileContentCheck.requiredContentRegex.toRegex()
 
       return MatchableFileContentCheck(
         filePathRegex = fileContentCheck.filePathRegex.toRegex(),
