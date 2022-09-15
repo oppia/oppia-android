@@ -99,11 +99,7 @@
           <Button
             android:id="@+id/resume_lesson_start_over_button"
             style="@style/StartOverLessonButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:minWidth="128dp"
-            android:minHeight="48dp"
             android:text="@string/start_over_lesson_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/resume_lesson_continue_button"
@@ -113,11 +109,7 @@
           <Button
             android:id="@+id/resume_lesson_continue_button"
             style="@style/ContinueLessonButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:minWidth="128dp"
-            android:minHeight="48dp"
             android:text="@string/resume_lesson_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
