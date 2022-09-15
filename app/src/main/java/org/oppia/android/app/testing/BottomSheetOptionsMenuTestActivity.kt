@@ -1,19 +1,17 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
-import org.oppia.android.app.player.exploration.ExplorationActivityPresenter
-import org.oppia.android.app.testing.activity.TestActivity
+import javax.inject.Inject
 
-class BottomSheetOptionsMenuTestActivity: InjectableAppCompatActivity(), BottomSheetOptionsMenuItemClickListener {
+class BottomSheetOptionsMenuTestActivity : InjectableAppCompatActivity(),
+  BottomSheetOptionsMenuItemClickListener {
 
   @Inject
-  lateinit var bottomSheetOptionsMenuTestActivityPresenter: BottomSheetOptionsMenuTestActivityPresenter
+  lateinit var bottomSheetOptionsMenuTestActivityPresenter :
+    BottomSheetOptionsMenuTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -24,5 +22,4 @@ class BottomSheetOptionsMenuTestActivity: InjectableAppCompatActivity(), BottomS
   override fun handleOnOptionsItemSelected(itemId: Int) {
     bottomSheetOptionsMenuTestActivityPresenter.handleOnOptionsItemSelected(itemId)
   }
-
 }
