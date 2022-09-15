@@ -1673,7 +1673,7 @@ class StoryProgressTestHelperTest {
   }
 
   private fun getTopic(profileId: ProfileId, topicId: String): Topic =
-    monitorFactory.waitForNextSuccessfulResult(topicController.getTopic(profileId, topicId))
+    monitorFactory.waitForNextSuccessfulResult(topicController.getTopic(profileId, topicId)).topic
 
   private fun Topic.getStory(storyId: String): StorySummary {
     return storyList.find { it.storyId == storyId } ?: error("Failed to find story: $storyId")

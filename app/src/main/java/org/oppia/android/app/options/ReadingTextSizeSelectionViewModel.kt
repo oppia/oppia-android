@@ -12,45 +12,46 @@ import javax.inject.Inject
 @FragmentScope
 class ReadingTextSizeSelectionViewModel @Inject constructor(
   fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler
+  resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private val resourceBundle = fragment.requireContext().resources
-  val selectedTextSize = MutableLiveData<String>()
+  private val changeableSelectedTextSize = MutableLiveData<ReadingTextSize>()
   private val textSizeRadioButtonListener = fragment as TextSizeRadioButtonListener
+  var selectedTextSize: ReadingTextSize?
+    get() = changeableSelectedTextSize.value
+    set(value) { changeableSelectedTextSize.value = value }
 
-  private val textSizeList = listOf<TextSizeItemViewModel>(
+  private val textSizeList = listOf(
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.SMALL_TEXT_SIZE,
-      selectedTextSize,
+      changeableSelectedTextSize,
       textSizeRadioButtonListener,
       resourceHandler
     ),
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.MEDIUM_TEXT_SIZE,
-      selectedTextSize,
+      changeableSelectedTextSize,
       textSizeRadioButtonListener,
       resourceHandler
     ),
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.LARGE_TEXT_SIZE,
-      selectedTextSize,
+      changeableSelectedTextSize,
       textSizeRadioButtonListener,
       resourceHandler
     ),
     TextSizeItemViewModel(
       resourceBundle,
       ReadingTextSize.EXTRA_LARGE_TEXT_SIZE,
-      selectedTextSize,
+      changeableSelectedTextSize,
       textSizeRadioButtonListener,
       resourceHandler
     ),
   )
 
-  val recyclerViewTextSizeList: List<TextSizeItemViewModel> by lazy {
-    textSizeList
-  }
+  val recyclerViewTextSizeList: List<TextSizeItemViewModel> by lazy { textSizeList }
 }

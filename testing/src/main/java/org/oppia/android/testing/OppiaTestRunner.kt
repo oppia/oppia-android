@@ -27,7 +27,7 @@ class OppiaTestRunner : AndroidJUnitRunner() {
     // Load a new application if it's different than the original.
     val bindApplication = retrieveTestApplicationName(arguments?.getString("class"))?.let {
       newApplication(applicationClassLoader, it, targetContext)
-    } ?: targetContext.applicationContext as Application
+    } ?: targetContext as Application
 
     // Ensure the bound application is forcibly overwritten in the target context, and used
     // subsequently throughout the runner since it's replacing the previous application.

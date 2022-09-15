@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
 
@@ -65,23 +67,23 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
   }
 
   override fun selectExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
     canExplorationBeResumed: Boolean,
     canHavePartialProgressSaved: Boolean,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     storyFragmentPresenter.handleSelectExploration(
-      internalProfileId,
+      profileId,
       topicId,
       storyId,
       explorationId,
       canExplorationBeResumed,
       canHavePartialProgressSaved,
-      backflowScreen,
+      parentScreen,
       explorationCheckpoint
     )
   }
