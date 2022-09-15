@@ -136,7 +136,7 @@ class ProfileEditFragmentPresenter @Inject constructor(
             DeleteProfileSuccessDialogFragment.createNewInstance()
               .showNow(
                 fragment.childFragmentManager,
-                DeleteProfileSuccessDialogFragment.DELETE_PROFILE_SUCCESS_DIALOG_TAG
+                DeleteProfileSuccessDialogFragment.DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG
               )
           }
         }
