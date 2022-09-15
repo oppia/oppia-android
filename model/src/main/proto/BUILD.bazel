@@ -55,7 +55,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "performance_metrics_event_logger_proto",
     srcs = ["performance_metrics.proto"],
-    deps = [":screens_proto"]
+    deps = [":screens_proto"],
 )
 
 java_lite_proto_library(
