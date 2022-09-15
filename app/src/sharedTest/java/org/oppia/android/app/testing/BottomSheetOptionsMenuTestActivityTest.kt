@@ -94,8 +94,8 @@ import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = BottomSheetOptionsMenuTest.TestApplication::class)
-class BottomSheetOptionsMenuTest {
+@Config(application = BottomSheetOptionsMenuTestActivityTest.TestApplication::class)
+class BottomSheetOptionsMenuTestActivityTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -199,7 +199,7 @@ class BottomSheetOptionsMenuTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest)
+    fun inject(bottomSheetOptionsMenuTestActivityTest: BottomSheetOptionsMenuTestActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
@@ -209,8 +209,8 @@ class BottomSheetOptionsMenuTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest) {
-      component.inject(bottomSheetOptionsMenuTest)
+    fun inject(bottomSheetOptionsMenuTestActivityTest: BottomSheetOptionsMenuTestActivityTest) {
+      component.inject(bottomSheetOptionsMenuTestActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

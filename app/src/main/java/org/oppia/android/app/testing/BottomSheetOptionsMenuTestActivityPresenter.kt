@@ -10,8 +10,9 @@ import org.oppia.android.app.player.exploration.BottomSheetOptionsMenu
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import javax.inject.Inject
 
-private const val profileId = 0
+private const val INTERNAL_PROFILE_ID = 0
 
+/** The presenter for [BottomSheetOptionsMenuTestActivity] */
 class BottomSheetOptionsMenuTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
@@ -30,7 +31,7 @@ class BottomSheetOptionsMenuTestActivityPresenter @Inject constructor(
       R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
-          profileId,
+          INTERNAL_PROFILE_ID,
           /* isFromNavigationDrawer= */ false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
@@ -39,7 +40,7 @@ class BottomSheetOptionsMenuTestActivityPresenter @Inject constructor(
       }
       R.id.action_help -> {
         val intent = HelpActivity.createHelpActivityIntent(
-          activity, profileId,
+          activity, INTERNAL_PROFILE_ID,
           /* isFromNavigationDrawer= */false
         )
         fontScaleConfigurationUtil.adjustFontScale(activity, ReadingTextSize.MEDIUM_TEXT_SIZE)
