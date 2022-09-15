@@ -4,12 +4,10 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
-import org.oppia.android.app.model.OppiaLogger
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.state.StateGraph
-import org.oppia.android.util.system.OppiaClock
 
 // TODO(#186): Use an interaction repository to retrieve whether a specific ID corresponds to a terminal interaction.
 private const val TERMINAL_INTERACTION_ID = "EndExploration"

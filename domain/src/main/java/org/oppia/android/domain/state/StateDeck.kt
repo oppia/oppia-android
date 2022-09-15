@@ -1,6 +1,5 @@
 package org.oppia.android.domain.state
 
-import javax.inject.Inject
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.CompletedState
 import org.oppia.android.app.model.CompletedStateInCheckpoint
@@ -12,9 +11,10 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.util.system.OppiaClock
+import javax.inject.Inject
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
- private const val THREE_SECONDS_IN_MS = 3000L
+private const val THREE_SECONDS_IN_MS = 3000L
 
 /**
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
@@ -29,7 +29,6 @@ class StateDeck @Inject constructor(
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
   private var stateIndex: Int = 0
   private val continueButtonAnimationDelay = THREE_SECONDS_IN_MS
-
 
   /** Resets this deck to a new, specified initial [State]. */
   fun resetDeck(initialState: State) {
@@ -200,7 +199,9 @@ class StateDeck @Inject constructor(
           .addAllWrongAnswer(currentDialogInteractions)
           .setHelpIndex(helpIndex)
       )
-      .setContinueButtonAnimationTimestamp(oppiaClock.getCurrentTimeMs() + continueButtonAnimationDelay)
+      .setContinueButtonAnimationTimestamp(
+        oppiaClock.getCurrentTimeMs() + continueButtonAnimationDelay
+      )
       .build()
   }
 

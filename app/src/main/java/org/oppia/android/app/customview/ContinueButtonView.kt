@@ -3,7 +3,6 @@ package org.oppia.android.app.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AnimationUtils
-import android.view.animation.BounceInterpolator
 import androidx.lifecycle.Observer
 import org.oppia.android.R
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
@@ -35,5 +34,4 @@ class ContinueButtonView @JvmOverloads constructor(
     super.onDetachedFromWindow()
     viewModel.animateContinueButton.removeObserver(myObserver)
   }
-
 }

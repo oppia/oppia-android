@@ -94,7 +94,6 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.databinding.AnimatingContinueInteractionItemBinding
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

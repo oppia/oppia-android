@@ -31,11 +31,11 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.system.OppiaClock
 
 private const val BEGIN_SESSION_RESULT_PROVIDER_ID =
   "QuestionAssessmentProgressController.begin_session_result"

@@ -16,7 +16,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import javax.inject.Inject
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -49,6 +48,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
+import javax.inject.Inject
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -346,7 +346,6 @@ class StateFragmentPresenter @Inject constructor(
 //            explorationProgressController.isContinueButtonAnimating.value =
 //            continueInteractionAnimationListener.startAnimation()
           }
-
       } else {
         lifecycleSafeTimerFactory.createTimer(explorationProgressController.timestampToAnimate)
           .observe(fragment) {
@@ -360,11 +359,9 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToAnimateContinueButton() {
     explorationProgressController.isContinueButtonAnimating.observe(fragment) {
       if (it) {
-
       }
     }
   }
-
 
   /** Subscribes to the result of requesting to show a hint or solution. */
   private fun subscribeToHintSolution(resultDataProvider: DataProvider<Any?>) {
