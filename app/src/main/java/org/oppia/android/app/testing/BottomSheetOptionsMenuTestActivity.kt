@@ -6,11 +6,12 @@ import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 import javax.inject.Inject
 
-class BottomSheetOptionsMenuTestActivity : InjectableAppCompatActivity(),
+class BottomSheetOptionsMenuTestActivity :
+  InjectableAppCompatActivity(),
   BottomSheetOptionsMenuItemClickListener {
 
   @Inject
-  lateinit var bottomSheetOptionsMenuTestActivityPresenter :
+  lateinit var bottomSheetOptionsMenuTestActivityPresenter:
     BottomSheetOptionsMenuTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
