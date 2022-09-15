@@ -84,8 +84,8 @@ kt_android_library(
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
-        ":dagger",
         ":activity_lifecycle_observer",
+        ":dagger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
     ],
 )

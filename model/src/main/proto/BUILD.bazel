@@ -308,5 +308,7 @@ android_library(
     name = "test_models",
     testonly = True,
     visibility = ["//:oppia_api_visibility"],
-    exports = [":test_java_proto_lite"],
+    exports = [
+        ":test_java_proto_lite",
+    ],
 )

@@ -55,6 +55,18 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "current_app_screen_name_intent_decorator",
+    srcs = [
+        "CurrentAppScreenNameIntentDecorator.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
+    ],
+)
+
+kt_android_library(
     name = "event_bundle_creator",
     srcs = [
         "EventBundleCreator.kt",
@@ -67,18 +79,6 @@ kt_android_library(
         "//third_party:javax_inject_javax_inject",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
-    ],
-)
-
-kt_android_library(
-    name = "current_app_screen_name_intent_decorator",
-    srcs = [
-        "CurrentAppScreenNameIntentDecorator.kt",
-    ],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        "//model/src/main/proto:screens_java_proto_lite",
-        "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions"
     ],
 )
 
