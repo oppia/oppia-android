@@ -158,7 +158,6 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
 
-    subscribeToAnimateContinueButton()
     subscribeToCurrentState()
     return binding.root
   }
@@ -332,34 +331,6 @@ class StateFragmentPresenter @Inject constructor(
         0,
         200
       )
-    }
-
-//    setUpContinueButtonAnimation(ephemeralState)
-  }
-
-  private fun setUpContinueButtonAnimation(ephemeralState: EphemeralState) {
-    if (!ephemeralState.hasPreviousState) {
-      if (explorationProgressController.timestampToAnimate == -1L) {
-        explorationProgressController.timestampToAnimate = oppiaClock.getCurrentTimeMs() + 5000L
-        lifecycleSafeTimerFactory.createTimer(explorationProgressController.timestampToAnimate)
-          .observe(fragment) {
-//            explorationProgressController.isContinueButtonAnimating.value =
-//            continueInteractionAnimationListener.startAnimation()
-          }
-      } else {
-        lifecycleSafeTimerFactory.createTimer(explorationProgressController.timestampToAnimate)
-          .observe(fragment) {
-//            explorationProgressController.isContinueButtonAnimating.value = true
-//            continueInteractionAnimationListener.startAnimation()
-          }
-      }
-    }
-  }
-
-  private fun subscribeToAnimateContinueButton() {
-    explorationProgressController.isContinueButtonAnimating.observe(fragment) {
-      if (it) {
-      }
     }
   }
 

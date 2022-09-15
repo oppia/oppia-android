@@ -1222,11 +1222,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.CONTINUE_INTERACTION,
         inflateDataBinding = ContinueInteractionItemBinding::inflate,
-        setViewModel = { continueInteractionItemBinding, viewModel ->
-          continueInteractionItemBinding.setViewModel(
-            viewModel
-          )
-        },
+        setViewModel = ContinueInteractionItemBinding::setViewModel,
         transformViewModel = { it as ContinueInteractionViewModel }
       ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON,

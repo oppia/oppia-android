@@ -11,7 +11,6 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
 private const val THREE_SECONDS_IN_MS = 3000L
@@ -20,7 +19,7 @@ private const val THREE_SECONDS_IN_MS = 3000L
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
  * treats the learner's progress like a deck of cards to simplify forward/backward navigation.
  */
-class StateDeck @Inject constructor(
+class StateDeck constructor(
   initialState: State,
   private val isTopOfDeckTerminalChecker: (State) -> Boolean
 ) {
