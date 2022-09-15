@@ -184,7 +184,8 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
