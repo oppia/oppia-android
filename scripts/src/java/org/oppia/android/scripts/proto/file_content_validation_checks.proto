@@ -27,4 +27,7 @@ message FileContentCheck {
 
   // Regex patterns for all file/file paths that should be exempted for this check.
   repeated string exempted_file_patterns = 5;
+
+  // Regex which should be contained in the file.
+  string required_content_regex = 6;
 }

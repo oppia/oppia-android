@@ -45,18 +45,6 @@ java_lite_proto_library(
 )
 
 oppia_proto_library(
-    name = "screen_name_presence_validation_checks_proto",
-    srcs = ["screen_name_presence_checks.proto"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-)
-
-java_lite_proto_library(
-    name = "screen_name_presence_validation_checks_java_proto_lite",
-    visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = [":screen_name_presence_validation_checks_proto"],
-)
-
-oppia_proto_library(
     name = "script_exemptions_proto",
     srcs = ["script_exemptions.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],

@@ -6,8 +6,6 @@ import org.oppia.android.scripts.proto.FileContentCheck
 import org.oppia.android.scripts.proto.FileContentChecks
 import org.oppia.android.scripts.proto.FilenameCheck
 import org.oppia.android.scripts.proto.FilenameChecks
-import org.oppia.android.scripts.proto.ScreenNamePresenceCheck
-import org.oppia.android.scripts.proto.ScreenNamePresenceChecks
 import java.io.File
 import java.io.FileInputStream
 
@@ -47,7 +45,7 @@ fun main(vararg args: String) {
   val contentChecks = retrieveFileContentChecks().map { MatchableFileContentCheck.createFrom(it) }
   val hasFileContentCheckFailure =
     searchFiles.fold(initial = false) { hasFailingFile, searchFile ->
-      val fileFails = checkProhibitedContent(
+      val fileFails = checkFileContent(
         repoRoot,
         searchFile,
         contentChecks
@@ -55,28 +53,14 @@ fun main(vararg args: String) {
       return@fold hasFailingFile || fileFails
     }
 
-  // TODO(#4557): Introduction of a robust approach to verify proper screen name usage in activities.
-  val screenNamePresenceChecks = retrieveScreenNamePresenceChecks().map {
-    MatchableScreenNamePresenceCheck.createFrom(it)
-  }
-  val hasScreenNamePresenceCheckFailure =
-    searchFiles.fold(initial = false) { hasFailingFile, searchFile ->
-      val fileFails = checkScreenNamePresence(
-        repoRoot,
-        searchFile,
-        screenNamePresenceChecks
-      )
-      return@fold hasFailingFile || fileFails
-    }
-
-  if (hasFilenameCheckFailure || hasFileContentCheckFailure || hasScreenNamePresenceCheckFailure) {
+  if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
         "#regexpatternvalidation-check for more details on how to fix this.\n"
     )
   }
 
-  if (hasFilenameCheckFailure || hasFileContentCheckFailure || hasScreenNamePresenceCheckFailure) {
+  if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
     throw Exception("REGEX PATTERN CHECKS FAILED")
   } else {
     println("REGEX PATTERN CHECKS PASSED")
@@ -105,18 +89,6 @@ private fun retrieveFileContentChecks(): List<FileContentCheck> {
     "file_content_validation_checks.pb",
     FileContentChecks.getDefaultInstance()
   ).fileContentChecksList
-}
-
-/**
- * Retrieves all screen name presence checks.
- *
- * @return a list of all the ScreenNamePresenceChecks
- */
-private fun retrieveScreenNamePresenceChecks(): List<ScreenNamePresenceCheck> {
-  return loadProto(
-    "screen_name_presence_validation_checks.pb",
-    ScreenNamePresenceChecks.getDefaultInstance()
-  ).screenNamePresenceChecksList
 }
 
 /**
@@ -171,12 +143,13 @@ private fun checkProhibitedFileNamePattern(
  * @param fileContentChecks contents to check for validity
  * @return whether the file content pattern is correct or not
  */
-private fun checkProhibitedContent(
+private fun checkFileContent(
   repoRoot: File,
   searchFile: File,
   fileContentChecks: Iterable<MatchableFileContentCheck>
 ): Boolean {
-  val lines = searchFile.readLines()
+  val fileContent = searchFile.readText()
+  val lines = fileContent.lines()
   return fileContentChecks.fold(initial = false) { hasFailingFile, fileContentCheck ->
     val fileRelativePath = searchFile.toRelativeString(repoRoot)
     val fileFails = if (fileContentCheck.isFileAffectedByCheck(fileRelativePath)) {
@@ -190,34 +163,11 @@ private fun checkProhibitedContent(
           )
         }
       }
-      affectedLines.isNotEmpty()
-    } else false
-    return@fold hasFailingFile || fileFails
-  }
-}
-
-/**
- * Checks for the presence of screen name.
- *
- * @param repoRoot the root directory of the repo
- * @param searchFile the file to check for accepted content
- * @param screenNameChecks contents to check for validity
- * @return whether the file content pattern is correct or not
- */
-private fun checkScreenNamePresence(
-  repoRoot: File,
-  searchFile: File,
-  screenNamePresenceChecks: Iterable<MatchableScreenNamePresenceCheck>
-): Boolean {
-  val lines = searchFile.readLines()
-  return screenNamePresenceChecks.fold(initial = false) { hasFailingFile, screenNamePresenceCheck ->
-    val fileRelativePath = searchFile.toRelativeString(repoRoot)
-    val fileFails = if (screenNamePresenceCheck.isFileAffectedByCheck(fileRelativePath)) {
-      val isFileAffected = screenNamePresenceCheck.computeIfFileIsAffected(lines)
-      if (isFileAffected) {
-        logScreenNamePresenceFailure(screenNamePresenceCheck.failureMessage, fileRelativePath)
+      val hasRequiredRegex = fileContentCheck.doesFileContainRequiredRegex(fileContent)
+      if (!hasRequiredRegex) {
+        logRequiredContentFailure(fileContentCheck.failureMessage, fileRelativePath)
       }
-      isFileAffected
+      affectedLines.isNotEmpty() || !hasRequiredRegex
     } else false
     return@fold hasFailingFile || fileFails
   }
@@ -245,7 +195,7 @@ private fun logProhibitedFilenameFailure(
 }
 
 /**
- * Logs the failures for file content violation.
+ * Logs the failures for prohibited file content violation.
  *
  * @param lineNumber the line number at which the failure occured
  * @param errorToShow the failure message to be logged
@@ -261,12 +211,12 @@ private fun logProhibitedContentFailure(
 }
 
 /**
- * Logs the failures for screen name presence.
+ * Logs the failures for required file content violation.
  *
  * @param errorToShow the failure message to be logged
  * @param filePath the path of the file relative to the repository which failed the check
  */
-private fun logScreenNamePresenceFailure(
+private fun logRequiredContentFailure(
   errorToShow: String,
   filePath: String
 ) {
@@ -277,10 +227,11 @@ private fun logScreenNamePresenceFailure(
 /** A matchable version of [FileContentCheck]. */
 private data class MatchableFileContentCheck(
   val filePathRegex: Regex,
-  val prohibitedContentRegex: Regex,
+  val prohibitedContentRegex: Regex?,
   val failureMessage: String,
   val exemptedFileNames: List<String>,
-  val exemptedFilePatterns: List<Regex>
+  val exemptedFilePatterns: List<Regex>,
+  val requiredContentRegex: Regex?
 ) {
   /**
    * Returns whether the relative file given by the specified path should be affected by this check
@@ -295,9 +246,17 @@ private data class MatchableFileContentCheck(
    * provided iterable.
    */
   fun computeAffectedLines(lines: Iterable<String>): List<Int> {
-    return lines.withIndex().filter { (_, line) ->
-      prohibitedContentRegex.containsMatchIn(line)
-    }.map { (index, _) -> index }
+    if (prohibitedContentRegex != null)
+      return lines.withIndex().filter { (_, line) ->
+        prohibitedContentRegex.containsMatchIn(line)
+      }.map { (index, _) -> index }
+    else return emptyList()
+  }
+
+  /** Returns a boolean indicating whether the file contains the required content or not. */
+  fun doesFileContainRequiredRegex(fileContent: String): Boolean {
+    if (requiredContentRegex != null) return requiredContentRegex.containsMatchIn(fileContent)
+    else return true
   }
 
   private fun isFileExempted(relativePath: String): Boolean {
@@ -308,63 +267,18 @@ private data class MatchableFileContentCheck(
   companion object {
     /** Returns a new [MatchableFileContentCheck] based on the specified [FileContentCheck]. */
     fun createFrom(fileContentCheck: FileContentCheck): MatchableFileContentCheck {
+      val prohibitedContentRegex = if (fileContentCheck.prohibitedContentRegex == "") null
+        else fileContentCheck.prohibitedContentRegex.toRegex()
+      val requiredContentRegex = if (fileContentCheck.requiredContentRegex == "") null
+        else fileContentCheck.requiredContentRegex.toRegex()
+
       return MatchableFileContentCheck(
         filePathRegex = fileContentCheck.filePathRegex.toRegex(),
-        prohibitedContentRegex = fileContentCheck.prohibitedContentRegex.toRegex(),
+        prohibitedContentRegex = prohibitedContentRegex,
+        requiredContentRegex = requiredContentRegex,
         failureMessage = fileContentCheck.failureMessage,
         exemptedFileNames = fileContentCheck.exemptedFileNameList,
         exemptedFilePatterns = fileContentCheck.exemptedFilePatternsList.map { it.toRegex() }
-      )
-    }
-  }
-}
-
-/** A matchable version of [ScreenNamePresenceCheck]. */
-private data class MatchableScreenNamePresenceCheck(
-  val filePathRegex: Regex,
-  val acceptedContentRegex: Regex,
-  val failureMessage: String,
-  val exemptedFileNames: List<String>,
-  val exemptedFilePatterns: List<Regex>
-) {
-  /**
-   * Returns whether the relative file given by the specified path should be affected by this check
-   * (i.e. that it matches the inclusion pattern and is not explicitly or implicitly excluded).
-   */
-  fun isFileAffectedByCheck(relativePath: String): Boolean =
-    filePathRegex.containsMatchIn(relativePath) && !isFileExempted(relativePath)
-
-  /**
-   * Returns a boolean value indicating whether the file in consideration contains the accepted
-   * content or not.
-   */
-  fun computeIfFileIsAffected(lines: Iterable<String>): Boolean {
-    lines.forEach { line ->
-      if (line.contains(acceptedContentRegex))
-        return false
-    }
-    return true
-  }
-
-  private fun isFileExempted(relativePath: String): Boolean {
-    return relativePath in exemptedFileNames ||
-      exemptedFilePatterns.any { it.containsMatchIn(relativePath) }
-  }
-
-  companion object {
-    /**
-     * Returns a new [MatchableScreenNamePresenceCheck] based on the specified
-     * [ScreenNamePresenceCheck].
-     */
-    fun createFrom(
-      screenNamePresenceCheck: ScreenNamePresenceCheck
-    ): MatchableScreenNamePresenceCheck {
-      return MatchableScreenNamePresenceCheck(
-        filePathRegex = screenNamePresenceCheck.filePathRegex.toRegex(),
-        acceptedContentRegex = screenNamePresenceCheck.acceptedContentRegex.toRegex(),
-        failureMessage = screenNamePresenceCheck.failureMessage,
-        exemptedFileNames = screenNamePresenceCheck.exemptedFileNameList,
-        exemptedFilePatterns = screenNamePresenceCheck.exemptedFilePatternsList.map { it.toRegex() }
       )
     }
   }
