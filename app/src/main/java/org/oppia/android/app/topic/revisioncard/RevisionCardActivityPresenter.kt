@@ -59,9 +59,6 @@ class RevisionCardActivityPresenter @Inject constructor(
     binding.revisionCardToolbar.setNavigationOnClickListener {
       (activity as RevisionCardActivity).finish()
     }
-
-    binding.revisionCardMarqueeView.setPauseBetweenAnimations(500)
-    binding.revisionCardMarqueeView.setSpeed(10)
     binding.revisionCardToolbarTitle.setOnClickListener {
       binding.revisionCardMarqueeView.startMarquee()
     }

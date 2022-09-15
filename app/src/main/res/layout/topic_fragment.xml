@@ -38,7 +38,8 @@
           android:id="@+id/topic_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          >
+          app:speed ="10"
+          app:pause="500">
         <TextView
           android:id="@+id/topic_toolbar_title"
           android:layout_width="match_parent"
