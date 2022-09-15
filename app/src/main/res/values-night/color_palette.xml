@@ -87,5 +87,10 @@
   <color name="color_palette_drag_drop_single_item_gradient_center_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_drag_drop_single_item_gradient_start_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_drag_drop_single_item_stroke_color">@color/color_def_white</color>
+  <color name="color_palette_confetti_red_color">@color/color_def_confetti_rosy_pink</color>
+  <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_bright_gold</color>
+  <color name="color_palette_confetti_blue_color">@color/color_def_confetti_crystal_blue</color>
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
 </resources>

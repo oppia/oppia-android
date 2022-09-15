@@ -4183,6 +4183,22 @@ states {
   }
 }
 init_state_name: "Introduction"
-objective: "Learn how to find equivalent ratios, and how to simplify ratios."
-title: "Equivalent Ratios"
 language_code: "en"
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Equivalent Ratios"
+  content_id: "title"
+}
+description {
+  html: "Learn how to find equivalent ratios, and how to simplify ratios."
+  content_id: "description"
+}
