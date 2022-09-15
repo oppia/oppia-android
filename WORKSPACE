@@ -144,7 +144,7 @@ git_repository(
 git_repository(
     name = "marqueeview",
     commit = "472f8d63faf6491da0f5a04cafbad3f70878fb81",
-    remote = "https://github.com/KevinGitonga/Android-MarqueeView"
+    remote = "https://github.com/KevinGitonga/Android-MarqueeView",
 )
 
 bind(
