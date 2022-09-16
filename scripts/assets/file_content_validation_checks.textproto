@@ -393,5 +393,5 @@ file_content_checks {
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/player/state/testing.+?\\.kt"
   exempted_file_patterns: "testing.+?\\.kt"
-  required_content_regex: "org\\.oppia\\.android\\.app\\.model\\.ScreenName"
+  required_content_regex: "decorateWithScreenName\\("
 }

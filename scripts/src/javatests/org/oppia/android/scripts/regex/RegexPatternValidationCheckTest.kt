@@ -183,7 +183,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInAppModule_fileNamePatternIsCorrect() {
-    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
+    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val tempFile = tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
     tempFile.writeText(acceptedContent)
@@ -205,7 +205,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInDataModule_fileNamePatternIsNotCorrect() {
-    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
+    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val tempFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
     tempFile.writeText(acceptedContent)
@@ -1370,7 +1370,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_subclassedActivity_fileContentIsNotCorrect() {
-    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
+    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "class SomeActivity: Activity() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/SomeActivity.kt"
@@ -1392,7 +1392,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_subclassedAppCompatActivity_fileContentIsNotCorrect() {
-    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
+    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "class SomeActivity: AppCompatActivity() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/SomeActivity.kt"
@@ -1724,11 +1724,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
-    val acceptedContent = "import org.oppia.android.app.model.ScreenName.TEST_ACTIVITY"
+    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val prohibitedContent = "import android.support.v7.app"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
-    val prohibitedContent = "import android.support.v7.app"
-    prohibitedFile.writeText(acceptedContent + prohibitedContent)
+    prohibitedFile.writeText(prohibitedContent + acceptedContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -2196,7 +2196,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testScreenNamePresence_activityFileWithAcceptedContent_screenNameIsPresent() {
-    val acceptedContent = "import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY"
+    val acceptedContent = "decorateWithScreenName(HOME_ACTIVITY)"
     tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
     val stringFilePath = "app/src/main/activity/HomeActivity.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(acceptedContent)
