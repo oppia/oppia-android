@@ -90,6 +90,9 @@
   <color name="color_palette_confetti_red_color">@color/color_def_confetti_rosy_pink</color>
   <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_bright_gold</color>
   <color name="color_palette_confetti_blue_color">@color/color_def_confetti_crystal_blue</color>
+  <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_topic_practice_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_topic_practice_header_description_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_topic_practice_subtopic_text_color">@color/color_def_white</color>
