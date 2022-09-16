@@ -64,6 +64,7 @@
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
