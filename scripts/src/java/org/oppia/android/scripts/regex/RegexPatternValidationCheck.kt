@@ -14,13 +14,13 @@ import java.io.FileInputStream
  * codebase.
  *
  * Usage:
- *   bazel run //scripts:pattern_validation_check -- <path_to_directory_root>
+ *   bazel run //scripts:regex_pattern_validation_check -- <path_to_directory_root>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
  *
  * Example:
- *   bazel run //scripts:pattern_validation_check -- $(pwd)
+ *   bazel run //scripts:regex_pattern_validation_check -- $(pwd)
  */
 fun main(vararg args: String) {
   // Path of the repo to be analyzed.
@@ -255,8 +255,7 @@ private data class MatchableFileContentCheck(
 
   /** Returns a boolean indicating whether the file contains the required content or not. */
   fun doesFileContainRequiredRegex(fileContent: String): Boolean {
-    if (requiredContentRegex != null) return requiredContentRegex.containsMatchIn(fileContent)
-    else return true
+    return requiredContentRegex?.containsMatchIn(fileContent) ?: true
   }
 
   private fun isFileExempted(relativePath: String): Boolean {
@@ -267,10 +266,10 @@ private data class MatchableFileContentCheck(
   companion object {
     /** Returns a new [MatchableFileContentCheck] based on the specified [FileContentCheck]. */
     fun createFrom(fileContentCheck: FileContentCheck): MatchableFileContentCheck {
-      val prohibitedContentRegex = if (fileContentCheck.prohibitedContentRegex == "") null
-      else fileContentCheck.prohibitedContentRegex.toRegex()
-      val requiredContentRegex = if (fileContentCheck.requiredContentRegex == "") null
-      else fileContentCheck.requiredContentRegex.toRegex()
+      val prohibitedContentRegex =
+        fileContentCheck.prohibitedContentRegex.takeIf(String::isNotEmpty)?.toRegex()
+      val requiredContentRegex =
+        fileContentCheck.requiredContentRegex.takeIf(String::isNotEmpty)?.toRegex()
 
       return MatchableFileContentCheck(
         filePathRegex = fileContentCheck.filePathRegex.toRegex(),

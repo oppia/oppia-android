@@ -375,14 +375,14 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?ActivityTest.kt"
-  failure_message: "Screen Name test not added."
+  failure_message: "You've not added a test for verifying the presence of a screen name for this activity. To do this, add a test named testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen name has been added to the activity's intent."
   exempted_file_patterns: "app/src/sharedTest/java/org/oppia/android/app/testing.+?\\.kt"
   exempted_file_patterns: "app/src/test/java/org/oppia/android/app/testing/activity.+?\\.kt"
   required_content_regex: "testActivity_createIntent_verifyScreenNameInIntent\\("
 }
 file_content_checks {
   file_path_regex: ".+?Activity.kt"
-  failure_message: "Screen Name not added."
+  failure_message: "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum of screens.proto and add that name to your activity using Intent.decorateWithScreenName(value) on the activity creation intent."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/testing.+?\\.kt"
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/devoptions/testing.+?\\.kt"
