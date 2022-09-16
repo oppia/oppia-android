@@ -118,7 +118,7 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "2.28.1",
     },
     "protobuf_tools": {
-        "version": "3.11.0",
+        "version": "3.14.0",
     },
     "rules_java": {
         "sha": "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
