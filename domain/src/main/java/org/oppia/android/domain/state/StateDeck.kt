@@ -10,7 +10,6 @@ import org.oppia.android.app.model.PendingState
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.util.system.OppiaClock
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
 private const val THREE_SECONDS_IN_MS = 3000L

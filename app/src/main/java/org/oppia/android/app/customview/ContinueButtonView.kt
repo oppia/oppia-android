@@ -48,8 +48,8 @@ class ContinueButtonView @JvmOverloads constructor(
     // or not.
 
     if (isVisible && isAnimationTimerFinished) {
-        startAnimating()
-        viewModel.animateContinueButton.removeObserver(continueButtonAnimationObserver)
+      startAnimating()
+      viewModel.animateContinueButton.removeObserver(continueButtonAnimationObserver)
     }
   }
 }
