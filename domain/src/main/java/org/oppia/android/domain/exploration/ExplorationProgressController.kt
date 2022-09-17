@@ -835,7 +835,7 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
-    explorationProgress.stateDeck.getCurrentEphemeralState(retrieveCurrentHelpIndex(), oppiaClock)
+    explorationProgress.stateDeck.getCurrentEphemeralState(retrieveCurrentHelpIndex(), oppiaClock.getCurrentTimeMs() + 3000L)
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {
