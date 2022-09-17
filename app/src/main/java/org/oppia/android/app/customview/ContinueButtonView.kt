@@ -46,7 +46,6 @@ class ContinueButtonView @JvmOverloads constructor(
     // timer goes off. To make sure that the animation is shown when the user finally scrolls down
     // enough that the button is visible, animate the button based on whether the timer has finished
     // or not.
-
     if (isVisible && isAnimationTimerFinished) {
       startAnimating()
       viewModel.animateContinueButton.removeObserver(continueButtonAnimationObserver)

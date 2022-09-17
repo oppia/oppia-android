@@ -51,6 +51,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -516,6 +517,71 @@ class ExplorationActivityTest {
       )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+
+      onView(withId(R.id.animation_continue_button)).check(matches(not(isAnimating())))
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.animation_continue_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimStartsIn45SecAfterOpening() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+
+      onView(withId(R.id.animation_continue_button)).check(matches(not(isAnimating())))
+      testCoroutineDispatchers.advanceTimeBy(30000)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.animation_continue_button)).check(matches(not(isAnimating())))
+      testCoroutineDispatchers.advanceTimeBy(15000)
+      onView(withId(R.id.animation_continue_button)).check(matches(isAnimating()))
+    }
+  }
+
+  private fun isAnimating(): TypeSafeMatcher<View> {
+    return ActiveAnimationMatcher()
+  }
+
+  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("View is animating")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view.animation.isInitialized
+    }
   }
 
   @Test

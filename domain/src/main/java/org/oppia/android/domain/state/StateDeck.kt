@@ -12,8 +12,6 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
-private const val THREE_SECONDS_IN_MS = 3000L
-
 /**
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
  * treats the learner's progress like a deck of cards to simplify forward/backward navigation.
@@ -26,7 +24,6 @@ class StateDeck constructor(
   private val previousStates: MutableList<EphemeralState> = ArrayList()
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
   private var stateIndex: Int = 0
-  private val continueButtonAnimationDelay = THREE_SECONDS_IN_MS
 
   /** Resets this deck to a new, specified initial [State]. */
   fun resetDeck(initialState: State) {
