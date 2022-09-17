@@ -222,6 +222,8 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
     "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+    "//model/src/main/proto:spotlight_proto",
+    "//domain/src/main/java/org/oppia/android/domain/spotlight:spotlight_state_controller",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
