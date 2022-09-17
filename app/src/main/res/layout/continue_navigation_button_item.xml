@@ -36,7 +36,7 @@
     app:questionViewMarginStart="@{@dimen/general_button_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/general_button_item_margin_top}">
 
-  <ImageButton
+    <ImageButton
       android:id="@+id/previous_state_navigation_button"
       style="@style/PreviousButton"
       android:elevation="2dp"
@@ -49,7 +49,8 @@
     <Button
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
-      android:layout_width="wrap_content"
+      android:minWidth="96dp"
+      android:minHeight="36dp"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"
       app:layout_constraintBottom_toBottomOf="parent"

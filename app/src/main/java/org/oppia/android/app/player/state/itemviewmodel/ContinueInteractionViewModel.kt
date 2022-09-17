@@ -91,6 +91,8 @@ class ContinueInteractionViewModel private constructor(
           animateContinueButton.value = true
         }
       }
+    }else{
+      animateContinueButton.value = false
     }
   }
 

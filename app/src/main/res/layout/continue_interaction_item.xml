@@ -17,7 +17,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="50dp"
     android:gravity="center_vertical"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
@@ -53,14 +53,16 @@
     <org.oppia.android.app.customview.ContinueButtonView
       android:id="@+id/animation_continue_button"
       style="@style/StateButtonActive"
+      android:layout_marginEnd="10dp"
       android:gravity="center"
-      app:viewModel="@{viewModel}"
+      android:minWidth="96dp"
+      android:minHeight="36dp"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
+      android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-
+      app:layout_constraintTop_toTopOf="parent"
+      app:viewModel="@{viewModel}" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
