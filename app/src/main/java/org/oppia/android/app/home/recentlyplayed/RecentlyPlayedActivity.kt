@@ -15,8 +15,8 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 /** Activity for recent stories. */
@@ -31,10 +31,7 @@ class RecentlyPlayedActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val bundle = checkNotNull(intent.getBundleExtra(RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY)) {
-      "Expected arguments to be passed to RecentlyPlayedActivity"
-    }
-    val recentlyPlayedActivityParams = bundle.getProto(
+    val recentlyPlayedActivityParams = intent.getProtoExtra(
       RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
       RecentlyPlayedActivityParams.getDefaultInstance()
     )
@@ -43,8 +40,6 @@ class RecentlyPlayedActivity :
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
-    const val RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY =
-      "RecentlyPlayedActivity.bundle"
     const val RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY =
       "RecentlyPlayedActivity.intent_extras"
 
@@ -53,13 +48,11 @@ class RecentlyPlayedActivity :
       context: Context,
       recentlyPlayedActivityParams: RecentlyPlayedActivityParams
     ): Intent {
-      val bundle = Bundle()
-      bundle.putProto(
+      val intent = Intent(context, RecentlyPlayedActivity::class.java)
+      intent.putProtoExtra(
         RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
         recentlyPlayedActivityParams
       )
-      val intent = Intent(context, RecentlyPlayedActivity::class.java)
-      intent.putExtra(RECENTLY_PLAYED_ACTIVITY_BUNDLE_EXTRA_KEY, bundle)
       return intent
     }
   }

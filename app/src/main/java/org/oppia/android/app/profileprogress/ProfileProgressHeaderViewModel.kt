@@ -4,9 +4,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
@@ -49,7 +49,7 @@ class ProfileProgressHeaderViewModel(
 
   fun clickOnViewAll() {
     routeToRecentlyPlayedActivity.routeToRecentlyPlayed(
-      resourceHandler.getStringInLocale(R.string.recently_played_activity)
+      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
     )
   }
 

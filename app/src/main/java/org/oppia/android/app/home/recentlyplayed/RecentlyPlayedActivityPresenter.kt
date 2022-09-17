@@ -46,11 +46,14 @@ class RecentlyPlayedActivityPresenter @Inject constructor(
 
   private fun getTitle(recentlyPlayedActivityParams: RecentlyPlayedActivityParams): String {
     return when (recentlyPlayedActivityParams.activityTitle) {
-      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES -> {
-        resourceHandler.getStringInLocale(R.string.recently_played_activity)
-      }
       RecentlyPlayedActivityTitle.STORIES_FOR_YOU -> {
         resourceHandler.getStringInLocale(R.string.stories_for_you)
+      }
+      RecentlyPlayedActivityTitle.LAST_PLAYED_STORIES -> {
+        resourceHandler.getStringInLocale(R.string.last_played_stories)
+      }
+      RecentlyPlayedActivityTitle.RECOMMENDED_STORIES -> {
+        resourceHandler.getStringInLocale(R.string.recommended_stories)
       }
       else -> {
         resourceHandler.getStringInLocale(R.string.recently_played_activity)

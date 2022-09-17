@@ -72,24 +72,13 @@ class NavigationDrawerTestActivity :
     )
   }
 
-  override fun routeToRecentlyPlayed(title: String) {
+  override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .setActivityTitle(
-          when (title) {
-            resourceHandler.getStringInLocale(R.string.stories_for_you) -> {
-              RecentlyPlayedActivityTitle.STORIES_FOR_YOU
-            }
-            resourceHandler.getStringInLocale(R.string.recently_played_activity) -> {
-              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
-            }
-            else -> {
-              RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
-            }
-          }
-        ).build()
+        .setActivityTitle(recentlyPlayedActivityTitle)
+        .build()
 
     activityRouter.routeToScreen(
       DestinationScreen
