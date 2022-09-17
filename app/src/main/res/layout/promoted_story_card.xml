@@ -35,9 +35,9 @@
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
         android:layout_width="wrap_content"
-        android:minWidth="280dp"
-        android:layout_height="158dp"
+        android:layout_height="0dp"
         android:importantForAccessibility="no"
+        android:minWidth="280dp"
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="H, 16:9"
@@ -48,9 +48,9 @@
 
       <LinearLayout
         android:layout_width="wrap_content"
-        android:minWidth="280dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_rounded_rect_white_background"
+        android:minWidth="280dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

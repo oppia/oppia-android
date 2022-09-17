@@ -36,7 +36,8 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout"></FrameLayout>
+      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout">
+    </FrameLayout>
 
     <View
       android:id="@+id/app_language_toolbar_shadow_view"
@@ -45,6 +46,6 @@
       android:background="@drawable/toolbar_drop_shadow"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout" />
+      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
