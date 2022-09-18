@@ -1,5 +1,5 @@
 """
-Test-only utilities corresponding to app notices.
+Test-only utilities corresponding to BottomSheetOptionsMenu.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
@@ -17,5 +17,3 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],
 )
-
-dagger_rules()
