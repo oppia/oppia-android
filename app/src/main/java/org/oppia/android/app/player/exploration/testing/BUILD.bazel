@@ -2,6 +2,7 @@
 Test-only utilities corresponding to BottomSheetOptionsMenu.
 """
 
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
@@ -16,3 +17,5 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
     ],
 )
+
+dagger_rules()

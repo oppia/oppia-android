@@ -42,3 +42,5 @@ app_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
     ],
 )
+
+dagger_rules()
