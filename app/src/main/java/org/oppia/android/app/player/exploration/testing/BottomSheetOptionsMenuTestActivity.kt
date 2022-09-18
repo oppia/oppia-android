@@ -17,5 +17,4 @@ class BottomSheetOptionsMenuTestActivity : TestActivity(), BottomSheetOptionsMen
   override fun handleOnOptionsItemSelected(itemId: Int) {
     mockCallbacklistner.handleOnOptionsItemSelected(itemId)
   }
-
 }

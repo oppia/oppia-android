@@ -120,7 +120,7 @@ class BottomSheetOptionsMenuTest {
 
   @Test
   fun bottomSheetOptionsMenu_selectHelp_callsClickListenerWithActionHelp() {
-  launchBottomSheetOptionsMenuTestActivity {
+    launchBottomSheetOptionsMenuTestActivity {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.menu_help)).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -212,7 +212,8 @@ class BottomSheetOptionsMenuTest {
         .build()
     }
 
-    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest) = component.inject(bottomSheetOptionsMenuTest)
+    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest) =
+      component.inject(bottomSheetOptionsMenuTest)
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()

@@ -38,7 +38,6 @@ import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.app.player.exploration.testing.BottomSheetOptionsMenuTestActivity
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.profile.AddProfileActivity
