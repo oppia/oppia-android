@@ -38,6 +38,7 @@ import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.options.ReadingTextSizeActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.app.player.exploration.testing.BottomSheetOptionsMenuTestActivity
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.profile.AddProfileActivity
@@ -56,7 +57,6 @@ import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
 import org.oppia.android.app.testing.AudioFragmentTestActivity
-import org.oppia.android.app.testing.BottomSheetOptionsMenuTestActivity
 import org.oppia.android.app.testing.ConceptCardFragmentTestActivity
 import org.oppia.android.app.testing.DragDropTestActivity
 import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
@@ -118,7 +118,6 @@ interface ActivityComponentImpl :
   fun inject(appVersionActivity: AppVersionActivity)
   fun inject(audioFragmentTestActivity: AudioFragmentTestActivity)
   fun inject(audioLanguageActivity: AudioLanguageActivity)
-  fun inject(bottomSheetOptionsMenuTestActivity: BottomSheetOptionsMenuTestActivity)
   fun inject(completedStoryListActivity: CompletedStoryListActivity)
   fun inject(conceptCardFragmentTestActivity: ConceptCardFragmentTestActivity)
   fun inject(developerOptionsActivity: DeveloperOptionsActivity)

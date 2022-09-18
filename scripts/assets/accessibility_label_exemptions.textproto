@@ -9,7 +9,6 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/player/state/testing
 exempted_activity: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/AudioFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestActivity"
-exempted_activity: "app/src/main/java/org/oppia/android/app/testing/BottomSheetOptionsMenuTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ConceptCardFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DragDropTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/DrawableBindingAdaptersTestActivity"

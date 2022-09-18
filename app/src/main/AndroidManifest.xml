@@ -122,6 +122,10 @@
       android:label="@string/exploration_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
+    <activity
+      android:name=".app.player.exploration.testing.BottomSheetOptionsMenuTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".app.profile.AddProfileActivity"
@@ -188,7 +192,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.testing.AudioFragmentTestActivity" />
     <activity android:name=".app.testing.BindableAdapterTestActivity" />
-    <activity android:name=".app.testing.BottomSheetOptionsMenuTestActivity"/>
     <activity android:name=".app.testing.ConceptCardFragmentTestActivity" />
     <activity android:name=".app.testing.DragDropTestActivity" />
     <activity android:name=".app.testing.DrawableBindingAdaptersTestActivity" />
