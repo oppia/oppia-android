@@ -56,13 +56,13 @@ The android_binary of a test suite generates a test apk with the same name as th
 
 #### Steps to run the tests
 
-1. Build the oppia_test and test suite android_binary from the instrumentation module
+1. Build the oppia_test and test suite android_binary from the **root** repository directory:
     ```
-    bazel build :oppia_test && bazel build //instrumentation:<test suite classname>
+    bazel build //instrumentation:oppia_test && bazel build //instrumentation:<test suite classname>
     ```
     e.g.:
     ```
-    bazel build :oppia_test && bazel build //instrumentation/src/javatests/org/oppia/android/instrumentation/player:ExplorationPlayerTestBinary
+    bazel build //instrumentation:oppia_test && bazel build //instrumentation/src/javatests/org/oppia/android/instrumentation/player:ExplorationPlayerTestBinary
     ```
 2. install the oppia_test.apk and the test suite’s APK
     ```
