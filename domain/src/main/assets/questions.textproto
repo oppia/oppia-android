@@ -2722,7 +2722,6 @@ questions {
       answer_groups {
         outcome {
           feedback {
-            html: ""
             content_id: "feedback_1"
           }
           labelled_as_correct: true

@@ -1,6 +1,9 @@
 package org.oppia.android.scripts.common
 
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.streams.asSequence
 
 /** Helper class for managing & accessing files within the project repository. */
 class RepositoryFile() {
@@ -41,7 +44,10 @@ class RepositoryFile() {
       expectedExtension: String = "",
       exemptionsList: List<String> = listOf<String>()
     ): List<File> {
-      return File(repoPath).walk().filter { file ->
+      // Note that Files.walk() is used instead of Kotlin's walk() function since the latter follows
+      // symbolic links which is almost 10x slower than not following them (due to very deep Bazel
+      // build directories), and it's not necessary to follow the symlinks.
+      return Files.walk(File(repoPath).toPath()).asSequence().map(Path::toFile).filter { file ->
         val isProhibited = checkIfProhibitedFile(retrieveRelativeFilePath(file, repoPath))
         !isProhibited &&
           file.isFile &&

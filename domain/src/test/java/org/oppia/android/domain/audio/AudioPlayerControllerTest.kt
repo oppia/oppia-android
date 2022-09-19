@@ -109,6 +109,8 @@ class AudioPlayerControllerTest {
   private val TEST_URL2 = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
+  private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+
   @Test
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
     setUpMediaReadyApplication()
@@ -666,8 +668,8 @@ class AudioPlayerControllerTest {
 
   private fun loadExploration(explorationId: String): Exploration {
     return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(explorationId)
-    )
+      explorationDataController.getExplorationById(profileId, explorationId)
+    ).exploration
   }
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {
