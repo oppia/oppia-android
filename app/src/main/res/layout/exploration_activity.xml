@@ -27,7 +27,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/exploration_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_exploration_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
@@ -65,6 +65,7 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:scaleType="center" />
+
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

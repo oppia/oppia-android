@@ -19,7 +19,7 @@
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/profile_and_device_id_toolbar"
       android:layout_width="match_parent"
-      android:layout_height="?attr/actionBarSize"
+      android:layout_height="wrap_content"
       android:background="@color/oppia_primary"
       android:textSize="20sp"
       app:navigationContentDescription="@string/navigate_up"
