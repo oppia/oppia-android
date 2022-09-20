@@ -117,6 +117,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 /** Tests for [PoliciesFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -134,6 +136,10 @@ class PoliciesFragmentTest {
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
+
+  @Rule
+  @JvmField
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock
   lateinit var mockPolicyOppiaTagActionListener: HtmlParser.PolicyOppiaTagActionListener
