@@ -47,10 +47,9 @@
         app:lessonThumbnail="@{viewModel.promotedStory.lessonThumbnail}" />
 
       <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_rounded_rect_white_background"
-        android:minWidth="280dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
