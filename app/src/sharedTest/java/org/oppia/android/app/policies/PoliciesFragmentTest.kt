@@ -272,22 +272,29 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_forTermsOfService_opensPrivacyPolicyPage() {
-    val htmlParser = htmlParserFactory.create(
-      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView =
-        it.findViewById(R.id.policy_description_text_view)
-
-      val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-        getResources().getString(R.string.terms_of_service_content),
-        textView,
-        supportsLinks = true,
-        supportsConceptCards = false
+    launch<PoliciesFragmentTestActivity>(
+      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+        getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
       )
-      textView.text = htmlResult
+    ).use { activityScenario ->
+      activityScenario.onActivity { activity ->
 
+        val htmlParser = htmlParserFactory.create(
+          policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+          displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        )
+        val textView: TextView =
+          activity.findViewById(R.id.policy_description_text_view)
+
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          getResources().getString(R.string.terms_of_service_content),
+          textView,
+          supportsLinks = true,
+          supportsConceptCards = false
+        )
+        textView.text = htmlResult
+      }
       // Verify that the tag listener is called.
       verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
         capture(policyTypeCaptor)
