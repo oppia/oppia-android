@@ -78,6 +78,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -122,6 +123,9 @@ class ProfileEditFragmentTest {
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var dataProviderTestMonitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -213,14 +217,15 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
-    profileManagementController.addProfile(
+    val addProfileProvider = profileManagementController.addProfile(
       name = "James",
       pin = "123",
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
       isAdmin = false
-    ).toLiveData()
+    )
+    dataProviderTestMonitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,

@@ -71,6 +71,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -146,6 +147,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -249,6 +251,19 @@ class ExplorationActivityTest {
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createExplorationActivityIntent(
+      internalProfileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ).extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.EXPLORATION_ACTIVITY)
+  }
 
   @Test
   fun testExplorationActivity_hasCorrectActivityLabel() {

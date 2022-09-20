@@ -13,6 +13,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -22,6 +23,7 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSaved
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
@@ -97,6 +99,7 @@ class ExplorationActivity :
     ): Intent {
       return Intent(context, ExplorationActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
+        decorateWithScreenName(EXPLORATION_ACTIVITY)
       }
     }
   }

@@ -27,7 +27,6 @@ import java.security.InvalidParameterException
 import javax.inject.Inject
 
 const val APP_LANGUAGE = "APP_LANGUAGE"
-const val AUDIO_LANGUAGE = "AUDIO_LANGUAGE"
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
 private const val APP_LANGUAGE_TAG = "AppLanguage"
 private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"
@@ -271,87 +270,14 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(1)
   }
 
-  fun updateAudioLanguage(language: String) {
-    when (language) {
-      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.NO_AUDIO) -> {
-        profileManagementController.updateAudioLanguage(
-          profileId,
-          AudioLanguage.NO_AUDIO
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> audioLanguage = AudioLanguage.NO_AUDIO
-              is AsyncResult.Failure ->
-                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: No Audio", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.ENGLISH_AUDIO_LANGUAGE) -> {
-        profileManagementController.updateAudioLanguage(
-          profileId,
-          AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: English", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.HINDI_AUDIO_LANGUAGE) -> {
-        profileManagementController.updateAudioLanguage(
-          profileId,
-          AudioLanguage.HINDI_AUDIO_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> audioLanguage = AudioLanguage.HINDI_AUDIO_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: Hindi", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.CHINESE_AUDIO_LANGUAGE) -> {
-        profileManagementController.updateAudioLanguage(
-          profileId,
-          AudioLanguage.CHINESE_AUDIO_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> audioLanguage = AudioLanguage.CHINESE_AUDIO_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: Chinese", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getAudioLanguage(AudioLanguage.FRENCH_AUDIO_LANGUAGE) -> {
-        profileManagementController.updateAudioLanguage(
-          profileId,
-          AudioLanguage.FRENCH_AUDIO_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> audioLanguage = AudioLanguage.FRENCH_AUDIO_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: French", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
+  fun updateAudioLanguage(language: AudioLanguage) {
+    val updateLanguageResult = profileManagementController.updateAudioLanguage(profileId, language)
+    updateLanguageResult.toLiveData().observe(fragment) {
+      when (it) {
+        is AsyncResult.Success -> audioLanguage = language
+        is AsyncResult.Failure ->
+          oppiaLogger.e(AUDIO_LANGUAGE_TAG, "$AUDIO_LANGUAGE_ERROR: $language", it.error)
+        is AsyncResult.Pending -> {} // Wait for a result.
       }
     }
 

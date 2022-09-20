@@ -21,7 +21,7 @@
 
   <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/concept_toolbar_heading</item>
+    <item name="colorPrimaryDark">@color/component_color_concept_card_fragment_status_bar_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
@@ -64,6 +64,7 @@
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>

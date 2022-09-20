@@ -189,6 +189,36 @@ message ReadingTextSizeFragmentStateBundle {
   ReadingTextSize selected_reading_text_size = 1;
 }
 
+// Params required when creating a new AudioLanguageActivity.
+message AudioLanguageActivityParams {
+  // The default audio language previously selected by the user (upon opening the activity).
+  AudioLanguage audio_language = 1;
+}
+
+// The bundle of properties that are saved upon configuration changes in AudioLanguageActivity.
+message AudioLanguageActivityStateBundle {
+  // The default audio language selected by the user.
+  AudioLanguage audio_language = 1;
+}
+
+// The bundle of properties that are returned by AudioLanguageActivity after it's finished.
+message AudioLanguageActivityResultBundle {
+  // The new default audio language selected by the user.
+  AudioLanguage audio_language = 1;
+}
+
+// Arguments required when creating a new AudioLanguageFragment.
+message AudioLanguageFragmentArguments {
+  // The default audio language previously selected by the user (upon opening the fragment).
+  AudioLanguage audio_language = 1;
+}
+
+// The bundle of properties that are saved upon configuration changes in AudioLanguageFragment.
+message AudioLanguageFragmentStateBundle {
+  // The default audio language selected by the user.
+  AudioLanguage audio_language = 1;
+}
+
 // Activity Parameters needed to open the policy page.
 message PoliciesActivityParams {
   // The specific policy page that should be displayed.
