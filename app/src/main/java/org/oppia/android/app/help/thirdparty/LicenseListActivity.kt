@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.LICENSE_LIST_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
@@ -30,6 +32,7 @@ class LicenseListActivity : InjectableAppCompatActivity(), RouteToLicenseTextLis
     ): Intent {
       val intent = Intent(context, LicenseListActivity::class.java)
       intent.putExtra(THIRD_PARTY_DEPENDENCY_INDEX, dependencyIndex)
+      intent.decorateWithScreenName(LICENSE_LIST_ACTIVITY)
       return intent
     }
   }

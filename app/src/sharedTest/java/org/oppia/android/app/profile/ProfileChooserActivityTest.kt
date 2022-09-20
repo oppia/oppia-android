@@ -1,25 +1,19 @@
-package org.oppia.android.app.devoptions
+package org.oppia.android.app.profile
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
@@ -28,13 +22,13 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
-import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -69,6 +63,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -91,35 +86,41 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [MarkChaptersCompletedActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = MarkChaptersCompletedActivityTest.TestApplication::class,
+  application = ProfileChooserActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class MarkChaptersCompletedActivityTest {
+class ProfileChooserActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  private val internalProfileId = 0
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkChaptersCompletedActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
+  @get:Rule
+  val activityTestRule = ActivityTestRule(
+    ProfileChooserActivity::class.java,
+    /* initialTouchMode= */ true,
+    /* launchActivity= */ false
+  )
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -128,57 +129,18 @@ class MarkChaptersCompletedActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName =
-      createMarkChaptersCompletedActivityIntent(internalProfileId).extractCurrentAppScreenName()
+    val currentScreenName =
+      ProfileChooserActivity.createProfileChooserActivity(context).extractCurrentAppScreenName()
 
-    assertThat(screenName).isEqualTo(ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY)
-  }
-
-  @Test
-  fun testMarkChaptersCompletedActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createMarkChaptersCompletedActivityIntent(internalProfileId))
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.mark_chapters_completed_activity_title))
-  }
-
-  @Test
-  fun testMarkChaptersCompletedActivity_markChaptersCompletedFragmentIsDisplayed() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId)
-    ).use {
-      onView(withId(R.id.mark_chapters_completed_fragment_container)).check(
-        matches(isDisplayed())
-      )
-    }
-  }
-
-  @Test
-  fun testMarkChaptersCompletedActivity_configChange_markChaptersCompletedFragmentIsDisplayed() {
-    launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId)
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.mark_chapters_completed_fragment_container)).check(
-        matches(isDisplayed())
-      )
-    }
-  }
-
-  private fun createMarkChaptersCompletedActivityIntent(internalProfileId: Int): Intent {
-    return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-      context, internalProfileId
-    )
+    assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_CHOOSER_ACTIVITY)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -195,7 +157,6 @@ class MarkChaptersCompletedActivityTest {
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
@@ -207,18 +168,18 @@ class MarkChaptersCompletedActivityTest {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
 
-    fun inject(markChaptersCompletedActivityTest: MarkChaptersCompletedActivityTest)
+    fun inject(profileChooserActivityTest: ProfileChooserActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarkChaptersCompletedActivityTest_TestApplicationComponent.builder()
+      DaggerProfileChooserActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(markChaptersCompletedActivityTest: MarkChaptersCompletedActivityTest) {
-      component.inject(markChaptersCompletedActivityTest)
+    fun inject(profileChooserActivityTest: ProfileChooserActivityTest) {
+      component.inject(profileChooserActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
