@@ -183,10 +183,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInAppModule_fileNamePatternIsCorrect() {
-    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val tempFile = tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
-    tempFile.writeText(acceptedContent)
+    tempFile.writeText(requiredContent)
 
     runScript()
 
@@ -205,10 +205,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInDataModule_fileNamePatternIsNotCorrect() {
-    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val tempFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
-    tempFile.writeText(acceptedContent)
+    tempFile.writeText(requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -219,7 +219,7 @@ class RegexPatternValidationCheckTest {
       """
       File name/path violation: $activitiesPlacementErrorMessage
       - data/src/main/TestActivity.kt
-      
+
       $wikiReferenceNote
       """.trimIndent()
     )
@@ -1370,11 +1370,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_subclassedActivity_fileContentIsNotCorrect() {
-    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "class SomeActivity: Activity() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/SomeActivity.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + acceptedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -1392,11 +1392,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_subclassedAppCompatActivity_fileContentIsNotCorrect() {
-    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "class SomeActivity: AppCompatActivity() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/SomeActivity.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + acceptedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -1724,11 +1724,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
-    val acceptedContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "import android.support.v7.app"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
-    prohibitedFile.writeText(prohibitedContent + acceptedContent)
+    prohibitedFile.writeText(prohibitedContent + requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -2195,11 +2195,11 @@ class RegexPatternValidationCheckTest {
   }
 
   @Test
-  fun testScreenNamePresence_activityFileWithAcceptedContent_screenNameIsPresent() {
-    val acceptedContent = "decorateWithScreenName(HOME_ACTIVITY)"
+  fun testScreenNamePresence_activityFileWithScreenName_screenNameIsPresent() {
+    val requiredContent = "decorateWithScreenName(HOME_ACTIVITY)"
     tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
     val stringFilePath = "app/src/main/activity/HomeActivity.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(acceptedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent)
 
     runScript()
 
@@ -2228,10 +2228,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent() {
-    val acceptedContent = "testActivity_createIntent_verifyScreenNameInIntent()"
+    val requiredContent = "testActivity_createIntent_verifyScreenNameInIntent()"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/HomeActivityTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(acceptedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent)
 
     runScript()
 
