@@ -215,7 +215,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  fun testAdministratorControlsFragment_autoUpdateSettingsIsNotDisplayed() {
+  fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateSettingsIsNotDisplayed() {
     TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
