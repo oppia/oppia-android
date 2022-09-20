@@ -40,7 +40,7 @@
 
           <asia.ivity.android.marqueeview.MarqueeView
             android:id="@+id/exploration_marquee_view"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="20dp"
@@ -50,7 +50,7 @@
           <TextView
             android:id="@+id/exploration_toolbar_title"
             style="@style/MarqueeToolbarTitleTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
           </asia.ivity.android.marqueeview.MarqueeView>
