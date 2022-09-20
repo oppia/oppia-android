@@ -93,5 +93,17 @@
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_white</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
+  <color name="color_palette_icon_background_secondary_color">@color/color_def_white</color>
+  <color name="color_palette_accent_background_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_seekbar_progress_background_color">@color/color_def_ocean_blue</color>
+  <color name="color_palette_toolbar_secondary_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_secondary_dark_background_color">@color/color_def_oppia_light_green</color>
+  <color name="color_palette_concept_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
+  <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_brown_dark</color>
+  <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue</color>
+  <color name="color_palette_underline_view_color">@color/color_def_oppia_light_brown</color>
+  <color name="color_palette_menu_text_color">@color/color_def_black</color>
+  <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
+  <color name="color_palette_concept_status_bar_color">@color/color_def_dark_red</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_white_background</color>
 </resources>
