@@ -278,7 +278,7 @@ class PoliciesFragmentTest {
     )
     activityScenarioRule.scenario.runWithActivity {
       val textView: TextView =
-        it.findViewById(R.id.test_html_content_text_view)
+        it.findViewById(R.id.policy_description_text_view)
 
       val htmlResult: Spannable = htmlParser.parseOppiaHtml(
         getResources().getString(R.string.terms_of_service_content),
