@@ -1,8 +1,5 @@
 package org.oppia.android.app.profile
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +18,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import kotlin.system.exitProcess
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -38,6 +36,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   }
   private var profileId = -1
   private lateinit var alertDialog: AlertDialog
+  private var confirmedDeletion = false
 
   fun handleOnCreate() {
     val adminPin = activity.intent.getStringExtra(PIN_PASSWORD_ADMIN_PIN_EXTRA_KEY)
@@ -168,42 +167,70 @@ class PinPasswordActivityPresenter @Inject constructor(
   private fun showAdminForgotPin() {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
+    val resetDataButtonText =
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.admin_forgot_pin_reset_app_data_button_text, appName
+      )
     alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.pin_password_forgot_title)
       .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_forgot_message, appName)
+        resourceHandler.getStringInLocaleWithWrapping(R.string.admin_forgot_pin_message, appName)
       )
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.pin_password_play_store) { dialog, _ ->
-        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
-        try {
-          activity.startActivity(
-            Intent(
-              Intent.ACTION_VIEW,
-              Uri.parse("market://details?id=" + activity.packageName)
-            )
-          )
-        } catch (e: ActivityNotFoundException) {
-          activity.startActivity(
-            Intent(
-              Intent.ACTION_VIEW,
-              Uri.parse(
-                "https://play.google.com/store/apps/details?id=" + activity.packageName
-              )
-            )
-          )
-        }
+      .setPositiveButton(resetDataButtonText) { dialog, _ ->
+        // Show a confirmation dialog since this is a permanent action.
         dialog.dismiss()
+        showConfirmAppResetDialog()
       }.create()
+    alertDialog.setCanceledOnTouchOutside(false)
     alertDialog.show()
   }
 
-  fun dismissAlertDialog() {
+  private fun showConfirmAppResetDialog() {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setTitle(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.admin_confirm_app_wipe_title, appName
+        )
+      )
+      .setMessage(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.admin_confirm_app_wipe_message, appName
+        )
+      )
+      .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
+        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
+        dialog.dismiss()
+      }
+      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { dialog, _ ->
+        profileManagementController.deleteAllProfiles().toLiveData().observe(
+          activity,
+          {
+            // Regardless of the result of the operation, always restart the app.
+            confirmedDeletion = true
+            activity.finishAffinity()
+          }
+        )
+      }.create()
+    alertDialog.setCanceledOnTouchOutside(false)
+    alertDialog.show()
+  }
+
+  fun handleOnDestroy() {
     if (::alertDialog.isInitialized && alertDialog.isShowing) {
       alertDialog.dismiss()
+    }
+
+    if (confirmedDeletion) {
+      confirmedDeletion = false
+
+      // End the process forcibly since the app is not designed to recover from major on-disk state
+      // changes that happen from underneath it (like deleting all profiles).
+      exitProcess(0)
     }
   }
 

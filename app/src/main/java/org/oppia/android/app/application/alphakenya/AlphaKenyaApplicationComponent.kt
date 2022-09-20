@@ -4,6 +4,7 @@ import dagger.Component
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.alpha.AlphaBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -27,14 +28,16 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigAlphaKenyaModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ActivityLifecycleObserverModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterAlphaKenyaModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
@@ -46,10 +49,13 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CachingModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.LogReportingModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -77,8 +83,8 @@ import javax.inject.Singleton
     LogStorageModule::class, IntentFactoryShimModule::class, ViewBindingShimModule::class,
     PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
     RatioInputModule::class, UncaughtExceptionLoggerModule::class,
-    ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
-    WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
+    ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
+    WorkManagerConfigurationModule::class, HintsAndSolutionConfigAlphaKenyaModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
     PlatformParameterAlphaKenyaModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
@@ -89,7 +95,10 @@ import javax.inject.Singleton
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
-    HintsAndSolutionProdModule::class, AlphaKenyaBuildFlavorModule::class
+    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
+    ActivityLifecycleObserverModule::class, PerformanceMetricsAssessorModule::class,
+    PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
+    KenyaAlphaEventLoggingConfigurationModule::class
   ]
 )
 interface AlphaKenyaApplicationComponent : ApplicationComponent {

@@ -2955,7 +2955,6 @@ states {
         outcome {
           dest_state_name: "Question 1"
           feedback {
-            html: ""
             content_id: "feedback_1"
           }
           labelled_as_correct: true
@@ -8192,7 +8191,23 @@ states {
   }
 }
 init_state_name: "Into the Bakery"
-objective: "Learn how to write fractions when the parts of a picture are not equal"
-title: "The Meaning of \"Equal Parts\""
 language_code: "en"
 version: 86
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "The Meaning of \"Equal Parts\""
+  content_id: "title"
+}
+description {
+  html: "Learn how to write fractions when the parts of a picture are not equal"
+  content_id: "description"
+}

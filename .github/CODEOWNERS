@@ -105,8 +105,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #####################################################################################
 
 # Global app module code ownership.
-/app/**/*.kt @rt4914
-/app/**/*.java @rt4914
+/app/**/*.kt @rt4914 @BenHenning
+/app/**/*.java @rt4914 @BenHenning
 
 # State players.
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
@@ -125,8 +125,8 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Databinding adapters.
 /app/src/main/java/org/oppia/android/app/databinding/ @BenHenning
 
-# App deprecation functionality.
-/app/src/*/java/org/oppia/android/app/deprecation/ @BenHenning
+# App notices functionality (such as for deprecations).
+/app/src/*/java/org/oppia/android/app/notice/ @BenHenning
 
 # Parsing functionality needed for interactions.
 /app/src/*/java/org/oppia/android/app/parser/ @BenHenning
@@ -149,9 +149,6 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 
 # Global domain module code ownership.
 /domain/**/*.kt @BenHenning
-
-# Domain test resources.
-/domain/src/test/res/values/strings.xml @BenHenning
 
 # Questions support.
 /domain/src/*/java/org/oppia/android/domain/question/ @BenHenning
@@ -181,14 +178,17 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Global utility module code ownership.
 /utility/**/*.kt @BenHenning
 
+# Utility test resources.
+/utility/src/test/res/values/strings.xml @BenHenning
+
 # Accessibility utilities.
-/utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914
+/utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914 @BenHenning
 
 # Core logging infrastructure.
 /utility/src/*/java/org/oppia/android/util/logging/ @BenHenning
 
 # Miscellaneous statusbar UI utilities.
-/utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914
+/utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914 @BenHenning
 
 #####################################################################################
 #                                     scripts                                       #
