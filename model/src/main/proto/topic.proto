@@ -345,9 +345,6 @@ message TopicSummary {
 
   // The old name corresponding to the topic (as a string).
   reserved 2;
-
-  // The ID of the first story of this topic.
-  string first_story_id = 9;
 }
 
 // Corresponds to a topic summary that is currently being viewed.
@@ -357,9 +354,6 @@ message EphemeralTopicSummary {
 
   // The translation context that should be used for this topic summary.
   WrittenTranslationContext written_translation_context = 2;
-
-  // The ID of the first story of this topic.
-  string first_story_id = 7;
 }
 
 // Represents the play state of a single chapter.
