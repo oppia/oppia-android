@@ -15,6 +15,7 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
 
   companion object {
+    /** Argument key for Profile Deletion Success Dialog in [ProfileEditFragmentPresenter]. */
     const val DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG = "DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT"
 
     /**
