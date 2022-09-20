@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.os.BundleSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -59,9 +58,6 @@ import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.HOME_SCREEN
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
@@ -75,6 +71,14 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -98,7 +102,8 @@ private const val TEST_ANDROID_SDK_VERSION = 30
  */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
-@RunWith(AndroidJUnit4::class)
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = EventBundleCreatorTest.TestApplication::class,
@@ -137,8 +142,19 @@ class EventBundleCreatorTest {
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
   }
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var eventBundleCreator: EventBundleCreator
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var eventBundleCreator: EventBundleCreator
+
+  @Parameter
+  lateinit var name: String
+
+  @Parameter
+  lateinit var expNameStr: String
+
+  private val screenName by lazy { ScreenName.valueOf(name) }
 
   @After
   fun tearDown() {
@@ -179,7 +195,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("unspecified_memory_tier")
     assertThat(bundle).string("storage_tier").isEqualTo("unspecified_storage_tier")
     assertThat(bundle).string("network_type").isEqualTo("unspecified_network_type")
-    assertThat(bundle).string("current_screen").isEqualTo("unspecified_current_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
   }
 
   @Test
@@ -229,7 +245,7 @@ class EventBundleCreatorTest {
     val performanceMetricLog = createPerformanceMetricLog(
       timestamp = TEST_TIMESTAMP_1,
       priority = HIGH_PRIORITY,
-      currentScreen = HOME_SCREEN,
+      currentScreen = SCREEN_NAME_UNSPECIFIED,
       memoryTier = HIGH_MEMORY_TIER,
       storageTier = HIGH_STORAGE,
       networkType = WIFI,
@@ -249,7 +265,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
   }
 
   @Test
@@ -304,11 +320,11 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
     val performanceMetricLog =
-      createPerformanceMetricLog(currentScreen = SCREEN_UNSPECIFIED)
+      createPerformanceMetricLog(currentScreen = SCREEN_NAME_UNSPECIFIED)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
-    assertThat(bundle).string("current_screen").isEqualTo("unspecified_current_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
   }
 
   @Test
@@ -442,7 +458,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("apk_size_bytes").isEqualTo(TEST_APK_SIZE)
   }
 
@@ -466,7 +482,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("storage_usage_bytes").isEqualTo(TEST_STORAGE_USAGE)
   }
 
@@ -490,7 +506,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("startup_latency_millis").isEqualTo(TEST_STARTUP_LATENCY)
   }
 
@@ -514,7 +530,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("total_pss_bytes").isEqualTo(TEST_MEMORY_USAGE)
   }
 
@@ -538,7 +554,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("bytes_received").isEqualTo(TEST_NETWORK_USAGE)
     assertThat(bundle).longInt("bytes_sent").isEqualTo(TEST_NETWORK_USAGE)
   }
@@ -563,7 +579,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("memory_tier").isEqualTo("high_memory")
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
-    assertThat(bundle).string("current_screen").isEqualTo("home_screen")
+    assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("cpu_usage").isEqualTo(TEST_CPU_USAGE)
   }
 
@@ -1461,6 +1477,156 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("install_id").isEqualTo(TEST_INSTALLATION_ID)
   }
 
+  @Test
+  @RunParameterized(
+    Iteration("home", "name=HOME_ACTIVITY", "expNameStr=home_activity"),
+    Iteration("splash", "name=SPLASH_ACTIVITY", "expNameStr=splash_activity"),
+    Iteration(
+      "profileChooser",
+      "name=PROFILE_CHOOSER_ACTIVITY",
+      "expNameStr=profile_chooser_activity"
+    ),
+    Iteration("addProfile", "name=ADD_PROFILE_ACTIVITY", "expNameStr=add_profile_activity"),
+    Iteration("background", "name=BACKGROUND_SCREEN", "expNameStr=background_screen"),
+    Iteration("appVersion", "name=APP_VERSION_ACTIVITY", "expNameStr=app_version_activity"),
+    Iteration(
+      "administratorControls",
+      "name=ADMINISTRATOR_CONTROLS_ACTIVITY",
+      "expNameStr=administrator_controls_activity"
+    ),
+    Iteration(
+      "profileAndDeviceId",
+      "name=PROFILE_AND_DEVICE_ID_ACTIVITY",
+      "expNameStr=profile_and_device_id_activity"
+    ),
+    Iteration(
+      "completedStoryList",
+      "name=COMPLETED_STORY_LIST_ACTIVITY",
+      "expNameStr=completed_story_list_activity"
+    ),
+    Iteration("faqSingle", "name=FAQ_SINGLE_ACTIVITY", "expNameStr=faq_single_activity"),
+    Iteration("faqList", "name=FAQ_LIST_ACTIVITY", "expNameStr=faq_list_activity"),
+    Iteration("licenseList", "name=LICENSE_LIST_ACTIVITY", "expNameStr=license_list_activity"),
+    Iteration(
+      "licenseTextViewer",
+      "name=LICENSE_TEXT_VIEWER_ACTIVITY",
+      "expNameStr=license_text_viewer_activity"
+    ),
+    Iteration(
+      "thirdPartyDependencyList",
+      "name=THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY",
+      "expNameStr=third_party_dependency_list_activity"
+    ),
+    Iteration("help", "name=HELP_ACTIVITY", "expNameStr=help_activity"),
+    Iteration(
+      "recentlyPlayed",
+      "name=RECENTLY_PLAYED_ACTIVITY",
+      "expNameStr=recently_played_activity"
+    ),
+    Iteration("myDownloads", "name=MY_DOWNLOADS_ACTIVITY", "expNameStr=my_downloads_activity"),
+    Iteration("onboarding", "name=ONBOARDING_ACTIVITY", "expNameStr=onboarding_activity"),
+    Iteration(
+      "ongoingTopicList",
+      "name=ONGOING_TOPIC_LIST_ACTIVITY",
+      "expNameStr=ongoing_topic_list_activity"
+    ),
+    Iteration(
+      "audioLanguage",
+      "name=AUDIO_LANGUAGE_ACTIVITY",
+      "expNameStr=audio_language_activity"
+    ),
+    Iteration("appLanguage", "name=APP_LANGUAGE_ACTIVITY", "expNameStr=app_language_activity"),
+    Iteration("options", "name=OPTIONS_ACTIVITY", "expNameStr=options_activity"),
+    Iteration(
+      "readingTextSize",
+      "name=READING_TEXT_SIZE_ACTIVITY",
+      "expNameStr=reading_text_size_activity"
+    ),
+    Iteration("exploration", "name=EXPLORATION_ACTIVITY", "expNameStr=exploration_activity"),
+    Iteration("adminAuth", "name=ADMIN_AUTH_ACTIVITY", "expNameStr=admin_auth_activity"),
+    Iteration("pinPassword", "name=PIN_PASSWORD_ACTIVITY", "expNameStr=pin_password_activity"),
+    Iteration(
+      "profilePicture",
+      "name=PROFILE_PICTURE_ACTIVITY",
+      "expNameStr=profile_picture_activity"
+    ),
+    Iteration(
+      "profileProgress",
+      "name=PROFILE_PROGRESS_ACTIVITY",
+      "expNameStr=profile_progress_activity"
+    ),
+    Iteration("resumeLesson", "name=RESUME_LESSON_ACTIVITY", "expNameStr=resume_lesson_activity"),
+    Iteration("profileEdit", "name=PROFILE_EDIT_ACTIVITY", "expNameStr=profile_edit_activity"),
+    Iteration(
+      "profileResetPin",
+      "name=PROFILE_RESET_PIN_ACTIVITY",
+      "expNameStr=profile_reset_pin_activity"
+    ),
+    Iteration(
+      "profileRename",
+      "name=PROFILE_RENAME_ACTIVITY",
+      "expNameStr=profile_rename_activity"
+    ),
+    Iteration("profileList", "name=PROFILE_LIST_ACTIVITY", "expNameStr=profile_list_activity"),
+    Iteration("story", "name=STORY_ACTIVITY", "expNameStr=story_activity"),
+    Iteration("topic", "name=TOPIC_ACTIVITY", "expNameStr=topic_activity"),
+    Iteration("revisionCard", "name=REVISION_CARD_ACTIVITY", "expNameStr=revision_card_activity"),
+    Iteration(
+      "questionPlayer",
+      "name=QUESTION_PLAYER_ACTIVITY",
+      "expNameStr=question_player_activity"
+    ),
+    Iteration("walkthrough", "name=WALKTHROUGH_ACTIVITY", "expNameStr=walkthrough_activity"),
+    Iteration(
+      "developerOptions",
+      "name=DEVELOPER_OPTIONS_ACTIVITY",
+      "expNameStr=developer_options_activity"
+    ),
+    Iteration(
+      "viewEventLogs",
+      "name=VIEW_EVENT_LOGS_ACTIVITY",
+      "expNameStr=view_event_logs_activity"
+    ),
+    Iteration(
+      "markTopicsCompleted",
+      "name=MARK_TOPICS_COMPLETED_ACTIVITY",
+      "expNameStr=mark_topics_completed_activity"
+    ),
+    Iteration(
+      "mathExpressionParser",
+      "name=MATH_EXPRESSION_PARSER_ACTIVITY",
+      "expNameStr=math_expression_parser_activity"
+    ),
+    Iteration(
+      "markChaptersCompleted",
+      "name=MARK_CHAPTERS_COMPLETED_ACTIVITY",
+      "expNameStr=mark_chapters_completed_activity"
+    ),
+    Iteration(
+      "markStoriesCompleted",
+      "name=MARK_STORIES_COMPLETED_ACTIVITY",
+      "expNameStr=mark_stories_completed_activity"
+    ),
+    Iteration(
+      "forceNetworkType",
+      "name=FORCE_NETWORK_TYPE_ACTIVITY",
+      "expNameStr=force_network_type_activity"
+    ),
+    Iteration("adminPin", "name=ADMIN_PIN_ACTIVITY", "expNameStr=admin_pin_activity"),
+    Iteration("policies", "name=POLICIES_ACTIVITY", "expNameStr=policies_activity"),
+    Iteration("unspecified", "name=SCREEN_NAME_UNSPECIFIED", "expNameStr=screen_name_unspecified"),
+  )
+  fun testMetricsBundle_addScreenName_verifyConversionToCorrectAnalyticalName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+    val performanceMetricLog =
+      createPerformanceMetricLog(currentScreen = screenName)
+
+    eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
+
+    assertThat(bundle).string("current_screen").isEqualTo(expNameStr)
+  }
+
   private fun createEventLog(
     timestamp: Long = TEST_TIMESTAMP_1,
     priority: EventLog.Priority = ESSENTIAL,
@@ -1474,7 +1640,7 @@ class EventBundleCreatorTest {
   private fun createPerformanceMetricLog(
     timestamp: Long = TEST_TIMESTAMP_1,
     priority: Priority = HIGH_PRIORITY,
-    currentScreen: CurrentScreen = HOME_SCREEN,
+    currentScreen: ScreenName = SCREEN_NAME_UNSPECIFIED,
     memoryTier: MemoryTier = HIGH_MEMORY_TIER,
     storageTier: StorageTier = HIGH_STORAGE,
     isAppInForeground: Boolean = true,
