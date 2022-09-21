@@ -916,26 +916,6 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testHomeActivity_firstTestTopic_topicSummary_opensTopicActivityThroughPlayIntent() {
-    logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(5)
-      onView(
-        atPositionOnView(
-          R.id.home_recycler_view,
-          5,
-          R.id.topic_name_text_view
-        )
-      ).check(matches(withText(containsString("Fractions")))).perform(click())
-      intended(hasComponent(TopicActivity::class.java.name))
-      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
-      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
-      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
-    }
-  }
-
-  @Test
   fun testHomeActivity_firstTestTopic_topicSummary_topicNameIsCorrect() {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
