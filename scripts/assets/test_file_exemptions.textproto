@@ -371,6 +371,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/StartS
 exempted_file_path: "app/src/main/java/org/oppia/android/app/resumelesson/ResumeLessonActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/resumelesson/ResumeLessonFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/resumelesson/ResumeLessonViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/DeleteProfileSuccessDialogFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/LoadProfileEditDeletionDialogListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditDeletionDialogFragment.kt"
