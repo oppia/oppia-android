@@ -9,9 +9,11 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName.STORY_ACTIVITY
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.topic.RouteToResumeLessonListener
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity for stories. */
@@ -96,11 +98,12 @@ class StoryActivity :
       topicId: String,
       storyId: String
     ): Intent {
-      val intent = Intent(context, StoryActivity::class.java)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, internalProfileId)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID, topicId)
-      intent.putExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, storyId)
-      return intent
+      return Intent(context, StoryActivity::class.java).apply {
+        putExtra(STORY_ACTIVITY_INTENT_EXTRA_INTERNAL_PROFILE_ID, internalProfileId)
+        putExtra(STORY_ACTIVITY_INTENT_EXTRA_TOPIC_ID, topicId)
+        putExtra(STORY_ACTIVITY_INTENT_EXTRA_STORY_ID, storyId)
+        decorateWithScreenName(STORY_ACTIVITY)
+      }
     }
   }
 }

@@ -27,6 +27,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -225,7 +226,7 @@ class LogUploadWorkerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       OppiaMetricLog.Priority.LOW_PRIORITY
     )
@@ -251,7 +252,7 @@ class LogUploadWorkerTest {
       OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
     )
     assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
-      OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
+      SCREEN_NAME_UNSPECIFIED
     )
     assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
     assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)

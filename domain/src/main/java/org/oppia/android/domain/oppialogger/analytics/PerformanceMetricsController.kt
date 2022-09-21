@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
 import org.oppia.android.app.model.OppiaMetricLogs
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
@@ -46,7 +47,7 @@ class PerformanceMetricsController @Inject constructor(
    */
   fun logPerformanceMetricsEvent(
     timestamp: Long,
-    currentScreen: OppiaMetricLog.CurrentScreen,
+    currentScreen: ScreenName,
     loggableMetric: OppiaMetricLog.LoggableMetric,
     priority: Priority
   ) {
@@ -102,7 +103,7 @@ class PerformanceMetricsController @Inject constructor(
   private fun createMetricLog(
     timestamp: Long,
     priority: Priority,
-    currentScreen: OppiaMetricLog.CurrentScreen,
+    currentScreen: ScreenName,
     loggableMetric: OppiaMetricLog.LoggableMetric
   ): OppiaMetricLog {
     return OppiaMetricLog.newBuilder().apply {
