@@ -13,11 +13,13 @@ import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 const val HELP_OPTIONS_TITLE_SAVED_KEY = "HelpActivity.help_options_title"
@@ -96,6 +98,7 @@ class HelpActivity :
       val intent = Intent(context, HelpActivity::class.java)
       intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
       intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+      intent.decorateWithScreenName(HELP_ACTIVITY)
       return intent
     }
   }
