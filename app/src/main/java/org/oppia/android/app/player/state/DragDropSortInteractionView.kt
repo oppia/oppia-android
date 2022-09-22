@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.view.isVisible
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,6 +21,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /**
  * A custom [RecyclerView] for displaying a list of items that can be re-ordered using
@@ -32,30 +32,18 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  // For disabling grouping of items by default.
-  private var isMultipleItemsInSamePositionAllowed: Boolean = false
-  private var isAccessibilityEnabled: Boolean = false
+  @field:[Inject ExplorationHtmlParserEntityType] lateinit var entityType: String
+  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject lateinit var viewBindingShim: ViewBindingShim
+  @Inject lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
-
-  @Inject
-  @field:ExplorationHtmlParserEntityType
-  lateinit var entityType: String
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
-  @Inject
-  lateinit var viewBindingShim: ViewBindingShim
-
-  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-
+  private var multipleItemsInSamePositionInitialized = false
+  private var isMultipleItemsInSamePositionAllowed by Delegates.notNull<Boolean>()
   private lateinit var entityId: String
+  private lateinit var dataList: List<DragDropInteractionContentViewModel>
   private lateinit var onDragEnd: OnDragEndedListener
   private lateinit var onItemDrag: OnItemDragListener
 
@@ -65,24 +53,59 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
-
-    isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled()
+    maybeInitializeAdapter()
   }
 
-  fun allowMultipleItemsInSamePosition(isAllowed: Boolean) {
-    // TODO(#299): Find a cleaner way to initialize the item input type. Using data-binding results in a race condition
-    //  with setting the adapter data, so this needs to be done in an order-agnostic way. There should be a way to do
-    //  this more efficiently and cleanly than always relying on notifying of potential changes in the adapter when the
-    //  type is set (plus the type ought to be permanent).
+  fun setAllowMultipleItemsInSamePosition(isAllowed: Boolean) {
     this.isMultipleItemsInSamePositionAllowed = isAllowed
-    singleTypeBuilderFactory = BindableAdapter.SingleTypeBuilder.Factory(Fragment())
-    adapter = createAdapter()
+    multipleItemsInSamePositionInitialized = true
+    maybeInitializeAdapter()
   }
 
-  // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding adapter, allowing
-  //  TextViews that require custom Oppia HTML parsing to be fully automatically bound through data-binding.
+  // TODO(#264): Clean up HTML parser such that it can be handled completely through a binding
+  //  adapter, allowing TextViews that require custom Oppia HTML parsing to be fully automatically
+  //  bound through data-binding.
   fun setEntityId(entityId: String) {
     this.entityId = entityId
+    maybeInitializeAdapter()
+  }
+
+  /**
+   * Sets the view's RecyclerView [DragDropInteractionContentViewModel] data list.
+   *
+   * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
+   * since this one takes into account initialization order with other binding properties.
+   */
+  fun setDraggableData(dataList: List<DragDropInteractionContentViewModel>) {
+    this.dataList = dataList
+    maybeInitializeAdapter()
+  }
+
+  fun setOnDragEnded(onDragEnd: OnDragEndedListener) {
+    this.onDragEnd = onDragEnd
+    maybeAttachItemTouchHelper()
+  }
+
+  fun setOnItemDrag(onItemDrag: OnItemDragListener) {
+    this.onItemDrag = onItemDrag
+    maybeAttachItemTouchHelper()
+  }
+
+  private fun maybeInitializeAdapter() {
+    if (::singleTypeBuilderFactory.isInitialized &&
+      multipleItemsInSamePositionInitialized &&
+      ::entityId.isInitialized &&
+      ::dataList.isInitialized
+    ) {
+      adapter = createAdapter().also { it.setData(dataList) }
+    }
+  }
+
+  private fun maybeAttachItemTouchHelper() {
+    if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized) {
+      val itemTouchHelper = ItemTouchHelper(DragAndDropItemFacilitator(onItemDrag, onDragEnd))
+      itemTouchHelper.attachToRecyclerView(this)
+    }
   }
 
   private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
@@ -105,7 +128,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
             viewModel.htmlContent.contentIdsList.size > 1
           viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =
-            isAccessibilityEnabled
+            accessibilityService.isScreenReaderEnabled()
           viewBindingShim.setDragDropInteractionItemsBindingViewModel(viewModel)
         }
       )
@@ -135,42 +158,4 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       )
       .build()
   }
-
-  fun setOnDragEnded(onDragEnd: OnDragEndedListener) {
-    this.onDragEnd = onDragEnd
-    checkIfSettingIsPossible()
-  }
-
-  fun setOnItemDrag(onItemDrag: OnItemDragListener) {
-    this.onItemDrag = onItemDrag
-    checkIfSettingIsPossible()
-  }
-
-  private fun checkIfSettingIsPossible() {
-    if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized) {
-      performAttachment()
-    }
-  }
-
-  private fun performAttachment() {
-    val dragCallback: ItemTouchHelper.Callback =
-      DragAndDropItemFacilitator(onItemDrag, onDragEnd)
-
-    val itemTouchHelper = ItemTouchHelper(dragCallback)
-    itemTouchHelper.attachToRecyclerView(this)
-  }
 }
-
-/** Sets the exploration ID for a specific [DragDropSortInteractionView] via data-binding. */
-@BindingAdapter("entityId")
-fun setEntityId(
-  dragDropSortInteractionView: DragDropSortInteractionView,
-  entityId: String
-) = dragDropSortInteractionView.setEntityId(entityId)
-
-/** Sets the [SelectionItemInputType] for a specific [SelectionInteractionView] via data-binding. */
-@BindingAdapter("allowMultipleItemsInSamePosition")
-fun setAllowMultipleItemsInSamePosition(
-  dragDropSortInteractionView: DragDropSortInteractionView,
-  isAllowed: Boolean
-) = dragDropSortInteractionView.allowMultipleItemsInSamePosition(isAllowed)

@@ -226,13 +226,10 @@ class BindableAdapter<T : Any> internal constructor(
     }
 
     /** Fragment injectable factory to create new [SingleTypeBuilder]. */
-    class Factory @Inject constructor(
-      val fragment: Fragment
-    ) {
-      /**Returns a new [SingleTypeBuilder] for the specified Data class type.*/
-      inline fun <reified T : Any> create(): SingleTypeBuilder<T> {
-        return SingleTypeBuilder(T::class, fragment)
-      }
+    class Factory @Inject constructor(val fragment: Fragment) {
+      /** Returns a new [SingleTypeBuilder] for the specified Data class type. */
+      inline fun <reified T : Any> create(): SingleTypeBuilder<T> =
+        SingleTypeBuilder(T::class, fragment)
     }
   }
 
@@ -362,16 +359,11 @@ class BindableAdapter<T : Any> internal constructor(
     }
 
     /** Fragment injectable factory to create new [MultiTypeBuilder]. */
-    class Factory @Inject constructor(
-      val fragment: Fragment
-    ) {
-
-      /*** Returns a new [MultiTypeBuilder] for the specified data class type.*/
+    class Factory @Inject constructor(val fragment: Fragment) {
+      /** Returns a new [MultiTypeBuilder] for the specified data class type. */
       inline fun <reified T : Any, reified E : Enum<E>> create(
         noinline computeViewType: ComputeViewType<T, E>
-      ): MultiTypeBuilder<T, E> {
-        return MultiTypeBuilder(T::class, computeViewType, fragment)
-      }
+      ): MultiTypeBuilder<T, E> = MultiTypeBuilder(T::class, computeViewType, fragment)
     }
   }
 }
