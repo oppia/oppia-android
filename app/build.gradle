@@ -171,6 +171,7 @@ dependencies {
       'com.google.firebase:firebase-crashlytics:17.0.0',
       'com.google.guava:guava:28.1-android',
       'com.google.protobuf:protobuf-javalite:3.17.3',
+      'com.github.oppia:Android-MarqueeView:a935a78c88',
       'com.github.oppia:CircularImageview:35d08ba88a',
       'de.hdodenhof:circleimageview:3.0.1',
       'nl.dionsegijn:konfetti:1.2.5',
@@ -178,7 +179,6 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
       'org.mockito:mockito-core:2.7.22',
-      'com.github.oppia:Android-MarqueeView:a13c4de701',
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',

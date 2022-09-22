@@ -28,8 +28,8 @@
           android:id="@+id/license_text_viewer_activity_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:speed="10"
-          app:pause="500">
+          app:animationSpeed="10"
+          app:animationDelay="500">
 
         <TextView
           android:id="@+id/license_text_viewer_activity_toolbar_title"
