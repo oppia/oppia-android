@@ -5,12 +5,12 @@ import dagger.Module
 import dagger.multibindings.IntoSet
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
-/** Binds [PerformanceMetricsLogger] as an [ApplicationStartupListener] */
+/** Binds [ActivityLifecycleObserver] as an [ApplicationStartupListener] */
 @Module
-abstract class PerformanceMetricsLoggerModule {
+interface ActivityLifecycleObserverModule {
   @Binds
   @IntoSet
-  abstract fun providePerformanceMetricsLogger(
-    performanceMetricsLogger: PerformanceMetricsLogger
+  fun bindActivityLifecycleObserver(
+    activityLifecycleObserver: ActivityLifecycleObserver
   ): ApplicationStartupListener
 }
