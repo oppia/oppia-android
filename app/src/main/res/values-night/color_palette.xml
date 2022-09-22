@@ -113,5 +113,4 @@
   <color name="color_palette_ongoing_progress_activity_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_completed_progress_activity_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_completed_progress_activity_completed_story_card_text_color">@color/color_def_white</color>
->>>>>>> Stashed changes
 </resources>
