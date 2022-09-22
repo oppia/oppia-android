@@ -32,7 +32,7 @@
         android:layout_weight="1"
         android:fontFamily="sans-serif-medium"
         android:text="@{viewModel.getHeader()}"
-        android:textColor="@color/oppia_primary_text"
+        android:textColor="@color/component_color_profile_progress_activity_recently_played_stories_text_color"
         android:textSize="18sp" />
 
       <TextView
