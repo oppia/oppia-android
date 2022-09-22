@@ -143,8 +143,8 @@ git_repository(
 # min target SDK version set to be compatible with Oppia.
 git_repository(
     name = "marqueeview",
-    commit = "472f8d63faf6491da0f5a04cafbad3f70878fb81",
-    remote = "https://github.com/KevinGitonga/Android-MarqueeView",
+    commit = "a935a78c88a01958716396e6f2cb4abf4559eccc",
+    remote = "https://github.com/oppia/Android-MarqueeView",
 )
 
 bind(
