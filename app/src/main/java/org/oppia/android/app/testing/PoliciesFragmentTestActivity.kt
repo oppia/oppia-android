@@ -7,12 +7,14 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.policies.PoliciesActivity
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 /** Test Activity used for testing [PoliciesFragment] */
-class PoliciesFragmentTestActivity : InjectableAppCompatActivity() {
+class PoliciesFragmentTestActivity : InjectableAppCompatActivity(), RouteToPoliciesListener {
 
   @Inject
   lateinit var policiesFragmentTestActivityPresenter: PoliciesFragmentTestActivityPresenter
@@ -45,5 +47,9 @@ class PoliciesFragmentTestActivity : InjectableAppCompatActivity() {
         it.putProtoExtra(POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO, policiesActivityParams)
       }
     }
+  }
+
+  override fun onRouteToPolicies(policyPage: PolicyPage) {
+    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
   }
 }
