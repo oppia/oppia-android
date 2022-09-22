@@ -51,7 +51,7 @@
       android:layout_width="0dp"
       android:layout_height="6dp"
       android:layout_marginTop="4dp"
-      android:background="@color/component_color_home_activity_layout_below_greeting_text_color"
+      android:background="@color/component_color_home_activity_layout_greeting_text_line_color"
       app:layout_constraintEnd_toEndOf="@id/welcome_message_container"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@+id/welcome_message_container"
