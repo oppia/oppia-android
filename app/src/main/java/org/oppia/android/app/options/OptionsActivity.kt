@@ -12,9 +12,11 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
+import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.getStringFromBundle
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 private const val SELECTED_OPTIONS_TITLE_SAVED_KEY = "OptionsActivity.selected_options_title"
@@ -52,10 +54,11 @@ class OptionsActivity :
       profileId: Int?,
       isFromNavigationDrawer: Boolean
     ): Intent {
-      val intent = Intent(context, OptionsActivity::class.java)
-      intent.putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
-      intent.putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
-      return intent
+      return Intent(context, OptionsActivity::class.java).apply {
+        putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
+        putExtra(BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, isFromNavigationDrawer)
+        decorateWithScreenName(OPTIONS_ACTIVITY)
+      }
     }
   }
 

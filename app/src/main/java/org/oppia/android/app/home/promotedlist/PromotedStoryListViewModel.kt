@@ -51,7 +51,7 @@ class PromotedStoryListViewModel(
   }
 
   private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle {
-    with (promotedActivityList.promotedStoryList) {
+    with(promotedActivityList.promotedStoryList) {
       return when {
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {

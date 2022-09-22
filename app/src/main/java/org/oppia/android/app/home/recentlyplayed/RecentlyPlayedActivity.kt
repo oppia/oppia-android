@@ -54,7 +54,6 @@ class RecentlyPlayedActivity :
         recentlyPlayedActivityParams
       )
       return intent
-    }
   }
 
   override fun routeToExploration(
