@@ -1,6 +1,6 @@
 package org.oppia.android.util.parser.math
 
-import android.content.Context
+import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
@@ -46,24 +46,24 @@ import kotlin.math.roundToInt
  * and blocks the main thread).
  */
 class MathBitmapModelLoader private constructor(
-  private val applicationContext: Context
+  private val application: Application
 ) : ModelLoader<MathModel, ByteBuffer> {
   // Ref: https://bumptech.github.io/glide/tut/custom-modelloader.html#writing-the-modelloader.
 
   private val backgroundDispatcher by lazy {
-    val injectorProvider = applicationContext.applicationContext as DispatcherInjectorProvider
+    val injectorProvider = application as DispatcherInjectorProvider
     val injector = injectorProvider.getDispatcherInjector()
     injector.getBackgroundDispatcher()
   }
 
   private val blockingDispatcher by lazy {
-    val injectorProvider = applicationContext.applicationContext as DispatcherInjectorProvider
+    val injectorProvider = application as DispatcherInjectorProvider
     val injector = injectorProvider.getDispatcherInjector()
     injector.getBlockingDispatcher()
   }
 
   private val consoleLogger by lazy {
-    val injectorProvider = applicationContext as ConsoleLoggerInjectorProvider
+    val injectorProvider = application as ConsoleLoggerInjectorProvider
     val injector = injectorProvider.getConsoleLoggerInjector()
     injector.getConsoleLogger()
   }
@@ -77,7 +77,7 @@ class MathBitmapModelLoader private constructor(
     return ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
-        applicationContext,
+        application,
         model,
         width,
         height,
@@ -91,7 +91,7 @@ class MathBitmapModelLoader private constructor(
   override fun handles(model: MathModel): Boolean = true
 
   private class LatexModelDataFetcher(
-    private val applicationContext: Context,
+    private val application: Application,
     private val model: MathModel,
     private val targetWidth: Int,
     private val targetHeight: Int,
@@ -109,7 +109,7 @@ class MathBitmapModelLoader private constructor(
         // creation can still happen in parallel, and those are the more expensive steps.
         val span = withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
           MathExpressionSpan(
-            model.rawLatex, model.lineHeight, applicationContext.assets, !model.useInlineRendering
+            model.rawLatex, model.lineHeight, application.assets, !model.useInlineRendering
           ).also { it.ensureDrawable() }
         }
         val renderableText = SpannableStringBuilder("\uFFFC").apply {
@@ -385,10 +385,10 @@ class MathBitmapModelLoader private constructor(
 
   /** [ModelLoaderFactory] for creating new [MathBitmapModelLoader]s. */
   class Factory(
-    private val applicationContext: Context
+    private val application: Application
   ) : ModelLoaderFactory<MathModel, ByteBuffer> {
     override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
-      return MathBitmapModelLoader(applicationContext)
+      return MathBitmapModelLoader(application)
     }
 
     override fun teardown() {}

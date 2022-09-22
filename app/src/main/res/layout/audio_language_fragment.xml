@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.options.LanguageSelectionViewModel" />
+      type="org.oppia.android.app.options.AudioLanguageSelectionViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +25,7 @@
         android:id="@+id/audio_language_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/general_navigation_background"
+        android:background="@color/component_color_audio_language_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/audio_language_recycler_view_padding_bottom"

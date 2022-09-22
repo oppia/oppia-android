@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
 
 /** The presenter for [OptionsActivity]. */
@@ -79,7 +81,7 @@ class OptionsActivityPresenter @Inject constructor(
       ) as OptionsFragment?
   }
 
-  fun updateReadingTextSize(textSize: String) {
+  fun updateReadingTextSize(textSize: ReadingTextSize) {
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
@@ -87,15 +89,15 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.updateAppLanguage(appLanguage)
   }
 
-  fun updateAudioLanguage(audioLanguage: String) {
+  fun updateAudioLanguage(audioLanguage: AudioLanguage) {
     getOptionFragment()?.updateAudioLanguage(audioLanguage)
   }
 
-  fun loadReadingTextSizeFragment(textSize: String) {
+  fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     val readingTextSizeFragment = ReadingTextSizeFragment.newInstance(textSize)
     activity.supportFragmentManager
       .beginTransaction()
-      .add(R.id.multipane_options_container, readingTextSizeFragment)
+      .replace(R.id.multipane_options_container, readingTextSizeFragment)
       .commitNow()
     getOptionFragment()?.setSelectedFragment(READING_TEXT_SIZE_FRAGMENT)
   }
@@ -105,17 +107,16 @@ class OptionsActivityPresenter @Inject constructor(
       AppLanguageFragment.newInstance(APP_LANGUAGE, appLanguage)
     activity.supportFragmentManager
       .beginTransaction()
-      .add(R.id.multipane_options_container, appLanguageFragment)
+      .replace(R.id.multipane_options_container, appLanguageFragment)
       .commitNow()
     getOptionFragment()?.setSelectedFragment(APP_LANGUAGE_FRAGMENT)
   }
 
-  fun loadAudioLanguageFragment(audioLanguage: String) {
-    val audioLanguageFragment =
-      AudioLanguageFragment.newInstance(AUDIO_LANGUAGE, audioLanguage)
+  fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
+    val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage)
     activity.supportFragmentManager
       .beginTransaction()
-      .add(R.id.multipane_options_container, audioLanguageFragment)
+      .replace(R.id.multipane_options_container, audioLanguageFragment)
       .commitNow()
     getOptionFragment()?.setSelectedFragment(AUDIO_LANGUAGE_FRAGMENT)
   }

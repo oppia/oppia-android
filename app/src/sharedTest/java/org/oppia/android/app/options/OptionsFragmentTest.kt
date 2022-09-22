@@ -24,10 +24,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.google.protobuf.MessageLite
 import dagger.Component
-import dagger.Module
-import dagger.Provides
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,8 +43,13 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -72,7 +79,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -80,6 +88,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -88,8 +97,10 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -98,19 +109,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
-import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.CacheLatexRendering
-import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -141,7 +139,7 @@ class OptionsFragmentTest {
 
   @Before
   fun setUp() {
-    TestModule.forceEnableLanguageSelectionUi = true
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -352,7 +350,6 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureEnabled_appLanguageOptionIsDisplayed() {
-    TestModule.forceEnableLanguageSelectionUi = true
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -366,7 +363,8 @@ class OptionsFragmentTest {
 
   @Test
   fun testOptionsFragment_featureDisabled_appLanguageOptionIsNotDisplayed() {
-    TestModule.forceEnableLanguageSelectionUi = false
+    TestPlatformParameterModule.forceEnableLanguageSelectionUi(false)
+
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
@@ -436,12 +434,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.reading_text_size_text_view
         )
       ).perform(click())
+
+      val expectedParams = ReadingTextSizeActivityParams.newBuilder().apply {
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
-            "Medium"
-          ),
+          hasProtoExtra("ReadingTextSizeActivity.params", expectedParams),
           hasComponent(ReadingTextSizeActivity::class.java.name)
         )
       )
@@ -464,16 +463,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.reading_text_size_text_view
         )
       ).perform(click())
+
+      val expectedParams = ReadingTextSizeActivityParams.newBuilder().apply {
+        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceTitle(),
-            READING_TEXT_SIZE
-          ),
-          hasExtra(
-            ReadingTextSizeActivity.getKeyReadingTextSizePreferenceSummaryValue(),
-            "Medium"
-          ),
+          hasProtoExtra("ReadingTextSizeActivity.params", expectedParams),
           hasComponent(ReadingTextSizeActivity::class.java.name)
         )
       )
@@ -560,16 +556,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.audio_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
-            AUDIO_LANGUAGE
-          ),
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
-            "English"
-          ),
+          hasProtoExtra("AudioLanguageActivity.params", expectedParams),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
       )
@@ -592,16 +585,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.audio_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceSummaryValue(),
-            "English"
-          ),
-          hasExtra(
-            AudioLanguageActivity.getKeyAudioLanguagePreferenceTitle(),
-            AUDIO_LANGUAGE
-          ),
+          hasProtoExtra("AudioLanguageActivity.params", expectedParams),
           hasComponent(AudioLanguageActivity::class.java.name)
         )
       )
@@ -640,48 +630,17 @@ class OptionsFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  @Module
-  class TestModule {
-    companion object {
-      var forceEnableLanguageSelectionUi: Boolean = true
-    }
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
 
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceEnableLanguageSelectionUi)
-    }
-
-    @Provides
-    @LearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Boolean> {
-      return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
-        ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @CacheLatexRendering
-    fun provideCacheLatexRendering(
-      platformParameterSingleton: PlatformParameterSingleton
-    ): PlatformParameterValue<Boolean> {
-      return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
-        ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
     }
   }
 
@@ -689,7 +648,8 @@ class OptionsFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class,
+      RobolectricModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -700,7 +660,7 @@ class OptionsFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
@@ -710,7 +670,8 @@ class OptionsFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
