@@ -9,10 +9,12 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ReadingTextSizeActivityStateBundle
+import org.oppia.android.app.model.ScreenName.READING_TEXT_SIZE_ACTIVITY
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 private const val ACTIVITY_PARAMS_KEY = "ReadingTextSizeActivity.params"
@@ -45,6 +47,7 @@ class ReadingTextSizeActivity : InjectableAppCompatActivity() {
       }.build()
       return Intent(context, ReadingTextSizeActivity::class.java).apply {
         putProtoExtra(ACTIVITY_PARAMS_KEY, params)
+        decorateWithScreenName(READING_TEXT_SIZE_ACTIVITY)
       }
     }
   }

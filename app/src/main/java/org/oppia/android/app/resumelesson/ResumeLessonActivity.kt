@@ -10,9 +10,11 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.ScreenName.RESUME_LESSON_ACTIVITY
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity that allows the user to resume a saved exploration. */
@@ -69,6 +71,7 @@ class ResumeLessonActivity : InjectableAppCompatActivity(), RouteToExplorationLi
     ): Intent {
       return Intent(context, ResumeLessonActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
+        decorateWithScreenName(RESUME_LESSON_ACTIVITY)
       }
     }
   }
