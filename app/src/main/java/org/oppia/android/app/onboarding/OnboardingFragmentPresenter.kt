@@ -10,12 +10,16 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
 import org.oppia.android.databinding.OnboardingSlideBinding
 import org.oppia.android.databinding.OnboardingSlideFinalBinding
+import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -27,12 +31,13 @@ class OnboardingFragmentPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<OnboardingViewModel>,
   private val viewModelProviderFinalSlide: ViewModelProvider<OnboardingSlideFinalViewModel>,
   private val resourceHandler: AppLanguageResourceHandler,
+  private val htmlParserFactory: HtmlParser.Factory,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-) : OnboardingNavigationListener {
+) : OnboardingNavigationListener, HtmlParser.PolicyOppiaTagActionListener {
   private val dotsList = ArrayList<ImageView>()
   private lateinit var binding: OnboardingFragmentBinding
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
+  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     binding = OnboardingFragmentBinding.inflate(
       inflater,
       container,
@@ -112,10 +117,41 @@ class OnboardingFragmentPresenter @Inject constructor(
       .registerViewDataBinder(
         viewType = ViewType.ONBOARDING_FINAL_SLIDE,
         inflateDataBinding = OnboardingSlideFinalBinding::inflate,
-        setViewModel = OnboardingSlideFinalBinding::setViewModel,
+        setViewModel = this::bindOnboardingSlideFinal,
         transformViewModel = { it as OnboardingSlideFinalViewModel }
       )
       .build()
+  }
+
+  private fun bindOnboardingSlideFinal(
+    binding: OnboardingSlideFinalBinding,
+    model: OnboardingSlideFinalViewModel
+  ) {
+    binding.viewModel = model
+
+    val completeString: String =
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.agree_to_terms,
+        resourceHandler.getStringInLocale(R.string.app_name)
+      )
+    binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = htmlParserFactory.create(
+      policyOppiaTagActionListener = this,
+      displayLocale = resourceHandler.getDisplayLocale()
+    ).parseOppiaHtml(
+      completeString,
+      binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView,
+      supportsLinks = true,
+      supportsConceptCards = false
+    )
+  }
+
+  override fun onPolicyPageLinkClicked(policyType: PolicyType) {
+    when (policyType) {
+      PolicyType.PRIVACY_POLICY ->
+        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
+      PolicyType.TERMS_OF_SERVICE ->
+        (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
+    }
   }
 
   private fun getOnboardingSlideFinalViewModel(): OnboardingSlideFinalViewModel {

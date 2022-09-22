@@ -19,9 +19,12 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
+import org.oppia.android.app.model.EphemeralTopicSummary
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -52,11 +55,13 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -69,6 +74,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -92,27 +98,28 @@ private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
   manifest = Config.NONE
 )
 class TopicSummaryViewModelTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var translationController: TranslationController
 
   private val testFragment by lazy { HomeFragment() }
 
-  private val topicSummary1 = TopicSummary.newBuilder()
-    .setTopicId("id_1")
-    .setName("topic_name")
-    .setTotalChapterCount(2)
-    .build()
-  private val topicSummary2 = TopicSummary.newBuilder()
-    .setTopicId("id_2")
-    .setName("topic_name")
-    .setTotalChapterCount(2)
-    .build()
+  private val topicSummary1 = EphemeralTopicSummary.newBuilder().apply {
+    topicSummary = TopicSummary.newBuilder()
+      .setTopicId("id_1")
+      .setTitle(SubtitledHtml.newBuilder().setContentId("title").setHtml("topic_name"))
+      .setTotalChapterCount(2)
+      .build()
+  }.build()
+  private val topicSummary2 = EphemeralTopicSummary.newBuilder().apply {
+    topicSummary = TopicSummary.newBuilder()
+      .setTopicId("id_2")
+      .setTitle(SubtitledHtml.newBuilder().setContentId("title").setHtml("topic_name"))
+      .setTotalChapterCount(2)
+      .build()
+  }.build()
 
   @Before
   fun setUp() {
@@ -212,19 +219,21 @@ class TopicSummaryViewModelTest {
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelTopicSummary1 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
-          topicSummary = topicSummary1,
+          ephemeralTopicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler
+          homeFragmentTestActivity.appLanguageResourceHandler,
+          translationController
         )
         val topicSummaryViewModelTopicSummary2 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
-          topicSummary = topicSummary2,
+          ephemeralTopicSummary = topicSummary2,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler
+          homeFragmentTestActivity.appLanguageResourceHandler,
+          translationController
         )
 
         assertThat(topicSummaryViewModelTopicSummary1)
@@ -242,19 +251,21 @@ class TopicSummaryViewModelTest {
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelEntity1 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
-          topicSummary = topicSummary1,
+          ephemeralTopicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler
+          homeFragmentTestActivity.appLanguageResourceHandler,
+          translationController
         )
         val topicSummaryViewModelEntity2 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
-          topicSummary = topicSummary1,
+          ephemeralTopicSummary = topicSummary1,
           entityType = "entity_2",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler
+          homeFragmentTestActivity.appLanguageResourceHandler,
+          translationController
         )
 
         assertThat(topicSummaryViewModelEntity1).isNotEqualTo(topicSummaryViewModelEntity2)
@@ -271,19 +282,21 @@ class TopicSummaryViewModelTest {
         setUpTestFragment(homeFragmentTestActivity)
         val topicSummaryViewModelPosition4 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
-          topicSummary = topicSummary1,
+          ephemeralTopicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 4,
-          homeFragmentTestActivity.appLanguageResourceHandler
+          homeFragmentTestActivity.appLanguageResourceHandler,
+          translationController
         )
         val topicSummaryViewModelPosition5 = TopicSummaryViewModel(
           activity = homeFragmentTestActivity,
-          topicSummary = topicSummary1,
+          ephemeralTopicSummary = topicSummary1,
           entityType = "entity_1",
           topicSummaryClickListener = testFragment,
           position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler
+          homeFragmentTestActivity.appLanguageResourceHandler,
+          translationController
         )
 
         assertThat(topicSummaryViewModelPosition4).isNotEqualTo(topicSummaryViewModelPosition5)
@@ -339,11 +352,12 @@ class TopicSummaryViewModelTest {
   ): TopicSummaryViewModel {
     return TopicSummaryViewModel(
       activity = activity,
-      topicSummary = topicSummary1,
+      ephemeralTopicSummary = topicSummary1,
       entityType = "entity",
       topicSummaryClickListener = testFragment,
       position = 5,
-      activity.appLanguageResourceHandler
+      activity.appLanguageResourceHandler,
+      translationController
     )
   }
 
@@ -361,7 +375,7 @@ class TopicSummaryViewModelTest {
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
@@ -372,7 +386,8 @@ class TopicSummaryViewModelTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

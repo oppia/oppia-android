@@ -50,7 +50,7 @@
           android:fontFamily="sans-serif"
           android:gravity="start|top"
           android:minHeight="@dimen/clickable_item_min_height"
-          android:text="@{viewModel.subtopic.title}"
+          android:text="@{viewModel.subtopicTitle}"
           android:textAlignment="viewStart"
           android:textColor="@color/oppia_primary_text"
           android:textSize="16sp"

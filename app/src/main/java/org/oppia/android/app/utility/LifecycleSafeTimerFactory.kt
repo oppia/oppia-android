@@ -1,7 +1,9 @@
 package org.oppia.android.app.utility
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -35,5 +37,49 @@ class LifecycleSafeTimerFactory @Inject constructor(
       liveData.postValue(Any())
     }
     return liveData
+  }
+
+  /**
+   * A convenience version of [createTimer] that runs the specified [block] for this
+   * [LifecycleOwner] with the specified millisecond delay of [delayMillis].
+   *
+   * Note that [block] is guaranteed to run at a lifecycle-safe time, though it will be run on the
+   * main thread so it should not perform any I/O or expensive operations.
+   */
+  fun LifecycleOwner.runWithDelay(delayMillis: Long, block: () -> Unit) {
+    val liveData = createTimer(delayMillis)
+    liveData.observe(
+      this,
+      object : Observer<Any> {
+        override fun onChanged(value: Any?) {
+          liveData.removeObserver(this)
+          block()
+        }
+      }
+    )
+  }
+
+  /**
+   * Runs a [block] of code with an initial delay of [delayMillis] (default 0) at a periodic rate of
+   * [periodMillis] milliseconds for this [LifecycleOwner].
+   *
+   * Like [runWithDelay], [block] is run at a lifecycle-safe time on the main thread. The loop will
+   * continue until either the [LifecycleOwner]'s lifecycle ends, or [block] returns false.
+   *
+   * Note that [periodMillis] is how much time should be run between calls to [block]. If [block]
+   * schedules something that will happen in parallel (such as an animation), then the period time
+   * will likely represent the time between each animation start, rather than between one animation
+   * end and the next start.
+   */
+  fun LifecycleOwner.runPeriodically(
+    delayMillis: Long = 0,
+    periodMillis: Long,
+    block: () -> Boolean
+  ) {
+    runWithDelay(delayMillis) {
+      if (block()) {
+        runPeriodically(periodMillis, periodMillis, block)
+      }
+    }
   }
 }
