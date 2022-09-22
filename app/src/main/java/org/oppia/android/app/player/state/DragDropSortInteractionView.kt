@@ -21,11 +21,10 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /**
  * A custom [RecyclerView] for displaying a list of items that can be re-ordered using
- * [DragItemTouchHelperCallback].
+ * [DragAndDropItemFacilitator].
  */
 class DragDropSortInteractionView @JvmOverloads constructor(
   context: Context,
@@ -41,7 +40,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @Inject lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private var multipleItemsInSamePositionInitialized = false
-  private var isMultipleItemsInSamePositionAllowed by Delegates.notNull<Boolean>()
+  private var isMultipleItemsInSamePositionAllowed: Boolean? = null
   private lateinit var entityId: String
   private lateinit var dataList: List<DragDropInteractionContentViewModel>
   private lateinit var onDragEnd: OnDragEndedListener
@@ -92,12 +91,14 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   }
 
   private fun maybeInitializeAdapter() {
+    val itemsInSamePositionAllowed = isMultipleItemsInSamePositionAllowed
     if (::singleTypeBuilderFactory.isInitialized &&
       multipleItemsInSamePositionInitialized &&
       ::entityId.isInitialized &&
-      ::dataList.isInitialized
+      ::dataList.isInitialized &&
+      itemsInSamePositionAllowed != null
     ) {
-      adapter = createAdapter().also { it.setData(dataList) }
+      adapter = createAdapter(itemsInSamePositionAllowed).also { it.setData(dataList) }
     }
   }
 
@@ -108,7 +109,9 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     }
   }
 
-  private fun createAdapter(): BindableAdapter<DragDropInteractionContentViewModel> {
+  private fun createAdapter(
+    itemsInSamePositionAllowed: Boolean
+  ): BindableAdapter<DragDropInteractionContentViewModel> {
     return singleTypeBuilderFactory.create<DragDropInteractionContentViewModel>()
       .registerViewBinder(
         inflateView = { parent ->
@@ -124,7 +127,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
             createNestedAdapter()
           adapter?.let { viewBindingShim.setDragDropInteractionItemsBindingAdapter(it) }
           viewBindingShim.getDragDropInteractionItemsBindingGroupItem().isVisible =
-            isMultipleItemsInSamePositionAllowed
+            itemsInSamePositionAllowed
           viewBindingShim.getDragDropInteractionItemsBindingUnlinkItems().isVisible =
             viewModel.htmlContent.contentIdsList.size > 1
           viewBindingShim.getDragDropInteractionItemsBindingAccessibleContainer().isVisible =

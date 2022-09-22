@@ -108,25 +108,26 @@ class BindableAdapter<T : Any> internal constructor(
     private val lifecycleOwnerRef: WeakReference<LifecycleOwner> = WeakReference(fragment)
 
     /**
-     * Returns the [LifecycleOwner] bound to this adapter, or null if there isn't one. This method
-     * will throw if there was a lifecycle owner bound but is now expired.
+     * The [LifecycleOwner] bound to this adapter.
+     *
+     * Attempting to call this property will throw if the bound [LifecycleOwner] is expired (i.e.
+     * indicating that it's been cleaned up by the system and is no longer valid).
      */
-    protected fun getLifecycleOwner(): LifecycleOwner? {
-      // Crash if the lifecycle owner has been cleaned up since it's not valid to use the adapter
-      // with an old lifecycle owner, and silently ignoring this may result in part of the layout
-      // not responding to events.
-      return lifecycleOwnerRef?.let { ref ->
-        checkNotNull(ref.get()) {
+    protected val lifecycleOwner: LifecycleOwner
+      get() {
+        // Crash if the lifecycle owner has been cleaned up since it's not valid to use the adapter
+        // with an old lifecycle owner, and silently ignoring this may result in part of the layout
+        // not responding to events.
+        return checkNotNull(lifecycleOwnerRef.get()) {
           "Attempted to inflate data binding with expired lifecycle owner"
         }
       }
-    }
   }
 
   /**
    * Constructs a new [BindableAdapter] that for a single view type.
    *
-   * Instances of [SingleTypeBuilder] should be instantiated using [newBuilder].
+   * Instances of this class can be created by injecting [Factory] and calling [Factory.create].
    */
   class SingleTypeBuilder<T : Any>(
     private val dataClassType: KClass<T>,
@@ -206,9 +207,10 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, data)
+
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
-            binding.lifecycleOwner = getLifecycleOwner()
+            binding.lifecycleOwner = lifecycleOwner
           }
         }
       }
@@ -237,7 +239,7 @@ class BindableAdapter<T : Any> internal constructor(
    * Constructs a new [BindableAdapter] that supports multiple view types. Each type returned by the
    * computer should have an associated view binder.
    *
-   * Instances of [MultiTypeBuilder] should be instantiated using [newBuilder].
+   * Instances of this class can be created by injecting [Factory] and calling [Factory.create].
    */
   class MultiTypeBuilder<T : Any, E : Enum<E>>(
     private val dataClassType: KClass<T>,
@@ -250,7 +252,7 @@ class BindableAdapter<T : Any> internal constructor(
      * Registers a [View] inflater and bind function for views of the specified view type (with
      * default value [DEFAULT_VIEW_TYPE] for single-view [RecyclerView]s). Note that the viewType
      * specified here must be properly returned in the [ComputeViewType] function passed into
-     * [newBuilder].
+     * [Factory.create].
      *
      * The inflateView and bindView functions passed in here must not hold any references to UI
      * objects except those that own the RecyclerView.
@@ -331,9 +333,10 @@ class BindableAdapter<T : Any> internal constructor(
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
             setViewModel(binding, transformViewModel(data))
+
             // Attaching lifecycleOwner before view model initialization can sometimes cause a
             // NullPointerException because data might not be attached to the views yet.
-            binding.lifecycleOwner = getLifecycleOwner()
+            binding.lifecycleOwner = lifecycleOwner
           }
         }
       }
