@@ -9,9 +9,11 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
+import org.oppia.android.app.model.ScreenName.SPLASH_ACTIVITY
 import org.oppia.android.app.notice.BetaNoticeClosedListener
 import org.oppia.android.app.notice.DeprecationNoticeExitAppListener
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeClosedListener
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /**
@@ -40,6 +42,7 @@ class SplashActivity :
     activityComponent = componentFactory.createActivityComponent(this)
     (activityComponent as ActivityComponentImpl).inject(this)
     splashActivityPresenter.handleOnCreate()
+    intent.decorateWithScreenName(SPLASH_ACTIVITY)
   }
 
   override fun createFragmentComponent(fragment: Fragment): FragmentComponent {

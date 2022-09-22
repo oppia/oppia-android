@@ -33,13 +33,13 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PerformanceMetricsLoggerModule]. */
+/** Tests for [ActivityLifecycleObserverModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PerformanceMetricsLoggerModuleTest.TestApplication::class)
-class PerformanceMetricsLoggerModuleTest {
+@Config(application = ActivityLifecycleObserverModuleTest.TestApplication::class)
+class ActivityLifecycleObserverModuleTest {
   @Inject
   lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
 
@@ -50,7 +50,7 @@ class PerformanceMetricsLoggerModuleTest {
 
   @Test
   fun testInjectApplicationStartupListenerSet_includesPerformanceMetricsLogger() {
-    assertThat(startupListeners.any { it is PerformanceMetricsLogger }).isTrue()
+    assertThat(startupListeners.any { it is ActivityLifecycleObserver }).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -76,7 +76,7 @@ class PerformanceMetricsLoggerModuleTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      LoggerModule::class, SyncStatusModule::class, PerformanceMetricsLoggerModule::class
+      LoggerModule::class, SyncStatusModule::class, ActivityLifecycleObserverModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -87,17 +87,17 @@ class PerformanceMetricsLoggerModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: PerformanceMetricsLoggerModuleTest)
+    fun inject(test: ActivityLifecycleObserverModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsLoggerModuleTest_TestApplicationComponent.builder()
+      DaggerActivityLifecycleObserverModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: PerformanceMetricsLoggerModuleTest) {
+    fun inject(test: ActivityLifecycleObserverModuleTest) {
       component.inject(test)
     }
 

@@ -26,6 +26,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseListActivity
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -71,6 +72,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -112,6 +114,14 @@ class LicenseTextViewerActivityTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenName = createLicenseTextViewerActivityIntent(0, 0)
+      .extractCurrentAppScreenName()
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY)
   }
 
   @Test

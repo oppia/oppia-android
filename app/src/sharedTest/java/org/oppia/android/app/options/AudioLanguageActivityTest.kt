@@ -2,7 +2,6 @@ package org.oppia.android.app.options
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -24,6 +23,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -69,6 +71,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -91,21 +94,15 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AudioLanguageActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   val activityTestRule: ActivityTestRule<AudioLanguageActivity> = ActivityTestRule(
     AudioLanguageActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
-  @Inject
-  lateinit var context: Context
-
-  private val summaryValue = "English"
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -117,25 +114,26 @@ class AudioLanguageActivityTest {
   }
 
   @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName =
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE).extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.AUDIO_LANGUAGE_ACTIVITY)
+  }
+
+  @Test
   fun testAudioLanguageActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createDefaultAudioActivityIntent(
-        summaryValue
-      )
-    )
+    activityTestRule.launchActivity(createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE))
+
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(context.getString(R.string.audio_language_activity_title))
   }
 
-  private fun createDefaultAudioActivityIntent(summaryValue: String): Intent {
-    return AudioLanguageActivity.createAudioLanguageActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      AUDIO_LANGUAGE,
-      summaryValue
-    )
-  }
+  @Suppress("SameParameterValue")
+  private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
+    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

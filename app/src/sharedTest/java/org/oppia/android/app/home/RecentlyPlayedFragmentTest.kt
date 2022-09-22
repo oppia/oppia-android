@@ -59,6 +59,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -122,6 +123,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -208,6 +210,14 @@ class RecentlyPlayedFragmentTest {
       context = context,
       internalProfileId = internalProfileId
     )
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createRecentlyPlayedActivityIntent(internalProfileId)
+      .extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.RECENTLY_PLAYED_ACTIVITY)
   }
 
   @Test
