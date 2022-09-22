@@ -1,7 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/fragment_container"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".app.splash.SplashActivity" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+    <import type="android.view.View" />
+
+    <variable
+      name="isOnDeveloperFlavor"
+      type="Boolean" />
+
+    <variable
+      name="isOnAlphaFlavor"
+      type="Boolean" />
+
+    <variable
+      name="isOnBetaFlavor"
+      type="Boolean" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#019489"
+    tools:context=".app.splash.SplashActivity">
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/logo_top_margin"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.354" />
+    <ImageView
+      android:id="@+id/splash_oppia_logo"
+      android:layout_width="228dp"
+      android:layout_height="88dp"
+      android:importantForAccessibility="no"
+      app:srcCompat="@drawable/full_oppia_logo"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/logo_top_margin" />
+    <TextView
+      android:id="@+id/build_flavor_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@{isOnAlphaFlavor ? @string/splash_screen_alpha_label : isOnBetaFlavor ? @string/splash_screen_beta_label : @string/splash_screen_developer_label}"
+      style="@style/Heading2ViewStart"
+      android:textSize="24sp"
+      android:textColor="@color/color_def_white"
+      android:visibility="@{(isOnDeveloperFlavor || isOnAlphaFlavor || isOnBetaFlavor) ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="@+id/splash_oppia_logo"
+      app:layout_constraintTop_toBottomOf="@+id/splash_oppia_logo" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

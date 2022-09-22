@@ -14,6 +14,8 @@ import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
 import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
 import org.oppia.android.app.model.SpotlightStateDatabase
 import org.oppia.android.app.model.SpotlightViewState
+import org.oppia.android.app.model.SpotlightViewState.SPOTLIGHT_NOT_SEEN
+import org.oppia.android.app.model.SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -34,9 +36,9 @@ private const val RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
 class SpotlightStateController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,
   private val oppiaLogger: OppiaLogger,
-  private val dataProviders: DataProviders,
+  private val dataProviders: DataProviders
 ) {
-  // thrown when spotlight feature is not set while retrieving or marking spotlight view states
+  /** Thrown when spotlight feature is not set while retrieving or marking spotlight view states. */
   class SpotlightFeatureNotFoundException(message: String) : IllegalArgumentException(message)
 
   private val cacheStoreMap =
@@ -60,12 +62,17 @@ class SpotlightStateController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
     ) {
-      return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
+      try {
+        return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
+      } catch (e: SpotlightFeatureNotFoundException) {
+        return@createInMemoryDataProviderAsync AsyncResult.Failure(e)
+      }
     }
   }
 
   /**
    * Retrieves the current [SpotlightViewState] of a spotlit feature for a given profile.
+   *
    * @param profileId the ID of the profile that will be viewing the spotlight
    * @param feature the spotlight feature to be spotlit
    * @return DataProvider containing the current [SpotlightViewState] corresponding to the specified [feature]
@@ -89,13 +96,16 @@ class SpotlightStateController @Inject constructor(
           VOICEOVER_LANGUAGE_ICON -> it.voiceoverLanguageIcon
           FEATURE_NOT_SET -> {
             return@transformAsync AsyncResult.Failure(
-              SpotlightFeatureNotFoundException("Spotlight feature was not found")
+              SpotlightFeatureNotFoundException("Spotlight feature requested was not found")
             )
           }
         }
-        AsyncResult.Success(viewState)
+        AsyncResult.Success(viewState.ensureSeenOrNotSeen())
       }
   }
+
+  private fun SpotlightViewState.ensureSeenOrNotSeen(): SpotlightViewState =
+    if (this == SPOTLIGHT_VIEW_STATE_UNSPECIFIED) SPOTLIGHT_NOT_SEEN else this
 
   private fun recordSpotlightStateAsync(
     profileId: ProfileId,
@@ -126,21 +136,18 @@ class SpotlightStateController @Inject constructor(
   private fun retrieveCacheStore(
     profileId: ProfileId
   ): PersistentCacheStore<SpotlightStateDatabase> {
-    val cacheStore = if (profileId in cacheStoreMap) {
-      cacheStoreMap[profileId]!!
-    } else {
-      val cacheStore = cacheStoreMap.getOrPut(profileId) {
-        cacheStoreFactory.createPerProfile(
-          CACHE_NAME,
-          SpotlightStateDatabase.getDefaultInstance(),
-          profileId
-        )
-      }
-      cacheStoreMap[profileId] = cacheStore
-      cacheStore
+    val cacheStore = cacheStoreMap.getOrPut(profileId) {
+      cacheStoreFactory.createPerProfile(
+        CACHE_NAME,
+        SpotlightStateDatabase.getDefaultInstance(),
+        profileId
+      )
     }
 
-    cacheStore.primeInMemoryCacheAsync().invokeOnCompletion { throwable ->
+    cacheStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion { throwable ->
       throwable?.let {
         oppiaLogger.e(
           "SpotlightCheckpointController",

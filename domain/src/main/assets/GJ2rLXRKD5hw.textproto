@@ -1,6 +1,4 @@
 id: "GJ2rLXRKD5hw"
-name: "Fractions"
-description: "You\'ll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or some of the eggs in a box might have broken. In these lessons, you\'ll learn to use fractions to describe situations like these."
 canonical_story_ids: "wANbh4oOClga"
 subtopic_ids: 1
 subtopic_ids: 2
@@ -8,4 +6,22 @@ subtopic_ids: 3
 subtopic_ids: 4
 is_published: true
 topic_thumbnail {
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Fractions"
+  content_id: "title"
+}
+translatable_description {
+  html: "You\'ll often need to talk about part of an object or group. For example, a jar of milk might be half-full, or some of the eggs in a box might have broken. In these lessons, you\'ll learn to use fractions to describe situations like these."
+  content_id: "description"
 }

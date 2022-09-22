@@ -4,9 +4,12 @@ import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.View
 import android.widget.TextView
+import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -16,14 +19,16 @@ import javax.inject.Inject
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
   private val context: Context,
-  private val urlImageParserFactory: UrlImageParser.Factory,
+  private val urlImageParserFactory: UrlImageParser.Factory?,
   private val gcsResourceName: String,
   private val entityType: String,
   private val entityId: String,
   private val imageCenterAlign: Boolean,
   private val consoleLogger: ConsoleLogger,
   private val cacheLatexRendering: Boolean,
-  customOppiaTagActionListener: CustomOppiaTagActionListener?
+  customOppiaTagActionListener: CustomOppiaTagActionListener?,
+  policyOppiaTagActionListener: PolicyOppiaTagActionListener?,
+  displayLocale: OppiaLocale.DisplayLocale
 ) {
   private val conceptCardTagHandler by lazy {
     ConceptCardTagHandler(
@@ -35,8 +40,23 @@ class HtmlParser private constructor(
       consoleLogger
     )
   }
-  private val bulletTagHandler by lazy { BulletTagHandler() }
+
+  private val policyPageTagHandler by lazy {
+    PolicyPageTagHandler(
+      object : PolicyPageTagHandler.PolicyPageLinkClickListener {
+        override fun onPolicyPageLinkClicked(policyType: PolicyType) {
+          policyOppiaTagActionListener?.onPolicyPageLinkClicked(policyType)
+        }
+      },
+      consoleLogger
+    )
+  }
+  private val bulletTagHandler by lazy { LiTagHandler(context, displayLocale) }
   private val imageTagHandler by lazy { ImageTagHandler(consoleLogger) }
+
+  private val isRtl by lazy {
+    displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  }
 
   /**
    * Parses a raw HTML string with support for custom Oppia tags.
@@ -54,16 +74,12 @@ class HtmlParser private constructor(
     supportsLinks: Boolean = false,
     supportsConceptCards: Boolean = false
   ): Spannable {
-
     // Canvas does not support RTL, it always starts from left to right in RTL due to which compound drawables are
     // not center aligned. To avoid this situation check if RTL is enabled and set the textDirection.
-    when (getLayoutDirection(htmlContentTextView)) {
-      ViewCompat.LAYOUT_DIRECTION_RTL -> {
-        htmlContentTextView.textDirection = View.TEXT_DIRECTION_ANY_RTL
-      }
-      ViewCompat.LAYOUT_DIRECTION_LTR -> {
-        htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
-      }
+    if (isRtl) {
+      htmlContentTextView.textDirection = View.TEXT_DIRECTION_RTL
+    } else {
+      htmlContentTextView.textDirection = View.TEXT_DIRECTION_LTR
     }
     htmlContentTextView.invalidate()
 
@@ -75,31 +91,33 @@ class HtmlParser private constructor(
       htmlContent = htmlContent.replace("\n\n", "")
     }
     if ("<li>" in htmlContent) {
-      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_BULLET_LIST_TAG>")
-        .replace("</li>", "</$CUSTOM_BULLET_LIST_TAG>")
+      htmlContent = htmlContent.replace("<li>", "<$CUSTOM_LIST_LI_TAG>")
+        .replace("</li>", "</$CUSTOM_LIST_LI_TAG>")
+    }
+    if ("<ul>" in htmlContent) {
+      htmlContent = htmlContent.replace("<ul>", "<$CUSTOM_LIST_UL_TAG>")
+        .replace("</ul>", "</$CUSTOM_LIST_UL_TAG>")
+    }
+    if ("<ol>" in htmlContent) {
+      htmlContent = htmlContent.replace("<ol>", "<$CUSTOM_LIST_OL_TAG>")
+        .replace("</ol>", "</$CUSTOM_LIST_OL_TAG>")
     }
 
     // https://stackoverflow.com/a/8662457
     if (supportsLinks) {
       htmlContentTextView.movementMethod = LinkMovementMethod.getInstance()
+      LinkifyCompat.addLinks(htmlContentTextView, Linkify.WEB_URLS)
     }
 
-    val imageGetter = urlImageParserFactory.create(
+    val imageGetter = urlImageParserFactory?.create(
       htmlContentTextView, gcsResourceName, entityType, entityId, imageCenterAlign
     )
+
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent, imageGetter, computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
     )
 
-    val spannableBuilder = CustomBulletSpan.replaceBulletSpan(
-      SpannableStringBuilder(htmlSpannable),
-      htmlContentTextView.context
-    )
-    return ensureNonEmpty(trimSpannable(spannableBuilder))
-  }
-
-  private fun getLayoutDirection(view: View): Int {
-    return ViewCompat.getLayoutDirection(view)
+    return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
   private fun computeCustomTagHandlers(
@@ -107,7 +125,9 @@ class HtmlParser private constructor(
     htmlContentTextView: TextView
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
-    handlersMap[CUSTOM_BULLET_LIST_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_LIST_LI_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_LIST_UL_TAG] = bulletTagHandler
+    handlersMap[CUSTOM_LIST_OL_TAG] = bulletTagHandler
     handlersMap[CUSTOM_IMG_TAG] = imageTagHandler
     handlersMap[CUSTOM_MATH_TAG] =
       MathTagHandler(
@@ -119,6 +139,7 @@ class HtmlParser private constructor(
     if (supportsConceptCards) {
       handlersMap[CUSTOM_CONCEPT_CARD_TAG] = conceptCardTagHandler
     }
+    handlersMap[CUSTOM_POLICY_PAGE_TAG] = policyPageTagHandler
     return handlersMap
   }
 
@@ -151,6 +172,14 @@ class HtmlParser private constructor(
     fun onConceptCardLinkClicked(view: View, skillId: String)
   }
 
+  /** Listener that's called when a custom tag triggers an event. */
+  interface PolicyOppiaTagActionListener {
+    /**
+     * Called when a policy page link is clicked that corresponds to the page that should be shown.
+     */
+    fun onPolicyPageLinkClicked(policyType: PolicyType)
+  }
+
   /** Factory for creating new [HtmlParser]s. */
   class Factory @Inject constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
@@ -160,14 +189,16 @@ class HtmlParser private constructor(
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
-     * optionally specified [CustomOppiaTagActionListener] for handling custom Oppia tag events.
+     * optionally specified [CustomOppiaTagActionListener] and [PolicyOppiaTagActionListener] for
+     * handling custom Oppia tag events.
      */
     fun create(
       gcsResourceName: String,
       entityType: String,
       entityId: String,
       imageCenterAlign: Boolean,
-      customOppiaTagActionListener: CustomOppiaTagActionListener? = null
+      customOppiaTagActionListener: CustomOppiaTagActionListener? = null,
+      displayLocale: OppiaLocale.DisplayLocale
     ): HtmlParser {
       return HtmlParser(
         context,
@@ -178,7 +209,34 @@ class HtmlParser private constructor(
         imageCenterAlign,
         consoleLogger,
         cacheLatexRendering = enableCacheLatexRendering.value,
-        customOppiaTagActionListener
+        customOppiaTagActionListener,
+        null,
+        displayLocale
+      )
+    }
+
+    /**
+     * Returns a new [HtmlParser] with an optionally specified [CustomOppiaTagActionListener] and
+     * [PolicyOppiaTagActionListener] for handling custom Oppia tag events. Note that Oppia image
+     * loading is specifically not supported (see the other [create] method if image support is
+     * needed).
+     */
+    fun create(
+      policyOppiaTagActionListener: PolicyOppiaTagActionListener? = null,
+      displayLocale: OppiaLocale.DisplayLocale
+    ): HtmlParser {
+      return HtmlParser(
+        context = context,
+        urlImageParserFactory = null,
+        gcsResourceName = "",
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        consoleLogger = consoleLogger,
+        cacheLatexRendering = false,
+        customOppiaTagActionListener = null,
+        policyOppiaTagActionListener = policyOppiaTagActionListener,
+        displayLocale = displayLocale
       )
     }
   }

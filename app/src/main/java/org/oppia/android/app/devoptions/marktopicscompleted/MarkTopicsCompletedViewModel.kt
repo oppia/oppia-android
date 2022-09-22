@@ -3,11 +3,12 @@ package org.oppia.android.app.devoptions.marktopicscompleted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Topic
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class MarkTopicsCompletedViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val modifyLessonProgressController: ModifyLessonProgressController,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
 
   private lateinit var profileId: ProfileId
@@ -34,34 +36,36 @@ class MarkTopicsCompletedViewModel @Inject constructor(
     Transformations.map(allTopicsLiveData, ::processAllTopics)
   }
 
-  private val allTopicsLiveData: LiveData<List<Topic>> by lazy { getAllTopics() }
+  private val allTopicsLiveData: LiveData<List<EphemeralTopic>> by lazy { getAllTopics() }
 
-  private val allTopicsResultLiveData: LiveData<AsyncResult<List<Topic>>> by lazy {
+  private val allTopicsResultLiveData: LiveData<AsyncResult<List<EphemeralTopic>>> by lazy {
     modifyLessonProgressController.getAllTopicsWithProgress(profileId).toLiveData()
   }
 
-  private fun getAllTopics(): LiveData<List<Topic>> {
+  private fun getAllTopics(): LiveData<List<EphemeralTopic>> {
     return Transformations.map(allTopicsResultLiveData, ::processAllTopicsResult)
   }
 
-  private fun processAllTopicsResult(allTopics: AsyncResult<List<Topic>>): List<Topic> {
-    return when (allTopics) {
+  private fun processAllTopicsResult(
+    ephemeralResult: AsyncResult<List<EphemeralTopic>>
+  ): List<EphemeralTopic> {
+    return when (ephemeralResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "MarkTopicsCompletedFragment", "Failed to retrieve all topics", allTopics.error
+          "MarkTopicsCompletedFragment", "Failed to retrieve all topics", ephemeralResult.error
         )
         mutableListOf()
       }
       is AsyncResult.Pending -> mutableListOf()
-      is AsyncResult.Success -> allTopics.value
+      is AsyncResult.Success -> ephemeralResult.value
     }
   }
 
-  private fun processAllTopics(allTopics: List<Topic>): List<TopicViewModel> {
+  private fun processAllTopics(allTopics: List<EphemeralTopic>): List<TopicViewModel> {
     itemList.clear()
-    allTopics.forEach { topic ->
-      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(topic)
-      itemList.add(TopicViewModel(topic, isCompleted))
+    allTopics.forEach { ephemeralTopic ->
+      val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(ephemeralTopic)
+      itemList.add(TopicViewModel(ephemeralTopic, isCompleted, translationController))
     }
     return itemList
   }

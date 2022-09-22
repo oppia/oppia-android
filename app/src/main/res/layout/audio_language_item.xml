@@ -1,0 +1,45 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.options.AudioLanguageItemViewModel" />
+  </data>
+
+  <LinearLayout
+    android:id="@+id/radio_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/general_item_background_border_light"
+    android:gravity="center_vertical"
+    android:minHeight="48dp"
+    android:onClick="@{() -> viewModel.audioLanguageRadioButtonListener.onLanguageSelected(viewModel.language)}"
+    android:importantForAccessibility="yes"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.AppCompatRadioButton
+      android:id="@+id/language_radio_button"
+      style="@style/LanguageRadioButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:layout_marginEnd="24dp"
+      android:checked="@{viewModel.isLanguageSelected}"
+      android:clickable="false"
+      android:focusable="false"
+      android:labelFor="@id/language_text_view"
+      android:minWidth="20dp"
+      android:minHeight="20dp" />
+
+    <TextView
+      android:id="@+id/language_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="24dp"
+      android:fontFamily="sans-serif"
+      android:text="@{viewModel.languageDisplayName}"
+      android:textColor="@color/component_color_language_items_heading_text_color"
+      android:textSize="16sp" />
+  </LinearLayout>
+</layout>
