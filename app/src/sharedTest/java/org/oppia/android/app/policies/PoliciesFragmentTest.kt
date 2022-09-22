@@ -302,8 +302,6 @@ class PoliciesFragmentTest {
         // Call each of the spans.
         clickableSpans.forEach { it.onClick(textView) }
       }
-
-
       // Verify that the tag listener is called.
       verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
         capture(policyTypeCaptor)
