@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
@@ -119,6 +120,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
 
 /** Tests for [PoliciesFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -294,7 +296,14 @@ class PoliciesFragmentTest {
           supportsConceptCards = false
         )
         textView.text = htmlResult
+        // Verify the displayed text is correct & has a clickable span.
+        val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
+        assertThat(clickableSpans).isNotEmpty()
+        // Call each of the spans.
+        clickableSpans.forEach { it.onClick(textView) }
       }
+
+
       // Verify that the tag listener is called.
       verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
         capture(policyTypeCaptor)
@@ -371,6 +380,9 @@ class PoliciesFragmentTest {
   private fun setUpTestApplicationComponent() {
     getApplicationContext<TestApplication>().inject(this)
   }
+
+  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
+    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
     crossinline action: (A) -> V
