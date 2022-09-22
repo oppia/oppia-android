@@ -1,9 +1,25 @@
 id: "omzF4oqgeTXd"
-name: "Ratios and Proportional Reasoning"
-description: "Many everyday problems involve thinking about proportions. For example, if 30 apples cost 6 dollars, how much would 12 apples cost? In these lessons, you\'ll learn about how to use ratios and proportional reasoning to solve problems like this."
 canonical_story_ids: "wAMdg4oOClga"
 canonical_story_ids: "xBSdg4oOClga"
 subtopic_ids: 1
 is_published: true
 topic_thumbnail {
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "Ratios and Proportional Reasoning"
+  content_id: "title"
+}
+translatable_description {
+  html: "Many everyday problems involve thinking about proportions. For example, if 30 apples cost 6 dollars, how much would 12 apples cost? In these lessons, you\'ll learn about how to use ratios and proportional reasoning to solve problems like this."
+  content_id: "description"
 }

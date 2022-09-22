@@ -12,8 +12,11 @@ import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionListener
 import org.oppia.android.app.hintsandsolution.RevealHintListener
 import org.oppia.android.app.hintsandsolution.RevealSolutionInterface
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -21,6 +24,9 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
@@ -39,80 +45,64 @@ class ExplorationActivity :
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener {
 
-  @Inject
-  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
-  private var internalProfileId: Int = -1
-  private lateinit var topicId: String
-  private lateinit var storyId: String
-  private lateinit var explorationId: String
+  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
-  private var backflowScreen: Int? = null
-  private var isCheckpointingEnabled: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent.getIntExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, -1)
-    topicId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY)) {
-      "Expected $EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY to be in intent extras."
-    }
-    storyId = checkNotNull(intent.getStringExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY)) {
-      "Expected $EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY to be in intent extras."
-    }
-    explorationId = checkNotNull(
-      intent.getStringExtra(
-        EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY
-      )
-    ) {
-      "Expected EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY to be in intent extras."
-    }
-    backflowScreen = intent.getIntExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, -1)
-    isCheckpointingEnabled =
-      intent.getBooleanExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, false)
+
+    val params = intent.getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
     explorationActivityPresenter.handleOnCreate(
       this,
-      internalProfileId,
-      topicId,
-      storyId,
-      explorationId,
-      backflowScreen,
-      isCheckpointingEnabled
+      params.profileId,
+      params.topicId,
+      params.storyId,
+      params.explorationId,
+      params.parentScreen,
+      params.isCheckpointingEnabled
     )
   }
 
   // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
   companion object {
-    /** Returns a new [Intent] to route to [ExplorationActivity] for a specified exploration. */
+    private const val PARAMS_KEY = "ExplorationActivity.params"
 
-    const val EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
-      "ExplorationActivity.profile_id"
-    const val EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "ExplorationActivity.topic_id"
-    const val EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY = "ExplorationActivity.story_id"
-    const val EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY =
-      "ExplorationActivity.exploration_id"
-    const val EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY =
-      "ExplorationActivity.backflow_screen"
-    const val EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY =
-      "ExplorationActivity.is_checkpointing_enabled_key"
-
+    /**
+     * A convenience function for creating a new [ExplorationActivity] intent by prefilling common
+     * params needed by the activity.
+     */
     fun createExplorationActivityIntent(
       context: Context,
-      profileId: Int,
+      profileId: ProfileId,
       topicId: String,
       storyId: String,
       explorationId: String,
-      backflowScreen: Int?,
+      parentScreen: ExplorationActivityParams.ParentScreen,
       isCheckpointingEnabled: Boolean
     ): Intent {
-      val intent = Intent(context, ExplorationActivity::class.java)
-      intent.putExtra(EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
-      intent.putExtra(EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY, topicId)
-      intent.putExtra(EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY, storyId)
-      intent.putExtra(EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY, explorationId)
-      intent.putExtra(EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY, backflowScreen)
-      intent.putExtra(EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY, isCheckpointingEnabled)
-      return intent
+      val params = ExplorationActivityParams.newBuilder().apply {
+        this.profileId = profileId
+        this.topicId = topicId
+        this.storyId = storyId
+        this.explorationId = explorationId
+        this.parentScreen = parentScreen
+        this.isCheckpointingEnabled = isCheckpointingEnabled
+      }.build()
+      return createExplorationActivityIntent(context, params)
+    }
+
+    /** Returns a new [Intent] open an [ExplorationActivity] with the specified [params]. */
+    fun createExplorationActivityIntent(
+      context: Context,
+      params: ExplorationActivityParams
+    ): Intent {
+      return Intent(context, ExplorationActivity::class.java).apply {
+        putProtoExtra(PARAMS_KEY, params)
+        decorateWithScreenName(EXPLORATION_ACTIVITY)
+      }
     }
   }
 

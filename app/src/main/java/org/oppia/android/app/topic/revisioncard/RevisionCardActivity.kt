@@ -8,7 +8,9 @@ import android.view.MenuItem
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity for revision card. */
@@ -52,11 +54,12 @@ class RevisionCardActivity :
       topicId: String,
       subtopicId: Int
     ): Intent {
-      val intent = Intent(context, RevisionCardActivity::class.java)
-      intent.putExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)
-      intent.putExtra(TOPIC_ID_EXTRA_KEY, topicId)
-      intent.putExtra(SUBTOPIC_ID_EXTRA_KEY, subtopicId)
-      return intent
+      return Intent(context, RevisionCardActivity::class.java).apply {
+        putExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)
+        putExtra(TOPIC_ID_EXTRA_KEY, topicId)
+        putExtra(SUBTOPIC_ID_EXTRA_KEY, subtopicId)
+        decorateWithScreenName(REVISION_CARD_ACTIVITY)
+      }
     }
   }
 

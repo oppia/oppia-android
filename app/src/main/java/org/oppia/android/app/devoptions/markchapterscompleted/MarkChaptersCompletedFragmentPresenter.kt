@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.MarkChaptersCompletedChapterSummaryViewBinding
 import org.oppia.android.databinding.MarkChaptersCompletedFragmentBinding
 import org.oppia.android.databinding.MarkChaptersCompletedStorySummaryViewBinding
@@ -22,7 +21,7 @@ import javax.inject.Inject
 class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<MarkChaptersCompletedViewModel>,
+  private val viewModel: MarkChaptersCompletedViewModel,
   private val modifyLessonProgressController: ModifyLessonProgressController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) : ChapterSelector {
@@ -50,13 +49,13 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
 
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = getMarkChaptersCompletedViewModel()
+      this.viewModel = this@MarkChaptersCompletedFragmentPresenter.viewModel
     }
 
     this.selectedExplorationIdList = selectedExplorationIdList
 
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    getMarkChaptersCompletedViewModel().setProfileId(profileId)
+    viewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -69,7 +68,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     binding.markChaptersCompletedAllCheckBoxContainer.setOnClickListener {
       if (binding.isAllChecked == null || binding.isAllChecked == false) {
         binding.isAllChecked = true
-        getMarkChaptersCompletedViewModel().getItemList().forEach { viewModel ->
+        viewModel.getItemList().forEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
               chapterSelected(
@@ -85,8 +84,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     binding.markChaptersCompletedMarkCompletedTextView.setOnClickListener {
       modifyLessonProgressController.markMultipleChaptersCompleted(
         profileId = profileId,
-        chapterMap = getMarkChaptersCompletedViewModel().getChapterMap()
-          .filterKeys { selectedExplorationIdList.contains(it) }
+        chapterMap = viewModel.getChapterMap().filterKeys { selectedExplorationIdList.contains(it) }
       )
       activity.finish()
     }
@@ -123,7 +121,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     model: ChapterSummaryViewModel
   ) {
     binding.viewModel = model
-    val notCompletedChapterCount = getMarkChaptersCompletedViewModel().getItemList().count {
+    val notCompletedChapterCount = viewModel.getItemList().count {
       it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
     }
     if (notCompletedChapterCount == 0) {
@@ -156,16 +154,12 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getMarkChaptersCompletedViewModel(): MarkChaptersCompletedViewModel {
-    return viewModelProvider.getForFragment(fragment, MarkChaptersCompletedViewModel::class.java)
-  }
-
   override fun chapterSelected(chapterIndex: Int, nextStoryIndex: Int, explorationId: String) {
     if (!selectedExplorationIdList.contains(explorationId)) {
       selectedExplorationIdList.add(explorationId)
     }
     if (selectedExplorationIdList.size ==
-      getMarkChaptersCompletedViewModel().getItemList().count {
+      viewModel.getItemList().count {
         it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
       }
     ) {
@@ -183,14 +177,13 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   override fun chapterUnselected(chapterIndex: Int, nextStoryIndex: Int) {
     for (index in chapterIndex until nextStoryIndex) {
       val explorationId =
-        (getMarkChaptersCompletedViewModel().getItemList()[index] as ChapterSummaryViewModel)
-          .chapterSummary.explorationId
+        (viewModel.getItemList()[index] as ChapterSummaryViewModel).chapterSummary.explorationId
       if (selectedExplorationIdList.contains(explorationId)) {
         selectedExplorationIdList.remove(explorationId)
       }
     }
     if (selectedExplorationIdList.size !=
-      getMarkChaptersCompletedViewModel().getItemList().count {
+      viewModel.getItemList().count {
         it is ChapterSummaryViewModel && !it.checkIfChapterIsCompleted()
       }
     ) {

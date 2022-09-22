@@ -54,11 +54,11 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationContext
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.hintsandsolution.TAG_REVEAL_SOLUTION_DIALOG
@@ -79,7 +79,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.PracticeTabModule
@@ -110,7 +109,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -147,6 +147,7 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -191,7 +192,6 @@ class StateFragmentLocalTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
-  @field:ApplicationContext
   lateinit var context: Context
 
   @Inject
@@ -638,19 +638,19 @@ class StateFragmentLocalTest {
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
       closeHintsAndSolutionsDialog()
 
       moveToPreviousAndBackToCurrentStateWithSubmitButton()
 
       openHintsAndSolutionsDialog()
       onView(withText("Hint 1")).inRoot(isDialog()).check(matches(isDisplayed()))
-      onView(withText("Reveal Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Show Hint")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_revealFirstHint_prevState_currentState_checkFirstHintRevealed() {
+  fun testStateFragment_showFirstHint_prevState_currentState_checkFirstHintRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -663,7 +663,7 @@ class StateFragmentLocalTest {
         .perform(scrollToPosition<ViewHolder>(0))
       testCoroutineDispatchers.runCurrent()
       onView(
-        RecyclerViewMatcher.atPositionOnView(
+        atPositionOnView(
           R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
         )
       ).perform(click())
@@ -979,13 +979,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1034,20 +1032,18 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testStateFragment_nextState_viewSolution_clickRevealSolutionButton_showsDialog() {
+  fun testStateFragment_nextState_viewSolution_clickShowSolutionButton_showsDialog() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1058,13 +1054,11 @@ class StateFragmentLocalTest {
       openHintsAndSolutionsDialog()
 
       // The reveal solution button should now be visible.
-      // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-      // introduces divider in UI as a separate item.
       onView(withId(R.id.hints_and_solution_recycler_view))
         .inRoot(isDialog())
-        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
+        .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
       testCoroutineDispatchers.runCurrent()
-      onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -1109,7 +1103,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickConfirmRevealSolutionButton(scenario)
 
-      onView(withId(R.id.reveal_solution_button))
+      onView(withId(R.id.show_solution_button))
         .inRoot(isDialog())
         .check(matches(not(isDisplayed())))
     }
@@ -1136,7 +1130,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_canViewRevealSolution() {
+  fun testStateFragment_nextState_viewShowSolutionDialog_clickCancel_canViewShowSolution() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
       playThroughFractionsState1()
@@ -1149,7 +1143,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withSubstring("Reveal Solution"))
+      onView(withText("Show"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1305,7 +1299,7 @@ class StateFragmentLocalTest {
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1325,7 +1319,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1354,7 +1348,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1408,13 +1402,13 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
       // The hint button label should be in English since the app string locale is unaffected by the
       // content string setting.
-      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Reveal Hint")))
+      onView(withId(R.id.reveal_hint_button)).check(matches(withText("Show Hint")))
     }
   }
 
@@ -1436,7 +1430,7 @@ class StateFragmentLocalTest {
       submitFractionAnswer(answerText = "1/3")
       submitFractionAnswer(answerText = "1/4")
 
-      // Reveal the hint.
+      // Show the hint.
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
@@ -1737,6 +1731,18 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testStateFragment_openHintsAndSolution_checkReturnToLessonButtonIsVisible() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+      submitTwoWrongAnswersForFractionsState2()
+
+      openHintsAndSolutionsDialog()
+      onView(allOf(withId(R.id.return_to_lesson_button), isDisplayed())).inRoot(isDialog())
+    }
+  }
+
   private fun createAudioUrl(explorationId: String, audioFileName: String): String {
     return "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
@@ -1941,32 +1947,28 @@ class StateFragmentLocalTest {
 
   private fun showRevealSolutionDialog() {
     // The reveal solution button should now be visible.
-    // NOTE: solutionIndex is multiplied by 2, because the implementation of hints and solution
-    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex * 2))
-    onView(allOf(withId(R.id.reveal_solution_button), isDisplayed()))
+      .perform(scrollToPosition<ViewHolder>(/* position= */ solutionIndex))
+    onView(allOf(withId(R.id.show_solution_button), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
   }
 
   private fun pressRevealHintButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
+    pressShowHintOrSolutionButton(R.id.reveal_hint_button, hintPosition)
   }
 
-  private fun pressRevealSolutionButton(hintPosition: Int) {
-    pressRevealHintOrSolutionButton(R.id.reveal_solution_button, hintPosition)
+  private fun pressShowSolutionButton(hintPosition: Int) {
+    pressShowHintOrSolutionButton(R.id.show_solution_button, hintPosition)
   }
 
-  private fun pressRevealHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
+  private fun pressShowHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
-    // NOTE: hintPosition is multiplied by 2, because the implementation of hints and solution
-    // introduces divider in UI as a separate item.
     onView(withId(R.id.hints_and_solution_recycler_view))
       .inRoot(isDialog())
-      .perform(scrollToPosition<ViewHolder>(hintPosition * 2))
+      .perform(scrollToPosition<ViewHolder>(hintPosition))
     onView(allOf(withId(buttonId), isDisplayed()))
       .inRoot(isDialog())
       .perform(click())
@@ -2137,7 +2139,7 @@ class StateFragmentLocalTest {
   ) {
     submitWrongAnswerToFractionsState2AndWait()
     openHintsAndSolutionsDialog()
-    pressRevealSolutionButton(revealedHintCount)
+    pressShowSolutionButton(revealedHintCount)
     clickConfirmRevealSolutionButton(activityScenario)
     closeHintsAndSolutionsDialog()
   }
@@ -2287,7 +2289,7 @@ class StateFragmentLocalTest {
       AccessibilityTestModule::class, LogStorageModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
@@ -2297,7 +2299,8 @@ class StateFragmentLocalTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

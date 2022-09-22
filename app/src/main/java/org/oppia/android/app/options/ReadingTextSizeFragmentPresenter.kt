@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
 import org.oppia.android.databinding.TextSizeItemsBinding
 import javax.inject.Inject
@@ -15,17 +14,12 @@ import javax.inject.Inject
 class ReadingTextSizeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel,
-  resourceHandler: AppLanguageResourceHandler,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
-  private var fontSize: String = resourceHandler.getStringInLocale(
-    R.string.reading_text_size_medium
-  )
-
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    readingTextSize: String
+    readingTextSize: ReadingTextSize
   ): View? {
     val binding = ReadingTextSizeFragmentBinding.inflate(
       inflater,
@@ -33,20 +27,17 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
-    fontSize = readingTextSize
-    updateTextSize(fontSize)
+    updateTextSize(readingTextSize)
 
     binding.viewModel = readingTextSizeSelectionViewModel
-    readingTextSizeSelectionViewModel.selectedTextSize.value = fontSize
+    readingTextSizeSelectionViewModel.selectedTextSize = readingTextSize
     binding.textSizeRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
     return binding.root
   }
 
-  fun getTextSizeSelected(): String? {
-    return readingTextSizeSelectionViewModel.selectedTextSize.value
-  }
+  fun getTextSizeSelected(): ReadingTextSize? = readingTextSizeSelectionViewModel.selectedTextSize
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TextSizeItemViewModel> {
     return singleTypeBuilderFactory.create<TextSizeItemViewModel>()
@@ -57,7 +48,7 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun updateTextSize(textSize: String) {
+  private fun updateTextSize(textSize: ReadingTextSize) {
     // The first branch of (when) will be used in the case of multipane
     when (val parentActivity = fragment.activity) {
       is OptionsActivity -> parentActivity.optionActivityPresenter.updateReadingTextSize(textSize)
@@ -66,8 +57,8 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
     }
   }
 
-  fun onTextSizeSelected(selectedTextSize: String) {
-    readingTextSizeSelectionViewModel.selectedTextSize.value = selectedTextSize
+  fun onTextSizeSelected(selectedTextSize: ReadingTextSize) {
+    readingTextSizeSelectionViewModel.selectedTextSize = selectedTextSize
     updateTextSize(selectedTextSize)
   }
 }

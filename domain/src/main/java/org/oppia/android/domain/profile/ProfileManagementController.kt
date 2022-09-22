@@ -17,6 +17,8 @@ import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
+import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
@@ -30,6 +32,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
+import org.oppia.android.util.profile.ProfileNameValidator
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
@@ -76,7 +79,8 @@ class ProfileManagementController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val loggingIdentifierController: LoggingIdentifierController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
   private val profileDataStore =
@@ -129,10 +133,13 @@ class ProfileManagementController @Inject constructor(
 
   // TODO(#272): Remove init block when storeDataAsync is fixed
   init {
-    profileDataStore.primeInMemoryCacheAsync().invokeOnCompletion {
+    profileDataStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion {
       it?.let {
         oppiaLogger.e(
-          "DOMAIN",
+          "ProfileManagementController",
           "Failed to prime cache ahead of data retrieval for ProfileManagementController.",
           it
         )
@@ -205,7 +212,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(name)) {
+      if (!learnerStudyAnalytics.value && !profileNameValidator.isNameValid(name)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(name, it)) {
@@ -324,7 +331,7 @@ class ProfileManagementController @Inject constructor(
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
-      if (!onlyLetters(newName)) {
+      if (!learnerStudyAnalytics.value && !profileNameValidator.isNameValid(newName)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.INVALID_PROFILE_NAME)
       }
       if (!isNameUnique(newName, it)) {
@@ -664,9 +671,7 @@ class ProfileManagementController @Inject constructor(
    * @return a [DataProvider] that indicates the success/failure of this delete operation.
    */
   fun deleteProfile(profileId: ProfileId): DataProvider<Any?> {
-    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = true
-    ) {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
       if (!it.profilesMap.containsKey(profileId.internalId)) {
         return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
       }
@@ -680,6 +685,30 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Deletes all profiles installed on the device (and logs out the current user).
+   *
+   * Note that this will not update the in-memory cache as the app is expected to be forcibly closed
+   * after deletion (since there's no mechanism to notify existing cache stores that they need to
+   * reload/reset from their on-disk copies).
+   *
+   * Finally, this method attempts to never fail by forcibly deleting all profiles even if some are
+   * in a bad state (and would normally failed if attempted to be deleted via [deleteProfile]).
+   */
+  fun deleteAllProfiles(): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync {
+      val installationId = loggingIdentifierController.fetchInstallationId()
+      it.profilesMap.forEach { (internalProfileId, profile) ->
+        directoryManagementUtil.deleteDir(internalProfileId.toString())
+        learnerAnalyticsLogger.logDeleteProfile(installationId, profile.learnerId)
+      }
+      Pair(ProfileDatabase.getDefaultInstance(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(DELETE_PROFILE_PROVIDER_ID) {
+      getDeferredResult(profileId = null, name = null, deferred)
     }
   }
 
@@ -807,10 +836,6 @@ class ProfileManagementController @Inject constructor(
       return null
     }
     return imageFile.absolutePath
-  }
-
-  private fun onlyLetters(name: String): Boolean {
-    return name.matches(Regex("^[ A-Za-z]+\$"))
   }
 
   private fun rotateAndCompressBitmap(uri: Uri, bitmap: Bitmap, cropSize: Int): Bitmap {
