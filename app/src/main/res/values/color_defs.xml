@@ -42,7 +42,6 @@
   <color name="color_def_highlight_blue">#A5D3EC</color>
   <color name="color_def_bright_grey">#E4F2F1</color>
   <color name="color_def_forest_green">#035D63</color>
-  <color name="color_def_bright_green">#009C8A</color>
   <color name="color_def_bright_turquoise">#663BD1C4</color>
   <color name="color_def_oppia_silver">#C4C4C4</color>
   <color name="color_def_oppia_turquoise">#3bd1c4</color>
@@ -90,4 +89,5 @@
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
   <color name="color_def_dark_purple">#441530</color>
+  <color name="color_def_oppia_white_2">#F2F2F2</color>
 </resources>
