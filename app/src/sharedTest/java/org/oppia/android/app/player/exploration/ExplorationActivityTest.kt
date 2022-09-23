@@ -322,7 +322,7 @@ class ExplorationActivityTest {
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    onView(withId(R.id.exploration_toolbar_title)).perform(click())
+    onView(withId(R.id.exploration_marquee_view)).perform(click())
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
@@ -341,7 +341,7 @@ class ExplorationActivityTest {
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    onView(withId(R.id.exploration_toolbar_title)).perform(click())
+    onView(withId(R.id.exploration_marquee_view)).perform(click())
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
   }
 
