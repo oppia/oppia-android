@@ -939,7 +939,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
               entityType,
               contentViewModel.gcsEntityId,
               imageCenterAlign = true,
-              customOppiaTagActionListener = customTagListener
+              customOppiaTagActionListener = customTagListener,
+              displayLocale = resourceHandler.getDisplayLocale()
             ).parseOppiaHtml(
               contentViewModel.htmlContent.toString(),
               binding.contentTextView,
@@ -973,7 +974,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
               entityType,
               feedbackViewModel.gcsEntityId,
               imageCenterAlign = true,
-              customOppiaTagActionListener = customTagListener
+              customOppiaTagActionListener = customTagListener,
+              displayLocale = resourceHandler.getDisplayLocale()
             ).parseOppiaHtml(
               feedbackViewModel.htmlContent.toString(),
               binding.feedbackTextView,
@@ -1081,7 +1083,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 entityType,
                 submittedAnswerViewModel.gcsEntityId,
                 imageCenterAlign = false,
-                customOppiaTagActionListener = customTagListener
+                customOppiaTagActionListener = customTagListener,
+                displayLocale = resourceHandler.getDisplayLocale()
               )
               submittedAnswerViewModel.setSubmittedAnswer(
                 htmlParser.parseOppiaHtml(
@@ -1154,7 +1157,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 entityType,
                 gcsEntityId,
                 imageCenterAlign = false,
-                customOppiaTagActionListener = customTagListener
+                customOppiaTagActionListener = customTagListener,
+                displayLocale = resourceHandler.getDisplayLocale()
               ).parseOppiaHtml(
                 viewModel,
                 binding.submittedAnswerContentTextView,

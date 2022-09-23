@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
@@ -33,6 +35,7 @@ import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -61,6 +64,9 @@ class StoryFragmentPresenter @Inject constructor(
 
   @Inject
   lateinit var storyViewModel: StoryViewModel
+
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -105,32 +111,32 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   fun handleSelectExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
     canExplorationBeResumed: Boolean,
     canHavePartialProgressSaved: Boolean,
-    backflowScreen: Int?,
+    parentScreen: ExplorationActivityParams.ParentScreen,
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
-        backflowScreen,
+        parentScreen,
         explorationCheckpoint
       )
     } else {
       playExploration(
-        internalProfileId,
+        profileId,
         topicId,
         storyId,
         explorationId,
         canHavePartialProgressSaved,
-        backflowScreen
+        parentScreen
       )
     }
   }
@@ -167,41 +173,42 @@ class StoryFragmentPresenter @Inject constructor(
               resourceBucketName,
               entityType,
               storyItemViewModel.storyId,
-              imageCenterAlign = true
-            ).parseOppiaHtml(
-              storyItemViewModel.summary, binding.chapterSummary
-            )
+              imageCenterAlign = true,
+              displayLocale = resourceHandler.getDisplayLocale()
+            ).parseOppiaHtml(storyItemViewModel.description, binding.chapterSummary)
           if (storyItemViewModel.chapterSummary.chapterPlayState
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
             val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
               R.string.chapter_prerequisite_title_label,
               storyItemViewModel.index.toString(),
-              storyItemViewModel.missingPrerequisiteChapter.name
+              storyItemViewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
-            val clickableSpan = object : ClickableSpan() {
-              override fun onClick(widget: View) {
-                smoothScrollToPosition(storyItemViewModel.index - 1)
-              }
+            if (!accessibilityService.isScreenReaderEnabled()) {
+              val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                  smoothScrollToPosition(storyItemViewModel.index - 1)
+                }
 
-              override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
+                override fun updateDrawState(ds: TextPaint) {
+                  super.updateDrawState(ds)
+                  ds.isUnderlineText = false
+                }
               }
+              chapterLockedSpannable.setSpan(
+                clickableSpan,
+                /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+                /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+              )
+              chapterLockedSpannable.setSpan(
+                TypefaceSpan("sans-serif-medium"),
+                /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+                /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+              )
             }
-            chapterLockedSpannable.setSpan(
-              clickableSpan,
-              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
-              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
-              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            chapterLockedSpannable.setSpan(
-              TypefaceSpan("sans-serif-medium"),
-              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
-              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
-              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
             binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }
@@ -252,22 +259,22 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
     canHavePartialProgressSaved: Boolean,
-    backflowScreen: Int?
+    parentScreen: ExplorationActivityParams.ParentScreen
   ) {
     // If there's no existing progress, this is either playing a new exploration or replaying an old
     // one.
     val startPlayingProvider = if (canHavePartialProgressSaved) {
       explorationDataController.startPlayingNewExploration(
-        internalProfileId, topicId, storyId, explorationId
+        profileId.internalId, topicId, storyId, explorationId
       )
     } else {
       explorationDataController.replayExploration(
-        internalProfileId, topicId, storyId, explorationId
+        profileId.internalId, topicId, storyId, explorationId
       )
     }
     startPlayingProvider.toLiveData().observe(fragment) { result ->
@@ -278,11 +285,11 @@ class StoryFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
           routeToExplorationListener.routeToExploration(
-            internalProfileId,
+            profileId,
             topicId,
             storyId,
             explorationId,
-            backflowScreen,
+            parentScreen,
             isCheckpointingEnabled = canHavePartialProgressSaved
           )
         }

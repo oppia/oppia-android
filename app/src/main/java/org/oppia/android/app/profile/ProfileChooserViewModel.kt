@@ -65,7 +65,7 @@ class ProfileChooserViewModel @Inject constructor(
       machineLocale.run { it.profile.name.toMachineLowerCase() }
     }.toMutableList()
 
-    val adminProfile = sortedProfileList.find { it.profile.isAdmin }!!
+    val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
 
     sortedProfileList.remove(adminProfile)
     adminPin = adminProfile.profile.pin
