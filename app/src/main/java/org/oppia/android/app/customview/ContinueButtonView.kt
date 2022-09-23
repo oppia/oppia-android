@@ -4,15 +4,26 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyleAttr: Int = R.style.StateButtonActive
 ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
+
+  @Inject
+  @EnableContinueButtonAnimation
+  lateinit var enableContinueButtonAnimation: PlatformParameterValue<Boolean>
 
   private lateinit var viewModel: ContinueInteractionViewModel
   private var isAnimationTimerFinished = false
@@ -36,7 +47,9 @@ class ContinueButtonView @JvmOverloads constructor(
     val animation = AnimationUtils.loadAnimation(context, R.anim.expand)
     animation.interpolator = AccelerateInterpolator()
     animation.repeatCount = Int.MAX_VALUE
-    this.startAnimation(animation)
+    if (enableContinueButtonAnimation.value) {
+      this.startAnimation(animation)
+    }
     isAnimationTimerFinished = true
   }
 
@@ -49,6 +62,20 @@ class ContinueButtonView @JvmOverloads constructor(
     if (isVisible && isAnimationTimerFinished) {
       startAnimating()
       viewModel.animateContinueButton.removeObserver(continueButtonAnimationObserver)
+    }
+  }
+
+  override fun onAttachedToWindow() {
+    try {
+      super.onAttachedToWindow()
+
+      val viewComponentFactory =
+        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+
+    } catch (e: IllegalStateException) {
+
     }
   }
 }

@@ -33,6 +33,7 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -168,10 +169,19 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @EnableLanguageSelectionUi
+  fun provideEnableContinueButtonAnimation(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableContinueButtonAnimation
+    )
+  }
+
   companion object {
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+    private var enableContinueButtonAnimation = ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -189,6 +199,12 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableLearnerStudyAnalytics(value: Boolean) {
       enableLearnerStudyAnalytics = value
+    }
+
+    /** Enables forcing [EnableContinueButtonAnimation] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableContinueButtonAnimation(value: Boolean) {
+      enableContinueButtonAnimation = value
     }
   }
 }
