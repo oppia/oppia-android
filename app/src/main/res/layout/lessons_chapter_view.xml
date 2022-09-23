@@ -43,7 +43,7 @@
       android:fontFamily="sans-serif"
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:text="@{viewModel.computePlayChapterIndexText()}"
-      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary_text : @color/oppia_primary_text_30}"
+      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/component_color_topic_lessons_chapter_index_not_play_text_color : @color/component_color_topic_lessons_chapter_index_played_text_color}"
       android:textSize="14sp" />
 
     <TextView
@@ -58,7 +58,7 @@
       android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
       android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
       android:text="@{viewModel.chapterTitle}"
-      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/oppia_primary_text : @color/oppia_primary_text_30}"
+      android:textColor="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/component_color_topic_lessons_chapter_name_not_play_text_color : @color/component_color_topic_lessons_chapter_name_played_text_color}"
       android:textSize="14sp" />
   </LinearLayout>
 </layout>

@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/oppia_background">
+    android:background="@color/component_color_topic_lessons_fragment_background_color">
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/story_summary_recycler_view"
