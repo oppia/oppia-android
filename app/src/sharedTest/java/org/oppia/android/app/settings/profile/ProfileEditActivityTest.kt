@@ -12,6 +12,7 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -268,7 +270,6 @@ class ProfileEditActivityTest {
     }
   }
 
-/*
   @Test
   fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
@@ -277,43 +278,19 @@ class ProfileEditActivityTest {
         profileId = 1
       )
     ).use {
-      onView(withId(R.id.profile_delete_button)).perform(click())
-      (ShadowAlertDialog.getLatestDialog() as AlertDialog)
-        .getButton(AlertDialog.BUTTON_POSITIVE)
-        .performClick()
-     *//* onView(withText(R.string.profile_edit_delete_dialog_positive))
-        .inRoot(isDialog())
-        .perform(click())*//*
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_delete_button)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_title)
+      verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_message)
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       } else {
-        intended(hasComponent(ProfileListActivity::class.java.name))
+        intended(hasComponent(ProfileListActivity::class.java.name), times(0))
       }
     }
   }
-
-  @Test
-  fun testProfileEdit_landscape_deleteProfile_checkReturnsProfileListOnTabletAdminControlOnPhone() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive))
-        .inRoot(isDialog())
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      } else {
-        intended(hasComponent(ProfileListActivity::class.java.name))
-      }
-    }
-  }*/
 
   @Test
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
