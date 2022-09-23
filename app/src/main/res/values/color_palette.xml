@@ -109,6 +109,6 @@
   <color name="color_palette_topic_lessons_chapter_list_container_color">@color/color_def_white_light</color>
   <color name="color_palette_topic_lessons_chapter_index_not_play_text_color">@color/oppia_primary_text</color>
   <color name="color_palette_topic_lessons_chapter_index_played_text_color">@color/color_def_oppia_primary_text_30</color>
-  <color name="color_palette_dashed_divider_color">@color/oppia_dashed_divider</color>
+  <color name="color_palette_dashed_divider_color">@color/color_def_oppia_dashed_divider</color>
   <color name="color_palette_chapter_play_state_icon_pending_color">@color/color_def_dark_grey</color>
 </resources>
