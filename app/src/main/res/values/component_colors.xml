@@ -295,5 +295,4 @@
   <color name="component_color_topic_lessons_dashed_divider_color">@color/color_palette_dashed_divider_color</color>
   <color name="component_color_topic_lessons_chapter_play_state_icon_pending_color">@color/color_palette_chapter_play_state_icon_pending_color</color>
 
-
 </resources>
