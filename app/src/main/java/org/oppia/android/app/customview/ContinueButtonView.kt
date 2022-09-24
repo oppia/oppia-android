@@ -7,13 +7,13 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
@@ -73,9 +73,7 @@ class ContinueButtonView @JvmOverloads constructor(
         FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
       val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
       viewComponent.inject(this)
-
     } catch (e: IllegalStateException) {
-
     }
   }
 }
