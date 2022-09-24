@@ -79,7 +79,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
         }
       } else if (binding.isAllChecked == true) {
         binding.isAllChecked = false
-        getMarkChaptersCompletedViewModel().getItemList().forEach { viewModel ->
+        viewModel.getItemList().forEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted()) {
               chapterUnselected(viewModel.chapterIndex, viewModel.nextStoryIndex)

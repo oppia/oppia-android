@@ -72,7 +72,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
           if (!viewModel.isCompleted) topicSelected(viewModel.topic.topicId)
         }
       } else {
-        getMarkTopicsCompletedViewModel().getTopicList().forEach { viewModel ->
+        viewModel.getTopicList().forEach { viewModel ->
           if (!viewModel.isCompleted) topicUnselected(viewModel.topic.topicId)
         }
       }
