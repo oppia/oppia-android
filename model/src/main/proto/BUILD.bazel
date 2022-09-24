@@ -125,7 +125,7 @@ java_lite_proto_library(
 
 oppia_proto_library(
     name = "spotlight_proto",
-    srcs = ["spotlight.proto"]
+    srcs = ["spotlight.proto"],
 )
 
 java_lite_proto_library(
