@@ -283,9 +283,6 @@ class RevisionCardFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
-      testCoroutineDispatchers.runCurrent()
-
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("Description of subtopic is here."))))
     }
