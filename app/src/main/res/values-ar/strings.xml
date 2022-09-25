@@ -218,8 +218,8 @@
   <string name="add_profile_pin_info">مع وجود رقم التعريف الشخصي، لا يمكن لأي شخص آخر الوصول إلى الملف الشخصي بخلاف هذا المستخدم.</string>
   <string name="add_profile_error_image_failed_store">فشلنا في حفظ الصورة. برجاء المحاولة مجددًا.</string>
   <string name="add_profile_error_name_not_unique">هذا الاسم مستخدَم بالفعل من قبل ملف شخصي آخر.</string>
-  <string name="add_profile_error_name_empty">من فضلك أدخل اسمًا لهذا الملف الشخصي.</string>
-  <string name="add_profile_error_name_only_letters">يمكن أن يحتوي الاسم على أحرفٍ فقط، جرّب اسمًا آخر؟</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">من فضلك أدخل اسمًا لهذا الملف الشخصي.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">يمكن أن يحتوي الاسم على أحرفٍ فقط، جرّب اسمًا آخر؟</string>
   <string name="add_profile_error_pin_length">رقم التعريف الشخصي يجب أن يتكون من 3 أرقام.</string>
   <string name="add_profile_error_pin_confirm_wrong">برجاء التأكد من تطابق رقمي التعريف الشخصي.</string>
   <string name="add_profile_info_content_description">المزيد من المعلومات عن رقم التعريف الشخصي المكون من 3 أرقام.</string>

@@ -125,6 +125,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -173,6 +174,9 @@ class StoryFragmentTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var accessibilityService: FakeAccessibilityService
 
   @Captor
   lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
@@ -552,6 +556,52 @@ class StoryFragmentTest {
         matches(
           withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
         )
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_checkClickableSpanWithoutScreenReader_isClickable() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      accessibilityService.setScreenReaderEnabled(false)
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check(
+        matches(hasClickableSpanWithText("Chapter 1: What is a Fraction?"))
+      )
+    }
+  }
+
+  @Test
+  fun testStoryFragment_checkClickableSpanWithScreenReader_isNotClickable() {
+    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+      accessibilityService.setScreenReaderEnabled(true)
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(allOf(withId(R.id.story_chapter_list))).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          2
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_chapter_list,
+          position = 2,
+          targetViewId = R.id.chapter_summary
+        )
+      ).check(
+        matches(not(hasClickableSpanWithText("Chapter 1: What is a Fraction?")))
       )
     }
   }

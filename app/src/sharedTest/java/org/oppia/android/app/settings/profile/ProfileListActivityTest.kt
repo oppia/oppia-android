@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
@@ -24,6 +24,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -68,6 +69,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -107,13 +109,20 @@ class ProfileListActivityTest {
   }
 
   @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenName = createProfileListActivityIntent().extractCurrentAppScreenName()
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_LIST_ACTIVITY)
+  }
+
+  @Test
   fun testProfileListActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(createProfileListActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    Truth.assertThat(title).isEqualTo(context.getString(R.string.profile_list_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.profile_list_activity_title))
   }
 
   private fun setUpTestApplicationComponent() {

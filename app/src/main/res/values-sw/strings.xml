@@ -220,8 +220,8 @@
   <string name="add_profile_pin_info">Ukiwa na Nambari ya Siri, hakuna mtu mwingine anayeweza kufikia wasifu kando na mtumiaji huyu aliyekabidhiwa.</string>
   <string name="add_profile_error_image_failed_store">Tumeshindwa kuhifadhi picha yako. Tafadhali jaribu tena.</string>
   <string name="add_profile_error_name_not_unique">Jina hili tayari linatumiwa na wasifu mwingine.</string>
-  <string name="add_profile_error_name_empty">Tafadhali weka jina la wasifu huu.</string>
-  <string name="add_profile_error_name_only_letters">Majina yanaweza kuwa na herufi pekee. Jaribu jina lingine?</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">Tafadhali weka jina la wasifu huu.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">Majina yanaweza kuwa na herufi pekee. Jaribu jina lingine?</string>
   <string name="add_profile_error_pin_length">Nambari yako ya Siri inapaswa kuwa na urefu wa tarakimu 3.</string>
   <string name="add_profile_error_pin_confirm_wrong">Tafadhali hakikisha kwamba Nambari za Siri zote mbili zinalingana.</string>
   <string name="add_profile_info_content_description">Maelezo zaidi kuhusu Nambari za Siri zenye tarakimu 3.</string>

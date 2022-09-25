@@ -31,8 +31,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.ActivityLifecycleObserverModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
@@ -94,7 +94,7 @@ import javax.inject.Singleton
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
-    PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
+    ActivityLifecycleObserverModule::class, PerformanceMetricsAssessorModule::class,
     PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
     EventLoggingConfigurationModule::class
   ]
