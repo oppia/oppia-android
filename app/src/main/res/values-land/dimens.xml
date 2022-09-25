@@ -542,4 +542,33 @@
 
   <!-- ProfileListFragment -->
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">108dp</dimen>
+
+  <!-- ProfileChooserAddView -->
+  <dimen name="profile_chooser_add_view_constraint_layout_margin_top_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_constraint_layout_margin_top_profile_not_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_constraint_layout_padding_end_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_constraint_layout_padding_end_profile_not_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_constraint_layout_padding_start_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_constraint_layout_padding_start_profile_not_added">0dp</dimen>
+
+  <dimen name="profile_chooser_add_view_add_profile_item_android_margin_end_profile_added">16dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_margin_end_profile_not_added">16dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_margin_bottom_profile_added">24dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_margin_bottom_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_margin_start_profile_added">16dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_margin_start_profile_not_added">16dp</dimen>
+
+  <dimen name="profile_chooser_add_view_add_profile_item_android_padding_end_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_padding_end_profile_not_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_padding_start_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_android_padding_start_profile_not_added">0dp</dimen>
+
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_end_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_end_profile_not_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_start_profile_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_start_profile_not_added">0dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_top_profile_added">16dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_top_profile_not_added">24dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_bottom_profile_added">20dp</dimen>
+  <dimen name="profile_chooser_add_view_add_profile_item_app_margin_bottom_profile_not_added">28dp</dimen>
 </resources>

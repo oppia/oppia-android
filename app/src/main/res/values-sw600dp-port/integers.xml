@@ -10,4 +10,8 @@
   <integer name="completed_story_span_count">3</integer>
   <integer name="profile_progress_span_count">3</integer>
   <integer name="profile_progress_limit">3</integer>
+  <integer name="profile_chooser_add_view_add_profile_item_gravity_profile_added">1</integer>
+  <integer name="profile_chooser_add_view_add_profile_item_gravity_profile_not_added">11</integer>
+  <integer name="profile_chooser_add_view_add_profile_item_orientation_profile_added">1</integer>
+  <integer name="profile_chooser_add_view_add_profile_item_orientation_profile_not_added">0</integer>
 </resources>

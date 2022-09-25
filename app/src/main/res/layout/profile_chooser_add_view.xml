@@ -18,20 +18,27 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal">
+    android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_constraint_layout_padding_start_profile_added : @dimen/profile_chooser_add_view_constraint_layout_padding_start_profile_not_added}"
+    android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_constraint_layout_padding_end_profile_added : @dimen/profile_chooser_add_view_constraint_layout_padding_end_profile_not_added}"
+    app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_constraint_layout_margin_top_profile_added : @dimen/profile_chooser_add_view_constraint_layout_margin_top_profile_not_added}">
 
     <LinearLayout
       android:id="@+id/add_profile_item"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
-      android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
-      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_end_profile_already_added : @dimen/profile_view_not_added_margin}"
-      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_start_profile_already_added : @dimen/profile_view_not_added_margin}"
-      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_top_profile_not_added}"
+      android:gravity="@{hasProfileEverBeenAddedValue ? @integer/profile_chooser_add_view_add_profile_item_gravity_profile_added : @integer/profile_chooser_add_view_add_profile_item_gravity_profile_not_added}"
+      android:orientation="@{hasProfileEverBeenAddedValue ? @integer/profile_chooser_add_view_add_profile_item_orientation_profile_added : @integer/profile_chooser_add_view_add_profile_item_orientation_profile_not_added}"
+      android:layout_marginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_android_margin_end_profile_added : @dimen/profile_chooser_add_view_add_profile_item_android_margin_end_profile_not_added}"
+      android:layout_marginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_android_margin_bottom_profile_added : @dimen/profile_chooser_add_view_add_profile_item_android_margin_bottom_profile_not_added}"
+      android:layout_marginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_android_margin_start_profile_added : @dimen/profile_chooser_add_view_add_profile_item_android_margin_start_profile_not_added}"
+      android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_android_padding_end_profile_added : @dimen/profile_chooser_add_view_add_profile_item_android_padding_end_profile_not_added}"
+      android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_android_padding_start_profile_added : @dimen/profile_chooser_add_view_add_profile_item_android_padding_start_profile_not_added}"
+      app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_app_margin_end_profile_added : @dimen/profile_chooser_add_view_add_profile_item_app_margin_end_profile_not_added}"
+      app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_app_margin_start_profile_added : @dimen/profile_chooser_add_view_add_profile_item_app_margin_start_profile_not_added}"
+      app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_app_margin_top_profile_added : @dimen/profile_chooser_add_view_add_profile_item_app_margin_top_profile_not_added}"
+      app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_add_profile_item_app_margin_bottom_profile_added : @dimen/profile_chooser_add_view_add_profile_item_app_margin_bottom_profile_not_added}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
