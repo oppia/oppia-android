@@ -21,8 +21,7 @@ class ContinueButtonView @JvmOverloads constructor(
   defStyleAttr: Int = R.style.StateButtonActive
 ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
 
-  @Inject
-  @EnableContinueButtonAnimation
+  @field:[Inject EnableContinueButtonAnimation]
   lateinit var enableContinueButtonAnimation: PlatformParameterValue<Boolean>
 
   private lateinit var viewModel: ContinueInteractionViewModel
@@ -37,6 +36,7 @@ class ContinueButtonView @JvmOverloads constructor(
   private val continueButtonAnimationObserver = Observer<Boolean> {
     if (it) {
       startAnimating()
+      isAnimationTimerFinished = true
     } else {
       this.clearAnimation()
       isAnimationTimerFinished = false
@@ -50,7 +50,6 @@ class ContinueButtonView @JvmOverloads constructor(
     if (enableContinueButtonAnimation.value) {
       this.startAnimation(animation)
     }
-    isAnimationTimerFinished = true
   }
 
   override fun onVisibilityAggregated(isVisible: Boolean) {
