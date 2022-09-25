@@ -15,12 +15,19 @@ import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -28,9 +35,9 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.MetricLogScheduler
-import org.oppia.android.util.logging.firebase.LogReportingModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -145,14 +152,32 @@ class FakeLogSchedulerTest {
     fun bindMetricLogScheduler(fakeLogScheduler: FakeLogScheduler): MetricLogScheduler
   }
 
+  @Module
+  class TestLogStorageModule {
+
+    @Provides
+    @EventLogStorageCacheSize
+    fun provideEventLogStorageCacheSize(): Int = 2
+
+    @Provides
+    @ExceptionLogStorageCacheSize
+    fun provideExceptionLogStorageSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
-      TestDispatcherModule::class, LogReportingModule::class, RobolectricModule::class,
+      TestModule::class, LoggerModule::class, TestDispatcherModule::class,
+      TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
-      OppiaClockModule::class
+      OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      SyncStatusModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

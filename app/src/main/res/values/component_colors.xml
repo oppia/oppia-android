@@ -257,6 +257,31 @@
   <color name="component_color_topic_info_fragment_download_status_image_color">@color/color_palette_primary_color</color>
   <color name="component_color_topic_info_fragment_download_story_count_text_color">@color/color_palette_show_text_color</color>
   <color name="component_color_topic_info_fragment_download_story_size_text_color">@color/color_palette_show_text_color</color>
+  <!-- Drawer Fragment -->
+  <color name="component_color_drawer_fragment_background_color">@color/color_palette_primary_container_background_color</color>
+  <color name="component_color_drawer_fragment_selected_text_color">@color/color_palette_menu_selected_text_color</color>
+  <color name="component_color_drawer_fragment_text_color">@color/color_palette_menu_text_color</color>
+  <color name="component_color_drawer_fragment_developer_options_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_drawer_fragment_developer_options_selected_text_color">@color/color_palette_developer_option_menu_selected_color</color>
+  <color name="component_color_drawer_fragment_developer_options_image_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_drawer_fragment_developer_options_selected_image_color">@color/color_palette_developer_option_menu_selected_color</color>
+  <color name="component_color_drawer_fragment_admin_controls_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_drawer_fragment_admin_controls_selected_text_color">@color/color_palette_menu_selected_text_color</color>
+  <color name="component_color_drawer_fragment_admin_controls_image_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_drawer_fragment_admin_controls_selected_image_color">@color/color_palette_menu_selected_text_color</color>
+  <!-- Concept Card Fragment -->
+  <color name="component_color_concept_card_fragment_toolbar_color">@color/color_palette_concept_card_toolbar_color</color>
+  <color name="component_color_concept_card_fragment_status_bar_color">@color/color_palette_concept_status_bar_color</color>
+  <color name="component_color_concept_card_fragment_background_color">@color/color_palette_background_color</color>
+  <color name="component_color_concept_card_fragment_text_color">@color/color_palette_highlighted_text_color</color>
+  <!-- Audio Fragment -->
+  <color name="component_color_audio_fragment_background_color">@color/color_palette_accent_background_color</color>
+  <color name="component_color_audio_fragment_icon_color">@color/color_palette_icon_background_secondary_color</color>
+  <color name="component_color_audio_fragment_thumb_background_color">@color/color_palette_icon_background_secondary_color</color>
+  <color name="component_color_audio_fragment_seekbar_progress_color">@color/color_palette_icon_background_secondary_color</color>
+  <color name="component_color_audio_fragment_seekbar_color">@color/color_palette_seekbar_progress_background_color</color>
+  <!-- Topic Revision Fragment -->
+  <color name="component_color_topic_revision_fragment_background_color">@color/color_palette_topic_revision_background_color</color>
   <!-- Profile Edit Activity -->
   <color name="component_color_profile_edit_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_profile_edit_activity_profile_view_background_color">@color/color_palette_container_background_color</color>
