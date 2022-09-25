@@ -113,7 +113,7 @@ const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 /**
  * Qualifier for the platform parameter that controls whether to animate the continue button
  * interaction and navigation items. This is used to disable the animation during testing because
- * espresso has known problems while testing views that contain animations.
+ * Espresso has known problems while testing views that contain animations.
  */
 @Qualifier
 annotation class EnableContinueButtonAnimation

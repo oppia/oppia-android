@@ -24,14 +24,11 @@ class ContinueButtonView @JvmOverloads constructor(
   @field:[Inject EnableContinueButtonAnimation]
   lateinit var enableContinueButtonAnimation: PlatformParameterValue<Boolean>
 
+  @Inject
+  lateinit var fragment: Fragment
+
   private lateinit var viewModel: ContinueInteractionViewModel
   private var isAnimationTimerFinished = false
-
-  fun setViewModel(viewModel: ContinueInteractionViewModel) {
-    this.viewModel = viewModel
-    viewModel.subscribeToCurrentState()
-    viewModel.animateContinueButton.observeForever(continueButtonAnimationObserver)
-  }
 
   private val continueButtonAnimationObserver = Observer<Boolean> {
     if (it) {
@@ -41,6 +38,12 @@ class ContinueButtonView @JvmOverloads constructor(
       this.clearAnimation()
       isAnimationTimerFinished = false
     }
+  }
+
+  fun setViewModel(viewModel: ContinueInteractionViewModel) {
+    this.viewModel = viewModel
+    viewModel.subscribeToCurrentState()
+    viewModel.animateContinueButton.observeForever(continueButtonAnimationObserver)
   }
 
   private fun startAnimating() {
@@ -65,14 +68,11 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   override fun onAttachedToWindow() {
-    try {
       super.onAttachedToWindow()
 
       val viewComponentFactory =
         FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
       val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
       viewComponent.inject(this)
-    } catch (e: IllegalStateException) {
-    }
   }
 }

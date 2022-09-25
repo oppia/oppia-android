@@ -28,11 +28,11 @@ interface ViewComponentImpl : ViewComponent {
   }
 
   fun inject(comingSoonTopicsListView: ComingSoonTopicsListView)
+  fun inject(continueButtonView: ContinueButtonView)
   fun inject(selectionInteractionView: SelectionInteractionView)
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
-  fun inject(continueButtonView: ContinueButtonView)
   fun inject(promotedStoryListView: PromotedStoryListView)
   fun inject(segmentedCircularProgressView: SegmentedCircularProgressView)
 }
