@@ -71,8 +71,12 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setCurrentTab(tab: TopicTab) {
-    viewPager.setCurrentItem(tab.ordinal, true)
+    viewPager.setCurrentItem(computeTabPosition(tab), true)
     logTopicEvents(tab)
+  }
+
+  private fun computeTabPosition(tab: TopicTab): Int {
+    return if (enableExtraTopicTabsUi.value) tab.positionWithFourTabs else tab.positionWithTwoTabs
   }
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {

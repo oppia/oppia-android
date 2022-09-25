@@ -6,8 +6,8 @@ import org.oppia.android.R
 
 /** Enum to store the tabs of [TopicFragment] and get tab by position. */
 enum class TopicTab(
-  private val positionWithTwoTabs: Int,
-  private val positionWithFourTabs: Int,
+  val positionWithTwoTabs: Int,
+  val positionWithFourTabs: Int,
   @StringRes val tabLabelResId: Int,
   @DrawableRes val tabIconResId: Int
 ) {
