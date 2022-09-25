@@ -130,7 +130,7 @@ class ExplorationProgressController @Inject constructor(
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
   // the amount of time to wait before the continue interaction button is animated in milliseconds
-  private val continueButtonAnimationDelay: Long = 45000L
+  private val continueButtonAnimationDelay: Long = 10000L
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
    * [DataProvider] indicating whether the start was successful.
@@ -410,7 +410,8 @@ class ExplorationProgressController @Inject constructor(
                   commandQueue,
                   installationId,
                   learnerId,
-                  learnerAnalyticsLogger
+                  learnerAnalyticsLogger,
+                  oppiaClock.getCurrentTimeMs()
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -839,7 +840,7 @@ class ExplorationProgressController @Inject constructor(
   private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
-      oppiaClock.getCurrentTimeMs() + continueButtonAnimationDelay
+      startSessionTimeMs + continueButtonAnimationDelay
     )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
@@ -1040,7 +1041,8 @@ class ExplorationProgressController @Inject constructor(
     val commandQueue: SendChannel<ControllerMessage<*>>,
     private val installationId: String?,
     private val learnerId: String?,
-    private val learnerAnalyticsLogger: LearnerAnalyticsLogger
+    private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
+    val startSessionTimeMs: Long
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this

@@ -48,8 +48,6 @@ class ContinueButtonView @JvmOverloads constructor(
 
   private fun startAnimating() {
     val animation = AnimationUtils.loadAnimation(context, R.anim.expand)
-    animation.interpolator = AccelerateInterpolator()
-    animation.repeatCount = Int.MAX_VALUE
     if (enableContinueButtonAnimation.value) {
       this.startAnimation(animation)
     }
