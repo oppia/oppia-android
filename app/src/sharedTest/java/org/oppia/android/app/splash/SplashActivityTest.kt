@@ -49,6 +49,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -109,6 +110,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -1026,6 +1028,18 @@ class SplashActivityTest {
       val monitor = monitorFactory.createMonitor(appStartupStateController.getAppStartupState())
       testCoroutineDispatchers.advanceUntilIdle()
       monitor.ensureNextResultIsSuccess()
+    }
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    initializeTestApplication()
+    launchSplashActivity { activityScenario ->
+      testCoroutineDispatchers.advanceUntilIdle()
+      activityScenario.onActivity { activity ->
+        val currentScreenName = activity.intent.extractCurrentAppScreenName()
+        assertThat(currentScreenName).isEqualTo(ScreenName.SPLASH_ACTIVITY)
+      }
     }
   }
 
