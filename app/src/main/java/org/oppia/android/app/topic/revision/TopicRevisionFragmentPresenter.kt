@@ -59,7 +59,8 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
+    val subtopicListSize = viewModel.subtopicLiveData.value!!.size
+    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId, subtopicListSize)
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {

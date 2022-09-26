@@ -135,6 +135,7 @@ const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 0
 const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 1
 const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 2
 const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 3
+const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -186,7 +187,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -207,7 +209,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -234,7 +237,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -261,7 +265,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -278,7 +283,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_2
+        SUBTOPIC_TOPIC_ID_2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -295,7 +301,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_0
+        FRACTIONS_SUBTOPIC_TOPIC_ID_0,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -312,7 +319,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_1
+        FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -329,13 +337,14 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_3
+        FRACTIONS_SUBTOPIC_TOPIC_ID_3,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.navigation_card_container)).perform(scrollTo())
-      onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.next_navigation_card)).check(matches(not(isDisplayed())))
     }
   }
@@ -347,7 +356,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_1
+        FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -366,7 +376,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_TOPIC_ID_1
+        FRACTIONS_SUBTOPIC_TOPIC_ID_1,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -385,7 +396,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -405,7 +417,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID_2
+        SUBTOPIC_TOPIC_ID_2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -425,7 +438,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = 2
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -443,7 +457,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = 2
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -464,7 +479,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = 2
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -488,7 +504,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        subtopicId = 2
+        subtopicId = 2,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -516,7 +533,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         "test_topic_id_0",
-        subtopicId = 1
+        subtopicId = 1,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -536,7 +554,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         "test_topic_id_0",
-        subtopicId = 1
+        subtopicId = 1,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -560,7 +579,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         "test_topic_id_0",
-        subtopicId = 1
+        subtopicId = 1,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

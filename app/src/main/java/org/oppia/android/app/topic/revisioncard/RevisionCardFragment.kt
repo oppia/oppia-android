@@ -18,6 +18,7 @@ class RevisionCardFragment : InjectableDialogFragment() {
   companion object {
     private const val TOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.topic_id"
     private const val SUBTOPIC_ID_ARGUMENT_KEY = "RevisionCardFragment.subtopic_id"
+    private const val SUBTOPIC_LIST_SIZE_ARGUMENT_KEY = "RevisionCardFragment.subtopic_list_size"
     private const val PROFILE_ID_ARGUMENT_KEY = "RevisionCardFragment.profile_id"
 
     /**
@@ -58,8 +59,9 @@ class RevisionCardFragment : InjectableDialogFragment() {
       }
     val subtopicId = args.getInt(SUBTOPIC_ID_ARGUMENT_KEY, -1)
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    val subtopicListSize = args.getInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, -1)
     return revisionCardFragmentPresenter.handleCreateView(
-      inflater, container, topicId, subtopicId, profileId
+      inflater, container, topicId, subtopicId, profileId, subtopicListSize
     )
   }
 

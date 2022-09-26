@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
@@ -19,7 +19,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -42,7 +41,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     topicId: String,
     subtopicId: Int,
-    profileId: ProfileId
+    profileId: ProfileId,
+    subtopicListSize: Int
   ): View? {
     this.profileId = profileId
 
@@ -63,7 +63,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    setUpRevisionNavigationCards(binding, topicId, subtopicId)
+    setUpRevisionNavigationCards(binding, topicId, subtopicId, subtopicListSize)
 
     viewModel.revisionCardLiveData.observe(
       fragment,
@@ -89,38 +89,51 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private fun setUpRevisionNavigationCards(
     binding: RevisionCardFragmentBinding,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
+    subtopicListSize: Int
   ) {
-    binding.nextSubtopicImageView.setEntityType(entityType)
+
     binding.prevSubtopicImageView.setEntityType(entityType)
+    binding.nextSubtopicImageView.setEntityType(entityType)
+
+    if (subtopicId == 0) {
+      binding.previousNavigationCard.visibility = View.INVISIBLE
+    } else {
+      getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
+        binding.nextSubtopicImageView.setLessonThumbnail(nextSubtopic.subtopic.subtopicThumbnail)
+        binding.nextSubtopicTitle.text = translationController.extractString(
+          nextSubtopic.subtopic.title,
+          nextSubtopic.writtenTranslationContext
+        )
+      }
+    }
+    if (subtopicId == subtopicListSize - 1) {
+      binding.nextNavigationCard.visibility = View.INVISIBLE
+    } else {
+      getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
+        binding.prevSubtopicImageView.setLessonThumbnail(previousSubtopic.subtopic.subtopicThumbnail)
+        binding.prevSubtopicTitle.text = translationController.extractString(
+          previousSubtopic.subtopic.title,
+          previousSubtopic.writtenTranslationContext
+        )
+      }
+    }
 
     binding.previousNavigationCard.setOnClickListener {
-      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId - 1)
-    }
-
-    binding.nextNavigationCard.setOnClickListener {
-      routeToReviewListener.routeToRevisionCard(profileId.internalId, topicId, subtopicId + 1)
-    }
-
-    getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
-      if (nextSubtopic == EphemeralSubtopic.getDefaultInstance()) {
-        binding.nextNavigationCard.visibility = View.INVISIBLE
-      }
-      binding.nextSubtopicImageView.setLessonThumbnail(nextSubtopic.subtopic.subtopicThumbnail)
-      binding.nextSubtopicTitle.text = translationController.extractString(
-        nextSubtopic.subtopic.title,
-        nextSubtopic.writtenTranslationContext
+      routeToReviewListener.routeToRevisionCard(
+        profileId.internalId,
+        topicId,
+        subtopicId - 1,
+        subtopicListSize
       )
     }
 
-    getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
-      if (previousSubtopic.equals(EphemeralSubtopic.getDefaultInstance())) {
-        binding.previousNavigationCard.visibility = View.INVISIBLE
-      }
-      binding.prevSubtopicImageView.setLessonThumbnail(previousSubtopic.subtopic.subtopicThumbnail)
-      binding.prevSubtopicTitle.text = translationController.extractString(
-        previousSubtopic.subtopic.title,
-        previousSubtopic.writtenTranslationContext
+    binding.nextNavigationCard.setOnClickListener {
+      routeToReviewListener.routeToRevisionCard(
+        profileId.internalId,
+        topicId,
+        subtopicId + 1,
+        subtopicListSize
       )
     }
   }

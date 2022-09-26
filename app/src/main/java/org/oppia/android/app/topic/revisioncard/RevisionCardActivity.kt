@@ -61,29 +61,38 @@ class RevisionCardActivity :
     internal const val INTERNAL_PROFILE_ID_EXTRA_KEY = "RevisionCardActivity.internal_profile_id"
     internal const val TOPIC_ID_EXTRA_KEY = "RevisionCardActivity.topic_id"
     internal const val SUBTOPIC_ID_EXTRA_KEY = "RevisionCardActivity.subtopic_id"
+    internal const val SUBTOPIC_LIST_SIZE_EXTRA_KEY = "RevisionCardActivity.subtopic_list_size"
 
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createRevisionCardActivityIntent(
       context: Context,
       internalProfileId: Int,
       topicId: String,
-      subtopicId: Int
+      subtopicId: Int,
+      subtopicListSize: Int = -1
     ): Intent {
       val intent = Intent(context, RevisionCardActivity::class.java)
       intent.putExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)
       intent.putExtra(TOPIC_ID_EXTRA_KEY, topicId)
       intent.putExtra(SUBTOPIC_ID_EXTRA_KEY, subtopicId)
+      intent.putExtra(SUBTOPIC_LIST_SIZE_EXTRA_KEY, subtopicListSize)
       return intent
     }
   }
 
-  override fun routeToRevisionCard(internalProfileId: Int, topicId: String, subtopicId: Int) {
+  override fun routeToRevisionCard(
+    internalProfileId: Int,
+    topicId: String,
+    subtopicId: Int,
+    subtopicListSize: Int
+  ) {
     startActivity(
       createRevisionCardActivityIntent(
         this,
         internalProfileId,
         topicId,
-        subtopicId
+        subtopicId,
+        subtopicListSize
       )
     )
     this.finish()
