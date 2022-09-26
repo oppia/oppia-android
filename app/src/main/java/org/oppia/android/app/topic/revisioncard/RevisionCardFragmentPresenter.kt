@@ -96,19 +96,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
     binding.prevSubtopicImageView.setEntityType(entityType)
     binding.nextSubtopicImageView.setEntityType(entityType)
 
-    if (subtopicId == 0) {
+    if (subtopicId == 1) {
       binding.previousNavigationCard.visibility = View.INVISIBLE
-    } else {
-      getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
-        binding.nextSubtopicImageView.setLessonThumbnail(nextSubtopic.subtopic.subtopicThumbnail)
-        binding.nextSubtopicTitle.text = translationController.extractString(
-          nextSubtopic.subtopic.title,
-          nextSubtopic.writtenTranslationContext
-        )
-      }
-    }
-    if (subtopicId == subtopicListSize - 1) {
-      binding.nextNavigationCard.visibility = View.INVISIBLE
     } else {
       getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
         binding.prevSubtopicImageView.setLessonThumbnail(
@@ -117,6 +106,17 @@ class RevisionCardFragmentPresenter @Inject constructor(
         binding.prevSubtopicTitle.text = translationController.extractString(
           previousSubtopic.subtopic.title,
           previousSubtopic.writtenTranslationContext
+        )
+      }
+    }
+    if (subtopicId == subtopicListSize - 1) {
+      binding.nextNavigationCard.visibility = View.INVISIBLE
+    } else {
+      getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
+        binding.nextSubtopicImageView.setLessonThumbnail(nextSubtopic.subtopic.subtopicThumbnail)
+        binding.nextSubtopicTitle.text = translationController.extractString(
+          nextSubtopic.subtopic.title,
+          nextSubtopic.writtenTranslationContext
         )
       }
     }

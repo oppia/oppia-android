@@ -35,7 +35,8 @@ class RevisionCardActivity :
         "Expected topic ID to be included in intent for RevisionCardActivity."
       }
       val subtopicId = intent.getIntExtra(SUBTOPIC_ID_EXTRA_KEY, -1)
-      revisionCardActivityPresenter.handleOnCreate(internalProfileId, topicId, subtopicId)
+      val subtopicListSize = intent.getIntExtra(SUBTOPIC_LIST_SIZE_EXTRA_KEY, -1)
+      revisionCardActivityPresenter.handleOnCreate(internalProfileId, topicId, subtopicId, subtopicListSize)
     }
     supportActionBar?.setBackgroundDrawable(
       ResourcesCompat.getDrawable(

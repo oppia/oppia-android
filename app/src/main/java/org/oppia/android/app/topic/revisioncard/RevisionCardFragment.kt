@@ -25,12 +25,14 @@ class RevisionCardFragment : InjectableDialogFragment() {
      * Returns a new [RevisionCardFragment] to display the specific subtopic for the given topic &
      * profile.
      */
-    fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId): RevisionCardFragment {
+    fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int):
+      RevisionCardFragment {
       return RevisionCardFragment().apply {
         arguments = Bundle().apply {
           putString(TOPIC_ID_ARGUMENT_KEY, topicId)
           putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
           putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+          putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
         }
       }
     }

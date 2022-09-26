@@ -27,7 +27,7 @@ class TopicRevisionViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
   private lateinit var topicId: String
-  private val subtopicList: MutableList<TopicRevisionItemViewModel> = ArrayList()
+  val subtopicList: MutableList<TopicRevisionItemViewModel> = ArrayList()
   private val revisionSubtopicSelector: RevisionSubtopicSelector =
     fragment as RevisionSubtopicSelector
 
