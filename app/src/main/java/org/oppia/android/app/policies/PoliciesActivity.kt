@@ -7,8 +7,10 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.ScreenName.POLICIES_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Activity for displaying the app policies. */
@@ -44,6 +46,7 @@ class PoliciesActivity :
           .build()
       return Intent(context, PoliciesActivity::class.java).also {
         it.putProtoExtra(POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO, policiesActivityParams)
+        it.decorateWithScreenName(POLICIES_ACTIVITY)
       }
     }
   }
