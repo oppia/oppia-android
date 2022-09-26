@@ -1,6 +1,5 @@
 package org.oppia.android.app.topic.revisioncard
 
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -53,15 +52,15 @@ class RevisionCardViewModel @Inject constructor(
   private fun processPreviousSubtopicData(
     topicLiveData: AsyncResult<EphemeralTopic>
   ): EphemeralSubtopic? {
-      return when (topicLiveData) {
-        is AsyncResult.Success -> {
-          val topic = topicLiveData.value
-          topic.subtopicsList.find {
-            it.subtopic.subtopicId == subtopicId - 1
-          } ?: EphemeralSubtopic.getDefaultInstance()
-        }
-        else -> EphemeralSubtopic.getDefaultInstance()
+    return when (topicLiveData) {
+      is AsyncResult.Success -> {
+        val topic = topicLiveData.value
+        topic.subtopicsList.find {
+          it.subtopic.subtopicId == subtopicId - 1
+        } ?: EphemeralSubtopic.getDefaultInstance()
       }
+      else -> EphemeralSubtopic.getDefaultInstance()
+    }
   }
 
   private fun processNextSubtopicData(

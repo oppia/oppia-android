@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.topic.RouteToRevisionCardListener
@@ -19,6 +18,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import javax.inject.Inject
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -111,7 +111,9 @@ class RevisionCardFragmentPresenter @Inject constructor(
       binding.nextNavigationCard.visibility = View.INVISIBLE
     } else {
       getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
-        binding.prevSubtopicImageView.setLessonThumbnail(previousSubtopic.subtopic.subtopicThumbnail)
+        binding.prevSubtopicImageView.setLessonThumbnail(
+          previousSubtopic.subtopic.subtopicThumbnail
+        )
         binding.prevSubtopicTitle.text = translationController.extractString(
           previousSubtopic.subtopic.title,
           previousSubtopic.writtenTranslationContext
