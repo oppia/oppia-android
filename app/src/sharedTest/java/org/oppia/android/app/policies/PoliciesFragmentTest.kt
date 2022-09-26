@@ -317,7 +317,7 @@ class PoliciesFragmentTest {
             .newBuilder()
             .setPolicyPage(PolicyPage.PRIVACY_POLICY)
             .build()
-      intended(hasComponent(hasClassName(PoliciesActivity::class.java.getName())))
+        intended(hasComponent(hasClassName(PoliciesActivity::class.java.getName())))
         hasExtras(
           hasEntry(
             equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
