@@ -1,0 +1,26 @@
+"""
+Tests for testing-specific top-level application configurations.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "TestingBuildFlavorModuleTest",
+    srcs = ["TestingBuildFlavorModuleTest.kt"],
+    custom_package = "org.oppia.android.app.application.testing",
+    test_class = "org.oppia.android.app.application.testing.TestingBuildFlavorModuleTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+        ":dagger",
+        "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
+        "//model/src/main/proto:version_java_proto_lite",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+dagger_rules()

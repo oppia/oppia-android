@@ -26,18 +26,23 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.FakeSyncStatusManager
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.mockito.anyOrNull
@@ -58,6 +63,9 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NETWORK_ERROR
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -69,6 +77,7 @@ import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
+private const val TEST_APK_SIZE = Long.MAX_VALUE
 
 /** Tests for [LogUploadWorker]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -80,9 +89,11 @@ class LogUploadWorkerTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var fakeEventLogger: FakeEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var analyticsController: AnalyticsController
   @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -104,6 +115,13 @@ class LogUploadWorkerTest {
     .setPriority(EventLog.Priority.ESSENTIAL)
     .setTimestamp(TEST_TIMESTAMP)
     .build()
+
+  private val apkSizeTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
+    .setApkSizeMetric(
+      OppiaMetricLog.ApkSizeMetric.newBuilder()
+        .setApkSizeBytes(TEST_APK_SIZE)
+        .build()
+    ).build()
 
   private val exception = Exception("TEST")
 
@@ -201,6 +219,46 @@ class LogUploadWorkerTest {
     // The following can't be an exact match for the stack trace since new properties are added to
     // stack trace elements in newer versions of Java (such as module name).
     assertThat(loggedExceptionStackTraceElems).isEqualTo(expectedExceptionStackTraceElems)
+  }
+
+  @Test
+  fun testWorker_logPerformanceMetric_withoutNetwork_enqueueRequest_verifySuccess() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      OppiaMetricLog.Priority.LOW_PRIORITY
+    )
+
+    val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
+
+    val inputData = Data.Builder().putString(
+      LogUploadWorker.WORKER_CASE_KEY,
+      LogUploadWorker.PERFORMANCE_METRICS_WORKER
+    ).build()
+
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+      .setInputData(inputData)
+      .build()
+    workManager.enqueue(request)
+    testCoroutineDispatchers.runCurrent()
+
+    val workInfo = workManager.getWorkInfoById(request.id)
+    val loggedPerformanceMetric =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
+    assertThat(loggedPerformanceMetric.loggableMetric.loggableMetricTypeCase).isEqualTo(
+      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
+    )
+    assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
+      SCREEN_NAME_UNSPECIFIED
+    )
+    assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
+    assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)
+    assertThat(loggedPerformanceMetric.loggableMetric.apkSizeMetric.apkSizeBytes).isEqualTo(
+      TEST_APK_SIZE
+    )
   }
 
   @Test
@@ -310,6 +368,11 @@ class LogUploadWorkerTest {
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
+
+    @Provides
+    fun bindFakePerformanceMetricsLogger(
+      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+    ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
   }
 
   @Module
@@ -322,6 +385,10 @@ class LogUploadWorkerTest {
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageSize(): Int = 2
+
+    @Provides
+    @PerformanceMetricsLogStorageCacheSize
+    fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
   }
 
   @Module
@@ -336,11 +403,13 @@ class LogUploadWorkerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, LogUploadWorkerModule::class,
+      TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, ApplicationLifecycleModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class,
+      PerformanceMetricsAssessorModule::class, ApplicationLifecycleModule::class,
+      PerformanceMetricsConfigurationsModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

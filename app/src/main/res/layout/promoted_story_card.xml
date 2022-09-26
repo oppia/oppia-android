@@ -12,11 +12,12 @@
   </data>
 
   <com.google.android.material.card.MaterialCardView
-    android:layout_width="@dimen/promoted_story_card_layout_width"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/promoted_story_card_layout_margin_start"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
+    android:minWidth="@dimen/promoted_story_card_layout_width"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -33,9 +34,10 @@
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
+        android:minWidth="280dp"
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="H, 16:9"
@@ -45,7 +47,7 @@
         app:lessonThumbnail="@{viewModel.promotedStory.lessonThumbnail}" />
 
       <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_rounded_rect_white_background"
         android:orientation="vertical"
@@ -65,7 +67,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif-medium"
           android:maxLines="1"
-          android:text="@{viewModel.promotedStory.nextChapterName}"
+          android:text="@{viewModel.nextChapterTitle}"
           android:textColor="@color/oppia_primary_text"
           android:textSize="18sp" />
 
@@ -79,7 +81,7 @@
           android:ellipsize="end"
           android:fontFamily="sans-serif"
           android:maxLines="1"
-          android:text="@{viewModel.promotedStory.storyName}"
+          android:text="@{viewModel.storyTitle}"
           android:textColor="@color/oppia_primary_text"
           android:textSize="@dimen/promoted_story_card_text_size" />
 
@@ -94,7 +96,7 @@
           android:fontFamily="sans-serif-light"
           android:maxLines="1"
           android:paddingBottom="8dp"
-          android:text="@{viewModel.promotedStory.topicName}"
+          android:text="@{viewModel.topicTitle}"
           android:textAllCaps="true"
           android:textColor="@color/oppia_primary_text"
           android:textSize="14sp" />

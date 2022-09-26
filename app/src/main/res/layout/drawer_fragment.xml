@@ -25,6 +25,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/component_color_drawer_fragment_background_color"
         android:orientation="vertical">
 
         <com.google.android.material.navigation.NavigationView
@@ -36,7 +37,7 @@
           android:overScrollMode="never"
           android:scrollbars="none"
           app:elevation="0dp"
-          app:itemBackground="@android:color/transparent"
+          android:background="@color/component_color_drawer_fragment_background_color"
           app:itemIconTint="@color/drawer_item"
           app:itemTextColor="@color/drawer_item"
           app:menu="@menu/navigation_drawer_menu" />
@@ -66,7 +67,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_baseline_code_24"
-            android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlighted_developer_options_nav_menu_item : @color/oppia_primary_text_dark}"/>
+            android:tint="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_image_color : @color/component_color_drawer_fragment_developer_options_image_color}"/>
 
           <TextView
             android:layout_width="match_parent"
@@ -75,7 +76,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/developer_options"
-            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/highlighted_developer_options_nav_menu_item : @color/oppia_primary_text_dark}"
+            android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_text_color : @color/component_color_drawer_fragment_developer_options_text_color}"
             android:textSize="14sp" />
         </LinearLayout>
 
@@ -97,7 +98,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_admin_settings_icon_brown_24dp"
-            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/highlighted_nav_menu_item : @color/oppia_primary_text_dark}" />
+            android:tint="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_image_color : @color/component_color_drawer_fragment_admin_controls_image_color}" />
 
           <TextView
             android:layout_width="match_parent"
@@ -106,7 +107,7 @@
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/administrator_controls"
-            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/highlighted_nav_menu_item : @color/oppia_primary_text_dark}"
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_drawer_fragment_admin_controls_text_color}"
             android:textSize="14sp" />
         </LinearLayout>
       </LinearLayout>

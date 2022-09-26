@@ -18,7 +18,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/audio_language_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.ScreenName.PROFILE_EDIT_ACTIVITY
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** Argument key for the Profile Id in [ProfileEditActivity]. */
@@ -29,10 +31,11 @@ class ProfileEditActivity : InjectableAppCompatActivity() {
       profileId: Int,
       isMultipane: Boolean = false
     ): Intent {
-      val intent = Intent(context, ProfileEditActivity::class.java)
-      intent.putExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)
-      intent.putExtra(IS_MULTIPANE_EXTRA_KEY, isMultipane)
-      return intent
+      return Intent(context, ProfileEditActivity::class.java).apply {
+        putExtra(PROFILE_EDIT_PROFILE_ID_EXTRA_KEY, profileId)
+        putExtra(IS_MULTIPANE_EXTRA_KEY, isMultipane)
+        decorateWithScreenName(PROFILE_EDIT_ACTIVITY)
+      }
     }
   }
 

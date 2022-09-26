@@ -21,57 +21,101 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:background="@drawable/audio_background"
-    android:elevation="8dp"
-    android:gravity="center_vertical"
-    android:minHeight="48dp">
+    android:paddingBottom="4dp"
+    android:clipToPadding="false"
+    android:gravity="center_vertical">
 
-    <ImageView
-      android:id="@+id/play_pause_audio_icon"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_marginStart="8dp"
-      android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
-      android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
-      android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
-      android:padding="12dp"
-      app:srcCompat="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <SeekBar
-      android:id="@+id/audio_progress_seek_bar"
-      style="@style/AudioSeekBar"
-      android:layout_width="0dp"
-      android:layout_height="26dp"
-      android:layout_marginStart="4dp"
-      android:contentDescription="@string/audio_player_seekbar_content_description"
-      android:max="@{viewModel.durationLiveData}"
-      android:maxHeight="4dp"
-      android:minWidth="180dp"
-      android:minHeight="4dp"
-      android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
-      android:progressDrawable="@drawable/audio_seekbar_background"
-      android:splitTrack="false"
-      android:thumb="@drawable/seekbar_thumb"
-      android:thumbOffset="16dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/audio_language_icon"
-      app:layout_constraintStart_toEndOf="@+id/play_pause_audio_icon"
-      app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-      android:id="@+id/audio_language_icon"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:contentDescription="@string/audio_language_icon_content_description"
-      android:gravity="center"
-      android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
-      android:padding="12dp"
-      app:srcCompat="@drawable/ic_audio_lang_24px"
-      app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/audio_bar_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/audio_background"
+      android:elevation="8dp"
+      android:minHeight="48dp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <ImageView
+        android:id="@+id/play_pause_audio_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:clickable="@{viewModel.playStatusLiveData != UiAudioPlayStatus.LOADING}"
+        android:contentDescription="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @string/audio_pause_description : @string/audio_play_description}"
+        android:onClick="@{(v) -> viewModel.togglePlayPause(viewModel.playStatusLiveData)}"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@{viewModel.playStatusLiveData == UiAudioPlayStatus.PLAYING ? @drawable/ic_pause_circle_filled_white_24dp : @drawable/ic_play_circle_filled_white_24dp}"
+        app:tint="@color/component_color_audio_fragment_icon_color" />
+
+      <SeekBar
+        android:id="@+id/audio_progress_seek_bar"
+        style="@style/AudioSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="4dp"
+        android:contentDescription="@string/audio_player_seekbar_content_description"
+        android:max="@{viewModel.durationLiveData}"
+        android:maxHeight="4dp"
+        android:minWidth="180dp"
+        android:minHeight="4dp"
+        android:progress="@{audioFragment.userIsSeeking ? audioFragment.userPosition : viewModel.positionLiveData}"
+        android:progressDrawable="@drawable/audio_seekbar_background"
+        android:splitTrack="false"
+        android:thumb="@drawable/seekbar_thumb"
+        android:thumbOffset="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/audio_language_icon"
+        app:layout_constraintStart_toEndOf="@+id/play_pause_audio_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <ImageView
+        android:id="@+id/audio_language_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/audio_language_icon_content_description"
+        android:gravity="center"
+        android:onClick="@{(v) -> audioFragment.languageSelectionClicked()}"
+        android:padding="12dp"
+        app:tint="@color/component_color_audio_fragment_icon_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_audio_lang_24px" />
+
+      <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/audio_bar_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="play_pause_audio_icon,audio_progress_seek_bar,audio_language_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:elevation="4dp"
+      android:background="@drawable/audio_language_availability_background"
+      android:paddingBottom="4dp"
+      android:clipToPadding="false"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/audio_bar_container">
+
+      <TextView
+        android:id="@+id/language_unavailable_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:paddingBottom="4dp"
+        android:text="@{viewModel.computeAudioUnavailabilityString(viewModel.selectedLanguageName)}"
+        android:visibility="@{viewModel.selectedLanguageUnavailable ? View.VISIBLE : View.GONE}" />
+    </FrameLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

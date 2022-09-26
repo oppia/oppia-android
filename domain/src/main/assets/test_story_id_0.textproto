@@ -1,5 +1,4 @@
 story_id: "test_story_id_0"
-story_name: "First Story"
 story_thumbnail {
   background_color_rgb: 11761905
 }
@@ -8,21 +7,78 @@ chapters {
   chapter_thumbnail {
     background_color_rgb: 14061432
   }
-  title: "Prototype Exploration"
-  description: "This is the outline/summary for the first exploration of the story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter."
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Prototype Exploration"
+    content_id: "title"
+  }
+  translatable_description {
+    html: "This is the outline/summary for the first exploration of the story. It is very long but it has to be fully visible. You wil be learning about Oppia interactions. There is no second story to follow-up, but there is a second chapter."
+    content_id: "description"
+  }
 }
 chapters {
   exploration_id: "13"
   chapter_thumbnail {
     background_color_rgb: 14061432
   }
-  title: "Image Region Selection Exploration"
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Image Region Selection Exploration"
+    content_id: "title"
+  }
+  translatable_description {
+    content_id: "description"
+  }
 }
 chapters {
   exploration_id: "test_exp_id_5"
   chapter_thumbnail {
     background_color_rgb: 14061432
   }
-  title: "Math Expressions"
-  description: "Test the different math expression/equation interactions."
+  written_translations {
+    key: "title"
+    value {
+    }
+  }
+  written_translations {
+    key: "description"
+    value {
+    }
+  }
+  translatable_title {
+    html: "Math Expressions"
+    content_id: "title"
+  }
+  translatable_description {
+    html: "Test the different math expression/equation interactions."
+    content_id: "description"
+  }
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+translatable_story_name {
+  html: "First Story"
+  content_id: "title"
 }

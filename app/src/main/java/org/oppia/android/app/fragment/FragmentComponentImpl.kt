@@ -8,7 +8,6 @@ import org.oppia.android.app.administratorcontrols.LogoutDialogFragment
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
-import org.oppia.android.app.deprecation.AutomaticAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
@@ -30,6 +29,9 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.mydownloads.DownloadsTabFragment
 import org.oppia.android.app.mydownloads.MyDownloadsFragment
 import org.oppia.android.app.mydownloads.UpdatesTabFragment
+import org.oppia.android.app.notice.AutomaticAppDeprecationNoticeDialogFragment
+import org.oppia.android.app.notice.BetaNoticeDialogFragment
+import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.onboarding.OnboardingFragment
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListFragment
 import org.oppia.android.app.options.AppLanguageFragment
@@ -47,6 +49,7 @@ import org.oppia.android.app.player.state.itemviewmodel.InteractionViewModelModu
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.StopExplorationDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
@@ -105,6 +108,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
   fun inject(autoAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
+  fun inject(betaNoticeDialogFragment: BetaNoticeDialogFragment)
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
   fun inject(conceptCardFragment: ConceptCardFragment)
@@ -116,6 +120,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
+  fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
   fun inject(helpFragment: HelpFragment)
   fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
   fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
@@ -135,6 +140,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(onboardingFragment: OnboardingFragment)
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
   fun inject(optionFragment: OptionsFragment)
+  fun inject(policiesFragment: PoliciesFragment)
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
   fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)

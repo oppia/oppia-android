@@ -1,0 +1,124 @@
+"""
+Tests for logging utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "EventBundleCreatorTest",
+    srcs = ["EventBundleCreatorTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.EventBundleCreatorTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
+    ],
+)
+
+oppia_android_test(
+    name = "EventLoggingConfigurationModuleTest",
+    srcs = ["EventLoggingConfigurationModuleTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.EventLoggingConfigurationModuleTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
+    ],
+)
+
+oppia_android_test(
+    name = "KenyaAlphaEventBundleCreatorTest",
+    srcs = ["KenyaAlphaEventBundleCreatorTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.KenyaAlphaEventBundleCreatorTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+        "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
+    ],
+)
+
+oppia_android_test(
+    name = "KenyaAlphaEventLoggingConfigurationModuleTest",
+    srcs = ["KenyaAlphaEventLoggingConfigurationModuleTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.KenyaAlphaEventLoggingConfigurationModuleTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:androidx_test_ext_truth",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:kenya_alpha_event_logging_configuration_module",
+    ],
+)
+
+oppia_android_test(
+    name = "StandardEventTypeToHumanReadableNameConverterImplTest",
+    srcs = ["StandardEventTypeToHumanReadableNameConverterImplTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.StandardEventTypeToHumanReadableNameConverterImplTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging:standard_event_logging_configuration_module",
+    ],
+)
+
+oppia_android_test(
+    name = "SyncStatusManagerImplTest",
+    srcs = ["SyncStatusManagerImplTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.SyncStatusManagerImplTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        ":dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+    ],
+)
+
+dagger_rules()

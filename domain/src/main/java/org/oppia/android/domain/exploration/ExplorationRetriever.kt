@@ -3,6 +3,7 @@ package org.oppia.android.domain.exploration
 import org.json.JSONObject
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.StateRetriever
 import org.oppia.android.domain.util.getStringFromObject
@@ -39,10 +40,20 @@ class ExplorationRetriever @Inject constructor(
     val innerExplorationObject = explorationObject.getJSONObject("exploration")
     return Exploration.newBuilder()
       .setId(explorationObject.getStringFromObject("exploration_id"))
-      .setTitle(innerExplorationObject.getStringFromObject("title"))
+      .setTranslatableTitle(
+        SubtitledHtml.newBuilder().apply {
+          contentId = "title"
+          html = innerExplorationObject.getStringFromObject("title")
+        }.build()
+      )
       .setLanguageCode(innerExplorationObject.getStringFromObject("language_code"))
       .setInitStateName(innerExplorationObject.getStringFromObject("init_state_name"))
-      .setObjective(innerExplorationObject.getStringFromObject("objective"))
+      .setDescription(
+        SubtitledHtml.newBuilder().apply {
+          contentId = "description"
+          html = innerExplorationObject.getStringFromObject("objective")
+        }.build()
+      )
       .putAllStates(createStatesFromJsonObject(innerExplorationObject.getJSONObject("states")))
       .setVersion(explorationObject.getInt("version"))
       .build()
