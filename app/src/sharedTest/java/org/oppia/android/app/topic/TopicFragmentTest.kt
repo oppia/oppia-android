@@ -139,7 +139,7 @@ class TopicFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @field: [Inject EnableExtraTopicTabsUi]
+  @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
