@@ -7,7 +7,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -50,6 +49,6 @@ class PoliciesFragmentTestActivity : InjectableAppCompatActivity(), RouteToPolic
   }
 
   override fun onRouteToPolicies(policyPage: PolicyPage) {
-    startActivity(PoliciesActivity.createPoliciesActivityIntent(this, policyPage))
+    startActivity(createPoliciesFragmentTestActivity(this, policyPage))
   }
 }

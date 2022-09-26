@@ -18,8 +18,12 @@ import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.BundleMatchers
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtras
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -28,7 +32,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -59,6 +63,7 @@ import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
+import org.oppia.android.app.testing.PoliciesFragmentTestActivity.Companion.createPoliciesFragmentTestActivity
 import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -184,7 +189,6 @@ class PoliciesFragmentTest {
   @After
   fun tearDown() {
     Intents.release()
-
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
@@ -254,7 +258,7 @@ class PoliciesFragmentTest {
         Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
-        Intents.intended(expectingIntent)
+        intended(expectingIntent)
       }
     }
   }
@@ -275,13 +279,14 @@ class PoliciesFragmentTest {
   @Test
   fun testPoliciesFragment_forTermsOfService_opensPrivacyPolicyPage() {
     launch<PoliciesFragmentTestActivity>(
-      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+      createPoliciesFragmentTestActivity(
         getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
 
+        testCoroutineDispatchers.runCurrent()
         val htmlParser = htmlParserFactory.create(
           policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
           displayLocale = appLanguageLocaleHandler.getDisplayLocale()
@@ -300,27 +305,26 @@ class PoliciesFragmentTest {
         val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
         assertThat(clickableSpans).isNotEmpty()
         // Call each of the spans.
-        clickableSpans.forEach { it.onClick(textView) }
-      }
-      // Verify that the tag listener is called.
-      verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
-        capture(policyTypeCaptor)
-      )
-      assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
-
-      val policiesArguments =
-        PoliciesActivityParams
-          .newBuilder()
-          .setPolicyPage(PolicyPage.PRIVACY_POLICY)
-          .build()
-
-      Intents.intended(IntentMatchers.hasComponent(PoliciesActivity::class.java.name))
-      IntentMatchers.hasExtras(
-        BundleMatchers.hasEntry(
-          Matchers.equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
-          Matchers.equalTo(policiesArguments)
+        clickableSpans[0].onClick(textView)
+        // Verify that the tag listener is called.
+        verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
+          capture(policyTypeCaptor)
         )
-      )
+        assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
+        testCoroutineDispatchers.runCurrent()
+        val policiesArguments =
+          PoliciesActivityParams
+            .newBuilder()
+            .setPolicyPage(PolicyPage.PRIVACY_POLICY)
+            .build()
+      intended(hasComponent(hasClassName(PoliciesActivity::class.java.getName())))
+        hasExtras(
+          hasEntry(
+            equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
+            equalTo(policiesArguments)
+          )
+        )
+      }
     }
   }
 
@@ -366,7 +370,7 @@ class PoliciesFragmentTest {
         Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
         onView(withId(R.id.policy_web_link_text_view))
           .perform(openLinkWithText("this page"))
-        Intents.intended(expectingIntent)
+        intended(expectingIntent)
       }
     }
   }
