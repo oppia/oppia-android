@@ -300,7 +300,7 @@
   <!-- Profile Rename Activity -->
   <color name="component_color_profile_rename_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_start_button_transparent_background_stroke_color">@color/color_palette_save_button_border_color</color>
-  <!-- Profile Reset Pin Fragment -->
+  <!-- Profile Reset Pin Activity -->
   <color name="component_color_profile_reset_pin_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_profile_reset_pin_activity_enter_pin_background_color">@color/color_palette_container_background_color</color>
   <color name="component_color_profile_reset_pin_activity_header_text_color">@color/color_palette_highlighted_text_color</color>
