@@ -3,24 +3,30 @@ package org.oppia.android.app.testing
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
+import org.oppia.android.app.utility.OnClickableAreaClickedListener
+import org.oppia.android.databinding.ImageRegionSelectionTestFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [ImageRegionSelectionTestActivity] */
 class ImageRegionSelectionTestFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity
+  private val fragment: Fragment
 ) {
-
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val view = inflater.inflate(R.layout.image_region_selection_test_fragment, container, false)
+    val view =
+      ImageRegionSelectionTestFragmentBinding.inflate(
+        inflater, container, /* attachToRoot= */ false
+      ).root
     with(view) {
       val clickableAreas: List<LabeledRegion> = getClickableAreas()
-      view.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-        .setClickableAreas(clickableAreas)
+      view.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view).apply {
+        setClickableAreas(clickableAreas)
+        setOnRegionClicked(fragment as OnClickableAreaClickedListener)
+      }
     }
     return view
   }
