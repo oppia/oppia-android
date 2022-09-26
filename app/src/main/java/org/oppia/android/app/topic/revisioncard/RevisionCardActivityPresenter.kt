@@ -38,7 +38,12 @@ class RevisionCardActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private var subtopicId: Int = 0
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, subtopicId: Int, subtopicListSize: Int) {
+  fun handleOnCreate(
+    internalProfileId: Int,
+    topicId: String,
+    subtopicId: Int,
+    subtopicListSize: Int
+  ) {
     val binding = DataBindingUtil.setContentView<RevisionCardActivityBinding>(
       activity,
       R.layout.revision_card_activity

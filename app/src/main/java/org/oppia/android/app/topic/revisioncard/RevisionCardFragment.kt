@@ -27,15 +27,15 @@ class RevisionCardFragment : InjectableDialogFragment() {
      */
     fun newInstance(topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int):
       RevisionCardFragment {
-      return RevisionCardFragment().apply {
-        arguments = Bundle().apply {
-          putString(TOPIC_ID_ARGUMENT_KEY, topicId)
-          putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
-          putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
+        return RevisionCardFragment().apply {
+          arguments = Bundle().apply {
+            putString(TOPIC_ID_ARGUMENT_KEY, topicId)
+            putInt(SUBTOPIC_ID_ARGUMENT_KEY, subtopicId)
+            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+            putInt(SUBTOPIC_LIST_SIZE_ARGUMENT_KEY, subtopicListSize)
+          }
         }
       }
-    }
   }
 
   @Inject
