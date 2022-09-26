@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
-import java.io.BufferedReader
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
@@ -15,11 +14,12 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.util.system.OppiaClock
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.system.OppiaClock
 
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton

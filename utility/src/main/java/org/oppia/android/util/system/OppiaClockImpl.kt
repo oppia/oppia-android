@@ -7,6 +7,5 @@ import javax.inject.Inject
 class OppiaClockImpl @Inject constructor() : OppiaClock {
   override fun getCurrentTimeMs(): Long = System.currentTimeMillis()
 
-  override fun getElapsedRealTime(): Long =  SystemClock.elapsedRealtime()
-
+  override fun getElapsedRealTime(): Long = SystemClock.elapsedRealtime()
 }
