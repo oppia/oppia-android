@@ -35,4 +35,6 @@ interface PerformanceMetricsAssessor {
    * capacity of the device.
    */
   fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier
+
+  fun getCpuUsage(): Double
 }

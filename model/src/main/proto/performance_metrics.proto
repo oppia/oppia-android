@@ -102,7 +102,7 @@ message OppiaMetricLog {
   message CpuUsageMetric {
     // Amount of cpu used by the application.
     // TODO(#4466): Add correct proto definitions and comments for cpu usage metric logging.
-    int64 cpu_usage_metric = 1;
+    double cpu_usage_metric = 1;
   }
 
   // Supported priority of events for performance metric logging.

@@ -54,7 +54,7 @@ class ActivityLifecycleObserver @Inject constructor(
   override fun onCreate() {
     appStartTimeMillis = oppiaClock.getCurrentTimeMs()
     application.registerActivityLifecycleCallbacks(this)
-
+    performanceMetricsLogger.logCpuUsage(currentScreen)
     CoroutineScope(backgroundDispatcher).launch {
       performanceMetricsLogger.logApkSize(currentScreen)
       performanceMetricsLogger.logStorageUsage(currentScreen)
@@ -78,6 +78,7 @@ class ActivityLifecycleObserver @Inject constructor(
       )
       isStartupLatencyLogged = true
     }
+    performanceMetricsLogger.logCpuUsage(currentScreen)
     performanceMetricsLogger.logMemoryUsage(currentScreen)
   }
 
