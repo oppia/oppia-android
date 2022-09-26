@@ -17,7 +17,10 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
-import org.oppia.android.databinding.LessonsChapterViewBinding
+import org.oppia.android.databinding.LessonsCompletedChapterViewBinding
+import org.oppia.android.databinding.LessonsInProgressChapterViewBinding
+import org.oppia.android.databinding.LessonsLockedChapterViewBinding
+import org.oppia.android.databinding.LessonsNotStartedChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
 import org.oppia.android.databinding.TopicLessonsTitleBinding
