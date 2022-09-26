@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
-import android.util.Log
 import java.io.BufferedReader
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
@@ -81,8 +80,6 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   }
 
   override fun getCpuUsage(): Double {
-    val numOfCores = Os.sysconf(OsConstants._SC_NPROCESSORS_CONF)
-    Log.i("CPU Usage", "numOfCores = $numOfCores")
     val clockSpeedHz = Os.sysconf(OsConstants._SC_CLK_TCK)
     val uptimeSec = oppiaClock.getElapsedRealTime() / 1000.0
     val cpuTimeSec = Process.getElapsedCpuTime() / 1000.0
@@ -96,10 +93,6 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
       val startTime = stats[21].toLong()
       uptimeSec - (startTime / clockSpeedHz)
     }
-    val avgUsagePercent = 100 * (cpuTimeSec / processTimeSec)
-    Log.i("CPU Usage", "cpuTimeSec = $cpuTimeSec")
-    Log.i("CPU Usage", "processTimeSec = $processTimeSec")
-    Log.i("CPU Usage", "AvgUsagePercent = $avgUsagePercent")
-    return avgUsagePercent
+    return 100 * (cpuTimeSec / processTimeSec)
   }
 }
