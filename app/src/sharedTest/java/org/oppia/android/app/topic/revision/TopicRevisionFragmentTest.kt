@@ -107,6 +107,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -128,7 +130,8 @@ class TopicRevisionFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  var enableExtraTopicTabsUi: Boolean = false
+  @field:[Inject EnableExtraTopicTabsUi]
+  lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val subtopicThumbnail = R.drawable.topic_fractions_01
   private val internalProfileId = 0
@@ -136,7 +139,7 @@ class TopicRevisionFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    enableExtraTopicTabsUi()
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -145,11 +148,6 @@ class TopicRevisionFragmentTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-  }
-
-  private fun enableExtraTopicTabsUi() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    enableExtraTopicTabsUi = true
   }
 
   private fun setUpTestApplicationComponent() {
@@ -292,7 +290,7 @@ class TopicRevisionFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = 3,
-            enableExtraTopicTabsUi = enableExtraTopicTabsUi
+            enableExtraTopicTabsUi = enableExtraTopicTabsUi.value
           ).name
         ),
         isDescendantOfA(withId(R.id.topic_tabs_container))

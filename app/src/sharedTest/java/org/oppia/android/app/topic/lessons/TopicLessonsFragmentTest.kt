@@ -133,6 +133,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -163,7 +165,8 @@ class TopicLessonsFragmentTest {
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
-  var enableExtraTopicTabsUiValue: Boolean = false
+  @field:[Inject EnableExtraTopicTabsUi]
+  lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
 
@@ -171,7 +174,7 @@ class TopicLessonsFragmentTest {
 
   @Before
   fun setUp() {
-    enableExtraTopicTabs()
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -187,11 +190,6 @@ class TopicLessonsFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun enableExtraTopicTabs() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
-    enableExtraTopicTabsUiValue = true
   }
 
   @Test
@@ -965,7 +963,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 1, enableExtraTopicTabsUiValue).name),
+        withText(TopicTab.getTabForPosition(position = 1, enableExtraTopicTabsUiValue.value).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())

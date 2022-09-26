@@ -107,6 +107,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -137,7 +139,8 @@ class TopicFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private var enableExtraTopicTabsUi: Boolean? = null
+  @field: [Inject EnableExtraTopicTabsUi]
+  lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
 
@@ -165,7 +168,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
-    initializeApplicationComponent()
+    initializeApplicationComponent(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -184,7 +187,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
-    initializeApplicationComponent()
+    initializeApplicationComponent(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -202,7 +205,7 @@ class TopicFragmentTest {
 
   @Test
   fun testTopicFragment_clickOnToolbarNavigationButton_closeActivity() {
-    initializeApplicationComponent()
+    initializeApplicationComponent(false)
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         internalProfileId,
@@ -239,7 +242,7 @@ class TopicFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = INFO_TAB_POSITION,
-            enableExtraTopicTabsUi!!
+            enableExtraTopicTabsUi.value
           ).name
         )
       ).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
@@ -309,7 +312,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableExtraTabsUi = true)
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
-        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi!!)
+        TopicTab.getTabForPosition(position = PRACTICE_TAB_POSITION, enableExtraTopicTabsUi.value)
       onView(withText(practiceTab.name)).check(
         matches(
           isDescendantOfA(
@@ -607,7 +610,7 @@ class TopicFragmentTest {
   private fun clickTabAtPosition(position: Int) {
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi!!).name),
+        withText(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -617,7 +620,7 @@ class TopicFragmentTest {
     onView(withId(R.id.topic_tabs_container)).check(
       matches(
         matchCurrentTabTitle(
-          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi!!).name
+          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value).name
         )
       )
     )
@@ -647,9 +650,8 @@ class TopicFragmentTest {
     )
   }
 
-  private fun initializeApplicationComponent(enableExtraTabsUi: Boolean = false) {
+  private fun initializeApplicationComponent(enableExtraTabsUi: Boolean) {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(enableExtraTabsUi)
-    enableExtraTopicTabsUi = enableExtraTabsUi
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
