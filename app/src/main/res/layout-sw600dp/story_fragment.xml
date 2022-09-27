@@ -41,15 +41,16 @@
           android:id="@+id/story_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:animationSpeed="10"
-          app:animationDelay="500">
-        <TextView
-          android:id="@+id/story_toolbar_title"
-          style="@style/MarqueeToolbarTitleTextView"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="20dp"
-          android:text="@{viewModel.storyNameLiveData}" />
+          app:animationDelay="500"
+          app:animationSpeed="10">
+
+          <TextView
+            android:id="@+id/story_toolbar_title"
+            style="@style/MarqueeToolbarTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@{viewModel.storyNameLiveData}" />
         </asia.ivity.android.marqueeview.MarqueeView>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -70,9 +71,9 @@
         android:background="@color/component_color_story_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/story_fragment_padding_bottom"
         android:paddingStart="64dp"
         android:paddingEnd="64dp"
+        android:paddingBottom="@dimen/story_fragment_padding_bottom"
         android:scrollbars="none"
         app:data="@{viewModel.storyChapterLiveData}"
         tools:listitem="@layout/story_chapter_view" />

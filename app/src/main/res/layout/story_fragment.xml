@@ -40,17 +40,16 @@
           android:id="@+id/story_marquee_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:animationSpeed="10"
-          app:animationDelay="500">
+          app:animationDelay="500"
+          app:animationSpeed="10">
 
-        <TextView
-          android:id="@+id/story_toolbar_title"
-          style="@style/MarqueeToolbarTitleTextView"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="20dp"
-          android:text="@{viewModel.storyNameLiveData}"/>
-
+          <TextView
+            android:id="@+id/story_toolbar_title"
+            style="@style/MarqueeToolbarTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@{viewModel.storyNameLiveData}" />
         </asia.ivity.android.marqueeview.MarqueeView>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
