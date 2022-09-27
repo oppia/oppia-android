@@ -17,9 +17,12 @@ class ActivityRouterModule {
   @IntoMap
   @RouteKey(DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS)
   fun provideRecentlyPlayedActivityRoute(): Route {
-    return object: Route {
-      override fun <T: MessageLite> createIntent(context: Context, params: T): Intent {
-        return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(context, params as RecentlyPlayedActivityParams)
+    return object : Route {
+      override fun <T : MessageLite> createIntent(context: Context, params: T): Intent {
+        return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
+          context,
+          params as RecentlyPlayedActivityParams
+        )
       }
     }
   }

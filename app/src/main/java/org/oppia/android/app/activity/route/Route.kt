@@ -5,5 +5,5 @@ import android.content.Intent
 import com.google.protobuf.MessageLite
 
 interface Route {
-  fun <T: MessageLite> createIntent(context: Context, params: T): Intent
+  fun <T : MessageLite> createIntent(context: Context, params: T): Intent
 }

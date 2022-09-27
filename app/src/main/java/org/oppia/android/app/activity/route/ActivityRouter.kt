@@ -1,9 +1,7 @@
 package org.oppia.android.app.activity.route
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.util.logging.ConsoleLogger
 import javax.inject.Inject
 
