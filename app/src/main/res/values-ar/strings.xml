@@ -218,8 +218,8 @@
   <string name="add_profile_pin_info">مع وجود رقم التعريف الشخصي، لا يمكن لأي شخص آخر الوصول إلى الملف الشخصي بخلاف هذا المستخدم.</string>
   <string name="add_profile_error_image_failed_store">فشلنا في حفظ الصورة. برجاء المحاولة مجددًا.</string>
   <string name="add_profile_error_name_not_unique">هذا الاسم مستخدَم بالفعل من قبل ملف شخصي آخر.</string>
-  <string name="add_profile_error_name_empty">من فضلك أدخل اسمًا لهذا الملف الشخصي.</string>
-  <string name="add_profile_error_name_only_letters">يمكن أن يحتوي الاسم على أحرفٍ فقط، جرّب اسمًا آخر؟</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">من فضلك أدخل اسمًا لهذا الملف الشخصي.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">يمكن أن يحتوي الاسم على أحرفٍ فقط، جرّب اسمًا آخر؟</string>
   <string name="add_profile_error_pin_length">رقم التعريف الشخصي يجب أن يتكون من 3 أرقام.</string>
   <string name="add_profile_error_pin_confirm_wrong">برجاء التأكد من تطابق رقمي التعريف الشخصي.</string>
   <string name="add_profile_info_content_description">المزيد من المعلومات عن رقم التعريف الشخصي المكون من 3 أرقام.</string>
@@ -241,15 +241,14 @@
   <string name="pin_password_hello">أهلًا، %s!</string>
   <string name="pin_password_admin_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
   <string name="pin_password_user_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بك.</string>
-  <string name="pin_password_forgot_pin">نسيت رقم التعريف الشخصي الخاص بي.</string>
+  <string name="pin_password_forgot_pin" fuzzy="true">نسيت رقم التعريف الشخصي الخاص بي.</string>
   <string name="pin_password_incorrect_pin">رقم تعريف شخصي غير صحيح.</string>
   <string name="pin_password_show">عرض</string>
   <string name="pin_password_hide">إخفاء</string>
   <string name="pin_password_close">إغلاق</string>
   <string name="pin_password_success">تم تغيير رقم التعريف الشخصي بنجاح</string>
   <string name="pin_password_forgot_title">نسيت رقم التعريف الشخصي؟</string>
-  <string name="pin_password_forgot_message">لإعادة ضبط رقم التعريف الشخصي PIN الخاص بك، إحذف تطبيق %s وأعد تثبيته مرة أخرى.\n\nضع في اعتبارك أنه إذا لم يكن الجهاز متصلاً بالإنترنت ، فقد تفقد تقدم المستخدم في حسابات متعددة.</string>
-  <string name="pin_password_play_store">الذهاب إلى متجر بلاي (Play Store).</string>
+  <string name="admin_forgot_pin_message" fuzzy="true">لإعادة ضبط رقم التعريف الشخصي PIN الخاص بك، إحذف تطبيق %s وأعد تثبيته مرة أخرى.\n\nضع في اعتبارك أنه إذا لم يكن الجهاز متصلاً بالإنترنت ، فقد تفقد تقدم المستخدم في حسابات متعددة.</string>
   <string name="show_hide_password_icon">إظهار/إخفاء أيقونة كلمة السر</string>
   <string name="password_shown_icon">أيقونة كلمة المرور ظاهرة.</string>
   <string name="password_hidden_icon">أيقونة كلمة المرور مخفية.</string>
@@ -345,7 +344,7 @@
   <string name="welcome">\"مرحبًا %s\"</string>
   <string name="what_do_you_want_to_learn">ما الذي تريد أن تتعلمه؟</string>
   <string name="great">عظيم</string>
-  <string name="lets_get_started">هيّا نبدأ.</string>
+  <string name="lets_get_started" fuzzy="true">هيّا نبدأ.</string>
   <string name="yes">نعم</string>
   <string name="no">لا...</string>
   <string name="pick_a_different_topic">اختر موضوعًا\nآخرًا.</string>

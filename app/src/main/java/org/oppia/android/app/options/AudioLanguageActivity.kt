@@ -5,72 +5,67 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.AudioLanguageActivityStateBundle
+import org.oppia.android.app.model.ScreenName.AUDIO_LANGUAGE_ACTIVITY
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 /** The activity to change the Default Audio language of the app. */
 class AudioLanguageActivity : InjectableAppCompatActivity() {
-
-  @Inject
-  lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
-  private lateinit var prefKey: String
-  private lateinit var prefSummaryValue: String
+  @Inject lateinit var audioLanguageActivityPresenter: AudioLanguageActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    prefKey = checkNotNull(intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY)) {
-      "Expected $AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY to be in intent extras."
-    }
-    prefSummaryValue = if (savedInstanceState != null) {
-      savedInstanceState.get(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY) as String
-    } else {
-      checkNotNull(intent.getStringExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY)) {
-        "Expected $AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY to be in intent extras."
-      }
-    }
-    audioLanguageActivityPresenter.handleOnCreate(prefKey, prefSummaryValue)
-  }
-
-  companion object {
-    internal const val AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
-      "AudioLanguageActivity.audio_language_preference_title"
-    const val AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
-      "AudioLanguageActivity.audio_language_preference_summary_value"
-
-    /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
-    fun createAudioLanguageActivityIntent(
-      context: Context,
-      prefKey: String,
-      summaryValue: String?
-    ): Intent {
-      val intent = Intent(context, AudioLanguageActivity::class.java)
-      intent.putExtra(AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY, prefKey)
-      intent.putExtra(AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY, summaryValue)
-      return intent
-    }
-
-    fun getKeyAudioLanguagePreferenceTitle(): String {
-      return AUDIO_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
-    }
-
-    fun getKeyAudioLanguagePreferenceSummaryValue(): String {
-      return AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
-    }
+    audioLanguageActivityPresenter.handleOnCreate(
+      savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams()
+    )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putString(
-      AUDIO_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY,
-      audioLanguageActivityPresenter.getLanguageSelected()
-    )
+    val state = AudioLanguageActivityStateBundle.newBuilder().apply {
+      audioLanguage = audioLanguageActivityPresenter.getLanguageSelected()
+    }.build()
+    outState.putProto(ACTIVITY_SAVED_STATE_KEY, state)
   }
 
-  override fun onBackPressed() {
-    val message = audioLanguageActivityPresenter.getLanguageSelected()
-    val intent = Intent()
-    intent.putExtra(MESSAGE_AUDIO_LANGUAGE_ARGUMENT_KEY, message)
-    setResult(REQUEST_CODE_AUDIO_LANGUAGE, intent)
-    finish()
+  override fun onBackPressed() = audioLanguageActivityPresenter.finishWithResult()
+
+  companion object {
+    private const val ACTIVITY_PARAMS_KEY = "AudioLanguageActivity.params"
+    private const val ACTIVITY_SAVED_STATE_KEY = "AudioLanguageActivity.saved_state"
+
+    /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
+    fun createAudioLanguageActivityIntent(
+      context: Context,
+      audioLanguage: AudioLanguage
+    ): Intent {
+      return Intent(context, AudioLanguageActivity::class.java).apply {
+        val arguments = AudioLanguageActivityParams.newBuilder().apply {
+          this.audioLanguage = audioLanguage
+        }.build()
+        putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
+        decorateWithScreenName(AUDIO_LANGUAGE_ACTIVITY)
+      }
+    }
+
+    private fun Intent.retrieveLanguageFromParams(): AudioLanguage {
+      return getProtoExtra(
+        ACTIVITY_PARAMS_KEY, AudioLanguageActivityParams.getDefaultInstance()
+      ).audioLanguage
+    }
+
+    private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage {
+      return getProto(
+        ACTIVITY_SAVED_STATE_KEY, AudioLanguageActivityStateBundle.getDefaultInstance()
+      ).audioLanguage
+    }
   }
 }

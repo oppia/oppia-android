@@ -4,7 +4,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.android.app.options.LanguageItemViewModel" />
+      type="org.oppia.android.app.options.AudioLanguageItemViewModel" />
   </data>
 
   <LinearLayout
@@ -14,7 +14,7 @@
     android:background="@drawable/general_item_background_border_light"
     android:gravity="center_vertical"
     android:minHeight="48dp"
-    android:onClick="@{() -> viewModel.languageRadioButtonListener.onLanguageSelected(viewModel.language)}"
+    android:onClick="@{() -> viewModel.audioLanguageRadioButtonListener.onLanguageSelected(viewModel.language)}"
     android:importantForAccessibility="yes"
     android:orientation="horizontal">
 
@@ -38,7 +38,7 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
-      android:text="@{viewModel.language}"
+      android:text="@{viewModel.languageDisplayName}"
       android:textColor="@color/component_color_language_items_heading_text_color"
       android:textSize="16sp" />
   </LinearLayout>

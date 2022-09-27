@@ -171,3 +171,10 @@ const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES 
  */
 const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
   1440
+
+/** Qualifier for the feature flag corresponding to enabling the spotlight UI. */
+@Qualifier
+annotation class EnableSpotlightUi
+
+/** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
+const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
