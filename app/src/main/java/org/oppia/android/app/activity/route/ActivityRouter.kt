@@ -13,29 +13,27 @@ import javax.inject.Inject
  */
 class ActivityRouter @Inject constructor(
   private val activity: AppCompatActivity,
+  private val destinationRoutes: Map<DestinationScreen, Route>,
   private val consoleLogger: ConsoleLogger
 ) {
 
   /**  Opens the activity corresponding to the specified [destinationScreen]. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
-    when (destinationScreen.destinationScreenCase) {
-      DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
-        openRecentlyPlayedActivity(destinationScreen.recentlyPlayedActivityParams)
-      }
-      DestinationScreen.DestinationScreenCase.DESTINATIONSCREEN_NOT_SET -> {
-        consoleLogger.w("ActivityRouter", "Destination screen case is not identified.")
+    // TODO: Need to handle error cases properly here.
+    destinationRoutes[destinationScreen.destinationScreenCase].let { route ->
+      when (destinationScreen.destinationScreenCase) {
+        DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
+          activity.startActivity(
+            route?.createIntent(
+              activity,
+              destinationScreen.recentlyPlayedActivityParams
+            )
+          )
+        }
+        DestinationScreen.DestinationScreenCase.DESTINATIONSCREEN_NOT_SET -> {
+          consoleLogger.w("ActivityRouter", "Destination screen case is not identified.")
+        }
       }
     }
-  }
-
-  private fun openRecentlyPlayedActivity(
-    recentlyPlayedActivityParams: RecentlyPlayedActivityParams
-  ) {
-    activity.startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        activity,
-        recentlyPlayedActivityParams
-      )
-    )
   }
 }
