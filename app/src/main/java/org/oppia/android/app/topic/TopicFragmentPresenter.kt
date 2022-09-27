@@ -14,6 +14,8 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
@@ -23,7 +25,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
-  @EnablePracticeTab private val enablePracticeTab: Boolean,
+  @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var tabLayout: TabLayout
@@ -69,21 +71,29 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun setCurrentTab(tab: TopicTab) {
-    viewPager.setCurrentItem(tab.ordinal, true)
+    viewPager.setCurrentItem(computeTabPosition(tab), true)
     logTopicEvents(tab)
+  }
+
+  private fun computeTabPosition(tab: TopicTab): Int {
+    return if (enableExtraTopicTabsUi.value) tab.positionWithFourTabs else tab.positionWithTwoTabs
   }
 
   private fun setUpViewPager(viewPager2: ViewPager2, topicId: String, isConfigChanged: Boolean) {
     val adapter =
-      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enablePracticeTab)
+      ViewPagerAdapter(fragment, internalProfileId, topicId, storyId, enableExtraTopicTabsUi.value)
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      val topicTab = TopicTab.getTabForPosition(position, enablePracticeTab)
+      val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
-      setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      if (enableExtraTopicTabsUi.value) {
+        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+      } else {
+        setCurrentTab(TopicTab.LESSONS)
+      }
     }
   }
 
