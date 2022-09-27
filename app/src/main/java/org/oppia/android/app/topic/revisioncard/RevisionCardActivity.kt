@@ -11,8 +11,8 @@ import androidx.core.content.res.ResourcesCompat
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
-import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
+import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
