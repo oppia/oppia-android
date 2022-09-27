@@ -194,6 +194,7 @@ dependencies {
       'androidx.test.ext:truth:1.4.0',
       'androidx.work:work-testing:2.4.0',
       'com.github.bumptech.glide:mocks:4.11.0',
+
       'com.google.truth:truth:1.1.3',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',
       'org.robolectric:annotations:4.5',
@@ -210,6 +211,7 @@ dependencies {
       'androidx.test.espresso:espresso-intents:3.1.0',
       'androidx.test.ext:junit:1.1.1',
       'com.github.bumptech.glide:mocks:4.11.0',
+      'com.github.oppia:Android-MarqueeView:a935a78c88',
       'com.google.truth:truth:1.1.3',
       'androidx.work:work-testing:2.4.0',
       'com.google.truth.extensions:truth-liteproto-extension:1.1.3',

@@ -23,6 +23,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -30,11 +31,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -232,10 +235,14 @@ class StoryFragmentTest {
 
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
+    val storyMarqueeView: MarqueeView =
+      activityTestRule.activity.findViewById(R.id.story_marquee_view)
+
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+    assertThat(storyMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch
@@ -247,9 +254,12 @@ class StoryFragmentTest {
     val storyToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.story_toolbar_title)
     ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+    val storyMarqueeView: MarqueeView =
+      activityTestRule.activity.findViewById(R.id.story_marquee_view)
 
     onView(withId(R.id.story_toolbar_title)).perform(click())
     assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+    assertThat(storyMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test
