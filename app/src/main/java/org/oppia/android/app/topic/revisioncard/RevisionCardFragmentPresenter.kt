@@ -109,7 +109,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
         )
       }
     }
-    if (subtopicId == subtopicListSize - 1) {
+    if (subtopicId == subtopicListSize) {
       binding.nextNavigationCard.visibility = View.INVISIBLE
     } else {
       getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->

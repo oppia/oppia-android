@@ -130,11 +130,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 0
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 1
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 2
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 3
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 3
+const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 4
 const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 
 /** Tests for [RevisionCardActivity]. */
@@ -294,6 +295,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId0_checkOnlyPreviousNavCardIsNotDisplayed() {
     launch<RevisionCardActivity>(
@@ -312,6 +314,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId1_checkPreviousAndNextNavCardsDisplayed() {
     launch<RevisionCardActivity>(
@@ -330,6 +333,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId3_checkOnlyNextNavCardIsNotDisplayed() {
     launch<RevisionCardActivity>(
@@ -349,6 +353,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickPrevNavCard_opensRevisionCardActivity() {
     launch<RevisionCardActivity>(
@@ -361,7 +366,6 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))
@@ -369,6 +373,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickNextNavCard_opensRevisionCardActivity() {
     launch<RevisionCardActivity>(
