@@ -145,6 +145,7 @@ git_repository(
     name = "marqueeview",
     commit = "a935a78c88a01958716396e6f2cb4abf4559eccc",
     remote = "https://github.com/oppia/Android-MarqueeView",
+    shallow_since = "1663393399 -0400",
 )
 
 bind(
