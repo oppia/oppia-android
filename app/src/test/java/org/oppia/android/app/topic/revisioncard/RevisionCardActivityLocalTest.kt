@@ -112,7 +112,7 @@ class RevisionCardActivityLocalTest {
         internalProfileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        subtopicListSize
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       val event = fakeEventLogger.getMostRecentEvent()
