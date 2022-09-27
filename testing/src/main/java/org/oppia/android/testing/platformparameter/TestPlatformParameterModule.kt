@@ -34,6 +34,7 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -170,7 +171,7 @@ class TestPlatformParameterModule {
   }
 
   @Provides
-  @EnableLanguageSelectionUi
+  @EnableContinueButtonAnimation
   fun provideEnableContinueButtonAnimation(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
       enableContinueButtonAnimation
