@@ -2,7 +2,6 @@ package org.oppia.android.app.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -66,11 +65,11 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   override fun onAttachedToWindow() {
-      super.onAttachedToWindow()
+    super.onAttachedToWindow()
 
-      val viewComponentFactory =
-        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-      viewComponent.inject(this)
+    val viewComponentFactory =
+      FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+    viewComponent.inject(this)
   }
 }
