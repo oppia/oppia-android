@@ -281,7 +281,11 @@
   <color name="component_color_audio_fragment_seekbar_progress_color">@color/color_palette_icon_background_secondary_color</color>
   <color name="component_color_audio_fragment_seekbar_color">@color/color_palette_seekbar_progress_background_color</color>
   <!-- Topic Revision Fragment -->
-  <color name="component_color_topic_revision_fragment_background_color">@color/color_palette_topic_revision_background_color</color>
+  <color name="component_color_topic_revision_fragment_background_color">@color/color_palette_topic_fragments_background_color</color>
+  <!-- Topic Practice Fragment -->
+  <color name="component_color_topic_practice_fragment_background_color">@color/color_palette_topic_fragments_background_color</color>
+  <color name="component_color_topic_practice_header_view_description_text_color">@color/color_palette_topic_practice_header_description_color</color>
+  <color name="component_color_topic_practice_subtopic_checkbox_text_color">@color/color_palette_primary_container_background_color</color>
   <!-- Profile Edit Activity -->
   <color name="component_color_profile_edit_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_profile_edit_activity_profile_view_background_color">@color/color_palette_container_background_color</color>
