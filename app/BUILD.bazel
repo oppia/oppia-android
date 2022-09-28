@@ -394,6 +394,7 @@ VIEW_MODELS = [
 
 # keep sorted
 VIEWS_WITH_RESOURCE_IMPORTS = [
+    "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
