@@ -70,7 +70,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridC
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -912,6 +911,26 @@ class HomeActivityTest {
         targetViewId = R.id.topic_name_text_view,
         stringToMatch = "Fractions"
       )
+    }
+  }
+
+  @Test
+  fun testHomeActivity_firstTestTopic_topicSummary_opensTopicActivityThroughPlayIntent() {
+    logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(5)
+      onView(
+        atPositionOnView(
+          R.id.home_recycler_view,
+          5,
+          R.id.topic_name_text_view
+        )
+      ).check(matches(withText(containsString("Fractions")))).perform(click())
+      intended(hasComponent(TopicActivity::class.java.name))
+      intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
+      intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
+      intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
     }
   }
 
@@ -1814,7 +1833,7 @@ class HomeActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
