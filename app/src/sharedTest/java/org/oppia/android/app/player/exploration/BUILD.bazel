@@ -1,5 +1,5 @@
 """
-Tests for notices shown in the app.
+Tests for exploration player.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
