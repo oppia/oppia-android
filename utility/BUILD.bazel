@@ -140,6 +140,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/parser/html:tag_handlers",
     "//utility/src/main/java/org/oppia/android/util/parser/image:glide_image_loader",
     "//utility/src/main/java/org/oppia/android/util/parser/image:url_image_parser",
+    "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &

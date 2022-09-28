@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.translation.TranslationController
 
 // TODO(#297): Add download status information to promoted-story-card.
 
@@ -16,8 +17,25 @@ class OngoingStoryViewModel(
   val entityType: String,
   private val ongoingStoryClickListener: OngoingStoryClickListener,
   private val position: Int,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  translationController: TranslationController
 ) : RecentlyPlayedItemViewModel() {
+  val storyTitle by lazy {
+    translationController.extractString(
+      ongoingStory.storyTitle, ongoingStory.storyWrittenTranslationContext
+    )
+  }
+  val topicTitle by lazy {
+    translationController.extractString(
+      ongoingStory.topicTitle, ongoingStory.topicWrittenTranslationContext
+    )
+  }
+  val nextChapterTitle by lazy {
+    translationController.extractString(
+      ongoingStory.nextChapterTitle, ongoingStory.nextChapterWrittenTranslationContext
+    )
+  }
+
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
   }
@@ -102,7 +120,7 @@ class OngoingStoryViewModel(
 
   fun computeLessonThumbnailContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.lesson_thumbnail_content_description, ongoingStory.nextChapterName
+      R.string.lesson_thumbnail_content_description, nextChapterTitle
     )
   }
 }

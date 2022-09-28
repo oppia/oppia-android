@@ -26,6 +26,7 @@ import org.oppia.android.databinding.WelcomeBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
@@ -41,9 +42,10 @@ class HomeFragmentPresenter @Inject constructor(
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val dateTimeUtil: DateTimeUtil
+  private val dateTimeUtil: DateTimeUtil,
+  private val translationController: TranslationController
 ) {
-  private val routeToTopicListener = activity as RouteToTopicListener
+  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
   private var internalProfileId: Int = -1
 
@@ -65,7 +67,8 @@ class HomeFragmentPresenter @Inject constructor(
       topicEntityType,
       storyEntityType,
       resourceHandler,
-      dateTimeUtil
+      dateTimeUtil,
+      translationController
     )
 
     val homeAdapter = createRecyclerViewAdapter()
@@ -146,7 +149,11 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicListener.routeToTopic(internalProfileId, topicSummary.topicId)
+    routeToTopicPlayStoryListener.routeToTopicPlayStory(
+      internalProfileId,
+      topicSummary.topicId,
+      topicSummary.firstStoryId
+    )
   }
 
   private fun logHomeActivityEvent() {

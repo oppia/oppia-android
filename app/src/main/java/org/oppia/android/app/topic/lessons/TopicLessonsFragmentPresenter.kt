@@ -10,13 +10,17 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterSummary
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
-import org.oppia.android.databinding.LessonsChapterViewBinding
+import org.oppia.android.databinding.LessonsCompletedChapterViewBinding
+import org.oppia.android.databinding.LessonsInProgressChapterViewBinding
+import org.oppia.android.databinding.LessonsLockedChapterViewBinding
+import org.oppia.android.databinding.LessonsNotStartedChapterViewBinding
 import org.oppia.android.databinding.TopicLessonsFragmentBinding
 import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
 import org.oppia.android.databinding.TopicLessonsTitleBinding
@@ -35,18 +39,14 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
-  private val explorationCheckpointController: ExplorationCheckpointController
+  private val explorationCheckpointController: ExplorationCheckpointController,
+  private val topicLessonViewModel: TopicLessonViewModel,
+  private val accessibilityService: AccessibilityService
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToStoryListener = activity as RouteToStoryListener
-
-  @Inject
-  lateinit var topicLessonViewModel: TopicLessonViewModel
-
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
 
   private var currentExpandedChapterListIndex: Int? = null
 
@@ -227,12 +227,50 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<ChapterSummaryViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = LessonsChapterViewBinding::inflate,
-        setViewModel = LessonsChapterViewBinding::setViewModel
-      ).build()
+    return BindableAdapter.MultiTypeBuilder
+      .newBuilder<ChapterSummaryViewModel, ChapterViewType> { viewModel ->
+        when (viewModel.chapterPlayState) {
+          ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> ChapterViewType.CHAPTER_LOCKED
+          ChapterPlayState.COMPLETED -> ChapterViewType.CHAPTER_COMPLETED
+          ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+          ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
+          -> ChapterViewType.CHAPTER_IN_PROGRESS
+          ChapterPlayState.NOT_STARTED -> ChapterViewType.CHAPTER_NOT_STARTED
+          ChapterPlayState.UNRECOGNIZED -> throw IllegalArgumentException("Play state unknown")
+        }
+      }
+      .registerViewDataBinder(
+        viewType = ChapterViewType.CHAPTER_LOCKED,
+        inflateDataBinding = LessonsLockedChapterViewBinding::inflate,
+        setViewModel = LessonsLockedChapterViewBinding::setViewModel,
+        transformViewModel = { it }
+      )
+      .registerViewDataBinder(
+        viewType = ChapterViewType.CHAPTER_COMPLETED,
+        inflateDataBinding = LessonsCompletedChapterViewBinding::inflate,
+        setViewModel = LessonsCompletedChapterViewBinding::setViewModel,
+        transformViewModel = { it }
+      )
+      .registerViewDataBinder(
+        viewType = ChapterViewType.CHAPTER_NOT_STARTED,
+        inflateDataBinding = LessonsNotStartedChapterViewBinding::inflate,
+        setViewModel = LessonsNotStartedChapterViewBinding::setViewModel,
+        transformViewModel = { it }
+      )
+      .registerViewDataBinder(
+        viewType = ChapterViewType.CHAPTER_IN_PROGRESS,
+        inflateDataBinding = LessonsInProgressChapterViewBinding::inflate,
+        setViewModel = LessonsInProgressChapterViewBinding::setViewModel,
+        transformViewModel = { it }
+      )
+      .build()
+  }
+
+  private enum class ChapterViewType {
+    CHAPTER_NOT_STARTED,
+    CHAPTER_COMPLETED,
+    CHAPTER_LOCKED,
+    CHAPTER_IN_PROGRESS
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
@@ -244,6 +282,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
+    val profileId = ProfileId.newBuilder().apply {
+      internalId = internalProfileId
+    }.build()
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -257,10 +298,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       ChapterPlayState.IN_PROGRESS_SAVED -> {
         val explorationCheckpointLiveData =
           explorationCheckpointController.retrieveExplorationCheckpoint(
-            ProfileId.newBuilder().apply {
-              internalId = internalProfileId
-            }.build(),
-            explorationId
+            profileId, explorationId
           ).toLiveData()
         explorationCheckpointLiveData.observe(
           fragment,
@@ -269,17 +307,17 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               if (it is AsyncResult.Success) {
                 explorationCheckpointLiveData.removeObserver(this)
                 routeToResumeLessonListener.routeToResumeLesson(
-                  internalProfileId,
+                  profileId,
                   topicId,
                   storyId,
                   explorationId,
-                  backflowScreen = 0,
+                  parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
                   explorationCheckpoint = it.value
                 )
               } else if (it is AsyncResult.Failure) {
                 explorationCheckpointLiveData.removeObserver(this)
                 playExploration(
-                  internalProfileId,
+                  profileId,
                   topicId,
                   storyId,
                   explorationId,
@@ -293,7 +331,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       }
       ChapterPlayState.IN_PROGRESS_NOT_SAVED -> {
         playExploration(
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           explorationId,
@@ -303,7 +341,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       }
       else -> {
         playExploration(
-          internalProfileId,
+          profileId,
           topicId,
           storyId,
           explorationId,
@@ -315,7 +353,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun playExploration(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     storyId: String,
     explorationId: String,
@@ -352,11 +390,11 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            internalProfileId,
+            profileId,
             topicId,
             storyId,
             explorationId,
-            backflowScreen = 0,
+            parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
             isCheckpointingEnabled = canHavePartialProgressSaved
           )
         }
