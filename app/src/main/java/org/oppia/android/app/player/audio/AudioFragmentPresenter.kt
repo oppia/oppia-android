@@ -59,6 +59,7 @@ class AudioFragmentPresenter @Inject constructor(
   private val viewModel by lazy {
     getAudioViewModel()
   }
+  private var isPauseAudioRequestPending = false
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(
@@ -101,6 +102,9 @@ class AudioFragmentPresenter @Inject constructor(
       Observer {
         prepared = it != UiAudioPlayStatus.LOADING && it != UiAudioPlayStatus.FAILED
         binding.audioProgressSeekBar.isEnabled = prepared
+        if (prepared && isPauseAudioRequestPending) {
+          pauseAudio()
+        }
       }
     )
 
@@ -197,8 +201,10 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
-    if (prepared)
+    if (prepared && isPauseAudioRequestPending) {
       viewModel.pauseAudio()
+      isPauseAudioRequestPending = false
+    }
   }
 
   fun handleEnableAudio(saveUserChoice: Boolean) {
@@ -265,6 +271,7 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun hideAudioFragment() {
+    isPauseAudioRequestPending = true
     (activity as AudioButtonListener).showAudioStreamingOff()
     (fragment as AudioUiManager).pauseAudio()
     val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
