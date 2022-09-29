@@ -97,8 +97,9 @@ import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.DisableAccessibilityChecks
+import org.oppia.android.testing
+//.BuildEnvironment
+TODO(#4631): Remove this once #4235 is resolved.import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -295,6 +296,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+//  TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId0_checkOnlyPreviousNavCardIsNotDisplayed() {
@@ -314,6 +316,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+//  TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId1_checkPreviousAndNextNavCardsDisplayed() {
@@ -333,6 +336,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+//  TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId3_checkOnlyNextNavCardIsNotDisplayed() {
@@ -353,6 +357,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+//  TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickPrevNavCard_opensRevisionCardActivity() {
@@ -373,6 +378,7 @@ class RevisionCardFragmentTest {
     }
   }
 
+//  TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickNextNavCard_opensRevisionCardActivity() {

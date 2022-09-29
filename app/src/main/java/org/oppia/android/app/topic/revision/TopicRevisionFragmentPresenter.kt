@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import java.lang.IllegalArgumentException
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Subtopic
@@ -27,7 +28,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
-  private var subtopicListSize = -1
+  private var subtopicListSize: Int? = null
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -64,11 +65,14 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
+
     routeToReviewListener.routeToRevisionCard(
       internalProfileId,
       topicId,
       subtopic.subtopicId,
-      subtopicListSize
+      checkNotNull(subtopicListSize){
+        throw IllegalArgumentException("Subtopic list size not found.")
+      }
     )
   }
 

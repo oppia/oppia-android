@@ -77,7 +77,7 @@ class RevisionCardActivity :
       internalProfileId: Int,
       topicId: String,
       subtopicId: Int,
-      subtopicListSize: Int = -1
+      subtopicListSize: Int
     ): Intent {
       return Intent(context, RevisionCardActivity::class.java).apply {
         putExtra(INTERNAL_PROFILE_ID_EXTRA_KEY, internalProfileId)

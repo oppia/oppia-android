@@ -6,6 +6,6 @@ interface RouteToRevisionCardListener {
     internalProfileId: Int,
     topicId: String,
     subtopicId: Int,
-    subtopicListSize: Int = -1
+    subtopicListSize: Int
   )
 }

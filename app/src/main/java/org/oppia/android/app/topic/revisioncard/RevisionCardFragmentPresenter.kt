@@ -92,7 +92,6 @@ class RevisionCardFragmentPresenter @Inject constructor(
     subtopicId: Int,
     subtopicListSize: Int
   ) {
-
     binding.prevSubtopicImageView.setEntityType(entityType)
     binding.nextSubtopicImageView.setEntityType(entityType)
 
