@@ -76,7 +76,7 @@
   <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
-  <string name="topic_play_chapter_index">%s.</string>
+  <string name="topic_play_chapter_index">%s</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>

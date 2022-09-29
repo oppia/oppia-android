@@ -591,6 +591,7 @@ android_library(
         "//third_party:androidx_recyclerview_recyclerview",
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:androidx_viewpager_viewpager",
+        "//third_party:asia_ivity_android_marqueeview",
         "//third_party:circularimageview_circular_image_view",
         "//third_party:com_google_android_flexbox_flexbox",
         "//third_party:com_google_android_material_material",

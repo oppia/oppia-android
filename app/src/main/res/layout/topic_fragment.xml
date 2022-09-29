@@ -34,13 +34,21 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
-        <TextView
-          android:id="@+id/topic_toolbar_title"
-          style="@style/MarqueeToolbarTitleTextView"
-          android:layout_width="wrap_content"
+        <asia.ivity.android.marqueeview.MarqueeView
+          android:id="@+id/topic_marquee_view"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="20dp"
-          android:text="@{viewModel.topicToolbarTitleLiveData}" />
+          app:animationDelay="500"
+          app:animationSpeed="10">
+
+          <TextView
+            android:id="@+id/topic_toolbar_title"
+            style="@style/MarqueeToolbarTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:text="@{viewModel.topicToolbarTitleLiveData}" />
+        </asia.ivity.android.marqueeview.MarqueeView>
       </androidx.appcompat.widget.Toolbar>
 
       <com.google.android.material.tabs.TabLayout
