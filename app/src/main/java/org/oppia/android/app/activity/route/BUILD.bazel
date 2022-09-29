@@ -7,20 +7,22 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 # TODO(#59): Define these exported files as separate libraries from top-level targets.
 exports_files([
-    "ActivityRouter.kt",
+    "ActivityRouterModule.kt",
 ])
 
 kt_android_library(
-    name = "activity_router_module",
+    name = "activity_router",
     srcs = [
-        "ActivityRouterModule.kt",
+        "ActivityRouter.kt",
+        "Route.kt",
+        "RouteKey.kt",
     ],
-    visibility = [
-        "//:oppia_prod_module_visibility",
-    ],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
         ":dagger",
         "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
     ],
 )
 
