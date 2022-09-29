@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import java.lang.IllegalArgumentException
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Subtopic
@@ -15,6 +14,7 @@ import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.android.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.databinding.TopicRevisionSummaryViewBinding
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
@@ -70,7 +70,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       internalProfileId,
       topicId,
       subtopic.subtopicId,
-      checkNotNull(subtopicListSize){
+      checkNotNull(subtopicListSize) {
         throw IllegalArgumentException("Subtopic list size not found.")
       }
     )
