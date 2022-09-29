@@ -29,20 +29,22 @@ class ContinueButtonView @JvmOverloads constructor(
   private lateinit var viewModel: ContinueInteractionViewModel
   private var isAnimationTimerFinished = false
 
-  private val continueButtonAnimationObserver = Observer<Boolean> {
-    if (it) {
-      startAnimating()
-      isAnimationTimerFinished = true
-    } else {
-      this.clearAnimation()
-      isAnimationTimerFinished = false
-    }
-  }
+//  private val continueButtonAnimationObserver = Observer<Boolean> {
+//
+//  }
 
   fun setViewModel(viewModel: ContinueInteractionViewModel) {
     this.viewModel = viewModel
     viewModel.subscribeToCurrentState()
-    viewModel.animateContinueButton.observeForever(continueButtonAnimationObserver)
+    viewModel.animateContinueButton.observe(fragment){
+      if (it) {
+        startAnimating()
+        isAnimationTimerFinished = true
+      } else {
+        this.clearAnimation()
+        isAnimationTimerFinished = false
+      }
+    }
   }
 
   private fun startAnimating() {
@@ -60,16 +62,16 @@ class ContinueButtonView @JvmOverloads constructor(
     // or not.
     if (isVisible && isAnimationTimerFinished) {
       startAnimating()
-      viewModel.animateContinueButton.removeObserver(continueButtonAnimationObserver)
+      viewModel.animateContinueButton.removeObservers(fragment)
     }
   }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     val viewComponentFactory =
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
+
   }
 }

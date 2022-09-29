@@ -536,52 +536,61 @@ class ExplorationActivityTest {
 
   @Test
   fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    setUpAudioForFractionLesson()
+
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.animation_continue_button)).check(matches(not(isAnimating())))
+      scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
       testCoroutineDispatchers.advanceTimeBy(45000)
-      onView(withId(R.id.animation_continue_button)).check(matches(isAnimating()))
+      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
     }
   }
 
   @Test
   fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimStartsIn45SecAfterOpening() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
         shouldSavePartialProgress = false
       )
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.animation_continue_button)).check(matches(not(isAnimating())))
+      scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
       testCoroutineDispatchers.advanceTimeBy(30000)
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.animation_continue_button)).check(matches(not(isAnimating())))
+      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
       testCoroutineDispatchers.advanceTimeBy(15000)
-      onView(withId(R.id.animation_continue_button)).check(matches(isAnimating()))
+      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
     }
   }
 
@@ -595,7 +604,7 @@ class ExplorationActivityTest {
     }
 
     override fun matchesSafely(view: View): Boolean {
-      return view.animation.isInitialized
+      return view.animation?.hasStarted() ?: false
     }
   }
 
