@@ -27,6 +27,9 @@ import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputEditText
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -105,11 +108,9 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.robolectric.RuntimeEnvironment.application
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.hamcrest.CoreMatchers.containsString
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
