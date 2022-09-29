@@ -10,10 +10,17 @@ kt_android_library(
     srcs = [
         "EndToEndTestHelper.kt",
     ],
+    custom_package = "org.oppia.android",
+    enable_data_binding = True,
+    manifest = "AndroidManifest.xml",
     visibility = ["//:oppia_e2e_testing_visibility"],
     deps = [
+        "//app:databinding_resources",
+        "//third_party:androidx_databinding_databinding-common",
+        "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_uiautomator_uiautomator",
         "//third_party:com_google_truth_truth",
+        "//third_party:javax_annotation_javax_annotation-api",
     ],
 )

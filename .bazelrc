@@ -6,5 +6,29 @@ build --android_databinding_use_v3_4_args \
     --define=android_standalone_dexing_tool=d8_compat_dx \
     --android_databinding_use_androidx
 
+# Some Python dependencies require Python2.
+build --host_force_python=PY2
+
 # Show all test output by default (for better debugging).
 test --test_output=all
+
+# These configurations come from https://bazel.build/docs/android-instrumentation-test#running-tests
+# to make it easier to run instrumentation tests on a headless emulator, displayed emulator, or
+# local device (which could be either a physical device or a physical device).
+#
+# To select a configuration, run:
+#   bazel test //my:target --config={headless,gui,local_device}
+
+# Headless instrumentation tests (No GUI).
+test:headless --test_arg=--enable_display=false
+
+# Graphical instrumentation tests. Ensure that $DISPLAY is set.
+test:gui --test_env=DISPLAY \
+    --test_arg=--enable_display=true
+
+# Testing with a local emulator or device. Ensure that 'adb devices' lists the device. Note that
+# this mode forces tests to run serially, and it only supports ONE device being connected (otherwise
+# the line at the bottom of this block needs to be uncommented).
+test:local_device --test_strategy=exclusive \
+    --test_arg=--device_broker_type=LOCAL_ADB_SERVER
+# test:local_device --test_arg=--device_serial_number=$device_id

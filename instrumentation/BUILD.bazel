@@ -8,6 +8,22 @@ Note that:
 
 exports_files(["src/javatests/AndroidManifest.xml"])
 
+# Visibility for end-to-end utilities & infrastructure.
+package_group(
+    name = "instrumentation_infrastructure_visibility",
+    packages = [
+        "//instrumentation/src/java/...",
+    ],
+)
+
+# Visibility for end-to-end tests.
+package_group(
+    name = "instrumentation_testing_visibility",
+    packages = [
+        "//instrumentation/src/javatests/...",
+    ],
+)
+
 # Used for end-to-end tests
 android_binary(
     name = "oppia_test",

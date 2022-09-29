@@ -96,6 +96,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
+    "javax.annotation:javax.annotation-api": "1.3.2",
     "junit:junit": "4.12",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",

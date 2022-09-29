@@ -1,98 +1,101 @@
 package org.oppia.android.instrumentation.player
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByDesc
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByRes
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.findObjectByText
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.scrollRecyclerViewTextIntoView
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.startOppiaFromScratch
-import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
+import org.junit.runner.RunWith
+import org.oppia.android.R
+import org.oppia.android.instrumentation.testing.SearchableInteractable
+import org.oppia.android.instrumentation.testing.launchOppia
 
-/** Tests for Explorations. */
+/** End-to-end tests for explorations. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
+@RunWith(AndroidJUnit4::class)
 class ExplorationPlayerTest {
   private lateinit var device: UiDevice
 
   @Before
   fun setUp() {
-    // Initialize UiDevice instance
     device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.startOppiaFromScratch()
   }
 
   @Test
   fun testPlayExploration_prototypeExploration_playedFullyThrough_finishesSuccessfully() {
-    navigateToPrototypeExploration()
+    device.launchOppia {
+      navigateToPrototypeExploration()
 
-    // Play through all interactions.
-    playContinueInteraction()
-    playFractionInputInteraction()
-    playMultipleChoiceIntearction1()
-    playMultipleChoiceIntearction2()
-    playItemSelectionInteraction()
-    playNumericInputInteraction()
-    playRatioInputInteraction()
-    playTextInputInteraction()
-    playDragAndDropInteraction()
-    playDragDropMergeInteraction()
-    playEndExplorationInteraction()
+      // Play through all interactions.
+      playContinueInteraction()
+      playFractionInputInteraction()
+      playMultipleChoiceInteraction1()
+      playMultipleChoiceInteraction2()
+      playItemSelectionInteraction()
+      playNumericInputInteraction()
+      playRatioInputInteraction()
+      playTextInputInteraction()
+      playDragAndDropInteraction()
+      playDragDropMergeInteraction()
+      playEndExplorationInteraction()
 
-    // Assert Topic Completed.
-    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    val chapterCompletedTick = device.findObjectByText(
-      "Chapter 1: Prototype Exploration"
-    ).parent.findObjectByRes("chapter_completed_tick")
-    assertThat(chapterCompletedTick).isNotNull()
+      // Ensure the topic is completed by verifying that a completed tick is visible.
+      // TODO: Fix this check.
+      withChildByText("Chapter 1: Prototype Exploration") {
+        withChildById(R.id.chapter_completed_tick) {
+          waitToAppear(scrollTo = true)
+        }
+      }
+    }
   }
 
   // TODO(#3697): Update e2e tests when backend support is introduced.
   @Test
   @Ignore("Need backend connection support to test the ImageRegionSelectionInteraction")
   fun testPlayExploration_imageRegionInteractionExp_playedFullyThrough_finishesSuccessfully() {
-    navigateToImageRegionSelectionInteraction()
+    device.launchOppia {
+      navigateToImageRegionSelectionInteraction()
 
-    // Image Region Selection Interaction.
-    val imageSelectionView = device.findObjectByRes("interaction_container_frame_layout")
-    device.waitForRes("image_click_interaction_image_view")
-    // TODO(#3712): Use content description to fetch the image region.
-    imageSelectionView.children.get(2).click()
-    device.findObjectByText("SUBMIT").click()
-    device.findObjectByText("CONTINUE").click()
+      // Image Region Selection Interaction.
+      withChildById(R.id.image_click_interaction_image_view) {
+        // TODO(#3712): Use content description to fetch the image region.
+        // TODO: Reintroduce something like this.
+        // imageSelectionView.children.get(2).click()
+        clickChildWithId(R.id.default_selected_region)
+      }
+      clickChildWithText("Submit")
+      clickChildWithText("Continue")
 
-    // End Exploration.
-    playEndExplorationInteraction()
+      // End Exploration.
+      playEndExplorationInteraction()
 
-    // Assert Topic Completed.
-    scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
-    val chapterCompletedTick = device.findObjectByText(
-      "Chapter 2: Image Region Selection Exploration"
-    ).parent.findObjectByRes("chapter_completed_tick")
-    assertThat(chapterCompletedTick).isNotNull()
+      // Ensure the topic is completed by verifying that a completed tick is visible.
+      withChildByText("Chapter 2: Image Region Selection Exploration") {
+        withChildById(R.id.chapter_completed_tick) {
+          waitToAppear(scrollTo = true)
+        }
+      }
+    }
   }
 
   /** Navigates and opens the Prototype Exploration using the admin profile. */
-  private fun navigateToPrototypeExploration() {
-    device.findObjectByRes("skip_text_view").click()
-    device.findObjectByRes("get_started_button").click()
-    device.waitForRes("profile_select_text")
-    device.findObjectByText("Admin").click()
-    scrollRecyclerViewTextIntoView("First Test Topic")
-    device.findObjectByText("First Test Topic").click()
-    device.findObjectByText("LESSONS").click()
-    device.findObjectByText("First Story").click()
-    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    device.findObjectByText("Chapter 1: Prototype Exploration").click()
+  private fun SearchableInteractable.navigateToPrototypeExploration() {
+    clickChildWithId(R.id.skip_text_view)
+    clickChildWithId(R.id.get_started_button)
+    clickChildWithText("Admin")
+    clickChildWithText("First Test Topic")
+    clickChildWithText("Lessons")
+    clickChildWithText("First Story")
+    clickChildWithText("Chapter 1: Prototype Exploration")
   }
 
-  private fun completePrototypeExploration() {
+  private fun SearchableInteractable.completePrototypeExploration() {
     playContinueInteraction()
     playFractionInputInteraction()
-    playMultipleChoiceIntearction1()
-    playMultipleChoiceIntearction2()
+    playMultipleChoiceInteraction1()
+    playMultipleChoiceInteraction2()
     playItemSelectionInteraction()
     playNumericInputInteraction()
     playRatioInputInteraction()
@@ -102,85 +105,81 @@ class ExplorationPlayerTest {
     playEndExplorationInteraction()
   }
 
-  private fun playContinueInteraction() {
-    device.findObjectByText("CONTINUE").click()
+  private fun SearchableInteractable.playContinueInteraction() {
+    clickChildWithText("Continue")
   }
 
-  private fun playFractionInputInteraction() {
-    device.findObjectByRes("fraction_input_interaction_view").text = "1/2"
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playFractionInputInteraction() {
+    withChildById(R.id.fraction_input_interaction_view) { setText("1/2") }
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playMultipleChoiceIntearction1() {
-    device.findObjectByText("Eagle").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playMultipleChoiceInteraction1() {
+    clickChildWithText("Eagle")
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playMultipleChoiceIntearction2() {
-    device.findObjectByText("Green").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playMultipleChoiceInteraction2() {
+    clickChildWithText("Green")
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playItemSelectionInteraction() {
-    device.findObjectByText("Red").click()
-    device.findObjectByText("Green").click()
-    device.findObjectByText("Blue").click()
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playItemSelectionInteraction() {
+    clickChildWithText("Red")
+    clickChildWithText("Green")
+    clickChildWithText("Blue")
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playNumericInputInteraction() {
-    device.findObjectByRes("numeric_input_interaction_view").text = "121"
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playNumericInputInteraction() {
+    withChildById(R.id.numeric_input_interaction_view) { setText("121") }
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playRatioInputInteraction() {
-    device.findObjectByRes("ratio_input_interaction_view").text = "4:5"
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playRatioInputInteraction() {
+    withChildById(R.id.ratio_input_interaction_view) { setText("4:5") }
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playTextInputInteraction() {
-    device.findObjectByRes("text_input_interaction_view").text = "Finnish"
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playTextInputInteraction() {
+    withChildById(R.id.text_input_interaction_view) { setText("Finnish") }
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playDragAndDropInteraction() {
-    device.findObjectByDesc("Move item down to 2").click()
-    device.findObjectByDesc("Move item down to 3").click()
-    device.findObjectByDesc("Move item down to 4").click()
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playDragAndDropInteraction() {
+    clickChildWithContentDescription("Move item down to 2")
+    clickChildWithContentDescription("Move item down to 3")
+    clickChildWithContentDescription("Move item down to 4")
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playDragDropMergeInteraction() {
-    device.findObjectByDesc("Link to item 2").click()
-    device.findObjectByDesc("Move item down to 3").click()
-    device.findObjectByText("SUBMIT").click()
-    playContinueInteraction()
+  private fun SearchableInteractable.playDragDropMergeInteraction() {
+    clickChildWithContentDescription("Link to item 2")
+    clickChildWithContentDescription("Move item down to 3")
+    clickChildWithText("Submit")
+    clickChildWithText("Continue")
   }
 
-  private fun playEndExplorationInteraction() {
-    device.findObjectByText("RETURN TO TOPIC").click()
+  private fun SearchableInteractable.playEndExplorationInteraction() {
+    // This requires more investigating, but for some reason the final 'Return to Topic' button is
+    // sometimes simply not clicked (perhaps due to the confetti? It's not actually clear).
+    // TODO: Determine if this is actually needed.
+    Thread.sleep(5_000)
+    clickChildWithId(R.id.return_to_topic_button)
   }
 
   /** Navigates and opens the Image Region Selection Exploration using the admin profile. */
-  private fun navigateToImageRegionSelectionInteraction() {
-    device.findObjectByRes("skip_text_view").click()
-    device.findObjectByRes("get_started_button").click()
-    device.waitForRes("profile_select_text")
-    device.findObjectByText("Admin").click()
-    scrollRecyclerViewTextIntoView("First Test Topic")
-    device.findObjectByText("First Test Topic").click()
-    device.findObjectByText("LESSONS").click()
-    device.findObjectByText("First Story").click()
-    scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    device.findObjectByText("Chapter 1: Prototype Exploration").click()
+  private fun SearchableInteractable.navigateToImageRegionSelectionInteraction() {
+    navigateToPrototypeExploration()
     completePrototypeExploration()
-    scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
-    device.findObjectByText("Chapter 2: Image Region Selection Exploration").click()
+    clickChildWithText("Chapter 2: Image Region Selection Exploration")
   }
 }

@@ -20,7 +20,15 @@ def oppia_instrumentation_test(
         name = "%s_lib" % name,
         testonly = True,
         srcs = srcs,
-        deps = deps,
+        deps = deps + [
+            "//app:databinding_resources",
+            "//third_party:androidx_databinding_databinding-common",
+            "//third_party:androidx_databinding_databinding-runtime",
+            "//third_party:javax_annotation_javax_annotation-api",
+        ],
+        custom_package = "org.oppia.android",
+        enable_data_binding = True,
+        manifest = "//instrumentation:src/javatests/AndroidManifest.xml",
     )
 
     native.android_binary(
@@ -35,7 +43,7 @@ def oppia_instrumentation_test(
     # TODO(#3617): Target isn't supported yet. Remove the manual tag once fixed.
     native.android_instrumentation_test(
         name = name,
-        target_device = "@android_test_support//tools/android/emulated_devices/generic_phone:android_23_x86_qemu2",
+        target_device = "@android_test_support//tools/android/emulated_devices/nexus_5x:google_23_x86_qemu2",
         test_app = ":%sBinary" % name,
         tags = ["manual"],
     )
