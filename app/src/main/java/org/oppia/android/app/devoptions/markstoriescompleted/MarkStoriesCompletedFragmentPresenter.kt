@@ -77,7 +77,7 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
             storySelected(viewModel.storySummary.storyId)
         }
       } else {
-        getMarkStoriesCompletedViewModel().getStorySummaryMap().values.forEach { viewModel ->
+        viewModel.getStorySummaryMap().values.forEach { viewModel ->
           if (!viewModel.isCompleted) storyUnselected(viewModel.storySummary.storyId)
         }
       }
