@@ -29,6 +29,16 @@
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator">
 
+        <ImageButton
+          android:id="@+id/action_bottom_sheet_options_menu"
+          style="?android:actionOverflowButtonStyle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:minWidth="48dp"
+          android:minHeight="48dp"
+          android:scaleType="center" />
+
         <asia.ivity.android.marqueeview.MarqueeView
           android:id="@+id/revision_card_marquee_view"
           android:layout_width="match_parent"
@@ -43,16 +53,6 @@
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp" />
         </asia.ivity.android.marqueeview.MarqueeView>
-
-        <ImageButton
-          android:id="@+id/action_bottom_sheet_options_menu"
-          style="?android:actionOverflowButtonStyle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="end"
-          android:minWidth="48dp"
-          android:minHeight="48dp"
-          android:scaleType="center" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
