@@ -275,7 +275,7 @@ class StateFragmentLocalTest {
   @Test
   fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
-    launchForExploration(FRACTIONS_EXPLORATION_ID_0).use {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       testCoroutineDispatchers.runCurrent()
 
@@ -286,64 +286,36 @@ class StateFragmentLocalTest {
     }
   }
 
-//  @Test
-//  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimStartsIn45SecAfterOpening() {
-//    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
-//    setUpAudioForFractionLesson()
-//    ActivityScenario.launch<ExplorationActivity>(
-//      createExplorationActivityIntent(
-//        internalProfileId,
-//        FRACTIONS_TOPIC_ID,
-//        FRACTIONS_STORY_ID_0,
-//        FRACTIONS_EXPLORATION_ID_0,
-//        shouldSavePartialProgress = false
-//      )
-//    ).use {
-//      explorationDataController.startPlayingNewExploration(
-//        internalProfileId,
-//        FRACTIONS_TOPIC_ID,
-//        FRACTIONS_STORY_ID_0,
-//        FRACTIONS_EXPLORATION_ID_0
-//      )
-//      testCoroutineDispatchers.runCurrent()
-//
-//      scrollToViewType(CONTINUE_INTERACTION)
-//      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
-//      testCoroutineDispatchers.advanceTimeBy(30000)
-//      onView(isRoot()).perform(orientationLandscape())
-//      testCoroutineDispatchers.runCurrent()
-//      scrollToViewType(CONTINUE_INTERACTION)
-//      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
-//      testCoroutineDispatchers.advanceTimeBy(15000)
-//      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
-//    }
-//  }
-
   @Test
-  fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
+  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimStartsIn45SecAfterOpening() {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
-    setUpAudioForFractionLesson()
-    ActivityScenario.launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_1,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_1
-      )
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
       testCoroutineDispatchers.runCurrent()
 
       scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
-      testCoroutineDispatchers.advanceTimeBy(45000)
+      testCoroutineDispatchers.advanceTimeBy(30000)
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
+      testCoroutineDispatchers.advanceTimeBy(15000)
+      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+      submitFractionAnswer(answerText = "1/2")
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(Matchers.not(isAnimating())))
     }
   }
 
