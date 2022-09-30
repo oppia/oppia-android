@@ -65,7 +65,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-
     routeToReviewListener.routeToRevisionCard(
       internalProfileId,
       topicId,

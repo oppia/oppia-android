@@ -26,9 +26,6 @@ class RevisionCardViewModel @Inject constructor(
   private var subtopicId: Int = 0
   private lateinit var profileId: ProfileId
 
-  private val returnToTopicClickListener: ReturnToTopicClickListener =
-    activity as ReturnToTopicClickListener
-
   val revisionCardLiveData: LiveData<EphemeralRevisionCard> by lazy {
     processRevisionCardLiveData()
   }
@@ -65,7 +62,7 @@ class RevisionCardViewModel @Inject constructor(
 
   private fun processNextSubtopicData(
     topicLiveData: AsyncResult<EphemeralTopic>
-  ): EphemeralSubtopic? {
+  ): EphemeralSubtopic {
     return when (topicLiveData) {
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
