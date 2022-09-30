@@ -10,6 +10,8 @@ import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import javax.inject.Inject
 
 /** [DialogFragment] that notifies the user after a profile is successfully deleted. */
 class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
@@ -24,6 +26,9 @@ class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
     }
   }
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
@@ -32,8 +37,12 @@ class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val alertDialog = AlertDialog
       .Builder(requireContext(), R.style.OppiaAlertDialogTheme).apply {
-        setMessage(R.string.profile_edit_delete_successful_message)
-        setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
+        setMessage(
+          resourceHandler.getStringInLocale(R.string.profile_edit_delete_successful_message)
+        )
+        setPositiveButton(
+          resourceHandler.getStringInLocale(R.string.log_out_dialog_okay_button)
+        ) { _, _ ->
           if (requireContext().resources.getBoolean(R.bool.isTablet)) {
             val intent =
               Intent(requireContext(), AdministratorControlsActivity::class.java)
