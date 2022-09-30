@@ -30,7 +30,6 @@ class DeleteProfileSuccessDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
     val alertDialog = AlertDialog
       .Builder(requireContext(), R.style.OppiaAlertDialogTheme).apply {
         setMessage(R.string.profile_edit_delete_successful_message)
