@@ -75,6 +75,7 @@
             <org.oppia.android.app.customview.LessonThumbnailImageView
               android:id="@+id/prev_subtopic_image_view"
               android:layout_width="0dp"
+              app:lessonThumbnail="@{viewModel.previousSubtopicLiveData.subtopic.subtopicThumbnail}"
               android:layout_height="0dp"
               android:importantForAccessibility="no"
               app:entityId="@{viewModel.topicId}"

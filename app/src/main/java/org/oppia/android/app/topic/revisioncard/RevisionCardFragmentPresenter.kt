@@ -99,9 +99,9 @@ class RevisionCardFragmentPresenter @Inject constructor(
       binding.previousNavigationCard.visibility = View.INVISIBLE
     } else {
       getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
-        binding.prevSubtopicImageView.setLessonThumbnail(
-          previousSubtopic.subtopic.subtopicThumbnail
-        )
+//        binding.prevSubtopicImageView.setLessonThumbnail(
+//          previousSubtopic.subtopic.subtopicThumbnail
+//        )
         binding.prevSubtopicTitle.text = translationController.extractString(
           previousSubtopic.subtopic.title,
           previousSubtopic.writtenTranslationContext
