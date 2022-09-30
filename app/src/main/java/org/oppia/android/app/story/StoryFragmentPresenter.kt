@@ -89,7 +89,7 @@ class StoryFragmentPresenter @Inject constructor(
     }
 
     binding.storyToolbarTitle.setOnClickListener {
-      binding.storyToolbarTitle.isSelected = true
+      binding.storyMarqueeView?.startMarquee()
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
