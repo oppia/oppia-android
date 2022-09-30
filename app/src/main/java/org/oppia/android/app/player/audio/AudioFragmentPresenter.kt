@@ -202,6 +202,7 @@ class AudioFragmentPresenter @Inject constructor(
     viewModel.loadFeedbackAudio(contentId, allowAutoPlay)
 
   fun pauseAudio() {
+    isPauseAudioRequestPending = true
     if (prepared && isPauseAudioRequestPending) {
       viewModel.pauseAudio()
       isPauseAudioRequestPending = false
@@ -272,7 +273,6 @@ class AudioFragmentPresenter @Inject constructor(
   }
 
   private fun hideAudioFragment() {
-    isPauseAudioRequestPending = true
     (activity as AudioButtonListener).showAudioStreamingOff()
     (fragment as AudioUiManager).pauseAudio()
     val animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_audio)
