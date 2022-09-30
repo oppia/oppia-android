@@ -190,8 +190,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -208,8 +207,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_inputCorrectPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -226,8 +224,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_inputWrongPin_incorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -236,7 +233,6 @@ class PinPasswordActivityTest {
         profileId = adminId
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(closeSoftKeyboard())
         .perform(editTextInputAction.appendText("54321"), closeSoftKeyboard())
@@ -264,8 +260,7 @@ class PinPasswordActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.pin_password_activity_title))
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_inputWrongPin_incorrectPinShows() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -274,7 +269,6 @@ class PinPasswordActivityTest {
         profileId = userId
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
         editTextInputAction.appendText("321"), closeSoftKeyboard()
       )
@@ -286,8 +280,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_forgot_opensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -308,8 +301,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputWrongAdminPin_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -353,8 +345,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndShortPin_pinLengthError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -412,8 +403,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPinAndOldPin_wrongPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -461,8 +451,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPin_opensHomeActivity() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -508,8 +497,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPin_configChange_inputPinIsPresent() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -539,8 +527,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPin_submit_configChange_resetPinDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -569,8 +556,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPin_submit_inputNewPin_pinChanged() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -612,8 +598,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_forgot_configChange_opensAdminForgotDialog() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -632,8 +617,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputWrongAdminPin_configChange_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -676,8 +660,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndIncorrectPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -719,8 +702,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -753,8 +735,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_configChange_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -789,8 +770,7 @@ class PinPasswordActivityTest {
   }
 
   // TODO(#4209): Error -> Expected error text doesn't match the selected view
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_imeAction_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -820,8 +800,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_user_forgot_adminPinAndNullPin_configChange_imeAction_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -852,8 +831,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputNullAdminPin_configChange_wrongAdminPinError() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -896,8 +874,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndInvalidPin_errorIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -942,8 +919,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_inputWrongPin_configChange_incorrectPinIsDisplayed() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -952,7 +928,6 @@ class PinPasswordActivityTest {
         profileId = adminId
       )
     ).use {
-      testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
         editTextInputAction.appendText("54321"),
@@ -1022,8 +997,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_showHidePassword_textChangesToHide() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1038,8 +1012,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1062,8 +1035,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1086,8 +1058,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1112,8 +1083,7 @@ class PinPasswordActivityTest {
     }
   }
 
-  @Test // TODO(#3245): Error -> Editable TextView should not have a contentDescription
-  @DisableAccessibilityChecks
+  @Test
   fun testPinPassword_checkInputType_showHidePassword_inputTypeIsSame() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
