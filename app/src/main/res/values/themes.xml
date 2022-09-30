@@ -18,6 +18,14 @@
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
+  <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimaryDark">@color/component_color_concept_card_fragment_status_bar_color</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:editTextStyle">@style/InputInteractionEditText</item>
+    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/color_palette_primary_color</item>
     <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
