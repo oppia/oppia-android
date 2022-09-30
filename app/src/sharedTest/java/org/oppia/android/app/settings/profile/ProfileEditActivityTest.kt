@@ -271,7 +271,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_deleteProfile_checkReturnsToProfileListOnPhoneOrAdminControlOnTablet() {
+  fun testProfileEdit_deleteProfile_returnsToProfileListOnPhoneOrAdminControlOnTablet() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
