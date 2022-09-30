@@ -130,7 +130,7 @@ class ExplorationProgressController @Inject constructor(
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
   // the amount of time to wait before the continue interaction button is animated in milliseconds
-  private val continueButtonAnimationDelay: Long = 10000L
+  private val continueButtonAnimationDelay: Long = 45000L
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
    * [DataProvider] indicating whether the start was successful.
