@@ -18,6 +18,8 @@ import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 /** Activity for recent stories. */
 class RecentlyPlayedActivity :
@@ -48,12 +50,13 @@ class RecentlyPlayedActivity :
       context: Context,
       recentlyPlayedActivityParams: RecentlyPlayedActivityParams
     ): Intent {
-      val intent = Intent(context, RecentlyPlayedActivity::class.java)
-      intent.putProtoExtra(
-        RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-        recentlyPlayedActivityParams
-      )
-      return intent
+      return Intent(context, RecentlyPlayedActivity::class.java).apply {
+        putProtoExtra(
+          RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+          recentlyPlayedActivityParams
+        )
+        decorateWithScreenName(ScreenName.RECENTLY_PLAYED_ACTIVITY)
+      }
     }
   }
 
