@@ -37,12 +37,18 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
@@ -67,6 +73,7 @@ import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -110,10 +117,12 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
@@ -131,6 +140,7 @@ import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiv
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
@@ -160,11 +170,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import java.io.IOException
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -264,6 +269,95 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(FRACTIONS_EXPLORATION_ID_0).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
+    }
+  }
+
+//  @Test
+//  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimStartsIn45SecAfterOpening() {
+//    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+//    setUpAudioForFractionLesson()
+//    ActivityScenario.launch<ExplorationActivity>(
+//      createExplorationActivityIntent(
+//        internalProfileId,
+//        FRACTIONS_TOPIC_ID,
+//        FRACTIONS_STORY_ID_0,
+//        FRACTIONS_EXPLORATION_ID_0,
+//        shouldSavePartialProgress = false
+//      )
+//    ).use {
+//      explorationDataController.startPlayingNewExploration(
+//        internalProfileId,
+//        FRACTIONS_TOPIC_ID,
+//        FRACTIONS_STORY_ID_0,
+//        FRACTIONS_EXPLORATION_ID_0
+//      )
+//      testCoroutineDispatchers.runCurrent()
+//
+//      scrollToViewType(CONTINUE_INTERACTION)
+//      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
+//      testCoroutineDispatchers.advanceTimeBy(30000)
+//      onView(isRoot()).perform(orientationLandscape())
+//      testCoroutineDispatchers.runCurrent()
+//      scrollToViewType(CONTINUE_INTERACTION)
+//      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
+//      testCoroutineDispatchers.advanceTimeBy(15000)
+//      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
+//    }
+//  }
+
+  @Test
+  fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    setUpAudioForFractionLesson()
+    ActivityScenario.launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_1,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_1
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
+    }
+  }
+
+  private fun isAnimating(): TypeSafeMatcher<View> {
+    return ActiveAnimationMatcher()
+  }
+
+  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("View is animating")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view.animation?.hasStarted() ?: false
     }
   }
 
@@ -2278,7 +2372,7 @@ class StateFragmentLocalTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
