@@ -1,30 +1,21 @@
 package org.oppia.android.app.topic.revisioncard
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
-import org.oppia.android.app.model.Interaction
-import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
-import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
-import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
-import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
-import org.oppia.android.app.topic.RouteToRevisionCardListener
-import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import javax.inject.Inject
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
 class RevisionCardViewModel private constructor(
@@ -147,7 +138,10 @@ class RevisionCardViewModel private constructor(
     private val translationController: TranslationController
   ) {
     fun create(
-      topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int
+      topicId: String,
+      subtopicId: Int,
+      profileId: ProfileId,
+      subtopicListSize: Int
     ): RevisionCardViewModel {
       return RevisionCardViewModel(
         activity,
