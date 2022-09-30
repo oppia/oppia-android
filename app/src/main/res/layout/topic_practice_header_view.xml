@@ -37,7 +37,7 @@
         style="@style/Subtitle1ViewStart"
         android:layout_marginTop="4dp"
         android:text="@string/topic_practice_skills_description"
-        android:textColor="@color/oppia_secondary_text"
+        android:textColor="@color/component_color_topic_practice_header_view_description_text_color"
         app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
         app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -460,8 +460,6 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TopicRevisi
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TopicRevisionTestActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/TopicTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ViewBindingAdaptersTestActivity.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/EnablePracticeTab.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/PracticeTabModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/RouteToConceptCardListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/RouteToQuestionPlayerListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/RouteToResumeLessonListener.kt"
