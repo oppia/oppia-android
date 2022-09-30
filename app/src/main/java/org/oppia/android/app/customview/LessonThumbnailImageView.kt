@@ -66,9 +66,11 @@ class LessonThumbnailImageView @JvmOverloads constructor(
     checkIfLoadingIsPossible()
   }
 
-  fun setLessonThumbnail(lessonThumbnail: LessonThumbnail) {
-    this.lessonThumbnail = lessonThumbnail
-    checkIfLoadingIsPossible()
+  fun setLessonThumbnail(lessonThumbnail: LessonThumbnail?) {
+    if (lessonThumbnail != null){
+      this.lessonThumbnail = lessonThumbnail
+      checkIfLoadingIsPossible()
+    }
   }
 
   fun setIsBlurred(isBlurred: Boolean) {

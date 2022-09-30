@@ -26,11 +26,11 @@
       <TextView
         android:id="@+id/revision_card_explanation_text"
         style="@style/Body"
-        android:minHeight="48dp"
-        android:minWidth="48dp"
         android:layout_marginStart="@dimen/revision_card_fragment_layout_margin_start"
         android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top"
-        android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end" />
+        android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end"
+        android:minWidth="48dp"
+        android:minHeight="48dp" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/navigation_card_container"
@@ -61,6 +61,8 @@
           android:layout_marginEnd="28dp"
           android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
           android:clipToPadding="true"
+          android:onClick="@{() -> viewModel.onPreviousCardClicked()}"
+          android:visibility="@{viewModel.subtopicId == 1 ? View.GONE : View.VISIBLE}"
           app:cardBackgroundColor="@color/color_def_white"
           app:cardCornerRadius="4dp"
           app:cardElevation="4dp"
@@ -75,14 +77,15 @@
             <org.oppia.android.app.customview.LessonThumbnailImageView
               android:id="@+id/prev_subtopic_image_view"
               android:layout_width="0dp"
-              app:lessonThumbnail="@{viewModel.previousSubtopicLiveData.subtopic.subtopicThumbnail}"
               android:layout_height="0dp"
               android:importantForAccessibility="no"
               app:entityId="@{viewModel.topicId}"
+              app:entityType="@{viewModel.entityType}"
               app:layout_constraintDimensionRatio="H,4:3"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
+              app:layout_constraintTop_toTopOf="parent"
+              app:lessonThumbnail="@{viewModel.previousSubtopicLiveData.subtopic.subtopicThumbnail}" />
 
             <TextView
               android:id="@+id/prev_subtopic_title"
@@ -97,6 +100,7 @@
               android:paddingTop="8dp"
               android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
               android:paddingBottom="16dp"
+              android:text="@{viewModel.computeTitleText(viewModel.previousSubtopicLiveData)}"
               android:textColor="@color/color_def_white"
               android:textSize="14sp"
               android:textStyle="bold"
@@ -113,6 +117,8 @@
           android:layout_marginEnd="28dp"
           android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
           android:clipToPadding="true"
+          android:onClick="@{() -> viewModel.onNextCardClicked()}"
+          android:visibility="@{viewModel.subtopicId &lt; viewModel.subtopicListSize ? View.VISIBLE : View.GONE}"
           app:cardBackgroundColor="@color/color_def_white"
           app:cardCornerRadius="4dp"
           app:cardElevation="4dp"
@@ -130,10 +136,12 @@
               android:layout_height="0dp"
               android:importantForAccessibility="no"
               app:entityId="@{viewModel.topicId}"
+              app:entityType="@{viewModel.entityType}"
               app:layout_constraintDimensionRatio="H,4:3"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent" />
+              app:layout_constraintTop_toTopOf="parent"
+              app:lessonThumbnail="@{viewModel.nextSubtopicLiveData.subtopic.subtopicThumbnail}" />
 
             <TextView
               android:id="@+id/next_subtopic_title"
@@ -148,6 +156,7 @@
               android:paddingTop="8dp"
               android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
               android:paddingBottom="16dp"
+              android:text="@{viewModel.computeTitleText(viewModel.nextSubtopicLiveData)}"
               android:textColor="@color/color_def_white"
               android:textSize="14sp"
               android:textStyle="bold"

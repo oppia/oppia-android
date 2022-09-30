@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -23,18 +22,16 @@ import javax.inject.Inject
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class RevisionCardFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val viewModelProvider: ViewModelProvider<RevisionCardViewModel>,
   private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val revisionCardViewModelFactory: RevisionCardViewModel.Factory
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
-  private val routeToReviewListener = activity as RouteToRevisionCardListener
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -53,9 +50,13 @@ class RevisionCardFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     val view = binding.revisionCardExplanationText
-    val viewModel = getReviewCardViewModel()
+    val viewModel = revisionCardViewModelFactory.create(
+      topicId,
+      subtopicId,
+      profileId,
+      subtopicListSize
+    )
 
-    viewModel.initialize(topicId, subtopicId, profileId)
     logRevisionCardEvent(topicId, subtopicId)
 
     binding.let {
@@ -63,80 +64,26 @@ class RevisionCardFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-    setUpRevisionNavigationCards(binding, topicId, subtopicId, subtopicListSize)
+//    setUpRevisionNavigationCards(binding, topicId, subtopicId, subtopicListSize)
 
     viewModel.revisionCardLiveData.observe(
-      fragment,
-      { ephemeralRevisionCard ->
-        val pageContentsHtml =
-          translationController.extractString(
-            ephemeralRevisionCard.revisionCard.pageContents,
-            ephemeralRevisionCard.writtenTranslationContext
-          )
-        view.text = htmlParserFactory.create(
-          resourceBucketName, entityType, topicId, imageCenterAlign = true,
-          customOppiaTagActionListener = this,
-          displayLocale = appLanguageResourceHandler.getDisplayLocale()
-        ).parseOppiaHtml(
-          pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
+      fragment
+    ) { ephemeralRevisionCard ->
+      val pageContentsHtml =
+        translationController.extractString(
+          ephemeralRevisionCard.revisionCard.pageContents,
+          ephemeralRevisionCard.writtenTranslationContext
         )
-      }
-    )
+      view.text = htmlParserFactory.create(
+        resourceBucketName, entityType, topicId, imageCenterAlign = true,
+        customOppiaTagActionListener = this,
+        displayLocale = appLanguageResourceHandler.getDisplayLocale()
+      ).parseOppiaHtml(
+        pageContentsHtml, view, supportsLinks = true, supportsConceptCards = true
+      )
+    }
 
     return binding.root
-  }
-
-  private fun setUpRevisionNavigationCards(
-    binding: RevisionCardFragmentBinding,
-    topicId: String,
-    subtopicId: Int,
-    subtopicListSize: Int
-  ) {
-    binding.prevSubtopicImageView.setEntityType(entityType)
-    binding.nextSubtopicImageView.setEntityType(entityType)
-
-    if (subtopicId == 1) {
-      binding.previousNavigationCard.visibility = View.INVISIBLE
-    } else {
-      getReviewCardViewModel().previousSubtopicLiveData.observe(fragment) { previousSubtopic ->
-//        binding.prevSubtopicImageView.setLessonThumbnail(
-//          previousSubtopic.subtopic.subtopicThumbnail
-//        )
-        binding.prevSubtopicTitle.text = translationController.extractString(
-          previousSubtopic.subtopic.title,
-          previousSubtopic.writtenTranslationContext
-        )
-      }
-    }
-    if (subtopicId == subtopicListSize) {
-      binding.nextNavigationCard.visibility = View.INVISIBLE
-    } else {
-      getReviewCardViewModel().nextSubtopicLiveData.observe(fragment) { nextSubtopic ->
-        binding.nextSubtopicImageView.setLessonThumbnail(nextSubtopic.subtopic.subtopicThumbnail)
-        binding.nextSubtopicTitle.text = translationController.extractString(
-          nextSubtopic.subtopic.title,
-          nextSubtopic.writtenTranslationContext
-        )
-      }
-    }
-
-    binding.previousNavigationCard.setOnClickListener {
-      routeToReviewListener.routeToRevisionCard(
-        profileId.internalId,
-        topicId,
-        subtopicId - 1,
-        subtopicListSize
-      )
-    }
-
-    binding.nextNavigationCard.setOnClickListener {
-      routeToReviewListener.routeToRevisionCard(
-        profileId.internalId,
-        topicId,
-        subtopicId + 1,
-        subtopicListSize
-      )
-    }
   }
 
   /** Dismisses the concept card fragment if it's currently active in this fragment. */
@@ -146,10 +93,6 @@ class RevisionCardFragmentPresenter @Inject constructor(
     )?.let { dialogFragment ->
       fragment.childFragmentManager.beginTransaction().remove(dialogFragment).commitNow()
     }
-  }
-
-  private fun getReviewCardViewModel(): RevisionCardViewModel {
-    return viewModelProvider.getForFragment(fragment, RevisionCardViewModel::class.java)
   }
 
   private fun logRevisionCardEvent(topicId: String, subTopicId: Int) {

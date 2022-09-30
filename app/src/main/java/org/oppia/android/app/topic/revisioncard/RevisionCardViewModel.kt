@@ -1,6 +1,7 @@
 package org.oppia.android.app.topic.revisioncard
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
@@ -14,17 +15,49 @@ import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.Interaction
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
+import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
+import org.oppia.android.app.topic.RouteToRevisionCardListener
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 
 /** [ObservableViewModel] for revision card, providing rich text and worked examples */
-@FragmentScope
-class RevisionCardViewModel @Inject constructor(
+class RevisionCardViewModel private constructor(
   activity: AppCompatActivity,
   private val topicController: TopicController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  val entityType: String,
+  private val translationController: TranslationController,
+  val topicId: String,
+  val subtopicId: Int,
+  val profileId: ProfileId,
+  val subtopicListSize: Int
 ) : ObservableViewModel() {
-  lateinit var topicId: String
-  private var subtopicId: Int = 0
-  private lateinit var profileId: ProfileId
+
+  private val routeToReviewListener = activity as RouteToRevisionCardListener
+
+  fun onPreviousCardClicked() {
+    routeToReviewListener.routeToRevisionCard(
+      profileId.internalId,
+      topicId,
+      subtopicId - 1,
+      subtopicListSize
+    )
+  }
+
+  fun onNextCardClicked() {
+    routeToReviewListener.routeToRevisionCard(
+      profileId.internalId,
+      topicId,
+      subtopicId + 1,
+      subtopicListSize
+    )
+  }
 
   val revisionCardLiveData: LiveData<EphemeralRevisionCard> by lazy {
     processRevisionCardLiveData()
@@ -46,9 +79,18 @@ class RevisionCardViewModel @Inject constructor(
     Transformations.map(topicLiveData, ::processPreviousSubtopicData)
   }
 
+  fun computeTitleText(subtopic: EphemeralSubtopic?): String {
+    return subtopic?.let {
+      translationController.extractString(
+        subtopic.subtopic.title,
+        subtopic.writtenTranslationContext
+      )
+    } ?: ""
+  }
+
   private fun processPreviousSubtopicData(
     topicLiveData: AsyncResult<EphemeralTopic>
-  ): EphemeralSubtopic? {
+  ): EphemeralSubtopic {
     return when (topicLiveData) {
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
@@ -74,13 +116,6 @@ class RevisionCardViewModel @Inject constructor(
     }
   }
 
-  /** Initializes this view model with necessary identifiers. */
-  fun initialize(topicId: String, subtopicId: Int, profileId: ProfileId) {
-    this.topicId = topicId
-    this.subtopicId = subtopicId
-    this.profileId = profileId
-  }
-
   private val revisionCardResultLiveData: LiveData<AsyncResult<EphemeralRevisionCard>> by lazy {
     topicController.getRevisionCard(profileId, topicId, subtopicId).toLiveData()
   }
@@ -101,6 +136,30 @@ class RevisionCardViewModel @Inject constructor(
       }
       is AsyncResult.Pending -> EphemeralRevisionCard.getDefaultInstance()
       is AsyncResult.Success -> revisionCardResult.value
+    }
+  }
+
+  class Factory @Inject constructor(
+    private val activity: AppCompatActivity,
+    private val topicController: TopicController,
+    private val oppiaLogger: OppiaLogger,
+    @TopicHtmlParserEntityType private val entityType: String,
+    private val translationController: TranslationController
+  ) {
+    fun create(
+      topicId: String, subtopicId: Int, profileId: ProfileId, subtopicListSize: Int
+    ): RevisionCardViewModel {
+      return RevisionCardViewModel(
+        activity,
+        topicController,
+        oppiaLogger,
+        entityType,
+        translationController,
+        topicId,
+        subtopicId,
+        profileId,
+        subtopicListSize
+      )
     }
   }
 }
