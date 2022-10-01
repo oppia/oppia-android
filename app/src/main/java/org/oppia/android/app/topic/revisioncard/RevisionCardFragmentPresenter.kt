@@ -62,8 +62,6 @@ class RevisionCardFragmentPresenter @Inject constructor(
       it.lifecycleOwner = fragment
     }
 
-//    setUpRevisionNavigationCards(binding, topicId, subtopicId, subtopicListSize)
-
     viewModel.revisionCardLiveData.observe(
       fragment
     ) { ephemeralRevisionCard ->

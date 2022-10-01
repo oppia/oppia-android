@@ -132,11 +132,11 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 3
-const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 4
-const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
+private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
+private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
+private const val FRACTIONS_SUBTOPIC_TOPIC_ID_2 = 3
+private const val FRACTIONS_SUBTOPIC_TOPIC_ID_3 = 4
+private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -309,7 +309,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
+      onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.next_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.previous_navigation_card)).check(matches(not((isDisplayed()))))
     }
@@ -329,7 +329,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
+      onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.next_navigation_card)).check(matches(isDisplayed()))
     }
@@ -349,7 +349,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
+      onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_navigation_card)).check(matches(isDisplayed()))
       onView(withId(R.id.next_navigation_card)).check(matches(not(isDisplayed())))
@@ -391,7 +391,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.navigation_card_container)).perform(scrollTo())
+      onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(RevisionCardActivity::class.java.name))

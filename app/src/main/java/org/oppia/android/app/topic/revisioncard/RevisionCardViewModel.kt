@@ -130,6 +130,7 @@ class RevisionCardViewModel private constructor(
     }
   }
 
+  /** Factory method to initialize the fields of [RevisionCardViewModel]. */
   class Factory @Inject constructor(
     private val activity: AppCompatActivity,
     private val topicController: TopicController,
@@ -137,6 +138,7 @@ class RevisionCardViewModel private constructor(
     @TopicHtmlParserEntityType private val entityType: String,
     private val translationController: TranslationController
   ) {
+    /** Returns a new [RevisionCardViewModel]. */
     fun create(
       topicId: String,
       subtopicId: Int,

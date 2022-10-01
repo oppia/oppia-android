@@ -69,9 +69,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       internalProfileId,
       topicId,
       subtopic.subtopicId,
-      checkNotNull(subtopicListSize) {
-        throw IllegalArgumentException("Subtopic list size not found.")
-      }
+      checkNotNull(subtopicListSize) { "Subtopic list size not found." }
     )
   }
 

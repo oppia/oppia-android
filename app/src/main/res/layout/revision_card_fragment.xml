@@ -33,7 +33,7 @@
         android:minHeight="48dp" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/navigation_card_container"
+        android:id="@+id/revision_card_fragment_navigation_card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp">

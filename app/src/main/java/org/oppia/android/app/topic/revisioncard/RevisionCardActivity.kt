@@ -26,7 +26,6 @@ class RevisionCardActivity :
   @Inject
   lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)

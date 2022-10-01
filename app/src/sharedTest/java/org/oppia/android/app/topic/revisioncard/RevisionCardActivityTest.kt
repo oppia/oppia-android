@@ -133,6 +133,7 @@ class RevisionCardActivityTest {
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
+  private val fractionsSubtopicListSize = 4
 
   @Before
   fun setUp() {
@@ -148,7 +149,7 @@ class RevisionCardActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, 1
+      context, 1, FRACTIONS_TOPIC_ID, 1, fractionsSubtopicListSize
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
@@ -258,9 +259,9 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId
+    context, internalProfileId, topicId, subtopicId, fractionsSubtopicListSize
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
