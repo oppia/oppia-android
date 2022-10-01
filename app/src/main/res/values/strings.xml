@@ -6,6 +6,7 @@
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
+  <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
@@ -75,7 +76,7 @@
   <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <string name="topic_story_progress_percentage">%s\%%</string>
-  <string name="topic_play_chapter_index">%s.</string>
+  <string name="topic_play_chapter_index">%s</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
