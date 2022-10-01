@@ -91,6 +91,13 @@
   <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_bright_gold</color>
   <color name="color_palette_confetti_blue_color">@color/color_def_confetti_crystal_blue</color>
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_revision_card_layout_background_color">@color/color_def_oppia_light_black</color>
+  <color name="color_palette_home_activity_background_color">@color/color_def_oppia_light_black</color>
+  <color name="color_palette_view_all_text_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_recently_played_stories_text_color">@color/color_def_white</color>
+  <color name="color_palette_select_a_topic_to_start_text_color">@color/color_def_white</color>
+  <color name="color_palette_greeting_text_color">@color/color_def_white</color>
+  <color name="color_palette_layout_below_greeting_text_color">@color/color_def_dark_turquoise</color>
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_oppia_turquoise</color>
