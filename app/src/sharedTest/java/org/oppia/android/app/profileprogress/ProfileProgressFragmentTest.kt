@@ -673,7 +673,7 @@ class ProfileProgressFragmentTest {
       val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
+        .setActivityTitle(RecentlyPlayedActivityTitle.STORIES_FOR_YOU)
         .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
       intended(
