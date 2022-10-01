@@ -6,5 +6,11 @@ import com.google.protobuf.MessageLite
 
 /** Interface to create intent with generic proto. */
 interface Route {
+  /**
+   * Called to create Intent from proto.
+   *
+   * @param context the activity context
+   * @param params the generic proto
+   */
   fun <T : MessageLite> createIntent(context: Context, params: T): Intent
 }
