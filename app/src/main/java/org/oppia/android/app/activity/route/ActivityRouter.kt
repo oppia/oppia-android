@@ -1,5 +1,6 @@
 package org.oppia.android.app.activity.route
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.DestinationScreen.DestinationScreenCase
@@ -16,16 +17,13 @@ class ActivityRouter @Inject constructor(
   private val consoleLogger: ConsoleLogger
 ) {
   /**  Opens the activity corresponding to the specified [destinationScreen]. */
-  fun routeToScreen(destinationScreen: DestinationScreen) {
-    // TODO: Need to handle error cases properly here.
+  fun routeToScreen(destinationScreen: DestinationScreen): Intent? {
     destinationRoutes[destinationScreen.destinationScreenCase].let { route ->
       when (destinationScreen.destinationScreenCase) {
         DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
-          activity.startActivity(
-            route?.createIntent(
-              activity,
-              destinationScreen.recentlyPlayedActivityParams
-            )
+          return route?.createIntent(
+            activity,
+            destinationScreen.recentlyPlayedActivityParams
           )
         }
         DestinationScreenCase.DESTINATIONSCREEN_NOT_SET, null -> {
@@ -33,5 +31,6 @@ class ActivityRouter @Inject constructor(
         }
       }
     }
+    return Intent()
   }
 }

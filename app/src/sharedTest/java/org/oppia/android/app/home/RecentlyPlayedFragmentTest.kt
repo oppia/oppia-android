@@ -137,6 +137,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -206,11 +207,15 @@ class RecentlyPlayedFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(
+    internalProfileId: Int,
+    recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle = RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+  ): Intent {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context = context,
@@ -365,7 +370,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        RecentlyPlayedActivityTitle.STORIES_FOR_YOU
       )
     ).use {
       testCoroutineDispatchers.runCurrent()

@@ -51,11 +51,13 @@ class ProfileProgressActivity :
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 
-    activityRouter.routeToScreen(
-      DestinationScreen
-        .newBuilder()
-        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-        .build()
+    startActivity(
+      activityRouter.routeToScreen(
+        DestinationScreen
+          .newBuilder()
+          .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+          .build()
+      )
     )
   }
 

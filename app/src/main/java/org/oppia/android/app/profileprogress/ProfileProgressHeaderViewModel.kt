@@ -1,5 +1,6 @@
 package org.oppia.android.app.profileprogress
 
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
@@ -27,6 +28,14 @@ class ProfileProgressHeaderViewModel(
 
   private var recentlyPlayedTopicCount: Int = 0
 
+  private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle {
+    return if(completedStoryCount.get()!! >= 2) {
+      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+    } else {
+      RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+    }
+  }
+
   fun setProfile(currentProfile: Profile) {
     profile.set(currentProfile)
   }
@@ -48,9 +57,7 @@ class ProfileProgressHeaderViewModel(
   }
 
   fun clickOnViewAll() {
-    routeToRecentlyPlayedActivity.routeToRecentlyPlayed(
-      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
-    )
+    routeToRecentlyPlayedActivity.routeToRecentlyPlayed(getRecentlyPlayedActivityTitle())
   }
 
   fun clickOnProfilePicture() {
