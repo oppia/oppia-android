@@ -33,7 +33,7 @@ enum class TopicTab(
     positionWithTwoTabs = 1,
     positionWithFourTabs = 3,
     tabLabelResId = R.string.revision,
-    tabIconResId = R.drawable.ic_revision_icon_24dp
+    tabIconResId = R.drawable._revision
   );
 
   companion object {
