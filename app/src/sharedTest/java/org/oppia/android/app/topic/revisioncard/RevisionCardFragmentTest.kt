@@ -262,7 +262,8 @@ class RevisionCardFragmentTest {
         context,
         profileId.internalId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
