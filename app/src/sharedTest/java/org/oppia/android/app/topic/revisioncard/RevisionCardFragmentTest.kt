@@ -10,9 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -59,7 +60,6 @@ import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity.Companion.createRevisionCardActivityIntent
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -182,7 +182,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTest_overflowMenu_isDisplayedSuccessfully() {
+  fun testRevisionCardTest_initialise_openBottomSheet_showsBottomSheet() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
@@ -194,17 +194,16 @@ class RevisionCardFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
 
-      openActionBarOverflowOrOptionsMenu(context)
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.menu_help)))
+      onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testRevisionCardTest_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
+  fun testRevisionCardTest_openBottomSheet_selectHelpInOverflowMenu_opensHelpActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
@@ -215,12 +214,11 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      openActionBarOverflowOrOptionsMenu(context)
-      testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.menu_help))).perform(ViewActions.click())
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
-
+      onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasExtra(
@@ -232,7 +230,7 @@ class RevisionCardFragmentTest {
   }
 
   @Test
-  fun testRevisionCardTest_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
+  fun testRevisionCardTest_openBottomSheet_selectOptionsInOverflowMenu_opensOptionsActivity() {
     launch<ExplorationActivity>(
       createRevisionCardActivityIntent(
         context,
@@ -243,10 +241,10 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      openActionBarOverflowOrOptionsMenu(context)
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.menu_options))).perform(ViewActions.click())
+      onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(OptionsActivity::class.java.name))
@@ -256,6 +254,28 @@ class RevisionCardFragmentTest {
           /* value= */ false
         )
       )
+    }
+  }
+
+  @Test
+  fun testRevisionCardTest_openBottomSheet_selectCloseOption_bottomSheetCloses() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        SUBTOPIC_TOPIC_ID
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }
   }
 
@@ -688,7 +708,7 @@ class RevisionCardFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,

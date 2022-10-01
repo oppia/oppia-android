@@ -11,6 +11,7 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.model.ScreenName.REVISION_CARD_ACTIVITY
+import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickListener
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -21,7 +22,8 @@ class RevisionCardActivity :
   InjectableAppCompatActivity(),
   ReturnToTopicClickListener,
   ConceptCardListener,
-  RouteToRevisionCardListener {
+  RouteToRevisionCardListener,
+  BottomSheetOptionsMenuItemClickListener {
 
   @Inject
   lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
@@ -45,13 +47,8 @@ class RevisionCardActivity :
     }
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_reading_options, menu)
-    return super.onCreateOptionsMenu(menu)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return revisionCardActivityPresenter.handleOnOptionsItemSelected(item)
+  override fun handleOnOptionsItemSelected(itemId: Int) {
+    revisionCardActivityPresenter.handleOnOptionsItemSelected(itemId)
   }
 
   companion object {
