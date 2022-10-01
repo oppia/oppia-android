@@ -9,8 +9,9 @@ interface Route {
   /**
    * Called to create Intent from proto.
    *
-   * @param context the activity context
-   * @param params the generic proto
+   * @param context the activity context.
+   * @param params the generic proto.
+   * @return Intent created from given context and params.
    */
   fun <T : MessageLite> createIntent(context: Context, params: T): Intent
 }

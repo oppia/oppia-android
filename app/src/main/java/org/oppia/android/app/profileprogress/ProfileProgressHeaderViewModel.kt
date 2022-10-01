@@ -11,9 +11,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class ProfileProgressHeaderViewModel(
-  private val activity: AppCompatActivity,
+  activity: AppCompatActivity,
   fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler
 ) :
   ProfileProgressItemViewModel() {
   private val routeToCompletedStoryListListener = activity as RouteToCompletedStoryListListener

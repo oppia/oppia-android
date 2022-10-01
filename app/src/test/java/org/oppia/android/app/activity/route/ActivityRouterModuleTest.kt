@@ -80,7 +80,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-/** Tests for [ActivityRouter]. */
+/** Tests for [ActivityRouterModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -102,7 +102,7 @@ class ActivityRouterModuleTest {
   }
 
   @Test
-  fun testInjectActivityROuterModule_isInstanceOfActivityRouter() {
+  fun testInjectActivityRouterModule_isInstanceOfActivityRouter() {
     val activityRouter = retrieveActivityRouter()
     assertThat(activityRouter).isInstanceOf(ActivityRouter::class.java)
   }
