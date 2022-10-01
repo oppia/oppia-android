@@ -125,7 +125,7 @@ class AppLanguageResourceHandler @Inject constructor(
 
   /** See [OppiaLocale.DisplayLocale.toHumanReadableString] for specific behavior. */
   fun toHumanReadableString(number: Int): String =
-    getDisplayLocale().toHumanReadableString(number).toString()
+    getDisplayLocale().toHumanReadableString(number)
 
   /** See [OppiaLocale.DisplayLocale.computeDateString]. */
   fun computeDateString(timestampMillis: Long): String =

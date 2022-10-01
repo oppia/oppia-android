@@ -214,7 +214,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       resourceHandler.capitalizeForHumans(
         resourceHandler.getStringInLocaleWithWrapping(
           R.string.hint,
-          hintsViewModel.title.get()!!
+          hintsViewModel.title.get()
         )
       )
 
