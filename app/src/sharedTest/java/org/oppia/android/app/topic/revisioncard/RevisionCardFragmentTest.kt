@@ -295,7 +295,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-//  TODO(#4631): Remove this once #4235 is resolved.
+  // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId0_checkOnlyPreviousNavCardIsNotDisplayed() {
@@ -315,7 +315,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-//  TODO(#4631): Remove this once #4235 is resolved.
+  // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId1_checkPreviousAndNextNavCardsDisplayed() {
@@ -335,7 +335,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-//  TODO(#4631): Remove this once #4235 is resolved.
+  // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fractionSubtopicId3_checkOnlyNextNavCardIsNotDisplayed() {
@@ -356,7 +356,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-//  TODO(#4631): Remove this once #4235 is resolved.
+  // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickPrevNavCard_opensRevisionCardActivity() {
@@ -377,7 +377,7 @@ class RevisionCardFragmentTest {
     }
   }
 
-//  TODO(#4631): Remove this once #4235 is resolved.
+  // TODO(#4631): Remove this once #4235 is resolved.
   @DisableAccessibilityChecks
   @Test
   fun testRevisionCardTestActivity_fracSubtopicId1_clickNextNavCard_opensRevisionCardActivity() {
