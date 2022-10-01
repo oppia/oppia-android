@@ -91,6 +91,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.activity.route.ActivityRouterModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -189,7 +190,7 @@ class BottomSheetOptionsMenuTest {
       SplitScreenInteractionModule::class, LoggingIdentifierModule::class,
       ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
       CachingTestModule::class, MetricLogSchedulerModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
