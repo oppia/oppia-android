@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
 class ProfileProgressHeaderViewModel(
