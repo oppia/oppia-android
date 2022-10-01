@@ -6,12 +6,12 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import javax.inject.Inject
-import org.oppia.android.app.activity.route.ActivityRouter
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
 /**

@@ -59,6 +59,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -137,7 +138,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -209,7 +209,8 @@ class RecentlyPlayedFragmentTest {
 
   private fun createRecentlyPlayedActivityIntent(
     internalProfileId: Int,
-    recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle = RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+    recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle =
+      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
   ): Intent {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
