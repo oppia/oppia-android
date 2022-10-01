@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
-import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -101,6 +100,11 @@ class ExplorationActivityPresenter @Inject constructor(
       getExplorationFragment()?.handlePlayAudio()
     }
 
+    binding.actionBottomSheetOptionsMenu.setOnClickListener {
+      val bottomSheetOptionsMenu = BottomSheetOptionsMenu()
+      bottomSheetOptionsMenu.showNow(activity.supportFragmentManager, bottomSheetOptionsMenu.tag)
+    }
+
     this.profileId = profileId
     this.topicId = topicId
     this.storyId = storyId
@@ -143,9 +147,9 @@ class ExplorationActivityPresenter @Inject constructor(
   }
 
   /** Action for onOptionsItemSelected */
-  fun handleOnOptionsItemSelected(item: MenuItem?): Boolean {
-    return when (item?.itemId) {
-      R.id.action_preferences -> {
+  fun handleOnOptionsItemSelected(itemId: Int): Boolean {
+    return when (itemId) {
+      R.id.action_options -> {
         val intent = OptionsActivity.createOptionsActivity(
           activity,
           profileId.internalId,

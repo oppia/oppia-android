@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><!-- TODO(#4513): Add dark mode support for BottomSheet. -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.appcompat.widget.LinearLayoutCompat
+    android:id="@+id/options_menu_bottom_sheet_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+      android:id="@+id/action_options"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="48dp"
+      android:drawablePadding="8dp"
+      android:gravity="center_vertical"
+      android:text="@string/menu_options"
+      android:textColor="@color/color_def_black"
+      android:textSize="20sp"
+      app:drawableStartCompat="@drawable/ic_options_icon_grey_24dp" />
+
+    <TextView
+      android:id="@+id/action_help"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="48dp"
+      android:drawablePadding="8dp"
+      android:gravity="center_vertical"
+      android:text="@string/menu_help"
+      android:textColor="@color/color_def_black"
+      android:textSize="20sp"
+      app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
+
+    <TextView
+      android:id="@+id/action_close"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="48dp"
+      android:drawablePadding="8dp"
+      android:gravity="center_vertical"
+      android:text="@string/bottom_sheet_options_menu_close"
+      android:textColor="@color/color_def_black"
+      android:textSize="20sp"
+      app:drawableStartCompat="@drawable/ic_baseline_close_24" />
+  </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
