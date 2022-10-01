@@ -14,7 +14,6 @@ import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
 import org.oppia.android.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.databinding.TopicRevisionSummaryViewBinding
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
