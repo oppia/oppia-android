@@ -398,6 +398,8 @@ class ExplorationProgressController @Inject constructor(
               // Synchronously fetch the learner & installation IDs (these may result in file I/O).
               val learnerId = profileManagementController.fetchLearnerId(message.profileId)
               val installationId = loggingIdentifierController.fetchInstallationId()
+              val isContinueButtonAnimationSeen =
+                profileManagementController.fetchContinueAnimationSeenStatus(message.profileId)
 
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
@@ -411,7 +413,8 @@ class ExplorationProgressController @Inject constructor(
                   installationId,
                   learnerId,
                   learnerAnalyticsLogger,
-                  oppiaClock.getCurrentTimeMs()
+                  oppiaClock.getCurrentTimeMs(),
+                  isContinueButtonAnimationSeen
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -840,7 +843,8 @@ class ExplorationProgressController @Inject constructor(
   private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
-      startSessionTimeMs + continueButtonAnimationDelay
+      startSessionTimeMs + continueButtonAnimationDelay,
+      checkNotNull(isContinueButtonAnimationSeen) { "Continue animation seen status not found" }
     )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
@@ -1042,7 +1046,8 @@ class ExplorationProgressController @Inject constructor(
     private val installationId: String?,
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-    val startSessionTimeMs: Long
+    val startSessionTimeMs: Long,
+    val isContinueButtonAnimationSeen: Boolean?
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this

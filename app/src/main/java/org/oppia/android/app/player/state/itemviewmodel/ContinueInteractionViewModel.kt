@@ -35,11 +35,7 @@ class ContinueInteractionViewModel private constructor(
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val isSplitView: Boolean,
-  private val writtenTranslationContext: WrittenTranslationContext,
-  private val explorationProgressController: ExplorationProgressController,
-  private val fragment: Fragment,
-  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val oppiaClock: OppiaClock
+  private val writtenTranslationContext: WrittenTranslationContext
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
 
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
@@ -57,15 +53,8 @@ class ContinueInteractionViewModel private constructor(
     interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
   }
 
-
-
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(
-    private val fragment: Fragment,
-    private val explorationProgressController: ExplorationProgressController,
-    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-    private val oppiaClock: OppiaClock
-  ) : InteractionItemFactory {
+  class FactoryImpl @Inject constructor(private val fragment: Fragment) : InteractionItemFactory {
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
@@ -83,10 +72,6 @@ class ContinueInteractionViewModel private constructor(
         fragment as PreviousNavigationButtonListener,
         isSplitView,
         writtenTranslationContext,
-        explorationProgressController,
-        fragment,
-        lifecycleSafeTimerFactory,
-        oppiaClock
       )
     }
   }

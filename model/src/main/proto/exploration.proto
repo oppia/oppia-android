@@ -273,6 +273,9 @@ message EphemeralState {
 
   // The timestamp at which continue button should start animating.
   int64 continue_button_animation_timestamp = 10;
+
+  // Determines if the continue button animation should be shown or not.
+  bool show_continue_button_animation = 11;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.

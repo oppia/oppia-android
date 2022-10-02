@@ -7,6 +7,10 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
+import java.io.File
+import java.io.FileOutputStream
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
@@ -34,10 +38,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.DirectoryManagementUtil
 import org.oppia.android.util.profile.ProfileNameValidator
 import org.oppia.android.util.system.OppiaClock
-import java.io.File
-import java.io.FileOutputStream
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
 private const val GET_PROFILE_PROVIDER_ID = "get_profile_provider_id"
@@ -649,20 +649,20 @@ class ProfileManagementController @Inject constructor(
 
   private fun updateLastLoggedInAsyncAndNumberOfLogins(profileId: ProfileId):
     Deferred<ProfileActionStatus> {
-      return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
-        val profile = it.profilesMap[profileId.internalId]
-          ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
-        val updatedProfile = profile.toBuilder()
-          .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
-          .setNumberOfLogins(profile.numberOfLogins + 1)
-          .build()
-        val profileDatabaseBuilder = it.toBuilder().putProfiles(
-          profileId.internalId,
-          updatedProfile
-        )
-        Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
-      }
+    return profileDataStore.storeDataWithCustomChannelAsync(updateInMemoryCache = true) {
+      val profile = it.profilesMap[profileId.internalId]
+        ?: return@storeDataWithCustomChannelAsync Pair(it, ProfileActionStatus.PROFILE_NOT_FOUND)
+      val updatedProfile = profile.toBuilder()
+        .setLastLoggedInTimestampMs(oppiaClock.getCurrentTimeMs())
+        .setNumberOfLogins(profile.numberOfLogins + 1)
+        .build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
+  }
 
   /**
    * Deletes an existing profile.
@@ -744,6 +744,30 @@ class ProfileManagementController @Inject constructor(
   suspend fun fetchLearnerId(profileId: ProfileId): String? {
     val profileDatabase = profileDataStore.readDataAsync().await()
     return profileDatabase.profilesMap[profileId.internalId]?.learnerId
+  }
+
+  /**
+   * Returns true if the continue button animation corresponding to the specified [profileId],
+   * and null if the specified profile doesn't exist.
+   */
+  suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
+    val profileDatabase = profileDataStore.readDataAsync().await()
+    return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
+  }
+
+  suspend fun markContinueAnimationSeen(profileId: ProfileId) {
+    val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
+      val profile = it.profilesMap[profileId.internalId]
+      if (profile != null) {
+        val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        return@storeDataAsync profileDatabaseBuilder.build()
+      } else it
+    }
+    updateDatabaseDeferred.await()
   }
 
   private suspend fun getDeferredResult(

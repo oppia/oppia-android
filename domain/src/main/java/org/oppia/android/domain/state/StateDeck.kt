@@ -90,14 +90,14 @@ class StateDeck constructor(
   }
 
   /** Returns the current [EphemeralState] the learner is viewing. */
-  fun getCurrentEphemeralState(helpIndex: HelpIndex, timestamp: Long): EphemeralState {
+  fun getCurrentEphemeralState(helpIndex: HelpIndex, timestamp: Long, isContinueButtonAnimationSeen: Boolean): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current
     // state is the top of the deck, and that state is the terminal one. Otherwise the terminal
     // check would never be triggered since the second case assumes the top of the deck must be
     // pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex, timestamp)
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex, timestamp, isContinueButtonAnimationSeen)
       else -> getPreviousState()
     }
   }
@@ -185,7 +185,7 @@ class StateDeck constructor(
     }.build()
   }
 
-  private fun getCurrentPendingState(helpIndex: HelpIndex, timestamp: Long): EphemeralState {
+  private fun getCurrentPendingState(helpIndex: HelpIndex, timestamp: Long, isContinueButtonAnimationSeen: Boolean): EphemeralState {
     return EphemeralState.newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
@@ -194,9 +194,8 @@ class StateDeck constructor(
           .addAllWrongAnswer(currentDialogInteractions)
           .setHelpIndex(helpIndex)
       )
-      .setContinueButtonAnimationTimestamp(
-        timestamp
-      )
+      .setContinueButtonAnimationTimestamp(timestamp)
+      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen)
       .build()
   }
 
