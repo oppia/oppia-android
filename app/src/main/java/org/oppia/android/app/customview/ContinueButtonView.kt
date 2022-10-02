@@ -90,7 +90,7 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   private fun startAnimating() {
-    val animation = AnimationUtils.loadAnimation(context, R.anim.expand)
+    val animation = AnimationUtils.loadAnimation(context, R.anim.scale_button_size)
     if (enableContinueButtonAnimation.value) {
       this.startAnimation(animation)
     }
