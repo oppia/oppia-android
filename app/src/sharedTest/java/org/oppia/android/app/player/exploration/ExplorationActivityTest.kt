@@ -813,7 +813,7 @@ class ExplorationActivityTest {
           1
         )
       )
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
@@ -834,7 +834,7 @@ class ExplorationActivityTest {
           1
         )
       )
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(
         allOf(
           withId(R.id.audio_language_icon),
@@ -868,11 +868,11 @@ class ExplorationActivityTest {
     ).use {
       waitForTheView(withText("What is a Ratio?"))
       // Clicks continue until we reach the first interaction.
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(
@@ -1868,7 +1868,7 @@ class ExplorationActivityTest {
 
   private fun clickContinueButton() {
     scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 

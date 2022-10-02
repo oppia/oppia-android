@@ -52,7 +52,7 @@
       app:layout_constraintTop_toTopOf="parent" />
 
     <org.oppia.android.app.customview.ContinueButtonView
-      android:id="@+id/continue_button"
+      android:id="@+id/continue_interaction_button"
       style="@style/StateButtonActive"
       android:layout_marginEnd="10dp"
       android:gravity="center"

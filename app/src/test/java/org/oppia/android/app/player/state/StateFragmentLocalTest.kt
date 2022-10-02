@@ -277,7 +277,7 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
       testCoroutineDispatchers.advanceTimeBy(45000)
-      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
     }
   }
 
@@ -288,7 +288,7 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
       testCoroutineDispatchers.advanceTimeBy(45000)
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       assertThat(getContinueButtonAnimationSeenStatus()).isTrue()
     }
@@ -300,7 +300,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
-      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
     }
   }
 
@@ -313,7 +313,7 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
       testCoroutineDispatchers.advanceTimeBy(45000)
-      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
     }
   }
 
@@ -335,7 +335,7 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
       scrollToViewType(CONTINUE_INTERACTION)
       testCoroutineDispatchers.advanceTimeBy(15000)
-      onView(withId(R.id.continue_button)).check(matches(isAnimating()))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
     }
   }
 
@@ -2018,7 +2018,7 @@ class StateFragmentLocalTest {
   private fun clickContinueButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
     testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
