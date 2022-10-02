@@ -749,8 +749,8 @@ class ProfileManagementController @Inject constructor(
   }
 
   /**
-   * Returns true if the continue button animation corresponding to the specified [profileId],
-   * and null if the specified profile doesn't exist.
+   * Returns whether the exploration continue button animation has shown (or been disabled) for the
+   * specified [profileId], or null if the profile doesn't exist.
    */
   suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
     val profileDatabase = profileDataStore.readDataAsync().await()

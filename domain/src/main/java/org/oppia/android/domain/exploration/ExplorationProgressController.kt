@@ -1,5 +1,8 @@
 package org.oppia.android.domain.exploration
 
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -44,9 +47,6 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
-import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -104,7 +104,7 @@ class ExplorationProgressController @Inject constructor(
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
   private val loggingIdentifierController: LoggingIdentifierController,
-  val profileManagementController: ProfileManagementController,
+  private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -129,7 +129,7 @@ class ExplorationProgressController @Inject constructor(
 
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
-  // the amount of time to wait before the continue interaction button is animated in milliseconds
+  // The amount of time to wait before the continue interaction button is animated in milliseconds.
   private val continueButtonAnimationDelay: Long = 45000L
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
@@ -399,7 +399,9 @@ class ExplorationProgressController @Inject constructor(
               val learnerId = profileManagementController.fetchLearnerId(message.profileId)
               val installationId = loggingIdentifierController.fetchInstallationId()
               val isContinueButtonAnimationSeen =
-                profileManagementController.fetchContinueAnimationSeenStatus(message.profileId)
+                profileManagementController.fetchContinueAnimationSeenStatus(
+                  message.profileId
+                ) ?: false
 
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
@@ -413,7 +415,7 @@ class ExplorationProgressController @Inject constructor(
                   installationId,
                   learnerId,
                   learnerAnalyticsLogger,
-                  oppiaClock.getCurrentTimeMs(),
+                  startSessionTimeMs = oppiaClock.getCurrentTimeMs(),
                   isContinueButtonAnimationSeen,
                   profileManagementController,
                   profileId
@@ -625,10 +627,6 @@ class ExplorationProgressController @Inject constructor(
 
       return@tryOperation checkNotNull(answerOutcome) { "Expected answer outcome." }
     }
-  }
-
-  fun markContinueButtonAnimationSeen() {
-    profileManagementController.markContinueButtonAnimationSeen(profileId)
   }
 
   private suspend fun ControllerState.submitHintIsRevealedImpl(
@@ -1053,7 +1051,7 @@ class ExplorationProgressController @Inject constructor(
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
-    val isContinueButtonAnimationSeen: Boolean?,
+    var isContinueButtonAnimationSeen: Boolean?,
     private val profileManagementController: ProfileManagementController,
     private val profileId: ProfileId
   ) {

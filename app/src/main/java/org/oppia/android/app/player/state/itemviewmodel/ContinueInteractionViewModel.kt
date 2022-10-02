@@ -63,7 +63,7 @@ class ContinueInteractionViewModel private constructor(
         hasPreviousButton,
         fragment as PreviousNavigationButtonListener,
         isSplitView,
-        writtenTranslationContext,
+        writtenTranslationContext
       )
     }
   }

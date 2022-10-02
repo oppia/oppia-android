@@ -74,7 +74,7 @@ message Profile {
   // Represents the number of times a user has successfully logged into their profile.
   int32 number_of_logins = 14;
 
-  // Determines if the continue button animation has been seen by the user or not.
+  // Determines if the in-exploration continue button animation has been seen by the user or not.
   bool is_continue_button_animation_seen = 15;
 }
 
