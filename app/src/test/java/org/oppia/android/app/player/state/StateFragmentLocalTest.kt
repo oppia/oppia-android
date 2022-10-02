@@ -307,8 +307,13 @@ class StateFragmentLocalTest {
   @Test
   fun testContIntAnim_openProtExp_ContButtonAnimAlreadySeen_checkAnimIsNotShown() {
     launchForExploration(TEST_EXPLORATION_ID_2).use {
-      val markAnimationSeenProvider = profileTestHelper.markContinueButtonAnimationSeen(profileId)
-      monitorFactory.waitForNextSuccessfulResult(markAnimationSeenProvider)
+      startPlayingExploration()
+      playThroughTestState1()
+
+      it.onActivity { activity ->
+        activity.stopExploration(false)
+      }
+
       startPlayingExploration()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
@@ -349,21 +354,7 @@ class StateFragmentLocalTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       testCoroutineDispatchers.advanceTimeBy(45000)
-      onView(withId(R.id.continue_navigation_button)).check(matches(Matchers.not(isAnimating())))
-    }
-  }
-
-  private fun isAnimating(): TypeSafeMatcher<View> {
-    return ActiveAnimationMatcher()
-  }
-
-  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
-    override fun describeTo(description: Description) {
-      description.appendText("View is animating")
-    }
-
-    override fun matchesSafely(view: View): Boolean {
-      return view.animation?.hasStarted() ?: false
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }
 
@@ -2315,6 +2306,20 @@ class StateFragmentLocalTest {
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)
+  }
+
+  private fun isAnimating(): TypeSafeMatcher<View> {
+    return ActiveAnimationMatcher()
+  }
+
+  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("View is animating")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view.animation?.hasStarted() ?: false
+    }
   }
 
   /**
