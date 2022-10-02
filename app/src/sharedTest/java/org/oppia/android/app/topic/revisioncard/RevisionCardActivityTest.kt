@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,12 +12,15 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -180,11 +182,13 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
+        val revisionCardMarqueeView: MarqueeView =
+          activity.findViewById(R.id.revision_card_marquee_view)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
-        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(revisionCardMarqueeView, instanceOf(MarqueeView::class.java))
       }
     }
   }
@@ -200,11 +204,13 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
+        val revisionCardMarqueeView: MarqueeView =
+          activity.findViewById(R.id.revision_card_marquee_view)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
-        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(revisionCardMarqueeView, instanceOf(MarqueeView::class.java))
       }
     }
   }

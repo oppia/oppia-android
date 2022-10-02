@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -10,9 +12,7 @@
       type="org.oppia.android.app.player.exploration.ExplorationViewModel" />
   </data>
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -38,13 +38,21 @@
           android:layout_height="wrap_content"
           android:orientation="horizontal">
 
-          <TextView
-            android:id="@+id/exploration_toolbar_title"
-            style="@style/MarqueeToolbarTitleTextView"
-            android:layout_width="0dp"
+          <asia.ivity.android.marqueeview.MarqueeView
+            android:id="@+id/exploration_marquee_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:animationDelay="500"
+            app:animationSpeed="10">
+
+            <TextView
+              android:id="@+id/exploration_toolbar_title"
+              style="@style/MarqueeToolbarTitleTextView"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" />
+          </asia.ivity.android.marqueeview.MarqueeView>
 
           <ImageView
             android:id="@+id/action_audio_player"
@@ -55,6 +63,17 @@
             android:scaleType="center"
             android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
             app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}" />
+
+          <ImageButton
+            android:id="@+id/action_bottom_sheet_options_menu"
+            style="?android:actionOverflowButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:scaleType="center" />
+
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
