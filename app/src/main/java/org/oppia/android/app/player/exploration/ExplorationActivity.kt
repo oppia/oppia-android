@@ -3,9 +3,6 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -43,7 +40,8 @@ class ExplorationActivity :
   RevealSolutionInterface,
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
-  ConceptCardListener {
+  ConceptCardListener,
+  BottomSheetOptionsMenuItemClickListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
 
@@ -118,13 +116,8 @@ class ExplorationActivity :
     explorationActivityPresenter.deleteOldestSavedProgressAndStopExploration()
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_reading_options, menu)
-    return super.onCreateOptionsMenu(menu)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
+  override fun handleOnOptionsItemSelected(itemId: Int) {
+    explorationActivityPresenter.handleOnOptionsItemSelected(itemId)
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()
