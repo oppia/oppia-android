@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.Observable
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.app.model.Interaction
@@ -57,6 +58,7 @@ class SelectionInteractionViewModel private constructor(
 
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText = ObservableField("Please select all correct choices")
+  val selectedItemsList: List<ObservableBoolean>? = null
 
   init {
     val callback: Observable.OnPropertyChangedCallback =

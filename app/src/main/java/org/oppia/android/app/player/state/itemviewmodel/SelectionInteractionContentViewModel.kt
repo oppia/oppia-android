@@ -20,5 +20,8 @@ class SelectionInteractionContentViewModel(
     if (isCurrentlySelected != shouldNowBeSelected) {
       isAnswerSelected.set(shouldNowBeSelected)
     }
+    selectionInteractionViewModel.selectedItemsList?.forEach {
+      it.set(isAnswerSelected.get())
+    }
   }
 }
