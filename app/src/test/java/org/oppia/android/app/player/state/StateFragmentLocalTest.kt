@@ -37,6 +37,11 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -161,11 +166,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import java.io.IOException
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -276,10 +276,51 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
-      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
       testCoroutineDispatchers.advanceTimeBy(45000)
       onView(withId(R.id.continue_button)).check(matches(isAnimating()))
     }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ClickContinueButton_checkAnimSeenStatusIsTrue() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      assertThat(getContinueButtonAnimationSeenStatus()).isTrue()
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_checkAnimIsNotShownInTheBeginning() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ContButtonAnimAlreadySeen_checkAnimIsNotShown() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      val markAnimationSeenProvider = profileTestHelper.markContinueButtonAnimationSeen(profileId)
+      monitorFactory.waitForNextSuccessfulResult(markAnimationSeenProvider)
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  private fun getContinueButtonAnimationSeenStatus(): Boolean {
+    return monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.getProfile(profileId)
+    ).isContinueButtonAnimationSeen
   }
 
   @Test
@@ -287,15 +328,12 @@ class StateFragmentLocalTest {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
-      testCoroutineDispatchers.runCurrent()
 
       scrollToViewType(CONTINUE_INTERACTION)
-      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
       testCoroutineDispatchers.advanceTimeBy(30000)
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       scrollToViewType(CONTINUE_INTERACTION)
-      onView(withId(R.id.continue_button)).check(matches(Matchers.not(isAnimating())))
       testCoroutineDispatchers.advanceTimeBy(15000)
       onView(withId(R.id.continue_button)).check(matches(isAnimating()))
     }

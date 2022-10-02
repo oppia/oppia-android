@@ -9,6 +9,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.Profile
 
 /** This helper allows tests to easily create new profiles and switch between them. */
 class ProfileTestHelper @Inject constructor(
@@ -118,6 +119,14 @@ class ProfileTestHelper @Inject constructor(
     return profileManagementController.loginToProfile(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
     )
+  }
+
+  fun getProfile(profileId: ProfileId): DataProvider<Profile> {
+    return profileManagementController.getProfile(profileId)
+  }
+
+  fun markContinueButtonAnimationSeen(profileId: ProfileId): DataProvider<Any?> {
+    return profileManagementController.markContinueButtonAnimationSeen(profileId)
   }
 
   /**
