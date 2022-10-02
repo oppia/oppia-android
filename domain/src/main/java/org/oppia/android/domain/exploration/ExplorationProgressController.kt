@@ -131,6 +131,7 @@ class ExplorationProgressController @Inject constructor(
 
   // The amount of time to wait before the continue interaction button is animated in milliseconds.
   private val continueButtonAnimationDelay: Long = 45000L
+
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
    * [DataProvider] indicating whether the start was successful.
@@ -498,7 +499,9 @@ class ExplorationProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) { AsyncResult.Failure(e) }
+    } catch (e: Exception) {
+      AsyncResult.Failure(e)
+    }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
@@ -1121,7 +1124,7 @@ class ExplorationProgressController @Inject constructor(
     }
 
     /** Ends state-based logging for the current state and logs that the card has ended. */
-    fun endState() {
+    suspend fun endState() {
       stateAnalyticsLogger?.logEndCard()
       explorationAnalyticsLogger.endCard()
       isContinueButtonAnimationSeen?.let {
@@ -1145,9 +1148,11 @@ class ExplorationProgressController @Inject constructor(
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
               stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
-            LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
+            LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {
+            }
           }
-          INDEXTYPE_NOT_SET, null -> {} // Nothing to do here.
+          INDEXTYPE_NOT_SET, null -> {
+          } // Nothing to do here.
         }
         helpIndex = newHelpIndex
       }

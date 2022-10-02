@@ -125,7 +125,7 @@ class ProfileTestHelper @Inject constructor(
     return profileManagementController.getProfile(profileId)
   }
 
-  fun markContinueButtonAnimationSeen(profileId: ProfileId): DataProvider<Any?> {
+  suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
     return profileManagementController.markContinueButtonAnimationSeen(profileId)
   }
 
