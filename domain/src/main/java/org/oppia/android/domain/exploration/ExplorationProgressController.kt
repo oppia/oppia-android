@@ -104,7 +104,7 @@ class ExplorationProgressController @Inject constructor(
   private val translationController: TranslationController,
   private val dataProviders: DataProviders,
   private val loggingIdentifierController: LoggingIdentifierController,
-  private val profileManagementController: ProfileManagementController,
+  val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
@@ -414,7 +414,9 @@ class ExplorationProgressController @Inject constructor(
                   learnerId,
                   learnerAnalyticsLogger,
                   oppiaClock.getCurrentTimeMs(),
-                  isContinueButtonAnimationSeen
+                  isContinueButtonAnimationSeen,
+                  profileManagementController,
+                  profileId
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -623,6 +625,10 @@ class ExplorationProgressController @Inject constructor(
 
       return@tryOperation checkNotNull(answerOutcome) { "Expected answer outcome." }
     }
+  }
+
+  fun markContinueButtonAnimationSeen() {
+    profileManagementController.markContinueButtonAnimationSeen(profileId)
   }
 
   private suspend fun ControllerState.submitHintIsRevealedImpl(
@@ -844,7 +850,7 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
-      checkNotNull(isContinueButtonAnimationSeen) { "Continue animation seen status not found" }
+      isContinueButtonAnimationSeen ?: false
     )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
@@ -1047,7 +1053,9 @@ class ExplorationProgressController @Inject constructor(
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
-    val isContinueButtonAnimationSeen: Boolean?
+    val isContinueButtonAnimationSeen: Boolean?,
+    private val profileManagementController: ProfileManagementController,
+    private val profileId: ProfileId
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -1118,6 +1126,9 @@ class ExplorationProgressController @Inject constructor(
     fun endState() {
       stateAnalyticsLogger?.logEndCard()
       explorationAnalyticsLogger.endCard()
+      isContinueButtonAnimationSeen?.let {
+        if (!it) profileManagementController.markContinueButtonAnimationSeen(profileId)
+      }
     }
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */

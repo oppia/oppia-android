@@ -47,6 +47,8 @@ private const val GET_DEVICE_SETTINGS_PROVIDER_ID =
   "get_device_settings_provider_id"
 private const val ADD_PROFILE_PROVIDER_ID = "add_profile_provided_id"
 private const val UPDATE_NAME_PROVIDER_ID = "update_name_provider_id"
+private const val MARK_CONTINUE_BUTTON_ANIMATION_SEEN_PROVIDER_ID =
+  "mark_continue_button_animation_seen_provider_id"
 private const val UPDATE_PIN_PROVIDER_ID = "update_pin_provider_id"
 private const val UPDATE_PROFILE_AVATAR_PROVIDER_ID =
   "update_profile_avatar_provider_id"
@@ -755,19 +757,28 @@ class ProfileManagementController @Inject constructor(
     return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
   }
 
-  suspend fun markContinueAnimationSeen(profileId: ProfileId) {
-    val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
-      val profile = it.profilesMap[profileId.internalId]
-      if (profile != null) {
-        val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
-        val profileDatabaseBuilder = it.toBuilder().putProfiles(
-          profileId.internalId,
-          updatedProfile
+  /** Marks that the continue button animation has been seen. */
+  fun markContinueButtonAnimationSeen(profileId: ProfileId): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) {
+      val profile =
+        it.profilesMap[profileId.internalId] ?: return@storeDataWithCustomChannelAsync Pair(
+          it,
+          ProfileActionStatus.PROFILE_NOT_FOUND
         )
-        return@storeDataAsync profileDatabaseBuilder.build()
-      } else it
+      val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
+      val profileDatabaseBuilder = it.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
     }
-    updateDatabaseDeferred.await()
+    return dataProviders.createInMemoryDataProviderAsync(
+      MARK_CONTINUE_BUTTON_ANIMATION_SEEN_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
   }
 
   private suspend fun getDeferredResult(

@@ -620,7 +620,7 @@ class QuestionAssessmentProgressController @Inject constructor(
     progress.stateDeck.getCurrentEphemeralState(
       hintHandler.getCurrentHelpIndex().value,
       oppiaClock.getCurrentTimeMs(),
-
+      true
     )
 
   private fun createCurrentQuestionDataProvider(
