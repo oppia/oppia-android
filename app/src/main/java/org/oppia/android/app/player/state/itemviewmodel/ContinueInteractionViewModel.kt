@@ -1,9 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.UserAnswer
@@ -12,11 +9,6 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
-import org.oppia.android.domain.exploration.ExplorationProgressController
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
 // For context:
