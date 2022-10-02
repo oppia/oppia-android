@@ -101,7 +101,11 @@ class StateDeck constructor(
     // pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      isCurrentStateTopOfDeck() -> getCurrentPendingState(helpIndex, timestamp, isContinueButtonAnimationSeen)
+      isCurrentStateTopOfDeck() -> getCurrentPendingState(
+        helpIndex,
+        timestamp,
+        isContinueButtonAnimationSeen
+      )
       else -> getPreviousState()
     }
   }
