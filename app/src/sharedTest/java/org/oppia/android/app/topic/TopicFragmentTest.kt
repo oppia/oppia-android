@@ -2,7 +2,6 @@ package org.oppia.android.app.topic
 
 import android.app.Application
 import android.content.Intent
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +15,7 @@ import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -24,9 +24,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -179,10 +181,12 @@ class TopicFragmentTest {
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+    val topicMarqueeView: MarqueeView =
+      activityTestRule.activity.findViewById(R.id.topic_marquee_view)
 
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    assertThat(topicMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test
@@ -197,10 +201,12 @@ class TopicFragmentTest {
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.topic_toolbar_title)
+    val topicMarqueeView: MarqueeView =
+      activityTestRule.activity.findViewById(R.id.topic_marquee_view)
     ViewCompat.setLayoutDirection(topicToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
     onView(withId(R.id.topic_toolbar_title)).perform(click())
-    assertThat(topicToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(topicToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    assertThat(topicMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test
