@@ -32,6 +32,7 @@ class RevisionCardViewModel private constructor(
 
   private val routeToReviewListener = activity as RouteToRevisionCardListener
 
+  /** Called when the previous navigation card is clicked. */
   fun onPreviousCardClicked() {
     routeToReviewListener.routeToRevisionCard(
       profileId.internalId,
@@ -41,6 +42,7 @@ class RevisionCardViewModel private constructor(
     )
   }
 
+  /** Called when the next navigation card is clicked. */
   fun onNextCardClicked() {
     routeToReviewListener.routeToRevisionCard(
       profileId.internalId,
@@ -70,6 +72,7 @@ class RevisionCardViewModel private constructor(
     Transformations.map(topicLiveData, ::processPreviousSubtopicData)
   }
 
+  /** Returns the title string of the subtopic. */
   fun computeTitleText(subtopic: EphemeralSubtopic?): String {
     return subtopic?.let {
       translationController.extractString(
@@ -130,7 +133,7 @@ class RevisionCardViewModel private constructor(
     }
   }
 
-  /** Factory method to initialize the fields of [RevisionCardViewModel]. */
+  /** Factory to create new [RevisionCardViewModel]s. */
   class Factory @Inject constructor(
     private val activity: AppCompatActivity,
     private val topicController: TopicController,

@@ -107,6 +107,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
+
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -134,7 +136,6 @@ class RevisionCardActivityTest {
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-  private val fractionsSubtopicListSize = 4
 
   @Before
   fun setUp() {
@@ -150,7 +151,7 @@ class RevisionCardActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, 1, fractionsSubtopicListSize
+      context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
@@ -266,7 +267,7 @@ class RevisionCardActivityTest {
     topicId: String,
     subtopicId: Int,
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId, fractionsSubtopicListSize
+    context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
