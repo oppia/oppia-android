@@ -27,7 +27,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -170,7 +169,7 @@ class DateTimeUtilTest {
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, ApplicationModule::class,
       ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
-      ImageParsingModule::class, AccessibilityTestModule::class, PracticeTabModule::class,
+      ImageParsingModule::class, AccessibilityTestModule::class,
       GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
       NetworkModule::class, PlatformParameterModule::class, HintsAndSolutionProdModule::class,
       CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
