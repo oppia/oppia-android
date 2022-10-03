@@ -50,10 +50,11 @@ gradlew.bat @BenHenning
 # Devbots configurations.
 /.devbots/ @BenHenning
 
+# TODO(#4625): Replace BenHenning with rt4914 after 02-10-2022.
 # All resource files.
-/app/src/main/res/**/*.xml @rt4914
-/utility/src/main/res/**/*.xml @rt4914
-/app/src/main/res/values/colors_migrating.xml @rt4914
+/app/src/main/res/**/*.xml @BenHenning
+/utility/src/main/res/**/*.xml @BenHenning
+/app/src/main/res/values/colors_migrating.xml @BenHenning
 
 # App UI strings.
 /app/src/main/res/values*/strings.xml @BenHenning
@@ -62,8 +63,9 @@ gradlew.bat @BenHenning
 # Proguard configurations.
 *.pro @BenHenning
 
+# TODO(#4625): Add rt4914 after 02-10-2022.
 # Lesson assets.
-/domain/src/main/assets/ @BenHenning @rt4914
+/domain/src/main/assets/ @BenHenning
 
 # Android manifests and top-level app configuration.
 *Manifest.xml @BenHenning
@@ -104,9 +106,10 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 #                                    app module                                     #
 #####################################################################################
 
+# TODO(#4625): Add rt4914 after 02-10-2022.
 # Global app module code ownership.
-/app/**/*.kt @rt4914 @BenHenning
-/app/**/*.java @rt4914 @BenHenning
+/app/**/*.kt @BenHenning
+/app/**/*.java @BenHenning
 
 # State players.
 /app/src/*/java/org/oppia/android/app/player/ @BenHenning
@@ -181,14 +184,16 @@ config/kitkat_main_dex_class_list.txt @BenHenning
 # Utility test resources.
 /utility/src/test/res/values/strings.xml @BenHenning
 
+# TODO(#4625): Add rt4914 after 02-10-2022.
 # Accessibility utilities.
-/utility/src/*/java/org/oppia/android/util/accessibility/ @rt4914 @BenHenning
+/utility/src/*/java/org/oppia/android/util/accessibility/ @BenHenning
 
 # Core logging infrastructure.
 /utility/src/*/java/org/oppia/android/util/logging/ @BenHenning
 
+# TODO(#4625): Add rt4914 after 02-10-2022.
 # Miscellaneous statusbar UI utilities.
-/utility/src/*/java/org/oppia/android/util/statusbar/ @rt4914 @BenHenning
+/utility/src/*/java/org/oppia/android/util/statusbar/ @BenHenning
 
 #####################################################################################
 #                                     scripts                                       #

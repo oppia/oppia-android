@@ -27,6 +27,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
+  private var subtopicListSize: Int? = null
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -55,11 +56,20 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       this.viewModel = this@TopicRevisionFragmentPresenter.viewModel
       lifecycleOwner = fragment
     }
+
+    viewModel.subtopicLiveData.observe(fragment) {
+      this.subtopicListSize = it.size
+    }
     return binding.root
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
+    routeToReviewListener.routeToRevisionCard(
+      internalProfileId,
+      topicId,
+      subtopic.subtopicId,
+      checkNotNull(subtopicListSize) { "Subtopic list size not found." }
+    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {

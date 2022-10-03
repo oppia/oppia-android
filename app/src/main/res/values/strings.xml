@@ -6,6 +6,7 @@
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
+  <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
@@ -571,4 +572,5 @@
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <string name="revision_navigation_cards_header">Continue Studying</string>
 </resources>
