@@ -157,7 +157,7 @@
   <!-- Revision Card Activity -->
   <color name="component_color_revision_card_activity_background_color">@color/color_palette_revision_card_background_color</color>
   <color name="component_color_revision_card_activity_layout_background_color">@color/color_palette_revision_card_layout_background_color</color>
-  <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_revision_card_fragment_status_bar_color</color>
   <!-- Third Party Dependency List Activity -->
   <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_third_party_dependency_list_activity_dependency_name_text_view_color">@color/color_palette_dark_text_color</color>

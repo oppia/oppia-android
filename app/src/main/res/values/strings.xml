@@ -572,4 +572,5 @@
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <string name="revision_navigation_cards_header">Continue Studying</string>
 </resources>
