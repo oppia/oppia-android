@@ -111,7 +111,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageResourceHandlerTest.TestApplication::class)
 class AppLanguageResourceHandlerTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   var activityRule =
@@ -119,14 +120,21 @@ class AppLanguageResourceHandlerTest {
       TestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
-  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject
+  lateinit var translationController: TranslationController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  @Parameter lateinit var lang: String
-  @Parameter lateinit var expectedDisplayText: String
+  @Parameter
+  lateinit var lang: String
+  @Parameter
+  lateinit var expectedDisplayText: String
 
   private val audioLanguage by lazy { AudioLanguage.valueOf(lang) }
 
@@ -463,6 +471,16 @@ class AppLanguageResourceHandlerTest {
 
     // Depending on formatting, commas and/or periods are used for large doubles.
     assertThat(formattedString).containsMatch("[,.]")
+  }
+
+  @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumber() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.toHumanReadableString(1)
+
+    assertThat(formattedString).contains("1")
   }
 
   @Test

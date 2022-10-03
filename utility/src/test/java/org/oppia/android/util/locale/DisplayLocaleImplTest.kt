@@ -48,7 +48,8 @@ class DisplayLocaleImplTest {
   @Inject
   lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -157,6 +158,15 @@ class DisplayLocaleImplTest {
 
     // Depending on formatting, commas and/or periods are used for large doubles.
     assertThat(formattedString).containsMatch("[,.]")
+  }
+
+  @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumber() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.toHumanReadableString(1)
+
+    assertThat(formattedString).contains("1")
   }
 
   @Test

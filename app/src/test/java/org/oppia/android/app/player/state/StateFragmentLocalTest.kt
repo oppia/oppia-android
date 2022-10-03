@@ -1283,6 +1283,32 @@ class StateFragmentLocalTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = ""
   )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint title text should be in English with the correct number
+      onView(withId(R.id.hint_title))
+        .check(matches(withText(containsString("Hint 1"))))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
     // Ensure the system locale matches the initial locale context.
     forceDefaultLocale(Locale.ENGLISH)
