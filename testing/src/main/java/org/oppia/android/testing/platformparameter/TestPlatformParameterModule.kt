@@ -3,6 +3,8 @@ package org.oppia.android.testing.platformparameter
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -88,6 +90,14 @@ class TestPlatformParameterModule {
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
     ) ?: PlatformParameterValue.createDefaultParameter(
       SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+    )
+  }
+
+  @Provides
+  @AutomaticUpdateTopicSetting
+  fun provideAutomaticUpdateTopicSettingParam(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableAutomaticUpdateTopicSettingUi
     )
   }
 
@@ -179,10 +189,17 @@ class TestPlatformParameterModule {
   }
 
   companion object {
+    private var enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+
+    /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceShowAutomaticUpdateTopicSettingUi(value: Boolean) {
+      enableAutomaticUpdateTopicSettingUi = value
+    }
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

@@ -887,11 +887,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val interactionViewModelFactoryMap: Map<String, InteractionItemFactory>,
     private val backgroundCoroutineDispatcher: CoroutineDispatcher,
     private val resourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController
+    private val translationController: TranslationController,
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
   ) {
-    private val adapterBuilder = BindableAdapter.MultiTypeBuilder.newBuilder(
-      StateItemViewModel::viewType
-    )
+
+    private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
+      StateItemViewModel.ViewType> = multiTypeBuilderFactory.create { it.viewType }
 
     /**
      * Tracks features individually enabled for the assembler. No features are enabled by default.
@@ -1119,8 +1121,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<StringList> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<StringList>()
+      return singleTypeBuilderFactory.create<StringList>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedAnswerListItemBinding.inflate(
@@ -1141,8 +1142,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       gcsEntityId: String,
       supportsConceptCards: Boolean
     ): BindableAdapter<String> {
-      return BindableAdapter.SingleTypeBuilder
-        .newBuilder<String>()
+      return singleTypeBuilderFactory.create<String>()
         .registerViewBinder(
           inflateView = { parent ->
             SubmittedHtmlAnswerItemBinding.inflate(
@@ -1393,7 +1393,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         String, @JvmSuppressWildcards InteractionItemFactory>,
       @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
       private val resourceHandler: AppLanguageResourceHandler,
-      private val translationController: TranslationController
+      private val translationController: TranslationController,
+      private val multiAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1411,7 +1413,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interactionViewModelFactoryMap,
           backgroundCoroutineDispatcher,
           resourceHandler,
-          translationController
+          translationController,
+          multiAdapterBuilderFactory,
+          singleAdapterFactory
         )
       }
     }
