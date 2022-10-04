@@ -58,6 +58,7 @@ class ExplorationPlayerTest {
     // Image Region Selection Interaction.
     val imageSelectionView = device.findObjectByRes("interaction_container_frame_layout")
     device.waitForRes("image_click_interaction_image_view")
+    // TODO(#4639): Use content description to fetch the image region.
     imageSelectionView.children.get(2).click()
     device.findObjectByText("SUBMIT").click()
     device.findObjectByText("CONTINUE").click()
