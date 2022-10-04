@@ -2,7 +2,6 @@ package org.oppia.android.app.activity.route
 
 import android.content.Context
 import android.content.Intent
-import com.google.protobuf.MessageLite
 import org.oppia.android.app.model.DestinationScreen
 
 /** Represents a possible navigation route to a specific activity in the app. */

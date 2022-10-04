@@ -1,16 +1,13 @@
 package org.oppia.android.app.activity.route
 
 import android.app.Application
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,6 +23,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -81,10 +80,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.model.DestinationScreen
-import org.robolectric.shadows.ShadowLog
 
 /** Tests for [ActivityRouterModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -114,27 +111,33 @@ class ActivityRouterModuleTest {
   @Test
   fun testInjectActivityRouterModule_routeToRecentlyPlayedActivity() {
     activityRule.scenario.onActivity { activity ->
-      assert(destinationRoutes.containsKey(DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS))
-      destinationRoutes[DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS].let { route ->
-        val intent = route?.createIntent(
-          activity,
-          DestinationScreen.getDefaultInstance()
+      assert(
+        destinationRoutes.containsKey(
+          DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS
         )
-        assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
-      }
+      )
+      destinationRoutes[DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS]
+        .let { route ->
+          val intent = route?.createIntent(
+            activity,
+            DestinationScreen.getDefaultInstance()
+          )
+          assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
+        }
     }
   }
 
   @Test
   fun testInjectActivityRouterModule_routeToDestinationScreenNotSet_showsError() {
     activityRule.scenario.onActivity { activity ->
-      destinationRoutes[DestinationScreen.DestinationScreenCase.DESTINATIONSCREEN_NOT_SET].let { route ->
-        val intent = route?.createIntent(
-          activity,
-          DestinationScreen.getDefaultInstance()
-        )
-        assertThat(intent).isNull()
-      }
+      destinationRoutes[DestinationScreen.DestinationScreenCase.DESTINATIONSCREEN_NOT_SET]
+        .let { route ->
+          val intent = route?.createIntent(
+            activity,
+            DestinationScreen.getDefaultInstance()
+          )
+          assertThat(intent).isNull()
+        }
     }
   }
 

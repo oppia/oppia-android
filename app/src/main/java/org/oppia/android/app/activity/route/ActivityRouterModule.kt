@@ -2,13 +2,11 @@ package org.oppia.android.app.activity.route
 
 import android.content.Context
 import android.content.Intent
-import com.google.protobuf.MessageLite
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.DestinationScreen
-import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
 /** Module to bind destination screens to navigable activity routes. */
 @Module

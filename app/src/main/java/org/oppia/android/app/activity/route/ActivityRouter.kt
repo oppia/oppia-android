@@ -1,6 +1,5 @@
 package org.oppia.android.app.activity.route
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.DestinationScreen.DestinationScreenCase

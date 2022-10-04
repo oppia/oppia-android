@@ -80,11 +80,11 @@ class NavigationDrawerTestActivity :
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 
-      activityRouter.routeToScreen(
-        DestinationScreen
-          .newBuilder()
-          .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-          .build()
-      )
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+        .build()
+    )
   }
 }
