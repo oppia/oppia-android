@@ -15,7 +15,7 @@ class ActivityRouter @Inject constructor(
   private val destinationRoutes: Map<DestinationScreenCase, @JvmSuppressWildcards Route>,
   private val consoleLogger: ConsoleLogger
 ) {
-  /**  Opens the activity corresponding to the specified [destinationScreen]. */
+  /** Opens the activity corresponding to the specified [destinationScreen]. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
     destinationRoutes[destinationScreen.destinationScreenCase].let { route ->
       when (destinationScreen.destinationScreenCase) {
