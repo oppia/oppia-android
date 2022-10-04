@@ -26,10 +26,9 @@ class ProfileProgressHeaderViewModel(
   private var recentlyPlayedTopicCount: Int = 0
 
   private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle {
-    return if (completedStoryCount.get()!! >= 2) {
-      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
-    } else {
-      RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+    return when (completedStoryCount.get()) {
+      in 2..Int.MAX_VALUE -> RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+      else -> RecentlyPlayedActivityTitle.STORIES_FOR_YOU
     }
   }
 
