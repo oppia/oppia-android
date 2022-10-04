@@ -25,12 +25,12 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.FontSizeMatcher.Companion.withFontSize
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -74,6 +74,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -113,7 +114,7 @@ class TestFontScaleConfigurationUtilActivityTest {
     Intents.release()
   }
 
-  private fun createFontScaleTestActivityIntent(readingTextSize: String): Intent {
+  private fun createFontScaleTestActivityIntent(readingTextSize: ReadingTextSize): Intent {
     return TestFontScaleConfigurationUtilActivity.createFontScaleTestActivity(
       context,
       readingTextSize
@@ -123,7 +124,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_smallTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -138,7 +139,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_mediumTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -153,7 +154,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_largeTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -168,7 +169,7 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_extraLargeTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE.name)
+      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
@@ -198,7 +199,7 @@ class TestFontScaleConfigurationUtilActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -206,7 +207,8 @@ class TestFontScaleConfigurationUtilActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -6,6 +6,7 @@ import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ChapterProgress
 import org.oppia.android.app.model.ChapterSummary
 import org.oppia.android.app.model.ComingSoonTopicList
+import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.LessonThumbnailGraphic
 import org.oppia.android.app.model.ProfileId
@@ -15,6 +16,7 @@ import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.StoryProgress
 import org.oppia.android.app.model.StoryRecord
 import org.oppia.android.app.model.StorySummary
+import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.Topic
 import org.oppia.android.app.model.TopicIdList
 import org.oppia.android.app.model.TopicList
@@ -25,14 +27,15 @@ import org.oppia.android.app.model.TopicProgress
 import org.oppia.android.app.model.TopicRecord
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.model.UpcomingTopic
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.JsonAssetRetriever
 import org.oppia.android.domain.util.getStringFromObject
 import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.data.DataProviders.Companion.combineWith
+import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -91,9 +94,9 @@ class TopicListController @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,
   private val topicController: TopicController,
   private val storyProgressController: StoryProgressController,
-  private val dataProviders: DataProviders,
   private val oppiaClock: OppiaClock,
   private val assetRepository: AssetRepository,
+  private val translationController: TranslationController,
   @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
 ) {
 
@@ -101,11 +104,10 @@ class TopicListController @Inject constructor(
    * Returns the list of [TopicSummary]s currently tracked by the app, possibly up to
    * [EVICTION_TIME_MILLIS] old.
    */
-  fun getTopicList(): DataProvider<TopicList> {
-    return dataProviders.createInMemoryDataProvider(
-      GET_TOPIC_LIST_PROVIDER_ID,
-      this::createTopicList
-    )
+  fun getTopicList(profileId: ProfileId): DataProvider<TopicList> {
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return translationLocaleProvider.transform(GET_TOPIC_LIST_PROVIDER_ID, ::createTopicList)
   }
 
   /**
@@ -118,14 +120,18 @@ class TopicListController @Inject constructor(
    * @return a [DataProvider] for an [PromotedActivityList].
    */
   fun getPromotedActivityList(profileId: ProfileId): DataProvider<PromotedActivityList> {
-    return storyProgressController.retrieveTopicProgressListDataProvider(profileId)
-      .transformAsync(GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID) {
-        val promotedActivityList = computePromotedActivityList(it)
-        AsyncResult.Success(promotedActivityList)
-      }
+    val retrieveTopicProgressListProvider =
+      storyProgressController.retrieveTopicProgressListDataProvider(profileId)
+    val translationLocaleProvider =
+      translationController.getWrittenTranslationContentLocale(profileId)
+    return retrieveTopicProgressListProvider.combineWith(
+      translationLocaleProvider,
+      GET_PROMOTED_ACTIVITY_LIST_PROVIDER_ID,
+      ::computePromotedActivityList
+    )
   }
 
-  private fun createTopicList(): TopicList {
+  private fun createTopicList(contentLocale: OppiaLocale.ContentLocale): TopicList {
     return if (loadLessonProtosFromAssets) {
       val topicIdList =
         assetRepository.loadProtoFromLocalAssets(
@@ -135,23 +141,28 @@ class TopicListController @Inject constructor(
       return TopicList.newBuilder().apply {
         // Only include topics currently playable in the topic list.
         addAllTopicSummary(
-          topicIdList.topicIdsList.map { createTopicSummary(it) }
-            .filter { it.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW }
+          topicIdList.topicIdsList.map {
+            createEphemeralTopicSummary(it, contentLocale)
+          }.filter {
+            it.topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW
+          }
         )
       }.build()
-    } else loadTopicListFromJson()
+    } else loadTopicListFromJson(contentLocale)
   }
 
-  private fun loadTopicListFromJson(): TopicList {
+  private fun loadTopicListFromJson(contentLocale: OppiaLocale.ContentLocale): TopicList {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
       .getJSONArray("topic_id_list")
     val topicListBuilder = TopicList.newBuilder()
     for (i in 0 until topicIdJsonArray.length()) {
-      val topicSummary = createTopicSummary(topicIdJsonArray.optString(i)!!)
+      val ephemeralSummary =
+        createEphemeralTopicSummary(topicIdJsonArray.optString(i)!!, contentLocale)
+      val topicPlayAvailability = ephemeralSummary.topicSummary.topicPlayAvailability
       // Only include topics currently playable in the topic list.
-      if (topicSummary.topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
-        topicListBuilder.addTopicSummary(topicSummary)
+      if (topicPlayAvailability.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
+        topicListBuilder.addTopicSummary(ephemeralSummary)
       }
     }
     return topicListBuilder.build()
@@ -174,6 +185,20 @@ class TopicListController @Inject constructor(
     return comingSoonTopicListBuilder.build()
   }
 
+  private fun createEphemeralTopicSummary(
+    topicId: String,
+    contentLocale: OppiaLocale.ContentLocale
+  ): EphemeralTopicSummary {
+    val topicSummary = createTopicSummary(topicId)
+    return EphemeralTopicSummary.newBuilder().apply {
+      this.topicSummary = topicSummary
+      writtenTranslationContext =
+        translationController.computeWrittenTranslationContext(
+          topicSummary.writtenTranslationsMap, contentLocale
+        )
+    }.build()
+  }
+
   private fun createTopicSummary(topicId: String): TopicSummary {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
@@ -187,9 +212,11 @@ class TopicListController @Inject constructor(
           baseMessage = StoryRecord.getDefaultInstance()
         )
       }
+      val firstStoryId = storyRecords.getOrNull(0)?.storyId
       TopicSummary.newBuilder().apply {
         this.topicId = topicId
-        name = topicRecord.name
+        putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
+        title = topicRecord.translatableTitle
         totalChapterCount = storyRecords.map { it.chaptersList.size }.sum()
         topicThumbnail = topicRecord.topicThumbnail
         topicPlayAvailability = if (topicRecord.isPublished) {
@@ -197,6 +224,7 @@ class TopicListController @Inject constructor(
         } else {
           TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
         }
+        storyRecords.firstOrNull()?.storyId?.let { this.firstStoryId = it }
       }.build()
     } else {
       createTopicSummaryFromJson(topicId, jsonAssetRetriever.loadJsonFromAsset("$topicId.json")!!)
@@ -218,18 +246,27 @@ class TopicListController @Inject constructor(
         .getJSONArray("node_titles")
         .length()
     }
+    val firstStoryId =
+      if (storyData.length() == 0) "" else storyData.getJSONObject(0).getStringFromObject("id")
+
     val topicPlayAvailability = if (jsonObject.getBoolean("published")) {
       TopicPlayAvailability.newBuilder().setAvailableToPlayNow(true).build()
     } else {
       TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
     }
+    val topicTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "title"
+      html = jsonObject.getStringFromObject("topic_name")
+    }.build()
+    // No written translations are included since none are retrieved from JSON.
     return TopicSummary.newBuilder()
       .setTopicId(topicId)
-      .setName(jsonObject.getStringFromObject("topic_name"))
+      .setTitle(topicTitle)
       .setVersion(jsonObject.optInt("version"))
       .setTotalChapterCount(totalChapterCount)
       .setTopicThumbnail(createTopicThumbnailFromJson(jsonObject))
       .setTopicPlayAvailability(topicPlayAvailability)
+      .setFirstStoryId(firstStoryId)
       .build()
   }
 
@@ -251,8 +288,14 @@ class TopicListController @Inject constructor(
       TopicPlayAvailability.newBuilder().setAvailableToPlayInFuture(true).build()
     }
 
+    val topicTitle = SubtitledHtml.newBuilder().apply {
+      contentId = "title"
+      html = jsonObject.getStringFromObject("topic_name")
+    }.build()
+
+    // No written translations are included since none are retrieved from JSON.
     return UpcomingTopic.newBuilder().setTopicId(topicId)
-      .setName(jsonObject.getStringFromObject("topic_name"))
+      .setTitle(topicTitle)
       .setVersion(jsonObject.optInt("version"))
       .setTopicPlayAvailability(topicPlayAvailability)
       .setLessonThumbnail(createTopicThumbnailFromJson(jsonObject))
@@ -260,21 +303,30 @@ class TopicListController @Inject constructor(
   }
 
   private fun computePromotedActivityList(
-    topicProgressList: List<TopicProgress>
+    topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): PromotedActivityList {
     val promotedActivityListBuilder = PromotedActivityList.newBuilder()
-    promotedActivityListBuilder.promotedStoryList = computePromotedStoryList(topicProgressList)
+    promotedActivityListBuilder.promotedStoryList =
+      computePromotedStoryList(topicProgressList, contentLocale)
     if (promotedActivityListBuilder.promotedStoryList.getTotalPromotedStoryCount() == 0) {
       promotedActivityListBuilder.comingSoonTopicList = computeComingSoonTopicList()
     }
     return promotedActivityListBuilder.build()
   }
 
-  private fun computePromotedStoryList(topicProgressList: List<TopicProgress>): PromotedStoryList {
+  private fun computePromotedStoryList(
+    topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale
+  ): PromotedStoryList {
     return PromotedStoryList.newBuilder()
-      .addAllRecentlyPlayedStory(computePlayedStories(topicProgressList) { it < ONE_WEEK_IN_DAYS })
-      .addAllOlderPlayedStory(computePlayedStories(topicProgressList) { it > ONE_WEEK_IN_DAYS })
-      .addAllSuggestedStory(computeSuggestedStories(topicProgressList))
+      .addAllRecentlyPlayedStory(
+        computePlayedStories(topicProgressList, contentLocale) { it < ONE_WEEK_IN_DAYS }
+      )
+      .addAllOlderPlayedStory(
+        computePlayedStories(topicProgressList, contentLocale) { it > ONE_WEEK_IN_DAYS }
+      )
+      .addAllSuggestedStory(computeSuggestedStories(topicProgressList, contentLocale))
       .build()
   }
 
@@ -284,6 +336,7 @@ class TopicListController @Inject constructor(
 
   private fun computePlayedStories(
     topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale,
     completionTimeFilter: (Long) -> Boolean
   ): List<PromotedStory> {
     val playedPromotedStoryList = mutableListOf<PromotedStory>()
@@ -327,7 +380,8 @@ class TopicListController @Inject constructor(
                   completedChapterProgressList,
                   topic,
                   isTopicConsideredCompleted,
-                  storyProgress.chapterProgressMap
+                  storyProgress.chapterProgressMap,
+                  contentLocale
                 )?.let { promotedStory ->
                   playedPromotedStoryList.add(promotedStory)
                 }
@@ -346,7 +400,8 @@ class TopicListController @Inject constructor(
                   completedChapterProgressList,
                   topic,
                   isTopicConsideredCompleted,
-                  storyProgress.chapterProgressMap
+                  storyProgress.chapterProgressMap,
+                  contentLocale
                 )?.let { promotedStory ->
                   playedPromotedStoryList.add(promotedStory)
                 }
@@ -412,7 +467,8 @@ class TopicListController @Inject constructor(
     completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
     isTopicConsideredCompleted: Boolean,
-    chapterProgressMap: Map<String, ChapterProgress>
+    chapterProgressMap: Map<String, ChapterProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): PromotedStory? {
     val recentlyPlayerChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
@@ -424,10 +480,10 @@ class TopicListController @Inject constructor(
         topic,
         completedChapterProgressList.size,
         story.chapterCount,
-        recentlyPlayerChapterSummary.name,
-        recentlyPlayerChapterSummary.explorationId,
+        recentlyPlayerChapterSummary,
         isTopicConsideredCompleted,
-        chapterProgressMap[recentlyPlayerChapterSummary.explorationId]
+        chapterProgressMap[recentlyPlayerChapterSummary.explorationId],
+        contentLocale
       )
     }
     return null
@@ -440,7 +496,8 @@ class TopicListController @Inject constructor(
     completedChapterProgressList: List<ChapterProgress>,
     topic: Topic,
     isTopicConsideredCompleted: Boolean,
-    chapterProgressMap: Map<String, ChapterProgress>
+    chapterProgressMap: Map<String, ChapterProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): PromotedStory? {
     val lastChapterSummary: ChapterSummary? =
       story.chapterList.find { chapterSummary ->
@@ -455,10 +512,10 @@ class TopicListController @Inject constructor(
           topic,
           completedChapterProgressList.size,
           story.chapterCount,
-          nextChapterSummary.name,
-          nextChapterSummary.explorationId,
+          nextChapterSummary,
           isTopicConsideredCompleted,
-          chapterProgressMap[nextChapterSummary.explorationId]
+          chapterProgressMap[nextChapterSummary.explorationId],
+          contentLocale
         )
       }
     }
@@ -515,7 +572,8 @@ class TopicListController @Inject constructor(
   * In this example, when topic Fractions is finished, Test topic 0 will be recommended and so on.
   */
   private fun computeSuggestedStories(
-    topicProgressList: List<TopicProgress>
+    topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
     return if (loadLessonProtosFromAssets) {
       val topicIdList =
@@ -523,12 +581,15 @@ class TopicListController @Inject constructor(
           assetName = "topics",
           baseMessage = TopicIdList.getDefaultInstance()
         )
-      return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList.topicIdsList)
-    } else computeSuggestedStoriesFromJson(topicProgressList)
+      return computeSuggestedStoriesForTopicIds(
+        topicProgressList, topicIdList.topicIdsList, contentLocale
+      )
+    } else computeSuggestedStoriesFromJson(topicProgressList, contentLocale)
   }
 
   private fun computeSuggestedStoriesFromJson(
-    topicProgressList: List<TopicProgress>
+    topicProgressList: List<TopicProgress>,
+    contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
     val topicIdJsonArray = jsonAssetRetriever
       .loadJsonFromAsset("topics.json")!!
@@ -536,12 +597,13 @@ class TopicListController @Inject constructor(
     // All topics that could potentially be recommended.
     val topicIdList =
       (0 until topicIdJsonArray.length()).map { topicIdJsonArray[it].toString() }
-    return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList)
+    return computeSuggestedStoriesForTopicIds(topicProgressList, topicIdList, contentLocale)
   }
 
   private fun computeSuggestedStoriesForTopicIds(
     topicProgressList: List<TopicProgress>,
-    requestedTopicIdList: List<String>
+    requestedTopicIdList: List<String>,
+    contentLocale: OppiaLocale.ContentLocale
   ): List<PromotedStory> {
     // It's expected that topicIdList is the same as requestedTopicIdList, but this approach is
     // taken to ensure that removed topics are not considered for recommendations.
@@ -577,7 +639,7 @@ class TopicListController @Inject constructor(
       if (topicId !in impliedFinishedTopicIds &&
         impliedFinishedTopicIds.containsAll(dependentTopicIds)
       ) {
-        loadRecommendedStory(topicId)?.let(recommendedStories::add)
+        loadRecommendedStory(topicId, contentLocale)?.let(recommendedStories::add)
       }
     }
     return recommendedStories
@@ -625,7 +687,10 @@ class TopicListController @Inject constructor(
     return (transitiveDependencies + directDependencies).toSet()
   }
 
-  private fun loadRecommendedStory(topicId: String): PromotedStory? {
+  private fun loadRecommendedStory(
+    topicId: String,
+    contentLocale: OppiaLocale.ContentLocale
+  ): PromotedStory? {
     return if (loadLessonProtosFromAssets) {
       val topicRecord =
         assetRepository.loadProtoFromLocalAssets(
@@ -645,16 +710,28 @@ class TopicListController @Inject constructor(
         )
       return PromotedStory.newBuilder().apply {
         storyId = firstStoryId
-        storyName = storyRecord.storyName
+        storyWrittenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            storyRecord.writtenTranslationsMap, contentLocale
+          )
+        topicWrittenTranslationContext =
+          translationController.computeWrittenTranslationContext(
+            topicRecord.writtenTranslationsMap, contentLocale
+          )
+        storyTitle = storyRecord.translatableStoryName
         this.topicId = topicId
-        topicName = topicRecord.name
+        topicTitle = topicRecord.translatableTitle
         completedChapterCount = 0
         totalChapterCount = storyRecord.chaptersCount
         lessonThumbnail = storyRecord.storyThumbnail
         isTopicLearned = false
         // Only populate next chapter information if there is a next chapter.
         storyRecord.chaptersList.firstOrNull()?.let {
-          nextChapterName = it.title
+          nextChapterWrittenTranslationContext =
+            translationController.computeWrittenTranslationContext(
+              it.writtenTranslationsMap, contentLocale
+            )
+          nextChapterTitle = it.translatableTitle
           explorationId = it.explorationId
         }
         // ChapterPlayState will be NOT_STARTED because this function only recommends the first
@@ -685,16 +762,24 @@ class TopicListController @Inject constructor(
       val storyId = storyData.optJSONObject(0).optString("id")
       val storySummary = topicController.retrieveStory(topicId, storyId)
 
+      val topicTitle = topicJson.optString("topic_name").takeIf { it.isNotEmpty() }?.let {
+        SubtitledHtml.newBuilder().apply {
+          contentId = "title"
+          html = it
+        }.build()
+      } ?: SubtitledHtml.getDefaultInstance()
+      // No written translations are included for the topic since its name is directly fetched from
+      // the JSON (and the JSON doesn't include translations for these properties, anyway).
       val promotedStoryBuilder = PromotedStory.newBuilder()
         .setStoryId(storyId)
-        .setStoryName(storySummary.storyName)
+        .setStoryTitle(storySummary.storyTitle)
         .setLessonThumbnail(storySummary.storyThumbnail)
         .setTopicId(topicId)
-        .setTopicName(topicJson.optString("topic_name"))
+        .setTopicTitle(topicTitle)
         .setCompletedChapterCount(0)
         .setTotalChapterCount(totalChapterCount)
       if (storySummary.chapterList.isNotEmpty()) {
-        promotedStoryBuilder.nextChapterName = storySummary.chapterList[0].name
+        promotedStoryBuilder.nextChapterTitle = storySummary.chapterList[0].title
         promotedStoryBuilder.explorationId = storySummary.chapterList[0].explorationId
         promotedStoryBuilder.chapterPlayState = ChapterPlayState.NOT_STARTED
       }
@@ -707,30 +792,42 @@ class TopicListController @Inject constructor(
     topic: Topic,
     completedChapterCount: Int,
     totalChapterCount: Int,
-    nextChapterName: String?,
-    explorationId: String?,
+    nextChapterSummary: ChapterSummary,
     isTopicConsideredCompleted: Boolean,
-    nextChapterProgress: ChapterProgress?
+    nextChapterProgress: ChapterProgress?,
+    contentLocale: OppiaLocale.ContentLocale
   ): PromotedStory {
     val storySummary = topic.storyList.find { summary -> summary.storyId == storyId }!!
-    val promotedStoryBuilder = PromotedStory.newBuilder()
+    // If the chapterProgress equals null that means the chapter has no progress associated with
+    // it because it is not yet started.
+    return PromotedStory.newBuilder()
       .setStoryId(storyId)
-      .setStoryName(storySummary.storyName)
+      .setStoryWrittenTranslationContext(
+        translationController.computeWrittenTranslationContext(
+          storySummary.writtenTranslationsMap, contentLocale
+        )
+      )
+      .setTopicWrittenTranslationContext(
+        translationController.computeWrittenTranslationContext(
+          topic.writtenTranslationsMap, contentLocale
+        )
+      )
+      .setNextChapterWrittenTranslationContext(
+        translationController.computeWrittenTranslationContext(
+          nextChapterSummary.writtenTranslationsMap, contentLocale
+        )
+      )
+      .setStoryTitle(storySummary.storyTitle)
       .setLessonThumbnail(storySummary.storyThumbnail)
       .setTopicId(topic.topicId)
-      .setTopicName(topic.name)
+      .setTopicTitle(topic.title)
       .setCompletedChapterCount(completedChapterCount)
       .setTotalChapterCount(totalChapterCount)
       .setIsTopicLearned(isTopicConsideredCompleted)
-    if (nextChapterName != null && explorationId != null) {
-      promotedStoryBuilder.nextChapterName = nextChapterName
-      promotedStoryBuilder.explorationId = explorationId
-      // If the chapterProgress equals null that means the chapter has no progress associated with
-      // it because it is not yet started.
-      promotedStoryBuilder.chapterPlayState =
-        nextChapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED
-    }
-    return promotedStoryBuilder.build()
+      .setNextChapterTitle(nextChapterSummary.title)
+      .setExplorationId(nextChapterSummary.explorationId)
+      .setChapterPlayState(nextChapterProgress?.chapterPlayState ?: ChapterPlayState.NOT_STARTED)
+      .build()
   }
 }
 
@@ -832,13 +929,6 @@ internal fun createStoryThumbnail3(): LessonThumbnail {
     .build()
 }
 
-internal fun createStoryThumbnail4(): LessonThumbnail {
-  return LessonThumbnail.newBuilder()
-    .setThumbnailGraphic(LessonThumbnailGraphic.COMPARING_FRACTIONS)
-    .setBackgroundColorRgb(0xf2ecd3)
-    .build()
-}
-
 internal fun createStoryThumbnail5(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DERIVE_A_RATIO)
@@ -888,31 +978,10 @@ internal fun createChapterThumbnail5(): LessonThumbnail {
     .build()
 }
 
-internal fun createChapterThumbnail6(): LessonThumbnail {
-  return LessonThumbnail.newBuilder()
-    .setThumbnailGraphic(LessonThumbnailGraphic.BAKER)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_3))
-    .build()
-}
-
-internal fun createChapterThumbnail7(): LessonThumbnail {
-  return LessonThumbnail.newBuilder()
-    .setThumbnailGraphic(LessonThumbnailGraphic.PERSON_WITH_PIE_CHART)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_4))
-    .build()
-}
-
 internal fun createChapterThumbnail8(): LessonThumbnail {
   return LessonThumbnail.newBuilder()
     .setThumbnailGraphic(LessonThumbnailGraphic.DUCK_AND_CHICKEN)
     .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_1))
-    .build()
-}
-
-internal fun createChapterThumbnail9(): LessonThumbnail {
-  return LessonThumbnail.newBuilder()
-    .setThumbnailGraphic(LessonThumbnailGraphic.CHILD_WITH_FRACTIONS_HOMEWORK)
-    .setBackgroundColorRgb(Color.parseColor(CHAPTER_BG_COLOR_2))
     .build()
 }
 

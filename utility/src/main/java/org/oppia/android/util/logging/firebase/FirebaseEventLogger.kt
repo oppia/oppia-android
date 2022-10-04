@@ -1,7 +1,7 @@
 package org.oppia.android.util.logging.firebase
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Application
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
@@ -65,13 +65,11 @@ class FirebaseEventLogger private constructor(
   /** Application-scoped injectable factory for creating new [FirebaseEventLogger]s. */
   @SuppressLint("MissingPermission") // This is a false warning probably due to the IJwB plugin.
   class Factory @Inject constructor(
-    private val context: Context,
+    private val application: Application,
     private val networkConnectionUtil: NetworkConnectionUtil,
     private val eventBundleCreator: EventBundleCreator
   ) {
-    private val firebaseAnalytics by lazy {
-      FirebaseAnalytics.getInstance(context.applicationContext)
-    }
+    private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(application) }
 
     /**
      * Returns a new [FirebaseEventLogger] for the current application context.

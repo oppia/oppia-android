@@ -20,11 +20,10 @@ private const val TAG_PROFILE_PICTURE_EDIT_DIALOG = "PROFILE_PICTURE_EDIT_DIALOG
 @FragmentScope
 class ProfileProgressFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
-  private val fragment: Fragment
+  private val fragment: Fragment,
+  private val viewModel: ProfileProgressViewModel,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
-
-  @Inject
-  lateinit var viewModel: ProfileProgressViewModel
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -70,14 +69,13 @@ class ProfileProgressFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ProfileProgressItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ProfileProgressItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is ProfileProgressHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is RecentlyPlayedStorySummaryViewModel -> ViewType.VIEW_TYPE_RECENTLY_PLAYED_STORY
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<ProfileProgressItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is ProfileProgressHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is RecentlyPlayedStorySummaryViewModel -> ViewType.VIEW_TYPE_RECENTLY_PLAYED_STORY
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = ProfileProgressHeaderBinding::inflate,

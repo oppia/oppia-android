@@ -27,7 +27,9 @@ oppia_proto_library(
     name = "arguments_proto",
     srcs = ["arguments.proto"],
     deps = [
+        ":exploration_checkpoint_proto",
         ":exploration_proto",
+        ":profile_proto",
         ":translation_proto",
     ],
 )
@@ -53,6 +55,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "performance_metrics_event_logger_proto",
     srcs = ["performance_metrics.proto"],
+    deps = [":screens_proto"],
 )
 
 java_lite_proto_library(
@@ -99,6 +102,18 @@ java_lite_proto_library(
 )
 
 oppia_proto_library(
+    name = "screens_proto",
+    srcs = ["screens.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "screens_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":screens_proto"],
+)
+
+oppia_proto_library(
     name = "math_proto",
     srcs = ["math.proto"],
 )
@@ -112,12 +127,24 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "onboarding_proto",
     srcs = ["onboarding.proto"],
+    deps = [":version_proto"],
 )
 
 java_lite_proto_library(
     name = "onboarding_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":onboarding_proto"],
+)
+
+oppia_proto_library(
+    name = "spotlight_proto",
+    srcs = ["spotlight.proto"],
+)
+
+java_lite_proto_library(
+    name = "spotlight_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":spotlight_proto"],
 )
 
 oppia_proto_library(
@@ -180,15 +207,25 @@ oppia_proto_library(
     name = "translation_proto",
     srcs = ["translation.proto"],
     visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":languages_proto",
-    ],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(
     name = "translation_java_proto_lite",
     visibility = ["//:oppia_api_visibility"],
     deps = [":translation_proto"],
+)
+
+oppia_proto_library(
+    name = "version_proto",
+    srcs = ["version.proto"],
+    visibility = ["//:oppia_api_visibility"],
+)
+
+java_lite_proto_library(
+    name = "version_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":version_proto"],
 )
 
 oppia_proto_library(

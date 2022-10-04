@@ -13,7 +13,6 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeF
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicPracticeFooterViewBinding
 import org.oppia.android.databinding.TopicPracticeFragmentBinding
 import org.oppia.android.databinding.TopicPracticeHeaderViewBinding
@@ -27,7 +26,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val viewModelProvider: ViewModelProvider<TopicPracticeViewModel>
+  private val viewModel: TopicPracticeViewModel,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) : SubtopicSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -45,7 +45,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-    val viewModel = getTopicPracticeViewModel()
     this.topicId = topicId
     viewModel.setTopicId(this.topicId)
     viewModel.setInternalProfileId(internalProfileId)
@@ -58,6 +57,11 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
 
+    binding.apply {
+      this.viewModel = this@TopicPracticeFragmentPresenter.viewModel
+      lifecycleOwner = fragment
+    }
+
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
     binding.topicPracticeSkillList.apply {
@@ -65,23 +69,18 @@ class TopicPracticeFragmentPresenter @Inject constructor(
       adapter = createRecyclerViewAdapter()
     }
 
-    binding.apply {
-      this.viewModel = viewModel
-      lifecycleOwner = fragment
-    }
     return binding.root
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<TopicPracticeItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL
-          is TopicPracticeFooterViewModel -> ViewType.VIEW_TYPE_FOOTER
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<TopicPracticeItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL
+        is TopicPracticeFooterViewModel -> ViewType.VIEW_TYPE_FOOTER
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = TopicPracticeHeaderViewBinding::inflate,
@@ -132,10 +131,6 @@ class TopicPracticeFragmentPresenter @Inject constructor(
         skillIdList.flatten() as ArrayList<String>
       )
     }
-  }
-
-  private fun getTopicPracticeViewModel(): TopicPracticeViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicPracticeViewModel::class.java)
   }
 
   private enum class ViewType {
