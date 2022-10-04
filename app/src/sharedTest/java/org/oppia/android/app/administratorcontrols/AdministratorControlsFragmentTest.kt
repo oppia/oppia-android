@@ -54,7 +54,6 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.AdministratorControlsFragmentTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
@@ -142,11 +141,12 @@ class AdministratorControlsFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
     testCoroutineDispatchers.registerIdlingResource()
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
   }
 
   @After
@@ -207,6 +207,32 @@ class AdministratorControlsFragmentTest {
       )
       scrollToPosition(position = 2)
       verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.auto_update_topic_constraint_layout
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
+    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(false)
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 2,
+        targetViewId = R.id.download_permissions_text_view,
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
+      )
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.topic_update_on_wifi_constraint_layout
+      )
+      scrollToPosition(position = 2)
+      verifyItemNotDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -562,6 +588,19 @@ class AdministratorControlsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
+  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(matches(not(isDisplayed())))
+  }
+
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -607,7 +646,7 @@ class AdministratorControlsFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,

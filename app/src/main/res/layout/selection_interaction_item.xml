@@ -54,7 +54,7 @@
       android:layout_height="wrap_content"
       android:divider="@android:color/transparent"
       app:allOptionsItemInputType="@{viewModel.getSelectionItemInputType()}"
-      app:data="@{viewModel.choiceItems}"
+      app:selectionData="@{viewModel.choiceItems}"
       app:entityId="@{viewModel.entityId}"
       app:writtenTranslationContext="@{viewModel.writtenTranslationContext}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

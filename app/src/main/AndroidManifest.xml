@@ -121,6 +121,10 @@
       android:label="@string/exploration_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
+    <activity
+      android:name=".app.player.exploration.testing.BottomSheetOptionsMenuTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.player.state.testing.StateFragmentTestActivity" />
     <activity
       android:name=".app.profile.AddProfileActivity"
@@ -232,7 +236,7 @@
     <activity
       android:name=".app.topic.revisioncard.RevisionCardActivity"
       android:label="@string/revision_card_activity_title"
-      android:theme="@style/OppiaThemeWithoutActionBar" />
+      android:theme="@style/RevisionCardActivityTheme" />
     <activity android:name=".app.testing.SplashTestActivity" />
     <activity
       android:name=".app.topic.TopicActivity"

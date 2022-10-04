@@ -33,7 +33,6 @@ import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
@@ -192,15 +191,18 @@ class DragDropTestActivityTest {
   }
 
   private fun attachDragDropToActivity(activity: DragDropTestActivity) {
-    val recyclerView: RecyclerView = activity.findViewById(R.id.drag_drop_recycler_view)
-    val itemTouchHelper = ItemTouchHelper(createDragCallback(activity))
+    val dragDragTestFragment: DragDropTestFragment = activity.supportFragmentManager
+      .findFragmentById(R.id.drag_drop_test_fragment_placeholder) as DragDropTestFragment
+    val recyclerView: RecyclerView? =
+      dragDragTestFragment.view?.findViewById(R.id.drag_drop_recycler_view)
+    val itemTouchHelper = ItemTouchHelper(createDragCallback(fragment = dragDragTestFragment))
     itemTouchHelper.attachToRecyclerView(recyclerView)
   }
 
-  private fun createDragCallback(activity: DragDropTestActivity): ItemTouchHelper.Callback {
+  private fun createDragCallback(fragment: DragDropTestFragment): ItemTouchHelper.Callback {
     return DragAndDropItemFacilitator(
-      activity as OnItemDragListener,
-      activity as OnDragEndedListener
+      fragment as OnItemDragListener,
+      fragment as OnDragEndedListener
     )
   }
 
@@ -222,7 +224,7 @@ class DragDropTestActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,

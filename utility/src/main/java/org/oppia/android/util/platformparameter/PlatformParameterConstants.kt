@@ -11,6 +11,25 @@ import javax.inject.Qualifier
  */
 
 /**
+ * Qualifier for the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+@Qualifier
+annotation class AutomaticUpdateTopicSetting
+
+/**
+ * Name of the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+const val AUTOMATIC_UPDATE_TOPIC_SETTING = "automatically_update_topic"
+
+/**
+ * Default value of the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+const val AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE = false
+
+/**
  * Qualifier for the platform parameter that controls the visibility of splash screen welcome
  * message toast in the [SplashTestActivity].
  */
@@ -61,6 +80,15 @@ annotation class EnableLanguageSelectionUi
 // TODO(#52): Enable this feature by default once it's completed.
 /** Default value for the feature flag corresponding to [EnableLanguageSelectionUi]. */
 const val ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
+ */
+@Qualifier
+annotation class EnableExtraTopicTabsUi
+
+/** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
+const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
@@ -171,3 +199,10 @@ const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES 
  */
 const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL =
   1440
+
+/** Qualifier for the feature flag corresponding to enabling the spotlight UI. */
+@Qualifier
+annotation class EnableSpotlightUi
+
+/** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
+const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
