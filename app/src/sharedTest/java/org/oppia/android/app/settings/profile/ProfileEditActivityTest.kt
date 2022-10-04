@@ -21,7 +21,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -99,8 +104,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ProfileEditActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -115,6 +118,13 @@ class ProfileEditActivityTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
+
+  @get:Rule
+  var activityTestRule: ActivityTestRule<ProfileListActivity> = ActivityTestRule(
+    ProfileListActivity::class.java,
+    true,
+    false
+  )
 
   @Inject
   lateinit var context: Context
@@ -254,7 +264,7 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_deleteProfileSuccessful_clickCancel() {
+  fun testProfileEdit_deleteProfileSuccessful_clickCancel_closesDeleteDialog() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
@@ -284,11 +294,18 @@ class ProfileEditActivityTest {
       verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_message)
       onView(withText(R.string.profile_edit_delete_dialog_positive)).check(matches(isDisplayed()))
       onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+
+      activityTestRule.launchActivity(null)
+      testCoroutineDispatchers.advanceUntilIdle()
+
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       } else {
-        intended(hasComponent(ProfileListActivity::class.java.name), times(0))
+        intended(hasComponent(ProfileListActivity::class.java.name))
       }
+
+      // Closing the dialog does not close the activity.
+      assertThat(activityTestRule.activity.isFinishing).isFalse()
     }
   }
 
