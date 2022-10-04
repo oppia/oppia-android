@@ -51,14 +51,12 @@ class ProfileProgressActivity :
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 
-    startActivity(
       activityRouter.routeToScreen(
         DestinationScreen
           .newBuilder()
           .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
           .build()
       )
-    )
   }
 
   override fun routeToCompletedStory() {

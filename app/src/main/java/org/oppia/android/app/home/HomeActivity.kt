@@ -99,13 +99,11 @@ class HomeActivity :
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
-    startActivity(
       activityRouter.routeToScreen(
         DestinationScreen
           .newBuilder()
           .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
           .build()
       )
-    )
   }
 }

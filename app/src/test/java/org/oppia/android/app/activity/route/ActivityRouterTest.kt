@@ -1,14 +1,24 @@
 package org.oppia.android.app.activity.route
 
 import android.app.Application
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -85,7 +95,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Singleton
+import org.robolectric.shadows.ShadowLog
 
 private const val internalProfileId = 1
 
@@ -107,40 +117,65 @@ class ActivityRouterTest {
 
   @Before
   fun setUp() {
+    Intents.init()
     setUpTestApplicationComponent()
   }
 
+  @After
+  fun tearDown() {
+    Intents.release()
+  }
+
   @Test
-  fun testActivityRouter_routeToDestination() {
-    val activityRouter = retrieveActivityRouter()
-    activityRule.scenario.onActivity {
+  fun testActivityRouter_routeToRecentlyPlayedActivity() {
+    activityRule.scenario.onActivity { activity ->
+      val activityRouter = activity.activityRouter
       val recentlyPlayedActivityParams =
         RecentlyPlayedActivityParams
           .newBuilder()
           .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
           .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES).build()
-      val intent = activityRouter.routeToScreen(
+      activityRouter.routeToScreen(
         DestinationScreen
           .newBuilder()
           .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
           .build()
       )
-      assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
-      assertThat(
-        intent?.getProtoExtra(
-          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-          RecentlyPlayedActivityParams.getDefaultInstance()
+      intended(
+        allOf(
+          hasProtoExtra(
+            RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+            recentlyPlayedActivityParams
+          ),
+          IntentMatchers.hasComponent(RecentlyPlayedActivity::class.java.name)
         )
-      ).isEqualTo(recentlyPlayedActivityParams)
+      )
     }
   }
 
-  private fun retrieveActivityRouter(): ActivityRouter {
-    lateinit var activityRouter: ActivityRouter
+  @Test
+  fun testActivityRouter_destinationScreenNotSet_showsError() {
     activityRule.scenario.onActivity { activity ->
-      activityRouter = activity.activityRouter
+      val activityRouter = activity.activityRouter
+      activityRouter.routeToScreen(DestinationScreen.getDefaultInstance())
+      val log = ShadowLog.getLogs().last()
+      assertThat(log.tag).isEqualTo("ActivityRouter")
+      assertThat(log.msg).isEqualTo("Destination screen case is not identified.")
     }
-    return activityRouter
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {

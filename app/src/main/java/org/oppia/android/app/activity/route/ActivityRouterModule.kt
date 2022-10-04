@@ -10,7 +10,7 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 
-/** Module to bind [DestinationScreen]. */
+/** Module to bind destination screens to navigable activity routes. */
 @Module
 class ActivityRouterModule {
   @Provides
@@ -18,10 +18,13 @@ class ActivityRouterModule {
   @RouteKey(DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS)
   fun provideRecentlyPlayedActivityRoute(): Route {
     return object : Route {
-      override fun <T : MessageLite> createIntent(context: Context, params: T): Intent {
+      override fun createIntent(
+        context: Context,
+        destinationScreen: DestinationScreen
+      ): Intent {
         return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
           context,
-          params as RecentlyPlayedActivityParams
+          destinationScreen.recentlyPlayedActivityParams
         )
       }
     }

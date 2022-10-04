@@ -17,13 +17,15 @@ class ActivityRouter @Inject constructor(
   private val consoleLogger: ConsoleLogger
 ) {
   /**  Opens the activity corresponding to the specified [destinationScreen]. */
-  fun routeToScreen(destinationScreen: DestinationScreen): Intent? {
+  fun routeToScreen(destinationScreen: DestinationScreen) {
     destinationRoutes[destinationScreen.destinationScreenCase].let { route ->
       when (destinationScreen.destinationScreenCase) {
         DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
-          return route?.createIntent(
-            activity,
-            destinationScreen.recentlyPlayedActivityParams
+          activity.startActivity(
+            route?.createIntent(
+              activity,
+              destinationScreen
+            )
           )
         }
         DestinationScreenCase.DESTINATIONSCREEN_NOT_SET, null -> {
@@ -31,6 +33,5 @@ class ActivityRouter @Inject constructor(
         }
       }
     }
-    return Intent()
   }
 }
