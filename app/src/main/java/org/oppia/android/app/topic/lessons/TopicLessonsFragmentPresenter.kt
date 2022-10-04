@@ -41,7 +41,9 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   private val explorationCheckpointController: ExplorationCheckpointController,
   private val topicLessonViewModel: TopicLessonViewModel,
-  private val accessibilityService: AccessibilityService
+  private val accessibilityService: AccessibilityService,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -108,14 +110,13 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicLessonsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<TopicLessonsItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY_ITEM
-          is TopicLessonsTitleViewModel -> ViewType.VIEW_TYPE_TITLE_TEXT
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<TopicLessonsItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY_ITEM
+        is TopicLessonsTitleViewModel -> ViewType.VIEW_TYPE_TITLE_TEXT
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewBinder(
         viewType = ViewType.VIEW_TYPE_TITLE_TEXT,
         inflateView = { parent ->
@@ -227,18 +228,17 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   private fun createChapterRecyclerViewAdapter(): BindableAdapter<ChapterSummaryViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<ChapterSummaryViewModel, ChapterViewType> { viewModel ->
-        when (viewModel.chapterPlayState) {
-          ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> ChapterViewType.CHAPTER_LOCKED
-          ChapterPlayState.COMPLETED -> ChapterViewType.CHAPTER_COMPLETED
-          ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
-          ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
-          -> ChapterViewType.CHAPTER_IN_PROGRESS
-          ChapterPlayState.NOT_STARTED -> ChapterViewType.CHAPTER_NOT_STARTED
-          ChapterPlayState.UNRECOGNIZED -> throw IllegalArgumentException("Play state unknown")
-        }
+    return multiTypeBuilderFactory.create<ChapterSummaryViewModel, ChapterViewType> { viewModel ->
+      when (viewModel.chapterPlayState) {
+        ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> ChapterViewType.CHAPTER_LOCKED
+        ChapterPlayState.COMPLETED -> ChapterViewType.CHAPTER_COMPLETED
+        ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED
+        -> ChapterViewType.CHAPTER_IN_PROGRESS
+        ChapterPlayState.NOT_STARTED -> ChapterViewType.CHAPTER_NOT_STARTED
+        ChapterPlayState.UNRECOGNIZED -> throw IllegalArgumentException("Play state unknown")
       }
+    }
       .registerViewDataBinder(
         viewType = ChapterViewType.CHAPTER_LOCKED,
         inflateDataBinding = LessonsLockedChapterViewBinding::inflate,

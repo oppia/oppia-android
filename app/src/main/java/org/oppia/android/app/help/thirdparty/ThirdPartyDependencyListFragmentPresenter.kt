@@ -18,7 +18,8 @@ import javax.inject.Inject
 class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ThirdPartyDependencyListViewModel>
+  private val viewModelProvider: ViewModelProvider<ThirdPartyDependencyListViewModel>,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: ThirdPartyDependencyListFragmentBinding
 
@@ -50,8 +51,7 @@ class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<ThirdPartyDependencyItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<ThirdPartyDependencyItemViewModel>()
+    return singleTypeBuilderFactory.create<ThirdPartyDependencyItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ThirdPartyDependencyItemBinding::inflate,
         setViewModel = ThirdPartyDependencyItemBinding::setViewModel
