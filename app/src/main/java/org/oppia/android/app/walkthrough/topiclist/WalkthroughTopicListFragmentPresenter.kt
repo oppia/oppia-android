@@ -27,7 +27,8 @@ import javax.inject.Inject
 class WalkthroughTopicListFragmentPresenter @Inject constructor(
   val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModel: WalkthroughTopicViewModel
+  private val viewModel: WalkthroughTopicViewModel,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: WalkthroughTopicListFragmentBinding
   private val routeToNextPage = activity as WalkthroughFragmentChangeListener
@@ -79,14 +80,13 @@ class WalkthroughTopicListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<WalkthroughTopicItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<WalkthroughTopicItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is WalkthroughTopicHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is WalkthroughTopicSummaryViewModel -> ViewType.VIEW_TYPE_TOPIC
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = WalkthroughTopicHeaderViewBinding::inflate,

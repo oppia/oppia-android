@@ -12,6 +12,8 @@ import javax.inject.Inject
 /** The test-only fragment presenter corresponding to [BindableAdapterTestFragment]. */
 class BindableAdapterTestFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val testBindableAdapterFactory: BindableAdapterFactory,
   @VisibleForTesting val viewModel: BindableAdapterTestViewModel
 ) {
@@ -22,7 +24,7 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     binding.testRecyclerView.apply {
-      adapter = testBindableAdapterFactory.create(fragment)
+      adapter = testBindableAdapterFactory.create(singleTypeBuilderFactory, multiTypeBuilderFactory)
     }
     binding.let {
       it.viewModel = viewModel
@@ -33,6 +35,9 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
 
   /** Factory for creating new [BindableAdapter]s for the current fragment. */
   interface BindableAdapterFactory {
-    fun create(fragment: Fragment): BindableAdapter<BindableAdapterTestDataModel>
+    fun create(
+      singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+      multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+    ): BindableAdapter<BindableAdapterTestDataModel>
   }
 }
