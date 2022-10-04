@@ -275,7 +275,12 @@ class ProfileEditActivityTest {
       verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_title)
       verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_message)
       onView(withText(R.string.profile_edit_delete_dialog_negative)).perform(click())
-      onView(withId(R.id.profile_delete_button)).check(matches(isDisplayed()))
+
+      activityTestRule.launchActivity(null)
+      testCoroutineDispatchers.advanceUntilIdle()
+
+      // Closing the dialog does not close the activity.
+      assertThat(activityTestRule.activity.isFinishing).isFalse()
     }
   }
 
