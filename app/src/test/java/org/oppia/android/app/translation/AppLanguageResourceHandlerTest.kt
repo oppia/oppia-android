@@ -476,13 +476,13 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
-  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInHebrew() {
-    updateAppLanguageToSystem(HEBREW_LOCALE)
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEgyptArabicLocale() {
+    updateAppLanguageTo(EGYPT_ARABIC_LOCALE)
     val handler = retrieveAppLanguageResourceHandler()
 
-    val formattedString = handler.toHumanReadableString("אחת")
+    val localizedNumber = handler.toHumanReadableString(1)
 
-    assertThat(formattedString).contains("אחת")
+    assertThat(localizedNumber).isEqualTo("١")
   }
 
   @Test
@@ -644,6 +644,7 @@ class AppLanguageResourceHandlerTest {
 
     private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
     private val HEBREW_LOCALE = Locale("he", "US")
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
 
     private fun String.extractNumbers(): List<String> =
       "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()
