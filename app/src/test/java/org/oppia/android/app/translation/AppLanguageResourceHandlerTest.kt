@@ -476,14 +476,13 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
-  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInArabic() {
-    updateAppLanguageTo(OppiaLanguage.ARABIC)
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInHebrew() {
+    updateAppLanguageToSystem(HEBREW_LOCALE)
     val handler = retrieveAppLanguageResourceHandler()
 
     val formattedString = handler.toHumanReadableString(1)
 
-    // Arabic doesn't change the display answer for numeric input.
-    assertThat(formattedString).contains("1")
+    assertThat(formattedString).contains("אחת")
   }
 
   @Test
