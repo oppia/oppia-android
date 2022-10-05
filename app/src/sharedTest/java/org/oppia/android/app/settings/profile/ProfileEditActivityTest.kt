@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -21,8 +22,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -117,13 +116,6 @@ class ProfileEditActivityTest {
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<ProfileListActivity> = ActivityTestRule(
-    ProfileListActivity::class.java,
-    true,
-    false
-  )
 
   @Inject
   lateinit var context: Context
@@ -276,11 +268,7 @@ class ProfileEditActivityTest {
       verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_message)
       onView(withText(R.string.profile_edit_delete_dialog_negative)).perform(click())
 
-      activityTestRule.launchActivity(null)
-      testCoroutineDispatchers.advanceUntilIdle()
-
-      // Closing the dialog does not close the activity.
-      assertThat(activityTestRule.activity.isFinishing).isFalse()
+      onView(withText(R.string.profile_edit_delete_dialog_message)).check(doesNotExist())
     }
   }
 
@@ -299,17 +287,15 @@ class ProfileEditActivityTest {
       onView(withText(R.string.profile_edit_delete_dialog_positive)).check(matches(isDisplayed()))
       onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
 
-      activityTestRule.launchActivity(null)
       testCoroutineDispatchers.advanceUntilIdle()
 
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       } else {
-        intended(hasComponent(ProfileListActivity::class.java.name))
+        intended(hasComponent(ProfileListActivity::class.java.name), times(0))
       }
 
-      // Closing the dialog does not close the activity.
-      assertThat(activityTestRule.activity.isFinishing).isFalse()
+      onView(withText(R.string.profile_edit_delete_dialog_message)).check(doesNotExist())
     }
   }
 
