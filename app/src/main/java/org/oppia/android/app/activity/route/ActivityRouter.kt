@@ -18,19 +18,21 @@ class ActivityRouter @Inject constructor(
   /** Opens the activity corresponding to the specified [destinationScreen]. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
     destinationRoutes[destinationScreen.destinationScreenCase]?.let { route ->
-      when (destinationScreen.destinationScreenCase) {
-        DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
-          activity.startActivity(
-            route.createIntent(
-              activity,
-              destinationScreen
-            )
+      if (destinationScreen.destinationScreenCase ==
+        DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS
+      ) {
+        activity.startActivity(
+          route.createIntent(
+            activity,
+            destinationScreen
           )
-        }
-        DestinationScreenCase.DESTINATIONSCREEN_NOT_SET, null -> {
-          consoleLogger.w("ActivityRouter", "Destination screen case is not identified.")
-        }
+        )
       }
+    }
+    if (destinationScreen.destinationScreenCase ==
+      DestinationScreenCase.DESTINATIONSCREEN_NOT_SET
+    ) {
+      consoleLogger.w("ActivityRouter", "Destination screen case is not identified.")
     }
   }
 }

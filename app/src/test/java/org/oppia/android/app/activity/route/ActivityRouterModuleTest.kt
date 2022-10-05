@@ -116,9 +116,7 @@ class ActivityRouterModuleTest {
 
   @Test
   fun testInjectDestinationRoutes_hasRouteForRecentlyPlayedActivity() {
-    assertThat(
-      destinationRoutes.containsKey(DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS)
-    ).isTrue()
+    assertThat(destinationRoutes).containsKey(DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS)
     val route = destinationRoutes[DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS]
     val intent = route?.createIntent(context, DestinationScreen.getDefaultInstance())
     assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)

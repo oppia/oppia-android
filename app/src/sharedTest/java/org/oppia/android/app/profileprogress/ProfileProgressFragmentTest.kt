@@ -658,7 +658,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
+  fun testClickViewAll_withLessThanTwoStories_opensRecentlyPlayedActivityWithStoriesForYouTitle() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
@@ -674,6 +674,42 @@ class ProfileProgressFragmentTest {
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(RecentlyPlayedActivityTitle.STORIES_FOR_YOU)
+        .build()
+      clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
+      intended(
+        allOf(
+          hasProtoExtra(RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY, recentlyPlayedActivityParams),
+          hasComponent(RecentlyPlayedActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testClickViewAll_opensRecentlyPlayedActivityWithRecentlyPlayedActivityTitle() {
+    storyProgressTestHelper.markCompletedFractionsStory0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnProfileProgressListItem(
+        itemPosition = 0,
+        targetViewId = R.id.view_all_text_view,
+        stringToMatch = "View All"
+      )
+      val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
         .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
       intended(
