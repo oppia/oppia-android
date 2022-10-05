@@ -686,7 +686,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testClickViewAll_opensRecentlyPlayedActivityWithRecentlyPlayedActivityTitle() {
+  fun testClickViewAll_threeStoriesStarted_opensRecentlyPlayedActivityWithRecentlyPlayedTitle() {
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
