@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -99,7 +96,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hamcrest.CoreMatchers
 
 /**
  * Tests for [AppLanguageResourceHandler].
