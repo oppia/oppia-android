@@ -480,7 +480,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageToSystem(HEBREW_LOCALE)
     val handler = retrieveAppLanguageResourceHandler()
 
-    val formattedString = handler.toHumanReadableString(1)
+    val formattedString = handler.toHumanReadableString("אחת")
 
     assertThat(formattedString).contains("אחת")
   }
