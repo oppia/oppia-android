@@ -13,7 +13,8 @@ import javax.inject.Inject
 /** The presenter for [AudioLanguageFragment]. */
 class AudioLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel
+  private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   /**
    * Returns a newly inflated view to render the fragment with the specified [audioLanguage] as the
@@ -44,9 +45,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<AudioLanguageItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<AudioLanguageItemViewModel>()
-      .setLifecycleOwner(fragment)
+    return singleTypeBuilderFactory.create<AudioLanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = AudioLanguageItemBinding::inflate,
         setViewModel = AudioLanguageItemBinding::setViewModel

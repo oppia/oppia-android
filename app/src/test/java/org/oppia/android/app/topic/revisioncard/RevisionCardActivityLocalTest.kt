@@ -94,6 +94,7 @@ class RevisionCardActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   private val internalProfileId = 1
+  private val fractionsSubtopicListSize: Int = 4
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -110,7 +111,8 @@ class RevisionCardActivityLocalTest {
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        fractionsSubtopicListSize
       )
     ).use {
       val event = fakeEventLogger.getMostRecentEvent()

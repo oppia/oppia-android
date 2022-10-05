@@ -22,7 +22,7 @@
         android:id="@+id/revision_card_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_revision_card_activity_toolbar_color"
+        android:background="@color/component_color_concept_card_fragment_toolbar_color"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"

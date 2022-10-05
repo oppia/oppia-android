@@ -440,6 +440,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/HomeTestAct
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/HtmlParserTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageRegionSelectionTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageRegionSelectionTestFragment.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/DragDropTestFragmentPresenter.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/DragDropTestFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageRegionSelectionTestFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageViewBindingAdaptersTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/LessonThumbnailImageViewTestActivity.kt"
