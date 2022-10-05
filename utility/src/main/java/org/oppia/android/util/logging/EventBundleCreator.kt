@@ -1,5 +1,7 @@
 package org.oppia.android.util.logging
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
@@ -39,6 +41,9 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.utility.getVersionCode
+import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ConceptCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
@@ -61,6 +66,7 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
@@ -88,9 +94,16 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
  * This class is only expected to be used by internal logging mechanisms and should not be called
  * directly.
  */
+@Singleton
 class EventBundleCreator @Inject constructor(
+  private val context: Context,
+  private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
+  private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
+  private val appVersionCode by lazy { context.getVersionCode() }
+  private val appVersionName by lazy { context.getVersionName() }
+
   /**
    * Fills the specified [bundle] with a logging-ready representation of [eventLog] and returns a
    * string representation of the high-level type of event logged (per
@@ -99,10 +112,14 @@ class EventBundleCreator @Inject constructor(
   fun fillEventBundle(eventLog: EventLog, bundle: Bundle): String {
     bundle.putLong("timestamp", eventLog.timestamp)
     bundle.putString("priority", eventLog.priority.toAnalyticsName())
-    return eventLog.context.convertToActivityContext()?.also { eventContext ->
+    bundle.putInt("event_type", eventLog.context.activityContextCase.number)
+    bundle.putInt("android_sdk", androidSdkVersion)
+    bundle.putString("app_version_name", appVersionName)
+    bundle.putInt("app_version_code", appVersionCode)
+    return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
       eventContext.storeValue(PropertyStore(bundle, allowUserIds = learnerStudyAnalytics.value))
-    }?.activityName ?: "unknown_activity_context"
+    }.activityName
   }
 
   /**
@@ -124,48 +141,39 @@ class EventBundleCreator @Inject constructor(
     }?.metricName ?: "unknown_loggable_metric"
   }
 
-  private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*>? {
+  private fun EventLog.Context.convertToActivityContext(): EventActivityContext<*> {
+    val activityName = eventTypeNameConverter.convertToHumanReadableName(activityContextCase)
     return when (activityContextCase) {
-      OPEN_EXPLORATION_ACTIVITY ->
-        ExplorationContext("open_exploration_activity", openExplorationActivity)
-      OPEN_INFO_TAB -> TopicContext("open_info_tab", openInfoTab)
-      OPEN_LESSONS_TAB -> TopicContext("open_lessons_tab", openLessonsTab)
-      OPEN_PRACTICE_TAB -> TopicContext("open_practice_tab", openPracticeTab)
-      OPEN_REVISION_TAB -> TopicContext("open_revision_tab", openRevisionTab)
-      OPEN_QUESTION_PLAYER -> QuestionContext("open_question_player", openQuestionPlayer)
-      OPEN_STORY_ACTIVITY -> StoryContext("open_story_activity", openStoryActivity)
-      OPEN_CONCEPT_CARD -> ConceptCardContext("open_concept_card", openConceptCard)
-      OPEN_REVISION_CARD -> RevisionCardContext("open_revision_card", openRevisionCard)
-      START_CARD_CONTEXT -> CardContext("start_card_context", startCardContext)
-      END_CARD_CONTEXT -> CardContext("end_card_context", endCardContext)
-      HINT_OFFERED_CONTEXT -> HintContext("hint_offered_context", hintOfferedContext)
-      ACCESS_HINT_CONTEXT -> HintContext("access_hint_context", accessHintContext)
-      SOLUTION_OFFERED_CONTEXT ->
-        ExplorationContext("solution_offered_context", solutionOfferedContext)
-      ACCESS_SOLUTION_CONTEXT ->
-        ExplorationContext("access_solution_context", accessSolutionContext)
-      SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext("submit_answer_context", submitAnswerContext)
-      PLAY_VOICE_OVER_CONTEXT ->
-        PlayVoiceOverContext("play_voice_over_context", playVoiceOverContext)
-      APP_IN_BACKGROUND_CONTEXT ->
-        LearnerDetailsContext("app_in_background_context", appInBackgroundContext)
-      APP_IN_FOREGROUND_CONTEXT ->
-        LearnerDetailsContext("app_in_foreground_context", appInForegroundContext)
-      EXIT_EXPLORATION_CONTEXT ->
-        ExplorationContext("exit_exploration_context", exitExplorationContext)
-      FINISH_EXPLORATION_CONTEXT ->
-        ExplorationContext("finish_exploration_context", finishExplorationContext)
-      RESUME_EXPLORATION_CONTEXT ->
-        LearnerDetailsContext("resume_exploration_context", resumeExplorationContext)
+      OPEN_EXPLORATION_ACTIVITY -> ExplorationContext(activityName, openExplorationActivity)
+      OPEN_INFO_TAB -> TopicContext(activityName, openInfoTab)
+      OPEN_LESSONS_TAB -> TopicContext(activityName, openLessonsTab)
+      OPEN_PRACTICE_TAB -> TopicContext(activityName, openPracticeTab)
+      OPEN_REVISION_TAB -> TopicContext(activityName, openRevisionTab)
+      OPEN_QUESTION_PLAYER -> QuestionContext(activityName, openQuestionPlayer)
+      OPEN_STORY_ACTIVITY -> StoryContext(activityName, openStoryActivity)
+      OPEN_CONCEPT_CARD -> ConceptCardContext(activityName, openConceptCard)
+      OPEN_REVISION_CARD -> RevisionCardContext(activityName, openRevisionCard)
+      START_CARD_CONTEXT -> CardContext(activityName, startCardContext)
+      END_CARD_CONTEXT -> CardContext(activityName, endCardContext)
+      HINT_OFFERED_CONTEXT -> HintContext(activityName, hintOfferedContext)
+      ACCESS_HINT_CONTEXT -> HintContext(activityName, accessHintContext)
+      SOLUTION_OFFERED_CONTEXT -> ExplorationContext(activityName, solutionOfferedContext)
+      ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
+      SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
+      PLAY_VOICE_OVER_CONTEXT -> PlayVoiceOverContext(activityName, playVoiceOverContext)
+      APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
+      APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
+      EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
+      FINISH_EXPLORATION_CONTEXT -> ExplorationContext(activityName, finishExplorationContext)
+      RESUME_EXPLORATION_CONTEXT -> LearnerDetailsContext(activityName, resumeExplorationContext)
       START_OVER_EXPLORATION_CONTEXT ->
-        LearnerDetailsContext("start_over_exploration_context", startOverExplorationContext)
-      DELETE_PROFILE_CONTEXT ->
-        LearnerDetailsContext("delete_profile_context", deleteProfileContext)
-      OPEN_HOME -> EmptyContext("open_home")
-      OPEN_PROFILE_CHOOSER -> EmptyContext("open_profile_chooser")
+        LearnerDetailsContext(activityName, startOverExplorationContext)
+      DELETE_PROFILE_CONTEXT -> LearnerDetailsContext(activityName, deleteProfileContext)
+      OPEN_HOME -> EmptyContext(activityName)
+      OPEN_PROFILE_CHOOSER -> EmptyContext(activityName)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
-        SensitiveStringContext("failed_analytics_log", installIdForFailedAnalyticsLog, "install_id")
-      ACTIVITYCONTEXT_NOT_SET, null -> null // No context to create here.
+        SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
+      ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
     }
   }
 
@@ -552,10 +560,55 @@ class EventBundleCreator @Inject constructor(
     OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
   }
 
-  private fun OppiaMetricLog.CurrentScreen.toAnalyticsName() = when (this) {
-    OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED -> "unspecified_current_screen"
-    OppiaMetricLog.CurrentScreen.HOME_SCREEN -> "home_screen"
-    OppiaMetricLog.CurrentScreen.UNRECOGNIZED -> "unknown_screen_name"
-    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
+  private fun ScreenName.toAnalyticsName() = when (this) {
+    ScreenName.SCREEN_NAME_UNSPECIFIED -> "screen_name_unspecified"
+    ScreenName.SPLASH_ACTIVITY -> "splash_activity"
+    ScreenName.PROFILE_CHOOSER_ACTIVITY -> "profile_chooser_activity"
+    ScreenName.ADD_PROFILE_ACTIVITY -> "add_profile_activity"
+    ScreenName.HOME_ACTIVITY -> "home_activity"
+    ScreenName.BACKGROUND_SCREEN -> "background_screen"
+    ScreenName.APP_VERSION_ACTIVITY -> "app_version_activity"
+    ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY -> "administrator_controls_activity"
+    ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY -> "profile_and_device_id_activity"
+    ScreenName.COMPLETED_STORY_LIST_ACTIVITY -> "completed_story_list_activity"
+    ScreenName.FAQ_SINGLE_ACTIVITY -> "faq_single_activity"
+    ScreenName.FAQ_LIST_ACTIVITY -> "faq_list_activity"
+    ScreenName.LICENSE_LIST_ACTIVITY -> "license_list_activity"
+    ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY -> "license_text_viewer_activity"
+    ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY -> "third_party_dependency_list_activity"
+    ScreenName.HELP_ACTIVITY -> "help_activity"
+    ScreenName.RECENTLY_PLAYED_ACTIVITY -> "recently_played_activity"
+    ScreenName.MY_DOWNLOADS_ACTIVITY -> "my_downloads_activity"
+    ScreenName.ONBOARDING_ACTIVITY -> "onboarding_activity"
+    ScreenName.ONGOING_TOPIC_LIST_ACTIVITY -> "ongoing_topic_list_activity"
+    ScreenName.AUDIO_LANGUAGE_ACTIVITY -> "audio_language_activity"
+    ScreenName.APP_LANGUAGE_ACTIVITY -> "app_language_activity"
+    ScreenName.OPTIONS_ACTIVITY -> "options_activity"
+    ScreenName.READING_TEXT_SIZE_ACTIVITY -> "reading_text_size_activity"
+    ScreenName.EXPLORATION_ACTIVITY -> "exploration_activity"
+    ScreenName.ADMIN_AUTH_ACTIVITY -> "admin_auth_activity"
+    ScreenName.PIN_PASSWORD_ACTIVITY -> "pin_password_activity"
+    ScreenName.PROFILE_PICTURE_ACTIVITY -> "profile_picture_activity"
+    ScreenName.PROFILE_PROGRESS_ACTIVITY -> "profile_progress_activity"
+    ScreenName.RESUME_LESSON_ACTIVITY -> "resume_lesson_activity"
+    ScreenName.PROFILE_EDIT_ACTIVITY -> "profile_edit_activity"
+    ScreenName.PROFILE_RESET_PIN_ACTIVITY -> "profile_reset_pin_activity"
+    ScreenName.PROFILE_RENAME_ACTIVITY -> "profile_rename_activity"
+    ScreenName.PROFILE_LIST_ACTIVITY -> "profile_list_activity"
+    ScreenName.STORY_ACTIVITY -> "story_activity"
+    ScreenName.TOPIC_ACTIVITY -> "topic_activity"
+    ScreenName.REVISION_CARD_ACTIVITY -> "revision_card_activity"
+    ScreenName.QUESTION_PLAYER_ACTIVITY -> "question_player_activity"
+    ScreenName.WALKTHROUGH_ACTIVITY -> "walkthrough_activity"
+    ScreenName.DEVELOPER_OPTIONS_ACTIVITY -> "developer_options_activity"
+    ScreenName.VIEW_EVENT_LOGS_ACTIVITY -> "view_event_logs_activity"
+    ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY -> "mark_topics_completed_activity"
+    ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY -> "math_expression_parser_activity"
+    ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY -> "mark_chapters_completed_activity"
+    ScreenName.MARK_STORIES_COMPLETED_ACTIVITY -> "mark_stories_completed_activity"
+    ScreenName.FORCE_NETWORK_TYPE_ACTIVITY -> "force_network_type_activity"
+    ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
+    ScreenName.POLICIES_ACTIVITY -> "policies_activity"
+    ScreenName.UNRECOGNIZED -> "unrecognized"
   }
 }

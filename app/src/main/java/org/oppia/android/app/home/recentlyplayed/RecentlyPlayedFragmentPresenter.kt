@@ -14,6 +14,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
+import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
@@ -25,6 +26,7 @@ import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -40,7 +42,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val explorationCheckpointController: ExplorationCheckpointController,
   @StoryHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -123,12 +126,12 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(recentSectionTitleViewModel)
     recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
-      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
+      val ongoingStoryViewModel = createOngoingStoryViewModel(promotedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
 
-  private fun getOngoingStoryViewModel(
+  private fun createOngoingStoryViewModel(
     promotedStory: PromotedStory,
     index: Int
   ): RecentlyPlayedItemViewModel {
@@ -138,7 +141,8 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       entityType,
       fragment as OngoingStoryClickListener,
       index,
-      resourceHandler
+      resourceHandler,
+      translationController
     )
   }
 
@@ -151,7 +155,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(olderSectionTitleViewModel)
     olderPlayedStoryList.forEachIndexed { index, promotedStory ->
-      val ongoingStoryViewModel = getOngoingStoryViewModel(promotedStory, index)
+      val ongoingStoryViewModel = createOngoingStoryViewModel(promotedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
@@ -165,7 +169,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       )
     itemList.add(recommendedSectionTitleViewModel)
     suggestedStoryList.forEachIndexed { index, suggestedStory ->
-      val ongoingStoryViewModel = getOngoingStoryViewModel(suggestedStory, index)
+      val ongoingStoryViewModel = createOngoingStoryViewModel(suggestedStory, index)
       itemList.add(ongoingStoryViewModel)
     }
   }
@@ -234,6 +238,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   fun onOngoingStoryClicked(promotedStory: PromotedStory) {
+    val profileId = ProfileId.newBuilder().apply {
+      internalId = internalProfileId
+    }.build()
     val canHavePartialProgressSaved =
       when (promotedStory.chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -245,10 +252,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     if (promotedStory.chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
         explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build(),
-          promotedStory.explorationId
+          profileId, promotedStory.explorationId
         ).toLiveData()
 
       explorationCheckpointLiveData.observe(
@@ -258,11 +262,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
-                internalProfileId,
+                profileId,
                 promotedStory.topicId,
                 promotedStory.storyId,
                 promotedStory.explorationId,
-                backflowScreen = null,
+                parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
                 explorationCheckpoint = it.value
               )
             } else if (it is AsyncResult.Failure) {
@@ -317,11 +321,11 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            internalProfileId,
+            ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
             topicId,
             storyId,
             explorationId,
-            backflowScreen = null,
+            parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
             isCheckpointingEnabled = canHavePartialProgressSaved
           )
           activity.finish()

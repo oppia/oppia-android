@@ -18,7 +18,8 @@ import javax.inject.Inject
 class ViewEventLogsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ViewEventLogsViewModel>
+  private val viewModelProvider: ViewModelProvider<ViewEventLogsViewModel>,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: ViewEventLogsFragmentBinding
@@ -56,8 +57,7 @@ class ViewEventLogsFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<EventLogItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<EventLogItemViewModel>()
+    return singleTypeBuilderFactory.create<EventLogItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ViewEventLogsEventLogItemViewBinding::inflate,
         setViewModel = ViewEventLogsEventLogItemViewBinding::setViewModel

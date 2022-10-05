@@ -57,7 +57,7 @@
         android:paddingTop="8dp"
         android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
         android:paddingBottom="16dp"
-        android:text="@{viewModel.subtopic.title}"
+        android:text="@{viewModel.subtopicTitle}"
         android:textColor="@color/color_def_white"
         android:textSize="14sp"
         android:textStyle="bold"

@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.AppLanguageFragmentBinding
-import org.oppia.android.databinding.LanguageItemsBinding
+import org.oppia.android.databinding.AppLanguageItemBinding
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
 class AppLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val languageSelectionViewModel: LanguageSelectionViewModel
+  private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var prefSummaryValue: String
   fun handleOnCreateView(
@@ -27,8 +28,8 @@ class AppLanguageFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     this.prefSummaryValue = prefSummaryValue
-    binding.viewModel = languageSelectionViewModel
-    languageSelectionViewModel.selectedLanguage.value = prefSummaryValue
+    binding.viewModel = appLanguageSelectionViewModel
+    appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.languageRecyclerView.apply {
       adapter = createRecyclerViewAdapter()
     }
@@ -37,16 +38,14 @@ class AppLanguageFragmentPresenter @Inject constructor(
   }
 
   fun getLanguageSelected(): String? {
-    return languageSelectionViewModel.selectedLanguage.value
+    return appLanguageSelectionViewModel.selectedLanguage.value
   }
 
-  private fun createRecyclerViewAdapter(): BindableAdapter<LanguageItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<LanguageItemViewModel>()
-      .setLifecycleOwner(fragment)
+  private fun createRecyclerViewAdapter(): BindableAdapter<AppLanguageItemViewModel> {
+    return singleTypeBuilderFactory.create<AppLanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = LanguageItemsBinding::inflate,
-        setViewModel = LanguageItemsBinding::setViewModel
+        inflateDataBinding = AppLanguageItemBinding::inflate,
+        setViewModel = AppLanguageItemBinding::setViewModel
       ).build()
   }
 
@@ -61,7 +60,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
   }
 
   fun onLanguageSelected(selectedLanguage: String) {
-    languageSelectionViewModel.selectedLanguage.value = selectedLanguage
+    appLanguageSelectionViewModel.selectedLanguage.value = selectedLanguage
     updateAppLanguage(selectedLanguage)
   }
 }

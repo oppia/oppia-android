@@ -69,7 +69,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "javax.annotation:javax.annotation-api:jar": "1.3.2",
     "javax.inject:javax.inject": "1",
     "nl.dionsegijn:konfetti": "1.2.5",
-    "org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar": "1.3.72",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar": "1.3.72",
     "org.jetbrains.kotlinx:kotlinx-coroutines-android": "1.4.1",
     "org.jetbrains.kotlinx:kotlinx-coroutines-core": "1.4.1",
     "org.jetbrains:annotations:jar": "13.0",

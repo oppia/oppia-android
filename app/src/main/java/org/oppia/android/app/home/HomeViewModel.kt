@@ -25,6 +25,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
@@ -48,7 +49,8 @@ class HomeViewModel(
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val dateTimeUtil: DateTimeUtil
+  private val dateTimeUtil: DateTimeUtil,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
 
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -65,7 +67,7 @@ class HomeViewModel(
   }
 
   private val topicListSummaryDataProvider: DataProvider<TopicList> by lazy {
-    topicListController.getTopicList()
+    topicListController.getTopicList(profileId)
   }
 
   private val homeItemViewModelListDataProvider: DataProvider<List<HomeItemViewModel>> by lazy {
@@ -198,7 +200,8 @@ class HomeViewModel(
             internalProfileId,
             sortedStoryList.size,
             storyEntityType,
-            promotedStory
+            promotedStory,
+            translationController
           )
         }
     }
@@ -217,7 +220,8 @@ class HomeViewModel(
         activity,
         topicSummary,
         topicEntityType,
-        comingSoonTopicList
+        comingSoonTopicList,
+        translationController
       )
     }
   }
@@ -231,14 +235,15 @@ class HomeViewModel(
   private fun computeAllTopicsItemsViewModelList(
     topicList: TopicList
   ): List<HomeItemViewModel> {
-    val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, topicSummary ->
+    val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, ephemeralSummary ->
       TopicSummaryViewModel(
         activity,
-        topicSummary,
+        ephemeralSummary,
         topicEntityType,
         fragment as TopicSummaryClickListener,
         position = topicIndex,
-        resourceHandler
+        resourceHandler,
+        translationController
       )
     }
     return if (allTopicsList.isNotEmpty()) {
