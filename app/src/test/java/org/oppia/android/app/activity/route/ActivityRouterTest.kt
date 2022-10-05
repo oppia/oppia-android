@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -127,7 +127,7 @@ class ActivityRouterTest {
   }
 
   @Test
-  fun testActivityRouter_routeToRecentlyPlayedActivity() {
+  fun testActivityRouter_canRouteToRecentlyPlayedActivity() {
     activityRule.scenario.onActivity { activity ->
       val activityRouter = activity.activityRouter
       val recentlyPlayedActivityParams =
@@ -147,7 +147,7 @@ class ActivityRouterTest {
             RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
             recentlyPlayedActivityParams
           ),
-          IntentMatchers.hasComponent(RecentlyPlayedActivity::class.java.name)
+          hasComponent(RecentlyPlayedActivity::class.java.name)
         )
       )
     }

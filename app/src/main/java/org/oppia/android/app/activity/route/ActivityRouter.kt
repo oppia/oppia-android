@@ -17,11 +17,11 @@ class ActivityRouter @Inject constructor(
 ) {
   /** Opens the activity corresponding to the specified [destinationScreen]. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
-    destinationRoutes[destinationScreen.destinationScreenCase].let { route ->
+    destinationRoutes[destinationScreen.destinationScreenCase]?.let { route ->
       when (destinationScreen.destinationScreenCase) {
         DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS -> {
           activity.startActivity(
-            route?.createIntent(
+            route.createIntent(
               activity,
               destinationScreen
             )

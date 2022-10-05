@@ -1,11 +1,13 @@
 package org.oppia.android.app.activity.route
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
+import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
@@ -25,6 +27,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.DestinationScreen.DestinationScreenCase
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
@@ -97,6 +100,9 @@ class ActivityRouterModuleTest {
   lateinit var destinationRoutes:
     Map<DestinationScreen.DestinationScreenCase, @JvmSuppressWildcards Route>
 
+  @Inject
+  lateinit var context: Context
+
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
@@ -109,36 +115,19 @@ class ActivityRouterModuleTest {
   }
 
   @Test
-  fun testInjectActivityRouterModule_routeToRecentlyPlayedActivity() {
-    activityRule.scenario.onActivity { activity ->
-      assert(
-        destinationRoutes.containsKey(
-          DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS
-        )
-      )
-      destinationRoutes[DestinationScreen.DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS]
-        .let { route ->
-          val intent = route?.createIntent(
-            activity,
-            DestinationScreen.getDefaultInstance()
-          )
-          assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
-        }
-    }
+  fun testInjectDestinationRoutes_hasRouteForRecentlyPlayedActivity() {
+    assertThat(
+      destinationRoutes.containsKey(DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS)
+    ).isTrue()
+    val route = destinationRoutes[DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS]
+    val intent = route?.createIntent(context, DestinationScreen.getDefaultInstance())
+    assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
   }
 
   @Test
-  fun testInjectActivityRouterModule_routeToDestinationScreenNotSet_showsError() {
-    activityRule.scenario.onActivity { activity ->
-      destinationRoutes[DestinationScreen.DestinationScreenCase.DESTINATIONSCREEN_NOT_SET]
-        .let { route ->
-          val intent = route?.createIntent(
-            activity,
-            DestinationScreen.getDefaultInstance()
-          )
-          assertThat(intent).isNull()
-        }
-    }
+  fun testInjectDestinationRoutes_doesNotHaveRouteForDestinationScreenNotSet() {
+    assertThat(destinationRoutes)
+      .doesNotContainKey(DestinationScreenCase.DESTINATIONSCREEN_NOT_SET)
   }
 
   private fun setUpTestApplicationComponent() {
