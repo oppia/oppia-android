@@ -161,7 +161,7 @@ class DisplayLocaleImplTest {
   }
 
   @Test
-  fun testToHumanReadableString_forInt_returnsStringWithExactNumber() {
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglishLocale() {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
     val formattedString = impl.toHumanReadableString(1)
@@ -170,7 +170,16 @@ class DisplayLocaleImplTest {
   }
 
   @Test
-  fun testToHumanReadableString_forLargeInt_mayReturnStringWithPeriodsOrCommas() {
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEgyptArabicLocale() {
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+
+    val localizedNumber = impl.toHumanReadableString(1)
+
+    assertThat(localizedNumber).isEqualTo("١")
+  }
+
+  @Test
+  fun testToHumanReadableString_forLargeInt_returnsStringWithPeriodsOrCommas() {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
     val formattedString = impl.toHumanReadableString(10000)

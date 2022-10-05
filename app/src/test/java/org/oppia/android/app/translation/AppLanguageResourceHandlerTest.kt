@@ -476,16 +476,6 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
-  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEgyptArabicLocale() {
-    updateAppLanguageTo(EGYPT_ARABIC_LOCALE)
-    val handler = retrieveAppLanguageResourceHandler()
-
-    val localizedNumber = handler.toHumanReadableString(1)
-
-    assertThat(localizedNumber).isEqualTo("١")
-  }
-
-  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
