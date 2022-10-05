@@ -17,21 +17,14 @@ class ActivityRouter @Inject constructor(
 ) {
   /** Opens the activity corresponding to the specified [destinationScreen]. */
   fun routeToScreen(destinationScreen: DestinationScreen) {
-    destinationRoutes[destinationScreen.destinationScreenCase]?.let { route ->
-      if (destinationScreen.destinationScreenCase ==
-        DestinationScreenCase.RECENTLY_PLAYED_ACTIVITY_PARAMS
-      ) {
-        activity.startActivity(
-          route.createIntent(
-            activity,
-            destinationScreen
-          )
-        )
-      }
-    }
-    if (destinationScreen.destinationScreenCase ==
-      DestinationScreenCase.DESTINATIONSCREEN_NOT_SET
-    ) {
+    val routeIntent = destinationRoutes[destinationScreen.destinationScreenCase]
+      ?.createIntent(
+        activity,
+        destinationScreen
+      )
+    if (routeIntent != null) {
+      activity.startActivity(routeIntent)
+    } else {
       consoleLogger.w("ActivityRouter", "Destination screen case is not identified.")
     }
   }
