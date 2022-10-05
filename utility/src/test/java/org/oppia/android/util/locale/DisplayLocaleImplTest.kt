@@ -170,6 +170,16 @@ class DisplayLocaleImplTest {
   }
 
   @Test
+  fun testToHumanReadableString_forLargeInt_mayReturnStringWithPeriodsOrCommas() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.toHumanReadableString(10000)
+
+    // Depending on formatting, commas and/or periods are used for large doubles.
+    assertThat(formattedString).containsMatch("[,.]")
+  }
+
+  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 

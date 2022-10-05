@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -96,6 +99,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers
 
 /**
  * Tests for [AppLanguageResourceHandler].
@@ -111,8 +115,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageResourceHandlerTest.TestApplication::class)
 class AppLanguageResourceHandlerTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   var activityRule =
@@ -120,21 +123,14 @@ class AppLanguageResourceHandlerTest {
       TestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-  @Inject
-  lateinit var translationController: TranslationController
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  @Parameter
-  lateinit var lang: String
-  @Parameter
-  lateinit var expectedDisplayText: String
+  @Parameter lateinit var lang: String
+  @Parameter lateinit var expectedDisplayText: String
 
   private val audioLanguage by lazy { AudioLanguage.valueOf(lang) }
 
@@ -474,12 +470,23 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
-  fun testToHumanReadableString_forInt_returnsStringWithExactNumber() {
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglish() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
     val formattedString = handler.toHumanReadableString(1)
 
+    assertThat(formattedString).contains("1")
+  }
+
+  @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInArabic() {
+    updateAppLanguageTo(OppiaLanguage.ARABIC)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.toHumanReadableString(1)
+
+    // Arabic doesn't change the display answer for numeric input.
     assertThat(formattedString).contains("1")
   }
 
