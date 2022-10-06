@@ -1130,6 +1130,7 @@ class ExplorationProgressController @Inject constructor(
       isContinueButtonAnimationSeen?.let {
         if (!it) profileManagementController.markContinueButtonAnimationSeen(profileId)
       }
+      isContinueButtonAnimationSeen = true
     }
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */

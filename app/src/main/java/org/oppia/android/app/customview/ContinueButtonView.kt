@@ -69,8 +69,9 @@ class ContinueButtonView @JvmOverloads constructor(
   }
 
   private fun processEphemeralState(ephemeralState: EphemeralState) {
-    if (!ephemeralState.showContinueButtonAnimation) return
-    if (!ephemeralState.hasPreviousState) {
+    if (!ephemeralState.showContinueButtonAnimation) {
+      animateContinueButton.value = false
+    } else {
       val timeLeftToAnimate =
         ephemeralState.continueButtonAnimationTimestamp - oppiaClock.getCurrentTimeMs()
       if (timeLeftToAnimate < 0) {
@@ -80,8 +81,6 @@ class ContinueButtonView @JvmOverloads constructor(
           animateContinueButton.value = true
         }
       }
-    } else {
-      animateContinueButton.value = false
     }
   }
 

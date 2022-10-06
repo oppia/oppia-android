@@ -207,7 +207,7 @@ class StateDeck constructor(
           .setHelpIndex(helpIndex)
       )
       .setContinueButtonAnimationTimestamp(timestamp)
-      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen)
+      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
       .build()
   }
 
