@@ -27,7 +27,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -39,7 +39,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -81,6 +80,7 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -100,8 +100,8 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -115,39 +115,29 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ImageRegionSelectionInteractionViewTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val mockitoRule = MockitoJUnit.rule()
 
-  @Inject
-  lateinit var context: Context
+  @Mock lateinit var onClickableAreaClickedListener: OnClickableAreaClickedListener
+  @Captor lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
 
-  @Mock
-  lateinit var onClickableAreaClickedListener: OnClickableAreaClickedListener
-
-  @Captor
-  lateinit var regionClickedEvent: ArgumentCaptor<RegionClickedEvent>
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var imageLoader: TestGlideImageLoader
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
-    MockitoAnnotations.initMocks(this)
-  }
-
-  private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    imageLoader.arrangeBitmap("test_image_url.drawable", R.drawable.testing_fraction)
   }
 
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_region3Clicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
@@ -170,10 +160,9 @@ class ImageRegionSelectionInteractionViewTest {
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickRegion3_clickRegion2_region2Clicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
@@ -212,10 +201,9 @@ class ImageRegionSelectionInteractionViewTest {
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.0f, pointY = 0.0f)
@@ -234,10 +222,9 @@ class ImageRegionSelectionInteractionViewTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testView_withTalkbackEnabled_clickRegion3_clickRegion2_region2Clicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
@@ -275,10 +262,9 @@ class ImageRegionSelectionInteractionViewTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_withTalkbackEnabled_clickRegion3_region3Clicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
@@ -305,9 +291,8 @@ class ImageRegionSelectionInteractionViewTest {
   @Ignore("Move to Robolectric")
   fun testView_withTalkbackEnabled_clickOnDefaultRegion_defaultRegionNotClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
-      scenario.onActivity {
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+      scenario.onActivity { activity ->
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.0f, pointY = 0.0f)
@@ -324,11 +309,10 @@ class ImageRegionSelectionInteractionViewTest {
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_region3Clicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
@@ -351,11 +335,10 @@ class ImageRegionSelectionInteractionViewTest {
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_rtl_clickRegion3_clickRegion2_region2Clicked() {
-    launch(ImageRegionSelectionTestActivity::class.java).use {
-      it.onActivity {
-        it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-        it.findViewById<ImageRegionSelectionInteractionView>(R.id.clickable_image_view)
-          .setListener(onClickableAreaClickedListener)
+    launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
         clickPoint(pointX = 0.3f, pointY = 0.3f)
@@ -401,7 +384,7 @@ class ImageRegionSelectionInteractionViewTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
+      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
       HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,

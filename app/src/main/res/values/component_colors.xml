@@ -128,7 +128,6 @@
   <color name="component_color_hints_and_solution_summary_divider_color">@color/color_palette_hints_and_solution_summary_divider_color</color>
   <color name="component_color_hints_and_solution_summary_bottom_background_color">@color/color_palette_hints_and_solution_summary_bottom_background_color</color>
   <color name="component_color_hints_and_solution_summary_button_text_color">@color/color_palette_hints_and_solution_summary_button_text_color</color>
-
   <!-- Story Activity -->
   <color name="component_color_story_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_story_activity_story_header_view_text_color">@color/color_palette_highlighted_text_color</color>
@@ -157,7 +156,8 @@
   <color name="component_color_question_player_activity_text_color">@color/color_palette_highlighted_text_color</color>
   <!-- Revision Card Activity -->
   <color name="component_color_revision_card_activity_background_color">@color/color_palette_revision_card_background_color</color>
-  <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
+  <color name="component_color_revision_card_activity_layout_background_color">@color/color_palette_revision_card_layout_background_color</color>
+  <color name="component_color_revision_card_activity_toolbar_color">@color/color_palette_revision_card_fragment_status_bar_color</color>
   <!-- Third Party Dependency List Activity -->
   <color name="component_color_third_party_dependency_list_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_third_party_dependency_list_activity_dependency_name_text_view_color">@color/color_palette_dark_text_color</color>
@@ -239,6 +239,13 @@
   <color name="component_color_cellular_data_dialog_checkbox_color">@color/color_palette_dark_text_color</color>
   <!-- Profile Picture Edit Dialog -->
   <color name="component_color_profile_picture_edit_dialog_text_color">@color/color_palette_dark_text_color</color>
+  <!-- Home Activity -->
+  <color name="component_color_home_activity_background_color">@color/color_palette_home_activity_background_color</color>
+  <color name="component_color_home_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
+  <color name="component_color_home_activity_recently_played_stories_text_color">@color/color_palette_recently_played_stories_text_color</color>
+  <color name="component_color_home_activity_select_a_topic_to_start_text_color">@color/color_palette_select_a_topic_to_start_text_color</color>
+  <color name="component_color_home_activity_greeting_text_color">@color/color_palette_greeting_text_color</color>
+  <color name="component_color_home_activity_layout_greeting_text_line_color">@color/color_palette_layout_below_greeting_text_color</color>
   <!-- Topic Activity -->
   <color name="component_color_topic_fragment_primary_toolbar_color">@color/color_palette_toolbar_color</color>
   <color name="component_color_topic_fragment_primary_tab_color">@color/color_palette_secondary_toolbar_color</color>

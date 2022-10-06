@@ -2,6 +2,9 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -40,6 +43,16 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 /** Dagger module that provides bindings for platform parameters. */
 @Module
 class PlatformParameterModule {
+
+  @Provides
+  @AutomaticUpdateTopicSetting
+  fun provideAutomaticallyUpdateTopicMarker(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(AUTOMATIC_UPDATE_TOPIC_SETTING)
+      ?: PlatformParameterValue.createDefaultParameter(AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE)
+  }
+
   @Provides
   @SplashScreenWelcomeMsg
   fun provideSplashScreenWelcomeMsgParam(

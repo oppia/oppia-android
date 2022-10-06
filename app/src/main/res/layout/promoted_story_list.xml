@@ -32,7 +32,7 @@
         android:layout_weight="1"
         android:fontFamily="sans-serif-medium"
         android:text="@{viewModel.getHeader()}"
-        android:textColor="@color/component_color_profile_progress_activity_recently_played_stories_text_color"
+        android:textColor="@color/component_color_home_activity_recently_played_stories_text_color"
         android:textSize="18sp" />
 
       <TextView
@@ -49,7 +49,7 @@
         android:text="@string/view_all"
         android:textAllCaps="true"
         android:visibility="@{viewModel.getViewAllButtonVisibility()}"
-        android:textColor="@color/oppia_primary"
+        android:textColor="@color/component_color_home_activity_view_all_text_color"
         android:textSize="14sp" />
     </LinearLayout>
 
