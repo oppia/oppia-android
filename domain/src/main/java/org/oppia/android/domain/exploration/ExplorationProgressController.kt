@@ -122,6 +122,8 @@ class ExplorationProgressController @Inject constructor(
   private val activeSessionId: String
     get() = mostRecentSessionId.value ?: DEFAULT_SESSION_ID
 
+  var showContinueButtonAnimation: Boolean? = null
+
   private var mostRecentEphemeralStateFlow =
     createAsyncResultStateFlow<EphemeralState>(
       AsyncResult.Failure(IllegalStateException("Exploration is not yet initialized."))
