@@ -329,12 +329,25 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimStartsIn45SecAfterOpening() {
+  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
 
+      testCoroutineDispatchers.advanceTimeBy(30000)
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
       testCoroutineDispatchers.advanceTimeBy(30000)
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
