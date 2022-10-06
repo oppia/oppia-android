@@ -1,6 +1,7 @@
 package org.oppia.android.app.application.beta
 
 import dagger.Component
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
@@ -96,7 +97,7 @@ import javax.inject.Singleton
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     ActivityLifecycleObserverModule::class, PerformanceMetricsAssessorModule::class,
     PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
-    EventLoggingConfigurationModule::class
+    EventLoggingConfigurationModule::class, ActivityRouterModule::class
   ]
 )
 interface BetaApplicationComponent : ApplicationComponent {
