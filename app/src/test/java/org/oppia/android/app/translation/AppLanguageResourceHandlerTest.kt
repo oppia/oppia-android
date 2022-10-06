@@ -634,7 +634,6 @@ class AppLanguageResourceHandlerTest {
 
     private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
     private val HEBREW_LOCALE = Locale("he", "US")
-    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
 
     private fun String.extractNumbers(): List<String> =
       "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()
