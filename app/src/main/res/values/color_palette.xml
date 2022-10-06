@@ -94,7 +94,6 @@
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_revision_card_layout_background_color">@color/color_def_oppia_white</color>
   <color name="color_palette_home_activity_background_color">@color/color_def_white</color>
-  <color name="color_palette_view_all_text_color">@color/color_def_oppia_green</color>
   <color name="color_palette_recently_played_stories_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_select_a_topic_to_start_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_greeting_text_color">@color/color_def_accessible_grey</color>
@@ -122,7 +121,6 @@
   <color name="color_palette_completed_progress_activity_background_color">@color/color_def_white</color>
   <color name="color_palette_completed_progress_activity_completed_story_card_text_color">@color/color_def_oppia_stroke_black</color>
   <color name="color_palette_topic_fragments_background_color">@color/color_def_oppia_white_2</color>
-  <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_white_2</color>
   <color name="color_palette_topic_practice_header_description_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_topic_practice_subtopic_text_color">@color/color_def_accessible_grey</color>
 </resources>
