@@ -18,6 +18,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -28,6 +29,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.shim.IntentFactoryShimModule
@@ -278,9 +280,14 @@ class RecentlyPlayedSpanTest {
   }
 
   private fun createRecentlyPlayedActivityIntent(profileId: Int): Intent {
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
-      profileId
+      recentlyPlayedActivityParams
     )
   }
 
@@ -311,7 +318,7 @@ class RecentlyPlayedSpanTest {
       SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

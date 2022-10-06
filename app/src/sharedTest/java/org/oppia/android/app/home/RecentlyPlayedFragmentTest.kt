@@ -18,7 +18,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -45,6 +44,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -58,6 +58,8 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
@@ -204,10 +206,20 @@ class RecentlyPlayedFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(
+    internalProfileId: Int,
+    recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle =
+      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+  ): Intent {
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(recentlyPlayedActivityTitle)
+        .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context = context,
-      internalProfileId = internalProfileId
+      recentlyPlayedActivityParams = recentlyPlayedActivityParams
     )
   }
 
@@ -358,7 +370,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        RecentlyPlayedActivityTitle.STORIES_FOR_YOU
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -1493,7 +1506,7 @@ class RecentlyPlayedFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
