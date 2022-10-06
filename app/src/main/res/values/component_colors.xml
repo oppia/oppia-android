@@ -62,7 +62,7 @@
   <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
   <color name="component_color_general_item_background_solid_color">@color/color_palette_container_background_color</color>
   <color name="component_color_general_item_background_stroke_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_general_item_secondary_background_stroke_color">@color/Color_palette_stroke_color</color>
+  <color name="component_color_general_item_secondary_background_stroke_color">@color/color_palette_stroke_color</color>
   <!-- Admin Auth Activity -->
   <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
   <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
