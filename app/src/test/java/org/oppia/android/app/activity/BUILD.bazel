@@ -1,5 +1,5 @@
 """
-Tests for root activity Dagger configuration classes.
+Tests for general activity routing functionality.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
