@@ -20,6 +20,7 @@ import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.domain.oppialogger.OppiaLogger
 
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
@@ -42,6 +43,9 @@ class ContinueButtonView @JvmOverloads constructor(
   @Inject
   lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
 
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
   private lateinit var viewModel: ContinueInteractionViewModel
   private var isAnimationTimerFinished = false
 
@@ -60,10 +64,9 @@ class ContinueButtonView @JvmOverloads constructor(
   private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     when (result) {
       is AsyncResult.Failure -> {
+        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
       }
-//        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
-      is AsyncResult.Pending -> {
-      } // Display nothing until a valid result is available.
+      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
       is AsyncResult.Success -> processEphemeralState(result.value)
     }
   }

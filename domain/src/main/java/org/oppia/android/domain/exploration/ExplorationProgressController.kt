@@ -1,6 +1,7 @@
 package org.oppia.android.domain.exploration
 
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
@@ -130,7 +131,7 @@ class ExplorationProgressController @Inject constructor(
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
 
   // The amount of time to wait before the continue interaction button is animated in milliseconds.
-  private val continueButtonAnimationDelay: Long = 45000L
+  private val continueButtonAnimationDelay: Long = TimeUnit.SECONDS.toMillis(45)
 
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
