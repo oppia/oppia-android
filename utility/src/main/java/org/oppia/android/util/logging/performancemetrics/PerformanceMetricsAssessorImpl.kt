@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
+import android.util.Log
 import org.oppia.android.app.model.ApplicationState
 import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
@@ -18,6 +19,10 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
+import java.io.FileFilter
+import java.lang.Exception
+import java.nio.charset.Charset
+import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -102,10 +107,9 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   }
 
   private fun getNumberOfCores(): Int {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
-    } else {
-      1
-    }
+    val numOfCores = File("/sys/devices/system/cpu/").listFiles()?.filter {
+      Pattern.matches("cpu[0-9]", it.name)
+    }?.size
+    return numOfCores ?: 1
   }
 }
