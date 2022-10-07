@@ -15,11 +15,11 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.util.system.OppiaClock
-import java.io.BufferedReader
 import java.io.File
-import java.io.FileReader
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
 
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton
@@ -79,20 +79,31 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     }
   }
 
-  override fun getCpuUsage(): Double {
-    val clockSpeedHz = Os.sysconf(OsConstants._SC_CLK_TCK)
-    val uptimeSec = oppiaClock.getElapsedRealTime() / 1000.0
-    val cpuTimeSec = Process.getElapsedCpuTime() / 1000.0
-    val pid = Process.myPid()
-    val processTimeSec = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      val startTimeSec = Process.getStartElapsedRealtime() / 1000.0
-      uptimeSec - startTimeSec
+  override fun getCurrentCpuUsageParameters(currentApplicationState: ApplicationState): CpuUsageParameters {
+    return CpuUsageParameters.newBuilder().apply {
+      cpuTime = Process.getElapsedCpuTime()
+      processTime = oppiaClock.getCurrentTimeMs()
+      applicationState = currentApplicationState
+      numberOfActiveCores = getNumberOfCores()
+    }.build()
+  }
+
+  override fun getRelativeCpuUsage(
+    cpuUsageAtStartOfTimeWindow: CpuUsageParameters,
+    cpuUsageAtEndOfTimeWindow: CpuUsageParameters
+  ): Double {
+    val deltaCpuTimeMs = cpuUsageAtEndOfTimeWindow.cpuTime - cpuUsageAtStartOfTimeWindow.cpuTime
+    val deltaProcessTimeMs =
+      (cpuUsageAtEndOfTimeWindow.processTime * cpuUsageAtEndOfTimeWindow.numberOfActiveCores) -
+        (cpuUsageAtStartOfTimeWindow.processTime * cpuUsageAtStartOfTimeWindow.numberOfActiveCores)
+    return (100 * (deltaCpuTimeMs.toDouble() / deltaProcessTimeMs.toDouble()))
+  }
+
+  private fun getNumberOfCores(): Int {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
     } else {
-      val reader = BufferedReader(FileReader("/proc/$pid/stat"))
-      val stats = reader.readLine().split(" ")
-      val startTime = stats[21].toLong()
-      uptimeSec - (startTime / clockSpeedHz)
+      1
     }
-    return 100 * (cpuTimeSec / processTimeSec)
   }
 }

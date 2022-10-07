@@ -16,6 +16,7 @@ import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorImpl
 
 /** Observer that observes activity lifecycle and further logs analytics events on its basis. */
 @Singleton
@@ -24,6 +25,7 @@ class ActivityLifecycleObserver @Inject constructor(
   private val application: Application,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val oppiaLogger: OppiaLogger,
+  private val performanceMetricsController: PerformanceMetricsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : Application.ActivityLifecycleCallbacks, ApplicationStartupListener {
 
@@ -51,13 +53,17 @@ class ActivityLifecycleObserver @Inject constructor(
    */
   fun getCurrentScreen(): ScreenName = currentScreen
 
+  /** Returns the time in millis at which the application started. */
+  fun getAppStartupTimeMs(): Long = appStartTimeMillis
+
   override fun onCreate() {
     appStartTimeMillis = oppiaClock.getCurrentTimeMs()
     application.registerActivityLifecycleCallbacks(this)
-    performanceMetricsLogger.logCpuUsage(currentScreen)
     CoroutineScope(backgroundDispatcher).launch {
       performanceMetricsLogger.logApkSize(currentScreen)
       performanceMetricsLogger.logStorageUsage(currentScreen)
+
+      // log cpu here in a time based loop
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
@@ -78,7 +84,6 @@ class ActivityLifecycleObserver @Inject constructor(
       )
       isStartupLatencyLogged = true
     }
-    performanceMetricsLogger.logCpuUsage(currentScreen)
     performanceMetricsLogger.logMemoryUsage(currentScreen)
   }
 

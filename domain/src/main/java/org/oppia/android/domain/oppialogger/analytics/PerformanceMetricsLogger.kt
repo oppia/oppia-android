@@ -6,6 +6,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ApplicationState
 
 /**
  * Convenience logger for performance metrics related analytics events.
@@ -103,17 +104,21 @@ class PerformanceMetricsLogger @Inject constructor(
   /**
    * Logs the cpu usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
-   * application instance.
+   * application instance. It must also be noted that the metric will only be logged when cpuUsage
+   * is positive since garbage collection can lead to negative values as well.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
-   * @param cpuUsage denotes the current cpu usage of the application
+   * @param cpuUsage denotes the relative cpu usage of the application which is measured across two
+   * time-separated points in the application.
    */
-  fun logCpuUsage(currentScreen: ScreenName) {
-    performanceMetricsController.logHighPriorityMetricEvent(
-      oppiaClock.getCurrentTimeMs(),
-      currentScreen,
-      createCpuUsageLoggableMetric(performanceMetricsAssessor.getCpuUsage())
-    )
+  fun logCpuUsage(currentScreen: ScreenName, applicationState: ApplicationState, cpuUsage: Double) {
+    if (cpuUsage >= 0) {
+      performanceMetricsController.logHighPriorityMetricEvent(
+        oppiaClock.getCurrentTimeMs(),
+        currentScreen,
+        createCpuUsageLoggableMetric(cpuUsage, applicationState)
+      )
+    }
   }
 
   internal companion object {
@@ -263,12 +268,14 @@ class PerformanceMetricsLogger @Inject constructor(
    * CPU used by the application on user's device.
    */
   private fun createCpuUsageLoggableMetric(
-    cpuUsage: Double
+    cpuUsage: Double,
+    applicationState: ApplicationState
   ): OppiaMetricLog.LoggableMetric {
     return OppiaMetricLog.LoggableMetric.newBuilder()
       .setCpuUsageMetric(
         OppiaMetricLog.CpuUsageMetric.newBuilder()
           .setCpuUsageMetric(cpuUsage)
+          .setApplicationState(applicationState)
           .build()
       ).build()
   }

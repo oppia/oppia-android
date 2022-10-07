@@ -15,6 +15,14 @@ import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
+import org.oppia.android.app.model.ScreenName
+
+private const val SIXTY_MINUTES_IN_MILLIS = 60 * 60 * 1000L
+private const val FIVE_MINUTES_IN_MILLIS = 5 * 60 * 1000L
 
 /** Observer that observes application lifecycle. */
 @Singleton
@@ -24,10 +32,14 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
+  private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val performanceMetricsController: PerformanceMetricsController,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ApplicationStartupListener, LifecycleObserver {
+
+  private var alreadyRunningInForeground = false
+  private var alreadyRunningInBackground = false
 
   override fun onCreate() {
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -46,6 +58,14 @@ class ApplicationLifecycleObserver @Inject constructor(
       loggingIdentifierController.updateSessionId()
     }
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
+    if (!alreadyRunningInForeground) {
+      alreadyRunningInForeground = true
+      logRelativeCpuUsageInBackground(
+        FIVE_MINUTES_IN_MILLIS,
+        ApplicationState.APP_IN_FOREGROUND,
+        ScreenName.FOREGROUND_SCREEN
+      )
+    }
   }
 
   /** Occurs when application goes to background. */
@@ -54,6 +74,14 @@ class ApplicationLifecycleObserver @Inject constructor(
     performanceMetricsController.setAppInBackground()
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
+    if (!alreadyRunningInBackground){
+      alreadyRunningInBackground = true
+      logRelativeCpuUsageInBackground(
+        SIXTY_MINUTES_IN_MILLIS,
+        ApplicationState.APP_IN_BACKGROUND,
+        ScreenName.BACKGROUND_SCREEN
+      )
+    }
   }
 
   private fun logAppLifecycleEventInBackground(logMethod: (String?, String?) -> Unit) {
@@ -69,6 +97,60 @@ class ApplicationLifecycleObserver @Inject constructor(
           failure
         )
       }
+    }
+  }
+
+  private fun logRelativeCpuUsageInBackground(
+    timeIntervalInMillis: Long,
+    currentApplicationState: ApplicationState,
+    currentScreen: ScreenName
+  ) {
+    CoroutineScope(backgroundDispatcher).launch {
+      while (true) {
+        val previousCpuUsageParameters = performanceMetricsController.getLastCpuUsageParameters()
+        val currentCpuUsageParameters = performanceMetricsController.getCurrentCpuUsageParameters(
+          currentApplicationState
+        )
+        val relativeCpuUsage = performanceMetricsController.getRelativeCpuUsage(
+          previousCpuUsageParameters, currentCpuUsageParameters
+        )
+        val applicationState = calculateRelativeApplicationState(
+          previousCpuUsageParameters.applicationState,
+          currentApplicationState
+        )
+        performanceMetricsLogger.logCpuUsage(currentScreen, applicationState, relativeCpuUsage)
+        performanceMetricsController.cacheCpuUsageParameters(currentCpuUsageParameters)
+        delay(timeIntervalInMillis)
+      }
+    }
+  }
+
+  private fun calculateRelativeApplicationState(
+    previousApplicationState: ApplicationState,
+    currentApplicationState: ApplicationState
+  ): ApplicationState {
+    return if (
+      previousApplicationState == ApplicationState.APP_IN_FOREGROUND &&
+      currentApplicationState == ApplicationState.APP_IN_BACKGROUND
+    ) {
+      ApplicationState.FOREGROUND_TO_BACKGROUND
+    } else if (
+      previousApplicationState == ApplicationState.APP_IN_BACKGROUND &&
+      currentApplicationState == ApplicationState.APP_IN_FOREGROUND
+    ) {
+      ApplicationState.BACKGROUND_TO_FOREGROUND
+    } else if (
+      previousApplicationState == ApplicationState.APP_IN_FOREGROUND &&
+      currentApplicationState == ApplicationState.APP_IN_FOREGROUND
+    ) {
+      ApplicationState.APP_IN_FOREGROUND
+    } else if (
+      previousApplicationState == ApplicationState.APP_IN_BACKGROUND &&
+      currentApplicationState == ApplicationState.APP_IN_BACKGROUND
+    ) {
+      ApplicationState.APP_IN_BACKGROUND
+    } else {
+      ApplicationState.STATE_UNSPECIFIED
     }
   }
 }

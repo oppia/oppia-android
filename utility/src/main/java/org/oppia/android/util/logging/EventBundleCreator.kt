@@ -610,5 +610,6 @@ class EventBundleCreator @Inject constructor(
     ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
     ScreenName.POLICIES_ACTIVITY -> "policies_activity"
     ScreenName.UNRECOGNIZED -> "unrecognized"
+    ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
   }
 }

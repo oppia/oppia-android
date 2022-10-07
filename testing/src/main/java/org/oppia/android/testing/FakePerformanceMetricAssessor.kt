@@ -4,6 +4,8 @@ import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
 
 /** A test specific fake for performance metric utils. */
 @Singleton
@@ -31,7 +33,14 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
 
   override fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier = testDeviceMemoryTier
 
-  override fun getCpuUsage(): Double = testCpuUsage
+  override fun getRelativeCpuUsage(
+    cpuUsageAtStartOfTimeWindow: CpuUsageParameters,
+    cpuUsageAtEndOfTimeWindow: CpuUsageParameters
+  ): Double = testCpuUsage
+
+  override fun getCurrentCpuUsageParameters(
+    currentApplicationState: ApplicationState
+  ): CpuUsageParameters = CpuUsageParameters.getDefaultInstance()
 
   /** Sets [apkSize] as the value of [testApkSize]. */
   fun setApkSize(apkSize: Long) {
@@ -68,8 +77,8 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
     testDeviceMemoryTier = memoryTier
   }
 
-  /** Sets [cpuUsage] as the value of [testCpuUsage]. */
-  fun setCpuUsage(cpuUsage: Double) {
-    testCpuUsage = cpuUsage
+  /** Sets [relativeCpuUsage] as the value of [testCpuUsage]. */
+  fun setRelativeCpuUsage(relativeCpuUsage: Double) {
+    testCpuUsage = relativeCpuUsage
   }
 }

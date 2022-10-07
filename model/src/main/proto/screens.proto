@@ -152,6 +152,9 @@ enum ScreenName {
 
   // Screen name value for the scenario when the policies activity is visible to the user.
   POLICIES_ACTIVITY = 47;
+
+  // A generic foreground screen value for logging periodic metrics like cpu usage.
+  FOREGROUND_SCREEN = 48;
 }
 
 // Defines the current visible UI screen of the application.

@@ -1,5 +1,7 @@
 package org.oppia.android.util.logging.performancemetrics
 
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 
 /** Utility to extract performance metrics from the underlying Android system. */
@@ -36,5 +38,11 @@ interface PerformanceMetricsAssessor {
    */
   fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier
 
-  fun getCpuUsage(): Double
+  /** Returns the relative cpu usage of the application. */
+  fun getRelativeCpuUsage(
+    cpuUsageAtStartOfTimeWindow: CpuUsageParameters,
+    cpuUsageAtEndOfTimeWindow: CpuUsageParameters
+  ): Double
+
+  fun getCurrentCpuUsageParameters(currentApplicationState: ApplicationState): CpuUsageParameters
 }
