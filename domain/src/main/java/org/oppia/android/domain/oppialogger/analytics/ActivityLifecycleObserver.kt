@@ -16,7 +16,6 @@ import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorImpl
 
 /** Observer that observes activity lifecycle and further logs analytics events on its basis. */
 @Singleton

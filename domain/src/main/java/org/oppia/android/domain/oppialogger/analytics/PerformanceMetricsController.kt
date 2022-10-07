@@ -1,5 +1,7 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
 import org.oppia.android.app.model.OppiaMetricLogs
@@ -15,8 +17,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ApplicationState
-import org.oppia.android.app.model.CpuUsageParameters
 
 /**
  * Controller for handling performance metrics event logging.

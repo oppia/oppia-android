@@ -6,7 +6,10 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -15,11 +18,6 @@ import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import org.oppia.android.app.model.ApplicationState
-import org.oppia.android.app.model.CpuUsageParameters
-import org.oppia.android.app.model.ScreenName
 
 private const val SIXTY_MINUTES_IN_MILLIS = 60 * 60 * 1000L
 private const val FIVE_MINUTES_IN_MILLIS = 5 * 60 * 1000L
@@ -74,7 +72,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     performanceMetricsController.setAppInBackground()
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
-    if (!alreadyRunningInBackground){
+    if (!alreadyRunningInBackground) {
       alreadyRunningInBackground = true
       logRelativeCpuUsageInBackground(
         SIXTY_MINUTES_IN_MILLIS,

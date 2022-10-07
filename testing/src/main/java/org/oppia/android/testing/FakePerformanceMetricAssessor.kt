@@ -1,11 +1,11 @@
 package org.oppia.android.testing
 
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ApplicationState
-import org.oppia.android.app.model.CpuUsageParameters
 
 /** A test specific fake for performance metric utils. */
 @Singleton

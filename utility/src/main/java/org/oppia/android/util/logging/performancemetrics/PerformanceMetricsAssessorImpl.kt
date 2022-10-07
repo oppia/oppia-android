@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
+import org.oppia.android.app.model.ApplicationState
+import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
@@ -18,8 +20,6 @@ import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ApplicationState
-import org.oppia.android.app.model.CpuUsageParameters
 
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton
@@ -79,7 +79,9 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     }
   }
 
-  override fun getCurrentCpuUsageParameters(currentApplicationState: ApplicationState): CpuUsageParameters {
+  override fun getCurrentCpuUsageParameters(
+    currentApplicationState: ApplicationState
+  ): CpuUsageParameters {
     return CpuUsageParameters.newBuilder().apply {
       cpuTime = Process.getElapsedCpuTime()
       processTime = oppiaClock.getCurrentTimeMs()
