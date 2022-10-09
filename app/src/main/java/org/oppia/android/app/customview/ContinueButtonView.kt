@@ -49,7 +49,7 @@ class ContinueButtonView @JvmOverloads constructor(
   private lateinit var viewModel: ContinueInteractionViewModel
   private var isAnimationTimerFinished = false
 
-  val animateContinueButton = MutableLiveData(false)
+  private val animateContinueButton = MutableLiveData(false)
 
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
