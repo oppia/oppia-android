@@ -160,7 +160,6 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/topic/lessons/StorySummarySelector.kt",
     "src/main/java/org/oppia/android/app/topic/revision/RevisionSubtopicSelector.kt",
     "src/main/java/org/oppia/android/app/topic/revisioncard/ReturnToTopicClickListener.kt",
-    "src/main/java/org/oppia/android/app/utility/LifecycleSafeTimerFactory.kt",
     "src/main/java/org/oppia/android/app/utility/OnClickableAreaClickedListener.kt",
     "src/main/java/org/oppia/android/app/utility/RegionClickEvent.kt",
     "src/main/java/org/oppia/android/app/walkthrough/WalkthroughActivityListener.kt",
@@ -635,6 +634,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_scope",
+        "//app/src/main/java/org/oppia/android/app/utility:lifecycle_safe_timer_factory"
         "//third_party:androidx_appcompat_appcompat",
         "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_databinding_databinding-common",
