@@ -321,6 +321,20 @@ class StateFragmentLocalTest {
     }
   }
 
+  @Test
+  fun testContBtnAnim_openProtExp_waitFor30Sec_pressCont_submitAnswer_checkContNavBtnDoesNotAnim() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.advanceTimeBy(30000)
+      playThroughTestState1()
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(15000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
   private fun getContinueButtonAnimationSeenStatus(): Boolean {
     return monitorFactory.waitForNextSuccessfulResult(
       profileTestHelper.getProfile(profileId)
