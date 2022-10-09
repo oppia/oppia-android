@@ -76,7 +76,7 @@ class ContinueButtonView @JvmOverloads constructor(
       animateContinueButton.value = false
     } else {
       val timeLeftToAnimate =
-        ephemeralState.continueButtonAnimationTimestamp - oppiaClock.getCurrentTimeMs()
+        ephemeralState.continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
       if (timeLeftToAnimate < 0) {
         animateContinueButton.value = true
       } else {

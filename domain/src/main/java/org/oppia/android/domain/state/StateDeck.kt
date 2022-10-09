@@ -206,7 +206,7 @@ class StateDeck constructor(
           .addAllWrongAnswer(currentDialogInteractions)
           .setHelpIndex(helpIndex)
       )
-      .setContinueButtonAnimationTimestamp(timestamp)
+      .setContinueButtonAnimationTimestampMs(timestamp)
       .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
       .build()
   }
