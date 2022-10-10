@@ -467,6 +467,16 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglish() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.toHumanReadableString(1)
+
+    assertThat(formattedString).contains("1")
+  }
+
+  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()

@@ -48,7 +48,8 @@ class DisplayLocaleImplTest {
   @Inject
   lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
 
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -154,6 +155,34 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
 
     val formattedString = impl.formatDouble(123456789.123)
+
+    // Depending on formatting, commas and/or periods are used for large doubles.
+    assertThat(formattedString).containsMatch("[,.]")
+  }
+
+  @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglishLocale() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.toHumanReadableString(1)
+
+    assertThat(formattedString).contains("1")
+  }
+
+  @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEgyptArabicLocale() {
+    val impl = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
+
+    val localizedNumber = impl.toHumanReadableString(1)
+
+    assertThat(localizedNumber).isEqualTo("١")
+  }
+
+  @Test
+  fun testToHumanReadableString_forLargeInt_returnsStringWithPeriodsOrCommas() {
+    val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+
+    val formattedString = impl.toHumanReadableString(10000)
 
     // Depending on formatting, commas and/or periods are used for large doubles.
     assertThat(formattedString).containsMatch("[,.]")
