@@ -6,6 +6,9 @@
         <shape>
           <corners android:radius="4dp" />
           <solid android:color="@color/oppia_disabled_button_background" />
+          <stroke
+            android:width="1dp"
+            android:color="@color/component_color_start_button_transparent_background_stroke_color" />
         </shape>
       </item>
     </layer-list>

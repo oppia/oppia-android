@@ -122,4 +122,9 @@
   <color name="color_palette_topic_fragments_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_topic_practice_header_description_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_topic_practice_subtopic_text_color">@color/color_def_white</color>
+  <color name="color_palette_profile_view_designation_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_primary_toolbar_color">@color/color_def_forest_green</color>
+  <color name="color_palette_secondary_text_color">@color/color_def_oppia_silver</color>
+  <color name="color_palette_save_button_border_color">@color/color_def_bright_turquoise</color>
+  <color name="color_palette_stroke_color">@color/color_def_black_12</color>
 </resources>
