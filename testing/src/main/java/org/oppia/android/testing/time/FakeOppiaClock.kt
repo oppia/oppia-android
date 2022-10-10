@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @Singleton
 class FakeOppiaClock @Inject constructor() : OppiaClock {
   private var fixedFakeTimeMs: Long = 0
-  private var fixedFakeElapsedTimeMs: Long = 0
   private var fakeTimeMode: FakeTimeMode = FakeTimeMode.MODE_WALL_CLOCK_TIME
 
   init {
@@ -39,10 +38,6 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
     }
   }
 
-  override fun getElapsedRealTime(): Long {
-    return fixedFakeElapsedTimeMs
-  }
-
   /**
    * Sets the current wall-clock time in milliseconds since the Unix epoch, in UTC.
    *
@@ -53,10 +48,6 @@ class FakeOppiaClock @Inject constructor() : OppiaClock {
       "Cannot change set time unless time mode is MODE_FIXED_FAKE_TIME."
     }
     fixedFakeTimeMs = currentTimeMs
-  }
-
-  fun setElapsedRealTime(elapsedRealTime: Long) {
-    fixedFakeElapsedTimeMs = elapsedRealTime
   }
 
   /**

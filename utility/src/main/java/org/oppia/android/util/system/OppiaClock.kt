@@ -28,6 +28,4 @@ interface OppiaClock {
    * [getCurrentTimeMs].
    */
   fun getCurrentDate(): Date = Date(getCurrentTimeMs())
-
-  fun getElapsedRealTime(): Long
 }

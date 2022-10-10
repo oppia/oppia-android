@@ -61,8 +61,6 @@ class ActivityLifecycleObserver @Inject constructor(
     CoroutineScope(backgroundDispatcher).launch {
       performanceMetricsLogger.logApkSize(currentScreen)
       performanceMetricsLogger.logStorageUsage(currentScreen)
-
-      // log cpu here in a time based loop
     }.invokeOnCompletion { failure ->
       if (failure != null) {
         oppiaLogger.e(
