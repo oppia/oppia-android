@@ -689,7 +689,7 @@ states {
       hint {
         hint_content {
           html: "<p>Remember that two halves, when added together, make one whole.</p>"
-          content_id: "hint_1"
+          content_id: "hint_6"
         }
       }
       default_outcome {
