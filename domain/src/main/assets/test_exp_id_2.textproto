@@ -526,7 +526,7 @@ states {
       }
     }
     recorded_voiceovers {
-      key: "hint_1"
+      key: "hint_6"
       value {
       }
     }
@@ -567,7 +567,7 @@ states {
       }
     }
     written_translations {
-      key: "hint_1"
+      key: "hint_6"
       value {
         translation_mapping {
           key: "pt"
