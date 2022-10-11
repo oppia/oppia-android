@@ -227,9 +227,9 @@
   <string name="admin_pin_activity_title">Autorize para adicionar perfis</string>
   <string name="add_profile_activity_label">Adicionar Perfil</string>
   <string name="add_profile_title">Adicionar Perfil</string>
-  <string name="add_profile_input_name">Nome*</string>
-  <string name="add_profile_input_pin">PIN de 3 Dígitos*</string>
-  <string name="add_profile_input_confirm_pin">Confirmar PIN de 3 Dígitos*</string>
+  <string name="add_profile_input_name">Nome</string>
+  <string name="add_profile_input_pin">PIN de 3 Dígitos</string>
+  <string name="add_profile_input_confirm_pin">Confirmar PIN de 3 Dígitos</string>
   <string name="add_profile_allow_download_heading">Permitir Acesso a Download</string>
   <string name="add_profile_allow_download_sub">O usuário pode baixar e excluir conteúdo sem o PIN do administrador.</string>
   <string name="add_profile_create_btn">Criar</string>

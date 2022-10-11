@@ -208,8 +208,8 @@
   <string name="admin_pin_activity_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="add_profile_activity_label">إضافة ملف شخصي</string>
   <string name="add_profile_title">إضافة ملف شخصي</string>
-  <string name="add_profile_input_name">الاسم*</string>
-  <string name="add_profile_input_pin">رقم تعريف شخصي مكون من 3 أرقام*</string>
+  <string name="add_profile_input_name">الاسم</string>
+  <string name="add_profile_input_pin">رقم تعريف شخصي مكون من 3 أرقام</string>
   <string name="add_profile_input_confirm_pin">تأكيد رقم التعريف الشخصي المكون من 3 أرقام</string>
   <string name="add_profile_allow_download_heading">السماح بالوصول للتنزيل</string>
   <string name="add_profile_allow_download_sub">المستخدم قادر على تنزيل ومسح المحتوى بدون رقم التعريف الشخصي الخاص بالمشرف.</string>

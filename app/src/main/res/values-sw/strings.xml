@@ -210,9 +210,9 @@
   <string name="admin_pin_activity_title">Idhinisha kuongeza wasifu</string>
   <string name="add_profile_activity_label">Ongeza Wasifu</string>
   <string name="add_profile_title">Ongeza Wasifu</string>
-  <string name="add_profile_input_name">Jina*</string>
-  <string name="add_profile_input_pin">Nambari ya Siri ya tarakimu 3*</string>
-  <string name="add_profile_input_confirm_pin">Thibitisha Nambari ya Siri ya tarakimu 3*</string>
+  <string name="add_profile_input_name">Jina</string>
+  <string name="add_profile_input_pin">Nambari ya Siri ya tarakimu 3</string>
+  <string name="add_profile_input_confirm_pin">Thibitisha Nambari ya Siri ya tarakimu 3</string>
   <string name="add_profile_allow_download_heading">Ruhusu Upakuaji wa Ufikiaji</string>
   <string name="add_profile_allow_download_sub">Mtumiaji anaweza kupakua na kufuta maudhui bila Nambari ya Siri ya Msimamizi.</string>
   <string name="add_profile_create_btn">Anzisha</string>

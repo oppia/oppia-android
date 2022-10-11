@@ -184,15 +184,6 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_hasRequiredTextPrefixedWithStar() {
-    launch(AddProfileActivity::class.java).use {
-      onView(allOf(withId(R.id.add_profile_activity_required_heading_text_view))).check(
-        matches(withText("*" + context.getString(R.string.add_profile_required)))
-      )
-    }
-  }
-
-  @Test
   fun testAddProfileActivity_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
