@@ -43,7 +43,8 @@ class HomeFragmentPresenter @Inject constructor(
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
   private lateinit var binding: HomeFragmentBinding
@@ -96,17 +97,16 @@ class HomeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<HomeItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
-          is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
-          is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
-          is AllTopicsViewModel -> ViewType.ALL_TOPICS
-          is TopicSummaryViewModel -> ViewType.TOPIC_LIST
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<HomeItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
+        is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
+        is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
+        is AllTopicsViewModel -> ViewType.ALL_TOPICS
+        is TopicSummaryViewModel -> ViewType.TOPIC_LIST
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.WELCOME_MESSAGE,
         inflateDataBinding = WelcomeBinding::inflate,
