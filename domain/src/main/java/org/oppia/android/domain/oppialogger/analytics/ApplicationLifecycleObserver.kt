@@ -113,28 +113,22 @@ class ApplicationLifecycleObserver @Inject constructor(
     previousApplicationState: ApplicationState,
     currentApplicationState: ApplicationState
   ): ApplicationState {
-    return if (
-      previousApplicationState == ApplicationState.APP_IN_FOREGROUND &&
-      currentApplicationState == ApplicationState.APP_IN_BACKGROUND
-    ) {
-      ApplicationState.FOREGROUND_TO_BACKGROUND
-    } else if (
-      previousApplicationState == ApplicationState.APP_IN_BACKGROUND &&
-      currentApplicationState == ApplicationState.APP_IN_FOREGROUND
-    ) {
-      ApplicationState.BACKGROUND_TO_FOREGROUND
-    } else if (
-      previousApplicationState == ApplicationState.APP_IN_FOREGROUND &&
-      currentApplicationState == ApplicationState.APP_IN_FOREGROUND
-    ) {
-      ApplicationState.APP_IN_FOREGROUND
-    } else if (
-      previousApplicationState == ApplicationState.APP_IN_BACKGROUND &&
-      currentApplicationState == ApplicationState.APP_IN_BACKGROUND
-    ) {
-      ApplicationState.APP_IN_BACKGROUND
-    } else {
-      ApplicationState.STATE_UNSPECIFIED
+    return when (previousApplicationState) {
+      ApplicationState.APP_IN_FOREGROUND -> {
+        when (currentApplicationState) {
+          ApplicationState.APP_IN_FOREGROUND -> ApplicationState.APP_IN_FOREGROUND
+          ApplicationState.APP_IN_BACKGROUND -> ApplicationState.FOREGROUND_TO_BACKGROUND
+          else -> ApplicationState.STATE_UNSPECIFIED
+        }
+      }
+      ApplicationState.APP_IN_BACKGROUND -> {
+        when (currentApplicationState) {
+          ApplicationState.APP_IN_BACKGROUND -> ApplicationState.APP_IN_BACKGROUND
+          ApplicationState.APP_IN_FOREGROUND -> ApplicationState.BACKGROUND_TO_FOREGROUND
+          else -> ApplicationState.STATE_UNSPECIFIED
+        }
+      }
+      else -> ApplicationState.STATE_UNSPECIFIED
     }
   }
 }
