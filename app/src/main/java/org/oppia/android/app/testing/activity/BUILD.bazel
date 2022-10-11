@@ -30,6 +30,7 @@ kt_android_library(
         "//app:databinding_resources",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/activity:injectable_app_compat_activity",
+        "//app/src/main/java/org/oppia/android/app/activity/route:activity_router",
         "//app/src/main/java/org/oppia/android/app/utility/math:math_expression_accessibility_util",
     ],
 )

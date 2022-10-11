@@ -21,7 +21,8 @@ import javax.inject.Inject
 class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModel: TopicRevisionViewModel
+  private val viewModel: TopicRevisionViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
   private var internalProfileId: Int = -1
@@ -73,8 +74,7 @@ class TopicRevisionFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicRevisionItemViewModel>()
+    return singleTypeBuilderFactory.create<TopicRevisionItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
         setViewModel = TopicRevisionSummaryViewBinding::setViewModel
