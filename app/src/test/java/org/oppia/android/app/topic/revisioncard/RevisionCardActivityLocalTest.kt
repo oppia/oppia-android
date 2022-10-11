@@ -13,6 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -94,6 +95,7 @@ class RevisionCardActivityLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   private val internalProfileId = 1
+  private val fractionsSubtopicListSize: Int = 4
 
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
@@ -110,7 +112,8 @@ class RevisionCardActivityLocalTest {
         ApplicationProvider.getApplicationContext(),
         internalProfileId,
         FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID
+        SUBTOPIC_TOPIC_ID,
+        fractionsSubtopicListSize
       )
     ).use {
       val event = fakeEventLogger.getMostRecentEvent()
@@ -150,7 +153,7 @@ class RevisionCardActivityLocalTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

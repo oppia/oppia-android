@@ -18,6 +18,10 @@
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
   </style>
 
+  <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimaryDark">@color/component_color_revision_card_activity_toolbar_color</item>
+  </style>
+
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimary">@color/color_palette_primary_color</item>
     <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>

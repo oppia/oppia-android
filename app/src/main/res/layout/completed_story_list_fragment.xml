@@ -12,7 +12,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_completed_progress_activity_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/completed_story_list_app_bar_layout"
@@ -27,7 +27,7 @@
         android:id="@+id/completed_story_list_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/component_color_completed_progress_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/navigate_up"

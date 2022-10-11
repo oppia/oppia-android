@@ -20,7 +20,8 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModel: MarkTopicsCompletedViewModel,
-  private val modifyLessonProgressController: ModifyLessonProgressController
+  private val modifyLessonProgressController: ModifyLessonProgressController,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : TopicSelector {
   private lateinit var binding: MarkTopicsCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -63,14 +64,17 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markTopicsCompletedAllCheckBoxContainer.setOnClickListener {
-      if (binding.isAllChecked == null || binding.isAllChecked == false)
-        binding.isAllChecked = true
+      binding.isAllChecked = !(binding.isAllChecked ?: false)
     }
 
     binding.markTopicsCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
         viewModel.getTopicList().forEach { viewModel ->
           if (!viewModel.isCompleted) topicSelected(viewModel.topic.topicId)
+        }
+      } else {
+        viewModel.getTopicList().forEach { viewModel ->
+          if (!viewModel.isCompleted) topicUnselected(viewModel.topic.topicId)
         }
       }
       bindingAdapter.notifyDataSetChanged()
@@ -88,8 +92,7 @@ class MarkTopicsCompletedFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicViewModel>()
+    return singleTypeBuilderFactory.create<TopicViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = MarkTopicsCompletedTopicViewBinding::inflate,
         setViewModel = this::bindTopicSummaryView

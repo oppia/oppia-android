@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/app_version_background">
+      android:background="@color/component_color_app_version_activity_background_color">
 
       <TextView
         android:id="@+id/app_version_text_view"
@@ -25,7 +25,7 @@
         android:paddingEnd="@dimen/app_version_text_view_padding_end"
         android:paddingBottom="20dp"
         android:text="@{viewModel.computeVersionNameText()}"
-        android:textColor="@color/oppia_primary_text_dark"
+        android:textColor="@color/component_color_app_version_activity_text_color"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
         android:layout_marginEnd="@dimen/app_version_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.computeLastUpdatedDateText()}"
-        android:textColor="@color/oppia_secondary_text"
+        android:textColor="@color/component_color_app_version_activity_description_text_color"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"

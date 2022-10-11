@@ -26,7 +26,8 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
-  private val viewModel: TopicPracticeViewModel
+  private val viewModel: TopicPracticeViewModel,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) : SubtopicSelector {
   private lateinit var binding: TopicPracticeFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -72,15 +73,14 @@ class TopicPracticeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicPracticeItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<TopicPracticeItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL
-          is TopicPracticeFooterViewModel -> ViewType.VIEW_TYPE_FOOTER
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<TopicPracticeItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is TopicPracticeHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is TopicPracticeSubtopicViewModel -> ViewType.VIEW_TYPE_SKILL
+        is TopicPracticeFooterViewModel -> ViewType.VIEW_TYPE_FOOTER
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = TopicPracticeHeaderViewBinding::inflate,
