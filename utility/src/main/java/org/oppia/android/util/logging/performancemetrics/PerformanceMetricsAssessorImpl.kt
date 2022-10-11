@@ -15,7 +15,6 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
-import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -84,7 +83,6 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
       cpuTime = Process.getElapsedCpuTime()
       processTime = oppiaClock.getCurrentTimeMs()
       applicationState = currentApplicationState
-      numberOfActiveCores = getNumberOfCores()
     }.build()
   }
 
@@ -94,15 +92,8 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   ): Double {
     val deltaCpuTimeMs = cpuUsageAtEndOfTimeWindow.cpuTime - cpuUsageAtStartOfTimeWindow.cpuTime
     val deltaProcessTimeMs =
-      (cpuUsageAtEndOfTimeWindow.processTime * cpuUsageAtEndOfTimeWindow.numberOfActiveCores) -
-        (cpuUsageAtStartOfTimeWindow.processTime * cpuUsageAtStartOfTimeWindow.numberOfActiveCores)
-    return (100 * (deltaCpuTimeMs.toDouble() / deltaProcessTimeMs.toDouble()))
-  }
-
-  private fun getNumberOfCores(): Int {
-    val numOfCores = File("/sys/devices/system/cpu/").listFiles()?.filter {
-      Pattern.matches("cpu[0-9]", it.name)
-    }?.size
-    return numOfCores ?: 1
+      cpuUsageAtEndOfTimeWindow.processTime - cpuUsageAtStartOfTimeWindow.processTime
+    val numberOfCores = Runtime.getRuntime().availableProcessors()
+    return deltaCpuTimeMs.toDouble() / (deltaProcessTimeMs.toDouble() * numberOfCores)
   }
 }

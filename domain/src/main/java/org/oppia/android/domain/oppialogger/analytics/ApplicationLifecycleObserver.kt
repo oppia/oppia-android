@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.ApplicationState
-import org.oppia.android.app.model.ScreenName
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -32,15 +31,17 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val performanceMetricsController: PerformanceMetricsController,
+  private val activityLifecycleObserver: ActivityLifecycleObserver,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ApplicationStartupListener, LifecycleObserver {
 
-  private var alreadyRunningInForeground = false
-  private var alreadyRunningInBackground = false
+  private var timeIntervalInMillis = FIVE_MINUTES_IN_MILLIS
+  private var currentApplicationState = ApplicationState.STATE_UNSPECIFIED
 
   override fun onCreate() {
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+    logRelativeCpuUsageInBackground()
   }
 
   // Use a large Long value such that the time difference based on any timestamp will be negative
@@ -50,36 +51,24 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
-    performanceMetricsController.setAppInForeground()
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
+    currentApplicationState = ApplicationState.APP_IN_FOREGROUND
+    timeIntervalInMillis = FIVE_MINUTES_IN_MILLIS
+    performanceMetricsController.setAppInForeground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
-    if (!alreadyRunningInForeground) {
-      alreadyRunningInForeground = true
-      logRelativeCpuUsageInBackground(
-        FIVE_MINUTES_IN_MILLIS,
-        ApplicationState.APP_IN_FOREGROUND,
-        ScreenName.FOREGROUND_SCREEN
-      )
-    }
   }
 
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
-    performanceMetricsController.setAppInBackground()
     firstTimestamp = oppiaClock.getCurrentTimeMs()
+    currentApplicationState = ApplicationState.APP_IN_BACKGROUND
+    timeIntervalInMillis = SIXTY_MINUTES_IN_MILLIS
+    performanceMetricsController.setAppInBackground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
-    if (!alreadyRunningInBackground) {
-      alreadyRunningInBackground = true
-      logRelativeCpuUsageInBackground(
-        SIXTY_MINUTES_IN_MILLIS,
-        ApplicationState.APP_IN_BACKGROUND,
-        ScreenName.BACKGROUND_SCREEN
-      )
-    }
   }
 
   private fun logAppLifecycleEventInBackground(logMethod: (String?, String?) -> Unit) {
@@ -98,11 +87,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     }
   }
 
-  private fun logRelativeCpuUsageInBackground(
-    timeIntervalInMillis: Long,
-    currentApplicationState: ApplicationState,
-    currentScreen: ScreenName
-  ) {
+  private fun logRelativeCpuUsageInBackground() {
     CoroutineScope(backgroundDispatcher).launch {
       while (true) {
         val previousCpuUsageParameters = performanceMetricsController.getLastCpuUsageParameters()
@@ -116,6 +101,7 @@ class ApplicationLifecycleObserver @Inject constructor(
           previousCpuUsageParameters.applicationState,
           currentApplicationState
         )
+        val currentScreen = activityLifecycleObserver.getCurrentScreen()
         performanceMetricsLogger.logCpuUsage(currentScreen, applicationState, relativeCpuUsage)
         performanceMetricsController.cacheCpuUsageParameters(currentCpuUsageParameters)
         delay(timeIntervalInMillis)

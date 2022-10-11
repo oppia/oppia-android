@@ -183,9 +183,6 @@ message CpuUsageParameters {
 
   // Depicts the application state at the time of cpu metric logging.
   ApplicationState application_state = 3;
-
-  // Depicts the number of active cores during the time of cpu usage sample collection.
-  int32 number_of_active_cores = 4;
 }
 
 // Supported application states for indicating the app's state while logging relative cpu usage.

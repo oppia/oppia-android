@@ -198,7 +198,6 @@ class PerformanceMetricsController @Inject constructor(
           .setCpuTime(cpuUsageParameters.cpuTime)
           .setProcessTime(cpuUsageParameters.processTime)
           .setApplicationState(cpuUsageParameters.applicationState)
-          .setNumberOfActiveCores(cpuUsageParameters.numberOfActiveCores)
           .build()
       } else {
         // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
@@ -217,7 +216,6 @@ class PerformanceMetricsController @Inject constructor(
         .setCpuTime(cpuUsageParameters.cpuTime)
         .setProcessTime(cpuUsageParameters.processTime)
         .setApplicationState(cpuUsageParameters.applicationState)
-        .setNumberOfActiveCores(cpuUsageParameters.numberOfActiveCores)
         .build()
     }.invokeOnCompletion {
       it?.let {
@@ -240,7 +238,6 @@ class PerformanceMetricsController @Inject constructor(
       cpuTime = lastCpuUsageParameters.cpuTime
       processTime = lastCpuUsageParameters.processTime
       applicationState = lastCpuUsageParameters.applicationState
-      numberOfActiveCores = lastCpuUsageParameters.numberOfActiveCores
     }.build()
   }
 
