@@ -3,11 +3,11 @@ package org.oppia.android.domain.oppialogger.analytics
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /**
  * Convenience logger for performance metrics related analytics events.
@@ -20,7 +20,8 @@ class PerformanceMetricsLogger @Inject constructor(
   private val performanceMetricsController: PerformanceMetricsController,
   private val performanceMetricsAssessor: PerformanceMetricsAssessor,
   private val oppiaClock: OppiaClock,
-  @EnablePerformanceMetricsCollection private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
+  @EnablePerformanceMetricsCollection
+  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
 ) {
 
   /**

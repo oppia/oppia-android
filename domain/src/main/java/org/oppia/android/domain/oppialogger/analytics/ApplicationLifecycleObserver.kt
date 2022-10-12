@@ -11,19 +11,19 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ScreenName
-import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 private const val SIXTY_MINUTES_IN_MILLIS = 60 * 1000L
 private const val FIVE_MINUTES_IN_MILLIS = 5 * 1000L
@@ -39,7 +39,8 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val performanceMetricsController: PerformanceMetricsController,
-  @EnablePerformanceMetricsCollection private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
+  @EnablePerformanceMetricsCollection
+  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
@@ -143,7 +144,8 @@ class ApplicationLifecycleObserver @Inject constructor(
       CoroutineScope(backgroundDispatcher).launch {
         while (true) {
           val previousCpuUsageParameters = performanceMetricsController.getLastCpuUsageParameters()
-          val currentCpuUsageParameters = performanceMetricsController.getCurrentCpuUsageParameters()
+          val currentCpuUsageParameters =
+            performanceMetricsController.getCurrentCpuUsageParameters()
           val relativeCpuUsage = performanceMetricsController.getRelativeCpuUsage(
             previousCpuUsageParameters, currentCpuUsageParameters
           )

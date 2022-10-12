@@ -93,7 +93,10 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     val deltaCpuTimeMs = cpuUsageAtEndOfTimeWindow.cpuTime - cpuUsageAtStartOfTimeWindow.cpuTime
     val deltaProcessTimeMs =
       cpuUsageAtEndOfTimeWindow.processTime - cpuUsageAtStartOfTimeWindow.processTime
-    val numberOfCores = (cpuUsageAtEndOfTimeWindow.numberOfActiveCores + cpuUsageAtStartOfTimeWindow.numberOfActiveCores) / 2
+    val numberOfCores = (
+      cpuUsageAtEndOfTimeWindow.numberOfActiveCores +
+        cpuUsageAtStartOfTimeWindow.numberOfActiveCores
+      ) / 2
     return deltaCpuTimeMs.toDouble() / (deltaProcessTimeMs.toDouble() * numberOfCores)
   }
 
