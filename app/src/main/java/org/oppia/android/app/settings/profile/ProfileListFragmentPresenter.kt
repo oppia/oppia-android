@@ -19,7 +19,8 @@ import javax.inject.Inject
 class ProfileListFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<ProfileListViewModel>
+  private val viewModelProvider: ViewModelProvider<ProfileListViewModel>,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private var isMultipane = false
@@ -52,8 +53,7 @@ class ProfileListFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<Profile> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<Profile>()
+    return singleTypeBuilderFactory.create<Profile>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ProfileListProfileViewBinding::inflate,
         setViewModel = ::bindProfileView

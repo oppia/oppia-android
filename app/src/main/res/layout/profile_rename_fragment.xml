@@ -17,7 +17,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/general_navigation_background"
+      android:background="@color/component_color_profile_rename_activity_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/general_item_background_border"
+        android:background="@drawable/general_item_background_border_grey"
         android:paddingBottom="@dimen/profile_rename_activity_constraint_layout"
         app:layout_constraintTop_toTopOf="parent">
 

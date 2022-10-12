@@ -44,7 +44,8 @@ class OptionsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
@@ -91,25 +92,24 @@ class OptionsFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAdapter(
     isMultipane: Boolean
   ): BindableAdapter<OptionsItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<OptionsItemViewModel, ViewType> { viewModel ->
-        viewModel.isMultipane.set(isMultipane)
-        when (viewModel) {
-          is OptionsReadingTextSizeViewModel -> {
-            viewModel.itemIndex.set(0)
-            ViewType.VIEW_TYPE_READING_TEXT_SIZE
-          }
-          is OptionsAppLanguageViewModel -> {
-            viewModel.itemIndex.set(1)
-            ViewType.VIEW_TYPE_APP_LANGUAGE
-          }
-          is OptionsAudioLanguageViewModel -> {
-            viewModel.itemIndex.set(2)
-            ViewType.VIEW_TYPE_AUDIO_LANGUAGE
-          }
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+    return multiTypeBuilderFactory.create<OptionsItemViewModel, ViewType> { viewModel ->
+      viewModel.isMultipane.set(isMultipane)
+      when (viewModel) {
+        is OptionsReadingTextSizeViewModel -> {
+          viewModel.itemIndex.set(0)
+          ViewType.VIEW_TYPE_READING_TEXT_SIZE
         }
+        is OptionsAppLanguageViewModel -> {
+          viewModel.itemIndex.set(1)
+          ViewType.VIEW_TYPE_APP_LANGUAGE
+        }
+        is OptionsAudioLanguageViewModel -> {
+          viewModel.itemIndex.set(2)
+          ViewType.VIEW_TYPE_AUDIO_LANGUAGE
+        }
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_READING_TEXT_SIZE,
         inflateDataBinding = OptionStoryTextSizeBinding::inflate,

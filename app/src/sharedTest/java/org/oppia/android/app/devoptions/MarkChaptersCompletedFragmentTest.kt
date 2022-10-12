@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -29,6 +30,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -159,31 +161,26 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 0)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 4)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Other Interesting Story",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 6)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 6,
         stringToMatch = "Matthew Goes to the Bakery",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 9)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 9,
         stringToMatch = "Ratios: Part 1",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 12)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 12,
         stringToMatch = "Ratios: Part 2",
@@ -199,31 +196,26 @@ class MarkChaptersCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 4)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Other Interesting Story",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 6)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 6,
         stringToMatch = "Matthew Goes to the Bakery",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 9)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 9,
         stringToMatch = "Ratios: Part 1",
         targetViewId = R.id.mark_chapters_completed_story_name_text_view
       )
-      scrollToPosition(position = 12)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 12,
         stringToMatch = "Ratios: Part 2",
@@ -238,61 +230,51 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Prototype Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 2)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Image Region Selection Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 3)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Math Expressions",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 5)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 5,
         stringToMatch = "Fifth Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 7)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 7,
         stringToMatch = "What is a Fraction?",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 8)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 8,
         stringToMatch = "The Meaning of Equal Parts",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 10)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 10,
         stringToMatch = "What is a Ratio?",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 11)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 11,
         stringToMatch = "Order is important",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 13)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 13,
         stringToMatch = "Equivalent Ratios",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 14)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 14,
         stringToMatch = "Writing Ratios in Simplest Form",
@@ -308,61 +290,51 @@ class MarkChaptersCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Prototype Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 2)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Image Region Selection Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 3)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Math Expressions",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 5)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 5,
         stringToMatch = "Fifth Exploration",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 7)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 7,
         stringToMatch = "What is a Fraction?",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 8)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 8,
         stringToMatch = "The Meaning of Equal Parts",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 10)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 10,
         stringToMatch = "What is a Ratio?",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 11)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 11,
         stringToMatch = "Order is important",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 13)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 13,
         stringToMatch = "Equivalent Ratios",
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
-      scrollToPosition(position = 14)
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 14,
         stringToMatch = "Writing Ratios in Simplest Form",
@@ -401,26 +373,41 @@ class MarkChaptersCompletedFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
-      scrollToPosition(position = 1)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 3)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
-      scrollToPosition(position = 5)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
-      scrollToPosition(position = 7)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
-      scrollToPosition(position = 8)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
-      scrollToPosition(position = 10)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
-      scrollToPosition(position = 11)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
-      scrollToPosition(position = 13)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
-      scrollToPosition(position = 14)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+    }
+  }
+
+  @Test
+  fun testMarkChaptersCompletedFragment_deselectAllChapters_deselectsAllChapters() {
+    launch<MarkChaptersCompletedTestActivity>(
+      createMarkChaptersCompletedTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      // Click one to select all chapters.
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      // Click a second time to unselect all chapters.
+      onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
+      verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
     }
   }
 
@@ -432,25 +419,15 @@ class MarkChaptersCompletedFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 3)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 3)
-      scrollToPosition(position = 5)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 5)
-      scrollToPosition(position = 7)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 7)
-      scrollToPosition(position = 8)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 8)
-      scrollToPosition(position = 10)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 10)
-      scrollToPosition(position = 11)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 11)
-      scrollToPosition(position = 13)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 13)
-      scrollToPosition(position = 14)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 14)
     }
   }
@@ -461,10 +438,8 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
     }
@@ -476,14 +451,10 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 1)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition = 2)
     }
   }
@@ -545,13 +516,9 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
@@ -568,14 +535,10 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
@@ -592,25 +555,15 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 3)
-      scrollToPosition(position = 5)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 5)
-      scrollToPosition(position = 7)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 7)
-      scrollToPosition(position = 8)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 8)
-      scrollToPosition(position = 10)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 10)
-      scrollToPosition(position = 11)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 11)
-      scrollToPosition(position = 13)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 13)
-      scrollToPosition(position = 14)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 14)
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
     }
@@ -622,25 +575,15 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 3)
-      scrollToPosition(position = 5)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 5)
-      scrollToPosition(position = 7)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 7)
-      scrollToPosition(position = 8)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 8)
-      scrollToPosition(position = 10)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 10)
-      scrollToPosition(position = 11)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 11)
-      scrollToPosition(position = 13)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 13)
-      scrollToPosition(position = 14)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 14)
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(isChecked()))
@@ -653,27 +596,16 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 3)
-      scrollToPosition(position = 5)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 5)
-      scrollToPosition(position = 7)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 7)
-      scrollToPosition(position = 8)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 8)
-      scrollToPosition(position = 10)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 10)
-      scrollToPosition(position = 11)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 11)
-      scrollToPosition(position = 13)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 13)
-      scrollToPosition(position = 14)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 14)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
     }
@@ -685,27 +617,16 @@ class MarkChaptersCompletedFragmentTest {
       createMarkChaptersCompletedTestActivityIntent(internalProfileId)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 1)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 1)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
-      scrollToPosition(position = 3)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 3)
-      scrollToPosition(position = 5)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 5)
-      scrollToPosition(position = 7)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 7)
-      scrollToPosition(position = 8)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 8)
-      scrollToPosition(position = 10)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 10)
-      scrollToPosition(position = 11)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 11)
-      scrollToPosition(position = 13)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 13)
-      scrollToPosition(position = 14)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 14)
-      scrollToPosition(position = 2)
       performItemCheckOnRecyclerViewItemAtPosition(itemPosition = 2)
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_chapters_completed_all_check_box)).check(matches(not(isChecked())))
@@ -841,6 +762,7 @@ class MarkChaptersCompletedFragmentTest {
     stringToMatch: String,
     targetViewId: Int
   ) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
@@ -851,6 +773,7 @@ class MarkChaptersCompletedFragmentTest {
   }
 
   private fun performItemCheckOnRecyclerViewItemAtPosition(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
@@ -861,6 +784,7 @@ class MarkChaptersCompletedFragmentTest {
   }
 
   private fun verifyItemCheckedOnRecyclerViewItemAtPosition(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
@@ -868,6 +792,17 @@ class MarkChaptersCompletedFragmentTest {
         targetViewId = R.id.mark_chapters_completed_chapter_check_box
       )
     ).check(matches(isChecked()))
+  }
+
+  private fun verifyItemUncheckedOnRecyclerViewItemAtPosition(itemPosition: Int) {
+    scrollToPosition(position = itemPosition)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.mark_chapters_completed_recycler_view,
+        position = itemPosition,
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+      )
+    ).check(matches(isNotChecked()))
   }
 
   private fun markFractionsFirstChapterCompleted() {
@@ -917,7 +852,7 @@ class MarkChaptersCompletedFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
