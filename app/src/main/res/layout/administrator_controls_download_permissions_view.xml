@@ -3,7 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-    <import type="android.view.View" />
+
     <variable
       name="viewModel"
       type="org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsDownloadPermissionsViewModel" />
@@ -34,9 +34,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/component_color_admin_controls_options_background_color"
-      android:clickable="true"
-      android:focusable="true"
-      android:importantForAccessibility="yes"
       android:onClick="@{(view) -> viewModel.onTopicWifiUpdatePermissionChanged()}"
       android:paddingStart="@dimen/administrator_controls_download_permissions_view_topic_update_on_wifi_constraint_layout_padding_start"
       android:paddingTop="20dp"
@@ -47,26 +44,35 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/download_permissions_text_view">
 
-      <TextView
-        android:id="@+id/topic_update_on_wifi_title_text_view"
-        style="@style/Body"
-        android:background="@color/component_color_admin_controls_options_background_color"
-        android:paddingBottom="4dp"
-        android:text="@string/administrator_controls_update_on_wifi_title"
-        android:textColor="@color/component_color_admin_controls_menu_options_text_color"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/topic_update_on_wifi_description_text_view"
-        style="@style/Subtitle2ViewStart"
+      <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
-        android:background="@color/component_color_admin_controls_options_background_color"
-        android:text="@string/administrator_controls_update_on_wifi_message"
-        android:textColor="@color/component_color_admin_controls_switch_description_color"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/topic_update_on_wifi_switch"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+          android:id="@+id/topic_update_on_wifi_title_text_view"
+          style="@style/Body"
+          android:background="@color/component_color_admin_controls_options_background_color"
+          android:paddingBottom="4dp"
+          android:text="@string/administrator_controls_update_on_wifi_title"
+          android:textColor="@color/component_color_admin_controls_menu_options_text_color"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/topic_update_on_wifi_description_text_view"
+          style="@style/Subtitle2ViewStart"
+          android:layout_width="0dp"
+          android:background="@color/component_color_admin_controls_options_background_color"
+          android:text="@string/administrator_controls_update_on_wifi_message"
+          android:textColor="@color/component_color_admin_controls_switch_description_color"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/topic_update_on_wifi_title_text_view" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
       <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/topic_update_on_wifi_switch"
@@ -75,14 +81,13 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="@dimen/administrator_controls_download_permissions_view_topic_update_on_wifi_widget_switch_compat_margin_end"
         android:checked="@{viewModel.isTopicWifiUpdatePermission}"
-        android:clickable="false"
-        android:focusable="false"
+        android:clickable="true"
+        android:focusable="true"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:theme="@style/OppiaSwitchCompatTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/topic_update_on_wifi_description_text_view"
         app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -103,7 +108,6 @@
       android:background="@color/component_color_admin_controls_options_background_color"
       android:clickable="true"
       android:focusable="true"
-      android:visibility="@{viewModel.isVisible ? View.VISIBLE: View.GONE}"
       android:importantForAccessibility="yes"
       android:onClick="@{(view) -> viewModel.onTopicAutoUpdatePermissionChanged()}"
       android:paddingStart="@dimen/administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start"
