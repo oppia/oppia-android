@@ -103,8 +103,8 @@ message OppiaMetricLog {
     // Relative percent of cpu used by the application.
     double cpu_usage_metric = 1;
 
-    // Depicts the application state at the time of cpu metric logging.
-    ApplicationState application_state = 2;
+    // The screen where previous cpu usage was logged.
+    ScreenName previous_screen_name = 2;
   }
 
   // Supported priority of events for performance metric logging.
@@ -175,36 +175,17 @@ message OppiaMetricLog {
 
 // Structure for cpu usage parameters which consist of cpu time and process time.
 message CpuUsageParameters {
-  // Depicts the amount of time cpu was utilised during the entire process.
+  // The amount of time cpu was utilised during the entire process.
   int64 cpu_time = 1;
 
-  // Depicts the total amount from the beginning to the end of the process.
+  // The total amount from the beginning to the end of the process.
   int64 process_time = 2;
 
-  // Depicts the application state at the time of cpu metric logging.
-  ApplicationState application_state = 3;
-}
+  // The number of active cores during the time of cpu usage sample collection.
+  int32 number_of_active_cores = 3;
 
-// Supported application states for indicating the app's state while logging relative cpu usage.
-enum ApplicationState {
-  // The undefined application state of a device.
-  STATE_UNSPECIFIED = 0;
-
-  // State depicting that the application is in the foreground when cpu usage is logged.
-  APP_IN_FOREGROUND = 1;
-
-  // State depicting that the application is in the background when cpu usage is logged.
-  APP_IN_BACKGROUND = 2;
-
-  // State depicting that the application has moved from foreground to background since the last
-  // cpu usage logging. This essentially means that the first cpu usage was taken when the app was
-  // in foreground and the second is taken when the app is in the background.
-  FOREGROUND_TO_BACKGROUND = 3;
-
-  // State depicting that the application has moved from background to foreground since the last
-  // cpu usage logging. This essentially means that the first cpu usage was taken when the app was
-  // in background and the second is taken when the app is in the foreground.
-  BACKGROUND_TO_FOREGROUND = 4;
+  // The current screen where cpu usage parameters are getting logged.
+  ScreenName current_screen = 4;
 }
 
 // Structure for a container that contains metric log reports.

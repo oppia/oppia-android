@@ -1,6 +1,5 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import org.oppia.android.app.model.ApplicationState
 import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
@@ -17,6 +16,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Controller for handling performance metrics event logging.
@@ -40,8 +40,7 @@ class PerformanceMetricsController @Inject constructor(
   private val metricLogStore =
     cacheStoreFactory.create("metric_logs", OppiaMetricLogs.getDefaultInstance())
 
-  private val lastCpuUsageParameters =
-    cacheStoreFactory.create("last_cpu_usage_parameters", CpuUsageParameters.getDefaultInstance())
+  private var previousCpuUsageParameters = MutableStateFlow(CpuUsageParameters.getDefaultInstance())
 
   /**
    * Logs a performance metric occurring at [currentScreen] defined by [loggableMetric]
@@ -184,62 +183,16 @@ class PerformanceMetricsController @Inject constructor(
     }
   }
 
-  /**
-   * Adds [cpuUsageParameters] to the storage.
-   *
-   * At first it checks if there is an existing instance, if yes, it cleans out those values before
-   * setting the new parameter values for storage.
-   */
-  fun cacheCpuUsageParameters(cpuUsageParameters: CpuUsageParameters) {
-    lastCpuUsageParameters.storeDataAsync(updateInMemoryCache = true) { lastCpuUsageParameters ->
-      if (lastCpuUsageParameters.isInitialized) {
-        return@storeDataAsync lastCpuUsageParameters.toBuilder()
-          .clear()
-          .setCpuTime(cpuUsageParameters.cpuTime)
-          .setProcessTime(cpuUsageParameters.processTime)
-          .setApplicationState(cpuUsageParameters.applicationState)
-          .build()
-      } else {
-        // TODO(#1433): Refactoring for logging exceptions to both console and exception loggers.
-        val exception =
-          IllegalStateException(
-            "Last cpu usage parameters absent."
-          )
-        consoleLogger.e(
-          "PerformanceMetricsController",
-          "Failure while caching last cpu usage parameters.",
-          exception
-        )
-        exceptionLogger.logException(exception)
-      }
-      return@storeDataAsync lastCpuUsageParameters.toBuilder()
-        .setCpuTime(cpuUsageParameters.cpuTime)
-        .setProcessTime(cpuUsageParameters.processTime)
-        .setApplicationState(cpuUsageParameters.applicationState)
-        .build()
-    }.invokeOnCompletion {
-      it?.let {
-        consoleLogger.e(
-          "PerformanceMetricsController",
-          "Failed to store last cpu usage parameters.",
-          it
-        )
-      }
-    }
+  /** Adds [cpuUsageParameters] to the in-memory storage via [previousCpuUsageParameters]. */
+  fun saveCpuUsageParameters(cpuUsageParameters: CpuUsageParameters) {
+    previousCpuUsageParameters = MutableStateFlow(cpuUsageParameters)
   }
 
   /**
-   * Returns the last cached cpu usage parameters. These parameters are then used to calculate
+   * Returns the last saved cpu usage parameters. These parameters are then used to calculate
    * relative cpu usage of the application.
    */
-  suspend fun getLastCpuUsageParameters(): CpuUsageParameters {
-    val lastCpuUsageParameters = lastCpuUsageParameters.readDataAsync().await()
-    return CpuUsageParameters.newBuilder().apply {
-      cpuTime = lastCpuUsageParameters.cpuTime
-      processTime = lastCpuUsageParameters.processTime
-      applicationState = lastCpuUsageParameters.applicationState
-    }.build()
-  }
+  fun getLastCpuUsageParameters(): CpuUsageParameters = previousCpuUsageParameters.value
 
   /**
    * Returns the relative cpu usage. This cpu usage is taken out by comparing the values in
@@ -256,8 +209,8 @@ class PerformanceMetricsController @Inject constructor(
   }
 
   /** Returns the current cpu usage parameters. */
-  fun getCurrentCpuUsageParameters(currentApplicationState: ApplicationState): CpuUsageParameters {
-    return performanceMetricsAssessor.getCurrentCpuUsageParameters(currentApplicationState)
+  fun getCurrentCpuUsageParameters(): CpuUsageParameters {
+    return performanceMetricsAssessor.getCurrentCpuUsageParameters()
   }
 
   /** Sets [isAppInForeground] to true when application is in or returns to foreground. */

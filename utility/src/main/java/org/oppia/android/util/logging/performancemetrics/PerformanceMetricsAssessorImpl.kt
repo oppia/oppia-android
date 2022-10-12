@@ -3,8 +3,10 @@ package org.oppia.android.util.logging.performancemetrics
 import android.app.ActivityManager
 import android.content.Context
 import android.net.TrafficStats
+import android.os.Build
 import android.os.Process
-import org.oppia.android.app.model.ApplicationState
+import android.system.Os
+import android.system.OsConstants
 import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
@@ -51,7 +53,7 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     TrafficStats.getUidRxBytes(context.applicationInfo.uid)
 
   override fun getTotalPssUsed(): Long {
-    val pid = ActivityManager.RunningAppProcessInfo().pid
+    val pid = Process.myPid()
     val processMemoryInfo = activityManager.getProcessMemoryInfo(intArrayOf(pid))
     return processMemoryInfo?.map { it.totalPss }?.sum()?.toLong() ?: 0L
   }
@@ -76,13 +78,11 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     }
   }
 
-  override fun getCurrentCpuUsageParameters(
-    currentApplicationState: ApplicationState
-  ): CpuUsageParameters {
+  override fun getCurrentCpuUsageParameters(): CpuUsageParameters {
     return CpuUsageParameters.newBuilder().apply {
       cpuTime = Process.getElapsedCpuTime()
       processTime = oppiaClock.getCurrentTimeMs()
-      applicationState = currentApplicationState
+      numberOfActiveCores = getNumberOfOnlineCores()
     }.build()
   }
 
@@ -93,7 +93,15 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     val deltaCpuTimeMs = cpuUsageAtEndOfTimeWindow.cpuTime - cpuUsageAtStartOfTimeWindow.cpuTime
     val deltaProcessTimeMs =
       cpuUsageAtEndOfTimeWindow.processTime - cpuUsageAtStartOfTimeWindow.processTime
-    val numberOfCores = Runtime.getRuntime().availableProcessors()
+    val numberOfCores = (cpuUsageAtEndOfTimeWindow.numberOfActiveCores + cpuUsageAtStartOfTimeWindow.numberOfActiveCores) / 2
     return deltaCpuTimeMs.toDouble() / (deltaProcessTimeMs.toDouble() * numberOfCores)
+  }
+
+  private fun getNumberOfOnlineCores(): Int {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
+    } else {
+      Runtime.getRuntime().availableProcessors()
+    }
   }
 }

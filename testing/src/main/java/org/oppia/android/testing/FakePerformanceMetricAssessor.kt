@@ -1,6 +1,5 @@
 package org.oppia.android.testing
 
-import org.oppia.android.app.model.ApplicationState
 import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
@@ -38,9 +37,8 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
     cpuUsageAtEndOfTimeWindow: CpuUsageParameters
   ): Double = testCpuUsage
 
-  override fun getCurrentCpuUsageParameters(
-    currentApplicationState: ApplicationState
-  ): CpuUsageParameters = CpuUsageParameters.getDefaultInstance()
+  override fun getCurrentCpuUsageParameters(): CpuUsageParameters =
+    CpuUsageParameters.getDefaultInstance()
 
   /** Sets [apkSize] as the value of [testApkSize]. */
   fun setApkSize(apkSize: Long) {

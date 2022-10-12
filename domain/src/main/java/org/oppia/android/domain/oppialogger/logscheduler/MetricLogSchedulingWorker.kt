@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
-import org.oppia.android.domain.oppialogger.analytics.ActivityLifecycleObserver
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleObserver
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
@@ -25,7 +25,7 @@ class MetricLogSchedulingWorker private constructor(
   params: WorkerParameters,
   private val consoleLogger: ConsoleLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
-  private val activityLifecycleObserver: ActivityLifecycleObserver,
+  private val applicationLifecycleObserver: ApplicationLifecycleObserver,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ListenableWorker(context, params) {
 
@@ -100,7 +100,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicUiMetricLogging(): Result {
     return try {
-      val currentScreen = activityLifecycleObserver.getCurrentScreen()
+      val currentScreen = applicationLifecycleObserver.getCurrentScreen()
       performanceMetricsLogger.logMemoryUsage(currentScreen)
       Result.success()
     } catch (e: Exception) {
@@ -113,7 +113,7 @@ class MetricLogSchedulingWorker private constructor(
   class Factory @Inject constructor(
     private val consoleLogger: ConsoleLogger,
     private val performanceMetricsLogger: PerformanceMetricsLogger,
-    private val activityLifecycleObserver: ActivityLifecycleObserver,
+    private val applicationLifecycleObserver: ApplicationLifecycleObserver,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
     /**
@@ -128,7 +128,7 @@ class MetricLogSchedulingWorker private constructor(
         params,
         consoleLogger,
         performanceMetricsLogger,
-        activityLifecycleObserver,
+        applicationLifecycleObserver,
         backgroundDispatcher
       )
     }

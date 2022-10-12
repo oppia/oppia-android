@@ -1,6 +1,5 @@
 package org.oppia.android.util.logging.performancemetrics
 
-import org.oppia.android.app.model.ApplicationState
 import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 
@@ -44,5 +43,6 @@ interface PerformanceMetricsAssessor {
     cpuUsageAtEndOfTimeWindow: CpuUsageParameters
   ): Double
 
-  fun getCurrentCpuUsageParameters(currentApplicationState: ApplicationState): CpuUsageParameters
+  /** Returns [CpuUsageParameters] with current data. */
+  fun getCurrentCpuUsageParameters(): CpuUsageParameters
 }

@@ -18,13 +18,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Observer that observes activity lifecycle and further logs analytics events on its basis. */
+// TO BE DELETED AFTER APPROVAL OF TRANSFER TO ApplicationLifecycleObserver
 @Singleton
 class ActivityLifecycleObserver @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val application: Application,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val oppiaLogger: OppiaLogger,
-  private val performanceMetricsController: PerformanceMetricsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : Application.ActivityLifecycleCallbacks, ApplicationStartupListener {
 
@@ -57,7 +57,7 @@ class ActivityLifecycleObserver @Inject constructor(
 
   override fun onCreate() {
     appStartTimeMillis = oppiaClock.getCurrentTimeMs()
-    application.registerActivityLifecycleCallbacks(this)
+    //application.registerActivityLifecycleCallbacks(this)
     CoroutineScope(backgroundDispatcher).launch {
       performanceMetricsLogger.logApkSize(currentScreen)
       performanceMetricsLogger.logStorageUsage(currentScreen)
