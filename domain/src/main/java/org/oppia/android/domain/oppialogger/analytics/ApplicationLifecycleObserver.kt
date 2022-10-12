@@ -25,8 +25,8 @@ import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val SIXTY_MINUTES_IN_MILLIS = 60 * 1000L
-private const val FIVE_MINUTES_IN_MILLIS = 5 * 1000L
+private const val SIXTY_MINUTES_IN_MILLIS = 60 * 60 * 1000L
+private const val FIVE_MINUTES_IN_MILLIS = 5 * 60 * 1000L
 
 /** Observer that observes application and activity lifecycle. */
 @Singleton
