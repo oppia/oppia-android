@@ -16,7 +16,7 @@
     <FrameLayout
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:background="@color/general_navigation_background"
+      android:background="@color/component_color_profile_reset_pin_activity_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/color_def_white"
+          android:background="@color/component_color_profile_reset_pin_activity_enter_pin_background_color"
           android:paddingBottom="@dimen/profile_reset_pin_activity_constraint_layout_padding_bottom">
 
           <TextView
@@ -44,7 +44,7 @@
             android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
             android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
             android:text="@string/profile_reset_pin_main"
-            android:textColor="@color/oppia_primary_text"
+            android:textColor="@color/component_color_profile_reset_pin_activity_header_text_color"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

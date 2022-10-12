@@ -64,8 +64,11 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
     }
 
     binding.markStoriesCompletedAllCheckBoxContainer.setOnClickListener {
-      if (binding.isAllChecked == null || binding.isAllChecked == false)
+      if (binding.isAllChecked == null || binding.isAllChecked == false) {
         binding.isAllChecked = true
+      } else if (binding.isAllChecked == true) {
+        binding.isAllChecked = false
+      }
     }
 
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -73,6 +76,10 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
         viewModel.getStorySummaryMap().values.forEach { viewModel ->
           if (!viewModel.isCompleted)
             storySelected(viewModel.storySummary.storyId)
+        }
+      } else {
+        viewModel.getStorySummaryMap().values.forEach { viewModel ->
+          if (!viewModel.isCompleted) storyUnselected(viewModel.storySummary.storyId)
         }
       }
       bindingAdapter.notifyDataSetChanged()
