@@ -52,6 +52,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -281,6 +282,12 @@ class ActivityLifecycleObserverTest {
     @LearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
+    }
+
+    @Provides
+    @EnablePerformanceMetricsCollection
+    fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(true)
     }
   }
 

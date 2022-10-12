@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoSet
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
@@ -48,6 +49,12 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+
+private const val TWENTY_SECONDS_IN_MILLIS = 20 * 1000L
+private const val TEN_SECONDS_IN_MILLIS = 10 * 1000L
 
 /** Tests for [ApplicationLifecycleObserver]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -64,6 +71,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var fakeEventLogger: FakeEventLogger
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
@@ -243,6 +251,7 @@ class ApplicationLifecycleObserverTest {
   class TestPlatformParameterModule {
     companion object {
       var forceLearnerAnalyticsStudy: Boolean = false
+      var enablePerformanceMetricsLogging: Boolean = false
     }
 
     @Provides
@@ -272,7 +281,35 @@ class ApplicationLifecycleObserverTest {
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
     }
+
+    @Provides
+    @EnablePerformanceMetricsCollection
+    fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsLogging)
+    }
   }
+
+  @Module
+  class TestApplicationLifecycleModule {
+    @Provides
+    @IntoSet
+    fun bindLifecycleObserver(
+      applicationLifecycleObserver: ApplicationLifecycleObserver
+    ): ApplicationStartupListener = applicationLifecycleObserver
+
+    @Provides
+    @LearnerAnalyticsInactivityLimitMillis
+    fun provideLearnerAnalyticsInactivityLimitMillis(): Long = TimeUnit.MINUTES.toMillis(30)
+
+    @Provides
+    @ForegroundCpuLoggingTimePeriod
+    fun provideForegroundCpuLoggingTimePeriod(): Long = TEN_SECONDS_IN_MILLIS
+
+    @Provides
+    @BackgroundCpuLoggingTimePeriod
+    fun provideBackgroundCpuLoggingTimePeriod(): Long = TWENTY_SECONDS_IN_MILLIS
+  }
+
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
@@ -282,7 +319,7 @@ class ApplicationLifecycleObserverTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      TestLoggingIdentifierModule::class, TestApplicationLifecycleModule::class,
       SyncStatusModule::class
     ]
   )

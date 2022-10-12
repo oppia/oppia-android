@@ -40,7 +40,11 @@ class PerformanceMetricsController @Inject constructor(
   private val metricLogStore =
     cacheStoreFactory.create("metric_logs", OppiaMetricLogs.getDefaultInstance())
 
-  private var previousCpuUsageParameters = MutableStateFlow(CpuUsageParameters.getDefaultInstance())
+  private var previousBackgroundCpuUsageParameters =
+    MutableStateFlow(CpuUsageParameters.getDefaultInstance())
+
+  private var previousForegroundCpuUsageParameters =
+    MutableStateFlow(CpuUsageParameters.getDefaultInstance())
 
   /**
    * Logs a performance metric occurring at [currentScreen] defined by [loggableMetric]
@@ -183,16 +187,27 @@ class PerformanceMetricsController @Inject constructor(
     }
   }
 
-  /** Adds [cpuUsageParameters] to the in-memory storage via [previousCpuUsageParameters]. */
-  fun saveCpuUsageParameters(cpuUsageParameters: CpuUsageParameters) {
-    previousCpuUsageParameters = MutableStateFlow(cpuUsageParameters)
+  /** Adds [cpuUsageParameters] to the in-memory storage via [previousBackgroundCpuUsageParameters]. */
+  fun saveBackgroundCpuUsageParameters(cpuUsageParameters: CpuUsageParameters) {
+    previousBackgroundCpuUsageParameters = MutableStateFlow(cpuUsageParameters)
+  }
+
+  /** Adds [cpuUsageParameters] to the in-memory storage via [previousForegroundCpuUsageParameters]. */
+  fun saveForegroundCpuUsageParameters(cpuUsageParameters: CpuUsageParameters) {
+    previousForegroundCpuUsageParameters = MutableStateFlow(cpuUsageParameters)
   }
 
   /**
-   * Returns the last saved cpu usage parameters. These parameters are then used to calculate
-   * relative cpu usage of the application.
+   * Returns the last saved background cpu usage parameters. These parameters are then used to
+   * calculate relative cpu usage of the application.
    */
-  fun getLastCpuUsageParameters(): CpuUsageParameters = previousCpuUsageParameters.value
+  fun getLastBackgroundCpuUsageParameters(): CpuUsageParameters = previousBackgroundCpuUsageParameters.value
+
+  /**
+   * Returns the last saved foreground cpu usage parameters. These parameters are then used to
+   * calculate relative cpu usage of the application.
+   */
+  fun getLastForegroundCpuUsageParameters(): CpuUsageParameters = previousForegroundCpuUsageParameters.value
 
   /**
    * Returns the relative cpu usage. This cpu usage is taken out by comparing the values in

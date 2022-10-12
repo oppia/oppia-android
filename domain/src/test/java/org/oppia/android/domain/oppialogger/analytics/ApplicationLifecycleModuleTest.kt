@@ -41,6 +41,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 
 /** Tests for [ApplicationLifecycleModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -131,6 +132,12 @@ class ApplicationLifecycleModuleTest {
     @LearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
+    }
+
+    @Provides
+    @EnablePerformanceMetricsCollection
+    fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(true)
     }
   }
 
