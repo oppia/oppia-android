@@ -24,6 +24,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.LOW_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
+import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -51,7 +52,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Long.MAX_VALUE

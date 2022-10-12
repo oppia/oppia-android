@@ -201,13 +201,15 @@ class PerformanceMetricsController @Inject constructor(
    * Returns the last saved background cpu usage parameters. These parameters are then used to
    * calculate relative cpu usage of the application.
    */
-  fun getLastBackgroundCpuUsageParameters(): CpuUsageParameters = previousBackgroundCpuUsageParameters.value
+  fun getLastBackgroundCpuUsageParameters(): CpuUsageParameters =
+    previousBackgroundCpuUsageParameters.value
 
   /**
    * Returns the last saved foreground cpu usage parameters. These parameters are then used to
    * calculate relative cpu usage of the application.
    */
-  fun getLastForegroundCpuUsageParameters(): CpuUsageParameters = previousForegroundCpuUsageParameters.value
+  fun getLastForegroundCpuUsageParameters(): CpuUsageParameters =
+    previousForegroundCpuUsageParameters.value
 
   /**
    * Returns the relative cpu usage. This cpu usage is taken out by comparing the values in

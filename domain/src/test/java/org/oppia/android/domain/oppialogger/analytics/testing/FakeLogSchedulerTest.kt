@@ -21,7 +21,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
@@ -44,8 +46,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 
 /** Tests for [FakeLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.

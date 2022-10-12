@@ -14,11 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
+import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -38,6 +40,7 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
@@ -49,9 +52,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.ApplicationStartupListener
-import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 
 private const val TWENTY_SECONDS_IN_MILLIS = 20 * 1000L
 private const val TEN_SECONDS_IN_MILLIS = 10 * 1000L
@@ -309,7 +309,6 @@ class ApplicationLifecycleObserverTest {
     @BackgroundCpuLoggingTimePeriod
     fun provideBackgroundCpuLoggingTimePeriod(): Long = TWENTY_SECONDS_IN_MILLIS
   }
-
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
