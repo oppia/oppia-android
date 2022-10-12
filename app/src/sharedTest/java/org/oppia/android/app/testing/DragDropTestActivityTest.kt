@@ -19,6 +19,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -191,15 +192,18 @@ class DragDropTestActivityTest {
   }
 
   private fun attachDragDropToActivity(activity: DragDropTestActivity) {
-    val recyclerView: RecyclerView = activity.findViewById(R.id.drag_drop_recycler_view)
-    val itemTouchHelper = ItemTouchHelper(createDragCallback(activity))
+    val dragDragTestFragment: DragDropTestFragment = activity.supportFragmentManager
+      .findFragmentById(R.id.drag_drop_test_fragment_placeholder) as DragDropTestFragment
+    val recyclerView: RecyclerView? =
+      dragDragTestFragment.view?.findViewById(R.id.drag_drop_recycler_view)
+    val itemTouchHelper = ItemTouchHelper(createDragCallback(fragment = dragDragTestFragment))
     itemTouchHelper.attachToRecyclerView(recyclerView)
   }
 
-  private fun createDragCallback(activity: DragDropTestActivity): ItemTouchHelper.Callback {
+  private fun createDragCallback(fragment: DragDropTestFragment): ItemTouchHelper.Callback {
     return DragAndDropItemFacilitator(
-      activity as OnItemDragListener,
-      activity as OnDragEndedListener
+      fragment as OnItemDragListener,
+      fragment as OnDragEndedListener
     )
   }
 
@@ -230,7 +234,7 @@ class DragDropTestActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

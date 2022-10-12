@@ -15,6 +15,7 @@
   <string name="menu_help">Ajuda</string>
   <string name="exploration_activity_title">Reprodutor de Exploração</string>
   <string name="help_activity_title">Ajuda</string>
+  <string name="bottom_sheet_options_menu_close">Fechar</string>
   <string name="menu_switch_profile">Trocar Perfil</string>
   <string name="developer_options">Opções de Desenvolvedor</string>
   <string name="administrator_controls">Controles de Administrador</string>

@@ -50,7 +50,7 @@ class DisplayLocaleImpl(
 
   override fun formatDouble(value: Double): String = numberFormat.format(value)
 
-  override fun toHumanReadableString(number: Int): String? = numberFormat.format(number)
+  override fun toHumanReadableString(number: Int): String = numberFormat.format(number)
 
   override fun computeDateString(timestampMillis: Long): String =
     dateFormat.format(Date(timestampMillis))
