@@ -7,7 +7,7 @@
 
 ---
 **Developing Oppia**
-  * [[Contributing to Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android]]
+  * [[Contributing to Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#onboarding-instructions]]
     * [[Installing Oppia-Android|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#install-oppia-android]]
     * [[Troubleshooting Installation|https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation]]
     * [[Finding Something to do|https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android#finding-something-to-do]]
