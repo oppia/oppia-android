@@ -5,7 +5,6 @@ import dagger.Provides
 import dagger.multibindings.IntoSet
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
 
 /** Application-level module that provides application-bound domain utilities. */
 @Module

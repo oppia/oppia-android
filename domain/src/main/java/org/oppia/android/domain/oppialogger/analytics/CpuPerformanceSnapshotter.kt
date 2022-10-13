@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -18,6 +17,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 class CpuPerformanceSnapshotter private constructor(
   private val backgroundCoroutineDispatcher: CoroutineDispatcher,
@@ -174,7 +174,10 @@ class CpuPerformanceSnapshotter private constructor(
 
   sealed class CommandMessage {
     data class SwitchIconification(val newIconification: AppIconification) : CommandMessage()
-    data class ScheduleTakeSnapshot(val currentIconification: AppIconification, val switchId: Int) : CommandMessage()
+    data class ScheduleTakeSnapshot(
+      val currentIconification: AppIconification,
+      val switchId: Int
+    ) : CommandMessage()
     data class TakeSnapshot(val switchId: Int) : CommandMessage()
     data class LogSnapshotDiff(val firstSnapshot: Snapshot, val secondSnapshot: Snapshot) :
       CommandMessage()
