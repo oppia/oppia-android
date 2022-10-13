@@ -102,9 +102,6 @@ message OppiaMetricLog {
   message CpuUsageMetric {
     // Relative percent of cpu used by the application.
     double cpu_usage_metric = 1;
-
-    // The screen where previous cpu usage was logged.
-    ScreenName previous_screen_name = 2;
   }
 
   // Supported priority of events for performance metric logging.

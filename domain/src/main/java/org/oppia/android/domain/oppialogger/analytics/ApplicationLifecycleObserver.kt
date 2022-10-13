@@ -9,13 +9,14 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotter.AppIconification.APP_IN_FOREGROUND
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotter.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
@@ -37,15 +38,10 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val performanceMetricsController: PerformanceMetricsController,
-  @EnablePerformanceMetricsCollection
-  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
+  private val cpuPerformanceSnapshotter: CpuPerformanceSnapshotter,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @ForegroundCpuLoggingTimePeriod private val foregroundCpuLoggingTimePeriod: Long,
-  @BackgroundCpuLoggingTimePeriod private val backgroundCpuLoggingTimePeriod: Long
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
-
-  private val cpuLoggerCreationCount = AtomicInteger(0)
 
   /**
    * Timestamp indicating the time of application start-up. It will be used to calculate the
@@ -92,10 +88,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
-    startCpuUsageLogging(
-      timeIntervalInMillis = foregroundCpuLoggingTimePeriod,
-      cpuLoggerCreationCount.incrementAndGet()
-    )
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     performanceMetricsController.setAppInForeground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
   }
@@ -104,10 +97,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
     firstTimestamp = oppiaClock.getCurrentTimeMs()
-    startCpuUsageLogging(
-      timeIntervalInMillis = backgroundCpuLoggingTimePeriod,
-      cpuLoggerCreationCount.incrementAndGet()
-    )
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     performanceMetricsController.setAppInBackground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
   }
@@ -141,42 +131,6 @@ class ApplicationLifecycleObserver @Inject constructor(
           failure
         )
       }
-    }
-  }
-
-  private fun startCpuUsageLogging(timeIntervalInMillis: Long, initiationId: Int) {
-    if (enablePerformanceMetricsCollection.value) {
-      CoroutineScope(backgroundDispatcher).launch {
-        while (initiationId == cpuLoggerCreationCount.get()) {
-          logCpuUsageAtCurrentTime()
-          delay(timeIntervalInMillis)
-        }
-      }
-    }
-  }
-
-  private fun logCpuUsageAtCurrentTime() {
-    val previousCpuUsageParameters = if (currentScreen == BACKGROUND_SCREEN) {
-      performanceMetricsController.getLastBackgroundCpuUsageParameters()
-    } else {
-      performanceMetricsController.getLastForegroundCpuUsageParameters()
-    }
-    val currentCpuUsageParameters =
-      performanceMetricsController.getCurrentCpuUsageParameters()
-    val relativeCpuUsage = performanceMetricsController.getRelativeCpuUsage(
-      previousCpuUsageParameters, currentCpuUsageParameters
-    )
-    performanceMetricsLogger.logCpuUsage(
-      currentScreen,
-      previousCpuUsageParameters.currentScreen,
-      relativeCpuUsage
-    )
-    val cpuUsageParametersForStorage =
-      currentCpuUsageParameters.toBuilder().setCurrentScreen(currentScreen).build()
-    if (currentScreen == BACKGROUND_SCREEN) {
-      performanceMetricsController.saveBackgroundCpuUsageParameters(cpuUsageParametersForStorage)
-    } else {
-      performanceMetricsController.saveForegroundCpuUsageParameters(cpuUsageParametersForStorage)
     }
   }
 

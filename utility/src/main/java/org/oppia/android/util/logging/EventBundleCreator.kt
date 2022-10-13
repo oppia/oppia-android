@@ -517,10 +517,6 @@ class EventBundleCreator @Inject constructor(
     ) : PerformanceMetricsLoggableMetricType<OppiaMetricLog.CpuUsageMetric>(metricName, value) {
       override fun OppiaMetricLog.CpuUsageMetric.storeValue(store: PropertyStore) {
         store.putNonSensitiveValue("cpu_usage", cpuUsageMetric)
-        store.putNonSensitiveValue(
-          "previous_screen_name",
-          previousScreenName.toString().toLowerCase()
-        )
       }
     }
   }

@@ -122,12 +122,12 @@ class PerformanceMetricsLogger @Inject constructor(
    * @param cpuUsage denotes the relative cpu usage of the application which is measured across two
    * time-separated points in the application.
    */
-  fun logCpuUsage(currentScreen: ScreenName, previousScreenName: ScreenName, cpuUsage: Double) {
+  fun logCpuUsage(currentScreen: ScreenName, cpuUsage: Double) {
     if (cpuUsage >= 0 && enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logHighPriorityMetricEvent(
         oppiaClock.getCurrentTimeMs(),
         currentScreen,
-        createCpuUsageLoggableMetric(cpuUsage, previousScreenName)
+        createCpuUsageLoggableMetric(cpuUsage)
       )
     }
   }
@@ -279,14 +279,12 @@ class PerformanceMetricsLogger @Inject constructor(
    * CPU used by the application on user's device.
    */
   private fun createCpuUsageLoggableMetric(
-    cpuUsage: Double,
-    previousScreenName: ScreenName
+    cpuUsage: Double
   ): OppiaMetricLog.LoggableMetric {
     return OppiaMetricLog.LoggableMetric.newBuilder()
       .setCpuUsageMetric(
         OppiaMetricLog.CpuUsageMetric.newBuilder()
           .setCpuUsageMetric(cpuUsage)
-          .setPreviousScreenName(previousScreenName)
           .build()
       ).build()
   }
