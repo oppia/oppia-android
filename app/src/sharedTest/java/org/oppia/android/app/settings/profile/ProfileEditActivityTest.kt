@@ -277,10 +277,7 @@ class ProfileEditActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_delete_button)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_title)
-      verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_message)
       onView(withText(R.string.profile_edit_delete_dialog_negative)).perform(click())
-
       onView(withText(R.string.profile_edit_delete_dialog_message)).check(doesNotExist())
     }
   }
