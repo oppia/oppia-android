@@ -283,33 +283,6 @@ class ProfileEditActivityTest {
   }
 
   @Test
-  fun testProfileEdit_deleteProfile_returnsToProfileListOnPhoneOrAdminControlOnTablet() {
-    launch<ProfileEditActivity>(
-      ProfileEditActivity.createProfileEditActivity(
-        context = context,
-        profileId = 1
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_delete_button)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_title)
-      verifyTextInDialog(textInDialogId = R.string.profile_edit_delete_dialog_message)
-      onView(withText(R.string.profile_edit_delete_dialog_positive)).check(matches(isDisplayed()))
-      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
-
-      testCoroutineDispatchers.advanceUntilIdle()
-
-      if (context.resources.getBoolean(R.bool.isTablet)) {
-        intended(hasComponent(AdministratorControlsActivity::class.java.name))
-      } else {
-        intended(hasComponent(ProfileListActivity::class.java.name), times(0))
-      }
-
-      onView(withText(R.string.profile_edit_delete_dialog_message)).check(doesNotExist())
-    }
-  }
-
-  @Test
   fun testProfileEdit_startWithUserProfile_checkUserInfoIsDisplayed() {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
