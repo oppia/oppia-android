@@ -38,6 +38,11 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.xml"
+  prohibited_content_regex: "<include layout=\"@layout/[^\\s]+?\\(\">"
+  failure_message: "Remove <include .../> tag from layout and use the appropriate widget, like AppBarLayout widget instead"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "android:gravity=\"left\""
   failure_message: "Use android:gravity=\"start\", instead, for proper RTL support"
 }
