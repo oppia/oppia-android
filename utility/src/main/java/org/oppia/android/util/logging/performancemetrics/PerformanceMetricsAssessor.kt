@@ -36,13 +36,4 @@ interface PerformanceMetricsAssessor {
    * capacity of the device.
    */
   fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier
-
-  /** Returns the relative cpu usage of the application. */
-  fun getRelativeCpuUsage(
-    cpuUsageAtStartOfTimeWindow: CpuUsageParameters,
-    cpuUsageAtEndOfTimeWindow: CpuUsageParameters
-  ): Double
-
-  /** Returns [CpuUsageParameters] with current data. */
-  fun getCurrentCpuUsageParameters(): CpuUsageParameters
 }

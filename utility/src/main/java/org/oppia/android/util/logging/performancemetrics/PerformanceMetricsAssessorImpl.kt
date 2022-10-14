@@ -77,34 +77,4 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
       else -> HIGH_MEMORY_TIER
     }
   }
-
-  override fun getCurrentCpuUsageParameters(): CpuUsageParameters {
-    return CpuUsageParameters.newBuilder().apply {
-      cpuTime = Process.getElapsedCpuTime()
-      processTime = oppiaClock.getCurrentTimeMs()
-      numberOfActiveCores = getNumberOfOnlineCores()
-    }.build()
-  }
-
-  override fun getRelativeCpuUsage(
-    cpuUsageAtStartOfTimeWindow: CpuUsageParameters,
-    cpuUsageAtEndOfTimeWindow: CpuUsageParameters
-  ): Double {
-    val deltaCpuTimeMs = cpuUsageAtEndOfTimeWindow.cpuTime - cpuUsageAtStartOfTimeWindow.cpuTime
-    val deltaProcessTimeMs =
-      cpuUsageAtEndOfTimeWindow.processTime - cpuUsageAtStartOfTimeWindow.processTime
-    val numberOfCores = (
-      cpuUsageAtEndOfTimeWindow.numberOfActiveCores +
-        cpuUsageAtStartOfTimeWindow.numberOfActiveCores
-      ) / 2
-    return deltaCpuTimeMs.toDouble() / (deltaProcessTimeMs.toDouble() * numberOfCores)
-  }
-
-  private fun getNumberOfOnlineCores(): Int {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
-    } else {
-      Runtime.getRuntime().availableProcessors()
-    }
-  }
 }

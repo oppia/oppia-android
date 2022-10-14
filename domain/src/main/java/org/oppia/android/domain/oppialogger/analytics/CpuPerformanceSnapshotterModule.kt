@@ -2,15 +2,22 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 
-private const val SIXTY_MINUTES_IN_MILLIS = 60 * 60 * 1000L
-private const val FIVE_MINUTES_IN_MILLIS = 5 * 60 * 1000L
-
+/**
+ * Corresponds to an injectable application-level [Long] that corresponds to the number of
+ * milliseconds in which the foregrounded app logs another cpu usage metric event.
+ */
 @Qualifier annotation class ForegroundCpuLoggingTimePeriod
 
+/**
+ * Corresponds to an injectable application-level [Long] that corresponds to the number of
+ * milliseconds in which the backgrounded app logs another cpu usage metric event.
+ */
 @Qualifier annotation class BackgroundCpuLoggingTimePeriod
 
+/** Provides dependencies that are needed for logging cpu usage. */
 @Module
 class CpuPerformanceSnapshotterModule {
 
@@ -21,9 +28,9 @@ class CpuPerformanceSnapshotterModule {
 
   @Provides
   @ForegroundCpuLoggingTimePeriod
-  fun provideForegroundCpuLoggingTimePeriod(): Long = FIVE_MINUTES_IN_MILLIS
+  fun provideForegroundCpuLoggingTimePeriod(): Long = TimeUnit.MINUTES.toMillis(5)
 
   @Provides
   @BackgroundCpuLoggingTimePeriod
-  fun provideBackgroundCpuLoggingTimePeriod(): Long = SIXTY_MINUTES_IN_MILLIS
+  fun provideBackgroundCpuLoggingTimePeriod(): Long = TimeUnit.MINUTES.toMillis(60)
 }

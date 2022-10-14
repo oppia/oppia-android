@@ -16,7 +16,6 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
   private var testTotalReceivedBytes = 0L
   private var testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
   private var testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
-  private var testCpuUsage = 0.00
 
   override fun getApkSize(): Long = testApkSize
 
@@ -31,14 +30,6 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
   override fun getDeviceStorageTier(): OppiaMetricLog.StorageTier = testDeviceStorageTier
 
   override fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier = testDeviceMemoryTier
-
-  override fun getRelativeCpuUsage(
-    cpuUsageAtStartOfTimeWindow: CpuUsageParameters,
-    cpuUsageAtEndOfTimeWindow: CpuUsageParameters
-  ): Double = testCpuUsage
-
-  override fun getCurrentCpuUsageParameters(): CpuUsageParameters =
-    CpuUsageParameters.getDefaultInstance()
 
   /** Sets [apkSize] as the value of [testApkSize]. */
   fun setApkSize(apkSize: Long) {
@@ -73,10 +64,5 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
   /** Sets [memoryTier] as the value of [testDeviceMemoryTier]. */
   fun setDeviceMemoryTier(memoryTier: OppiaMetricLog.MemoryTier) {
     testDeviceMemoryTier = memoryTier
-  }
-
-  /** Sets [relativeCpuUsage] as the value of [testCpuUsage]. */
-  fun setRelativeCpuUsage(relativeCpuUsage: Double) {
-    testCpuUsage = relativeCpuUsage
   }
 }
