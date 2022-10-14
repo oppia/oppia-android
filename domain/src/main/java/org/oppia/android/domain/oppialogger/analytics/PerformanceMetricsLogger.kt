@@ -1,5 +1,6 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import android.util.Log
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
@@ -123,7 +124,7 @@ class PerformanceMetricsLogger @Inject constructor(
    * time-separated points in the application.
    */
   fun logCpuUsage(currentScreen: ScreenName, cpuUsage: Double) {
-    if (cpuUsage >= 0 && enablePerformanceMetricsCollection.value) {
+    if (enablePerformanceMetricsCollection.value) {
       performanceMetricsController.logHighPriorityMetricEvent(
         oppiaClock.getCurrentTimeMs(),
         currentScreen,

@@ -30,7 +30,7 @@ class PerformanceMetricsController @Inject constructor(
   private val exceptionLogger: ExceptionLogger,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   cacheStoreFactory: PersistentCacheStore.Factory,
-  @PerformanceMetricsLogStorageCacheSize private var metricLogStorageCacheSize: Int
+  @PerformanceMetricsLogStorageCacheSize private val metricLogStorageCacheSize: Int
 ) {
 
   private var isAppInForeground: Boolean = false

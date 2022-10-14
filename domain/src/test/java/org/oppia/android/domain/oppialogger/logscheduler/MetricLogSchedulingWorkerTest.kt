@@ -63,6 +63,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 
@@ -269,7 +270,7 @@ class MetricLogSchedulingWorkerTest {
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

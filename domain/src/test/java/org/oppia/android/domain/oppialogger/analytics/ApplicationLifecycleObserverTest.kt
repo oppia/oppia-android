@@ -3,18 +3,17 @@ package org.oppia.android.domain.oppialogger.analytics
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoSet
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
-import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -52,9 +51,14 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.ScreenName
+import org.oppia.android.testing.TextInputActionTestActivity
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
-private const val TWENTY_SECONDS_IN_MILLIS = 20 * 1000L
-private const val TEN_SECONDS_IN_MILLIS = 10 * 1000L
+private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
+private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
 
 /** Tests for [ApplicationLifecycleObserver]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -72,6 +76,20 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var performanceMetricsController: PerformanceMetricsController
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+
+  @get:Rule
+  var activityRule =
+    ActivityScenarioRule<TextInputActionTestActivity>(
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()).apply {
+        decorateWithScreenName(ScreenName.HOME_ACTIVITY)
+      }
+    )
+
+  @get:Rule
+  var activityRuleForUnspecifiedActivity =
+    ActivityScenarioRule<TextInputActionTestActivity>(
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
+    )
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
@@ -177,6 +195,160 @@ class ApplicationLifecycleObserverTest {
     assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
   }
 
+  @Test
+  fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
+    setUpTestApplicationComponent()
+    assertThat(applicationLifecycleObserver.getCurrentScreen())
+      .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+  }
+
+  @Test
+  fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
+    setUpTestApplicationComponent()
+    activityRuleForUnspecifiedActivity.scenario.onActivity { activity ->
+      applicationLifecycleObserver.onActivityResumed(activity)
+      val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
+      assertThat(currentScreenValue).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+    }
+  }
+
+  @Test
+  fun testObserver_onCreate_verifyPerformanceMetricsLoggingWithCorrectDetails() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
+
+    val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
+    assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase).isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
+    assertThat(loggedMetrics[1].loggableMetric.loggableMetricTypeCase).isEqualTo(
+      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+    )
+    assertThat(loggedMetrics[0].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    assertThat(loggedMetrics[1].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+  }
+
+  @Test
+  fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
+    setUpTestApplicationComponent()
+    activityRule.scenario.onActivity { activity ->
+      applicationLifecycleObserver.onActivityResumed(activity)
+      val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
+      assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
+    }
+  }
+
+  @Test
+  fun testObserver_onFirstActivityResume_verifyLogsStartupLatency() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
+    activityRule.scenario.onActivity { activity ->
+      val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
+      applicationLifecycleObserver.onActivityResumed(activity)
+      val startupLatencyEvents =
+        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
+      val startupLatencyEvent = startupLatencyEvents[1]
+
+      assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
+        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
+      )
+      assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
+      assertThat(startupLatencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+      assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
+        .isEqualTo(expectedStartupLatency)
+    }
+  }
+
+  @Test
+  fun testObserver_onSecondActivityResume_verifyStartupLatencyIsLoggedOnce() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onCreate()
+    testCoroutineDispatchers.runCurrent()
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
+    activityRule.scenario.onActivity { activity ->
+      applicationLifecycleObserver.onActivityResumed(activity)
+      applicationLifecycleObserver.onActivityResumed(activity)
+
+      val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+      )
+
+      assertThat(loggedEvents.size).isEqualTo(5)
+      assertThat(loggedEvents[0].loggableMetric.loggableMetricTypeCase).isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
+      assertThat(loggedEvents[1].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC)
+      assertThat(loggedEvents[2].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC)
+      assertThat(loggedEvents[3].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC)
+      assertThat(loggedEvents[4].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC)
+    }
+  }
+
+  @Test
+  fun testObserver_activityResumed_verifyLogsMemoryUsage() {
+    setUpTestApplicationComponent()
+
+    activityRule.scenario.onActivity { activity ->
+      applicationLifecycleObserver.onActivityResumed(activity)
+
+      val memoryUsageEvent =
+        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+      assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
+        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
+      )
+      assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+      assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+    }
+  }
+
+  @Test
+  fun testObserver_activityResumed_activityPaused_verifyCurrentScreenReturnsBackgroundValue() {
+    setUpTestApplicationComponent()
+    activityRule.scenario.onActivity { activity ->
+      applicationLifecycleObserver.onActivityResumed(activity)
+      applicationLifecycleObserver.onActivityPaused(activity)
+      val currentScreen = applicationLifecycleObserver.getCurrentScreen()
+
+      assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    }
+  }
+
+  @Test
+  fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+
+    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    ).filter {
+      it.loggableMetric.hasCpuUsageMetric()
+    }
+
+    assertThat(event).isNotEmpty()
+    assertThat(event[0].currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+  }
+
+  @Test
+  fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onAppInBackground()
+    testCoroutineDispatchers.runCurrent()
+
+    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    ).filter {
+      it.loggableMetric.hasCpuUsageMetric()
+    }
+
+    assertThat(event).isNotEmpty()
+    assertThat(event[0].currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+  }
+
   private fun waitInBackgroundFor(millis: Long) {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
@@ -210,6 +382,8 @@ class ApplicationLifecycleObserverTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -251,7 +425,6 @@ class ApplicationLifecycleObserverTest {
   class TestPlatformParameterModule {
     companion object {
       var forceLearnerAnalyticsStudy: Boolean = false
-      var enablePerformanceMetricsLogging: Boolean = false
     }
 
     @Provides
@@ -285,29 +458,8 @@ class ApplicationLifecycleObserverTest {
     @Provides
     @EnablePerformanceMetricsCollection
     fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsLogging)
+      return PlatformParameterValue.createDefaultParameter(true)
     }
-  }
-
-  @Module
-  class TestApplicationLifecycleModule {
-    @Provides
-    @IntoSet
-    fun bindLifecycleObserver(
-      applicationLifecycleObserver: ApplicationLifecycleObserver
-    ): ApplicationStartupListener = applicationLifecycleObserver
-
-    @Provides
-    @LearnerAnalyticsInactivityLimitMillis
-    fun provideLearnerAnalyticsInactivityLimitMillis(): Long = TimeUnit.MINUTES.toMillis(30)
-
-    @Provides
-    @ForegroundCpuLoggingTimePeriod
-    fun provideForegroundCpuLoggingTimePeriod(): Long = TEN_SECONDS_IN_MILLIS
-
-    @Provides
-    @BackgroundCpuLoggingTimePeriod
-    fun provideBackgroundCpuLoggingTimePeriod(): Long = TWENTY_SECONDS_IN_MILLIS
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -318,8 +470,8 @@ class ApplicationLifecycleObserverTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, TestApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

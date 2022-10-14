@@ -46,6 +46,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 /** Tests for [FakeLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -179,7 +180,8 @@ class FakeLogSchedulerTest {
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class
+      SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

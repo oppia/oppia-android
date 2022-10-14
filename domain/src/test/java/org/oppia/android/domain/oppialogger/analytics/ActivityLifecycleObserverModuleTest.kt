@@ -76,7 +76,8 @@ class ActivityLifecycleObserverModuleTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      LoggerModule::class, SyncStatusModule::class, ActivityLifecycleObserverModule::class
+      LoggerModule::class, SyncStatusModule::class, ActivityLifecycleObserverModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

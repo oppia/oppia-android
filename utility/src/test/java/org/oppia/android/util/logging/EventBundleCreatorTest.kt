@@ -134,7 +134,7 @@ class EventBundleCreatorTest {
     private const val TEST_CONTENT_ID = "test_content_id"
     private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
     private const val TEST_APP_VERSION_CODE = 125
-    private const val TEST_CPU_USAGE = Long.MAX_VALUE
+    private const val TEST_CPU_USAGE = Double.MAX_VALUE
     private const val TEST_APK_SIZE = Long.MAX_VALUE
     private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
     private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
@@ -580,7 +580,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
-    assertThat(bundle).longInt("cpu_usage").isEqualTo(TEST_CPU_USAGE)
+    assertThat(bundle.getDouble("cpu_usage")).isEqualTo(TEST_CPU_USAGE)
   }
 
   @Test
@@ -1615,6 +1615,7 @@ class EventBundleCreatorTest {
     Iteration("adminPin", "name=ADMIN_PIN_ACTIVITY", "expNameStr=admin_pin_activity"),
     Iteration("policies", "name=POLICIES_ACTIVITY", "expNameStr=policies_activity"),
     Iteration("unspecified", "name=SCREEN_NAME_UNSPECIFIED", "expNameStr=screen_name_unspecified"),
+    Iteration("foreground", "name=FOREGROUND_SCREEN", "expNameStr=foreground_screen"),
   )
   fun testMetricsBundle_addScreenName_verifyConversionToCorrectAnalyticalName() {
     setUpTestApplicationComponent()

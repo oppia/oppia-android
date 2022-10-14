@@ -24,12 +24,10 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.LOW_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
-import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
@@ -52,9 +50,18 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
-private const val TEST_CPU_USAGE = Long.MAX_VALUE
+private const val TEST_CPU_USAGE = Double.MAX_VALUE
 private const val TEST_APK_SIZE = Long.MAX_VALUE
 private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
 private const val TEST_TOTAL_PSS = Long.MAX_VALUE
@@ -91,16 +98,24 @@ class PerformanceMetricsLoggerTest {
   private val testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
   private val testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
-    setUpFakePerformanceMetricsUtils()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
+  @Test
+  fun testLogger_inDefaultState_logPerformanceMetrics_verifyNoMetricsAreLogged() {
+    setUpApplicationInDefaultMode()
+    performanceMetricsLogger.apply {
+      logApkSize(SCREEN_NAME_UNSPECIFIED)
+      logStorageUsage(SCREEN_NAME_UNSPECIFIED)
+      logMemoryUsage(SCREEN_NAME_UNSPECIFIED)
+      logNetworkUsage(SCREEN_NAME_UNSPECIFIED)
+      logCpuUsage(SCREEN_NAME_UNSPECIFIED, TEST_CPU_USAGE)
+      logStartupLatency(TEST_STARTUP_LATENCY_IN_MILLISECONDS, SCREEN_NAME_UNSPECIFIED)
+    }
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
 
   @Test
   fun testLogger_logApkSizePerformanceMetric_verifyLogsMetricCorrectly() {
+    setUpApplicationForPerformanceMetricsLogging()
     val apkSize = fakePerformanceMetricAssessor.getApkSize()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -120,6 +135,7 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logStorageUsagePerformanceMetric_verifyLogsMetricCorrectly() {
+    setUpApplicationForPerformanceMetricsLogging()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -141,6 +157,7 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logMemoryUsagePerformanceMetric_verifyLogsMetricCorrectly() {
+    setUpApplicationForPerformanceMetricsLogging()
     val memoryUsage = fakePerformanceMetricAssessor.getTotalPssUsed()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -160,6 +177,7 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logStartupLatencyPerformanceMetric_verifyLogsMetricCorrectly() {
+    setUpApplicationForPerformanceMetricsLogging()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -185,13 +203,13 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logCpuUsagePerformanceMetric_verifyLogsMetricCorrectly() {
+    setUpApplicationForPerformanceMetricsLogging()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logCpuUsage(
       SCREEN_NAME_UNSPECIFIED,
-      HOME_ACTIVITY,
-      TEST_CPU_USAGE.toDouble()
+      TEST_CPU_USAGE
     )
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
@@ -207,6 +225,7 @@ class PerformanceMetricsLoggerTest {
 
   @Test
   fun testLogger_logNetworkUsagePerformanceMetric_verifyLogsMetricCorrectly() {
+    setUpApplicationForPerformanceMetricsLogging()
     val bytesSent = fakePerformanceMetricAssessor.getTotalSentBytes()
     val bytesReceived = fakePerformanceMetricAssessor.getTotalReceivedBytes()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
@@ -226,8 +245,19 @@ class PerformanceMetricsLoggerTest {
     assertThat(loggedEvent.isAppInForeground).isEqualTo(isAppInForeground)
   }
 
-  private fun setUpTestApplicationComponent() {
+  private fun setUpApplicationInDefaultMode() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    setUpFakePerformanceMetricsUtils()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
+  }
+
+  private fun setUpApplicationForPerformanceMetricsLogging() {
+    TestPlatformParameterModule.enablePerformanceMetricsLogging = true
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    setUpFakePerformanceMetricsUtils()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
   }
 
   private fun setUpFakePerformanceMetricsUtils() {
@@ -286,6 +316,48 @@ class PerformanceMetricsLoggerTest {
     ): PerformanceMetricsAssessor
   }
 
+  @Module
+  class TestPlatformParameterModule {
+    companion object {
+      var forceLearnerAnalyticsStudy: Boolean = false
+      var enablePerformanceMetricsLogging: Boolean = false
+    }
+
+    @Provides
+    @SplashScreenWelcomeMsg
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @SyncUpWorkerTimePeriodHours
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @EnableLanguageSelectionUi
+    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
+    }
+
+    @Provides
+    @EnablePerformanceMetricsCollection
+    fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsLogging)
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -293,7 +365,7 @@ class PerformanceMetricsLoggerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       ActivityLifecycleObserverModule::class
     ]

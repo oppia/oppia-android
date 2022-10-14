@@ -43,6 +43,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 /** Tests for [PerformanceMetricsLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -178,7 +179,7 @@ class PerformanceMetricsLogSchedulerTest {
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
       PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
-      ApplicationLifecycleModule::class,
+      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -237,6 +237,7 @@ class EventBundleCreator @Inject constructor(
       if (!isSensitive || allowUserIds) {
         val propertyName = computePropertyName(valueName)
         when (value) {
+          is Double -> bundle.putDouble(propertyName, value)
           is Long -> bundle.putLong(propertyName, value)
           is Iterable<*> -> bundle.putString(propertyName, value.joinToString(separator = ","))
           else -> bundle.putString(propertyName, value.toString())
