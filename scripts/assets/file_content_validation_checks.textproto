@@ -38,7 +38,7 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: "app/src/main/res/layout/add_profile_activity.xml"
-  prohibited_content_regex: "<include "
+  prohibited_content_regex: "<include android:id=\"[^"]*\""
   failure_message: "Remove <include .../> tag from layout and use the appropriate widget, e.g like AppBarLayout widget instead"
 }
 file_content_checks {
