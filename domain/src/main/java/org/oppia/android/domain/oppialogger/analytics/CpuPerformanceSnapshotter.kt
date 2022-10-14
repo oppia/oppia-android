@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -17,6 +16,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 /**
  * Snapshotter that gracefully and sequentially logs cpu usage across foreground and background

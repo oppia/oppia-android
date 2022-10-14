@@ -11,7 +11,6 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +19,6 @@ import javax.inject.Singleton
 @Singleton
 class PerformanceMetricsAssessorImpl @Inject constructor(
   private val context: Context,
-  private val oppiaClock: OppiaClock,
   @LowStorageTierUpperBound private val lowStorageTierUpperBound: Long,
   @MediumStorageTierUpperBound private val mediumStorageTierUpperBound: Long,
   @LowMemoryTierUpperBound private val lowMemoryTierUpperBound: Long,
