@@ -6,21 +6,22 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.util.*
 import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.OverlayPositionAutomator
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.spotlight.SpotlightStateController
-
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
@@ -36,6 +37,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val spotlightStateController: SpotlightStateController,
   @EnableSpotlightUi val enableSpotlightUi: PlatformParameterValue<Boolean>,
   @EnablePracticeTab private val enablePracticeTab: Boolean,
+  private val spotlightFragment: SpotlightFragment,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var tabLayout: TabLayout
@@ -49,6 +51,26 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun getTab(tab: TopicTab): View {
     return tabLayout.getTabAt(tab.ordinal)!!.view
+  }
+
+  fun startSpotlight() {
+    spotlightFragment.initialiseTargetList(
+      arrayListOf(
+        SpotlightTarget(
+          getTab(TopicTab.LESSONS),
+          "hello",
+          SpotlightShape.RoundedRectangle,
+          Spotlight.FeatureCase.TOPIC_LESSON_TAB
+        )
+      )
+    )
+    val fragmentManager =  activity.supportFragmentManager.beginTransaction()
+      .add(
+        R.id.topic_fragment_placeholder,
+        spotlightFragment
+      )
+
+
   }
 
   fun handleCreateView(
@@ -79,8 +101,7 @@ class TopicFragmentPresenter @Inject constructor(
       binding.topicToolbarTitle.isSelected = true
     }
 
-
-    spotlightOverlayPositionAutomator = OverlayPositionAutomator(activity, fragment)
+//    spotlightOverlayPositionAutomator = OverlayPositionAutomator(activity, fragment)
 
     val viewModel = getTopicViewModel()
     viewModel.setInternalProfileId(internalProfileId)

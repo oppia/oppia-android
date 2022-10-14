@@ -1,5 +1,6 @@
 package org.oppia.android.app.spotlight
 
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -70,6 +71,12 @@ class SpotlightFragment @Inject constructor(
     spotlightTargetList = spotlightTargets
   }
 
+  override fun onAttach(context: Context) {
+
+    super.onAttach(context)
+    start()
+  }
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
@@ -78,24 +85,22 @@ class SpotlightFragment @Inject constructor(
 //    viewLifecycleOwner.lifecycleScope.launchWhenCreated {
 //        for (i in spotlightTargetList) {
 //          lifecycleScope.launchWhenCreated {
-            checkSpotlightViewState(spotlightTargetList[0])
+//            checkSpotlightViewState(spotlightTargetList[0])
 //          }
 //        }
 
 //    }
 
+//    checkSpotlightViewState(spotlightTargetList[0])
 
 
   }
 
-//  override fun onCreateView(
-//    inflater: LayoutInflater,
-//    container: ViewGroup?,
-//    savedInstanceState: Bundle?
-//  ): View? {
-//    val binding: OverlayOverLeftBinding = OverlayOverLeftBinding.inflate(inflater)
-//    return binding.root
-//  }
+  fun start() {
+    createTarget(spotlightTargetList[0])
+    startSpotlight()
+  }
+
 
 
 
@@ -140,7 +145,7 @@ class SpotlightFragment @Inject constructor(
     spotlightTarget: SpotlightTarget
   ) {
     initialiseAnchor(spotlightTarget.anchor)
-    initialiseHintText(hintText)
+    initialiseHintText(spotlightTarget.hint)
 
     val target = Target.Builder()
       .setAnchor(spotlightTarget.anchor)
@@ -416,4 +421,53 @@ class SpotlightFragment @Inject constructor(
 
   private val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+}
+
+data class SpotlightTarget(
+  val anchor: View,
+  val hint: String = "",
+  val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
+  val feature: org.oppia.android.app.model.Spotlight.FeatureCase
+) {
+  val positionParameters = PositionParameters(anchor)
+
+}
+
+data class PositionParameters(
+  val anchor: View
+) {
+  val anchorLeft: Float = calculateAnchorLeft()
+  val anchorTop: Float = calculateAnchorTop()
+  val anchorHeight: Int = calculateAnchorHeight()
+  val anchorWidth: Int = calculateAnchorWidth()
+
+  private fun calculateAnchorLeft(): Float {
+    val location = IntArray(2)
+    anchor.getLocationOnScreen(location)
+    val x = location[0]
+    return x.toFloat()
+  }
+
+  private fun calculateAnchorTop(): Float {
+    val location = IntArray(2)
+    anchor.getLocationOnScreen(location)
+    val y = location[1]
+    return y.toFloat()
+  }
+
+  private fun calculateAnchorHeight(): Int {
+    return anchor.height
+  }
+
+  private fun calculateAnchorWidth(): Int {
+    return anchor.width
+  }
+
+  private fun calculateAnchorCentreX(): Float {
+    return anchorLeft + anchorWidth / 2
+  }
+
+  private fun calculateAnchorCentreY(): Float {
+    return anchorTop + anchorHeight / 2
+  }
 }
