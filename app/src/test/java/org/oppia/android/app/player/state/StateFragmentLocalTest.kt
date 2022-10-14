@@ -165,6 +165,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -268,6 +269,30 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      typeTextIntoInteraction("1+2", interactionViewId = R.id.numeric_input_interaction_view)
+      clickSubmitAnswerButton()
+
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      submitNumericInput("1+2")
+      onView(withId(R.id.continue_navigation_button)).perform(click())
+      submitNumericInput("1+2")
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
   fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_2).use {
@@ -329,16 +354,10 @@ class StateFragmentLocalTest {
       playThroughTestState1()
       submitFractionAnswer("1/2")
 
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
       testCoroutineDispatchers.advanceTimeBy(15000)
       onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
-  }
-
-  private fun getContinueButtonAnimationSeenStatus(): Boolean {
-    return monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.getProfile(profileId)
-    ).isContinueButtonAnimationSeen
   }
 
   @Test
@@ -2336,6 +2355,12 @@ class StateFragmentLocalTest {
 
   private fun isAnimating(): TypeSafeMatcher<View> {
     return ActiveAnimationMatcher()
+  }
+
+  private fun getContinueButtonAnimationSeenStatus(): Boolean {
+    return monitorFactory.waitForNextSuccessfulResult(
+      profileTestHelper.getProfile(profileId)
+    ).isContinueButtonAnimationSeen
   }
 
   private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
