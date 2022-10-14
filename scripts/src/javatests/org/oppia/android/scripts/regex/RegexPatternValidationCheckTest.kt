@@ -391,6 +391,7 @@ class RegexPatternValidationCheckTest {
     val prohibitedContent = "<include layout=\"@layout/example_layout\"/>"
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
+    fileContainsSupportLibraryImport.writeText(fileContainsSupportLibraryImport)
 
     val exception = assertThrows(Exception::class) {
       runScript()
