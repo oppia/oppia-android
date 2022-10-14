@@ -1,6 +1,5 @@
 package org.oppia.android.util.logging.performancemetrics
 
-import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 
 /** Utility to extract performance metrics from the underlying Android system. */

@@ -3,11 +3,7 @@ package org.oppia.android.util.logging.performancemetrics
 import android.app.ActivityManager
 import android.content.Context
 import android.net.TrafficStats
-import android.os.Build
 import android.os.Process
-import android.system.Os
-import android.system.OsConstants
-import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER

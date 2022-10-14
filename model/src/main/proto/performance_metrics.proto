@@ -170,21 +170,6 @@ message OppiaMetricLog {
   }
 }
 
-// Structure for cpu usage parameters which consist of cpu time and process time.
-message CpuUsageParameters {
-  // The amount of time cpu was utilised during the entire process.
-  int64 cpu_time = 1;
-
-  // The total amount from the beginning to the end of the process.
-  int64 process_time = 2;
-
-  // The number of active cores during the time of cpu usage sample collection.
-  int32 number_of_active_cores = 3;
-
-  // The current screen where cpu usage parameters are getting logged.
-  ScreenName current_screen = 4;
-}
-
 // Structure for a container that contains metric log reports.
 message OppiaMetricLogs {
   repeated OppiaMetricLog oppia_metric_log = 1;

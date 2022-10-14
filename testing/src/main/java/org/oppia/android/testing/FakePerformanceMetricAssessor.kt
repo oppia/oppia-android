@@ -1,6 +1,5 @@
 package org.oppia.android.testing
 
-import org.oppia.android.app.model.CpuUsageParameters
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import javax.inject.Inject
