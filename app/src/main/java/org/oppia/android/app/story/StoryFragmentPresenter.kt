@@ -52,7 +52,8 @@ class StoryFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -89,7 +90,7 @@ class StoryFragmentPresenter @Inject constructor(
     }
 
     binding.storyToolbarTitle.setOnClickListener {
-      binding.storyToolbarTitle.isSelected = true
+      binding.storyMarqueeView?.startMarquee()
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -141,14 +142,13 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<StoryItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = StoryHeaderViewBinding::inflate,

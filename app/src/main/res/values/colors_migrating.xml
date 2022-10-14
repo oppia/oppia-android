@@ -69,12 +69,12 @@
   <color name="question_player_progress_bar_gradient_end">#E4F2F1</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="avatar_background_1">#E65C5C</color>
-  <color name="avatar_background_2">#E6935C</color>
-  <color name="avatar_background_3">#FFDB4E</color>
-  <color name="avatar_background_4">#CAE65C</color>
-  <color name="avatar_background_5">#93E65C</color>
-  <color name="avatar_background_6">#5CE6CA</color>
-  <color name="avatar_background_7">#5CCAE6</color>
+  <color name="avatar_background_2">#EB701D</color>
+  <color name="avatar_background_3">#A48C2D</color>
+  <color name="avatar_background_4">#C1851D</color>
+  <color name="avatar_background_5">#5C9F2F</color>
+  <color name="avatar_background_6">#1A9F84</color>
+  <color name="avatar_background_7">#1F98B7</color>
   <color name="avatar_background_8">#5C93E6</color>
   <color name="avatar_background_9">#5C5CE6</color>
   <color name="avatar_background_10">#935CE6</color>
@@ -82,11 +82,11 @@
   <color name="avatar_background_12">#E65C97</color>
   <color name="avatar_background_13">#CC2929</color>
   <color name="avatar_background_14">#CC6A29</color>
-  <color name="avatar_background_15">#E6C12E</color>
-  <color name="avatar_background_16">#ABCC29</color>
-  <color name="avatar_background_17">#6ACC29</color>
-  <color name="avatar_background_18">#29CCAB</color>
-  <color name="avatar_background_19">#29ABCC</color>
+  <color name="avatar_background_15">#AE8B00</color>
+  <color name="avatar_background_16">#819205</color>
+  <color name="avatar_background_17">#47A00C</color>
+  <color name="avatar_background_18">#0D9176</color>
+  <color name="avatar_background_19">#159DBF</color>
   <color name="avatar_background_20">#296ACC</color>
   <color name="avatar_background_21">#6A29CC</color>
   <color name="avatar_background_22">#AB29CC</color>

@@ -5,11 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
-import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.DestinationScreen
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.PROFILE_PROGRESS_ACTIVITY
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
@@ -25,6 +30,12 @@ class ProfileProgressActivity :
   lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
   private var internalProfileId = -1
 
+  @Inject
+  lateinit var activityRouter: ActivityRouter
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -32,12 +43,19 @@ class ProfileProgressActivity :
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
   }
 
-  override fun routeToRecentlyPlayed() {
-    startActivity(
-      RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
-        this,
-        internalProfileId
-      )
+  override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(recentlyPlayedActivityTitle)
+        .build()
+
+    activityRouter.routeToScreen(
+      DestinationScreen
+        .newBuilder()
+        .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+        .build()
     )
   }
 

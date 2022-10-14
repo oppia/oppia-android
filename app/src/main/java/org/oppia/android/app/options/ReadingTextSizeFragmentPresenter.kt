@@ -13,7 +13,8 @@ import javax.inject.Inject
 /** The presenter for [ReadingTextSizeFragment]. */
 class ReadingTextSizeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel
+  private val readingTextSizeSelectionViewModel: ReadingTextSizeSelectionViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   fun handleOnCreateView(
     inflater: LayoutInflater,
@@ -39,13 +40,12 @@ class ReadingTextSizeFragmentPresenter @Inject constructor(
   fun getTextSizeSelected(): ReadingTextSize? = readingTextSizeSelectionViewModel.selectedTextSize
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TextSizeItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TextSizeItemViewModel>()
-      .setLifecycleOwner(fragment)
+    return singleTypeBuilderFactory.create<TextSizeItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TextSizeItemsBinding::inflate,
         setViewModel = TextSizeItemsBinding::setViewModel
-      ).build()
+      )
+      .build()
   }
 
   private fun updateTextSize(textSize: ReadingTextSize) {

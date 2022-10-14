@@ -1,6 +1,7 @@
 package org.oppia.android.app.application.dev
 
 import dagger.Component
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
@@ -9,7 +10,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -87,12 +87,12 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionDebugModule::class,
-    FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
+    FirebaseLogUploaderModule::class, NetworkModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
     NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
-    LocaleProdModule::class, ActivityRecreatorProdModule::class,
+    LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
     NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

@@ -27,6 +27,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputEditText
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -36,6 +37,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -48,7 +50,6 @@ import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -1137,6 +1138,37 @@ class PinPasswordActivityTest {
     }
   }
 
+  @Test
+  fun testPinPassword_clickForgotPin_enterAdminPin_clickSubmit_dialogMessageIsCorrect() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        withText(
+          containsString(
+            context.resources.getString(R.string.reset_pin_enter_dialog_message, "Ben")
+          )
+        )
+      ).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
@@ -1158,7 +1190,7 @@ class PinPasswordActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -1168,7 +1200,7 @@ class PinPasswordActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

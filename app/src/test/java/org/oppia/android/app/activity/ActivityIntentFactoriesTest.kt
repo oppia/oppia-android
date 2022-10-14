@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
 import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -24,10 +25,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -133,7 +134,9 @@ class ActivityIntentFactoriesTest {
   @Test
   fun testRecentlyPlayedActivityIntentFactory_createIntent_returnsIntentToStartCorrectActivity() {
     val intent =
-      getRecentlyPlayedActivityIntentFactory().createIntent(ProfileId.getDefaultInstance())
+      getRecentlyPlayedActivityIntentFactory().createIntent(
+        RecentlyPlayedActivityParams.getDefaultInstance()
+      )
 
     assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
     assertThat(intent).extras().integer(RECENTLY_PLAYED_PROFILE_ID_KEY).isEqualTo(0)
@@ -175,7 +178,7 @@ class ActivityIntentFactoriesTest {
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -185,7 +188,7 @@ class ActivityIntentFactoriesTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

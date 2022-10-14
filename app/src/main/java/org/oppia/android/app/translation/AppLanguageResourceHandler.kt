@@ -123,6 +123,10 @@ class AppLanguageResourceHandler @Inject constructor(
   /** See [OppiaLocale.DisplayLocale.formatDouble] for specific behavior. */
   fun formatDouble(value: Double): String = getDisplayLocale().formatDouble(value)
 
+  /** See [OppiaLocale.DisplayLocale.toHumanReadableString] for specific behavior. */
+  fun toHumanReadableString(number: Int): String =
+    getDisplayLocale().toHumanReadableString(number)
+
   /** See [OppiaLocale.DisplayLocale.computeDateString]. */
   fun computeDateString(timestampMillis: Long): String =
     getDisplayLocale().computeDateString(timestampMillis)
