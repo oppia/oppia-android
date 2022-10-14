@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -43,7 +44,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 /** Tests for [PerformanceMetricsLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.

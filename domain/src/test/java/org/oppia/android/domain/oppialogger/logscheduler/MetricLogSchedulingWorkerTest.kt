@@ -31,6 +31,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
@@ -63,7 +64,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 

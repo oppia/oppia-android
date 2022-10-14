@@ -10,9 +10,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
@@ -21,6 +24,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.FakeEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -31,6 +35,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -51,11 +56,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Rule
-import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.ScreenName
-import org.oppia.android.testing.TextInputActionTestActivity
-import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -219,7 +219,8 @@ class ApplicationLifecycleObserverTest {
     testCoroutineDispatchers.runCurrent()
 
     val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
-    assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase).isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
+    assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase)
+      .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
     assertThat(loggedMetrics[1].loggableMetric.loggableMetricTypeCase).isEqualTo(
       OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
     )
@@ -275,7 +276,8 @@ class ApplicationLifecycleObserverTest {
       )
 
       assertThat(loggedEvents.size).isEqualTo(5)
-      assertThat(loggedEvents[0].loggableMetric.loggableMetricTypeCase).isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
+      assertThat(loggedEvents[0].loggableMetric.loggableMetricTypeCase)
+        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
       assertThat(loggedEvents[1].loggableMetric.loggableMetricTypeCase)
         .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC)
       assertThat(loggedEvents[2].loggableMetric.loggableMetricTypeCase)

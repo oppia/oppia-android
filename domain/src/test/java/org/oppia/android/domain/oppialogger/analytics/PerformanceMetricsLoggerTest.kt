@@ -10,7 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -46,10 +45,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
@@ -59,6 +54,10 @@ import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAUL
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Double.MAX_VALUE

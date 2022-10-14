@@ -1,6 +1,5 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import android.util.Log
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
