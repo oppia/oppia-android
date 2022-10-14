@@ -35,7 +35,7 @@ class RegexPatternValidationCheckTest {
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
       "mess up & lead to a hanging ListenableFuture."
   private val androidLayoutIncludeTagErrorMessage =
-    "Remove <include .../> tag from layout and use the appropriate widget,e.g " +
+    "Remove <include .../> tag from layout and use the appropriate widget, e.g " +
       "AppBarLayout widget instead."
   private val androidGravityLeftErrorMessage =
     "Use android:gravity=\"start\", instead, for proper RTL support"
