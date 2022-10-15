@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
@@ -20,7 +20,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
-import javax.inject.Inject
 
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
@@ -46,7 +45,6 @@ class ContinueButtonView @JvmOverloads constructor(
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
-  private lateinit var viewModel: ContinueInteractionViewModel
   private var isAnimationTimerFinished = false
 
   private val animateContinueButton = MutableLiveData(false)
@@ -85,10 +83,6 @@ class ContinueButtonView @JvmOverloads constructor(
         }
       }
     }
-  }
-
-  fun setViewModel(viewModel: ContinueInteractionViewModel) {
-    this.viewModel = viewModel
   }
 
   private fun startAnimating() {
