@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
@@ -20,6 +19,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
+import javax.inject.Inject
 
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
