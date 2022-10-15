@@ -35,4 +35,27 @@ interface PerformanceMetricsAssessor {
    * capacity of the device.
    */
   fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier
+
+  /** Returns a [Snapshot] with current values for cpu-usage calculations. */
+  fun computeSnapshotAtCurrentTime(iconification: AppIconification): Snapshot
+
+  /** Returns the relative cpu-usage after comparing [firstSnapshot] and [secondSnapshot]. */
+  fun getRelativeCpuUsage(firstSnapshot: Snapshot, secondSnapshot: Snapshot): Double
+
+  /**
+   * Container that consists of all the necessary values that are required for calculating cpu usage
+   * at that point of time.
+   */
+  data class Snapshot(
+    val iconification: AppIconification,
+    val appTimeMillis: Double,
+    val cpuTimeMillis: Double,
+    val numCores: Double
+  )
+
+  /** Represents the different states of the application. */
+  enum class AppIconification {
+    APP_IN_FOREGROUND,
+    APP_IN_BACKGROUND
+  }
 }

@@ -22,6 +22,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.system.OppiaClockModule
 
 /** Tests for [PerformanceMetricsAssessorModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -61,7 +62,7 @@ class PerformanceMetricsAssessorModuleTest {
     modules = [
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class
+      PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

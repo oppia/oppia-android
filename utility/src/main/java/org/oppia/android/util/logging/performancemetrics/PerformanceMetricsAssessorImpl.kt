@@ -3,7 +3,10 @@ package org.oppia.android.util.logging.performancemetrics
 import android.app.ActivityManager
 import android.content.Context
 import android.net.TrafficStats
+import android.os.Build
 import android.os.Process
+import android.system.Os
+import android.system.OsConstants
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
@@ -11,13 +14,17 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.Snapshot
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.system.OppiaClock
 
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton
 class PerformanceMetricsAssessorImpl @Inject constructor(
+  private val oppiaClock: OppiaClock,
   private val context: Context,
   @LowStorageTierUpperBound private val lowStorageTierUpperBound: Long,
   @MediumStorageTierUpperBound private val mediumStorageTierUpperBound: Long,
@@ -69,6 +76,31 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
       totalMemory <= lowMemoryTierUpperBound -> LOW_MEMORY_TIER
       totalMemory <= mediumMemoryTierUpperBound -> MEDIUM_MEMORY_TIER
       else -> HIGH_MEMORY_TIER
+    }
+  }
+
+  override fun computeSnapshotAtCurrentTime(iconification: AppIconification): Snapshot {
+    return Snapshot(
+      appTimeMillis = oppiaClock.getCurrentTimeMs().toDouble(),
+      cpuTimeMillis = Process.getElapsedCpuTime().toDouble(),
+      numCores = getNumberOfOnlineCores(),
+      iconification = iconification
+    )
+  }
+
+  override fun getRelativeCpuUsage(firstSnapshot: Snapshot, secondSnapshot: Snapshot): Double {
+    val deltaCpuTimeMs = secondSnapshot.cpuTimeMillis - firstSnapshot.cpuTimeMillis
+    val deltaProcessTimeMs = secondSnapshot.appTimeMillis - firstSnapshot.appTimeMillis
+    val numberOfCores = (secondSnapshot.numCores + firstSnapshot.numCores) / 2
+    return deltaCpuTimeMs / (deltaProcessTimeMs * numberOfCores)
+  }
+
+  /** Returns the number of processors that are currently online/available. */
+  private fun getNumberOfOnlineCores(): Double {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toDouble()
+    } else {
+      Runtime.getRuntime().availableProcessors().toDouble()
     }
   }
 }

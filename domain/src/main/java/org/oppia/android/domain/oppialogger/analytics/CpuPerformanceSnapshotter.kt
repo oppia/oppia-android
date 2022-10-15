@@ -1,9 +1,5 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import android.os.Build
-import android.os.Process
-import android.system.Os
-import android.system.OsConstants
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -14,6 +10,9 @@ import kotlinx.coroutines.launch
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.Snapshot
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -26,11 +25,11 @@ class CpuPerformanceSnapshotter private constructor(
   private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val initialIconification: AppIconification,
-  private val oppiaClock: OppiaClock,
   private val consoleLogger: ConsoleLogger,
   private val exceptionLogger: ExceptionLogger,
   private val foregroundCpuLoggingTimePeriod: Long,
-  private val backgroundCpuLoggingTimePeriod: Long
+  private val backgroundCpuLoggingTimePeriod: Long,
+  private val performanceMetricsAssessor: PerformanceMetricsAssessor
 ) {
 
   private val commandQueue by lazy { createCommandQueueActor() }
@@ -42,7 +41,8 @@ class CpuPerformanceSnapshotter private constructor(
 
   private fun createCommandQueueActor(): SendChannel<CommandMessage> {
     var currentIconification = initialIconification
-    var previousSnapshot = computeSnapshotAtCurrentTime(currentIconification)
+    var previousSnapshot =
+      performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
     var switchIconificationCount = 0
     val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
     return coroutineScope.actor<CommandMessage>(capacity = Channel.UNLIMITED) {
@@ -51,13 +51,14 @@ class CpuPerformanceSnapshotter private constructor(
           is CommandMessage.SwitchIconification -> {
             ++switchIconificationCount
             sendLogSnapshotDiffCommand(
-              getRelativeCpuUsage(
+              performanceMetricsAssessor.getRelativeCpuUsage(
                 previousSnapshot,
-                computeSnapshotAtCurrentTime(currentIconification)
+                performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
               )
             )
             currentIconification = message.newIconification
-            previousSnapshot = computeSnapshotAtCurrentTime(currentIconification)
+            previousSnapshot =
+              performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
             sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)
           }
           is CommandMessage.ScheduleTakeSnapshot -> scheduleTakeSnapshot(
@@ -66,8 +67,11 @@ class CpuPerformanceSnapshotter private constructor(
           )
           is CommandMessage.TakeSnapshot -> {
             if (message.switchId == switchIconificationCount) {
-              val newSnapshot = computeSnapshotAtCurrentTime(currentIconification)
-              sendLogSnapshotDiffCommand(getRelativeCpuUsage(previousSnapshot, newSnapshot))
+              val newSnapshot =
+                performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
+              sendLogSnapshotDiffCommand(
+                performanceMetricsAssessor.getRelativeCpuUsage(previousSnapshot, newSnapshot)
+              )
               previousSnapshot = newSnapshot
               sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)
             }
@@ -133,42 +137,6 @@ class CpuPerformanceSnapshotter private constructor(
     }
   }
 
-  private fun computeSnapshotAtCurrentTime(iconification: AppIconification): Snapshot {
-    return Snapshot(
-      appTimeMillis = oppiaClock.getCurrentTimeMs().toDouble(),
-      cpuTimeMillis = Process.getElapsedCpuTime().toDouble(),
-      numCores = getNumberOfOnlineCores(),
-      iconification = iconification
-    )
-  }
-
-  private fun getRelativeCpuUsage(firstSnapshot: Snapshot, secondSnapshot: Snapshot): Double {
-    val deltaCpuTimeMs = secondSnapshot.cpuTimeMillis - firstSnapshot.cpuTimeMillis
-    val deltaProcessTimeMs = secondSnapshot.appTimeMillis - firstSnapshot.appTimeMillis
-    val numberOfCores = (secondSnapshot.numCores + firstSnapshot.numCores) / 2
-    return deltaCpuTimeMs / (deltaProcessTimeMs * numberOfCores)
-  }
-
-  /** Returns the number of processors that are currently online/available. */
-  private fun getNumberOfOnlineCores(): Double {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toDouble()
-    } else {
-      Runtime.getRuntime().availableProcessors().toDouble()
-    }
-  }
-
-  /**
-   * Container that consists of all the necessary values that are required for calculating cpu usage
-   * at that point of time.
-   */
-  data class Snapshot(
-    val iconification: AppIconification,
-    val appTimeMillis: Double,
-    val cpuTimeMillis: Double,
-    val numCores: Double
-  )
-
   /**
    * Represents a message that can be sent to [commandQueue] to process cpu-usage logging.
    *
@@ -203,12 +171,6 @@ class CpuPerformanceSnapshotter private constructor(
     data class LogSnapshotDiff(val relativeCpuUsage: Double) : CommandMessage()
   }
 
-  /** Represents the different states of the application. */
-  enum class AppIconification {
-    APP_IN_FOREGROUND,
-    APP_IN_BACKGROUND
-  }
-
   /** Returns an appropriate [ScreenName] on the basis of [AppIconification]. */
   private fun AppIconification.toScreenName(): ScreenName = when (this) {
     AppIconification.APP_IN_BACKGROUND -> ScreenName.BACKGROUND_SCREEN
@@ -223,9 +185,9 @@ class CpuPerformanceSnapshotter private constructor(
   /** Creates an instance of [CpuPerformanceSnapshotter] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val performanceMetricsLogger: PerformanceMetricsLogger,
-    private val oppiaClock: OppiaClock,
     private val consoleLogger: ConsoleLogger,
     private val exceptionLogger: ExceptionLogger,
+    private val performanceMetricsAssessor: PerformanceMetricsAssessor,
     @ForegroundCpuLoggingTimePeriod private val foregroundCpuLoggingTimePeriod: Long,
     @BackgroundCpuLoggingTimePeriod private val backgroundCpuLoggingTimePeriod: Long,
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
@@ -237,11 +199,11 @@ class CpuPerformanceSnapshotter private constructor(
         backgroundCoroutineDispatcher,
         performanceMetricsLogger,
         AppIconification.APP_IN_FOREGROUND,
-        oppiaClock,
         consoleLogger,
         exceptionLogger,
         foregroundCpuLoggingTimePeriod,
-        backgroundCpuLoggingTimePeriod
+        backgroundCpuLoggingTimePeriod,
+        performanceMetricsAssessor
       )
   }
 }

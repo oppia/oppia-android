@@ -34,6 +34,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -45,6 +46,11 @@ import org.robolectric.shadow.api.Shadow.newInstanceOf
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.time.FakeOppiaClock
+import org.robolectric.annotation.Implementation
+import org.robolectric.annotation.Implements
+import org.robolectric.shadows.ShadowOs
+import org.robolectric.shadows.ShadowProcess
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_APP_PATH_CACHE = "TEST_APP_PATH_CACHE"
@@ -59,6 +65,14 @@ private const val THREE_MEGABYTES = ONE_MEGABYTE * 3L
 private const val ONE_GIGABYTE = ONE_MEGABYTE * 1024
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
 private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
+private const val TEST_FIRST_CPU_TIME = 1000.00
+private const val TEST_SECOND_CPU_TIME = 1200.00
+private const val TEST_FIRST_PROCESS_TIME = 1665790650.00
+private const val TEST_SECOND_PROCESS_TIME = 1665790700.00
+private const val TEST_FIRST_NUMBER_OF_CORES = 6.00
+private const val TEST_SECOND_NUMBER_OF_CORES = 2.00
+private const val TEST_CURRENT_TIME = 1665790700L
+private const val TEST_CPU_TIME = 100L
 
 /** Tests for [PerformanceMetricsAssessorImpl]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -75,11 +89,9 @@ class PerformanceMetricsAssessorImplTest {
   @Parameter
   var totalMemory: Long = Long.MIN_VALUE // Inited because primitives can't be lateinit.
 
-  @Inject
-  lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
+  @Inject lateinit var context: Context
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val shadowActivityManager by lazy {
     shadowOf(
@@ -204,6 +216,40 @@ class PerformanceMetricsAssessorImplTest {
     )
     val apkSize = performanceMetricsAssessorImpl.getApkSize()
     assertThat(apkSize).isEqualTo(ONE_MEGABYTE)
+  }
+
+  @Test
+  fun testAssessor_setFirstAndSecondSnapshot_verifyCorrectCpuUsageIsReturned() {
+    val firstSnapshot = PerformanceMetricsAssessor.Snapshot(
+      APP_IN_FOREGROUND,
+      TEST_FIRST_PROCESS_TIME,
+      TEST_FIRST_CPU_TIME,
+      TEST_FIRST_NUMBER_OF_CORES
+    )
+    val secondSnapshot = PerformanceMetricsAssessor.Snapshot(
+      APP_IN_FOREGROUND,
+      TEST_SECOND_PROCESS_TIME,
+      TEST_SECOND_CPU_TIME,
+      TEST_SECOND_NUMBER_OF_CORES
+    )
+
+    val relativeCpuUsage =
+      performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
+
+    // After comparing the test values in first and second snapshots, we get relativeUsage of 1.00.
+    assertThat(relativeCpuUsage).isEqualTo(1.00)
+  }
+
+  @Test
+  fun testAssessor_getCurrentCpuSnapshot_verifySnapshotReturnsCurrentValues() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(TEST_CURRENT_TIME)
+
+    val currentSnapshot =
+      performanceMetricsAssessorImpl.computeSnapshotAtCurrentTime(APP_IN_FOREGROUND)
+
+    assertThat(currentSnapshot.appTimeMillis).isEqualTo(TEST_CURRENT_TIME.toDouble())
+    assertThat(currentSnapshot.iconification).isEqualTo(APP_IN_FOREGROUND)
   }
 
   @Test
