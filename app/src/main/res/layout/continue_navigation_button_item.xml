@@ -49,8 +49,8 @@
     <org.oppia.android.app.customview.ContinueButtonView
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
-      android:minWidth="96dp"
-      android:minHeight="36dp"
+      android:layout_width="wrap_content"
+      android:gravity="center_vertical"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"
       app:layout_constraintBottom_toBottomOf="parent"

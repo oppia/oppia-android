@@ -54,13 +54,10 @@
     <org.oppia.android.app.customview.ContinueButtonView
       android:id="@+id/continue_interaction_button"
       style="@style/StateButtonActive"
-      android:layout_marginEnd="10dp"
-      android:gravity="center"
-      android:minWidth="96dp"
-      android:minHeight="36dp"
+      android:layout_width="wrap_content"
+      android:gravity="center_vertical"
       android:onClick="@{(v) -> viewModel.handleButtonClicked()}"
       android:text="@string/state_continue_button"
-      android:textSize="14sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
