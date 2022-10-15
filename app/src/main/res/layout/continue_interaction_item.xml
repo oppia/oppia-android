@@ -18,7 +18,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/continue_interaction_container"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     app:explorationSplitViewMarginApplicable="@{viewModel.hasConversationView &amp;&amp; viewModel.isSplitView}"
     app:explorationSplitViewMarginBottom="@{@dimen/space_0dp}"
