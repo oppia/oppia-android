@@ -76,6 +76,7 @@
             android:hint="@string/add_profile_input_name"
             app:helperTextEnabled="true"
             app:helperText="@{viewModel.requiredField}"
+            app:prefixText="@{viewModel.requiredField}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view">
@@ -132,6 +133,7 @@
               android:hint="@string/add_profile_input_pin"
               app:helperTextEnabled="true"
               app:helperText="@{viewModel.requiredField}"
+              app:prefixText="@{viewModel.requiredField}"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent">
@@ -157,6 +159,7 @@
               android:hint="@string/add_profile_input_confirm_pin"
               app:helperTextEnabled="true"
               app:helperText="@{viewModel.requiredField}"
+              app:prefixText="@{viewModel.requiredField}"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin">
