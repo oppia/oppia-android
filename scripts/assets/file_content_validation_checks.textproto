@@ -39,7 +39,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.xml"
   prohibited_content_regex: "<include"
-  failure_message: "Remove <include .../> tag from layout and use the appropriate widget, e.g AppBarLayout widget instead"
+  failure_message: "Remove <include .../> tag from layout and use the appropriate widget, e.g AppBarLayout widget instead."
 }
 file_content_checks {
   file_path_regex: ".+?\\.xml"
