@@ -18,11 +18,11 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.LogReportingModule
+import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.system.OppiaClockModule
 
 /** Tests for [PerformanceMetricsAssessorModule]. */
 // FunctionName: test names are conventionally named with underscores.

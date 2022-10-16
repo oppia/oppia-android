@@ -27,6 +27,7 @@ import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
 import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -34,9 +35,9 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -46,11 +47,6 @@ import org.robolectric.shadow.api.Shadow.newInstanceOf
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.time.FakeOppiaClock
-import org.robolectric.annotation.Implementation
-import org.robolectric.annotation.Implements
-import org.robolectric.shadows.ShadowOs
-import org.robolectric.shadows.ShadowProcess
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_APP_PATH_CACHE = "TEST_APP_PATH_CACHE"

@@ -16,10 +16,10 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.Snapshot
+import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.system.OppiaClock
 
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton
