@@ -13,7 +13,6 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.Snapshot
-import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -32,7 +31,7 @@ class CpuPerformanceSnapshotter private constructor(
   private val performanceMetricsAssessor: PerformanceMetricsAssessor
 ) {
 
-  private val commandQueue by lazy { createCommandQueueActor() }
+  private val commandQueue = createCommandQueueActor()
 
   /** Updates the current [AppIconification] in accordance with the app's state changes. */
   fun updateAppIconification(newIconification: AppIconification) {
