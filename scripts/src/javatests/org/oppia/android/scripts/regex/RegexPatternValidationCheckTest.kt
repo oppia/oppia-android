@@ -389,7 +389,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_androidLayoutIncludeTag_fileContentIsNotCorrect() {
-    val prohibitedContent = "<include android:id=\"@+id/test_layout_toolbar\""
+    val prohibitedContent = "<include"
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
