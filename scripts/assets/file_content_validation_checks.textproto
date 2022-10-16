@@ -37,8 +37,8 @@ file_content_checks {
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
-  file_path_regex: "app/src/main/res/layout/add_profile_activity.xml"
-  prohibited_content_regex: "<include android:id=\"[^"]*\""
+  file_path_regex: ".+?\\.xml"
+  prohibited_content_regex: "layout="
   failure_message: "Remove <include .../> tag from layout and use the appropriate widget, e.g like AppBarLayout widget instead"
 }
 file_content_checks {
