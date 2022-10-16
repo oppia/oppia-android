@@ -11,9 +11,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-      android:id="@+id/home_activity_toolbar"
-      layout="@layout/toolbar" />
+    <com.google.android.material.appbar.AppBarLayout
+      android:id="@+id/home_activity_app_bar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/home_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@color/oppia_primary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppCompat.ActionBar"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
+        app:titleTextColor="@color/color_def_white" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
       android:id="@+id/home_fragment_placeholder"

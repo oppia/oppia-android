@@ -12,12 +12,26 @@
       android:layout_height="match_parent"
       android:background="@color/oppia_grey_background">
 
-      <include
-        android:id="@+id/administrator_controls_activity_toolbar"
-        layout="@layout/toolbar"
+      <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/administrator_controls_activity_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+          android:id="@+id/administrator_controls_activity_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="end"
+          android:background="@color/oppia_primary"
+          android:minHeight="?attr/actionBarSize"
+          android:theme="@style/Widget.AppCompat.ActionBar"
+          app:titleTextAppearance="@style/ToolbarTextAppearance"
+          app:titleTextColor="@color/color_def_white" />
+      </com.google.android.material.appbar.AppBarLayout>
 
       <FrameLayout
         android:id="@+id/administrator_controls_fragment_placeholder"
