@@ -5,15 +5,12 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
@@ -23,8 +20,6 @@ import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
 import java.util.*
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
@@ -101,6 +96,12 @@ class SpotlightFragment @Inject constructor(
     startSpotlight()
   }
 
+  fun selfInitTargets(){
+    spotlightTargetList.forEach {
+      it.selfInitialize()
+    }
+  }
+
 
 
 
@@ -149,8 +150,8 @@ class SpotlightFragment @Inject constructor(
 
     val target = Target.Builder()
       .setAnchor(spotlightTarget.anchor)
-      .setShape(getShape(spotlightTarget.shape))
-      .setOverlay(requestOverlayResource())
+      .setShape(getShape(spotlightTarget))
+      .setOverlay(requestOverlayResource(spotlightTarget))
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
 
@@ -190,16 +191,16 @@ class SpotlightFragment @Inject constructor(
     spotlight.start()
   }
 
-  private fun getShape(shape: SpotlightShape): Shape {
-    return when (shape) {
+  private fun getShape(spotlightTarget: SpotlightTarget): Shape {
+    return when (spotlightTarget.shape) {
       SpotlightShape.RoundedRectangle -> {
         RoundedRectangle(itemToSpotlight.height.toFloat(), itemToSpotlight.width.toFloat(), 24f)
       }
       SpotlightShape.Circle -> {
-        return if (getAnchorHeight() > getAnchorWidth()) {
-          Circle((getAnchorHeight() / 2).toFloat())
+        return if (spotlightTarget.anchorHeight > spotlightTarget.anchorWidth) {
+          Circle((spotlightTarget.anchorHeight / 2).toFloat())
         } else {
-          Circle((getAnchorWidth() / 2).toFloat())
+          Circle((spotlightTarget.anchorWidth / 2).toFloat())
         }
       }
     }
@@ -227,56 +228,20 @@ class SpotlightFragment @Inject constructor(
     this.hintText = hintText
   }
 
-  private fun getAnchorLeft(): Float {
-    val location = IntArray(2)
-    itemToSpotlight.getLocationOnScreen(location)
-    val x = location[0]
-    return x.toFloat()
-  }
-
-  private fun getAnchorTop(): Float {
-    val location = IntArray(2)
-    itemToSpotlight.getLocationOnScreen(location)
-    val y = location[1]
-    return y.toFloat()
-  }
-
-  private fun getAnchorHeight(): Int {
-    return itemToSpotlight.height
-  }
-
-  private fun getAnchorWidth(): Int {
-    return itemToSpotlight.width
-  }
-
-  private fun getAnchorCentreX(): Float {
-    Log.d(overlay + "anchorCentre X ", (getAnchorLeft() + getAnchorWidth() / 2).toString())
-    return getAnchorLeft() + getAnchorWidth() / 2
-  }
-
-  private fun getAnchorCentreY(): Float {
-    Log.d(overlay + "anchorCentre Y ", (getAnchorTop() + getAnchorHeight() / 2).toString())
-    return getAnchorTop() + getAnchorHeight() / 2
-  }
-
-  private fun getScreenCentreX(): Int {
-    Log.d("overlay screenCentre X", (screenWidth / 2).toString())
-    return screenWidth / 2
-  }
 
   private fun getScreenCentreY(): Int {
     Log.d("overlay screenCentre Y", (screenHeight / 2).toString())
     return screenHeight / 2
   }
 
-  private fun calculateAnchorPosition() {
-    anchorPosition = if (getAnchorCentreX() > getScreenCentreX()) {
-      if (getAnchorCentreY() > getScreenCentreY()) {
+  private fun calculateAnchorPosition(spotlightTarget: SpotlightTarget) {
+    anchorPosition = if (spotlightTarget.anchorCentreX > spotlightTarget.anchorCentreY) {
+      if (spotlightTarget.anchorCentreY > getScreenCentreY()) {
         AnchorPosition.BottomRight
       } else {
         AnchorPosition.TopRight
       }
-    } else if (getAnchorCentreY() > getScreenCentreY()) {
+    } else if (spotlightTarget.anchorCentreY > getScreenCentreY()) {
       AnchorPosition.BottomLeft
     } else {
       AnchorPosition.TopLeft
@@ -285,25 +250,25 @@ class SpotlightFragment @Inject constructor(
     Log.d(overlay, anchorPosition.toString())
   }
 
-  private fun requestOverlayResource(): View {
-    calculateAnchorPosition()
+  private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View {
+    calculateAnchorPosition(spotlightTarget)
 
     return when (anchorPosition) {
       AnchorPosition.TopLeft -> {
         if (isRTL) {
-          configureTopRightOverlay()
+          configureTopRightOverlay(spotlightTarget)
         } else {
-          configureTopLeftOverlay()
+          configureTopLeftOverlay(spotlightTarget)
         }
       }
       AnchorPosition.TopRight -> {
-        configureTopRightOverlay()
+        configureTopRightOverlay(spotlightTarget)
       }
       AnchorPosition.BottomRight -> {
-        configureBottomRightOverlay()
+        configureBottomRightOverlay(spotlightTarget)
       }
       AnchorPosition.BottomLeft -> {
-        configureBottomLeftOverlay()
+        configureBottomLeftOverlay(spotlightTarget)
       }
     }
   }
@@ -323,7 +288,7 @@ class SpotlightFragment @Inject constructor(
     spotlight.next()
   }
 
-  private fun configureBottomLeftOverlay(): View {
+  private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
     overlayBinding = OverlayOverLeftBinding.inflate(this.layoutInflater)
     (overlayBinding as OverlayOverLeftBinding).let {
       it.lifecycleOwner = this
@@ -335,19 +300,19 @@ class SpotlightFragment @Inject constructor(
     val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
-      getAnchorLeft().toInt(),
-      (getAnchorTop().toInt() - getArrowHeight()).toInt(),
+      spotlightTarget.anchorLeft.toInt(),
+      (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight).toInt(),
       10.dp,
       10.dp
     )
-//    arrowParams.marginStart = getAnchorLeft().toInt()
+//    arrowParams.marginStart = spotlightTarget.anchorLeft.toInt()
 //    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverLeftBinding).root
   }
 
-  private fun configureBottomRightOverlay(): View {
+  private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
     overlayBinding = OverlayOverRightBinding.inflate(this.layoutInflater)
     (overlayBinding as OverlayOverRightBinding).let {
       it.lifecycleOwner = this
@@ -359,19 +324,19 @@ class SpotlightFragment @Inject constructor(
     val arrowParams = (overlayBinding as OverlayOverRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
-      (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt(),
-      (getAnchorTop().toInt() - getArrowHeight()).toInt(),
+      (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+      (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight).toInt(),
       10.dp,
       10.dp
     )
-//    arrowParams.marginStart = (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt()
+//    arrowParams.marginStart = (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt()
 //    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayOverRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverRightBinding).root
   }
 
-  private fun configureTopRightOverlay(): View {
+  private fun configureTopRightOverlay(spotlightTarget: SpotlightTarget): View {
     overlayBinding = OverlayUnderRightBinding.inflate(layoutInflater)
     (overlayBinding as OverlayUnderRightBinding).let {
       it.lifecycleOwner = this
@@ -383,19 +348,19 @@ class SpotlightFragment @Inject constructor(
     val arrowParams = (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
-      (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt(),
-      (getAnchorTop() + getAnchorHeight()).toInt(),
+      (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+      (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
       10.dp,
       10.dp
     )
-//    arrowParams.marginStart = (getAnchorLeft() + getAnchorWidth() - getArrowWidth()).toInt()
+//    arrowParams.marginStart = (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt()
 //    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderRightBinding).root
   }
 
-  private fun configureTopLeftOverlay(): View {
+  private fun configureTopLeftOverlay(spotlightTarget: SpotlightTarget): View {
     overlayBinding = OverlayUnderLeftBinding.inflate(this.layoutInflater)
     (overlayBinding as OverlayUnderLeftBinding).let {
       it.lifecycleOwner = this
@@ -407,12 +372,12 @@ class SpotlightFragment @Inject constructor(
     val arrowParams = (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     arrowParams.setMargins(
-      getAnchorLeft().toInt(),
-      (getAnchorTop() + getAnchorHeight()).toInt(),
+      spotlightTarget.anchorLeft.toInt(),
+      (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
       10.dp,
       10.dp
     )
-//    arrowParams.marginStart = getAnchorLeft().toInt()
+//    arrowParams.marginStart = spotlightTarget.anchorLeft.toInt()
 //    arrowParams.marginEnd = 10.dp
     (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams = arrowParams
 
@@ -429,17 +394,23 @@ data class SpotlightTarget(
   val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
   val feature: org.oppia.android.app.model.Spotlight.FeatureCase
 ) {
-  val positionParameters = PositionParameters(anchor)
-
-}
-
-data class PositionParameters(
-  val anchor: View
-) {
   val anchorLeft: Float = calculateAnchorLeft()
   val anchorTop: Float = calculateAnchorTop()
   val anchorHeight: Int = calculateAnchorHeight()
   val anchorWidth: Int = calculateAnchorWidth()
+  val anchorCentreX = calculateAnchorCentreX()
+  val anchorCentreY = calculateAnchorCentreY()
+
+
+
+  fun selfInitialize() {
+    calculateAnchorLeft()
+    calculateAnchorTop()
+    calculateAnchorHeight()
+    calculateAnchorWidth()
+    calculateAnchorCentreX()
+    calculateAnchorCentreY()
+  }
 
   private fun calculateAnchorLeft(): Float {
     val location = IntArray(2)
@@ -470,4 +441,5 @@ data class PositionParameters(
   private fun calculateAnchorCentreY(): Float {
     return anchorTop + anchorHeight / 2
   }
+
 }

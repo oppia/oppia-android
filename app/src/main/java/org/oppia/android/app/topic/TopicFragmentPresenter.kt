@@ -64,11 +64,13 @@ class TopicFragmentPresenter @Inject constructor(
         )
       )
     )
+
+    spotlightFragment.selfInitTargets()
     val fragmentManager =  activity.supportFragmentManager.beginTransaction()
       .add(
         R.id.topic_fragment_placeholder,
         spotlightFragment
-      )
+      ).commit()
 
 
   }
