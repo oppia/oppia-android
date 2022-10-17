@@ -141,10 +141,10 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":cpu_performance_logging_time_period_millis",
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
         ":performance_metrics_controller",
-        ":cpu_performance_logging_time_period_millis",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger",
@@ -169,7 +169,5 @@ kt_android_library(
         ":learner_analytics_inactivity_limit_millis",
     ],
 )
-
-
 
 dagger_rules()

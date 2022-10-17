@@ -55,7 +55,9 @@ interface PerformanceMetricsAssessor {
 
   /** Represents the different states of the application. */
   enum class AppIconification {
+    /** Indicates that the app is in foreground. */
     APP_IN_FOREGROUND,
+    /** Indicates that the app is in background. */
     APP_IN_BACKGROUND
   }
 }
