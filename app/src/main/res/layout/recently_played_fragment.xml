@@ -2,57 +2,29 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_def_white">
+    android:background="@color/component_color_recently_played_activity_background_color"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/reading_list_app_bar_layout"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/ongoing_story_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingTop="@dimen/recently_played_fragment_padding_top"
+      android:paddingBottom="@dimen/recently_played_fragment_padding_bottom"
+      android:scrollbars="none" />
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/recently_played_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:fontFamily="sans-serif"
-        android:minHeight="?attr/actionBarSize"
-        app:navigationContentDescription="@string/navigate_up"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/recently_played_activity"
-        app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <FrameLayout
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout">
-
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ongoing_story_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingTop="@dimen/recently_played_fragment_padding_top"
-        android:paddingBottom="@dimen/recently_played_fragment_padding_bottom"
-        android:scrollbars="none" />
-
-      <View
-        android:id="@+id/recently_played__shadow_view"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+      android:id="@+id/recently_played__shadow_view"
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
+  </FrameLayout>
 </layout>

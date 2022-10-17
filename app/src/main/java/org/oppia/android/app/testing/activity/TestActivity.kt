@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAppCompatActivity
+import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
 import org.oppia.android.app.utility.datetime.DateTimeUtil
@@ -41,6 +42,9 @@ open class TestActivity : InjectableAppCompatActivity() {
 
   @Inject
   lateinit var mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+
+  @Inject
+  lateinit var activityRouter: ActivityRouter
 
   override fun attachBaseContext(newBase: Context?) {
     super.attachBaseContext(newBase)

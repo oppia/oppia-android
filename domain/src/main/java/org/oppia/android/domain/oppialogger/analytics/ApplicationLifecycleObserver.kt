@@ -24,6 +24,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   private val profileManagementController: ProfileManagementController,
   private val oppiaLogger: OppiaLogger,
+  private val performanceMetricsController: PerformanceMetricsController,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ApplicationStartupListener, LifecycleObserver {
@@ -39,6 +40,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
+    performanceMetricsController.setAppInForeground()
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
@@ -49,6 +51,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
+    performanceMetricsController.setAppInBackground()
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
   }

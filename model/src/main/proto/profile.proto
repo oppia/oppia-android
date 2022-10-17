@@ -70,6 +70,9 @@ message Profile {
   // are enabled as part of a user study. In non-user study cases this is expected to either be
   // empty or a meaningless value.
   string learner_id = 13;
+
+  // Represents the number of times a user has successfully logged into their profile.
+  int32 number_of_logins = 14;
 }
 
 // Represents a profile avatar image.
@@ -128,4 +131,5 @@ enum AudioLanguage {
   HINDI_AUDIO_LANGUAGE = 3;
   FRENCH_AUDIO_LANGUAGE = 4;
   CHINESE_AUDIO_LANGUAGE =  5;
+  BRAZILIAN_PORTUGUESE_LANGUAGE = 6;
 }

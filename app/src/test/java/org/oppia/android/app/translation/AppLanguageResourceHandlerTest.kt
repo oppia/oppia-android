@@ -6,7 +6,6 @@ import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -17,20 +16,22 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.ActivityIntentFactoriesModule
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AppLanguageSelection
+import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -55,7 +56,8 @@ import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTe
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -66,6 +68,12 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -75,6 +83,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.locale.testing.TestOppiaBidiFormatter
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -98,12 +107,12 @@ import javax.inject.Singleton
 // FunctionName: test names are conventionally named with underscores.
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
-@RunWith(AndroidJUnit4::class)
+@RunWith(OppiaParameterizedTestRunner::class)
+@SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageResourceHandlerTest.TestApplication::class)
 class AppLanguageResourceHandlerTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   var activityRule =
@@ -111,20 +120,16 @@ class AppLanguageResourceHandlerTest {
       TestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  @Inject
-  lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
+  @Parameter lateinit var lang: String
+  @Parameter lateinit var expectedDisplayText: String
 
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  private val audioLanguage by lazy { AudioLanguage.valueOf(lang) }
 
   @Before
   fun setUp() {
@@ -462,6 +467,16 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglish() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.toHumanReadableString(1)
+
+    assertThat(formattedString).contains("1")
+  }
+
+  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
@@ -470,6 +485,30 @@ class AppLanguageResourceHandlerTest {
 
     assertThat(dateString.extractNumbers()).containsExactly("24", "2019")
     assertThat(dateString).contains("Apr")
+  }
+
+  // This test is breaking the "don't parameterize output" principle out of convenience since it's
+  // testing functionality that's expected to go away with later language selection work.
+  // TODO(#3793): Remove this once OppiaLanguage is used as the source of truth.
+  @Test
+  @RunParameterized(
+    Iteration("hi", "lang=HINDI_AUDIO_LANGUAGE", "expectedDisplayText=हिन्दी"),
+    Iteration("fr", "lang=FRENCH_AUDIO_LANGUAGE", "expectedDisplayText=Français"),
+    Iteration("zh", "lang=CHINESE_AUDIO_LANGUAGE", "expectedDisplayText=中文"),
+    Iteration("pr-pt", "lang=BRAZILIAN_PORTUGUESE_LANGUAGE", "expectedDisplayText=Português"),
+    Iteration("unsp", "lang=AUDIO_LANGUAGE_UNSPECIFIED", "expectedDisplayText=English"),
+    Iteration("none", "lang=NO_AUDIO", "expectedDisplayText=English"),
+    Iteration("unknown", "lang=UNRECOGNIZED", "expectedDisplayText=English"),
+    Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
+  )
+  fun testComputeLocalizedDisplayName_englishLocale_forAllLanguages_hasTheExpectedOutput() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val displayText = handler.computeLocalizedDisplayName(audioLanguage)
+
+    // The display name is localized to that language rather than the current locale (English).
+    assertThat(displayText).isEqualTo(expectedDisplayText)
   }
 
   @Test
@@ -546,8 +585,8 @@ class AppLanguageResourceHandlerTest {
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
       ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
-      LogUploadWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -556,7 +595,8 @@ class AppLanguageResourceHandlerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

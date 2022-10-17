@@ -1,8 +1,24 @@
 id: "test_topic_id_0"
-name: "First Test Topic"
-description: "A topic investigating the interesting aspects of the Oppia Android app."
 canonical_story_ids: "test_story_id_0"
 subtopic_ids: 1
 is_published: true
 topic_thumbnail {
+}
+written_translations {
+  key: "title"
+  value {
+  }
+}
+written_translations {
+  key: "description"
+  value {
+  }
+}
+translatable_title {
+  html: "First Test Topic"
+  content_id: "title"
+}
+translatable_description {
+  html: "A topic investigating the interesting aspects of the Oppia Android app."
+  content_id: "description"
 }

@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -11,6 +12,7 @@ import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.Walkthroug
 import org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel.WalkthroughTopicSummaryViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicListController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
@@ -22,18 +24,30 @@ class WalkthroughTopicViewModel @Inject constructor(
   private val topicListController: TopicListController,
   private val oppiaLogger: OppiaLogger,
   @TopicHtmlParserEntityType private val topicEntityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val translationController: TranslationController
 ) : ObservableViewModel() {
+  private lateinit var profileId: ProfileId
+
   val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
     Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
   }
 
   private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList().toLiveData()
+    topicListController.getTopicList(profileId).toLiveData()
   }
 
   private val topicListSummaryLiveData: LiveData<TopicList> by lazy {
     Transformations.map(topicListSummaryResultLiveData, ::processTopicListResult)
+  }
+
+  /**
+   * Initializes this view model with the specified [profileId].
+   *
+   * This MUST be called before the view model is interacted with.
+   */
+  fun initialize(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
@@ -59,12 +73,13 @@ class WalkthroughTopicViewModel @Inject constructor(
 
     // Add the rest of the list
     itemViewModelList.addAll(
-      topicList.topicSummaryList.map { topic ->
+      topicList.topicSummaryList.map { ephemeralTopicSummary ->
         WalkthroughTopicSummaryViewModel(
           topicEntityType,
-          topic,
+          ephemeralTopicSummary,
           fragment as TopicSummaryClickListener,
-          resourceHandler
+          resourceHandler,
+          translationController
         )
       }
     )

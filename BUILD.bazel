@@ -75,6 +75,7 @@ package_group(
 [
     transform_android_manifest(
         name = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
+        application_relative_qualified_class = ".app.application.dev.DeveloperOppiaApplication",
         build_flavor = apk_flavor_metadata["flavor"],
         input_file = "//app:src/main/AndroidManifest.xml",
         major_version = MAJOR_VERSION,
@@ -108,7 +109,7 @@ package_group(
         },
         multidex = apk_flavor_metadata["multidex"],
         deps = [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
         ],
     )
     for apk_flavor_metadata in [

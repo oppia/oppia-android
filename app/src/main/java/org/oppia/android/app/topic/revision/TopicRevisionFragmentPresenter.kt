@@ -12,7 +12,6 @@ import org.oppia.android.app.model.Subtopic
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToRevisionCardListener
 import org.oppia.android.app.topic.revision.revisionitemviewmodel.TopicRevisionItemViewModel
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.TopicRevisionFragmentBinding
 import org.oppia.android.databinding.TopicRevisionSummaryViewBinding
 import javax.inject.Inject
@@ -22,12 +21,14 @@ import javax.inject.Inject
 class TopicRevisionFragmentPresenter @Inject constructor(
   activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val viewModelProvider: ViewModelProvider<TopicRevisionViewModel>
+  private val viewModel: TopicRevisionViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) : RevisionSubtopicSelector {
   private lateinit var binding: TopicRevisionFragmentBinding
   private var internalProfileId: Int = -1
   private lateinit var topicId: String
   private val routeToReviewListener = activity as RouteToRevisionCardListener
+  private var subtopicListSize: Int? = null
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -35,8 +36,6 @@ class TopicRevisionFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String
   ): View? {
-    val viewModel = getTopicRevisionViewModel()
-
     this.internalProfileId = internalProfileId
     this.topicId = topicId
     binding = TopicRevisionFragmentBinding.inflate(
@@ -55,23 +54,27 @@ class TopicRevisionFragmentPresenter @Inject constructor(
       layoutManager = GridLayoutManager(context, spanCount)
     }
     binding.apply {
-      this.viewModel = viewModel
+      this.viewModel = this@TopicRevisionFragmentPresenter.viewModel
       lifecycleOwner = fragment
+    }
+
+    viewModel.subtopicLiveData.observe(fragment) {
+      this.subtopicListSize = it.size
     }
     return binding.root
   }
 
   override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(internalProfileId, topicId, subtopic.subtopicId)
-  }
-
-  private fun getTopicRevisionViewModel(): TopicRevisionViewModel {
-    return viewModelProvider.getForFragment(fragment, TopicRevisionViewModel::class.java)
+    routeToReviewListener.routeToRevisionCard(
+      internalProfileId,
+      topicId,
+      subtopic.subtopicId,
+      checkNotNull(subtopicListSize) { "Subtopic list size not found." }
+    )
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<TopicRevisionItemViewModel>()
+    return singleTypeBuilderFactory.create<TopicRevisionItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
         setViewModel = TopicRevisionSummaryViewBinding::setViewModel

@@ -14,7 +14,12 @@
     <item name="colorAccent">@color/color_palette_accent_color</item>
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
+    <item name="android:editTextStyle">@style/InputInteractionEditText</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+  </style>
+
+  <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimaryDark">@color/component_color_revision_card_activity_toolbar_color</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -28,6 +33,8 @@
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
     <item name="colorAccent">@color/color_palette_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_alert_dialog_background_color</item>
+    <item name="android:textColorPrimary">@color/component_color_alert_dialog_text_color</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -38,6 +45,8 @@
     <item name="colorPrimary">@color/color_palette_primary_color</item>
     <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
     <item name="colorAccent">@color/color_palette_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_alert_dialog_background_color</item>
+    <item name="android:textColorPrimary">@color/component_color_alert_dialog_text_color</item>
   </style>
 
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >

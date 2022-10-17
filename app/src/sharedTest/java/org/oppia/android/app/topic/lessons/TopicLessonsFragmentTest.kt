@@ -18,6 +18,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -25,10 +26,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,14 +42,19 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ResumeLessonActivityParams
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -52,8 +62,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
-import org.oppia.android.app.topic.EnablePracticeTab
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -82,8 +90,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -99,6 +107,7 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -106,10 +115,13 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -118,6 +130,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -147,11 +161,13 @@ class TopicLessonsFragmentTest {
   lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
-  @JvmField
-  @field:[Inject EnablePracticeTab]
-  var enablePracticeTab: Boolean = false
+  @field:[Inject EnableExtraTopicTabsUi]
+  lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
 
@@ -159,6 +175,7 @@ class TopicLessonsFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -212,7 +229,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "100%")
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "100% Completed")
     }
   }
 
@@ -224,7 +241,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0% In Progress")
     }
   }
 
@@ -240,7 +257,10 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "50%")
+      verifyProgressContentDescriptionAtPosition(
+        itemPosition = 1,
+        stringToMatch = "50% In Progress"
+      )
     }
   }
 
@@ -248,18 +268,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_noStoryProgress_contentDescriptionIsCorrect() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
-      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0%")
-    }
-  }
-
-  @Test
-  fun testLessonsPlayFragment_loadFractionsTopic_storyChapterTextsContentDescriptionIsCorrect() {
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
-      clickLessonTab()
-      verifyStoryAndChapterCountContentDescriptionAtPosition(
-        itemPosition = 1,
-        stringToMatch = "2 Chapters in Matthew Goes to the Bakery"
-      )
+      verifyProgressContentDescriptionAtPosition(itemPosition = 1, stringToMatch = "0% In Progress")
     }
   }
 
@@ -315,6 +324,148 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterNotStartedIsCorrectlyDisplayed() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.not_started_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterLockedIsCorrectlyDisplayed() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterCompletedIsCorrectlyDisplayed() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.lessons_completed_chapter_view
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_chapterInProgressIsCorrectlyDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.lessons_in_progress_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_configChange_chapterLockedIsCorrectlyDisplayed() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 1,
+          targetViewId = R.id.locked_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_configChange_chapterCompletedIsCorrectlyDisplayed() {
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.lessons_completed_chapter_view
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_configChange_chapterInProgressIsCorrectlyDisplayed() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
+      profileId,
+      timestampOlderThanOneWeek = false
+    )
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.lessons_in_progress_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_configChange_chapterNotStartedIsCorrectlyDisplayed() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      clickLessonTab()
+      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
+      onView(isRoot()).perform(orientationLandscape())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.chapter_recycler_view,
+          position = 0,
+          targetViewId = R.id.not_started_chapter_container
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testLessonsPlayFragment_loadRatiosTopic_default_arrowDown() {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
@@ -334,9 +485,14 @@ class TopicLessonsFragmentTest {
 
   @Test
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIcon_chapterListIsVisible() {
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        internalProfileId,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use {
       clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
@@ -369,31 +525,27 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container))))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ResumeLessonActivity::class.java.name))
+
+      val expectedParams = ResumeLessonActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
+        checkpoint = ExplorationCheckpoint.newBuilder().apply {
+          explorationTitle = "What is a Fraction?"
+          explorationVersion = 85
+          pendingStateName = "Introduction"
+          timestampOfFirstCheckpoint = 102
+        }.build()
+      }.build()
       intended(
-        hasExtra(
-          ResumeLessonActivity.RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY,
-          internalProfileId
-        )
-      )
-      intended(
-        hasExtra(
-          ResumeLessonActivity.RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-          FRACTIONS_TOPIC_ID
-        )
-      )
-      intended(
-        hasExtra(
-          ResumeLessonActivity.RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-          FRACTIONS_STORY_ID_0
-        )
-      )
-      intended(
-        hasExtra(
-          ResumeLessonActivity.RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-          FRACTIONS_EXPLORATION_ID_0
+        allOf(
+          hasProtoExtra("ResumeLessonActivity.params", expectedParams),
+          hasComponent(ResumeLessonActivity::class.java.name)
         )
       )
     }
@@ -420,34 +572,21 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container))))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = true
+        parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ true
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ 0
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -466,34 +605,21 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.not_started_chapter_container))))
+      onView(withId(R.id.not_started_chapter_container)).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = true
+        parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ true
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ 0
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -517,34 +643,21 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_in_progress_chapter_container))))
+        .perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = true
+        parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ true
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ 0
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -568,34 +681,20 @@ class TopicLessonsFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_recycler_view
         )
-      ).check(matches(hasDescendant(withId(R.id.chapter_container)))).perform(click())
+      ).check(matches(hasDescendant(withId(R.id.lessons_completed_chapter_view)))).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = false
+        parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ false
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ 0
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -677,40 +776,6 @@ class TopicLessonsFragmentTest {
   }
 
   @Test
-  fun testLessonPlayFrag_loadRatiosTopic_partialProg_verifyContentDescriptionIsCorrect() {
-    storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconContentDescriptionIsCorrect(
-        itemPosition = 0,
-        contentDescription = "Chapter 1 with title What is a Ratio? is in progress"
-      )
-    }
-  }
-
-  @Test
-  fun testLessonPlayFrag_loadRatiosTopic_topicCompleted_verifyContentDescriptionIsCorrect() {
-    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconContentDescriptionIsCorrect(
-        itemPosition = 0,
-        contentDescription = "Chapter 1 with title What is a Ratio? is completed"
-      )
-    }
-  }
-
-  @Test
   fun testLessonPlayFrag_loadRatiosTopic_partialProg_partialProgIconIsDisplayed() {
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId,
@@ -738,51 +803,6 @@ class TopicLessonsFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
       verifyPartialProgressIconIsDisplayedAtPosition(itemPosition = 0)
-    }
-  }
-
-  @Test
-  fun testLessonPlayFrag_loadRatiosTopic_chapterCompleted_completedIconIsDisplayed() {
-    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
-      verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition = 0)
-    }
-  }
-
-  @Test
-  fun testLessonPlayFrag_loadRatiosTopic_chapterCompleted_configChange_completedIconIsDisplayed() {
-    storyProgressTestHelper.markCompletedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      onView(isRoot()).perform(orientationLandscape())
-      verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition = 0)
-      verifyChapterCompletedIconIsDisplayedAtPosition(itemPosition = 0)
-    }
-  }
-
-  @Test
-  fun testLessonPlayFrag_loadRatiosTopic_unsavedPartialProg_chapterPlayStateIconIsNotVisible() {
-    storyProgressTestHelper.markInProgressNotSavedRatiosStory0Exp0(
-      profileId,
-      timestampOlderThanOneWeek = false
-    )
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      clickLessonTab()
-      clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
-      scrollToPosition(position = 1)
-      verifyChapterPlayStateIconIsNotVisibleAtPosition(itemPosition = 0)
     }
   }
 
@@ -849,6 +869,76 @@ class TopicLessonsFragmentTest {
     }
   }
 
+  @Test
+  fun testLessonsPlayFragment_loadRatiosTopic_checkDropDownIconWithScreenReader_isClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).check(
+        matches(isClickable())
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFragment_loadRatiosTopic_checkDropDownIconWithoutScreenReader_isNotClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.expand_list_icon
+        )
+      ).check(
+        matches(not(isClickable()))
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithScreenReader_isNotClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_container
+        )
+      ).check(
+        matches(not(isClickable()))
+      )
+    }
+  }
+
+  @Test
+  fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithoutScreenReader_isClickable() {
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 1,
+          targetViewId = R.id.story_container
+        )
+      ).check(
+        matches(isClickable())
+      )
+    }
+  }
+
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
@@ -874,7 +964,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     onView(
       allOf(
-        withText(TopicTab.getTabForPosition(position = 1, enablePracticeTab).name),
+        withText(TopicTab.getTabForPosition(position = 1, enableExtraTopicTabsUiValue.value).name),
         isDescendantOfA(withId(R.id.topic_tabs_container))
       )
     ).perform(click())
@@ -915,35 +1005,9 @@ class TopicLessonsFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.story_summary_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.story_progress_container
+        targetViewId = R.id.story_progress_linear_layout
       )
     ).check(matches(withContentDescription(stringToMatch)))
-  }
-
-  private fun verifyStoryAndChapterCountContentDescriptionAtPosition(
-    itemPosition: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.story_summary_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.story_name_chapter_count_container
-      )
-    ).check(matches(withContentDescription(stringToMatch)))
-  }
-
-  private fun verifyChapterPlayStateIconContentDescriptionIsCorrect(
-    itemPosition: Int,
-    contentDescription: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.chapter_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.chapter_play_state_icon
-      )
-    ).check(matches(withContentDescription(contentDescription)))
   }
 
   private fun verifyChapterPlayStateIconIsVisibleAtPosition(itemPosition: Int) {
@@ -986,11 +1050,25 @@ class TopicLessonsFragmentTest {
     ).check(matches(withDrawable(R.drawable.ic_check_24dp)))
   }
 
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -1001,9 +1079,9 @@ class TopicLessonsFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -1012,7 +1090,8 @@ class TopicLessonsFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

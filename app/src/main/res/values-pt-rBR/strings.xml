@@ -2,7 +2,9 @@
 <!-- Authors:
 * Carolintaschi
 * Eduardoaddad
+* Jfalarini
 * Leosls
+* Seanlip
 * Svjatysberega
 * YuriNikolai
 -->
@@ -13,6 +15,7 @@
   <string name="menu_help">Ajuda</string>
   <string name="exploration_activity_title">Reprodutor de Exploração</string>
   <string name="help_activity_title">Ajuda</string>
+  <string name="bottom_sheet_options_menu_close">Fechar</string>
   <string name="menu_switch_profile">Trocar Perfil</string>
   <string name="developer_options">Opções de Desenvolvedor</string>
   <string name="administrator_controls">Controles de Administrador</string>
@@ -20,6 +23,7 @@
   <string name="drawer_close_content_description">Fechar Menu de Navegação</string>
   <string name="audio_play_description">Tocar áudio</string>
   <string name="audio_pause_description">Pausar áudio</string>
+  <string name="audio_unavailable_in_selected_language">%s áudio está indisponível.</string>
   <string name="audio_language_select_dialog_okay_button">OK</string>
   <string name="audio_language_select_dialog_cancel_button">Cancelar</string>
   <string name="audio_language_select_dialog_title">Idioma de Áudio</string>
@@ -130,7 +134,6 @@
   <string name="ongoing_story_last_month">Reproduzidas no Último Mês</string>
   <string name="story_activity_title">Lista de Capítulos</string>
   <string name="lesson_thumbnail_content_description">Imagem para %s</string>
-  <string name="all_topics">Todos os Tópicos</string>
   <string name="stories_you_can_play">Histórias que Você Pode Reproduzir</string>
   <string name="navigate_up">Navegar para cima</string>
   <string name="recently_played_activity">Histórias Reproduzidas Recentemente</string>
@@ -234,8 +237,8 @@
   <string name="add_profile_pin_info">Com um PIN, ninguém mais pode acessar um perfil além deste usuário atribuído.</string>
   <string name="add_profile_error_image_failed_store">Falha ao armazenar sua imagem de avatar. Por favor, tente novamente.</string>
   <string name="add_profile_error_name_not_unique">Este nome já está em uso por outro perfil.</string>
-  <string name="add_profile_error_name_empty">Por favor, insira um nome para este perfil.</string>
-  <string name="add_profile_error_name_only_letters">Os nomes podem ter apenas letras. Tente outro nome.</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">Por favor, insira um nome válido para este perfil.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">Por favor, escolha um nome de perfil que não inclua números ou símbolos.</string>
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
@@ -259,15 +262,19 @@
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
   <string name="input_pin_password_as_admin">PIN de 5 dígitos do administrador.</string>
   <string name="input_pin_password_as_user">PIN de 3 dígitos do usuário.</string>
-  <string name="pin_password_forgot_pin">Eu esqueci meu pin.</string>
+  <string name="pin_password_forgot_pin">Esqueceu o PIN?</string>
   <string name="pin_password_incorrect_pin">PIN incorreto.</string>
   <string name="pin_password_show">Mostrar</string>
   <string name="pin_password_hide">Esconder</string>
   <string name="pin_password_close">Fechar</string>
   <string name="pin_password_success">A alteração do PIN foi bem-sucedida</string>
   <string name="pin_password_forgot_title">Esqueceu o PIN?</string>
-  <string name="pin_password_forgot_message">Para redefinir seu PIN, desinstale %s e reinstale-o.\n\nLembre-se de que, se o dispositivo não estiver online, você pode perder o progresso do usuário em várias contas.</string>
-  <string name="pin_password_play_store">Ir para a Play Store</string>
+  <string name="admin_forgot_pin_message">Para redefinir seu PIN, você precisará limpar todos os dados salvos de %s.\n\nLembre-se de que essa ação fará com que todos os perfis e o progresso do usuário sejam excluídos e não pode ser desfeito. Além disso, o aplicativo será fechado quando isso for concluído e precisará ser reaberto.</string>
+  <string name="admin_forgot_pin_reset_app_data_button_text">Redefinir dados de %s.</string>
+  <string name="admin_confirm_app_wipe_title">Confirmar redefinição de dados de %s</string>
+  <string name="admin_confirm_app_wipe_message">Tem certeza de que deseja excluir todos os perfis %s neste dispositivo? Esta ação não poderá ser desfeita.</string>
+  <string name="admin_confirm_app_wipe_positive_button_text">Sim</string>
+  <string name="admin_confirm_app_wipe_negative_button_text">Não</string>
   <string name="show_hide_password_icon">Mostrar/Esconder ícone da senha</string>
   <string name="password_shown_icon">Ícone de mostrar a senha</string>
   <string name="password_hidden_icon">Ícone de esconder a senha</string>
@@ -376,6 +383,7 @@
   <string name="show_hints_and_solution">Mostrar dicas e solução</string>
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
+  <string name="show_solution">Exibir</string>
   <string name="reveal_solution">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
   <string name="show_hide_hint_list">Mostrar/Esconder lista de dicas de %s</string>
@@ -388,6 +396,7 @@
   <string name="time_ago">%s atrás</string>
   <string name="yesterday">ontem</string>
   <string name="return_to_topic">Voltar ao tópico</string>
+  <string name="return_to_lesson">Voltar para a lição</string>
   <string name="explanation">Explicação:</string>
   <string name="drag_and_drop_interaction_group_merge_hint">Se dois itens forem iguais, junte-os.</string>
   <string name="link_to_item_below">Link para o item %s</string>
@@ -411,12 +420,24 @@
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
-  <string name="item_selection_text">Por favor, selecione pelo menos uma opção.</string>
+  <string name="item_selection_text">Por favor, selecione todas as alternativas corretas.</string>
   <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
+  <string name="splash_screen_developer_label">Versão do desenvolvedor</string>
+  <string name="splash_screen_alpha_label">Alfa</string>
+  <string name="splash_screen_beta_label">Beta</string>
+  <string name="beta_notice_dialog_title">Aviso Beta</string>
+  <string name="beta_notice_dialog_message">Olá! Seu aplicativo está sendo atualizado para a versão Beta. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
+  <string name="beta_notice_dialog_do_not_show_again_text">Não exibir esta mensagem novamente</string>
+  <string name="beta_notice_dialog_close_button_text">OK</string>
+  <string name="general_availability_notice_dialog_title">Aviso de disponibilidade geral</string>
+  <string name="general_availability_notice_dialog_message">Olá! Seu aplicativo está sendo atualizado para a versão de disponibilidade geral. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
+  <string name="general_availability_notice_dialog_do_not_show_again_text">Não exibir esta mensagem novamente</string>
+  <string name="general_availability_notice_dialog_close_button_text">OK</string>
   <string name="ratio_content_description_separator">para</string>
   <string name="ratio_default_hint_text">Insira uma razão no formato x:y.</string>
+  <string name="text_input_default_hint_text">Clique aqui para inserir texto.</string>
   <string name="smallest_text_size_content_description">Menor tamanho de texto</string>
   <string name="largest_text_size_content_description">Maior tamanho de texto</string>
   <string name="coming_soon">Em Breve</string>
@@ -445,6 +466,12 @@
   <string name="home_screen_good_morning_greeting_fragment">Bom dia,</string>
   <string name="home_screen_good_afternoon_greeting_fragment">Boa tarde,</string>
   <string name="home_screen_good_evening_greeting_fragment">Boa noite,</string>
+  <string name="policy_activity_title">Página de Política</string>
+  <string name="privacy_policy_title">Política de Privacidade</string>
+  <string name="privacy_policy_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;esta páginage&lt;/a&gt; para acessar a última versão desta política de privacidade.</string>
+  <string name="terms_of_service_title">Termos de Serviço</string>
+  <string name="agree_to_terms">Ao usar %s, você concorda com nossos &lt;br&gt; &lt;oppia-noninteractive-policy link=\"tos\"&gt;Termos de Serviço&lt;/oppia-noninteractive-policy&gt; e &lt;oppia-noninteractive-policy link=\"privacy\"&gt;Política de Privacidade&lt;/oppia-noninteractive-policy&gt;.</string>
+  <string name="terms_of_service_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/terms\"&gt;esta página&lt;/a&gt; para acessar a última versão destes termos.</string>
   <string name="faq_question_1">Como posso criar um novo perfil?</string>
   <string name="faq_question_2">Como posso deletar um perfil?</string>
   <string name="faq_question_3">Como posso alterar meu e-mail/número de telefone?</string>
@@ -454,7 +481,7 @@
   <string name="faq_question_7">Por que meu áudio não está tocando?</string>
   <string name="faq_question_8">Como faço o download de um tópico?</string>
   <string name="faq_question_9">Não consigo encontrar minha pergunta aqui. E agora?</string>
-  <string name="faq_answer_1">&lt;p&gt;Se é a sua primeira vez criando um perfil e você não tem um PIN:&lt;/p&gt; &lt;p&gt; 1. No Seletor de Perfil, toque em &lt;strong&gt;Configurar Múltiplos Perfis&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Crie um PIN e &lt;strong&gt;Salvar&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Preencha todos os campos do perfil. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Opcional) Carregar uma foto. &lt;/li&gt; &lt;li&gt; Insira um nome. &lt;/li&gt; &lt;li&gt; (Opcional) Atribua um PIN de 3 dígitos. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil está adicionado ao seu Seletor de Perfil! &lt;br/&gt; &lt;br/&gt; Se você já criou um perfil antes e tem um PIN: &lt;/p&gt; &lt;p&gt; 1. No Seletor de Perfil, toque em &lt;strong&gt;Adicionar Perfil&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Digite seu PIN e toque em &lt;strong&gt;Enviar&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Preencha todos os campos do perfil. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Opcional) Carregar uma foto. &lt;/li&gt; &lt;li&gt; Insira um nome. &lt;/li&gt; &lt;li&gt; (Opcional) Atribua um PIN de 3 dígitos. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil está adicionado ao seu Seletor de Perfil! &lt;br/&gt; &lt;br/&gt; Nota: Apenas o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
+  <string name="faq_answer_1">&lt;p&gt;Se é a sua primeira vez criando um perfil e você não tem um PIN:&lt;/p&gt; &lt;p&gt; 1. No Seletor de Perfil, toque em &lt;strong&gt;Configurar Múltiplos Perfis&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Crie um PIN e &lt;strong&gt;Salvar&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Preencha todos os campos do perfil. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Opcional) Carregue uma foto. &lt;/li&gt; &lt;li&gt; Insira um nome. &lt;/li&gt; &lt;li&gt; (Opcional) Atribua um PIN de 3 dígitos. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil está adicionado ao seu Seletor de Perfil! &lt;br/&gt; &lt;br/&gt; Se você já criou um perfil antes e tem um PIN: &lt;/p&gt; &lt;p&gt; 1. No Seletor de Perfil, toque em &lt;strong&gt;Adicionar Perfil&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 2. Digite seu PIN e toque em &lt;strong&gt;Enviar&lt;/strong&gt;. &lt;/p&gt; &lt;p&gt; 3. Preencha todos os campos do perfil. &lt;/p&gt; &lt;ol&gt; &lt;li&gt; (Opcional) Carregue uma foto. &lt;/li&gt; &lt;li&gt; Insira um nome. &lt;/li&gt; &lt;li&gt; (Opcional) Atribua um PIN de 3 dígitos. &lt;/li&gt; &lt;/ol&gt; &lt;p&gt; 4. Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil está adicionado ao seu Seletor de Perfil! &lt;br/&gt; &lt;br/&gt; Nota: Apenas o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
   <string name="faq_answer_2">&lt;p&gt;Depois que um perfil é deletado:&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt; &lt;li&gt; O perfil não pode ser recuperado. &lt;/li&gt; &lt;/p&gt; &lt;p&gt; &lt;li&gt; As informações do perfil, como nome, fotos e progresso, serão excluídas permanentemente. &lt;/li&gt; &lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Para deletar um perfil(excluindo o do &lt;u&gt;Administrador&lt;/u&gt;):&lt;/p&gt; &lt;p&gt;1. Na página inicial do administrador, toque no botão de menu no canto superior esquerdo.&lt;/p&gt; &lt;p&gt;2. Toque em &lt;strong&gt;Controles do Administrador&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;3. Toque em &lt;strong&gt;Editar Perfis&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;4. Toque no perfil que deseja excluir.&lt;/p&gt; &lt;p&gt;5. Na parte inferior da tela, toque em &lt;strong&gt;Exclusão de Perfil&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;6. Toque em &lt;strong&gt;Deletar&lt;/strong&gt; para confirmar a exclusão.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Nota: Apenas o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
   <string name="faq_answer_3">&lt;p&gt;Para alterar seu e-mail/número de telefone:&lt;/p&gt; &lt;p&gt;1. Na página inicial do administrador, toque no botão de menu no canto superior esquerdo.&lt;/p&gt; &lt;p&gt;2. Toque em &lt;strong&gt;Controles do Administrador&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;3. Toque em &lt;strong&gt;Editar Conta&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Se você deseja alterar seu e-mail:&lt;/p&gt; &lt;p&gt;4. Digite seu novo e-mail e toque em &lt;strong&gt;Salvar&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;5. Um link de confirmação será enviado para confirmar seu novo e-mail. O link irá expirar após 24 horas e deve ser clicado para ser associado à sua conta. &lt;/p&gt; &lt;p&gt;&lt;br&gt;&lt;/p&gt; &lt;p&gt;Se mudar seu número de telefone:&lt;/p&gt; &lt;p&gt;4. Digite seu novo número de telefone e toque em &lt;strong&gt;Verificar&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;5. Um código será enviado para confirmar seu novo número. O código expira após 5 minutos e deve ser inserido na nova tela para ser associado à sua conta.&lt;/p&gt;</string>
   <string name="faq_answer_4">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Finnish) - \"aprender\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s tem a missão de ajudar qualquer pessoa a aprender o que quiser de uma forma eficaz e agradável.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ao criar um conjunto de aulas gratuitas, de alta qualidade e comprovadamente eficazes com a ajuda de educadores de todo o mundo, %1$s visa proporcionar aos alunos uma educação de qualidade - independentemente de onde estejam ou a quais recursos tradicionais tenham acesso.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Como estudante, você pode começar sua aventura de aprendizado navegando pelos tópicos listados na página inicial!&lt;/p&gt;</string>
@@ -465,4 +492,5 @@
   <string name="faq_answer_9">&lt;p&gt;Se você não consegue encontrar sua pergunta ou gostaria de relatar um problema, entre em contato conosco em admin@oppia.org.&lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">Atividade de Teste de Fragmento de Edição de Perfil</string>
   <string name="administrator_controls_fragment_test_activity_label">Controle Administrativo da Atividade de Teste de Fragmento</string>
+  <string name="select_a_topic_to_start">Selecione um Tópico para começar</string>
 </resources>

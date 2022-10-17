@@ -21,7 +21,8 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val networkConnectionUtil: Optional<NetworkConnectionDebugUtil>,
-  private val viewModelProvider: ViewModelProvider<ForceNetworkTypeViewModel>
+  private val viewModelProvider: ViewModelProvider<ForceNetworkTypeViewModel>,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: ForceNetworkTypeFragmentBinding
@@ -60,8 +61,7 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<NetworkTypeItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<NetworkTypeItemViewModel>()
+    return singleTypeBuilderFactory.create<NetworkTypeItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = ForceNetworkTypeNetworkItemViewBinding::inflate,
         setViewModel = this::bindNetworkItemView

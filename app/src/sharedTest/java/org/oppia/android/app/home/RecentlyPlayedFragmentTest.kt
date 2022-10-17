@@ -18,7 +18,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -28,11 +27,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,23 +44,30 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
+import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
+import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasGridItemCount
 import org.oppia.android.app.resumelesson.ResumeLessonActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -84,7 +94,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
@@ -110,8 +121,11 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -192,11 +206,29 @@ class RecentlyPlayedFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createRecentlyPlayedActivityIntent(internalProfileId: Int): Intent {
+  private fun createRecentlyPlayedActivityIntent(
+    internalProfileId: Int,
+    recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle =
+      RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+  ): Intent {
+    val recentlyPlayedActivityParams =
+      RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(recentlyPlayedActivityTitle)
+        .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context = context,
-      internalProfileId = internalProfileId
+      recentlyPlayedActivityParams = recentlyPlayedActivityParams
     )
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createRecentlyPlayedActivityIntent(internalProfileId)
+      .extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.RECENTLY_PLAYED_ACTIVITY)
   }
 
   @Test
@@ -338,7 +370,8 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
+        internalProfileId = internalProfileId,
+        RecentlyPlayedActivityTitle.STORIES_FOR_YOU
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
@@ -819,28 +852,23 @@ class RecentlyPlayedFragmentTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ResumeLessonActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
+        checkpoint = ExplorationCheckpoint.newBuilder().apply {
+          explorationTitle = "What is a Fraction?"
+          explorationVersion = 85
+          pendingStateName = "Introduction"
+          timestampOfFirstCheckpoint = 102
+        }.build()
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_INTERNAL_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ResumeLessonActivity.RESUME_LESSON_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ null
-          ),
+          hasProtoExtra("ResumeLessonActivity.params", expectedParams),
           hasComponent(ResumeLessonActivity::class.java.name)
         )
       )
@@ -877,32 +905,18 @@ class RecentlyPlayedFragmentTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = true
+        parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ true
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ null
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -930,32 +944,18 @@ class RecentlyPlayedFragmentTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = true
+        parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ true
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ null
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -988,32 +988,18 @@ class RecentlyPlayedFragmentTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
+
+      val expectedParams = ExplorationActivityParams.newBuilder().apply {
+        explorationId = FRACTIONS_EXPLORATION_ID_0
+        storyId = FRACTIONS_STORY_ID_0
+        topicId = FRACTIONS_TOPIC_ID
+        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        isCheckpointingEnabled = true
+        parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_EXPLORATION_ID_ARGUMENT_KEY,
-            FRACTIONS_EXPLORATION_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_STORY_ID_ARGUMENT_KEY,
-            FRACTIONS_STORY_ID_0
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_TOPIC_ID_ARGUMENT_KEY,
-            FRACTIONS_TOPIC_ID
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_PROFILE_ID_ARGUMENT_KEY,
-            internalProfileId
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_IS_CHECKPOINTING_ENABLED_KEY,
-            /* isCheckpointEnabled = */ true
-          ),
-          hasExtra(
-            ExplorationActivity.EXPLORATION_ACTIVITY_BACKFLOW_SCREEN_KEY,
-            /* backflowScreen = */ null
-          ),
+          hasProtoExtra("ExplorationActivity.params", expectedParams),
           hasComponent(ExplorationActivity::class.java.name)
         )
       )
@@ -1472,11 +1458,25 @@ class RecentlyPlayedFragmentTest {
     }
   }
 
-  fun setUpTestFragment(activity: RecentlyPlayedActivity) {
+  private fun setUpTestFragment(activity: RecentlyPlayedActivity) {
     activity.supportFragmentManager
       .beginTransaction()
       .add(testFragment, TEST_FRAGMENT_TAG)
       .commitNow()
+  }
+
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -1495,9 +1495,9 @@ class RecentlyPlayedFragmentTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -1505,7 +1505,8 @@ class RecentlyPlayedFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

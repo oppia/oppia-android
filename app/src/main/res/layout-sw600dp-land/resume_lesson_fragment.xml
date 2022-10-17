@@ -14,8 +14,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="0dp"
@@ -47,8 +47,8 @@
     <ScrollView
       android:layout_width="0dp"
       android:layout_height="match_parent"
-      android:background="@color/component_color_resume_lesson_activity_background_color"
-      android:layout_weight="1">
+      android:layout_weight="1"
+      android:background="@color/component_color_resume_lesson_activity_background_color">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
           android:layout_marginEnd="32dp"
           android:layout_marginBottom="8dp"
           android:fontFamily="sans-serif"
-          android:text="@{viewModel.chapterSummary.name}"
+          android:text="@{viewModel.chapterTitle}"
           android:textColor="@color/component_color_resume_lesson_activity_text_color"
           android:textDirection="locale"
           android:textSize="24sp"
@@ -117,6 +117,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
   </LinearLayout>
 </layout>

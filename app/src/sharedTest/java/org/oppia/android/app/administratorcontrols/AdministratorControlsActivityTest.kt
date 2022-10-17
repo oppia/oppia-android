@@ -21,6 +21,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -49,20 +50,22 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.settings.profile.ProfileListActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -88,8 +91,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -97,6 +100,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -107,6 +111,8 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
+import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -164,6 +170,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -190,6 +197,67 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view)).perform(click())
       intended(hasComponent(ProfileListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_account
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
+
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnAdministratorControlListItem(
+        itemPosition = 1,
+        targetView = R.id.profile_management_text_view
+      )
+      verifyTextOnAdministratorListItemAtPosition(
+        itemPosition = 1,
+        targetViewId = R.id.edit_profiles_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
+      )
     }
   }
 
@@ -566,6 +634,14 @@ class AdministratorControlsActivityTest {
     }
   }
 
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createAdministratorControlsActivityIntent(1)
+      .extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY)
+  }
+
   private fun checkIsAdminProfileVisible() {
     onView(atPositionOnView(R.id.profile_list_recycler_view, 0, R.id.profile_list_name)).check(
       matches(withText("Admin"))
@@ -691,6 +767,19 @@ class AdministratorControlsActivityTest {
     ).check(matches(isDisplayed()))
   }
 
+  private fun verifyItemDisplayedOnAdministratorControlListItemDoesNotExist(
+    itemPosition: Int,
+    targetView: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetView
+      )
+    ).check(doesNotExist())
+  }
+
   private fun verifyTextOnAdministratorListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
@@ -703,6 +792,19 @@ class AdministratorControlsActivityTest {
         targetViewId = targetViewId
       )
     ).check(matches(withText(context.getString(stringIdToMatch))))
+  }
+
+  private fun verifyTextViewOnAdministratorListItemAtPositionDoesNotExist(
+    itemPosition: Int,
+    targetViewId: Int,
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.administrator_controls_list,
+        position = itemPosition,
+        targetViewId = targetViewId
+      )
+    ).check(doesNotExist())
   }
 
   private fun scrollToPosition(position: Int) {
@@ -724,7 +826,7 @@ class AdministratorControlsActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -735,9 +837,9 @@ class AdministratorControlsActivityTest {
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       PrimeTopicAssetsControllerModule::class, ExpirationMetaDataRetrieverModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogUploadWorkerModule::class,
+      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -745,7 +847,8 @@ class AdministratorControlsActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

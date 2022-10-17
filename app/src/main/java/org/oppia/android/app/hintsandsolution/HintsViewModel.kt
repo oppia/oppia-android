@@ -14,13 +14,6 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
 
-/**
- * RecyclerView items are 2 times of (No. of Hints + Solution),
- * this is because in UI after each hint or solution there is a horizontal line/view
- * which is considered as a separate item in recyclerview.
- */
-const val RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER = 2
-
 private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 
 /** [ViewModel] for Hints in [HintsAndSolutionDialogFragment]. */
@@ -63,35 +56,26 @@ class HintsViewModel @Inject constructor(
     for (index in hintList.indices) {
       if (itemList.isEmpty()) {
         addHintToList(index, hintList[index])
-      } else if (itemList.size > 1) {
-        val isLastHintRevealed =
-          (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
-            .isHintRevealed.get()
-            ?: false
+      } else {
+        val isPriorHintRevealed = (itemList.last() as HintsViewModel).isHintRevealed.get() ?: false
         val availableHintIndex = newAvailableHintIndex.get() ?: 0
-        if (isLastHintRevealed &&
-          index <= availableHintIndex / RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER
-        ) {
+        if (isPriorHintRevealed && index <= availableHintIndex) {
           addHintToList(index, hintList[index])
-        } else {
-          break
-        }
+        } else break
       }
     }
-    if (itemList.size > 1) {
-      val isLastHintRevealed =
-        (itemList[itemList.size - RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER] as HintsViewModel)
-          .isHintRevealed.get()
-          ?: false
+    if (itemList.isNotEmpty()) {
+      val isLastHintRevealed = (itemList.last() as HintsViewModel).isHintRevealed.get() ?: false
       val areAllHintsExhausted = allHintsExhausted.get() ?: false
       if (solution.hasExplanation() &&
-        hintList.size * RECYCLERVIEW_INDEX_CORRECTION_MULTIPLIER == itemList.size &&
+        hintList.size == itemList.size &&
         isLastHintRevealed &&
         areAllHintsExhausted
       ) {
         addSolutionToList(solution)
       }
     }
+    itemList.add(ReturnToLessonViewModel())
     return itemList
   }
 
@@ -104,13 +88,17 @@ class HintsViewModel @Inject constructor(
 
   private fun addHintToList(hintIndex: Int, hint: Hint) {
     val hintsViewModel = HintsViewModel(resourceHandler, translationController)
-    hintsViewModel.title.set(hint.hintContent.contentId)
+    hintsViewModel.title.set(
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.hint_list_item_number,
+        resourceHandler.toHumanReadableString(hintIndex + 1)
+      )
+    )
     val hintContentHtml =
       translationController.extractString(hint.hintContent, writtenTranslationContext)
     hintsViewModel.hintsAndSolutionSummary.set(hintContentHtml)
     hintsViewModel.isHintRevealed.set(helpIndex.isHintRevealed(hintIndex, hintList))
     itemList.add(hintsViewModel)
-    addDividerItem()
   }
 
   private fun addSolutionToList(solution: Solution) {
@@ -126,10 +114,5 @@ class HintsViewModel @Inject constructor(
     solutionViewModel.solutionSummary.set(explanationHtml)
     solutionViewModel.isSolutionRevealed.set(helpIndex.isSolutionRevealed())
     itemList.add(solutionViewModel)
-    addDividerItem()
-  }
-
-  private fun addDividerItem() {
-    itemList.add(HintsDividerViewModel())
   }
 }

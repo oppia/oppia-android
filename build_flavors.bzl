@@ -3,7 +3,7 @@ Macros & definitions corresponding to Oppia binary build flavors.
 """
 
 load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
-load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")
+load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KENYA_VERSION_CODE", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
 # should be ordered by the development pipeline (i.e. features go through dev first, then other
@@ -13,6 +13,9 @@ AVAILABLE_FLAVORS = [
     "dev_kitkat",
     "alpha",
     "alpha_kitkat",
+    "alpha_kenya",
+    "beta",
+    "ga",
 ]
 
 # This file contains the list of classes that must be in the main dex list for the legacy multidex
@@ -38,6 +41,7 @@ _PRODUCTION_PROGUARD_SPECS = [
 ]
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
+# TODO(#4419): Remove the Kenya-specific alpha flavor.
 _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -47,9 +51,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
         ],
         "version_code": OPPIA_DEV_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "dev_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -60,9 +65,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
         ],
         "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -72,9 +78,10 @@ _FLAVOR_METADATA = {
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
+        "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
     "alpha_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -85,9 +92,49 @@ _FLAVOR_METADATA = {
         "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
         "production_release": True,
         "deps": [
-            "//app",
+            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
         ],
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
+        "application_class": ".app.application.alpha.AlphaOppiaApplication",
+    },
+    "alpha_kenya": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 30,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/alphakenya:alpha_kenya_application",
+        ],
+        "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
+        "application_class": ".app.application.alphakenya.AlphaKenyaOppiaApplication",
+    },
+    "beta": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 30,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+        ],
+        "version_code": OPPIA_BETA_VERSION_CODE,
+        "application_class": ".app.application.beta.BetaOppiaApplication",
+    },
+    "ga": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 30,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+        ],
+        "version_code": OPPIA_GA_VERSION_CODE,
+        "application_class": ".app.application.ga.GaOppiaApplication",
     },
 }
 
@@ -99,6 +146,7 @@ def _transform_android_manifest_impl(ctx):
     major_version = ctx.attr.major_version
     minor_version = ctx.attr.minor_version
     version_code = ctx.attr.version_code
+    application_relative_qualified_class = ctx.attr.application_relative_qualified_class
 
     # See corresponding transformation script for details on the passed arguments.
     arguments = [
@@ -109,6 +157,7 @@ def _transform_android_manifest_impl(ctx):
         "%s" % major_version,
         "%s" % minor_version,
         "%s" % version_code,
+        "%s" % application_relative_qualified_class,
         "origin/develop",  # The base branch for computing the version name.
     ]
 
@@ -144,6 +193,7 @@ _transform_android_manifest = rule(
         "major_version": attr.int(mandatory = True),
         "minor_version": attr.int(mandatory = True),
         "version_code": attr.int(mandatory = True),
+        "application_relative_qualified_class": attr.string(mandatory = True),
         "_transform_android_manifest_tool": attr.label(
             executable = True,
             cfg = "host",
@@ -160,7 +210,8 @@ def transform_android_manifest(
         build_flavor,
         major_version,
         minor_version,
-        version_code):
+        version_code,
+        application_relative_qualified_class):
     """
     Generates a new transformation of the specified AndroidManifest.xml.
 
@@ -177,6 +228,8 @@ def transform_android_manifest(
         major_version: int. The major version of the app.
         minor_version: int. The minor version of the app.
         version_code: int. The version code of this flavor of the app.
+        application_relative_qualified_class: String. The relatively qualified main application
+            class of the app for this build flavor.
     """
     _transform_android_manifest(
         name = name,
@@ -187,6 +240,7 @@ def transform_android_manifest(
         major_version = major_version,
         minor_version = minor_version,
         version_code = version_code,
+        application_relative_qualified_class = application_relative_qualified_class,
     )
 
 def define_oppia_aab_binary_flavor(flavor):
@@ -206,6 +260,7 @@ def define_oppia_aab_binary_flavor(flavor):
     """
     transform_android_manifest(
         name = "oppia_%s_transformed_manifest" % flavor,
+        application_relative_qualified_class = _FLAVOR_METADATA[flavor]["application_class"],
         input_file = _FLAVOR_METADATA[flavor]["manifest"],
         output_file = "AndroidManifest_transformed_%s.xml" % flavor,
         build_flavor = flavor,
