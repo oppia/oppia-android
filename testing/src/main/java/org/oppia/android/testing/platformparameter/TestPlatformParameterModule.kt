@@ -8,11 +8,13 @@ import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.ENABLE_CONFIGURATION_CHANGE_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableConfigurationChange
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
@@ -188,12 +190,21 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @EnableConfigurationChange
+  fun provideEnableConfigurationChange(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableConfigurationChange
+    )
+  }
+
   companion object {
     private var enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+    private var enableConfigurationChange = ENABLE_CONFIGURATION_CHANGE_DEFAULT_VALUE
 
     /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -223,6 +234,12 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableExtraTopicTabsUi(value: Boolean) {
       enableExtraTopicTabsUi = value
+    }
+
+    /** Enables forcing [EnableConfigurationChange] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableConfigurationChange(value: Boolean) {
+      enableConfigurationChange = value
     }
   }
 }

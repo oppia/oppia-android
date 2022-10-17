@@ -206,3 +206,13 @@ annotation class EnableSpotlightUi
 
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
 const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
+
+/**
+ * Qualifier for the platform parameter that controls whether configuration change for Input
+ * Interactions.
+ */
+@Qualifier
+annotation class EnableConfigurationChange
+
+/** Default value for feature flag corresponding to [EnableConfigurationChange]. */
+const val ENABLE_CONFIGURATION_CHANGE_DEFAULT_VALUE = false
