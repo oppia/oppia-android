@@ -231,11 +231,11 @@ class CpuPerformanceSnapshotterTest {
     ): CpuPerformanceSnapshotter = factory.createSnapshotter()
 
     @Provides
-    @ForegroundCpuLoggingTimePeriod
+    @ForegroundCpuLoggingTimePeriodMillis
     fun provideForegroundCpuLoggingTimePeriod(): Long = foregroundCpuLoggingTimePeriod
 
     @Provides
-    @BackgroundCpuLoggingTimePeriod
+    @BackgroundCpuLoggingTimePeriodMillis
     fun provideBackgroundCpuLoggingTimePeriod(): Long = backgroundCpuLoggingTimePeriod
   }
 

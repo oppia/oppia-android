@@ -26,8 +26,8 @@ class CpuPerformanceSnapshotter private constructor(
   private val initialIconification: AppIconification,
   private val consoleLogger: ConsoleLogger,
   private val exceptionLogger: ExceptionLogger,
-  private val foregroundCpuLoggingTimePeriod: Long,
-  private val backgroundCpuLoggingTimePeriod: Long,
+  private val foregroundCpuLoggingTimePeriodMillis: Long,
+  private val backgroundCpuLoggingTimePeriodMillis: Long,
   private val performanceMetricsAssessor: PerformanceMetricsAssessor
 ) {
 
@@ -176,9 +176,10 @@ class CpuPerformanceSnapshotter private constructor(
     AppIconification.APP_IN_FOREGROUND -> ScreenName.FOREGROUND_SCREEN
   }
 
+  /** Returns an appropriate delay time period in millis on the basis of [AppIconification]. */
   private fun AppIconification.getDelay(): Long = when (this) {
-    AppIconification.APP_IN_BACKGROUND -> backgroundCpuLoggingTimePeriod
-    AppIconification.APP_IN_FOREGROUND -> foregroundCpuLoggingTimePeriod
+    AppIconification.APP_IN_BACKGROUND -> backgroundCpuLoggingTimePeriodMillis
+    AppIconification.APP_IN_FOREGROUND -> foregroundCpuLoggingTimePeriodMillis
   }
 
   /** Creates an instance of [CpuPerformanceSnapshotter] by properly injecting dependencies. */
@@ -187,8 +188,8 @@ class CpuPerformanceSnapshotter private constructor(
     private val consoleLogger: ConsoleLogger,
     private val exceptionLogger: ExceptionLogger,
     private val performanceMetricsAssessor: PerformanceMetricsAssessor,
-    @ForegroundCpuLoggingTimePeriod private val foregroundCpuLoggingTimePeriod: Long,
-    @BackgroundCpuLoggingTimePeriod private val backgroundCpuLoggingTimePeriod: Long,
+    @ForegroundCpuLoggingTimePeriodMillis private val foregroundCpuLoggingTimePeriodMillis: Long,
+    @BackgroundCpuLoggingTimePeriodMillis private val backgroundCpuLoggingTimePeriodMillis: Long,
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
   ) {
 
@@ -200,8 +201,8 @@ class CpuPerformanceSnapshotter private constructor(
         AppIconification.APP_IN_FOREGROUND,
         consoleLogger,
         exceptionLogger,
-        foregroundCpuLoggingTimePeriod,
-        backgroundCpuLoggingTimePeriod,
+        foregroundCpuLoggingTimePeriodMillis,
+        backgroundCpuLoggingTimePeriodMillis,
         performanceMetricsAssessor
       )
   }
