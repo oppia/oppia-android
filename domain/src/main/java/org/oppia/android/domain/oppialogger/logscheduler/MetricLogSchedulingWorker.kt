@@ -80,7 +80,6 @@ class MetricLogSchedulingWorker private constructor(
   private fun schedulePeriodicBackgroundMetricLogging(): Result {
     return try {
       performanceMetricsLogger.logNetworkUsage(BACKGROUND_SCREEN)
-      // TODO(#4466): Add functionality to log cpu usage performance metrics.
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)

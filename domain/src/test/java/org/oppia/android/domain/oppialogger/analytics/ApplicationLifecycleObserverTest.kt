@@ -10,6 +10,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,9 +56,6 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -67,15 +67,24 @@ private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleObserverTest.TestApplication::class)
 class ApplicationLifecycleObserverTest {
-  @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
-  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject
+  lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var fakeEventLogger: FakeEventLogger
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+  @Inject
+  lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject
+  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
   @get:Rule
   var activityRule =
@@ -218,14 +227,19 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
 
-    val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
-    assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase)
-      .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
-    assertThat(loggedMetrics[1].loggableMetric.loggableMetricTypeCase).isEqualTo(
-      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+    val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
     )
+
+    assertThat(loggedMetrics[0].isInitialized).isTrue()
+    assertThat(loggedMetrics[1].isInitialized).isTrue()
+    assertThat(loggedMetrics[2].isInitialized).isTrue()
+    assertThat(loggedMetrics[0].hasLoggableMetric()).isTrue()
+    assertThat(loggedMetrics[1].hasLoggableMetric()).isTrue()
+    assertThat(loggedMetrics[2].hasLoggableMetric()).isTrue()
     assertThat(loggedMetrics[0].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
     assertThat(loggedMetrics[1].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+    assertThat(loggedMetrics[2].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
   }
 
   @Test
@@ -271,21 +285,14 @@ class ApplicationLifecycleObserverTest {
       applicationLifecycleObserver.onActivityResumed(activity)
       applicationLifecycleObserver.onActivityResumed(activity)
 
-      val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-        fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-      )
+      val loggedStartupLatencyEvents =
+        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+          fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+        ).filter {
+          it.loggableMetric.hasStartupLatencyMetric()
+        }
 
-      assertThat(loggedEvents.size).isEqualTo(5)
-      assertThat(loggedEvents[0].loggableMetric.loggableMetricTypeCase)
-        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
-      assertThat(loggedEvents[1].loggableMetric.loggableMetricTypeCase)
-        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC)
-      assertThat(loggedEvents[2].loggableMetric.loggableMetricTypeCase)
-        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC)
-      assertThat(loggedEvents[3].loggableMetric.loggableMetricTypeCase)
-        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC)
-      assertThat(loggedEvents[4].loggableMetric.loggableMetricTypeCase)
-        .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC)
+      assertThat(loggedStartupLatencyEvents.size).isEqualTo(1)
     }
   }
 

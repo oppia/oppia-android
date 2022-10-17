@@ -64,6 +64,16 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
+import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 
@@ -146,11 +156,12 @@ class MetricLogSchedulingWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
-    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    ).filter { it.loggableMetric.hasNetworkUsageMetric() }
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(NETWORK_USAGE_METRIC)
-    // TODO(#4466): Verify functionality to log cpu usage performance metrics.
+    assertThat(loggedEvent).isNotEmpty()
   }
 
   @Test
@@ -185,9 +196,12 @@ class MetricLogSchedulingWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
+    val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    ).filter { !it.loggableMetric.hasCpuUsageMetric() }
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+    assertThat(loggedEvents).isEmpty()
   }
 
   @Test
@@ -259,6 +273,43 @@ class MetricLogSchedulingWorkerTest {
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
   }
 
+  @Module
+  class TestPlatformParameterModule {
+    @Provides
+    @SplashScreenWelcomeMsg
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @SyncUpWorkerTimePeriodHours
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
+      return PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @EnableLanguageSelectionUi
+    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(
+        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      )
+    }
+
+    @Provides
+    @LearnerStudyAnalytics
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
+    }
+
+    @Provides
+    @EnablePerformanceMetricsCollection
+    fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
+      return PlatformParameterValue.createDefaultParameter(true)
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -267,7 +318,7 @@ class MetricLogSchedulingWorkerTest {
       TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      AssetModule::class, TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
