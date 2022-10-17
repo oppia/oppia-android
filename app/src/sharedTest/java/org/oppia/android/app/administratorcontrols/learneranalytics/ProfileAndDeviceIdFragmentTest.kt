@@ -116,6 +116,8 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -629,7 +631,8 @@ class ProfileAndDeviceIdFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
-      ActivityRouterModule::class
+      ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
+      ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

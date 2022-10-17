@@ -98,6 +98,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 /** Tests for [ProfileAndDeviceIdActivity]. */
 // Function name: test names are conventionally named with underscores.
@@ -214,7 +216,8 @@ class ProfileAndDeviceIdActivityTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
       TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
-      ActivityRouterModule::class
+      ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
+      ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
