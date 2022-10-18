@@ -22,6 +22,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -72,6 +73,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.OppiaMetricLog
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 
@@ -154,12 +156,10 @@ class MetricLogSchedulingWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
-    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    ).filter { it.loggableMetric.hasNetworkUsageMetric() }
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(loggedEvent).isNotEmpty()
+    assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(NETWORK_USAGE_METRIC)
   }
 
   @Test
@@ -194,12 +194,9 @@ class MetricLogSchedulingWorkerTest {
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
-    val loggedEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    ).filter { !it.loggableMetric.hasCpuUsageMetric() }
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    assertThat(loggedEvents).isEmpty()
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
 
   @Test

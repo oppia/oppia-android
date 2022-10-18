@@ -77,18 +77,6 @@ class CpuPerformanceSnapshotterTest {
   }
 
   @Test
-  fun testSnapshotter_startsLoggingCpuUsageOnInitialisation() {
-    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE)
-    testCoroutineDispatchers.runCurrent()
-
-    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
-
-    assertThat(event.loggableMetric.loggableMetricTypeCase).isEqualTo(CPU_USAGE_METRIC)
-    assertThat(event.loggableMetric.cpuUsageMetric.cpuUsageMetric).isEqualTo(TEST_CPU_USAGE)
-    assertThat(event.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
-  }
-
-  @Test
   fun testSnapshotter_updateIconificationToBackground_logsCpuUsageInBackgroundState() {
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE)

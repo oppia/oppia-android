@@ -31,7 +31,7 @@ class CpuPerformanceSnapshotter private constructor(
   private val performanceMetricsAssessor: PerformanceMetricsAssessor
 ) {
 
-  private val commandQueue = createCommandQueueActor()
+  private val commandQueue by lazy { createCommandQueueActor() }
 
   /** Updates the current [AppIconification] in accordance with the app's state changes. */
   fun updateAppIconification(newIconification: AppIconification) {
