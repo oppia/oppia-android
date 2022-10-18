@@ -11,6 +11,7 @@
     android:id="@+id/profile_progress_activity_app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/profile_progress_activity_toolbar"
       android:layout_width="match_parent"
