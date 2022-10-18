@@ -69,20 +69,28 @@ private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
 class ApplicationLifecycleObserverTest {
   @Inject
   lateinit var loggingIdentifierController: LoggingIdentifierController
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject
   lateinit var fakeEventLogger: FakeEventLogger
+
   @Inject
   lateinit var profileManagementController: ProfileManagementController
+
   @Inject
   lateinit var performanceMetricsController: PerformanceMetricsController
+
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
@@ -227,19 +235,14 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
 
-    val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val loggedMetrics = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(2)
+    assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase)
+      .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
+    assertThat(loggedMetrics[1].loggableMetric.loggableMetricTypeCase).isEqualTo(
+      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
     )
-
-    assertThat(loggedMetrics[0].isInitialized).isTrue()
-    assertThat(loggedMetrics[1].isInitialized).isTrue()
-    assertThat(loggedMetrics[2].isInitialized).isTrue()
-    assertThat(loggedMetrics[0].hasLoggableMetric()).isTrue()
-    assertThat(loggedMetrics[1].hasLoggableMetric()).isTrue()
-    assertThat(loggedMetrics[2].hasLoggableMetric()).isTrue()
     assertThat(loggedMetrics[0].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
     assertThat(loggedMetrics[1].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
-    assertThat(loggedMetrics[2].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
   }
 
   @Test
