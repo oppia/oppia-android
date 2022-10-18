@@ -12,14 +12,6 @@
       android:layout_height="match_parent"
       android:background="@color/oppia_grey_background">
 
-      <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/administrator_controls_activity_app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
         <androidx.appcompat.widget.Toolbar
           android:id="@+id/administrator_controls_activity_toolbar"
           android:layout_width="match_parent"
@@ -28,8 +20,10 @@
           android:minHeight="?attr/actionBarSize"
           app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
           app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-          app:titleTextAppearance="@style/ToolbarTitle" />
-      </com.google.android.material.appbar.AppBarLayout>
+          app:titleTextAppearance="@style/ToolbarTitle"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
 
       <FrameLayout
         android:id="@+id/administrator_controls_fragment_placeholder"
