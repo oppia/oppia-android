@@ -1,34 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <!-- NavigationDrawer -->
   <string name="nav_header_desc">Navigation header</string>
   <string name="menu_options">Options</string>
   <string name="menu_my_downloads">My Downloads</string>
-  <string name="menu_help">Help</string>
-  <string name="exploration_activity_title">Exploration Player</string>
-  <string name="help_activity_title">Help</string>
-  <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
-  <string name="developer_options">Developer Options</string>
-  <string name="administrator_controls">Administrator Controls</string>
+  <string name="menu_help">Help</string>
   <string name="drawer_open_content_description">Navigation Menu Open</string>
   <string name="drawer_close_content_description">Navigation Menu Close</string>
+  <string name="bar_separator">\u0020|\u0020</string>
+  <!-- DeveloperActivity -->
+  <string name="developer_options">Developer Options</string>
+  <!-- AudioActivity -->
   <string name="audio_play_description">Play audio</string>
   <string name="audio_pause_description">Pause audio</string>
   <string name="audio_unavailable_in_selected_language">%s audio is unavailable.</string>
-  <string name="audio_language_select_dialog_okay_button">OK</string>
-  <string name="audio_language_select_dialog_cancel_button">Cancel</string>
-  <string name="audio_language_select_dialog_title">Audio Language</string>
   <string name="audio_dialog_offline_title">Currently Offline</string>
   <string name="audio_dialog_offline_message">Make sure Wi-Fi or cellular data is turned on, then try again.</string>
   <string name="audio_dialog_offline_positive">OK</string>
+  <string name="play_pause_audio">Play/Pause Audio</string>
+  <!-- AudioLanguageActivity -->
+  <string name="audio_language_select_dialog_okay_button">OK</string>
+  <string name="audio_language_select_dialog_cancel_button">Cancel</string>
+  <string name="audio_language_select_dialog_title">Audio Language</string>
+  <!-- CellularAudioActivity -->
   <string name="cellular_data_alert_dialog_okay_button">OK</string>
   <string name="cellular_data_alert_dialog_cancel_button">Cancel</string>
   <string name="cellular_data_alert_dialog_title">Currently on Cellular Data</string>
   <string name="cellular_data_alert_dialog_description">Streaming audio may use a lot of cellular data.</string>
   <string name="cellular_data_alert_dialog_checkbox">Don\'t show this message again</string>
+  <!-- ConceptCardActivity -->
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_close_icon_description">Clicking on this will close the concept card.</string>
+  <!-- RevisionCardActivity -->
+  <string name="revision_card_activity_title">Skill revision page</string>
   <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="revision">Revision</string>
+  <string name="revision_navigation_cards_header">Continue Studying</string>
+  <string name="bottom_sheet_options_menu_close">Close</string>
+  <!-- ExplorationActivity -->
+  <string name="exploration_activity_title">Exploration Player</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="unsaved_exploration_dialog_leave_button">Leave</string>
@@ -37,55 +48,141 @@
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
+  <string name="state_end_exploration_button">Return To Topic</string>
+  <string name="search">Search</string>
+  <!-- ProgressDatabaseFullDialogActivity -->
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
   <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
   <string name="progress_database_full_dialog_continue_button">Continue</string>
   <string name="progress_database_full_dialog_leave_without_saving_progress_button">Leave without saving progress</string>
   <string name="progress_database_full_dialog_back_to_lesson_button">Back to lesson</string>
+  <!-- TopicActivity -->
   <string name="topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
+  <string name="topic_page">Topic page</string>
+  <string name="topic_name">Topic: %s</string>
+  <string name="topic">Topic</string>
+  <!-- StateActivity -->
+  <string name="state_submit_button">Submit</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to the previous card</string>
   <string name="next_state_description">Navigate to the next card</string>
-  <string name="state_submit_button">Submit</string>
-  <string name="lesson_replay_button_text">Replay</string>
-  <string name="state_end_exploration_button">Return To Topic</string>
-  <string name="previous_responses_header">Previous Responses (%s)</string>
-  <string name="image_interaction_answer_text">Clicks on %s</string>
   <string name="state_learn_again_button">Learn Again</string>
+  <string name="previous_responses_header">Previous Responses (%s)</string>
+  <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
+  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
+  <string name="correct">Correct!</string>
+  <!-- StoryActivity -->
+  <string name="story_activity_title">Chapter List</string>
+  <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%s of %s Chapter Completed</item>
+    <item quantity="other">%s of %s Chapters Completed</item>
+  </plurals>
+  <string name="stories_you_can_play">Stories You Can Play</string>
+  <string name="lesson_thumbnail_content_description">Image for %s</string>
+  <!-- RecentlyPlayedActivity -->
+  <string name="ongoing_story_last_week">Played within the Last Week</string>
+  <string name="ongoing_story_last_month">Played within the Last Month</string>
+  <!-- TopicInfoActivity -->
+  <string name="info">Info</string>
   <string name="topic_download_text">(%s)</string>
   <string name="see_more">See More</string>
   <string name="see_less">See Less</string>
+  <string name="topic_downloaded">Topic Downloaded</string>
+  <string name="downloaded">Downloaded</string>
+  <string name="unknown_size">Unknown size</string>
+  <string name="size_bytes">%s Bytes</string>
+  <string name="size_kb">%s KB</string>
+  <string name="size_mb">%s MB</string>
+  <string name="size_gb">%s GB</string>
+  <string name="topic_prefix">Topic: %s</string>
+  <!-- FAQSingleActivity -->
   <string name="FAQs">FAQs</string>
   <string name="featured_questions">Featured Questions</string>
+  <!-- HelpActivity -->
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
-  <string name="pin_password_activity_title">PIN verification</string>
-  <string name="onboarding_activity_title">Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
-  <string name="info">Info</string>
+  <string name="help_activity_title">Help</string>
+  <!-- TopicLessonActivity -->
   <string name="lessons">Lessons</string>
+  <string name="lesson_replay_button_text">Replay</string>
+  <string name="image_interaction_answer_text">Clicks on %s</string>
+  <string name="status_in_progress">In Progress</string>
+  <string name="status_completed">Completed</string>
+  <string name="show_chapter_list">Show chapter list</string>
+  <string name="hide_chapter_list">Hide chapter list</string>
+  <!-- TopicPracticeActivity -->
   <string name="practice">Practice</string>
-  <string name="revision">Revision</string>
+  <!-- TopicLessonStoryActivity -->
+  <plurals name="chapter_count">
+    <item quantity="one">
+      1 Chapter
+    </item>
+    <item quantity="other">
+      %s Chapters
+    </item>
+  </plurals>
+  <plurals name="story_count">
+    <item quantity="one">
+      1 Story
+    </item>
+    <item quantity="other">
+      %s Stories
+    </item>
+  </plurals>
+  <plurals name="lesson_count">
+    <item quantity="one">
+      1 Lesson
+    </item>
+    <item quantity="other">
+      %s Lessons
+    </item>
+  </plurals>
+  <plurals name="completed_story_count">
+    <item quantity="one">
+      1 Story Completed
+    </item>
+    <item quantity="other">
+      %s Stories Completed
+    </item>
+    <item quantity="zero">
+      %s Stories Completed
+    </item>
+  </plurals>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">
+      1 Topic in Progress
+    </item>
+    <item quantity="other">
+      %s Topics in Progress
+    </item>
+    <item quantity="zero">
+      %s Topics in Progress
+    </item>
+  </plurals>
+  <!-- QuestionPlayerActivity -->
+  <string name="question_player_title">Practice Mode</string>
+  <string name="question_training_session_progress">Question %s of %s</string>
+  <string name="question_training_session_progress_finished">Complete</string>
+  <string name="question_training_session_finished_header">Finished</string>
+  <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
+  <!-- AdministratorControlActivity -->
   <string name="administrator_controls_title">Administrator Controls</string>
-  <string name="topic_page">Topic page</string>
-  <string name="topic_name">Topic: %s</string>
-  <string name="topic">Topic</string>
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
-  <string name="topic_story_progress_percentage">%s\%%</string>
+  <string name="administrator_controls">Administrator Controls</string>
+  <!-- ChapterSummaryActivity -->
   <string name="topic_play_chapter_index">%s</string>
   <string name="chapter_name">Chapter %s: %s</string>
   <string name="chapter_completed">Chapter %s with title %s is completed</string>
   <string name="chapter_in_progress">Chapter %s with title %s is in progress</string>
   <string name="chapter_prerequisite_title_label">Complete Chapter %s: %s to unlock this chapter.</string>
-  <string name="text_input_default_content_description">Enter text.</string>
-  <string name="fractions_default_hint_text">Enter a fraction in the form x/x, or a mixed number in the form x x/x.</string>
-  <string name="fractions_default_hint_text_no_integer">Enter a fraction in the form x/x.</string>
-  <string name="numeric_input_hint">Enter a number.</string>
-  <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
+  <!-- MathExpressionActivity -->
   <string name="numeric_expression_default_hint_text">Type an expression here, using only numbers.</string>
   <string name="algebraic_expression_default_hint_text">Type an expression here.</string>
   <string name="math_equation_default_hint_text">Type an equation here.</string>
@@ -120,32 +217,15 @@
   <string name="math_expression_error_unsupported_function">Function \'%s\' is not supported. Please revise your answer.</string>
   <string name="math_expression_error_incomplete_function_name">Did you mean sqrt? If not, please separate the variables with multiplication symbols.</string>
   <string name="math_expression_error_generic">Sorry, we couldn\'t understand your answer. Please check it to make sure there aren\'t any errors.</string>
+  <!-- HomeActivity -->
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
   <string name="last_played_stories">Last-Played Stories</string>
   <string name="view_all">View All</string>
-  <string name="ongoing_story_last_week">Played within the Last Week</string>
-  <string name="ongoing_story_last_month">Played within the Last Month</string>
-  <string name="story_activity_title">Chapter List</string>
-  <string name="lesson_thumbnail_content_description">Image for %s</string>
-  <string name="stories_you_can_play">Stories You Can Play</string>
-  <string name="navigate_up">Navigate up</string>
+  <!-- RecentlyPlayedActivity -->
   <string name="recently_played_activity">Recently-Played Stories</string>
-  <string name="topic_downloaded">Topic Downloaded</string>
-  <string name="downloaded">Downloaded</string>
-  <string name="question_player_title">Practice Mode</string>
-  <string name="question_training_session_progress">Question %s of %s</string>
-  <string name="question_training_session_progress_finished">Complete</string>
-  <string name="question_training_session_finished_header">Finished</string>
-  <string name="question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
-  <string name="status_in_progress">In Progress</string>
-  <string name="status_completed">Completed</string>
-  <string name="show_chapter_list">Show chapter list</string>
-  <string name="hide_chapter_list">Hide chapter list</string>
-  <string name="play_pause_audio">Play/Pause Audio</string>
-  <string name="preferences">Preferences</string>
-  <string name="profile_progress_activity_title">Profile Progress Page</string>
-  <string name="search">Search</string>
+  <string name="navigate_up">Navigate up</string>
+  <!-- InputInteractionActivity -->
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
@@ -153,6 +233,9 @@
   <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
   <string name="number_error_invalid_format">Please enter a valid number.</string>
   <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
+  <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
+  <string name="text_input_default_content_description">Enter text.</string>
+  <string name="numeric_input_hint">Enter a number.</string>
   <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">
     Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
   </string>
@@ -168,66 +251,6 @@
   <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
     Ratios cannot have 0 as an element.
   </string>
-  <string name="unknown_size">Unknown size</string>
-  <string name="size_bytes">%s Bytes</string>
-  <string name="size_kb">%s KB</string>
-  <string name="size_mb">%s MB</string>
-  <string name="size_gb">%s GB</string>
-  <string name="correct">Correct!</string>
-  <string name="topic_prefix">Topic: %s</string>
-  <string name="welcome_profile_name">%s!</string>
-  <string name="chapter_count_with_story_name">%1$s in %2$s</string>
-  <plurals name="chapter_count">
-    <item quantity="one">
-      1 Chapter
-    </item>
-    <item quantity="other">
-      %s Chapters
-    </item>
-  </plurals>
-  <plurals name="story_count">
-    <item quantity="one">
-      1 Story
-    </item>
-    <item quantity="other">
-      %s Stories
-    </item>
-  </plurals>
-  <plurals name="story_total_chapters">
-    <item quantity="one">%s of %s Chapter Completed</item>
-    <item quantity="other">%s of %s Chapters Completed</item>
-  </plurals>
-  <plurals name="lesson_count">
-    <item quantity="one">
-      1 Lesson
-    </item>
-    <item quantity="other">
-      %s Lessons
-    </item>
-  </plurals>
-  <plurals name="completed_story_count">
-    <item quantity="one">
-      1 Story Completed
-    </item>
-    <item quantity="other">
-      %s Stories Completed
-    </item>
-    <item quantity="zero">
-      %s Stories Completed
-    </item>
-  </plurals>
-  <plurals name="ongoing_topic_count">
-    <item quantity="one">
-      1 Topic in Progress
-    </item>
-    <item quantity="other">
-      %s Topics in Progress
-    </item>
-    <item quantity="zero">
-      %s Topics in Progress
-    </item>
-  </plurals>
-  <string name="bar_separator">\u0020|\u0020</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_activity_label">Profile selection page</string>
   <string name="profile_chooser_admin">Administrator</string>
@@ -292,6 +315,7 @@
   <string name="next_arrow">Next</string>
   <string name="get_started">Get Started</string>
   <string name="onboarding_slide_dots_content_description">Slide %s of %s</string>
+  <string name="onboarding_activity_title">Introduction</string>
   <!-- PinPasswordActivity -->
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
@@ -316,6 +340,7 @@
   <string name="password_hidden_icon">Password hidden icon</string>
   <string name="enter_your_pin">Enter your PIN</string>
   <string name="pin_password_toolbar_title">Enter PIN</string>
+  <string name="pin_password_activity_title">PIN verification</string>
   <!-- AdminSettingsDialogFragment -->
   <string name="admin_settings_label">Administrator\'s PIN</string>
   <string name="admin_settings_heading">Access to Administrator Settings</string>
@@ -339,6 +364,7 @@
   <string name="home_activity_title">Home</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
+  <string name="welcome_profile_name">%s!</string>
   <!-- ProfileEditActivity -->
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>
@@ -358,6 +384,7 @@
   <string name="profile_picture_edit_alert_dialog_cancel_button">Cancel</string>
   <string name="profile_picture_edit_alert_dialog_view_profile_picture">View Profile Picture</string>
   <string name="profile_picture_edit_alert_dialog_choose_from_library">Choose From Library</string>
+  <string name="profile_progress_activity_title">Profile Progress Page</string>
   <!-- ProfileRenameActivity -->
   <string name="profile_rename_activity_title">Rename Profile</string>
   <string name="profile_rename_label">New Name</string>
@@ -418,6 +445,7 @@
   <string name="stories_completed">Stories Completed</string>
   <string name="story_completed">Story Completed</string>
   <string name="options_activity_title">Options</string>
+  <string name="preferences">Preferences</string>
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_title">Stories Completed</string>
   <!-- WalkthroughActivity -->
@@ -515,7 +543,6 @@
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
   <string name="question_player_activity_title">Practice Mode</string>
-  <string name="revision_card_activity_title">Skill revision page</string>
   <string name="audio_player_seekbar_content_description">Audio progress</string>
   <string name="audio_language_icon_content_description">Change language</string>
   <string name="audio_player_on">Audio, ON</string>
@@ -574,5 +601,4 @@
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
-  <string name="revision_navigation_cards_header">Continue Studying</string>
 </resources>
