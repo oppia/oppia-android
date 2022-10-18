@@ -8,15 +8,15 @@ import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
-import org.oppia.android.util.platformparameter.ENABLE_CONFIGURATION_CHANGE_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableConfigurationChange
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
@@ -191,10 +191,10 @@ class TestPlatformParameterModule {
   }
 
   @Provides
-  @EnableConfigurationChange
-  fun provideEnableConfigurationChange(): PlatformParameterValue<Boolean> {
+  @EnableInteractionConfigChangeStateRetention
+  fun provideEnableInteractionConfigChangeStateRetention(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      enableConfigurationChange
+      enableInteractionConfigChangeStateRetention
     )
   }
 
@@ -204,7 +204,8 @@ class TestPlatformParameterModule {
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
-    private var enableConfigurationChange = ENABLE_CONFIGURATION_CHANGE_DEFAULT_VALUE
+    private var enableInteractionConfigChangeStateRetention =
+      ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 
     /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -236,10 +237,10 @@ class TestPlatformParameterModule {
       enableExtraTopicTabsUi = value
     }
 
-    /** Enables forcing [EnableConfigurationChange] platform parameter flag from tests. */
+    /** Enables forcing [EnableInteractionConfigChangeStateRetention] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableConfigurationChange(value: Boolean) {
-      enableConfigurationChange = value
+    fun forceEnableInteractionConfigChangeStateRetention(value: Boolean) {
+      enableInteractionConfigChangeStateRetention = value
     }
   }
 }

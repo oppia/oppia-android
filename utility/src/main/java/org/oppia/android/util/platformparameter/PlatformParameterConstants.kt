@@ -208,11 +208,11 @@ annotation class EnableSpotlightUi
 const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
 
 /**
- * Qualifier for the platform parameter that controls whether configuration change for Input
- * Interactions.
+ * Qualifier for the platform parameter that controls controls whether input interaction state is
+ * correctly retained across configuration changes.
  */
 @Qualifier
-annotation class EnableConfigurationChange
+annotation class EnableInteractionConfigChangeStateRetention
 
-/** Default value for feature flag corresponding to [EnableConfigurationChange]. */
-const val ENABLE_CONFIGURATION_CHANGE_DEFAULT_VALUE = false
+/** Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention]. */
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = false
