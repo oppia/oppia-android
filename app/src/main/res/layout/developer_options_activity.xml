@@ -15,8 +15,7 @@
       <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/developer_options_activity_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
           android:id="@+id/developer_options_activity_toolbar"
@@ -25,9 +24,9 @@
           android:layout_gravity="end"
           android:background="@color/oppia_primary"
           android:minHeight="?attr/actionBarSize"
-          android:theme="@style/Widget.AppCompat.ActionBar"
-          app:titleTextAppearance="@style/ToolbarTextAppearance"
-          app:titleTextColor="@color/color_def_white" />
+          app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+          app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+          app:titleTextAppearance="@style/ToolbarTitle" />
       </com.google.android.material.appbar.AppBarLayout>
 
       <FrameLayout
