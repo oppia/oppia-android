@@ -322,6 +322,39 @@ message UserAnswer {
   WrittenTranslationContext written_translation_context = 6;
 }
 
+// Corresponds to a raw item selection answer that user has submitted.
+message ItemSelectionRawAnswer {
+  repeated int32 selected_indexes = 1;
+}
+
+// Corresponds to a raw user answer that user has submitted.
+message RawUserAnswer {
+  oneof answer_input_type {
+    // Just indicates the presence of the type.
+    bool continue = 1;
+    // A raw answer entered by user in TextInputInteraction.
+    string text = 2;
+    // A raw answer entered by user in FactionInputInteraction.
+    string fraction = 3;
+    // A raw answer entered by user in NumericInputInteraction.
+    string numeric = 4;
+    // A raw answer entered by user in NumericInputInteraction with units.
+    string number_with_units = 5;
+    // A raw answer entered by user in RatioInputInteraction.
+    string ratio_input = 6;
+    // A raw answer entered by user in MathInputInteraction with numeric expression.
+    string numeric_expression = 7;
+    // A raw answer entered by user in MathInputInteraction with algebraic expression.
+    string algebraic_expression = 8;
+    // A raw answer entered by user in MathInputInteraction with math equation.
+    string math_equation = 9;
+    int32 multiple_choice_selection_index = 10;
+    ItemSelectionRawAnswer item_selection = 11;
+    ListOfSetsOfTranslatableHtmlContentIds drag_and_drop = 12;
+    ClickOnImage image_region_selection = 13;
+  }
+}
+
 message AnswerAndResponse {
   // A previous answer the learner submitted.
   UserAnswer user_answer = 1;

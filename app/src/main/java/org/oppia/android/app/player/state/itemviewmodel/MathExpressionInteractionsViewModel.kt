@@ -8,9 +8,11 @@ import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
@@ -50,7 +52,6 @@ import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionE
 import org.oppia.android.util.math.toPlainText
 import org.oppia.android.util.math.toRawLatex
 import javax.inject.Inject
-import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 
 /**
  * [StateItemViewModel] for input for numeric expressions, algebraic expressions, and math
@@ -139,6 +140,14 @@ class MathExpressionInteractionsViewModel private constructor(
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
     }
   }.build()
+
+  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
+    TODO("Not yet implemented")
+  }
+
+  override fun getRawUserAnswer(): RawUserAnswer? {
+    TODO("Not yet implemented")
+  }
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {

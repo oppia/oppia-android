@@ -2,11 +2,13 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.FractionParsingUiError
@@ -33,7 +35,6 @@ class FractionInteractionViewModel private constructor(
   var answerText: CharSequence = ""
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
-
   val hintText: CharSequence = deriveHintText(interaction)
   private val fractionParser = FractionParser()
 
@@ -83,6 +84,16 @@ class FractionInteractionViewModel private constructor(
     }
     return pendingAnswerError
   }
+
+  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
+    Log.d("testAnswer", rawUserAnswer.fraction)
+  }
+
+  override fun getRawUserAnswer(): RawUserAnswer? = RawUserAnswer.newBuilder().apply {
+    if(answerText.isNotEmpty()) {
+      fraction = answerText.toString()
+    }
+  }.build()
 
   fun getAnswerTextWatcher(): TextWatcher {
     return object : TextWatcher {

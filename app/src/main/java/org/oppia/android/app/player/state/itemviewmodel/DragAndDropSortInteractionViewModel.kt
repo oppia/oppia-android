@@ -7,6 +7,7 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
@@ -128,6 +129,14 @@ class DragAndDropSortInteractionViewModel private constructor(
     this.writtenTranslationContext =
       this@DragAndDropSortInteractionViewModel.writtenTranslationContext
   }.build()
+
+  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
+    TODO("Not yet implemented")
+  }
+
+  override fun getRawUserAnswer(): RawUserAnswer? {
+    TODO("Not yet implemented")
+  }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {

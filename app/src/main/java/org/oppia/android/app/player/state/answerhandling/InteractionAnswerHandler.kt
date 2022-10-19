@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.answerhandling
 
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 
 /**
@@ -24,6 +25,14 @@ interface InteractionAnswerHandler {
 
   /** Return the current answer that is ready for handling. */
   fun getPendingAnswer(): UserAnswer? {
+    return null
+  }
+
+  /** Sets [RawUserAnswer] which is entered by user. */
+  fun setRawUserAnswer(rawUserAnswer: RawUserAnswer)
+
+  /** Return the last entered answer entered by user. */
+  fun getRawUserAnswer(): RawUserAnswer? {
     return null
   }
 }

@@ -7,6 +7,7 @@ import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -72,6 +73,14 @@ class TextInputViewModel private constructor(
       writtenTranslationContext = this@TextInputViewModel.writtenTranslationContext
     }
   }.build()
+
+  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
+    TODO("Not yet implemented")
+  }
+
+  override fun getRawUserAnswer(): RawUserAnswer? {
+    TODO("Not yet implemented")
+  }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.

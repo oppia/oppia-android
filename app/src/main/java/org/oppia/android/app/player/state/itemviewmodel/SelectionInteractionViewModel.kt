@@ -5,6 +5,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.TranslatableHtmlContentId
@@ -97,6 +98,14 @@ class SelectionInteractionViewModel private constructor(
     }
     writtenTranslationContext = translationContext
   }.build()
+
+  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
+    TODO("Not yet implemented")
+  }
+
+  override fun getRawUserAnswer(): RawUserAnswer? {
+    TODO("Not yet implemented")
+  }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {

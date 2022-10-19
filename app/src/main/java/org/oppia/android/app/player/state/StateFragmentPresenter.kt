@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -105,6 +107,7 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
+    rawUserAnswer: RawUserAnswer?,
     explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -158,7 +161,7 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
 
-    subscribeToCurrentState()
+    subscribeToCurrentState(rawUserAnswer)
     return binding.root
   }
 
@@ -278,25 +281,25 @@ class StateFragmentPresenter @Inject constructor(
     return getAudioFragment() as? AudioUiManager
   }
 
-  private fun subscribeToCurrentState() {
+  private fun subscribeToCurrentState(rawUserAnswer: RawUserAnswer?) {
     ephemeralStateLiveData.observe(
       fragment,
       { result ->
-        processEphemeralStateResult(result)
+        processEphemeralStateResult(result, rawUserAnswer)
       }
     )
   }
 
-  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
+  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>, rawUserAnswer: RawUserAnswer?) {
     when (result) {
       is AsyncResult.Failure ->
         oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
       is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
-      is AsyncResult.Success -> processEphemeralState(result.value)
+      is AsyncResult.Success -> processEphemeralState(result.value, rawUserAnswer)
     }
   }
 
-  private fun processEphemeralState(ephemeralState: EphemeralState) {
+  private fun processEphemeralState(ephemeralState: EphemeralState, rawUserAnswer: RawUserAnswer?) {
     explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
@@ -305,6 +308,12 @@ class StateFragmentPresenter @Inject constructor(
     } else {
       viewModel.isSplitView.set(false)
       viewModel.centerGuidelinePercentage.set(1f)
+    }
+
+    Log.d("testAnswer", "Ephemeral State Called")
+
+    if (rawUserAnswer != null) {
+      viewModel.setRawUserAnswer(rawUserAnswer, recyclerViewAssembler::getPendingAnswerHandler)
     }
 
     val isInNewState =
@@ -450,6 +459,10 @@ class StateFragmentPresenter @Inject constructor(
 
   /** Returns the checkpoint state for the current exploration. */
   fun getExplorationCheckpointState() = explorationCheckpointState
+
+  fun handleOnSavedInstance(): RawUserAnswer {
+    return viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+  }
 
   private fun markExplorationCompleted() {
     storyProgressController.recordCompletedChapter(

@@ -7,6 +7,7 @@ import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
@@ -82,6 +83,14 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     this.writtenTranslationContext =
       this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
   }.build()
+
+  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
+    TODO("Not yet implemented")
+  }
+
+  override fun getRawUserAnswer(): RawUserAnswer? {
+    TODO("Not yet implemented")
+  }
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
