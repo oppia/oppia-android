@@ -12,8 +12,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
-import javax.inject.Inject
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
+import javax.inject.Inject
 
 private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 

@@ -1650,7 +1650,8 @@ class ExplorationActivityTest {
         .check(
           matches(
             withContentDescription(
-              "Show/Hide hint list of Remember that two halves, when added together, make one whole.\n\n"
+              "Show/Hide hint list of Remember that two halves, when added together," +
+                " make one whole.\n\n"
             )
           )
         )
