@@ -48,7 +48,6 @@ class SpotlightFragment @Inject constructor(
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
 
-
   private var isRTL = false
 
   init {
@@ -61,7 +60,7 @@ class SpotlightFragment @Inject constructor(
     isRTL = checkIsRTL()
   }
 
-  fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>){
+  fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>) {
     spotlightTargetList = spotlightTargets
   }
 
@@ -96,16 +95,13 @@ class SpotlightFragment @Inject constructor(
               return
             } else if (viewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED || viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
 
-              Log.d("overlay",viewState.toString())
+              Log.d("overlay", viewState.toString())
               Log.d("overlay", "adding target ")
               createTarget(spotlightTarget)
               counter++
-              if (counter == spotlightTargetList.size){
+              if (counter == spotlightTargetList.size) {
                 startSpotlight()
               }
-
-
-
               featureViewStateLiveData.removeObserver(this)
             }
           }
@@ -118,6 +114,7 @@ class SpotlightFragment @Inject constructor(
   private fun createTarget(
     spotlightTarget: SpotlightTarget
   ) {
+    spotlightTarget.logParams()
 
     val target = Target.Builder()
       .setAnchor(spotlightTarget.anchor)
@@ -129,14 +126,14 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
-//          val profileId = ProfileId.newBuilder()
-//            .setInternalId(123)
-//            .build()
-//          spotlightStateController.recordSpotlightCheckpoint(
-//            profileId,
-//            spotlightTarget.feature,
-//            SpotlightViewState.SPOTLIGHT_SEEN
-//          )
+          val profileId = ProfileId.newBuilder()
+            .setInternalId(123)
+            .build()
+          spotlightStateController.recordSpotlightCheckpoint(
+            profileId,
+            spotlightTarget.feature,
+            SpotlightViewState.SPOTLIGHT_SEEN
+          )
         }
       })
       .build()
@@ -165,7 +162,11 @@ class SpotlightFragment @Inject constructor(
   private fun getShape(spotlightTarget: SpotlightTarget): Shape {
     return when (spotlightTarget.shape) {
       SpotlightShape.RoundedRectangle -> {
-        RoundedRectangle(spotlightTarget.anchorHeight.toFloat(), spotlightTarget.anchorWidth.toFloat(), 24f)
+        RoundedRectangle(
+          spotlightTarget.anchorHeight.toFloat(),
+          spotlightTarget.anchorWidth.toFloat(),
+          24f
+        )
       }
       SpotlightShape.Circle -> {
         return if (spotlightTarget.anchorHeight > spotlightTarget.anchorWidth) {
@@ -183,24 +184,22 @@ class SpotlightFragment @Inject constructor(
     return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
   }
 
-  private fun getArrowHeight(): Float {
-    return this.resources.getDimension(R.dimen.arrow_height)
-  }
-
   private fun getArrowWidth(): Float {
     return this.resources.getDimension(R.dimen.arrow_width)
   }
-
-
-
 
   private fun getScreenCentreY(): Int {
     Log.d("overlay screenCentre Y", (screenHeight / 2).toString())
     return screenHeight / 2
   }
 
+  private fun getScreenCentreX(): Int {
+    Log.d("overlay screenCentre X", (screenWidth / 2).toString())
+    return screenWidth / 2
+  }
+
   private fun calculateAnchorPosition(spotlightTarget: SpotlightTarget) {
-    anchorPosition = if (spotlightTarget.anchorCentreX > spotlightTarget.anchorCentreY) {
+    anchorPosition = if (spotlightTarget.anchorCentreX > getScreenCentreX()) {
       if (spotlightTarget.anchorCentreY > getScreenCentreY()) {
         AnchorPosition.BottomRight
       } else {
@@ -230,17 +229,17 @@ class SpotlightFragment @Inject constructor(
         configureTopRightOverlay(spotlightTarget)
       }
       AnchorPosition.BottomRight -> {
-        if (isRTL){
+        if (isRTL) {
           configureBottomLeftOverlay(spotlightTarget)
 
-        }else {
+        } else {
           configureBottomRightOverlay(spotlightTarget)
         }
       }
       AnchorPosition.BottomLeft -> {
-        if (isRTL){
+        if (isRTL) {
           configureBottomRightOverlay(spotlightTarget)
-        }else {
+        } else {
           configureBottomLeftOverlay(spotlightTarget)
         }
       }
@@ -273,14 +272,24 @@ class SpotlightFragment @Inject constructor(
 
     val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    arrowParams.setMargins(
-      spotlightTarget.anchorLeft.toInt(),
-      (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight).toInt(),
-      10.dp,
-      10.dp
-    )
-//    arrowParams.marginStart = spotlightTarget.anchorLeft.toInt()
-//    arrowParams.marginEnd = 10.dp
+    if (false) {
+      arrowParams.setMargins(
+        10.dp,
+        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        screenWidth - spotlightTarget.anchorLeft.toInt(),
+        10.dp
+      )
+    } else {
+      arrowParams.setMargins(
+        spotlightTarget.anchorLeft.toInt(),
+        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        10.dp,
+        10.dp
+      )
+    }
+    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
+    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
+
     (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverLeftBinding).root
@@ -297,14 +306,24 @@ class SpotlightFragment @Inject constructor(
 
     val arrowParams = (overlayBinding as OverlayOverRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    arrowParams.setMargins(
-      (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
-      (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight).toInt(),
-      10.dp,
-      10.dp
-    )
-//    arrowParams.marginStart = (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt()
-//    arrowParams.marginEnd = 10.dp
+    if (isRTL) {
+      arrowParams.setMargins(
+        10.dp,
+        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        screenWidth - (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+        10.dp
+      )
+    } else {
+      arrowParams.setMargins(
+        (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        10.dp,
+        10.dp
+      )
+    }
+    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
+    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
+
     (overlayBinding as OverlayOverRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverRightBinding).root
@@ -321,14 +340,24 @@ class SpotlightFragment @Inject constructor(
 
     val arrowParams = (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    arrowParams.setMargins(
-      (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
-      (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-      10.dp,
-      10.dp
-    )
-//    arrowParams.marginStart = (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt()
-//    arrowParams.marginEnd = 10.dp
+    if (isRTL) {
+      arrowParams.setMargins(
+        10.dp,
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
+        screenWidth - (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+        10.dp
+      )
+    } else {
+      arrowParams.setMargins(
+        (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth() + 5.dp).toInt(),
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
+        10.dp,
+        10.dp
+      )
+    }
+    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
+    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
+
     (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderRightBinding).root
@@ -345,14 +374,24 @@ class SpotlightFragment @Inject constructor(
 
     val arrowParams = (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    arrowParams.setMargins(
-      spotlightTarget.anchorLeft.toInt(),
-      (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-      10.dp,
-      10.dp
-    )
-//    arrowParams.marginStart = spotlightTarget.anchorLeft.toInt()
-//    arrowParams.marginEnd = 10.dp
+    if (isRTL) {
+      arrowParams.setMargins(
+        10.dp,
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
+        screenWidth - spotlightTarget.anchorLeft.toInt(),
+        10.dp
+      )
+    } else {
+      arrowParams.setMargins(
+        spotlightTarget.anchorLeft.toInt(),
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
+        10.dp,
+        10.dp
+      )
+    }
+    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
+    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
+
     (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderLeftBinding).root
@@ -396,6 +435,11 @@ data class SpotlightTarget(
     anchor.getLocationOnScreen(location)
     val y = location[1]
     return y.toFloat()
+  }
+
+  fun logParams() {
+    Log.d("overlay", "anchorLeft: " + anchorLeft.toString())
+    Log.d("overlay", "anchorTop: " + anchorTop.toString())
   }
 
   private fun calculateAnchorHeight(): Int {

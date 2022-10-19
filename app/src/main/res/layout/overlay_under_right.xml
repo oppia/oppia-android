@@ -37,6 +37,7 @@
       android:text="this is a custom text"
       android:textAlignment="center"
       android:textColor="@android:color/white"
+      style="@style/TextViewStart"
       android:textSize="24dp"
       android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="@+id/arrow"

@@ -259,15 +259,15 @@ class OnboardingFragmentPresenter @Inject constructor(
 
       val onboardingSkipSpotlight = SpotlightTarget(
         binding.skipTextView,
-        "Next",
+        "Skip",
         SpotlightShape.Circle,
         org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
       )
 
 
       val targetList = ArrayList<SpotlightTarget>()
-      targetList.add(onboardingButtonSpotlight)
       targetList.add(onboardingSkipSpotlight)
+      targetList.add(onboardingButtonSpotlight)
 
         spotlightFragment.initialiseTargetList(targetList)
         activity.supportFragmentManager.beginTransaction()
