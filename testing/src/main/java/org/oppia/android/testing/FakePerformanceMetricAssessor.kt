@@ -1,10 +1,10 @@
 package org.oppia.android.testing
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** A test specific fake for performance metric utils. */
 @Singleton
