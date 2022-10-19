@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
+import org.oppia.android.app.model.ScreenName.FOREGROUND_SCREEN
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -19,6 +20,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
+import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
@@ -38,6 +41,8 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val cpuPerformanceSnapshotter: CpuPerformanceSnapshotter,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  @EnablePerformanceMetricsCollection
+  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
 
   /**
@@ -60,7 +65,11 @@ class ApplicationLifecycleObserver @Inject constructor(
   /**
    * Returns the current active UI screen that's visible to the user.
    *
-   * If the UI is inactive or the app backgrounded, [BACKGROUND_SCREEN] is returned.
+   * A few exceptions:
+   * [BACKGROUND_SCREEN] is returned when the UI is inactive or when the app is backgrounded.
+   * [FOREGROUND_SCREEN] is never returned.
+   * [SCREEN_NAME_UNSPECIFIED] is the default value for [currentScreen] and is returned until a
+   * currentScreen value hasn't been set by the launcher activity's onResume method.
    */
   fun getCurrentScreen(): ScreenName = currentScreen
 
@@ -85,7 +94,9 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
-    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    if (enablePerformanceMetricsCollection.value) {
+      cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    }
     performanceMetricsController.setAppInForeground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInForeground)
   }
@@ -94,7 +105,9 @@ class ApplicationLifecycleObserver @Inject constructor(
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
     firstTimestamp = oppiaClock.getCurrentTimeMs()
-    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
+    if (enablePerformanceMetricsCollection.value) {
+      cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
+    }
     performanceMetricsController.setAppInBackground()
     logAppLifecycleEventInBackground(learnerAnalyticsLogger::logAppInBackground)
   }

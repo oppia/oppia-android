@@ -12,15 +12,13 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.Snapshot
-import org.oppia.android.util.threading.BackgroundDispatcher
-import javax.inject.Inject
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
 
 /**
- * Snapshotter that gracefully and sequentially logs cpu usage across foreground and background
+ * Snapshotter that gracefully and sequentially logs CPU usage across foreground and background
  * moves of the application.
  */
-class CpuPerformanceSnapshotter private constructor(
+class CpuPerformanceSnapshotter(
   private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val initialIconification: AppIconification,
@@ -41,7 +39,7 @@ class CpuPerformanceSnapshotter private constructor(
   private fun createCommandQueueActor(): SendChannel<CommandMessage> {
     var currentIconification = initialIconification
     var previousSnapshot =
-      performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
+      performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
     var switchIconificationCount = 0
     val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
     return coroutineScope.actor<CommandMessage>(capacity = Channel.UNLIMITED) {
@@ -49,15 +47,18 @@ class CpuPerformanceSnapshotter private constructor(
         when (message) {
           is CommandMessage.SwitchIconification -> {
             ++switchIconificationCount
+            // since there's a switch in the current iconification of the app, we'd cut short the
+            // existing delay and log the current CPU usage relative to the previously logged one.
             sendLogSnapshotDiffCommand(
               performanceMetricsAssessor.getRelativeCpuUsage(
                 previousSnapshot,
-                performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
-              )
+                performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
+              ),
+              currentIconification
             )
             currentIconification = message.newIconification
-            previousSnapshot =
-              performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
+            previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
+            // schedule CPU usage logging for the new app iconification.
             sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)
           }
           is CommandMessage.ScheduleTakeSnapshot -> scheduleTakeSnapshot(
@@ -66,10 +67,10 @@ class CpuPerformanceSnapshotter private constructor(
           )
           is CommandMessage.TakeSnapshot -> {
             if (message.switchId == switchIconificationCount) {
-              val newSnapshot =
-                performanceMetricsAssessor.computeSnapshotAtCurrentTime(currentIconification)
+              val newSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
               sendLogSnapshotDiffCommand(
-                performanceMetricsAssessor.getRelativeCpuUsage(previousSnapshot, newSnapshot)
+                performanceMetricsAssessor.getRelativeCpuUsage(previousSnapshot, newSnapshot),
+                currentIconification
               )
               previousSnapshot = newSnapshot
               sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)
@@ -77,7 +78,7 @@ class CpuPerformanceSnapshotter private constructor(
           }
           is CommandMessage.LogSnapshotDiff -> {
             performanceMetricsLogger.logCpuUsage(
-              currentIconification.toScreenName(),
+              message.screenName,
               message.relativeCpuUsage
             )
           }
@@ -107,19 +108,29 @@ class CpuPerformanceSnapshotter private constructor(
   private suspend fun sendScheduleTakeSnapshotCommand(
     currentIconification: AppIconification,
     switchId: Int
-  ) { commandQueue.send(CommandMessage.ScheduleTakeSnapshot(currentIconification, switchId)) }
+  ) {
+    commandQueue.send(CommandMessage.ScheduleTakeSnapshot(currentIconification, switchId))
+  }
 
   private suspend fun sendTakeSnapshotCommand(switchId: Int) {
     commandQueue.send(CommandMessage.TakeSnapshot(switchId))
   }
 
-  private suspend fun sendLogSnapshotDiffCommand(relativeCpuUsage: Double) {
-    commandQueue.send(CommandMessage.LogSnapshotDiff(relativeCpuUsage))
+  private suspend fun sendLogSnapshotDiffCommand(
+    relativeCpuUsage: Double,
+    currentIconification: AppIconification
+  ) {
+    commandQueue.send(
+      CommandMessage.LogSnapshotDiff(
+        relativeCpuUsage,
+        currentIconification.toScreenName()
+      )
+    )
   }
 
   /**
    * Schedules a delay on the basis of [currentIconification] and then sends the [CommandMessage]
-   * for taking a [Snapshot] that'll be used for logging the relative cpu-usage of the application.
+   * for taking a [CpuSnapshot] that'll be used for logging the relative CPU usage of the application.
    */
   private fun scheduleTakeSnapshot(currentIconification: AppIconification, switchId: Int) {
     CoroutineScope(backgroundCoroutineDispatcher).launch {
@@ -129,7 +140,7 @@ class CpuPerformanceSnapshotter private constructor(
       it?.let {
         consoleLogger.e(
           "PerformanceMetricsController",
-          "Failed to remove metric log.",
+          "Failed to schedule a delay and send CommandMessage to log CPU usage.",
           it
         )
       }
@@ -137,19 +148,19 @@ class CpuPerformanceSnapshotter private constructor(
   }
 
   /**
-   * Represents a message that can be sent to [commandQueue] to process cpu-usage logging.
+   * Represents a message that can be sent to [commandQueue] to process CPU usage logging.
    *
    * Messages are expected to be resolved serially (though their scheduling can occur across
    * multiple threads, so order cannot be guaranteed until they're enqueued).
    */
-  sealed class CommandMessage {
+  private sealed class CommandMessage {
 
     /** [CommandMessage] for switching the current [AppIconification]. */
     data class SwitchIconification(val newIconification: AppIconification) : CommandMessage()
 
     /**
      * [CommandMessage] that schedules [TakeSnapshot] for the [currentIconification] and [switchId]
-     * to take a [Snapshot] and log-cpu usage after a specific delay period.
+     * to take a [CpuSnapshot] and log CPU usage after a specific delay period.
      */
     data class ScheduleTakeSnapshot(
       val currentIconification: AppIconification,
@@ -157,17 +168,20 @@ class CpuPerformanceSnapshotter private constructor(
     ) : CommandMessage()
 
     /**
-     * [CommandMessage] that takes a real-time [Snapshot] and calls [LogSnapshotDiff] for logging
-     * the relative cpu-usage of the application.
+     * [CommandMessage] that takes a real-time [CpuSnapshot] and calls [LogSnapshotDiff] for logging
+     * the relative CPU usage of the application.
      *
-     * This relative cpu-usage is calculated by comparing the real-time [Snapshot] with a previous
-     * [Snapshot]. The current [Snapshot] is then put on as the previous [Snapshot] for the next
+     * This relative CPU usage is calculated by comparing the real-time [CpuSnapshot] with a previous
+     * [CpuSnapshot]. The current [CpuSnapshot] is then put on as the previous [CpuSnapshot] for the next
      * relative comparison.
      */
     data class TakeSnapshot(val switchId: Int) : CommandMessage()
 
-    /** [CommandMessage] for logging the relative cpu usage of the application. */
-    data class LogSnapshotDiff(val relativeCpuUsage: Double) : CommandMessage()
+    /** [CommandMessage] for logging the relative CPU usage of the application. */
+    data class LogSnapshotDiff(
+      val relativeCpuUsage: Double,
+      val screenName: ScreenName
+    ) : CommandMessage()
   }
 
   /** Returns an appropriate [ScreenName] on the basis of [AppIconification]. */
@@ -180,30 +194,5 @@ class CpuPerformanceSnapshotter private constructor(
   private fun AppIconification.getDelay(): Long = when (this) {
     AppIconification.APP_IN_BACKGROUND -> backgroundCpuLoggingTimePeriodMillis
     AppIconification.APP_IN_FOREGROUND -> foregroundCpuLoggingTimePeriodMillis
-  }
-
-  /** Creates an instance of [CpuPerformanceSnapshotter] by properly injecting dependencies. */
-  class Factory @Inject constructor(
-    private val performanceMetricsLogger: PerformanceMetricsLogger,
-    private val consoleLogger: ConsoleLogger,
-    private val exceptionLogger: ExceptionLogger,
-    private val performanceMetricsAssessor: PerformanceMetricsAssessor,
-    @ForegroundCpuLoggingTimePeriodMillis private val foregroundCpuLoggingTimePeriodMillis: Long,
-    @BackgroundCpuLoggingTimePeriodMillis private val backgroundCpuLoggingTimePeriodMillis: Long,
-    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
-  ) {
-
-    /** Returns an instance of [CpuPerformanceSnapshotter]. */
-    fun createSnapshotter(): CpuPerformanceSnapshotter =
-      CpuPerformanceSnapshotter(
-        backgroundCoroutineDispatcher,
-        performanceMetricsLogger,
-        AppIconification.APP_IN_FOREGROUND,
-        consoleLogger,
-        exceptionLogger,
-        foregroundCpuLoggingTimePeriodMillis,
-        backgroundCpuLoggingTimePeriodMillis,
-        performanceMetricsAssessor
-      )
   }
 }

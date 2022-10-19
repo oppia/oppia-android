@@ -62,7 +62,7 @@ class CpuPerformanceSnapshotterModuleTest {
   }
 
   @Test
-  fun testCpuPerformanceLoggingTimePeriod_isDefaultValue() {
+  fun testCpuPerformanceLoggingTimePeriods_areDefaultValuesAsExpected() {
     // This is a change detector test to ensure that changes to the cpu performance logging time
     // period are explicitly considered to help avoid potential unintended changes to this analytics
     // behavioral configuration property.

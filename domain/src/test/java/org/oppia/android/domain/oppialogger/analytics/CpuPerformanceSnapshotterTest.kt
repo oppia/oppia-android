@@ -50,11 +50,11 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TEST_CPU_USAGE = 0.07192
+private const val TEST_CPU_USAGE_ONE = 0.07192
+private const val TEST_CPU_USAGE_TWO = 0.32192
 
 /** Tests for [CpuPerformanceSnapshotter]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -71,6 +71,12 @@ class CpuPerformanceSnapshotterTest {
   @Inject lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
+  @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
+  var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
+  @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
+  var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -78,48 +84,150 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_updateIconificationToBackground_logsCpuUsageInBackgroundState() {
-    testCoroutineDispatchers.runCurrent()
-    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE)
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
 
     val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(event.loggableMetric.loggableMetricTypeCase).isEqualTo(CPU_USAGE_METRIC)
-    assertThat(event.loggableMetric.cpuUsageMetric.cpuUsageMetric).isEqualTo(TEST_CPU_USAGE)
+    assertThat(event.loggableMetric.cpuUsageMetric.cpuUsageMetric).isEqualTo(TEST_CPU_USAGE_ONE)
     assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
   }
 
   @Test
   fun testSnapshotter_updateIconificationToForeground_logsCpuUsageInForegroundState() {
-    testCoroutineDispatchers.runCurrent()
-    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE)
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
 
     val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(event.loggableMetric.loggableMetricTypeCase).isEqualTo(CPU_USAGE_METRIC)
-    assertThat(event.loggableMetric.cpuUsageMetric.cpuUsageMetric).isEqualTo(TEST_CPU_USAGE)
+    assertThat(event.loggableMetric.cpuUsageMetric.cpuUsageMetric).isEqualTo(TEST_CPU_USAGE_ONE)
     assertThat(event.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
   }
 
   @Test
   fun testSnapshotter_moveToForeground_moveToBackground_verifySequentialLogging() {
-    testCoroutineDispatchers.runCurrent()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
 
     val count = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
     val latestEvents =
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(count)
+    // event that got logged after time advancement.
     val latestEvent = latestEvents[count - 1]
+    // event that got logged on second iconification update.
     val secondLatestEvent = latestEvents[count - 2]
+    // event that got logged on first iconification update.
+    val thirdLatestEvent = latestEvents[count - 3]
 
     assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
     assertThat(secondLatestEvent.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+    assertThat(thirdLatestEvent.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+  }
+
+  @Test
+  fun testSnapshotter_moveToForegorund_logsCpuUsage_verifyLoggingOfSecondCpuLogAfterCorrectDelay() {
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    testCoroutineDispatchers.runCurrent()
+    val firstEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_TWO)
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
+    val latestEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(latestEvent.isInitialized).isTrue()
+    assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+    // verifying that a CPU usage metric is logged after delay.
+    assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isWithin(1e-5).of(TEST_CPU_USAGE_TWO)
+    // verifying that the logged CPU usage metric does not equal to the previously logged metric.
+    assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isNotWithin(1e-5).of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+  }
+
+  @Test
+  fun testSnapshotter_moveToFg_logsCpuUsage_verifyLoggingOfSecondCpuLogBeforeCorrectDelayFails() {
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    testCoroutineDispatchers.runCurrent()
+    fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
+
+    val timePeriodLessThanFgCpuLoggingTimePeriod = foregroundCpuLoggingTimePeriodMillis - 1000
+    testCoroutineDispatchers.advanceTimeBy(timePeriodLessThanFgCpuLoggingTimePeriod)
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_moveToBackgorund_logsCpuUsage_logsCpuUsageAfterDelay_verifyCorrectDelay() {
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
+    testCoroutineDispatchers.runCurrent()
+    val firstEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_TWO)
+    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
+    val latestEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(latestEvent.isInitialized).isTrue()
+    assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    // verifying that a CPU usage metric is logged after delay.
+    assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isWithin(1e-5).of(TEST_CPU_USAGE_TWO)
+    // verifying that the logged CPU usage metric does not equal to the previously logged metric.
+    assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isNotWithin(1e-5).of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+  }
+
+  @Test
+  fun testSnapshotter_moveToBg_logsCpuUsage_verifyLoggingOfSecondCpuLogBeforeCorrectDelayFails() {
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
+    testCoroutineDispatchers.runCurrent()
+    fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
+
+    val timePeriodLessThanBgCpuLoggingTimePeriod = backgroundCpuLoggingTimePeriodMillis - 1000
+    testCoroutineDispatchers.advanceTimeBy(timePeriodLessThanBgCpuLoggingTimePeriod)
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_moveToBg_logsCpuUsage_moveToFg_verifyLoggingOfTailEventBeforeNewEvent() {
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
+    testCoroutineDispatchers.runCurrent()
+    fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
+
+    val timePeriodLessThanBgCpuLoggingTimePeriod = backgroundCpuLoggingTimePeriodMillis - 1000
+    testCoroutineDispatchers.advanceTimeBy(timePeriodLessThanBgCpuLoggingTimePeriod)
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    testCoroutineDispatchers.runCurrent()
+
+    val latestEventCount = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+    val latestEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(latestEventCount)
+
+    assertThat(latestEvents[latestEventCount - 1].currentScreen)
+      .isEqualTo(ScreenName.BACKGROUND_SCREEN)
+  }
+
+  @Test
+  fun testSnapshotter_logCpuUsage_verifyCorrectCpuUsageValueIsLogged() {
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    testCoroutineDispatchers.runCurrent()
+
+    val latestEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isWithin(1e-5).of(TEST_CPU_USAGE_ONE)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -205,28 +313,6 @@ class CpuPerformanceSnapshotterTest {
     }
   }
 
-  @Module
-  class TestCpuPerformanceSnapshotterModule {
-
-    companion object {
-      var foregroundCpuLoggingTimePeriod = TimeUnit.MINUTES.toMillis(5)
-      var backgroundCpuLoggingTimePeriod = TimeUnit.MINUTES.toMillis(60)
-    }
-
-    @Provides
-    fun providesCpuPerformanceSnapshotter(
-      factory: CpuPerformanceSnapshotter.Factory
-    ): CpuPerformanceSnapshotter = factory.createSnapshotter()
-
-    @Provides
-    @ForegroundCpuLoggingTimePeriodMillis
-    fun provideForegroundCpuLoggingTimePeriod(): Long = foregroundCpuLoggingTimePeriod
-
-    @Provides
-    @BackgroundCpuLoggingTimePeriodMillis
-    fun provideBackgroundCpuLoggingTimePeriod(): Long = backgroundCpuLoggingTimePeriod
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -236,7 +322,7 @@ class CpuPerformanceSnapshotterTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      TestCpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class
+      CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -51,7 +51,7 @@ message OppiaMetricLog {
       // The metric being logged is related to the network usage of the application.
       NetworkUsageMetric network_usage_metric = 5;
 
-      // The metric being logged is related to the cpu usage of the application.
+      // The metric being logged is related to the CPU usage of the application.
       CpuUsageMetric cpu_usage_metric = 6;
     }
   }
@@ -98,9 +98,10 @@ message OppiaMetricLog {
     int64 bytes_sent = 2;
   }
 
-  // Structure of the cpu usage metric.
+  // Structure of the CPU usage metric.
   message CpuUsageMetric {
-    // Relative percent of cpu used by the application.
+    // Average ratio of app-specific CPU usage relative to available resources in the system, within
+    // a monitored time window. This is expected to always be between [0, 1].
     double cpu_usage_metric = 1;
   }
 

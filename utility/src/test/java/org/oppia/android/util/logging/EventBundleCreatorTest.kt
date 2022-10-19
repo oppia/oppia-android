@@ -580,7 +580,7 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
-    assertThat(bundle.getDouble("cpu_usage")).isEqualTo(TEST_CPU_USAGE)
+    assertThat(bundle.getDouble("cpu_usage")).isWithin(1e-5).of(TEST_CPU_USAGE)
   }
 
   @Test

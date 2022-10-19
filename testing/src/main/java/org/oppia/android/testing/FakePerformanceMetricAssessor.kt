@@ -1,11 +1,10 @@
 package org.oppia.android.testing
 
-import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.Snapshot
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
 
 /** A test specific fake for performance metric utils. */
 @Singleton
@@ -17,8 +16,6 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
   private var testTotalReceivedBytes = 0L
   private var testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
   private var testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
-  private var testSnapshot =
-    Snapshot(AppIconification.APP_IN_FOREGROUND, 0.00, 0.00, 0.00)
   private var testRelativeCpuUsage = 0.00
 
   override fun getApkSize(): Long = testApkSize
@@ -35,11 +32,12 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
 
   override fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier = testDeviceMemoryTier
 
-  override fun computeSnapshotAtCurrentTime(iconification: AppIconification): Snapshot {
-    return testSnapshot
-  }
+  override fun computeCpuSnapshotAtCurrentTime(): CpuSnapshot = CpuSnapshot(0L, 0L, 1)
 
-  override fun getRelativeCpuUsage(firstSnapshot: Snapshot, secondSnapshot: Snapshot): Double {
+  override fun getRelativeCpuUsage(
+    firstCpuSnapshot: CpuSnapshot,
+    secondCpuSnapshot: CpuSnapshot
+  ): Double {
     return testRelativeCpuUsage
   }
 
@@ -76,11 +74,6 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
   /** Sets [memoryTier] as the value of [testDeviceMemoryTier]. */
   fun setDeviceMemoryTier(memoryTier: OppiaMetricLog.MemoryTier) {
     testDeviceMemoryTier = memoryTier
-  }
-
-  /** Sets [snapshot] as the value of [testSnapshot]. */
-  fun setCurrentSnapshot(snapshot: Snapshot) {
-    testSnapshot = snapshot
   }
 
   /** Sets [relativeCpuUsage] as the value of [testRelativeCpuUsage]. */

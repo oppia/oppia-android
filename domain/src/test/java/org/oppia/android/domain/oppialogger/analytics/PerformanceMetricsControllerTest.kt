@@ -55,7 +55,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
-private const val TEST_CPU_USAGE = Long.MAX_VALUE.toDouble()
+private const val TEST_CPU_USAGE = Double.MAX_VALUE
 private const val TEST_APK_SIZE = Long.MAX_VALUE
 private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
 private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE

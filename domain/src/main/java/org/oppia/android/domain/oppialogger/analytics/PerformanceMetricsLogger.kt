@@ -115,8 +115,7 @@ class PerformanceMetricsLogger @Inject constructor(
   /**
    * Logs the cpu usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
-   * application instance. It must also be noted that the metric will only be logged when cpuUsage
-   * is positive since garbage collection can lead to negative values as well.
+   * application instance.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
    * @param cpuUsage denotes the relative cpu usage of the application which is measured across two

@@ -126,7 +126,7 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
       return if (isDebuggerAttached()) {
         TIMEOUT_WHEN_DEBUGGING_SECONDS
       } else {
-        STANDARD_TIMEOUT_SECONDS
+        TIMEOUT_WHEN_DEBUGGING_SECONDS
       }
     }
 

@@ -61,14 +61,13 @@ private const val THREE_MEGABYTES = ONE_MEGABYTE * 3L
 private const val ONE_GIGABYTE = ONE_MEGABYTE * 1024
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
 private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
-private const val TEST_FIRST_CPU_TIME = 1000.00
-private const val TEST_SECOND_CPU_TIME = 1200.00
-private const val TEST_FIRST_PROCESS_TIME = 1665790650.00
-private const val TEST_SECOND_PROCESS_TIME = 1665790700.00
-private const val TEST_FIRST_NUMBER_OF_CORES = 6.00
-private const val TEST_SECOND_NUMBER_OF_CORES = 2.00
+private const val TEST_FIRST_CPU_TIME = 1000L
+private const val TEST_SECOND_CPU_TIME = 1200L
+private const val TEST_FIRST_PROCESS_TIME = 1665790650L
+private const val TEST_SECOND_PROCESS_TIME = 1665790700L
+private const val TEST_FIRST_NUMBER_OF_CORES = 6
+private const val TEST_SECOND_NUMBER_OF_CORES = 2
 private const val TEST_CURRENT_TIME = 1665790700L
-private const val TEST_CPU_TIME = 100L
 
 /** Tests for [PerformanceMetricsAssessorImpl]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -216,14 +215,12 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_setFirstAndSecondSnapshot_verifyCorrectCpuUsageIsReturned() {
-    val firstSnapshot = PerformanceMetricsAssessor.Snapshot(
-      APP_IN_FOREGROUND,
+    val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       TEST_FIRST_PROCESS_TIME,
       TEST_FIRST_CPU_TIME,
       TEST_FIRST_NUMBER_OF_CORES
     )
-    val secondSnapshot = PerformanceMetricsAssessor.Snapshot(
-      APP_IN_FOREGROUND,
+    val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       TEST_SECOND_PROCESS_TIME,
       TEST_SECOND_CPU_TIME,
       TEST_SECOND_NUMBER_OF_CORES
@@ -233,7 +230,7 @@ class PerformanceMetricsAssessorImplTest {
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
 
     // After comparing the test values in first and second snapshots, we get relativeUsage of 1.00.
-    assertThat(relativeCpuUsage).isEqualTo(1.00)
+    assertThat(relativeCpuUsage).isWithin(1e-5).of(1.00)
   }
 
   @Test
@@ -242,10 +239,9 @@ class PerformanceMetricsAssessorImplTest {
     fakeOppiaClock.setCurrentTimeMs(TEST_CURRENT_TIME)
 
     val currentSnapshot =
-      performanceMetricsAssessorImpl.computeSnapshotAtCurrentTime(APP_IN_FOREGROUND)
+      performanceMetricsAssessorImpl.computeCpuSnapshotAtCurrentTime(APP_IN_FOREGROUND)
 
-    assertThat(currentSnapshot.appTimeMillis).isEqualTo(TEST_CURRENT_TIME.toDouble())
-    assertThat(currentSnapshot.iconification).isEqualTo(APP_IN_FOREGROUND)
+    assertThat(currentSnapshot.appTimeMillis).isEqualTo(TEST_CURRENT_TIME)
   }
 
   @Test

@@ -194,6 +194,8 @@ class TestPlatformParameterModule {
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+    private var enablePerformanceMetricsCollection =
+      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
 
     /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -223,6 +225,12 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableExtraTopicTabsUi(value: Boolean) {
       enableExtraTopicTabsUi = value
+    }
+
+    /** Enables forcing [EnablePerformanceMetricsCollection] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnablePerformanceMetricsCollection(value: Boolean) {
+      enablePerformanceMetricsCollection = value
     }
   }
 }
