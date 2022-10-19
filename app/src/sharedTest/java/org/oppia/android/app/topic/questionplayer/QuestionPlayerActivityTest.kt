@@ -20,9 +20,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -426,6 +428,33 @@ class QuestionPlayerActivityTest {
       // The hint explanation should be in English.
       onView(withId(R.id.hints_and_solution_summary))
         .check(matches(withText(containsString("number of pieces in the whole"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHintsAndSolution_hasCorrectContentDescription() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Ensure the hint description is correct and doesn't contain any HTML.
+      onView(withId(R.id.expand_list_icon))
+        .check(
+          matches(
+            withContentDescription(
+              "Show/Hide hint list of To write a fraction, you need to know " +
+                "its denominator, which is the total number of pieces in the whole. " +
+                "All of these pieces should be the same size.\n\n"
+            )
+          )
+        )
     }
   }
 

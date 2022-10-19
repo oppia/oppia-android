@@ -13,6 +13,7 @@ import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
 
@@ -82,7 +83,13 @@ class HintsViewModel @Inject constructor(
   fun computeHintListDropDownIconContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.show_hide_hint_list,
-      hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
+      hintsAndSolutionSummary.get()?.let {
+        CustomHtmlContentHandler.fromHtml(
+          it,
+          imageRetriever = null,
+          customTagHandlers = mapOf()
+        )
+      } ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
     )
   }
 
