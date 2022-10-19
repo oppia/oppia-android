@@ -28,21 +28,20 @@ import org.oppia.android.databinding.OverlayOverRightBinding
 import org.oppia.android.databinding.OverlayUnderLeftBinding
 import org.oppia.android.databinding.OverlayUnderRightBinding
 import org.oppia.android.domain.spotlight.SpotlightStateController
+import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 class SpotlightFragment @Inject constructor(
-  val activity: AppCompatActivity,
-  val spotlightStateController: SpotlightStateController,
+  private val activity: AppCompatActivity,
+  private val spotlightStateController: SpotlightStateController,
+  private val accessibilityServiceImpl: AccessibilityServiceImpl
 ) : Fragment(), SpotlightNavigationListener {
   private var targetList = ArrayList<Target>()
-
   private var spotlightTargetList = ArrayList<SpotlightTarget>()
-
   private lateinit var spotlight: Spotlight
   private val overlay = "overlay"
-  var counter = 0
-
+  private var counter = 0
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
   private lateinit var anchorPosition: AnchorPosition
@@ -64,11 +63,16 @@ class SpotlightFragment @Inject constructor(
     spotlightTargetList = spotlightTargets
   }
 
+  // since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
 
-    spotlightTargetList.forEach {
-      checkSpotlightViewState(it)
+    if (accessibilityServiceImpl.isScreenReaderEnabled()) {
+      activity.supportFragmentManager.beginTransaction().remove(this)
+    }else {
+      spotlightTargetList.forEach {
+        checkSpotlightViewState(it)
+      }
     }
   }
 
@@ -84,6 +88,7 @@ class SpotlightFragment @Inject constructor(
         spotlightTarget.feature
       ).toLiveData()
 
+    // use activity as observer because this fragment's view hasn't been created yet.
     featureViewStateLiveData.observe(
       activity,
       object : Observer<AsyncResult<SpotlightViewState>> {
