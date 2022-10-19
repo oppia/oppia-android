@@ -2,35 +2,21 @@ package org.oppia.android.app.policies
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Resources
-import android.text.Spannable
-import android.text.style.ClickableSpan
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtras
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.equalTo
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -43,7 +29,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -83,7 +68,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -103,13 +87,9 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 /** Tests for [PoliciesActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -134,15 +114,6 @@ class PoliciesActivityTest {
 
   @Inject
   lateinit var context: Context
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Mock
-  lateinit var mockPolicyOppiaTagActionListener: HtmlParser.PolicyOppiaTagActionListener
-
-  @Captor
-  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -159,6 +130,7 @@ class PoliciesActivityTest {
     Intents.release()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
+
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = PoliciesActivity.createPoliciesActivityIntent(
@@ -204,63 +176,6 @@ class PoliciesActivityTest {
       }
     }
   }
-  @Test
-  fun testPoliciesFragment_forTermsOfService_opensPrivacyPolicyPage() {
-    launch<PoliciesActivity>(
-      PoliciesActivity.createPoliciesActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use { activityScenario ->
-      activityScenario.onActivity { activity ->
-
-        testCoroutineDispatchers.runCurrent()
-        val htmlParser = htmlParserFactory.create(
-          policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
-          displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-        )
-        val textView: TextView =
-          activity.findViewById(R.id.policy_description_text_view)
-
-        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-          getResources().getString(R.string.terms_of_service_content),
-          textView,
-          supportsLinks = true,
-          supportsConceptCards = false
-        )
-        textView.text = htmlResult
-        // Verify the displayed text is correct & has a clickable span.
-        val clickableSpans = htmlResult.getSpansFromWholeString(ClickableSpan::class)
-        assertThat(clickableSpans).isNotEmpty()
-        // Call each of the spans.
-        clickableSpans[0].onClick(textView)
-        // Verify that the tag listener is called.
-        verify(mockPolicyOppiaTagActionListener).onPolicyPageLinkClicked(
-          capture(policyTypeCaptor)
-        )
-        assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
-        testCoroutineDispatchers.runCurrent()
-        val policiesArguments =
-          PoliciesActivityParams
-            .newBuilder()
-            .setPolicyPage(PolicyPage.PRIVACY_POLICY)
-            .build()
-        intended(
-          hasComponent(
-            hasClassName(
-              PoliciesActivity::class.java.getName()
-            )
-          )
-        )
-        hasExtras(
-          hasEntry(
-            equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
-            equalTo(policiesArguments)
-          )
-        )
-      }
-    }
-  }
 
   @Test
   fun testPoliciesFragment_forUnspecified_policyPageIsUnspecified() {
@@ -279,13 +194,6 @@ class PoliciesActivityTest {
       }
     }
   }
-
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
-  }
-
-  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
-    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
