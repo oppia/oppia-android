@@ -16,6 +16,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.oppia.android.util.system.OppiaClockModule
@@ -62,7 +63,8 @@ class PerformanceMetricsAssessorModuleTest {
     modules = [
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class
+      PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class,
+      LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

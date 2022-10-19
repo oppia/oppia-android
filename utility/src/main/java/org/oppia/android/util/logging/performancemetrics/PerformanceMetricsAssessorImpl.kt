@@ -14,17 +14,23 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val DEFAULT_CPU_USAGE = -1.0
+
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton
 class PerformanceMetricsAssessorImpl @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val context: Context,
+  private val exceptionLogger: ExceptionLogger,
+  private val consoleLogger: ConsoleLogger,
   @LowStorageTierUpperBound private val lowStorageTierUpperBound: Long,
   @MediumStorageTierUpperBound private val mediumStorageTierUpperBound: Long,
   @LowMemoryTierUpperBound private val lowMemoryTierUpperBound: Long,
@@ -90,11 +96,44 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     firstCpuSnapshot: CpuSnapshot,
     secondCpuSnapshot: CpuSnapshot
   ): Double {
-    val deltaCpuTimeMs = secondCpuSnapshot.cpuTimeMillis - firstCpuSnapshot.cpuTimeMillis
-    val deltaProcessTimeMs = secondCpuSnapshot.appTimeMillis - firstCpuSnapshot.appTimeMillis
+    val deltaCpuTimeMs = if (secondCpuSnapshot.cpuTimeMillis >= firstCpuSnapshot.cpuTimeMillis) {
+      secondCpuSnapshot.cpuTimeMillis - firstCpuSnapshot.cpuTimeMillis
+    } else {
+      val exceptionMessage =
+        "Initial CPU time is greater than that of second, resulting in negative CPU Usage."
+      exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
+      consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
+      return DEFAULT_CPU_USAGE
+    }
+    val deltaProcessTimeMs = if (secondCpuSnapshot.appTimeMillis > firstCpuSnapshot.appTimeMillis) {
+      secondCpuSnapshot.appTimeMillis - firstCpuSnapshot.appTimeMillis
+    } else {
+      val exceptionMessage =
+        "Initial process time is greater than that of second, resulting in negative CPU Usage."
+      exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
+      consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
+      return DEFAULT_CPU_USAGE
+    }
     val numberOfCores =
-      (secondCpuSnapshot.numberOfOnlineCores + firstCpuSnapshot.numberOfOnlineCores) / 2.0
-    return deltaCpuTimeMs / (deltaProcessTimeMs * numberOfCores)
+      if (secondCpuSnapshot.numberOfOnlineCores >= 1 && firstCpuSnapshot.numberOfOnlineCores >= 1) {
+        (secondCpuSnapshot.numberOfOnlineCores + firstCpuSnapshot.numberOfOnlineCores) / 2.0
+      } else {
+        val exceptionMessage = "Either of first or second CpuSnapshot's number of online cores " +
+          "is less than 1 resulting in negative CPU Usage."
+        exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
+        consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
+        return DEFAULT_CPU_USAGE
+      }
+
+    return when (val relativeCpuUsage = deltaCpuTimeMs / (deltaProcessTimeMs * numberOfCores)) {
+      in 0.0..1.0 -> relativeCpuUsage
+      else -> {
+        val exceptionMessage = "Incorrect relative CPU usage value."
+        exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
+        consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
+        DEFAULT_CPU_USAGE
+      }
+    }
   }
 
   /** Returns the number of processors that are currently online/available. */

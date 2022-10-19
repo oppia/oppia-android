@@ -16,8 +16,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
@@ -37,7 +39,6 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -62,11 +63,8 @@ private const val ONE_GIGABYTE = ONE_MEGABYTE * 1024
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
 private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
 private const val TEST_FIRST_CPU_TIME = 1000L
-private const val TEST_SECOND_CPU_TIME = 1200L
 private const val TEST_FIRST_PROCESS_TIME = 1665790650L
-private const val TEST_SECOND_PROCESS_TIME = 1665790700L
 private const val TEST_FIRST_NUMBER_OF_CORES = 6
-private const val TEST_SECOND_NUMBER_OF_CORES = 2
 private const val TEST_CURRENT_TIME = 1665790700L
 
 /** Tests for [PerformanceMetricsAssessorImpl]. */
@@ -82,11 +80,24 @@ private const val TEST_CURRENT_TIME = 1665790700L
 class PerformanceMetricsAssessorImplTest {
 
   @Parameter
-  var totalMemory: Long = Long.MIN_VALUE // Inited because primitives can't be lateinit.
+  var totalMemory: Long = Long.MIN_VALUE
+  @Parameter
+  var secondCpuValue: Long = Long.MIN_VALUE
+  @Parameter
+  var secondAppTimeValue: Long = Long.MIN_VALUE
+  @Parameter
+  var secondNumberOfOnlineCoresValue: Int = Int.MIN_VALUE
+  @Parameter
+  var relativeCpuUsage: Double = Double.MIN_VALUE
 
-  @Inject lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
-  @Inject lateinit var context: Context
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   private val shadowActivityManager by lazy {
     shadowOf(
@@ -214,6 +225,36 @@ class PerformanceMetricsAssessorImplTest {
   }
 
   @Test
+  @RunParameterized(
+    Iteration(
+      "zeroValue",
+      "secondCpuValue=1000",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=2",
+      "relativeCpuUsage=0.00"
+    ),
+    Iteration(
+      "prodValueExample1",
+      "secondCpuValue=1100",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=2",
+      "relativeCpuUsage=0.50"
+    ),
+    Iteration(
+      "prodValueExample2",
+      "secondCpuValue=12100",
+      "secondAppTimeValue=1869790700",
+      "secondNumberOfOnlineCoresValue=8",
+      "relativeCpuUsage=0.0000077"
+    ),
+    Iteration(
+      "prodValueExample3",
+      "secondCpuValue=2100",
+      "secondAppTimeValue=186933790700",
+      "secondNumberOfOnlineCoresValue=3",
+      "relativeCpuUsage=0.00000000239"
+    ),
+  )
   fun testAssessor_setFirstAndSecondSnapshot_verifyCorrectCpuUsageIsReturned() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       TEST_FIRST_PROCESS_TIME,
@@ -221,16 +262,85 @@ class PerformanceMetricsAssessorImplTest {
       TEST_FIRST_NUMBER_OF_CORES
     )
     val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      TEST_SECOND_PROCESS_TIME,
-      TEST_SECOND_CPU_TIME,
-      TEST_SECOND_NUMBER_OF_CORES
+      secondAppTimeValue,
+      secondCpuValue,
+      secondNumberOfOnlineCoresValue
+    )
+    val returnedRelativeCpuUsage =
+      performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
+    assertThat(returnedRelativeCpuUsage).isWithin(1e-5).of(relativeCpuUsage)
+  }
+
+  @Test
+  @RunParameterized(
+    Iteration(
+      "negativeDeltaCpuValue",
+      "secondCpuValue=900",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=2"
+    ),
+    Iteration(
+      "negativeCpuValue",
+      "secondCpuValue=-900",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=2"
+    ),
+    Iteration(
+      "negativeDeltaAppTimeValue",
+      "secondCpuValue=1200",
+      "secondAppTimeValue=1665790050",
+      "secondNumberOfOnlineCoresValue=2"
+    ),
+    Iteration(
+      "negativeAppTimeValue",
+      "secondCpuValue=1200",
+      "secondAppTimeValue=-1665790050",
+      "secondNumberOfOnlineCoresValue=2"
+    ),
+    Iteration(
+      "zeroDeltaAppTimeValue",
+      "secondCpuValue=1200",
+      "secondAppTimeValue=1665790650",
+      "secondNumberOfOnlineCoresValue=2"
+    ),
+    Iteration(
+      "zeroDeltaOnlineCores",
+      "secondCpuValue=1200",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=0"
+    ),
+    Iteration(
+      "negativeOnlineCores",
+      "secondCpuValue=1200",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=-1"
+    ),
+    Iteration(
+      "outOfBoundsCpuUsageValue",
+      "secondCpuValue=9223372036854775807",
+      "secondAppTimeValue=1665790700",
+      "secondNumberOfOnlineCoresValue=2"
+    ),
+  )
+  fun testAssessor_inputFailureSystemValues_calculateCpuUsage_verifyFailure() {
+    val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
+      TEST_FIRST_PROCESS_TIME,
+      TEST_FIRST_CPU_TIME,
+      TEST_FIRST_NUMBER_OF_CORES
+    )
+
+    val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
+      secondAppTimeValue,
+      secondCpuValue,
+      secondNumberOfOnlineCoresValue
     )
 
     val relativeCpuUsage =
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
+    val exception = fakeExceptionLogger.getMostRecentException()
 
-    // After comparing the test values in first and second snapshots, we get relativeUsage of 1.00.
-    assertThat(relativeCpuUsage).isWithin(1e-5).of(1.00)
+    assertThat(relativeCpuUsage).isWithin(1e-5).of(-1.00)
+    assertThat(exception).isInstanceOf(IllegalArgumentException::class.java)
   }
 
   @Test
@@ -238,17 +348,16 @@ class PerformanceMetricsAssessorImplTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_CURRENT_TIME)
 
-    val currentSnapshot =
-      performanceMetricsAssessorImpl.computeCpuSnapshotAtCurrentTime(APP_IN_FOREGROUND)
+    val currentSnapshot = performanceMetricsAssessorImpl.computeCpuSnapshotAtCurrentTime()
 
     assertThat(currentSnapshot.appTimeMillis).isEqualTo(TEST_CURRENT_TIME)
   }
 
   @Test
   @RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=0"),
-    OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=1147483648"),
-    OppiaParameterizedTestRunner.Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
+    Iteration("memoryEqualToLowerBound", "totalMemory=0"),
+    Iteration("memoryInRange", "totalMemory=1147483648"),
+    Iteration("memoryJustBelowUpperBound", "totalMemory=2147483647")
   )
   fun testAssessor_setTotalMemoryForLowMemoryRange_returnsCorrectLowMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
@@ -261,9 +370,9 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   @RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=2147483649"),
-    OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=2684354560"),
-    OppiaParameterizedTestRunner.Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
+    Iteration("memoryEqualToLowerBound", "totalMemory=2147483649"),
+    Iteration("memoryInRange", "totalMemory=2684354560"),
+    Iteration("memoryEqualToUpperBound", "totalMemory=3221225472")
   )
   fun testAssessor_setTotalMemoryForMediumMemoryRange_retsCorrectMediumMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
@@ -276,9 +385,9 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   @RunParameterized(
-    OppiaParameterizedTestRunner.Iteration("memoryEqualToLowerBound", "totalMemory=3221225473"),
-    OppiaParameterizedTestRunner.Iteration("memoryInRange", "totalMemory=5221225472"),
-    OppiaParameterizedTestRunner.Iteration(
+    Iteration("memoryEqualToLowerBound", "totalMemory=3221225473"),
+    Iteration("memoryInRange", "totalMemory=5221225472"),
+    Iteration(
       "memoryEqualToMaxValue",
       "totalMemory=9223372036854775807"
     )
