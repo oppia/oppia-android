@@ -29,7 +29,6 @@ class OnboardingFragment : InjectableFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     onboardingFragmentPresenter.computeLastSpotlightCheckpoint()
-    super.onViewCreated(view, savedInstanceState)
 
   }
 }

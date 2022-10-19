@@ -2,7 +2,6 @@ package org.oppia.android.app.spotlight
 
 import android.content.Context
 import android.content.res.Resources
-import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -34,23 +33,23 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 class SpotlightFragment @Inject constructor(
   val activity: AppCompatActivity,
-  val spotlightStateController: SpotlightStateController
+  val spotlightStateController: SpotlightStateController,
 ) : Fragment(), SpotlightNavigationListener {
-  private var targetList = ArrayList<com.takusemba.spotlight.Target>()
+  private var targetList = ArrayList<Target>()
 
   private var spotlightTargetList = ArrayList<SpotlightTarget>()
 
   private lateinit var spotlight: Spotlight
   private val overlay = "overlay"
+  var counter = 0
 
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
 
-  private lateinit var itemToSpotlight: View
+
   private var isRTL = false
-  private var hintText = ""
 
   init {
     val displayMetrics = DisplayMetrics()
@@ -67,43 +66,12 @@ class SpotlightFragment @Inject constructor(
   }
 
   override fun onAttach(context: Context) {
-
     super.onAttach(context)
-    start()
-  }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    Log.d("overlay" , "inside on view created")
-
-//    viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-//        for (i in spotlightTargetList) {
-//          lifecycleScope.launchWhenCreated {
-//            checkSpotlightViewState(spotlightTargetList[0])
-//          }
-//        }
-
-//    }
-
-//    checkSpotlightViewState(spotlightTargetList[0])
-
-
-  }
-
-  fun start() {
-    createTarget(spotlightTargetList[0])
-    startSpotlight()
-  }
-
-  fun selfInitTargets(){
     spotlightTargetList.forEach {
-      it.selfInitialize()
+      checkSpotlightViewState(it)
     }
   }
-
-
-
 
   private fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
 
@@ -118,7 +86,7 @@ class SpotlightFragment @Inject constructor(
       ).toLiveData()
 
     featureViewStateLiveData.observe(
-      viewLifecycleOwner,
+      activity,
       object : Observer<AsyncResult<SpotlightViewState>> {
         override fun onChanged(it: AsyncResult<SpotlightViewState>?) {
           if (it is AsyncResult.Success) {
@@ -131,7 +99,12 @@ class SpotlightFragment @Inject constructor(
               Log.d("overlay",viewState.toString())
               Log.d("overlay", "adding target ")
               createTarget(spotlightTarget)
-              startSpotlight()
+              counter++
+              if (counter == spotlightTargetList.size){
+                startSpotlight()
+              }
+
+
 
               featureViewStateLiveData.removeObserver(this)
             }
@@ -145,8 +118,6 @@ class SpotlightFragment @Inject constructor(
   private fun createTarget(
     spotlightTarget: SpotlightTarget
   ) {
-    initialiseAnchor(spotlightTarget.anchor)
-    initialiseHintText(spotlightTarget.hint)
 
     val target = Target.Builder()
       .setAnchor(spotlightTarget.anchor)
@@ -194,7 +165,7 @@ class SpotlightFragment @Inject constructor(
   private fun getShape(spotlightTarget: SpotlightTarget): Shape {
     return when (spotlightTarget.shape) {
       SpotlightShape.RoundedRectangle -> {
-        RoundedRectangle(itemToSpotlight.height.toFloat(), itemToSpotlight.width.toFloat(), 24f)
+        RoundedRectangle(spotlightTarget.anchorHeight.toFloat(), spotlightTarget.anchorWidth.toFloat(), 24f)
       }
       SpotlightShape.Circle -> {
         return if (spotlightTarget.anchorHeight > spotlightTarget.anchorWidth) {
@@ -220,13 +191,7 @@ class SpotlightFragment @Inject constructor(
     return this.resources.getDimension(R.dimen.arrow_width)
   }
 
-  private fun initialiseAnchor(itemToSpotlight: View) {
-    this.itemToSpotlight = itemToSpotlight
-  }
 
-  private fun initialiseHintText(hintText: String) {
-    this.hintText = hintText
-  }
 
 
   private fun getScreenCentreY(): Int {
@@ -265,10 +230,19 @@ class SpotlightFragment @Inject constructor(
         configureTopRightOverlay(spotlightTarget)
       }
       AnchorPosition.BottomRight -> {
-        configureBottomRightOverlay(spotlightTarget)
+        if (isRTL){
+          configureBottomLeftOverlay(spotlightTarget)
+
+        }else {
+          configureBottomRightOverlay(spotlightTarget)
+        }
       }
       AnchorPosition.BottomLeft -> {
-        configureBottomLeftOverlay(spotlightTarget)
+        if (isRTL){
+          configureBottomRightOverlay(spotlightTarget)
+        }else {
+          configureBottomLeftOverlay(spotlightTarget)
+        }
       }
     }
   }
@@ -295,7 +269,7 @@ class SpotlightFragment @Inject constructor(
       it.presenter = this
     }
 
-    (overlayBinding as OverlayOverLeftBinding).customText.text = hintText
+    (overlayBinding as OverlayOverLeftBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -319,7 +293,7 @@ class SpotlightFragment @Inject constructor(
       it.presenter = this
     }
 
-    (overlayBinding as OverlayOverRightBinding).customText.text = hintText
+    (overlayBinding as OverlayOverRightBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as OverlayOverRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -343,7 +317,7 @@ class SpotlightFragment @Inject constructor(
       it.presenter = this
     }
 
-    (overlayBinding as OverlayUnderRightBinding).customText.text = hintText
+    (overlayBinding as OverlayUnderRightBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -367,7 +341,7 @@ class SpotlightFragment @Inject constructor(
       it.presenter = this
     }
 
-    (overlayBinding as OverlayUnderLeftBinding).customText.text = hintText
+    (overlayBinding as OverlayUnderLeftBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -401,9 +375,7 @@ data class SpotlightTarget(
   val anchorCentreX = calculateAnchorCentreX()
   val anchorCentreY = calculateAnchorCentreY()
 
-
-
-  fun selfInitialize() {
+  init {
     calculateAnchorLeft()
     calculateAnchorTop()
     calculateAnchorHeight()
@@ -441,5 +413,4 @@ data class SpotlightTarget(
   private fun calculateAnchorCentreY(): Float {
     return anchorTop + anchorHeight / 2
   }
-
 }

@@ -248,20 +248,32 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   fun computeLastSpotlightCheckpoint() {
 
-    val onboardingButtonSpotlight = SpotlightTarget(
-      binding.onboardingFragmentNextImageView,
-      "Next",
-      SpotlightShape.Circle,
-      org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
-    )
+    binding.onboardingFragmentNextImageView.post {
+      val onboardingButtonSpotlight = SpotlightTarget(
+        binding.onboardingFragmentNextImageView,
+        "Next",
+        SpotlightShape.Circle,
+        org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
+      )
 
-    val targetList = ArrayList<SpotlightTarget>()
-    targetList.add(onboardingButtonSpotlight)
-    spotlightFragment.initialiseTargetList(targetList)
 
-    activity.supportFragmentManager.beginTransaction()
-      .add(R.id.onboarding_fragment_placeholder, spotlightFragment)
-      .commit()
-    
+      val onboardingSkipSpotlight = SpotlightTarget(
+        binding.skipTextView,
+        "Next",
+        SpotlightShape.Circle,
+        org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
+      )
+
+
+      val targetList = ArrayList<SpotlightTarget>()
+      targetList.add(onboardingButtonSpotlight)
+      targetList.add(onboardingSkipSpotlight)
+
+        spotlightFragment.initialiseTargetList(targetList)
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.onboarding_fragment_placeholder, spotlightFragment)
+          .commit()
+
+    }
   }
 }
