@@ -290,7 +290,10 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>, rawUserAnswer: RawUserAnswer?) {
+  private fun processEphemeralStateResult(
+    result: AsyncResult<EphemeralState>,
+    rawUserAnswer: RawUserAnswer?
+  ) {
     when (result) {
       is AsyncResult.Failure ->
         oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)

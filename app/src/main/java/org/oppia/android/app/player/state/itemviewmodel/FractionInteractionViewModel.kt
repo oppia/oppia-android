@@ -90,7 +90,7 @@ class FractionInteractionViewModel private constructor(
   }
 
   override fun getRawUserAnswer(): RawUserAnswer? = RawUserAnswer.newBuilder().apply {
-    if(answerText.isNotEmpty()) {
+    if (answerText.isNotEmpty()) {
       fraction = answerText.toString()
     }
   }.build()
