@@ -193,17 +193,17 @@ class AddProfileActivityTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.add_profile_activity_user_name)).check(
+      onView(withId(R.id.add_profile_activity_user_name_edit_text)).check(
         matches(
           withText(
             context.resources.getString(R.string.add_profile_required)
           )
         )
       ).check(
-          matches(
-            isDisplayed()
-          )
+        matches(
+          isDisplayed()
         )
+      )
     }
   }
 
