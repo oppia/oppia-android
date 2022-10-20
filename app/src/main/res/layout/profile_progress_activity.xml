@@ -7,22 +7,15 @@
   android:orientation="vertical"
   tools:context=".app.profileprogress.ProfileProgressActivity">
 
-  <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/profile_progress_activity_app_bar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/profile_progress_activity_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="end"
-      android:background="@color/oppia_primary"
+      android:background="@color/component_color_shared_activity_toolbar_color"
       android:minHeight="?attr/actionBarSize"
       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
       app:titleTextAppearance="@style/ToolbarTitle" />
-  </com.google.android.material.appbar.AppBarLayout>
 
   <FrameLayout
     android:layout_width="match_parent"
