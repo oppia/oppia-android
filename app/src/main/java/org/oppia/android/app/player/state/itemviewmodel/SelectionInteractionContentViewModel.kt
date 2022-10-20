@@ -20,8 +20,19 @@ class SelectionInteractionContentViewModel(
     if (isCurrentlySelected != shouldNowBeSelected) {
       isAnswerSelected.set(shouldNowBeSelected)
     }
-    selectionInteractionViewModel.selectedItemsList?.forEach {
-      it.set(isAnswerSelected.get())
+  }
+
+  fun enableItem(): Boolean {
+    return if (selectionInteractionViewModel.selectedItems.size == selectionInteractionViewModel.maxAllowableSelectionCount) {
+      selectionInteractionViewModel.enabledItemsList.forEach {
+        it.set(isAnswerSelected.get())
+      }
+      selectionInteractionViewModel.enabledItemsList[itemIndex].get()
+    } else {
+      selectionInteractionViewModel.enabledItemsList.forEach {
+        it.set(true)
+      }
+      true
     }
   }
 }

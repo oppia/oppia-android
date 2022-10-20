@@ -28,6 +28,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:checked="@{viewModel.answerSelected}"
+      android:enabled="@{viewModel.enableItem}"
       android:clickable="false"
       android:focusable="false"
       android:labelFor="@id/multiple_choice_content_text_view"

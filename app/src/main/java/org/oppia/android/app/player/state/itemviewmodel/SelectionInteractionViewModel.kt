@@ -46,19 +46,19 @@ class SelectionInteractionViewModel private constructor(
   private val minAllowableSelectionCount: Int by lazy {
     interaction.customizationArgsMap["minAllowableSelectionCount"]?.signedInt ?: 1
   }
-  private val maxAllowableSelectionCount: Int by lazy {
+  val maxAllowableSelectionCount: Int by lazy {
     // Assume that at least 1 answer always needs to be submitted, and that the max can't be less than the min for cases
     // when either of the counts are not specified.
     interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt
       ?: minAllowableSelectionCount
   }
-  private val selectedItems: MutableList<Int> = mutableListOf()
+  val selectedItems: MutableList<Int> = mutableListOf()
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText = ObservableField("Please select all correct choices")
-  val selectedItemsList: List<ObservableBoolean>? = null
+  val enabledItemsList by lazy { List(choiceItems.size) { ObservableBoolean() } }
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -206,7 +206,7 @@ class SelectionInteractionViewModel private constructor(
     private fun computeChoiceItems(
       choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
-      selectionInteractionViewModel: SelectionInteractionViewModel
+      selectionInteractionViewModel: SelectionInteractionViewModel,
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
