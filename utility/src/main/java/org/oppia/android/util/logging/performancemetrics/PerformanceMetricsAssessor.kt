@@ -40,16 +40,15 @@ interface PerformanceMetricsAssessor {
   fun computeCpuSnapshotAtCurrentTime(): CpuSnapshot
 
   /** Returns the relative CPU usage after comparing [firstCpuSnapshot] and [secondCpuSnapshot]. */
-  fun getRelativeCpuUsage(firstCpuSnapshot: CpuSnapshot, secondCpuSnapshot: CpuSnapshot): Double
+  fun getRelativeCpuUsage(firstCpuSnapshot: CpuSnapshot, secondCpuSnapshot: CpuSnapshot): Double?
 
   /**
    * Container that consists of all the necessary values that are required for calculating CPU usage
    * at that point of time.
    *
-   * @property iconification denotes the current app state / iconification.
-   * @property appTimeMillis denotes the amount of time since the current instance of the app begun.
-   * @property cpuTimeMillis denotes the amount of time CPU ran for this process.
-   * @property numberOfOnlineCores denotes the number of currently online/available cores.
+   * @property appTimeMillis denotes the amount of time since the current instance of the app begun
+   * @property cpuTimeMillis denotes the amount of time CPU ran for this process
+   * @property numberOfOnlineCores denotes the number of currently online/available cores
    */
   data class CpuSnapshot(
     val appTimeMillis: Long,

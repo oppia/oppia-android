@@ -69,7 +69,7 @@ class ApplicationLifecycleObserver @Inject constructor(
    * [BACKGROUND_SCREEN] is returned when the UI is inactive or when the app is backgrounded.
    * [FOREGROUND_SCREEN] is never returned.
    * [SCREEN_NAME_UNSPECIFIED] is the default value for [currentScreen] and is returned until a
-   * currentScreen value hasn't been set by the launcher activity's onResume method.
+   * currentScreen value has been set by the launcher activity's onResume method.
    */
   fun getCurrentScreen(): ScreenName = currentScreen
 

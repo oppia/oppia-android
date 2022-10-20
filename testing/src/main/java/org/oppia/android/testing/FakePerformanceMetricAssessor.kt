@@ -16,7 +16,7 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
   private var testTotalReceivedBytes = 0L
   private var testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
   private var testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
-  private var testRelativeCpuUsage = 0.00
+  private var testRelativeCpuUsage: Double? = 0.00
 
   override fun getApkSize(): Long = testApkSize
 
@@ -32,12 +32,13 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
 
   override fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier = testDeviceMemoryTier
 
-  override fun computeCpuSnapshotAtCurrentTime(): CpuSnapshot = CpuSnapshot(0L, 0L, 1)
+  override fun computeCpuSnapshotAtCurrentTime(): CpuSnapshot =
+    CpuSnapshot(appTimeMillis = 0L, cpuTimeMillis = 0L, numberOfOnlineCores = 1)
 
   override fun getRelativeCpuUsage(
     firstCpuSnapshot: CpuSnapshot,
     secondCpuSnapshot: CpuSnapshot
-  ): Double {
+  ): Double? {
     return testRelativeCpuUsage
   }
 
@@ -76,8 +77,8 @@ class FakePerformanceMetricAssessor @Inject constructor() : PerformanceMetricsAs
     testDeviceMemoryTier = memoryTier
   }
 
-  /** Sets [relativeCpuUsage] as the value of [testRelativeCpuUsage]. */
-  fun setRelativeCpuUsage(relativeCpuUsage: Double) {
+  /** Sets [relativeCpuUsage] as the value which is returned by [getRelativeCpuUsage]. */
+  fun setRelativeCpuUsage(relativeCpuUsage: Double?) {
     testRelativeCpuUsage = relativeCpuUsage
   }
 }

@@ -136,7 +136,7 @@ annotation class EnablePerformanceMetricsCollection
 const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_collection"
 
 /** Default value for whether to record performance metrics. */
-const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = true
+const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls the time interval in minutes of uploading

@@ -227,35 +227,35 @@ class PerformanceMetricsAssessorImplTest {
   @Test
   @RunParameterized(
     Iteration(
-      "zeroValue",
+      "zeroDoubleValue",
       "secondCpuValue=1000",
       "secondAppTimeValue=1665790700",
       "secondNumberOfOnlineCoresValue=2",
       "relativeCpuUsage=0.00"
     ),
     Iteration(
-      "prodValueExample1",
+      "nonZeroDoubleValueTillTwoDecimalPoints",
       "secondCpuValue=1100",
       "secondAppTimeValue=1665790700",
       "secondNumberOfOnlineCoresValue=2",
       "relativeCpuUsage=0.50"
     ),
     Iteration(
-      "prodValueExample2",
+      "nonZeroDoubleValueTillSevenDecimalPoints",
       "secondCpuValue=12100",
       "secondAppTimeValue=1869790700",
       "secondNumberOfOnlineCoresValue=8",
       "relativeCpuUsage=0.0000077"
     ),
     Iteration(
-      "prodValueExample3",
+      "nonZeroDoubleValueTillElevenDecimalPoints",
       "secondCpuValue=2100",
       "secondAppTimeValue=186933790700",
       "secondNumberOfOnlineCoresValue=3",
       "relativeCpuUsage=0.00000000239"
     ),
   )
-  fun testAssessor_setFirstAndSecondSnapshot_verifyCorrectCpuUsageIsReturned() {
+  fun testAssessor_setFirstAndSecondSnapshot_returnsCorrectRelativeCpuUsage() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       TEST_FIRST_PROCESS_TIME,
       TEST_FIRST_CPU_TIME,
@@ -322,7 +322,7 @@ class PerformanceMetricsAssessorImplTest {
       "secondNumberOfOnlineCoresValue=2"
     ),
   )
-  fun testAssessor_inputFailureSystemValues_calculateCpuUsage_verifyFailure() {
+  fun testAssessor_inputFailureSystemValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       TEST_FIRST_PROCESS_TIME,
       TEST_FIRST_CPU_TIME,
@@ -337,14 +337,12 @@ class PerformanceMetricsAssessorImplTest {
 
     val relativeCpuUsage =
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
-    val exception = fakeExceptionLogger.getMostRecentException()
 
-    assertThat(relativeCpuUsage).isWithin(1e-5).of(-1.00)
-    assertThat(exception).isInstanceOf(IllegalArgumentException::class.java)
+    assertThat(relativeCpuUsage).isNull()
   }
 
   @Test
-  fun testAssessor_getCurrentCpuSnapshot_verifySnapshotReturnsCurrentValues() {
+  fun testAssessor_getCurrentCpuSnapshot_snapshotHasCurrentAppTime() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_CURRENT_TIME)
 

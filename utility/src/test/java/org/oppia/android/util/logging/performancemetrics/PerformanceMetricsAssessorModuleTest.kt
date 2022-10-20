@@ -40,9 +40,6 @@ class PerformanceMetricsAssessorModuleTest {
   @Inject
   lateinit var performanceMetricsAssessor: PerformanceMetricsAssessor
 
-  @Inject
-  lateinit var context: Context
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

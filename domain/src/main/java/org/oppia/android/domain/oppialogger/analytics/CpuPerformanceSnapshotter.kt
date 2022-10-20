@@ -47,18 +47,22 @@ class CpuPerformanceSnapshotter(
         when (message) {
           is CommandMessage.SwitchIconification -> {
             ++switchIconificationCount
-            // since there's a switch in the current iconification of the app, we'd cut short the
-            // existing delay and log the current CPU usage relative to the previously logged one.
-            sendLogSnapshotDiffCommand(
-              performanceMetricsAssessor.getRelativeCpuUsage(
-                previousSnapshot,
-                performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
-              ),
-              currentIconification
+            // Since there's a switch in the current iconification of the app, we'd cut short the
+            // existing delay and log the current CPU usage relative to the previously logged one
+            // without this explicit log command.
+            val relativeCpuUsage = performanceMetricsAssessor.getRelativeCpuUsage(
+              previousSnapshot,
+              performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
             )
+            relativeCpuUsage?.let { value ->
+              sendLogSnapshotDiffCommand(
+                value,
+                currentIconification
+              )
+            }
             currentIconification = message.newIconification
             previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
-            // schedule CPU usage logging for the new app iconification.
+            // Schedule CPU usage logging for the new app iconification.
             sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)
           }
           is CommandMessage.ScheduleTakeSnapshot -> scheduleTakeSnapshot(
@@ -68,10 +72,14 @@ class CpuPerformanceSnapshotter(
           is CommandMessage.TakeSnapshot -> {
             if (message.switchId == switchIconificationCount) {
               val newSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
-              sendLogSnapshotDiffCommand(
-                performanceMetricsAssessor.getRelativeCpuUsage(previousSnapshot, newSnapshot),
-                currentIconification
-              )
+              val relativeCpuUsage =
+                performanceMetricsAssessor.getRelativeCpuUsage(previousSnapshot, newSnapshot)
+              relativeCpuUsage?.let { value ->
+                sendLogSnapshotDiffCommand(
+                  value,
+                  currentIconification
+                )
+              }
               previousSnapshot = newSnapshot
               sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)
             }

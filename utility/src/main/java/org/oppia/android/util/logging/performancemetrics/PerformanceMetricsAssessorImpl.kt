@@ -7,6 +7,9 @@ import android.os.Build
 import android.os.Process
 import android.system.Os
 import android.system.OsConstants
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.LOW_MEMORY_TIER
@@ -14,23 +17,14 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.LOW_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
 import org.oppia.android.util.system.OppiaClock
-import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
-
-private const val DEFAULT_CPU_USAGE = -1.0
 
 /** Utility to extract performance metrics from the underlying Android system. */
 @Singleton
 class PerformanceMetricsAssessorImpl @Inject constructor(
   private val oppiaClock: OppiaClock,
   private val context: Context,
-  private val exceptionLogger: ExceptionLogger,
-  private val consoleLogger: ConsoleLogger,
   @LowStorageTierUpperBound private val lowStorageTierUpperBound: Long,
   @MediumStorageTierUpperBound private val mediumStorageTierUpperBound: Long,
   @LowMemoryTierUpperBound private val lowMemoryTierUpperBound: Long,
@@ -95,44 +89,21 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   override fun getRelativeCpuUsage(
     firstCpuSnapshot: CpuSnapshot,
     secondCpuSnapshot: CpuSnapshot
-  ): Double {
+  ): Double? {
     val deltaCpuTimeMs = if (secondCpuSnapshot.cpuTimeMillis >= firstCpuSnapshot.cpuTimeMillis) {
       secondCpuSnapshot.cpuTimeMillis - firstCpuSnapshot.cpuTimeMillis
-    } else {
-      val exceptionMessage =
-        "Initial CPU time is greater than that of second, resulting in negative CPU Usage."
-      exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
-      consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
-      return DEFAULT_CPU_USAGE
-    }
+    } else { return null }
     val deltaProcessTimeMs = if (secondCpuSnapshot.appTimeMillis > firstCpuSnapshot.appTimeMillis) {
       secondCpuSnapshot.appTimeMillis - firstCpuSnapshot.appTimeMillis
-    } else {
-      val exceptionMessage =
-        "Initial process time is greater than that of second, resulting in negative CPU Usage."
-      exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
-      consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
-      return DEFAULT_CPU_USAGE
-    }
+    } else { return null }
     val numberOfCores =
       if (secondCpuSnapshot.numberOfOnlineCores >= 1 && firstCpuSnapshot.numberOfOnlineCores >= 1) {
         (secondCpuSnapshot.numberOfOnlineCores + firstCpuSnapshot.numberOfOnlineCores) / 2.0
-      } else {
-        val exceptionMessage = "Either of first or second CpuSnapshot's number of online cores " +
-          "is less than 1 resulting in negative CPU Usage."
-        exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
-        consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
-        return DEFAULT_CPU_USAGE
-      }
+      } else { return null }
 
     return when (val relativeCpuUsage = deltaCpuTimeMs / (deltaProcessTimeMs * numberOfCores)) {
       in 0.0..1.0 -> relativeCpuUsage
-      else -> {
-        val exceptionMessage = "Incorrect relative CPU usage value."
-        exceptionLogger.logException(IllegalArgumentException(exceptionMessage))
-        consoleLogger.e("PerformanceMetricsAssessorImpl.kt", exceptionMessage)
-        DEFAULT_CPU_USAGE
-      }
+      else -> { null }
     }
   }
 
@@ -140,8 +111,11 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
   private fun getNumberOfOnlineCores(): Int {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       // Returns the number of processors currently available in the system. This may be less than
-      // the total number of configured processors because some of them may be offline.
-      // reference: https://man7.org/linux/man-pages/man3/sysconf.3.html
+      // the total number of configured processors because some of them may be offline. It must also
+      // be noted that a similar OsConstant, _SC_NPROCESSORS_CONF also exists which provides the
+      // total number of configured processors in the system. This value is similar to that
+      // returned from Runtime.getRuntime().availableProcessors().
+      // Reference: https://man7.org/linux/man-pages/man3/sysconf.3.html
       Os.sysconf(OsConstants._SC_NPROCESSORS_ONLN).toInt()
     } else {
       // Returns the maximum number of processors available. This value is never smaller than one.

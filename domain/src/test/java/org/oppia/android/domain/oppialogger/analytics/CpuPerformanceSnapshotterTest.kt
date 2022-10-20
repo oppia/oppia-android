@@ -111,7 +111,7 @@ class CpuPerformanceSnapshotterTest {
   }
 
   @Test
-  fun testSnapshotter_moveToForeground_moveToBackground_verifySequentialLogging() {
+  fun testSnapshotter_moveToForeground_moveToBackground_logsSequentially() {
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
@@ -121,11 +121,11 @@ class CpuPerformanceSnapshotterTest {
     val count = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
     val latestEvents =
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(count)
-    // event that got logged after time advancement.
+    // Event that got logged after time advancement.
     val latestEvent = latestEvents[count - 1]
-    // event that got logged on second iconification update.
+    // Event that got logged on second iconification update.
     val secondLatestEvent = latestEvents[count - 2]
-    // event that got logged on first iconification update.
+    // Event that got logged on first iconification update.
     val thirdLatestEvent = latestEvents[count - 3]
 
     assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
@@ -134,7 +134,7 @@ class CpuPerformanceSnapshotterTest {
   }
 
   @Test
-  fun testSnapshotter_moveToForegorund_logsCpuUsage_verifyLoggingOfSecondCpuLogAfterCorrectDelay() {
+  fun testSnapshotter_moveToForegorund_logsCpuUsage_logsCpuUsageAfterCorrectDelay() {
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -146,16 +146,16 @@ class CpuPerformanceSnapshotterTest {
 
     assertThat(latestEvent.isInitialized).isTrue()
     assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
-    // verifying that a CPU usage metric is logged after delay.
+    // Verifying that a CPU usage metric is logged after delay.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
       .isWithin(1e-5).of(TEST_CPU_USAGE_TWO)
-    // verifying that the logged CPU usage metric does not equal to the previously logged metric.
+    // Verifying that the logged CPU usage metric does not equal to the previously logged metric.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
       .isNotWithin(1e-5).of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
   }
 
   @Test
-  fun testSnapshotter_moveToFg_logsCpuUsage_verifyLoggingOfSecondCpuLogBeforeCorrectDelayFails() {
+  fun testSnapshotter_moveToFg_logsCpuUsage_failsToLogSecondCpuLogBeforeCorrectDelay() {
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -167,7 +167,7 @@ class CpuPerformanceSnapshotterTest {
   }
 
   @Test
-  fun testSnapshotter_moveToBackgorund_logsCpuUsage_logsCpuUsageAfterDelay_verifyCorrectDelay() {
+  fun testSnapshotter_moveToBackgorund_logsCpuUsage_logsCpuUsageAfterCorrectDelay() {
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -179,16 +179,16 @@ class CpuPerformanceSnapshotterTest {
 
     assertThat(latestEvent.isInitialized).isTrue()
     assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
-    // verifying that a CPU usage metric is logged after delay.
+    // Verifying that a CPU usage metric is logged after delay.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
       .isWithin(1e-5).of(TEST_CPU_USAGE_TWO)
-    // verifying that the logged CPU usage metric does not equal to the previously logged metric.
+    // Verifying that the logged CPU usage metric does not equal to the previously logged metric.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
       .isNotWithin(1e-5).of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
   }
 
   @Test
-  fun testSnapshotter_moveToBg_logsCpuUsage_verifyLoggingOfSecondCpuLogBeforeCorrectDelayFails() {
+  fun testSnapshotter_moveToBg_logsCpuUsage_failsToLogSecondCpuLogBeforeCorrectDelay() {
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -200,7 +200,7 @@ class CpuPerformanceSnapshotterTest {
   }
 
   @Test
-  fun testSnapshotter_moveToBg_logsCpuUsage_moveToFg_verifyLoggingOfTailEventBeforeNewEvent() {
+  fun testSnapshotter_moveToBg_logsCpuUsage_moveToFg_logsTailEventBeforeNewEvent() {
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -219,7 +219,7 @@ class CpuPerformanceSnapshotterTest {
   }
 
   @Test
-  fun testSnapshotter_logCpuUsage_verifyCorrectCpuUsageValueIsLogged() {
+  fun testSnapshotter_logCpuUsage_correctCpuUsageValueIsLogged() {
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -228,6 +228,15 @@ class CpuPerformanceSnapshotterTest {
 
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
       .isWithin(1e-5).of(TEST_CPU_USAGE_ONE)
+  }
+
+  @Test
+  fun testSnapshotter_relativeCpuUsageEqualsNull_doesNotLogCpuUsage() {
+    fakePerformanceMetricAssessor.setRelativeCpuUsage(null)
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    testCoroutineDispatchers.runCurrent()
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -244,7 +253,7 @@ class CpuPerformanceSnapshotterTest {
     }
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
+    // Module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
     @Provides
     fun provideEnableConsoleLog(): Boolean = true
