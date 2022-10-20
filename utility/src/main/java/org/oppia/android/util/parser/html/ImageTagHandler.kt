@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.html
 
 import android.text.Editable
 import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
@@ -9,6 +10,7 @@ import org.xml.sax.Attributes
 /** The custom tag corresponding to [ImageTagHandler]. */
 const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
+private const val CUSTOM_IMG_ALT_TEXT_ATTRIBUTE = "alt-with-value"
 
 /**
  * A custom tag handler for supporting custom Oppia images parsed with [CustomHtmlContentHandler].
@@ -45,5 +47,24 @@ class ImageTagHandler(
         )
       }
     } else consoleLogger.e("ImageTagHandler", "Failed to parse image tag")
+  }
+
+  override fun handleContentDescription(
+    attributes: Attributes,
+    openIndex: Int,
+    closeIndex: Int,
+    output: Editable
+  ) {
+    val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
+    if (contentDescription != null) {
+      val spannableBuilder = SpannableStringBuilder(contentDescription)
+      spannableBuilder.setSpan(
+        contentDescription,
+        /* start= */ 0,
+        /* end= */ contentDescription.length,
+        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+      output.replace(openIndex, closeIndex, spannableBuilder)
+    } else consoleLogger.e("ImageTagHandler", "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
   }
 }

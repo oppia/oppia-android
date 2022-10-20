@@ -113,6 +113,8 @@ class CustomHtmlContentHandler private constructor(
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        customTagHandlers.getValue(tag)
+          .handleContentDescription(attributes, openTagIndex, output.length, output)
       }
     }
   }
@@ -185,6 +187,21 @@ class CustomHtmlContentHandler private constructor(
      * @param indentation The zero-based indentation level of this item.
      */
     fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
+
+    /**
+     * Called when a custom tag is encountered. This is always called after the closing tag.
+     *
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which spans can be added
+     */
+    fun handleContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {}
   }
 
   /**
