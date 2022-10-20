@@ -23,7 +23,8 @@ class SelectionInteractionContentViewModel(
   }
 
   fun enableItem(): Boolean {
-    return if (selectionInteractionViewModel.selectedItems.size == selectionInteractionViewModel.maxAllowableSelectionCount) {
+    return if (selectionInteractionViewModel.selectedItems.size ==
+      selectionInteractionViewModel.maxAllowableSelectionCount) {
       selectionInteractionViewModel.enabledItemsList.forEach {
         it.set(isAnswerSelected.get())
       }
