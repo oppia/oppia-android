@@ -70,8 +70,8 @@ class SpotlightFragment @Inject constructor(
     if (accessibilityServiceImpl.isScreenReaderEnabled()) {
       activity.supportFragmentManager.beginTransaction().remove(this)
     }else {
-      spotlightTargetList.forEach {
-        checkSpotlightViewState(it)
+      spotlightTargetList.forEachIndexed { _, spotlightTarget ->
+        checkSpotlightViewState(spotlightTarget)
       }
     }
   }
