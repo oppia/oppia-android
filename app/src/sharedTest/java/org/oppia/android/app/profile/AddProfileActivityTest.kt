@@ -205,6 +205,44 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_inputPin_hasPrefixTextRequired_IsDisplayedOnFocus() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputConfirmPin_hasPrefixTextRequired_IsDisplayedOnFocus() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
+    }
+  }
+
+  @Test
   fun testAddProfileActivity_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
