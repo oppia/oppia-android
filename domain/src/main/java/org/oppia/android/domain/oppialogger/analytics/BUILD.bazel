@@ -139,7 +139,7 @@ kt_android_library(
     srcs = [
         "CpuPerformanceSnapshotter.kt",
     ],
-    visibility = ["//:oppia_api_visibility"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":cpu_performance_logging_time_period_millis",
         ":dagger",

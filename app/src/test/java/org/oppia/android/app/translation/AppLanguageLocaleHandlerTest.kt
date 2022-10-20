@@ -45,6 +45,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 
 /** Tests for [AppLanguageLocaleHandler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -332,7 +333,7 @@ class AppLanguageLocaleHandlerTest {
       AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class, CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
