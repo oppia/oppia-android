@@ -25,12 +25,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -184,7 +186,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_hasPreffixTextRequiredIsDisplayed() {
+  fun testAddProfileActivity_inputName_hasPrefixTextRequired_IsDisplayedOnFocus() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -193,17 +195,12 @@ class AddProfileActivityTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.add_profile_activity_user_name_edit_text)).check(
-        matches(
-          withText(
-            context.resources.getString(R.string.add_profile_required)
-          )
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
-      ).check(
-        matches(
-          isDisplayed()
-        )
-      )
+      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
   }
 
