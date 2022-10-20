@@ -96,7 +96,7 @@ import javax.inject.Singleton
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
-    MetricLogSchedulerModule::class, ActivityRouterModule::class
+    MetricLogSchedulerModule::class, ActivityRouterModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
   ]
