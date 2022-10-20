@@ -192,14 +192,14 @@ class AddProfileActivityTest {
           isDescendantOfA(withId(R.id.add_profile_activity_user_name))
         )
       ).perform(click())
-        .check(
-          matches(
-            withText(
-              context.resources.getString(R.string.add_profile_required)
-            )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_activity_user_name)).check(
+        matches(
+          withText(
+            context.resources.getString(R.string.add_profile_required)
           )
         )
-        .check(
+      ).check(
           matches(
             isDisplayed()
           )
