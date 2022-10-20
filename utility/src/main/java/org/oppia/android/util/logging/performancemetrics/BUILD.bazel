@@ -52,6 +52,8 @@ kt_android_library(
         ":performance_metrics_configurations_module",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module"
     ],
 )
 
