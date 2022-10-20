@@ -222,9 +222,7 @@ class AddProfileActivityTest {
           withId(R.id.add_profile_activity_pin_edit_text),
           isDescendantOfA(withId(R.id.add_profile_activity_pin))
         )
-      ).perform(
-        click()
-      )
+      ).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
@@ -271,9 +269,7 @@ class AddProfileActivityTest {
           withId(R.id.add_profile_activity_confirm_pin_edit_text),
           isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
         )
-      ).perform(
-        click()
-      )
+      ).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
