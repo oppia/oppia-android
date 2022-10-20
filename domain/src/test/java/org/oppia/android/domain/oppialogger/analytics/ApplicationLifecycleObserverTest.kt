@@ -86,6 +86,12 @@ class ApplicationLifecycleObserverTest {
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
+  @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
+  var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
+  @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
+  var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
+
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TextInputActionTestActivity>(
@@ -327,15 +333,11 @@ class ApplicationLifecycleObserverTest {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
 
-    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    ).filter {
-      it.loggableMetric.hasCpuUsageMetric()
-    }
+    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
-    assertThat(event).isNotEmpty()
-    assertThat(event[0].currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
+    assertThat(event.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
   }
 
   @Test
@@ -344,15 +346,11 @@ class ApplicationLifecycleObserverTest {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
 
-    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-    ).filter {
-      it.loggableMetric.hasCpuUsageMetric()
-    }
+    val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
-    assertThat(event).isNotEmpty()
-    assertThat(event[0].currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+    assertThat(event.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
   }
 
   private fun waitInBackgroundFor(millis: Long) {
