@@ -99,6 +99,7 @@ class MetricLogSchedulingWorkerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -106,7 +107,6 @@ class MetricLogSchedulingWorkerTest {
       .setWorkerFactory(metricLogSchedulingWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
   }
 
   @Test

@@ -48,6 +48,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.FakePerformanceMetricAssessor
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -85,6 +86,9 @@ class ApplicationLifecycleObserverTest {
 
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+
+  @Inject
+  lateinit var fakePerformanceMetricsAssessor: FakePerformanceMetricAssessor
 
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
@@ -279,6 +283,7 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onSecondActivityResume_verifyStartupLatencyIsLoggedOnce() {
     setUpTestApplicationComponent()
+
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
@@ -343,7 +348,6 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
     setUpTestApplicationComponent()
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
@@ -385,6 +389,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpTestApplicationComponent() {
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
@@ -434,7 +439,7 @@ class ApplicationLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class,
+      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
