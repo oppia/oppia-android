@@ -184,6 +184,24 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_inputName_hasPreffixTextRequiredIsDisplayed() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.resources.getString(R.string.add_profile_required))).check(
+        matches(
+          isDisplayed()
+        )
+      )
+    }
+  }
+
+  @Test
   fun testAddProfileActivity_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
