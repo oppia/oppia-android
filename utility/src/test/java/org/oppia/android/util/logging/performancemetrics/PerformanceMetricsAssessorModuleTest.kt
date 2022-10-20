@@ -12,22 +12,22 @@ import dagger.Module
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.FakeEventLogger
-import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.util.logging.EventLogger
-import org.oppia.android.util.logging.ExceptionLogger
 
 /** Tests for [PerformanceMetricsAssessorModule]. */
 // FunctionName: test names are conventionally named with underscores.
