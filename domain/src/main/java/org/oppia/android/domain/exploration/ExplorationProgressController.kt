@@ -852,7 +852,7 @@ class ExplorationProgressController @Inject constructor(
     explorationProgress.stateDeck.getCurrentEphemeralState(
       retrieveCurrentHelpIndex(),
       startSessionTimeMs + continueButtonAnimationDelay,
-      isContinueButtonAnimationSeen ?: false
+      isContinueButtonAnimationSeen
     )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
@@ -1055,7 +1055,7 @@ class ExplorationProgressController @Inject constructor(
     private val learnerId: String?,
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
-    var isContinueButtonAnimationSeen: Boolean?,
+    var isContinueButtonAnimationSeen: Boolean,
     private val profileManagementController: ProfileManagementController,
     private val profileId: ProfileId
   ) {
@@ -1128,8 +1128,8 @@ class ExplorationProgressController @Inject constructor(
     suspend fun endState() {
       stateAnalyticsLogger?.logEndCard()
       explorationAnalyticsLogger.endCard()
-      isContinueButtonAnimationSeen?.let {
-        if (!it) profileManagementController.markContinueButtonAnimationSeen(profileId)
+      if (!isContinueButtonAnimationSeen) {
+        profileManagementController.markContinueButtonAnimationSeen(profileId)
       }
       isContinueButtonAnimationSeen = true
     }
