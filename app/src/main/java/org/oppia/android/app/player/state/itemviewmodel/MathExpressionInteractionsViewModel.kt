@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
@@ -60,6 +61,7 @@ import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 class MathExpressionInteractionsViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -104,8 +106,13 @@ class MathExpressionInteractionsViewModel private constructor(
           )
         }
       }
+
+    if (rawUserAnswer!=null) {
+      answerText = rawUserAnswer.mathExpression
+    }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -124,30 +131,28 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-          " math_content-with-value=\"$mathContentValue\" />"
+            " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-        answerTextString,
-        useFractionsForDivision,
-        allowedVariables,
-        mathExpressionAccessibilityUtil,
-        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-      ) ?: answerTextString
+          answerTextString,
+          useFractionsForDivision,
+          allowedVariables,
+          mathExpressionAccessibilityUtil,
+          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+        ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
     }
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
-  override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    if (answerText.isNotEmpty()) {
+      mathExpression = answerText.toString()
+    }
+  }.build()
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
@@ -234,6 +239,7 @@ class MathExpressionInteractionsViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -244,6 +250,7 @@ class MathExpressionInteractionsViewModel private constructor(
       return MathExpressionInteractionsViewModel(
         interaction,
         hasConversationView,
+        rawUserAnswer,
         answerErrorReceiver,
         writtenTranslationContext,
         resourceHandler,

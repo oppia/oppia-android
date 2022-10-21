@@ -94,6 +94,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.model.RawUserAnswer
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -195,6 +196,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
+    rawUserAnswer: RawUserAnswer?,
     isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
@@ -231,6 +233,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interaction,
           hasPreviousState,
           gcsEntityId,
+          rawUserAnswer,
           ephemeralState.writtenTranslationContext
         )
       }
@@ -305,12 +308,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
     interaction: Interaction,
     hasPreviousButton: Boolean,
     gcsEntityId: String,
+    rawUserAnswer: RawUserAnswer?,
     writtenTranslationContext: WrittenTranslationContext
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory.create(
       gcsEntityId,
       hasConversationView,
+      rawUserAnswer,
       interaction,
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,

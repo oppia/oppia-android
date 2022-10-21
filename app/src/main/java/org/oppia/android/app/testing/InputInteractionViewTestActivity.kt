@@ -158,6 +158,7 @@ class InputInteractionViewTestActivity :
     return create(
       entityId = "fake_entity_id",
       hasConversationView = false,
+      rawUserAnswer = null,
       interaction = interaction,
       interactionAnswerReceiver = this@InputInteractionViewTestActivity,
       answerErrorReceiver = this@InputInteractionViewTestActivity,

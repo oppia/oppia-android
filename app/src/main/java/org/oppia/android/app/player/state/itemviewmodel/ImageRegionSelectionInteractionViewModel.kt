@@ -24,6 +24,7 @@ import javax.inject.Inject
 class ImageRegionSelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   val isSplitView: Boolean,
@@ -84,13 +85,12 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
-  override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    if (answerText.isNotEmpty()) {
+      val answerTextString = answerText.toString()
+      imageRegionSelection = parseClickOnImage(answerTextString)
+    }
+  }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
@@ -107,6 +107,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -117,6 +118,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       return ImageRegionSelectionInteractionViewModel(
         entityId,
         hasConversationView,
+        rawUserAnswer,
         interaction,
         answerErrorReceiver,
         isSplitView,

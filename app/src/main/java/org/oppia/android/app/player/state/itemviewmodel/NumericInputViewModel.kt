@@ -20,6 +20,7 @@ import javax.inject.Inject
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel private constructor(
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
@@ -41,8 +42,12 @@ class NumericInputViewModel private constructor(
           )
         }
       }
+    if (rawUserAnswer!=null) {
+      answerText = rawUserAnswer.numeric
+    }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   /** It checks the pending error for the current numeric input, and correspondingly updates the error string based on the specified error category. */
@@ -91,13 +96,12 @@ class NumericInputViewModel private constructor(
     }
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
-  override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    if(answerText.isNotEmpty()) {
+      val answerTextString = answerText.toString()
+      numeric = answerTextString
+    }
+  }.build()
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
@@ -106,6 +110,7 @@ class NumericInputViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -115,6 +120,7 @@ class NumericInputViewModel private constructor(
     ): StateItemViewModel {
       return NumericInputViewModel(
         hasConversationView,
+        rawUserAnswer,
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,

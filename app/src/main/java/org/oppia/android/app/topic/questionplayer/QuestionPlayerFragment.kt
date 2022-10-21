@@ -22,6 +22,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.RawUserAnswer
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -52,8 +53,12 @@ class QuestionPlayerFragment :
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to QuestionPlayerFragment"
     }
+    var rawUserAnswer: RawUserAnswer? = null
+    if (savedInstanceState != null) {
+      rawUserAnswer = savedInstanceState.getProto("Answer", RawUserAnswer.getDefaultInstance())
+    }
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
-    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, profileId)
+    return questionPlayerFragmentPresenter.handleCreateView(inflater, container, rawUserAnswer, profileId)
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) {
@@ -82,6 +87,11 @@ class QuestionPlayerFragment :
 
   override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
     questionPlayerFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putProto("Answer", questionPlayerFragmentPresenter.handleOnSavedInstance())
+  }
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 

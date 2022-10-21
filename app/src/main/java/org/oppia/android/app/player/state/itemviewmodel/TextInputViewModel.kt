@@ -21,6 +21,7 @@ import javax.inject.Inject
 class TextInputViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
@@ -42,6 +43,9 @@ class TextInputViewModel private constructor(
           )
         }
       }
+    if (rawUserAnswer!=null) {
+      answerText = rawUserAnswer.text
+    }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
@@ -74,13 +78,11 @@ class TextInputViewModel private constructor(
     }
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
-  override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    if (answerText.isNotEmpty()) {
+       text = answerText.toString()
+    }
+  }.build()
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
@@ -111,6 +113,7 @@ class TextInputViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -121,6 +124,7 @@ class TextInputViewModel private constructor(
       return TextInputViewModel(
         interaction,
         hasConversationView,
+        rawUserAnswer,
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,

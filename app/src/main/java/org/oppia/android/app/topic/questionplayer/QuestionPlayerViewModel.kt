@@ -12,6 +12,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
+import org.oppia.android.app.model.RawUserAnswer
 
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor(
@@ -100,6 +101,22 @@ class QuestionPlayerViewModel @Inject constructor(
     } else {
       null
     }
+  }
+
+  fun getRawUserAnswer(
+    retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
+  ): RawUserAnswer {
+    return getRawUserAnswerWithError(
+      retrieveAnswerHandler(
+        getAnswerItemList()
+      )
+    ) ?: RawUserAnswer.getDefaultInstance()
+  }
+
+  private fun getRawUserAnswerWithError(
+    answerHandler: InteractionAnswerHandler?
+  ): RawUserAnswer? {
+    return answerHandler?.getRawUserAnswer()
   }
 
   private fun getAnswerItemList(): List<StateItemViewModel> {

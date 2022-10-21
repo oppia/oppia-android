@@ -315,10 +315,6 @@ class StateFragmentPresenter @Inject constructor(
 
     Log.d("testAnswer", "Ephemeral State Called")
 
-    if (rawUserAnswer != null) {
-      viewModel.setRawUserAnswer(rawUserAnswer, recyclerViewAssembler::getPendingAnswerHandler)
-    }
-
     val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
 
@@ -330,6 +326,7 @@ class StateFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
       explorationId,
+      rawUserAnswer,
       shouldSplit
     )
 

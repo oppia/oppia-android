@@ -25,6 +25,7 @@ import javax.inject.Inject
 class RatioExpressionInputInteractionViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   val isSplitView: Boolean,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   private val writtenTranslationContext: WrittenTranslationContext,
@@ -51,8 +52,13 @@ class RatioExpressionInputInteractionViewModel private constructor(
           )
         }
       }
+
+    if (rawUserAnswer!=null) {
+      answerText = rawUserAnswer.ratioInput
+    }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -68,13 +74,11 @@ class RatioExpressionInputInteractionViewModel private constructor(
     }
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
-  override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    if (answerText.isNotEmpty()) {
+      ratioInput = answerText.toString()
+    }
+  }.build()
 
   /** It checks the pending error for the current ratio input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
@@ -144,6 +148,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -154,6 +159,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
       return RatioExpressionInputInteractionViewModel(
         interaction,
         hasConversationView,
+        rawUserAnswer,
         isSplitView,
         answerErrorReceiver,
         writtenTranslationContext,

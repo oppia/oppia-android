@@ -24,6 +24,7 @@ import javax.inject.Inject
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel private constructor(
   interaction: Interaction,
+  rawUserAnswer: RawUserAnswer?,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -48,8 +49,12 @@ class FractionInteractionViewModel private constructor(
           )
         }
       }
+    if(rawUserAnswer!=null) {
+      answerText = rawUserAnswer.fraction
+    }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -83,10 +88,6 @@ class FractionInteractionViewModel private constructor(
       errorMessage.set(pendingAnswerError)
     }
     return pendingAnswerError
-  }
-
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    Log.d("testAnswer", rawUserAnswer.fraction)
   }
 
   override fun getRawUserAnswer(): RawUserAnswer? = RawUserAnswer.newBuilder().apply {
@@ -147,6 +148,7 @@ class FractionInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -156,6 +158,7 @@ class FractionInteractionViewModel private constructor(
     ): StateItemViewModel {
       return FractionInteractionViewModel(
         interaction,
+        rawUserAnswer,
         hasConversationView,
         isSplitView,
         answerErrorReceiver,

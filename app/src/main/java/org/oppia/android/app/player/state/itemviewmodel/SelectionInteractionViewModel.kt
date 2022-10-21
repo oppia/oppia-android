@@ -28,6 +28,7 @@ enum class SelectionItemInputType {
 class SelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   interaction: Interaction,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
@@ -99,13 +100,9 @@ class SelectionInteractionViewModel private constructor(
     writtenTranslationContext = translationContext
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
-  override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    RawUserAnswer.getDefaultInstance()
+  }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
@@ -175,6 +172,7 @@ class SelectionInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -185,6 +183,7 @@ class SelectionInteractionViewModel private constructor(
       return SelectionInteractionViewModel(
         entityId,
         hasConversationView,
+        rawUserAnswer,
         interaction,
         answerErrorReceiver,
         isSplitView,

@@ -36,6 +36,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
+import org.oppia.android.app.model.RawUserAnswer
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -68,6 +69,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
+    rawUserAnswer: RawUserAnswer?,
     profileId: ProfileId
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -99,7 +101,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         helpIndex
       )
     }
-    subscribeToCurrentQuestion()
+    subscribeToCurrentQuestion(rawUserAnswer)
     return binding.root
   }
 
@@ -175,16 +177,16 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
   }
 
-  private fun subscribeToCurrentQuestion() {
+  private fun subscribeToCurrentQuestion(rawUserAnswer: RawUserAnswer?) {
     ephemeralQuestionLiveData.observe(
       fragment,
       Observer {
-        processEphemeralQuestionResult(it)
+        processEphemeralQuestionResult(it, rawUserAnswer)
       }
     )
   }
 
-  private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
+  private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>, rawUserAnswer: RawUserAnswer?) {
     when (result) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
@@ -192,11 +194,11 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         )
       }
       is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
-      is AsyncResult.Success -> processEphemeralQuestion(result.value)
+      is AsyncResult.Success -> processEphemeralQuestion(result.value, rawUserAnswer)
     }
   }
 
-  private fun processEphemeralQuestion(ephemeralQuestion: EphemeralQuestion) {
+  private fun processEphemeralQuestion(ephemeralQuestion: EphemeralQuestion, rawUserAnswer: RawUserAnswer?) {
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
 
@@ -225,6 +227,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
       skillId,
+      rawUserAnswer,
       isSplitView
     )
 
@@ -388,5 +391,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         }
       }
     }
+  }
+
+  fun handleOnSavedInstance(): RawUserAnswer {
+    return questionViewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
   }
 }

@@ -25,6 +25,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 class ContinueInteractionViewModel private constructor(
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   val hasConversationView: Boolean,
+  rawUserAnswer: RawUserAnswer?,
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val isSplitView: Boolean,
@@ -42,12 +43,8 @@ class ContinueInteractionViewModel private constructor(
     this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
   }.build()
 
-  override fun setRawUserAnswer(rawUserAnswer: RawUserAnswer) {
-    TODO("Not yet implemented")
-  }
-
   override fun getRawUserAnswer(): RawUserAnswer? {
-    TODO("Not yet implemented")
+    return RawUserAnswer.getDefaultInstance()
   }
 
   fun handleButtonClicked() {
@@ -61,6 +58,7 @@ class ContinueInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
+      rawUserAnswer: RawUserAnswer?,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -71,6 +69,7 @@ class ContinueInteractionViewModel private constructor(
       return ContinueInteractionViewModel(
         interactionAnswerReceiver,
         hasConversationView,
+        rawUserAnswer,
         hasPreviousButton,
         fragment as PreviousNavigationButtonListener,
         isSplitView,

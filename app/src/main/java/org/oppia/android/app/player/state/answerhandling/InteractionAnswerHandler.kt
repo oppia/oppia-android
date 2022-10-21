@@ -28,9 +28,6 @@ interface InteractionAnswerHandler {
     return null
   }
 
-  /** Sets [RawUserAnswer] which is entered by user. */
-  fun setRawUserAnswer(rawUserAnswer: RawUserAnswer)
-
   /** Return the last entered answer entered by user. */
   fun getRawUserAnswer(): RawUserAnswer? {
     return null
