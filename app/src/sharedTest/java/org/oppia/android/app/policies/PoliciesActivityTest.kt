@@ -2,14 +2,26 @@ package org.oppia.android.app.policies
 
 import android.app.Application
 import android.content.Context
+import android.text.Spannable
+import android.text.style.ClickableSpan
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,6 +39,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -90,6 +103,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
 
 /** Tests for [PoliciesActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -160,6 +174,46 @@ class PoliciesActivityTest {
   }
 
   @Test
+  fun testPoliciesActivity_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+    ).use { scenario ->
+      scenario.onActivity {
+        onView(withId(R.id.policy_description_text_view))
+          .check(matches(isDisplayed()))
+        // Verify the displayed text is correct & has a clickable span.
+        val textView = it.findViewById<TextView>(R.id.policy_description_text_view)
+        val spannableString = textView.text as Spannable
+        val clickableSpans = spannableString.getSpansFromWholeString(ClickableSpan::class)
+        clickableSpans.first().onClick(textView)
+        testCoroutineDispatchers.runCurrent()
+
+        val policiesArguments =
+          PoliciesActivityParams
+            .newBuilder()
+            .setPolicyPage(PolicyPage.PRIVACY_POLICY)
+            .build()
+        Intents.intended(
+          IntentMatchers.hasComponent(
+            ComponentNameMatchers.hasClassName(
+              PoliciesActivity::class.java.getName()
+            )
+          )
+        )
+        IntentMatchers.hasExtras(
+          hasEntry(
+            equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
+            equalTo(policiesArguments)
+          )
+        )
+      }
+    }
+  }
+
+  @Test
   fun testActivity_forTermsOfService_hasCorrectActivityLabel() {
     launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
@@ -198,6 +252,9 @@ class PoliciesActivityTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+
+  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
+    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

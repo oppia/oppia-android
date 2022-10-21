@@ -5,15 +5,14 @@ import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -23,13 +22,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -143,9 +140,6 @@ class PoliciesFragmentTest {
   lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
 
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Mock
-  lateinit var mockPolicyOppiaTagActionListener: HtmlParser.PolicyOppiaTagActionListener
 
   @Captor
   lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
@@ -284,9 +278,11 @@ class PoliciesFragmentTest {
         it.mockCallbackListener = mockRouteToPoliciesListener
         onView(withId(R.id.policy_description_text_view))
           .check(matches(isDisplayed()))
-        onView(withId(R.id.policy_description_text_view))
-          .check(matches(withText(containsString("Privacy Policy"))))
-          .perform(click())
+        // Verify the displayed text is correct & has a clickable span.
+        val textView = it.findViewById<TextView>(R.id.policy_description_text_view)
+        val spannableString = textView.text as Spannable
+        val clickableSpans = spannableString.getSpansFromWholeString(ClickableSpan::class)
+        clickableSpans.first().onClick(textView)
         testCoroutineDispatchers.runCurrent()
 
         verify(mockRouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
@@ -339,10 +335,6 @@ class PoliciesFragmentTest {
         intended(expectingIntent)
       }
     }
-  }
-
-  private fun getResources(): Resources {
-    return getApplicationContext<Context>().resources
   }
 
   private fun setUpTestApplicationComponent() {
