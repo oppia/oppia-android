@@ -48,6 +48,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.android.synthetic.main.fraction_interaction_item.*
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -72,6 +73,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.customview.interaction.FractionInputInteractionView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
@@ -155,6 +157,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -186,11 +189,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.android.synthetic.main.fraction_interaction_item.*
-import org.oppia.android.app.customview.interaction.FractionInputInteractionView
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -1602,9 +1600,9 @@ class StateFragmentTest {
       startPlayingExploration()
       clickContinueInteractionButton()
       TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(false)
-      //Entering text in Fraction Input Interaction
+      // Entering text in Fraction Input Interaction
       typeFractionText("1/2")
-      //Rotating device
+      // Rotating device
       rotateToLandscape()
       it.onActivity {
         val fractionInputInteraction =
