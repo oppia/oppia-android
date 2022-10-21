@@ -276,7 +276,6 @@
   <string name="add_profile_error_pin_length">Your PIN should be 3 digits long.</string>
   <string name="add_profile_error_pin_confirm_wrong">Please make sure that both PINs match.</string>
   <string name="add_profile_info_content_description">More information on 3-digit PINs.</string>
-  <string name="required_fields_content_description">Fields marked with an * are required.</string>
   <string name="current_profile_picture_content_description">Current profile picture</string>
   <string name="edit_profile_picture_content_description">Edit profile picture</string>
   <!-- OnboardingActivity -->

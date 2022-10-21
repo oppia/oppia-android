@@ -225,7 +225,6 @@
   <string name="add_profile_error_pin_length">Nambari yako ya Siri inapaswa kuwa na urefu wa tarakimu 3.</string>
   <string name="add_profile_error_pin_confirm_wrong">Tafadhali hakikisha kwamba Nambari za Siri zote mbili zinalingana.</string>
   <string name="add_profile_info_content_description">Maelezo zaidi kuhusu Nambari za Siri zenye tarakimu 3.</string>
-  <string name="required_fields_content_description">Sehemu zilizo na alama ya * zinahitajika.</string>
   <string name="current_profile_picture_content_description">Picha ya sasa ya wasifu</string>
   <string name="edit_profile_picture_content_description">Hariri picha ya wasifu</string>
   <string name="onboarding_slide_0_title">Karibu kwa %s!</string>

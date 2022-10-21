@@ -99,6 +99,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasHelperText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -186,97 +187,16 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_hasPrefixTextRequired_IsDisplayedOnFocus() {
+  fun testAddProfileActivity_inputName_hasHelperTextRequired_IsDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_user_name_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+      onView(withId(R.id.add_profile_activity_user_name))
+        .check(
+          matches(
+            hasHelperText(
+              context.resources.getString(R.string.add_profile_required)
+            )
+          )
         )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_user_name_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
-        )
-      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-    }
-  }
-
-  @Test
-  fun testAddProfileActivity_inputPin_hasPrefixTextRequired_IsDisplayedOnFocus() {
-    launch(AddProfileActivity::class.java).use {
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_user_name_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
-        )
-      ).perform(
-        editTextInputAction.appendText("test"), closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_pin_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_pin))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_pin_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_pin))
-        )
-      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-    }
-  }
-
-  @Test
-  fun testAddProfileActivity_inputConfirmPin_hasPrefixTextRequired_IsDisplayedOnFocus() {
-    launch(AddProfileActivity::class.java).use {
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_user_name_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
-        )
-      ).perform(
-        editTextInputAction.appendText("test"),
-        closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_pin_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_pin))
-        )
-      ).perform(
-        scrollTo(),
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
-        )
-      ).perform(scrollTo())
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.add_profile_activity_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
-        )
-      ).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
   }
 

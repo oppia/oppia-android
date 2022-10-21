@@ -242,7 +242,6 @@
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
-  <string name="required_fields_content_description">Os campos marcados com * são obrigatórios.</string>
   <string name="current_profile_picture_content_description">Foto de perfil atual</string>
   <string name="edit_profile_picture_content_description">Editar foto de perfil</string>
   <string name="onboarding_slide_0_title">Bem-vindo à %s!</string>

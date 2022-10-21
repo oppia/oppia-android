@@ -74,7 +74,6 @@
             android:layout_marginTop="16dp"
             app:errorMessage="@{viewModel.nameErrorMsg}"
             android:hint="@string/add_profile_input_name"
-            app:prefixText="@string/add_profile_required"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view">
@@ -129,7 +128,8 @@
               android:layout_marginTop="24dp"
               app:errorMessage="@{viewModel.pinErrorMsg}"
               android:hint="@string/add_profile_input_pin"
-              app:prefixText="@string/add_profile_required"
+              app:helperTextEnabled="true"
+              app:helperText="@string/add_profile_required"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent">
@@ -153,7 +153,8 @@
               android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
               app:errorMessage="@{viewModel.confirmPinErrorMsg}"
               android:hint="@string/add_profile_input_confirm_pin"
-              app:prefixText="@string/add_profile_required"
+              app:helperTextEnabled="true"
+              app:helperText="@string/add_profile_required"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin">
