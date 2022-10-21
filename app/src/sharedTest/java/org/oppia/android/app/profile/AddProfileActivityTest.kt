@@ -201,6 +201,73 @@ class AddProfileActivityTest {
   }
 
   @Test
+  fun testAddProfileActivity_inputPin_hasHelperTextRequired_IsDisplayed() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(
+        editTextInputAction.appendText("test"), closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(withId(R.id.add_profile_activity_pin))
+        .check(
+          matches(
+            hasHelperText(
+              context.resources.getString(R.string.add_profile_required)
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputConfirmPin_hasHelperTextRequired_IsDisplayed() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(
+        editTextInputAction.appendText("test"),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(
+        scrollTo(),
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_confirm_pin))
+        .check(
+          matches(
+            hasHelperText(
+              context.resources.getString(R.string.add_profile_required)
+            )
+          )
+        )
+    }
+  }
+
+
+  @Test
   fun testAddProfileActivity_inputName_opensProfileChooserActivity() {
     launch(AddProfileActivity::class.java).use {
       onView(
