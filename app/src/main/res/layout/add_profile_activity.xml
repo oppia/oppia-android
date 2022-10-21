@@ -44,24 +44,24 @@
             android:layout_height="120dp"
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
-            android:focusable="true"
             android:elevation="4dp"
+            android:focusable="true"
             app:add_shadow="true"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:srcCompat="@{@drawable/ic_add_profile}"/>
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+            app:srcCompat="@{@drawable/ic_add_profile}" />
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:contentDescription="@string/edit_profile_picture_content_description"
+            android:elevation="4dp"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
-            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
             app:srcCompat="@drawable/rounded_white_background_with_shadow" />
@@ -72,10 +72,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:errorMessage="@{viewModel.nameErrorMsg}"
             android:hint="@string/add_profile_input_name"
-            app:helperTextEnabled="true"
+            app:errorMessage="@{viewModel.nameErrorMsg}"
             app:helperText="@string/add_profile_required"
+            app:helperTextEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view">
@@ -96,9 +96,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
-            android:textColor="@color/component_color_add_profile_activity_label_text_color"
             android:minHeight="48dp"
             android:text="@string/add_profile_create_a_3_digit_pin"
+            android:textColor="@color/component_color_add_profile_activity_label_text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_name" />
 
@@ -128,10 +128,10 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginTop="24dp"
-              app:errorMessage="@{viewModel.pinErrorMsg}"
               android:hint="@string/add_profile_input_pin"
-              app:helperTextEnabled="true"
+              app:errorMessage="@{viewModel.pinErrorMsg}"
               app:helperText="@string/add_profile_required"
+              app:helperTextEnabled="true"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent">
@@ -153,10 +153,10 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
-              app:errorMessage="@{viewModel.confirmPinErrorMsg}"
               android:hint="@string/add_profile_input_confirm_pin"
-              app:helperTextEnabled="true"
+              app:errorMessage="@{viewModel.confirmPinErrorMsg}"
               app:helperText="@string/add_profile_required"
+              app:helperTextEnabled="true"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin">
