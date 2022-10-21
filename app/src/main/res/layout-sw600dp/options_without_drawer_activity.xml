@@ -9,15 +9,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/options_activity_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/component_color_shared_activity_toolbar_color"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:titleTextAppearance="@style/ToolbarTitle"  />
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/options_activity_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_activity_toolbar_color"
+      android:minHeight="?attr/actionBarSize"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:titleTextAppearance="@style/ToolbarTitle" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
