@@ -51,6 +51,8 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -73,6 +75,8 @@ class StateFragmentPresenter @Inject constructor(
   private val storyProgressController: StoryProgressController,
   private val oppiaLogger: OppiaLogger,
   @DefaultResourceBucketName private val resourceBucketName: String,
+  @EnableInteractionConfigChangeStateRetention
+  private val isConfigChangeStateRetentionEnabled: PlatformParameterValue<Boolean>,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val oppiaClock: OppiaClock
@@ -461,7 +465,11 @@ class StateFragmentPresenter @Inject constructor(
   fun getExplorationCheckpointState() = explorationCheckpointState
 
   fun handleOnSavedInstance(): RawUserAnswer {
-    return viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    return if (isConfigChangeStateRetentionEnabled.value) {
+      viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    } else {
+      RawUserAnswer.getDefaultInstance()
+    }
   }
 
   private fun markExplorationCompleted() {

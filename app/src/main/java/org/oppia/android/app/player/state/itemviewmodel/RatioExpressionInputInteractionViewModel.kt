@@ -53,7 +53,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
         }
       }
 
-    if (rawUserAnswer!=null) {
+    if (rawUserAnswer != null) {
       answerText = rawUserAnswer.ratioInput
     }
     errorMessage.addOnPropertyChangedCallback(callback)

@@ -37,6 +37,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import javax.inject.Inject
 import org.oppia.android.app.model.RawUserAnswer
+import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** The presenter for [QuestionPlayerFragment]. */
 @FragmentScope
@@ -47,6 +49,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private val questionAssessmentProgressController: QuestionAssessmentProgressController,
   private val oppiaLogger: OppiaLogger,
   @QuestionResourceBucketName private val resourceBucketName: String,
+  @EnableInteractionConfigChangeStateRetention
+  private val isConfigChangeStateRetentionEnabled: PlatformParameterValue<Boolean>,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager
 ) {
@@ -186,7 +190,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>, rawUserAnswer: RawUserAnswer?) {
+  private fun processEphemeralQuestionResult(
+    result: AsyncResult<EphemeralQuestion>,
+    rawUserAnswer: RawUserAnswer?
+  ) {
     when (result) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
@@ -198,7 +205,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun processEphemeralQuestion(ephemeralQuestion: EphemeralQuestion, rawUserAnswer: RawUserAnswer?) {
+  private fun processEphemeralQuestion(
+    ephemeralQuestion: EphemeralQuestion,
+    rawUserAnswer: RawUserAnswer?
+  ) {
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
 
@@ -394,6 +404,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun handleOnSavedInstance(): RawUserAnswer {
-    return questionViewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    return if (isConfigChangeStateRetentionEnabled.value) {
+      questionViewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
+    } else {
+      RawUserAnswer.getDefaultInstance()
+    }
   }
 }

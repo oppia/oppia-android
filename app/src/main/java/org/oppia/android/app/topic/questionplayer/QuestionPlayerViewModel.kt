@@ -4,6 +4,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.R
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
@@ -12,7 +13,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
-import org.oppia.android.app.model.RawUserAnswer
 
 /** [ObservableViewModel] for the question player. */
 class QuestionPlayerViewModel @Inject constructor(

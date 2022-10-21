@@ -42,7 +42,7 @@ class NumericInputViewModel private constructor(
           )
         }
       }
-    if (rawUserAnswer!=null) {
+    if (rawUserAnswer != null) {
       answerText = rawUserAnswer.numeric
     }
     errorMessage.addOnPropertyChangedCallback(callback)
@@ -97,7 +97,7 @@ class NumericInputViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    if(answerText.isNotEmpty()) {
+    if (answerText.isNotEmpty()) {
       val answerTextString = answerText.toString()
       numeric = answerTextString
     }

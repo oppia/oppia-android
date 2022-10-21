@@ -43,7 +43,7 @@ class TextInputViewModel private constructor(
           )
         }
       }
-    if (rawUserAnswer!=null) {
+    if (rawUserAnswer != null) {
       answerText = rawUserAnswer.text
     }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
@@ -80,7 +80,7 @@ class TextInputViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
-       text = answerText.toString()
+      text = answerText.toString()
     }
   }.build()
 

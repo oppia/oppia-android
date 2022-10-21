@@ -186,6 +186,11 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.android.synthetic.main.fraction_interaction_item.*
+import org.oppia.android.app.customview.interaction.FractionInputInteractionView
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationPortrait
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -233,6 +238,7 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1591,6 +1597,24 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(false)
+      //Entering text in Fraction Input Interaction
+      typeFractionText("1/2")
+      //Rotating device
+      rotateToLandscape()
+      it.onActivity {
+        val fractionInputInteraction =
+          it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
+        assertThat(fractionInputInteraction.text.toString()).isEqualTo("1/2")
+      }
+    }
+  }
+
+  @Test
   fun testStateFragment_ratioInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -1626,9 +1650,9 @@ class StateFragmentTest {
     )
   }
 
-  // TODO(#503): Add versions of the following multi-language & localization tests for questions.
+// TODO(#503): Add versions of the following multi-language & localization tests for questions.
 
-  /* Multi-language & localization tests. */
+/* Multi-language & localization tests. */
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
@@ -3582,8 +3606,8 @@ class StateFragmentTest {
     }
   }
 
-  // TODO(#3171): Implement image region selection tests for English/Arabic to demonstrate that
-  //  answers submit normally & with no special behaviors.
+// TODO(#3171): Implement image region selection tests for English/Arabic to demonstrate that
+//  answers submit normally & with no special behaviors.
 
   @Test
   fun testStateFragment_clickContinue_returnToState_doesNotHaveFeedbackBox() {
@@ -4151,12 +4175,12 @@ class StateFragmentTest {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
 
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
+// TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
+//  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
+//  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
+//  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
+//  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
+//  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.

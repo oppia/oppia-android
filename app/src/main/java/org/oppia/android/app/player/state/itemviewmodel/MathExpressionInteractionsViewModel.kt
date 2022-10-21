@@ -2,7 +2,6 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
@@ -107,7 +106,7 @@ class MathExpressionInteractionsViewModel private constructor(
         }
       }
 
-    if (rawUserAnswer!=null) {
+    if (rawUserAnswer != null) {
       answerText = rawUserAnswer.mathExpression
     }
     errorMessage.addOnPropertyChangedCallback(callback)
@@ -131,17 +130,17 @@ class MathExpressionInteractionsViewModel private constructor(
         val mathContentValue = "{&amp;quot;raw_latex&amp;quot;:&amp;quot;$answerAsLatex&amp;quot;}"
         htmlAnswer =
           "<oppia-noninteractive-math render-type=\"block\"" +
-            " math_content-with-value=\"$mathContentValue\" />"
+          " math_content-with-value=\"$mathContentValue\" />"
       } else plainAnswer = answerTextString
 
       contentDescription =
         interactionType.computeHumanReadableString(
-          answerTextString,
-          useFractionsForDivision,
-          allowedVariables,
-          mathExpressionAccessibilityUtil,
-          this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
-        ) ?: answerTextString
+        answerTextString,
+        useFractionsForDivision,
+        allowedVariables,
+        mathExpressionAccessibilityUtil,
+        this@MathExpressionInteractionsViewModel.writtenTranslationContext.language
+      ) ?: answerTextString
 
       this.writtenTranslationContext =
         this@MathExpressionInteractionsViewModel.writtenTranslationContext
