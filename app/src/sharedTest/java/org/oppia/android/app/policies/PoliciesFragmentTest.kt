@@ -273,7 +273,7 @@ class PoliciesFragmentTest {
   }
 
   @Test
-  fun testPoliciesFragment_inTermsOfServicePage_clickOnPrivacyLink_opensPrivacyPolicyPage() {
+  fun testPoliciesFragment_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestActivity(
         getApplicationContext(),
