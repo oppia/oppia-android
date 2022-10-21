@@ -7,10 +7,6 @@
     <import type="android.view.View" />
 
     <variable
-      name="animateContinueButtonLiveData"
-      type="androidx.lifecycle.LiveData&lt;Boolean>" />
-
-    <variable
       name="viewModel"
       type="org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
   </data>

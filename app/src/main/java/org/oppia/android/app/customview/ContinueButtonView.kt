@@ -45,7 +45,7 @@ class ContinueButtonView @JvmOverloads constructor(
   @Inject
   lateinit var oppiaLogger: OppiaLogger
 
-  private var isAnimationTimerFinished = false
+  private var isAtAnimationEnd = false
 
   private val animateContinueButton = MutableLiveData(false)
 
@@ -98,7 +98,7 @@ class ContinueButtonView @JvmOverloads constructor(
     // timer goes off. To make sure that the animation is shown when the user finally scrolls down
     // enough that the button is visible, animate the button based on whether the timer has finished
     // or not.
-    if (isVisible && isAnimationTimerFinished) {
+    if (isVisible && isAtAnimationEnd) {
       startAnimating()
       animateContinueButton.removeObservers(fragment)
     }
@@ -115,10 +115,10 @@ class ContinueButtonView @JvmOverloads constructor(
     animateContinueButton.observe(fragment) {
       if (it) {
         startAnimating()
-        isAnimationTimerFinished = true
+        isAtAnimationEnd = true
       } else {
         this.clearAnimation()
-        isAnimationTimerFinished = false
+        isAtAnimationEnd = false
       }
     }
   }
