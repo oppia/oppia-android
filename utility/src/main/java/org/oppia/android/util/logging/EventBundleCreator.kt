@@ -128,6 +128,9 @@ class EventBundleCreator @Inject constructor(
    * [OppiaMetricLog.LoggableMetric.getLoggableMetricTypeCase]).
    */
   fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
+    bundle.putInt("android_sdk", androidSdkVersion)
+    bundle.putString("app_version_name", appVersionName)
+    bundle.putInt("app_version_code", appVersionCode)
     bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
     bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
     bundle.putString("is_app_in_foreground", oppiaMetricLog.isAppInForeground.toString())
