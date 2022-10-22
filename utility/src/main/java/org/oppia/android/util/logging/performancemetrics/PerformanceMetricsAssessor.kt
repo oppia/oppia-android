@@ -65,7 +65,7 @@ interface PerformanceMetricsAssessor {
   ) {
     /** Returns whether the current [CpuSnapshot] is newer than the [otherCpuSnapshot]. */
     fun isNewer(otherCpuSnapshot: CpuSnapshot) = cpuTimeMillis > otherCpuSnapshot.cpuTimeMillis ||
-        appTimeMillis > otherCpuSnapshot.appTimeMillis
+      appTimeMillis > otherCpuSnapshot.appTimeMillis
 
     /** Returns whether the current [CpuSnapshot] has invalid number of online CPU cores or not. */
     fun doesNotHaveValidNumberOfOnlineCores(): Boolean = numberOfOnlineCores <= 0

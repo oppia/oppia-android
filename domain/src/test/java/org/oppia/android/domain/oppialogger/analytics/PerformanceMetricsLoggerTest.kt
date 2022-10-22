@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -23,6 +24,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.LOW_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
+import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -50,8 +52,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
-import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Double.MAX_VALUE

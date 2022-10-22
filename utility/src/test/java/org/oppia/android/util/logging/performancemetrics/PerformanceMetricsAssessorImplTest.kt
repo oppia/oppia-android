@@ -12,9 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,6 +45,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadow.api.Shadow.extract
 import org.robolectric.shadow.api.Shadow.newInstanceOf
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_APP_PATH_CACHE = "TEST_APP_PATH_CACHE"

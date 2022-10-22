@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +49,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
