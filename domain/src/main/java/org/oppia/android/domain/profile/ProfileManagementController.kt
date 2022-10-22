@@ -47,8 +47,6 @@ private const val GET_DEVICE_SETTINGS_PROVIDER_ID =
   "get_device_settings_provider_id"
 private const val ADD_PROFILE_PROVIDER_ID = "add_profile_provided_id"
 private const val UPDATE_NAME_PROVIDER_ID = "update_name_provider_id"
-private const val MARK_CONTINUE_BUTTON_ANIMATION_SEEN_PROVIDER_ID =
-  "mark_continue_button_animation_seen_provider_id"
 private const val UPDATE_PIN_PROVIDER_ID = "update_pin_provider_id"
 private const val UPDATE_PROFILE_AVATAR_PROVIDER_ID =
   "update_profile_avatar_provider_id"
