@@ -17,6 +17,7 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
+    android:importantForAccessibility="no"
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
@@ -94,7 +95,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
+            android:contentDescription="@string/show_hide_hint_list"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"
@@ -122,9 +123,9 @@
           style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:contentDescription="@{viewModel.computeHintContentDescription()}"
           android:background="@color/component_color_hints_and_solution_summary_bottom_background_color"
           android:fontFamily="sans-serif"
-          android:importantForAccessibility="no"
           android:paddingStart="12dp"
           android:paddingTop="16dp"
           android:paddingEnd="12dp"

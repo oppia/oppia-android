@@ -444,13 +444,12 @@ class QuestionPlayerActivityTest {
       pressRevealHintButton(hintPosition = 0)
 
       // Ensure the hint description is correct and doesn't contain any HTML.
-      onView(withId(R.id.expand_list_icon))
+      onView(withId(R.id.hints_and_solution_summary))
         .check(
           matches(
             withContentDescription(
-              "Show/Hide hint list of To write a fraction, you need to know " +
-                "its denominator, which is the total number of pieces in the whole. " +
-                "All of these pieces should be the same size.\n\n"
+              "To write a fraction, you need to know its denominator, which is the total " +
+                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
             )
           )
         )

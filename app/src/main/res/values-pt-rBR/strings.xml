@@ -386,7 +386,6 @@
   <string name="show_solution">Exibir</string>
   <string name="reveal_solution">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
-  <string name="show_hide_hint_list">Mostrar/Esconder lista de dicas de %s</string>
   <string name="show_hide_solution_list">Mostrar/Esconder solução</string>
   <string name="the_only_solution_is">A única solução é :</string>
   <string name="this_will_reveal_the_solution">Isso revelará a solução. Tem certeza?</string>

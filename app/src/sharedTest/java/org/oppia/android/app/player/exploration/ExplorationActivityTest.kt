@@ -1646,11 +1646,11 @@ class ExplorationActivityTest {
       pressRevealHintButton(hintPosition = 0)
 
       // Ensure the hint description is correct and doesn't contain any HTML.
-      onView(withId(R.id.expand_list_icon))
+      onView(withId(R.id.hints_and_solution_summary))
         .check(
           matches(
             withContentDescription(
-              "Show/Hide hint list of Remember that two halves, when added together," +
+              "Remember that two halves, when added together," +
                 " make one whole.\n\n"
             )
           )
