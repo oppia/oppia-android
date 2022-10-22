@@ -355,6 +355,7 @@
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="reveal_solution">عرض الحل</string>
   <string name="reveal_hint" fuzzy="true">عرض الملاحظة</string>
+  <string name="show_hide_solution_list">عرض/إخفاء الحل</string>
   <string name="the_only_solution_is">الحل الوحيد هو :</string>
   <string name="this_will_reveal_the_solution">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
   <string name="reveal">إظهار</string>
