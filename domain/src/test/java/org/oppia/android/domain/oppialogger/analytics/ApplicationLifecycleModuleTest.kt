@@ -42,6 +42,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [ApplicationLifecycleModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -97,48 +98,6 @@ class ApplicationLifecycleModuleTest {
     @Provides
     @ApplicationIdSeed
     fun provideApplicationIdSeed(): Long = applicationIdSeed
-  }
-
-  @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLearnerAnalyticsStudy: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLanguageSelectionUi
-    fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(
-        ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @LearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
-
-    @Provides
-    @EnablePerformanceMetricsCollection
-    fun provideEnablePerformanceMetricsCollection(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(true)
-    }
   }
 
   // TODO(#89): Move this to a common test application component.

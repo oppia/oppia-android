@@ -12,6 +12,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,9 +48,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadow.api.Shadow.extract
 import org.robolectric.shadow.api.Shadow.newInstanceOf
-import java.io.File
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TEST_APP_PATH = "TEST_APP_PATH"
 private const val TEST_APP_PATH_CACHE = "TEST_APP_PATH_CACHE"
@@ -62,9 +62,6 @@ private const val THREE_MEGABYTES = ONE_MEGABYTE * 3L
 private const val ONE_GIGABYTE = ONE_MEGABYTE * 1024
 private const val TWO_GIGABYTES = ONE_GIGABYTE * 2L
 private const val THREE_GIGABYTES = ONE_GIGABYTE * 3L
-private const val TEST_FIRST_CPU_TIME = 1000L
-private const val TEST_FIRST_PROCESS_TIME = 1665790650L
-private const val TEST_FIRST_NUMBER_OF_CORES = 6
 private const val TEST_CURRENT_TIME = 1665790700L
 
 /** Tests for [PerformanceMetricsAssessorImpl]. */
@@ -83,6 +80,9 @@ class PerformanceMetricsAssessorImplTest {
   @Parameter var secondCpuValue: Long = 1200L
   @Parameter var secondAppTimeValue: Long = 1665790700L
   @Parameter var secondNumberOfOnlineCoresValue: Int = 2
+  @Parameter var firstCpuValue: Long = 1000L
+  @Parameter var firstAppTimeValue: Long = 1665790650L
+  @Parameter var firstNumberOfOnlineCoresValue: Int = 6
   @Parameter var relativeCpuUsage: Double = Double.MIN_VALUE
 
   @Inject
@@ -233,7 +233,7 @@ class PerformanceMetricsAssessorImplTest {
       "secondCpuValue=1100",
       "secondAppTimeValue=1665790700",
       "secondNumberOfOnlineCoresValue=2",
-      "relativeCpuUsage=0.50"
+      "relativeCpuUsage=0.40"
     ),
     Iteration(
       "nonZeroDoubleValueTillSevenDecimalPoints",
@@ -252,9 +252,9 @@ class PerformanceMetricsAssessorImplTest {
   )
   fun testAssessor_setFirstAndSecondSnapshot_returnsCorrectRelativeCpuUsage() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      TEST_FIRST_PROCESS_TIME,
-      TEST_FIRST_CPU_TIME,
-      TEST_FIRST_NUMBER_OF_CORES
+      firstAppTimeValue,
+      firstCpuValue,
+      firstNumberOfOnlineCoresValue
     )
     val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       secondAppTimeValue,
@@ -268,14 +268,22 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   @RunParameterized(
-    Iteration("zeroDeltaOnlineCores", "secondNumberOfOnlineCoresValue=0"),
-    Iteration("negativeOnlineCores", "secondNumberOfOnlineCoresValue=-1")
+    Iteration(
+      "zeroDeltaOnlineCores",
+      "firstNumberOfOnlineCoresValue=6",
+      "secondNumberOfOnlineCoresValue=0"
+    ),
+    Iteration(
+      "negativeOnlineCores",
+      "firstNumberOfOnlineCoresValue=-1",
+      "secondNumberOfOnlineCoresValue=6"
+    )
   )
   fun testAssessor_inputInvalidOnlineCoresValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      TEST_FIRST_PROCESS_TIME,
-      TEST_FIRST_CPU_TIME,
-      TEST_FIRST_NUMBER_OF_CORES
+      firstAppTimeValue,
+      firstCpuValue,
+      firstNumberOfOnlineCoresValue
     )
     val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       secondAppTimeValue,
@@ -291,15 +299,15 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   @RunParameterized(
-    Iteration("negativeDeltaCpuValue", "secondCpuValue=900"),
-    Iteration("negativeCpuValue", "secondCpuValue=-900"),
-    Iteration("outOfBoundsCpuValue", "secondCpuValue=9223372036854775807"),
+    Iteration("negativeDeltaCpuValue", "firstCpuValue=1000", "secondCpuValue=900"),
+    Iteration("negativeCpuValue", "firstCpuValue=1000", "secondCpuValue=-900"),
+    Iteration("outOfBoundsCpuValue", "firstCpuValue=1000", "secondCpuValue=9223372036854775807"),
   )
   fun testAssessor_inputInvalidCpuTimeValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      TEST_FIRST_PROCESS_TIME,
-      TEST_FIRST_CPU_TIME,
-      TEST_FIRST_NUMBER_OF_CORES
+      firstAppTimeValue,
+      firstCpuValue,
+      firstNumberOfOnlineCoresValue
     )
     val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       secondAppTimeValue,
@@ -315,15 +323,27 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   @RunParameterized(
-    Iteration("negativeDeltaAppTimeValue", "secondAppTimeValue=1665790050"),
-    Iteration("negativeAppTimeValue", "secondAppTimeValue=-1665790050"),
-    Iteration("zeroDeltaAppTimeValue", "secondAppTimeValue=1665790650"),
+    Iteration(
+      "negativeDeltaAppTimeValue",
+      "firstAppTimeValue=1665790650",
+      "secondAppTimeValue=1665790050"
+    ),
+    Iteration(
+      "negativeAppTimeValue",
+      "firstAppTimeValue=1665790650",
+      "secondAppTimeValue=-1665790050"
+    ),
+    Iteration(
+      "zeroDeltaAppTimeValue",
+      "firstAppTimeValue=1665790650",
+      "secondAppTimeValue=1665790650"
+    ),
   )
   fun testAssessor_inputInvalidAppTimeValues_calculateCpuUsage_returnsNull() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      TEST_FIRST_PROCESS_TIME,
-      TEST_FIRST_CPU_TIME,
-      TEST_FIRST_NUMBER_OF_CORES
+      firstAppTimeValue,
+      firstCpuValue,
+      firstNumberOfOnlineCoresValue
     )
     val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
       secondAppTimeValue,

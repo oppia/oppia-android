@@ -50,6 +50,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Double.MAX_VALUE
@@ -88,6 +90,11 @@ class PerformanceMetricsLoggerTest {
 
   private val testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
   private val testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testLogger_inDefaultState_logPerformanceMetrics_verifyNoMetricsAreLogged() {
@@ -234,6 +241,21 @@ class PerformanceMetricsLoggerTest {
     assertThat(loggedEvent.memoryTier).isEqualTo(memoryTier)
     assertThat(loggedEvent.storageTier).isEqualTo(storageTier)
     assertThat(loggedEvent.isAppInForeground).isEqualTo(isAppInForeground)
+  }
+
+  @Test
+  fun testLogger_inDefaultState_logMultipleEvents_doesNotLogEvent() {
+    setUpApplicationInDefaultMode()
+    performanceMetricsLogger.apply {
+      logApkSize(HOME_ACTIVITY)
+      logCpuUsage(HOME_ACTIVITY, TEST_CPU_USAGE)
+      logNetworkUsage(HOME_ACTIVITY)
+      logStartupLatency(TEST_STARTUP_LATENCY_IN_MILLISECONDS, HOME_ACTIVITY)
+      logMemoryUsage(HOME_ACTIVITY)
+      logStorageUsage(HOME_ACTIVITY)
+    }
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
 
   private fun setUpApplicationInDefaultMode() {

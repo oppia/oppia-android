@@ -22,7 +22,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.FakeEventLogger
-import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
@@ -49,6 +48,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -87,9 +87,6 @@ class ApplicationLifecycleObserverTest {
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
 
-  @Inject
-  lateinit var fakePerformanceMetricsAssessor: FakePerformanceMetricAssessor
-
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
 
@@ -109,6 +106,19 @@ class ApplicationLifecycleObserverTest {
     ActivityScenarioRule<TextInputActionTestActivity>(
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
+
+  @Test
+  fun testObserver_withDisabledMetricsCollection_doesNotLogAnyEvent() {
+    setUpTestApplicationComponent()
+    applicationLifecycleObserver.onAppInForeground()
+    testCoroutineDispatchers.runCurrent()
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
@@ -232,8 +242,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onCreate_verifyPerformanceMetricsLoggingWithCorrectDetails() {
-    setUpTestApplicationComponent()
+  fun testObserver_onCreate_performanceMetricsLoggingWithCorrectDetailsOccurs() {
+    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
 
@@ -258,8 +268,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onFirstActivityResume_verifyLogsStartupLatency() {
-    setUpTestApplicationComponent()
+  fun testObserver_onFirstActivityResume_logsStartupLatency() {
+    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
@@ -281,8 +291,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onSecondActivityResume_verifyStartupLatencyIsLoggedOnce() {
-    setUpTestApplicationComponent()
+  fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
+    setUpTestApplicationWithPerformanceMetricsCollection()
 
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
@@ -303,8 +313,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_activityResumed_verifyLogsMemoryUsage() {
-    setUpTestApplicationComponent()
+  fun testObserver_activityResumed_logsMemoryUsage() {
+    setUpTestApplicationWithPerformanceMetricsCollection()
 
     activityRule.scenario.onActivity { activity ->
       applicationLifecycleObserver.onActivityResumed(activity)
@@ -321,7 +331,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_activityResumed_activityPaused_verifyCurrentScreenReturnsBackgroundValue() {
+  fun testObserver_activityResumed_activityPaused_currentScreenReturnsBackgroundValue() {
     setUpTestApplicationComponent()
     activityRule.scenario.onActivity { activity ->
       applicationLifecycleObserver.onActivityResumed(activity)
@@ -334,7 +344,7 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
-    setUpTestApplicationComponent()
+    setUpTestApplicationWithPerformanceMetricsCollection()
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -347,7 +357,7 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
-    setUpTestApplicationComponent()
+    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
@@ -388,8 +398,12 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
   }
 
-  private fun setUpTestApplicationComponent() {
+  private fun setUpTestApplicationWithPerformanceMetricsCollection() {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    setUpTestApplicationComponent()
+  }
+
+  private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)

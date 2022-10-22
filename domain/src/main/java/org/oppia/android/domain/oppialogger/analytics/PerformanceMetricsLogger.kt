@@ -113,12 +113,12 @@ class PerformanceMetricsLogger @Inject constructor(
   }
 
   /**
-   * Logs the cpu usage of the application as a performance metric for the current state of the
+   * Logs the CPU usage of the application as a performance metric for the current state of the
    * app. It must be noted that the value of this metric will change across calls during the same
    * application instance.
    *
    * @param currentScreen denotes the application screen at which this metric has been logged
-   * @param cpuUsage denotes the relative cpu usage of the application which is measured across two
+   * @param cpuUsage denotes the relative CPU usage of the application which is measured across two
    * time-separated points in the application.
    */
   fun logCpuUsage(currentScreen: ScreenName, cpuUsage: Double) {
@@ -138,7 +138,7 @@ class PerformanceMetricsLogger @Inject constructor(
      * This will schedule a background upload of the event if there's internet connectivity, otherwise
      * it will cache the event for a later upload.
      *
-     * This method should only be used for logging periodic metrics like network and cpu usage of the
+     * This method should only be used for logging periodic metrics like network and CPU usage of the
      * application. These metrics are important to log and should be prioritized over metrics logged
      * via [logMediumPriorityMetricEvent] and [logLowPriorityMetricEvent].
      */

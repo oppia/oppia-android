@@ -50,15 +50,11 @@ class CpuPerformanceSnapshotter(
             // Since there's a switch in the current iconification of the app, we'd cut short the
             // existing delay and log the current CPU usage relative to the previously logged one
             // without this explicit log command.
-            val relativeCpuUsage = performanceMetricsAssessor.getRelativeCpuUsage(
+            performanceMetricsAssessor.getRelativeCpuUsage(
               previousSnapshot,
               performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
-            )
-            relativeCpuUsage?.let { value ->
-              sendLogSnapshotDiffCommand(
-                value,
-                currentIconification
-              )
+            )?.let { relativeCpuUsage ->
+              sendLogSnapshotDiffCommand(relativeCpuUsage, currentIconification)
             }
             currentIconification = message.newIconification
             previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
@@ -72,13 +68,11 @@ class CpuPerformanceSnapshotter(
           is CommandMessage.TakeSnapshot -> {
             if (message.switchId == switchIconificationCount) {
               val newSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
-              val relativeCpuUsage =
-                performanceMetricsAssessor.getRelativeCpuUsage(previousSnapshot, newSnapshot)
-              relativeCpuUsage?.let { value ->
-                sendLogSnapshotDiffCommand(
-                  value,
-                  currentIconification
-                )
+              performanceMetricsAssessor.getRelativeCpuUsage(
+                previousSnapshot,
+                performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
+              )?.let { relativeCpuUsage ->
+                sendLogSnapshotDiffCommand(relativeCpuUsage, currentIconification)
               }
               previousSnapshot = newSnapshot
               sendScheduleTakeSnapshotCommand(currentIconification, switchIconificationCount)

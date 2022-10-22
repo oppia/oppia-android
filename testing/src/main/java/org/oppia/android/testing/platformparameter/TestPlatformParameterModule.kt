@@ -135,9 +135,7 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnablePerformanceMetricsCollection
-  fun provideEnablePerformanceMetricCollection(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
+  fun provideEnablePerformanceMetricCollection(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsCollection)
   }
 
@@ -244,6 +242,17 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnablePerformanceMetricsCollection(value: Boolean) {
       enablePerformanceMetricsCollection = value
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun reset() {
+      enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+      enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+      enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+      enableInteractionConfigChangeStateRetention = ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+      enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     }
   }
 }
