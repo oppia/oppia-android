@@ -81,7 +81,7 @@ class HintsViewModel @Inject constructor(
   }
 
   fun computeHintContentDescription(): String {
-    return hintsAndSolutionSummary.get()?.let{
+    return hintsAndSolutionSummary.get()?.let {
       CustomHtmlContentHandler.fromHtml(
         it,
         imageRetriever = null,
