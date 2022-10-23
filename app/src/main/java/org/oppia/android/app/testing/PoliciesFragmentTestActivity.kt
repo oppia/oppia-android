@@ -17,7 +17,12 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
 
   @Inject
   lateinit var policiesFragmentTestActivityPresenter: PoliciesFragmentTestActivityPresenter
-
+  /**
+   * [RouteToPoliciesListener] that must be initialized by the test, and is presumed to be a
+   * Mockito mock (though this is not, strictly speaking, required).
+   *
+   * This listener will be used as the callback for the dialog in response to UI operations.
+   */
   lateinit var mockCallbackListener: RouteToPoliciesListener
 
   override fun onCreate(savedInstanceState: Bundle?) {
