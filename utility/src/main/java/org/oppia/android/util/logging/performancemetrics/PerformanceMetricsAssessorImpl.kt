@@ -94,15 +94,15 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
       firstCpuSnapshot.isNewer(secondCpuSnapshot) ||
       firstCpuSnapshot.doesNotHaveValidNumberOfOnlineCores() ||
       secondCpuSnapshot.doesNotHaveValidNumberOfOnlineCores()
-    ) { return null }
+    ) return null
 
     val deltaCpuTimeMs = secondCpuSnapshot.cpuTimeMillis - firstCpuSnapshot.cpuTimeMillis
     val deltaProcessTimeMs = secondCpuSnapshot.appTimeMillis - firstCpuSnapshot.appTimeMillis
     val numberOfCores =
-      secondCpuSnapshot.numberOfOnlineCores + firstCpuSnapshot.numberOfOnlineCores / 2.0
+      (secondCpuSnapshot.numberOfOnlineCores + firstCpuSnapshot.numberOfOnlineCores) / 2.0
     return when (val relativeCpuUsage = deltaCpuTimeMs / (deltaProcessTimeMs * numberOfCores)) {
       in 0.0..1.0 -> relativeCpuUsage
-      else -> { null }
+      else -> null
     }
   }
 

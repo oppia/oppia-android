@@ -244,7 +244,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  fun testLogger_inDefaultState_logMultipleEvents_doesNotLogEvent() {
+  fun testLogger_inDefaultState_tryToLogMultipleEvents_doesNotLogAnyPerformanceMetric() {
     setUpApplicationInDefaultMode()
     performanceMetricsLogger.apply {
       logApkSize(HOME_ACTIVITY)

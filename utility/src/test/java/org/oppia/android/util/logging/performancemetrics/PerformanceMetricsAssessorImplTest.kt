@@ -223,32 +223,44 @@ class PerformanceMetricsAssessorImplTest {
   @RunParameterized(
     Iteration(
       "zeroDoubleValue",
+      "firstCpuValue=1000",
       "secondCpuValue=1000",
+      "firstAppTimeValue=1665790650",
       "secondAppTimeValue=1665790700",
+      "firstNumberOfOnlineCoresValue=6",
       "secondNumberOfOnlineCoresValue=2",
       "relativeCpuUsage=0.00"
     ),
     Iteration(
       "nonZeroDoubleValueTillTwoDecimalPoints",
+      "firstCpuValue=1000",
       "secondCpuValue=1100",
+      "firstAppTimeValue=1665790650",
       "secondAppTimeValue=1665790700",
+      "firstNumberOfOnlineCoresValue=6",
       "secondNumberOfOnlineCoresValue=2",
-      "relativeCpuUsage=0.40"
+      "relativeCpuUsage=0.50"
     ),
     Iteration(
       "nonZeroDoubleValueTillSevenDecimalPoints",
+      "firstCpuValue=1000",
       "secondCpuValue=12100",
+      "firstAppTimeValue=1665790650",
       "secondAppTimeValue=1869790700",
+      "firstNumberOfOnlineCoresValue=6",
       "secondNumberOfOnlineCoresValue=8",
       "relativeCpuUsage=0.0000077"
     ),
     Iteration(
       "nonZeroDoubleValueTillElevenDecimalPoints",
+      "firstCpuValue=1000",
       "secondCpuValue=2100",
+      "firstAppTimeValue=1665790650",
       "secondAppTimeValue=186933790700",
+      "firstNumberOfOnlineCoresValue=6",
       "secondNumberOfOnlineCoresValue=3",
       "relativeCpuUsage=0.00000000239"
-    ),
+    )
   )
   fun testAssessor_setFirstAndSecondSnapshot_returnsCorrectRelativeCpuUsage() {
     val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
