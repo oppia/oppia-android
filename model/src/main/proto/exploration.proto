@@ -342,11 +342,15 @@ message RawUserAnswer {
     string number_with_units = 5;
     // A raw answer entered by user in RatioInputInteraction.
     string ratio_input = 6;
-    // A raw answer entered by user in MathInputInteraction with numeric expression.
+    // A raw answer entered by user in MathInputInteraction.
     string math_expression = 7;
+    // An indices selected in multiple choice selection.
     int32 multiple_choice_selection_index = 8;
+    // A selected index in SelectionInteraction.
     ItemSelectionRawAnswer item_selection = 9;
+    // A list of html content ids selected in DragAndDropInteraction.
     ListOfSetsOfTranslatableHtmlContentIds drag_and_drop = 10;
+    // A selected image region in ImageRegionSelectionInteraction.
     ClickOnImage image_region_selection = 11;
   }
 }
