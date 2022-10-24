@@ -150,7 +150,7 @@ class OptionsActivity :
   override fun loadAppLanguageFragment(appLanguage: String) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.app_language)
+      resourceHandler.getStringInLocale(R.string.app_language_activity_label_text)
     )
     optionActivityPresenter.loadAppLanguageFragment(appLanguage)
   }

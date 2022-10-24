@@ -30,7 +30,7 @@
       android:value="2020-09-01" />
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
-      android:label="@string/administrator_controls_title"
+      android:label="@string/administrator_controls_activity_label_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.AdministratorControlsFragmentTestActivity"
@@ -102,7 +102,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AppLanguageActivity"
-      android:label="@string/app_language_activity_title"
+      android:label="@string/app_language_activity_toolbar_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AudioLanguageActivity"

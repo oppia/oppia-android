@@ -71,7 +71,7 @@
   <string name="lessons">Masomo</string>
   <string name="practice">Mazoezi</string>
   <string name="revision">Mazoezi</string>
-  <string name="administrator_controls_title">Vidhibiti vya Msimamizi</string>
+  <string name="administrator_controls_activity_label_title">Vidhibiti vya Msimamizi</string>
   <string name="topic_activity_topic_page_label_text">Ukurasa wa mada</string>
   <string name="topic_view_activity_topic_name">mada: %s</string>
   <string name="topic">mada</string>
@@ -121,6 +121,7 @@
   <string name="math_expression_error_generic">Samahani, hatukuweza kuelewa jibu lako. Tafadhali iangalie ili kuhakikisha kuwa hakuna hitilafu zozote.</string>
   <string name="enable_audio_playback_content_description">Washa sauti kwa somo hili.</string>
   <string name="profile_progress_header_activity_recently_played_stories">Hadithi Zilizochezwa hivi karibuni</string>
+  <string name="recently_played_stories">Hadithi Zilizochezwa hivi karibuni</string>
   <string name="last_played_stories">Hadithi Zilizochezwa Mwisho</string>
   <string name="profile_progress_header_activity_view_all">Tazama zote</string>
   <string name="recently_played_activity_ongoing_story_last_week">zilizochezwa ndani ya Wiki Iliyopita</string>
@@ -132,7 +133,7 @@
   <string name="recently_played_activity_toolbar_title">Hadithi Zilizochezwa Hivi Karibuni</string>
   <string name="topic_info_activity_topic_downloaded">Mada Imepakuliwa</string>
   <string name="downloaded">Imepakuliwa</string>
-  <string name="question_player_activity_toobar_title">Hali ya Mazoezi</string>
+  <string name="question_player_activity_toolbar_title">Hali ya Mazoezi</string>
   <string name="question_player_activity_question_training_session_progress">Swali %s kati ya %s</string>
   <string name="question_player_activity_question_training_session_progress_finished">imekamilika</string>
   <string name="question_player_activity_question_training_session_finished_header_text">imekamilika</string>
@@ -324,15 +325,15 @@
   <string name="administrator_controls_app_version_activity_app_version_name">Toleo la Programu %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">Sasisho la mwisho lilisakinishwa kwenye %s. Tumia nambari ya toleo iliyo hapo juu kutuma maoni kuhusu hitilafu.</string>
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">Toleo la Programu</string>
-  <string name="app_language_activity_title">Lugha ya Programu</string>
+  <string name="app_language_activity_toolbar_title">Lugha ya Programu</string>
   <string name="audio_language_activity_title">Lugha chaguomsingi ya Sauti</string>
   <string name="reading_text_size_activity_title">Ukubwa wa Maandishi ya Kusoma</string>
+  <string name="reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="reading_text_size_activity_toolbar_title_text">Ukubwa wa Maandishi ya Kusoma</string>
   <string name="story_text_will_look_like_this">Nakala ya hadithi itaonekana hivi.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Sauti Chaguomsingi</string>
-  <string name="app_language">Lugha ya Programu</string>
-  <string name="reading_text_size">Ukubwa wa Maandishi ya Kusoma</string>
+  <string name="app_language_activity_label_text">Lugha ya Programu</string>
   <string name="reading_text_size_small">Ndogo</string>
   <string name="reading_text_size_medium">Kati</string>
   <string name="reading_text_size_large">Kubwa</string>

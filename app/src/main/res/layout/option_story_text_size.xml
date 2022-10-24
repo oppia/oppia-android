@@ -27,7 +27,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
-      android:text="@string/reading_text_size"
+      android:text="@string/reading_text_size_activity_title"
       android:textColor="@color/component_color_option_activity_text_color"
       android:textSize="16sp"
       app:layout_constraintBottom_toTopOf="@id/reading_text_size_text_view"

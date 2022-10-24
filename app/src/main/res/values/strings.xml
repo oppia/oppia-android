@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- AdministratorControlActivity -->
-  <string name="administrator_controls_title">Administrator Controls</string>
+  <string name="administrator_controls_activity_label_title">Administrator Controls</string>
   <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
-  <string name="administrator_controls">Administrator Controls</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_activity_toolbar_title">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
@@ -239,7 +238,8 @@
   <string name="onboarding_activity_agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">Privacy Policy</oppia-noninteractive-policy>.]]></string>
   <!-- OptionsActivity -->
   <string name="options_activity_title">Options</string>
-  <string name="app_language_activity_title">App Language</string>
+  <string name="app_language_activity_label_text">App Language</string>
+  <string name="app_language_activity_toolbar_title">App Language</string>
   <string name="audio_language_activity_title">Default Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="reading_text_size_activity_toolbar_title_text">Reading Text Size</string>
@@ -324,7 +324,7 @@
   <string name="policy_activity_label_title">Policy Page</string>
   <!-- QuestionPlayerActivity -->
   <string name="question_player_activity_title">Practice Mode</string>
-  <string name="question_player_activity_toobar_title">Practice Mode</string>
+  <string name="question_player_activity_toolbar_title">Practice Mode</string>
   <string name="question_player_activity_question_training_session_progress">Question %s of %s</string>
   <string name="question_player_activity_question_training_session_progress_finished">Complete</string>
   <string name="question_player_activity_question_training_session_finished_header_text">Finished</string>
@@ -439,6 +439,7 @@
 
 
   <!-- TO BE PLACED -->
+  <string name="administrator_controls">Administrator Controls</string>
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
@@ -604,9 +605,6 @@
   <string name="text_input_default_hint_text">Tap here to enter text.</string>
   <string name="smallest_text_size_content_description">Smallest text size</string>
   <string name="largest_text_size_content_description">Largest text size</string>
-
-
-  <!-- Duplicate String -->
-  <string name="app_language">App Language</string>
   <string name="reading_text_size">Reading Text Size</string>
+  <string name="recently_played_stories">Recently-Played Stories</string>
 </resources>

@@ -78,7 +78,7 @@
   <string name="lessons">Lições</string>
   <string name="practice">Prática</string>
   <string name="revision">Revisão</string>
-  <string name="administrator_controls_title">Controles do Administrador</string>
+  <string name="administrator_controls_activity_label_title">Controles do Administrador</string>
   <string name="topic_activity_topic_page_label_text">Página do tópico</string>
   <string name="topic_view_activity_topic_name">Tópico: %s</string>
   <string name="topic">Tópico</string>
@@ -128,6 +128,7 @@
   <string name="math_expression_error_generic">Desculpe, não conseguimos entender sua resposta. Por favor, verifique se não há erros.</string>
   <string name="enable_audio_playback_content_description">Habilitar narração de áudio para esta lição.</string>
   <string name="profile_progress_header_activity_recently_played_stories">Histórias Reproduzidas Recentemente</string>
+  <string name="recently_played_stories">Histórias Reproduzidas Recentemente</string>
   <string name="last_played_stories">Últimas Histórias Reproduzidas</string>
   <string name="profile_progress_header_activity_view_all">Ver Tudo</string>
   <string name="recently_played_activity_ongoing_story_last_week">Reproduzidas na Última Semana</string>
@@ -139,7 +140,7 @@
   <string name="recently_played_activity_toolbar_title">Histórias Reproduzidas Recentemente</string>
   <string name="topic_info_activity_topic_downloaded">Tópico Baixado</string>
   <string name="downloaded">Baixado</string>
-  <string name="question_player_activity_toobar_title">Modo de Prática</string>
+  <string name="question_player_activity_toolbar_title">Modo de Prática</string>
   <string name="question_player_activity_question_training_session_progress">Questão %s de %s</string>
   <string name="question_player_activity_question_training_session_progress_finished">Concluído</string>
   <string name="question_player_activity_question_training_session_finished_header_text">Concluído</string>
@@ -346,15 +347,15 @@
   <string name="administrator_controls_app_version_activity_app_version_name">Versão do Aplicativo %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">A última atualização foi instalada em %s. Use o número da versão acima para enviar feedback sobre erros.</string>
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">Versão do Aplicativo</string>
-  <string name="app_language_activity_title">Idioma do Aplicativo</string>
+  <string name="app_language_activity_toolbar_title">Idioma do Aplicativo</string>
   <string name="audio_language_activity_title">Idioma Padrão de Áudio</string>
+  <string name="reading_text_size">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_toolbar_title_text">Tamanho do Texto de Leitura</string>
   <string name="story_text_will_look_like_this">O texto da história ficará assim.</string>
   <string name="constant_string_for_text_size">A</string>
   <string name="audio_language">Áudio Padrão</string>
-  <string name="app_language">Idioma do Aplicativo</string>
-  <string name="reading_text_size">Tamanho do Texto de Leitura</string>
+  <string name="app_language_activity_label_text">Idioma do Aplicativo</string>
   <string name="reading_text_size_small">Pequeno</string>
   <string name="reading_text_size_medium">Médio</string>
   <string name="reading_text_size_large">Grande</string>

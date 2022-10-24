@@ -71,7 +71,7 @@
   <string name="lessons">الدروس</string>
   <string name="practice">ممارسة</string>
   <string name="revision">مراجعة</string>
-  <string name="administrator_controls_title">أدوات تحكم المشرف</string>
+  <string name="administrator_controls_activity_label_title">أدوات تحكم المشرف</string>
   <string name="topic_activity_topic_page_label_text">صفحة الموضوع</string>
   <string name="topic_view_activity_topic_name">الموضوع: %s</string>
   <string name="topic">موضوع</string>
@@ -87,6 +87,7 @@
   <string name="number_with_units_input_hint_text">أدخل أرقام بالوحدات هنا.</string>
   <string name="enable_audio_playback_content_description">تفعيل التعليق الصوتي لهذا الدرس.</string>
   <string name="profile_progress_header_activity_recently_played_stories">القصص التي تم تشغيلها مؤخرًا</string>
+  <string name="recently_played_stories">القصص التي تم تشغيلها مؤخرًا</string>
   <string name="last_played_stories">آخر القصص التي تم تشغيلها</string>
   <string name="profile_progress_header_activity_view_all">عرض الكل</string>
   <string name="recently_played_activity_ongoing_story_last_week">تم تشغيلها خلال الأسبوع الماضي</string>
@@ -98,7 +99,7 @@
   <string name="recently_played_activity_toolbar_title">القصص التي تم تشغيلها مؤخرًا</string>
   <string name="topic_info_activity_topic_downloaded">المواضيع التي تم تنزيلها</string>
   <string name="downloaded">تم التنزيل</string>
-  <string name="question_player_activity_toobar_title">وضع الممارسة</string>
+  <string name="question_player_activity_toolbar_title">وضع الممارسة</string>
   <string name="question_player_activity_question_training_session_progress" fuzzy="true">السؤال %s من أصل %s</string>
   <string name="question_player_activity_question_training_session_progress_finished">تمّ</string>
   <string name="question_player_activity_question_training_session_finished_header_text">تم الإنتهاء</string>
@@ -318,15 +319,15 @@
   <string name="administrator_controls_app_version_activity_app_version_name">إصدار التطبيق %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">تم تثبيت آخر إصدار في %s. قم باستخدام رقم الإصدار في الأعلى للإبلاغ عن أعطال التطبيق.</string>
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">إصدار التطبيق</string>
-  <string name="app_language_activity_title">لغة التطبيق</string>
+  <string name="app_language_activity_toolbar_title">لغة التطبيق</string>
   <string name="audio_language_activity_title">لغة الصوت الافتراضية</string>
+  <string name="reading_text_size">حجم النص المقروء</string>
   <string name="reading_text_size_activity_title">حجم النص المقروء</string>
   <string name="reading_text_size_activity_toolbar_title_text">حجم النص المقروء</string>
   <string name="story_text_will_look_like_this">سيظهر نص القصة بهذا الشكل.</string>
   <string name="constant_string_for_text_size">أ</string>
   <string name="audio_language">الصوت الافتراضي</string>
-  <string name="app_language">لغة التطبيق</string>
-  <string name="reading_text_size">حجم النص المقروء</string>
+  <string name="app_language_activity_label_text">لغة التطبيق</string>
   <string name="reading_text_size_small">صغير</string>
   <string name="reading_text_size_medium">متوسط</string>
   <string name="reading_text_size_large">كبير</string>

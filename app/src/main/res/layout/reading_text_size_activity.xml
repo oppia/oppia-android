@@ -22,7 +22,7 @@
       android:minHeight="?attr/actionBarSize"
       app:navigationContentDescription="@string/navigate_up"
       app:navigationIcon="?attr/homeAsUpIndicator"
-      app:title="@string/title_reading_text_size"
+      app:title="@string/reading_text_size_activity_toolbar_title_text"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/color_def_white" />
   </com.google.android.material.appbar.AppBarLayout>
