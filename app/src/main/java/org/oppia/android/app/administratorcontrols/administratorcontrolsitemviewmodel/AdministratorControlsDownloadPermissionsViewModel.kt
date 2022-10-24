@@ -28,22 +28,7 @@ class AdministratorControlsDownloadPermissionsViewModel(
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
   fun onTopicWifiUpdatePermissionChanged() {
-    profileManagementController.updateWifiPermissionDeviceSettings(
-      userProfileId,
-      !isTopicWifiUpdatePermission.get()!!
-    ).toLiveData()
-      .observe(
-        fragment,
-        Observer {
-          if (it is AsyncResult.Failure) {
-            oppiaLogger.e(
-              "AdministratorControlsFragment",
-              "Failed to update topic update on wifi permission",
-              it.error
-            )
-          }
-        }
-      )
+    isTopicWifiUpdatePermission.set(!isTopicWifiUpdatePermission.get()!!)
   }
 
   fun onTopicAutoUpdatePermissionChanged() {
