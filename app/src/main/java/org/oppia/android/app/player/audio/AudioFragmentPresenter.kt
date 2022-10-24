@@ -291,10 +291,10 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun showOfflineDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_title))
-      .setMessage(resourceHandler.getStringInLocale(R.string.audio_dialog_offline_message))
+      .setTitle(resourceHandler.getStringInLocale(R.string.audio_fragment_audio_dialog_offline_title))
+      .setMessage(resourceHandler.getStringInLocale(R.string.audio_fragment_audio_dialog_offline_message))
       .setPositiveButton(
-        resourceHandler.getStringInLocale(R.string.audio_dialog_offline_positive)
+        resourceHandler.getStringInLocale(R.string.audio_fragment_audio_dialog_offline_positive)
       ) { dialog, _ ->
         dialog.dismiss()
       }.create().show()

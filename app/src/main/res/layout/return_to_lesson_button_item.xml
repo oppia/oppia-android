@@ -20,5 +20,5 @@
     android:paddingTop="8dp"
     android:paddingEnd="24dp"
     android:paddingBottom="8dp"
-    android:text="@string/return_to_lesson" />
+    android:text="@string/return_to_lesson_button_activity_return_to_lesson_text" />
 </layout>

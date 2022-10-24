@@ -131,7 +131,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
     val completeString: String =
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.agree_to_terms,
+        R.string.onboarding_activity_agree_to_terms,
         resourceHandler.getStringInLocale(R.string.app_name)
       )
     binding.slideTermsOfServiceAndPrivacyPolicyLinksTextView.text = htmlParserFactory.create(

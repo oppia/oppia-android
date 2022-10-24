@@ -56,7 +56,7 @@ class RecentlyPlayedActivityPresenter @Inject constructor(
         resourceHandler.getStringInLocale(R.string.recommended_stories)
       }
       else -> {
-        resourceHandler.getStringInLocale(R.string.recently_played_activity)
+        resourceHandler.getStringInLocale(R.string.recently_played_activity_toolbar_title)
       }
     }
   }

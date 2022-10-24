@@ -28,7 +28,7 @@
         android:id="@+id/master_skills_text_view"
         style="@style/Heading2ViewStart"
         android:layout_marginEnd="@dimen/master_skills_text_view_margin_end"
-        android:text="@string/topic_practice_master_these_skills"
+        android:text="@string/topic_practice_header_view_activity_topic_practice_master_these_skills"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +36,7 @@
         android:id="@+id/skills_description_text_view"
         style="@style/Subtitle1ViewStart"
         android:layout_marginTop="4dp"
-        android:text="@string/topic_practice_skills_description"
+        android:text="@string/topic_practice_header_view_activity_topic_practice_skills_description"
         android:textColor="@color/component_color_topic_practice_header_view_description_text_color"
         app:layout_constraintStart_toStartOf="@+id/master_skills_text_view"
         app:layout_constraintTop_toBottomOf="@+id/master_skills_text_view" />

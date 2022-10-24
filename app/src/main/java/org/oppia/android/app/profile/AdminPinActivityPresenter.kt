@@ -40,7 +40,7 @@ class AdminPinActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_close)
+    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_activity_close_button_text)
 
     val binding =
       DataBindingUtil.setContentView<AdminPinActivityBinding>(activity, R.layout.admin_pin_activity)
@@ -91,7 +91,7 @@ class AdminPinActivityPresenter @Inject constructor(
       if (inputPin.length < 5) {
         adminViewModel.pinErrorMsg.set(
           resourceHandler.getStringInLocale(
-            R.string.admin_pin_error_pin_length
+            R.string.admin_pin_activity_admin_pin_length_error_text
           )
         )
         failed = true
@@ -99,7 +99,7 @@ class AdminPinActivityPresenter @Inject constructor(
       if (inputPin != confirmPin) {
         adminViewModel.confirmPinErrorMsg.set(
           resourceHandler.getStringInLocale(
-            R.string.admin_pin_error_pin_confirm_wrong
+            R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
           )
         )
         failed = true

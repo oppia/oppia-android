@@ -37,13 +37,13 @@ class StopExplorationDialogFragment : InjectableDialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.stop_exploration_dialog_title)
-      .setMessage(R.string.stop_exploration_dialog_description)
-      .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { _, _ ->
+      .setTitle(R.string.stop_exploration_dialog_fragment_stop_exploration_dialog_title)
+      .setMessage(R.string.unsaved_exploration_dialog_fragment_stop_exploration_dialog_description)
+      .setPositiveButton(R.string.unsaved_exploration_dialog_fragment_stop_exploration_dialog_leave_button_text) { _, _ ->
         stopStatePlayingSessionListener.stopSession()
         dismiss()
       }
-      .setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(R.string.unsaved_exploration_dialog_fragment_stop_exploration_dialog_cancel_button_text) { _, _ ->
         dismiss()
       }
       .create()

@@ -140,7 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
-                android:contentDescription="@{isListExpanded ? @string/hide_chapter_list : @string/show_chapter_list}"
+                android:contentDescription="@{isListExpanded ? @string/topic_lesson_story_summary_activity_hide_chapter_list : @string/topic_lesson_story_summary_activity_show_chapter_list}"
                 app:isRotationAnimationClockwise="@{isListExpanded}"
                 app:rotationAnimationAngle="@{180f}"
                 app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />

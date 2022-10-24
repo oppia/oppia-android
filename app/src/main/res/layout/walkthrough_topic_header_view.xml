@@ -17,7 +17,7 @@
     android:layout_marginEnd="28dp"
     android:layout_marginBottom="16dp"
     android:fontFamily="sans-serif-medium"
-    android:text="@string/what_do_you_want_to_learn"
+    android:text="@string/walkthrough_topic_header_view_activity_what_do_you_want_to_learn"
     android:textColor="@color/oppia_primary_text"
     android:textSize="24sp" />
 </layout>

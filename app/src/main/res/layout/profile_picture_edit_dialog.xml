@@ -14,7 +14,7 @@
     android:fontFamily="sans-serif"
     android:paddingTop="24dp"
     android:paddingBottom="12dp"
-    android:text="@string/profile_picture_edit_alert_dialog_view_profile_picture"
+    android:text="@string/profile_progress_edit_dialog_activity_view_profile_picture_text"
     android:textColor="@color/component_color_profile_picture_edit_dialog_text_color"
     android:textSize="16sp" />
 
@@ -28,7 +28,7 @@
     android:fontFamily="sans-serif"
     android:paddingTop="12dp"
     android:paddingBottom="16dp"
-    android:text="@string/profile_picture_edit_alert_dialog_choose_from_library"
+    android:text="@string/profile_progress_edit_dialog_activity_choose_from_library_text"
     android:textColor="@color/component_color_profile_picture_edit_dialog_text_color"
     android:textSize="16sp" />
 </LinearLayout>

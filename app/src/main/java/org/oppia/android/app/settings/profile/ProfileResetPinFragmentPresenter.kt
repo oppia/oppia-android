@@ -103,7 +103,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         if (pin.length < 5) {
           viewModel.pinErrorMsg.set(
             resourceHandler.getStringInLocale(
-              R.string.profile_reset_pin_error_admin_pin_length
+              R.string.profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length
             )
           )
           failed = true
@@ -112,7 +112,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
         if (pin.length < 3) {
           viewModel.pinErrorMsg.set(
             resourceHandler.getStringInLocale(
-              R.string.profile_reset_pin_error_user_pin_length
+              R.string.profile_reset_pin_activity_profile_reset_pin_error_user_pin_length
             )
           )
           failed = true
@@ -121,7 +121,7 @@ class ProfileResetPinFragmentPresenter @Inject constructor(
       if (pin != confirmPin) {
         viewModel.confirmErrorMsg.set(
           resourceHandler.getStringInLocale(
-            R.string.add_profile_error_pin_confirm_wrong
+            R.string.add_profile_activity_add_profile_error_text_pin_confirm_wrong
           )
         )
         failed = true

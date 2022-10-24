@@ -74,7 +74,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
-            android:text="@string/show_solution"
+            android:text="@string/solution_summary_activity_show_solution_button_text"
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
             android:visibility="@{viewModel.isSolutionRevealed()? View.GONE : View.VISIBLE}"
@@ -93,7 +93,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:contentDescription="@string/show_hide_solution_list"
+            android:contentDescription="@string/solution_summary_activity_show_hide_solution_list"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"
@@ -139,7 +139,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
-              android:text="@string/the_only_solution_is"
+              android:text="@string/solution_summary_activity_solution_correct_answer_label_text"
               android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
               android:textSize="16sp" />
 

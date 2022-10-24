@@ -180,7 +180,7 @@ class StoryFragmentPresenter @Inject constructor(
             == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES
           ) {
             val missingPrerequisiteSummary = resourceHandler.getStringInLocaleWithWrapping(
-              R.string.chapter_prerequisite_title_label,
+              R.string.story_activity_chapter_prerequisite_title_label,
               storyItemViewModel.index.toString(),
               storyItemViewModel.missingPrerequisiteChapterTitle
             )

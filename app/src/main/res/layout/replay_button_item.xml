@@ -26,7 +26,7 @@
       android:onClick="@{(v) -> buttonViewModel.replayButtonListener.onReplayButtonClicked()}"
       android:paddingStart="24dp"
       android:paddingEnd="24dp"
-      android:text="@string/lesson_replay_button_text"
+      android:text="@string/replay_button_item_activity_lesson_replay_button_text"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

@@ -20,9 +20,9 @@ class BetaNoticeDialogFragmentPresenter @Inject constructor(
     val preferenceCheckbox =
       contentView.findViewById<CheckBox>(R.id.beta_notice_dialog_preference_checkbox)
     return AlertDialog.Builder(activity)
-      .setTitle(R.string.beta_notice_dialog_title)
+      .setTitle(R.string.beta_notice_dialog_activity_title)
       .setView(contentView)
-      .setPositiveButton(R.string.beta_notice_dialog_close_button_text) { _, _ ->
+      .setPositiveButton(R.string.beta_notice_dialog_activity_close_button_text) { _, _ ->
         betaNoticeClosedListener.onBetaNoticeOkayButtonClicked(preferenceCheckbox.isChecked)
       }
       .setCancelable(false)

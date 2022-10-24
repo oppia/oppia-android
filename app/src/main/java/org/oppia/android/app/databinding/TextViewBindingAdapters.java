@@ -73,13 +73,13 @@ public final class TextViewBindingAdapters {
     AppLanguageResourceHandler resourceHandler = getResourceHandler(view);
 
     if (timeStampMillis > currentTimeMillis || timeStampMillis <= 0) {
-      return resourceHandler.getStringInLocale(R.string.last_logged_in_recently);
+      return resourceHandler.getStringInLocale(R.string.text_view_binding_adapters_activity_last_logged_in_recently);
     }
 
     long timeDifferenceMillis = currentTimeMillis - timeStampMillis;
 
     if (timeDifferenceMillis < (int) TimeUnit.MINUTES.toMillis(1)) {
-      return resourceHandler.getStringInLocale(R.string.just_now);
+      return resourceHandler.getStringInLocale(R.string.text_view_binding_adapters_activity_just_now);
     } else if (timeDifferenceMillis < TimeUnit.MINUTES.toMillis(50)) {
       return getPluralString(
               resourceHandler,
@@ -93,7 +93,7 @@ public final class TextViewBindingAdapters {
           (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis)
       );
     } else if (timeDifferenceMillis < TimeUnit.DAYS.toMillis(2)) {
-      return resourceHandler.getStringInLocale(R.string.yesterday);
+      return resourceHandler.getStringInLocale(R.string.text_view_binding_adapters_activity_yesterday);
     }
     return getPluralString(
             resourceHandler,
@@ -109,7 +109,7 @@ public final class TextViewBindingAdapters {
   ) {
     // TODO(#3841): Combine these strings together.
     return resourceHandler.getStringInLocaleWithWrapping(
-        R.string.time_ago,
+        R.string.text_view_binding_adapters_activity_time_ago,
         resourceHandler.getQuantityStringInLocaleWithWrapping(
             pluralsResId, count, String.valueOf(count)
         )

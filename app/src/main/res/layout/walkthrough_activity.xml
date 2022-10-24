@@ -34,7 +34,7 @@
       android:layout_height="48dp"
       android:padding="16dp"
       android:clickable="true"
-      android:contentDescription="@string/back_button"
+      android:contentDescription="@string/walkthrough_activity_back_button_text"
       android:focusable="true"
       android:onClick="@{(v) -> presenter.moveToPreviousPage(viewModel.currentProgress)}"
       app:srcCompat="@drawable/ic_arrow_back_white_24dp"

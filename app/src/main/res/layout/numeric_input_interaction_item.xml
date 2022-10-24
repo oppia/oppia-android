@@ -24,7 +24,7 @@
       android:id="@+id/numeric_input_interaction_view"
       style="@style/InputInteractionEditText"
       android:digits="0123456789.-"
-      android:hint="@string/numeric_input_hint"
+      android:hint="@string/numeric_input_interaction_item_activity_numeric_input_hint"
       android:inputType="numberDecimal"
       android:text="@={viewModel.answerText}"
       android:textColorHint="@color/component_color_shared_edit_text_hint_color"

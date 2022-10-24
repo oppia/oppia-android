@@ -53,7 +53,7 @@
       android:button="@drawable/state_button_primary_background"
       android:enabled="@{buttonViewModel.canSubmitAnswer}"
       android:onClick="@{(v) -> buttonViewModel.submitNavigationButtonListener.onSubmitButtonClicked()}"
-      android:text="@string/state_submit_button"
+      android:text="@string/submit_button_item_activity_state_submit_button_text"
       android:textColor="@{buttonViewModel.canSubmitAnswer ? @color/component_color_shared_submit_text_active_color : @color/component_color_shared_submit_text_inactive_color}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

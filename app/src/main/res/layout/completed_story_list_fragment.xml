@@ -32,7 +32,7 @@
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/completed_story_list_activity_title"
+        app:title="@string/completed_story_list_activity_toolbar_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -56,7 +56,7 @@
         android:paddingEnd="@dimen/completed_story_list_fragment_recyclerview_padding_end"
         android:paddingBottom="@dimen/completed_story_list_fragment_recyclerview_padding_bottom"
         android:scrollbars="none"
-        android:tag="@string/completed_story_list_recyclerview_tag"
+        android:tag="@string/completed_story_list_activity_completed_story_list_recyclerview_tag"
         app:data="@{viewModel.completedStoryListLiveData}" />
 
       <View

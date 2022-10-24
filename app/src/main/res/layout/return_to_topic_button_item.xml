@@ -34,7 +34,7 @@
       android:onClick="@{(v) -> buttonViewModel.returnToTopicNavigationButtonListener.onReturnToTopicButtonClicked()}"
       android:paddingStart="32dp"
       android:paddingEnd="32dp"
-      android:text="@string/state_end_exploration_button"
+      android:text="@string/unsaved_exploration_dialog_fragment_state_end_exploration_button_text"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

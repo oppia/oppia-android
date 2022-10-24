@@ -120,7 +120,7 @@ class StoryChapterSummaryViewModel(
         chapterSummary.title, ephemeralChapterSummary.writtenTranslationContext
       )
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.chapter_name, (index + 1).toString(), title
+      R.string.chapter_summary_activity_chapter_name, (index + 1).toString(), title
     )
   }
 }

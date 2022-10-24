@@ -21,7 +21,7 @@
     <org.oppia.android.app.customview.interaction.TextInputInteractionView
       android:id="@+id/text_input_interaction_view"
       style="@style/InputInteractionEditText"
-      android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/text_input_default_content_description : ``}"
+      android:contentDescription="@{viewModel.hintText.length() == 0 ? @string/text_input_interaction_item_activity_text_input_default_content_description : ``}"
       android:hint="@{viewModel.hintText}"
       android:inputType="text"
       android:text="@={viewModel.answerText}"

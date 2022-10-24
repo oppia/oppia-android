@@ -27,7 +27,7 @@ class OnboardingViewModel @Inject constructor(
 
   private fun computeSlideDotsContainerContentDescription(slideNumber: Int): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.onboarding_slide_dots_content_description,
+      R.string.onboarding_activity_onboarding_slide_dots_content_description,
       (slideNumber + 1).toString(),
       totalNumberOfSlides.toString()
     )

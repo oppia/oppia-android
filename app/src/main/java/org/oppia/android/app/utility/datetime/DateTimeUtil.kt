@@ -17,11 +17,11 @@ class DateTimeUtil @Inject constructor(
   fun getGreetingMessage(): String {
     return when (machineLocale.getCurrentTimeOfDay()) {
       OppiaLocale.MachineLocale.TimeOfDay.MORNING ->
-        resourceHandler.getStringInLocale(R.string.home_screen_good_morning_greeting_fragment)
+        resourceHandler.getStringInLocale(R.string.date_time_util_home_screen_good_morning_greeting_fragment)
       OppiaLocale.MachineLocale.TimeOfDay.AFTERNOON ->
-        resourceHandler.getStringInLocale(R.string.home_screen_good_afternoon_greeting_fragment)
+        resourceHandler.getStringInLocale(R.string.date_time_util_home_screen_good_afternoon_greeting_fragment)
       OppiaLocale.MachineLocale.TimeOfDay.EVENING, OppiaLocale.MachineLocale.TimeOfDay.UNKNOWN ->
-        resourceHandler.getStringInLocale(R.string.home_screen_good_evening_greeting_fragment)
+        resourceHandler.getStringInLocale(R.string.date_time_util_home_screen_good_evening_greeting_fragment)
     }
   }
 

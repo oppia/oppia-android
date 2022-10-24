@@ -28,9 +28,9 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter @Inject constructo
     val preferenceCheckbox =
       contentView.findViewById<CheckBox>(R.id.ga_update_notice_dialog_preference_checkbox)
     return AlertDialog.Builder(activity)
-      .setTitle(R.string.general_availability_notice_dialog_title)
+      .setTitle(R.string.general_availability_upgrade_notice_dialog_activity_title)
       .setView(contentView)
-      .setPositiveButton(R.string.general_availability_notice_dialog_close_button_text) { _, _ ->
+      .setPositiveButton(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text) { _, _ ->
         gaUpgradeNoticeClosedListener.onGaUpgradeNoticeOkayButtonClicked(
           preferenceCheckbox.isChecked
         )

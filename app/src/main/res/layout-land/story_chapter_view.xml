@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:contentDescription="@{@string/chapter_completed}"
+            android:contentDescription="@{@string/chapter_summary_activity_chapter_completed}"
             app:srcCompat="@drawable/ic_check_24dp"
             android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -483,7 +483,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (feedback.html.isBlank()) {
       accessibilityService.announceForAccessibilityForView(
         textView,
-        resourceHandler.getStringInLocale(R.string.correct)
+        resourceHandler.getStringInLocale(R.string.state_fragment_activity_correct_text)
       )
     }
   }

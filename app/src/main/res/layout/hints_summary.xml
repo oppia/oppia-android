@@ -75,7 +75,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
-            android:text="@string/reveal_hint"
+            android:text="@string/hints_summary_activity_reveal_hint_button_text"
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
             android:visibility="@{viewModel.isHintRevealed? View.GONE : View.VISIBLE}"

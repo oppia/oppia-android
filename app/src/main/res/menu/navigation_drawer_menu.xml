@@ -6,7 +6,7 @@
     <item
       android:id="@+id/nav_home"
       android:icon="@drawable/ic_home_icon_grey_24dp"
-      android:title="@string/home_activity_title" />
+      android:title="@string/home_activity_label_title" />
     <item
       android:id="@+id/nav_options"
       android:icon="@drawable/ic_options_icon_grey_24dp"
@@ -18,11 +18,11 @@
     <item
       android:id="@+id/nav_my_downloads"
       android:icon="@drawable/ic_folder_open_24dp"
-      android:title="@string/menu_my_downloads"
+      android:title="@string/navigation_drawer_activity_menu_my_downloads"
       android:visible="false" />
     <item
       android:id="@+id/nav_switch_profile"
       android:icon="@drawable/ic_profile_exit"
-      android:title="@string/menu_switch_profile" />
+      android:title="@string/navigation_drawer_activity_menu_switch_profile" />
   </group>
 </menu>

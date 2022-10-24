@@ -20,6 +20,6 @@
       android:layout_marginStart="@dimen/topic_lessons_title_margin_start"
       android:layout_marginTop="@dimen/topic_lessons_title_margin_top"
       android:layout_marginEnd="@dimen/topic_lessons_title_margin_end"
-      android:text="@string/stories_you_can_play"/>
+      android:text="@string/topic_lesson_title_activity_stories_you_can_play"/>
   </FrameLayout>
 </layout>

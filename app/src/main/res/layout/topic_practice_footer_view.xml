@@ -30,7 +30,7 @@
       android:enabled="@{isSubmitButtonActive}"
       android:fontFamily="sans-serif-medium"
       android:minHeight="@dimen/clickable_item_min_height"
-      android:text="@string/topic_practice_start"
+      android:text="@string/topic_practice_footer_view_activity_topic_practice_start"
       android:textColor="@{isSubmitButtonActive ? @color/color_def_white : @color/submit_button_text_inactive}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

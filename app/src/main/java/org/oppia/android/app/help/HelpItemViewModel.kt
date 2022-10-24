@@ -16,7 +16,7 @@ class HelpItemViewModel(
 ) : ObservableViewModel() {
   fun onClick(title: String) {
     when (title) {
-      resourceHandler.getStringInLocale(R.string.frequently_asked_questions_FAQ) -> {
+      resourceHandler.getStringInLocale(R.string.help_activity_frequently_asked_questions_FAQ_text) -> {
         if (isMultipane) {
           val loadFaqListFragmentListener = activity as LoadFaqListFragmentListener
           loadFaqListFragmentListener.loadFaqListFragment()
@@ -36,10 +36,10 @@ class HelpItemViewModel(
           routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()
         }
       }
-      resourceHandler.getStringInLocale(R.string.privacy_policy_title) -> {
+      resourceHandler.getStringInLocale(R.string.help_activity_privacy_policy_title) -> {
         loadPolicyPage(PolicyPage.PRIVACY_POLICY)
       }
-      resourceHandler.getStringInLocale(R.string.terms_of_service_title) -> {
+      resourceHandler.getStringInLocale(R.string.help_activity_terms_of_service_title) -> {
         loadPolicyPage(PolicyPage.TERMS_OF_SERVICE)
       }
     }

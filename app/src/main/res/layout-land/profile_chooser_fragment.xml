@@ -42,7 +42,7 @@
           style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
-          android:text="@string/profile_chooser_language"
+          android:text="@string/profile_chooser_activity_profile_chooser_language"
           android:textColor="@color/profile_chooser_grey_text"
           android:visibility="gone"
           app:layout_constraintEnd_toStartOf="@+id/profile_chooser_language_icon"
@@ -54,7 +54,7 @@
           android:layout_marginStart="36dp"
           android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
           android:layout_marginEnd="36dp"
-          android:text="@string/profile_chooser_select"
+          android:text="@string/profile_chooser_activity_profile_chooser_select"
           android:textColor="@color/color_def_white"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -102,7 +102,7 @@
         style="@style/Subtitle1ViewCenter"
         android:layout_marginBottom="24dp"
         android:minHeight="48dp"
-        android:text="@string/profile_chooser_administrator_controls"
+        android:text="@string/profile_chooser_activity_profile_chooser_administrator_controls"
         android:textColor="@color/profile_chooser_grey_text" />
 
       <ImageView

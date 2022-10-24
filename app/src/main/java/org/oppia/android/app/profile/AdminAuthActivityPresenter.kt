@@ -96,7 +96,7 @@ class AdminAuthActivityPresenter @Inject constructor(
         }
       } else if (inputPin.length == adminPin.length) {
         authViewModel.errorMessage.set(
-          resourceHandler.getStringInLocale(R.string.admin_auth_incorrect)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
         )
       }
     }
@@ -110,19 +110,19 @@ class AdminAuthActivityPresenter @Inject constructor(
         binding?.adminAuthToolbar?.title =
           resourceHandler.getStringInLocale(R.string.administrator_controls)
         binding?.adminAuthHeadingTextview?.text =
-          resourceHandler.getStringInLocale(R.string.admin_auth_heading)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_heading)
         binding?.adminAuthSubText?.text =
-          resourceHandler.getStringInLocale(R.string.admin_auth_admin_controls_sub)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_admin_auth_admin_controls_sub_text)
       }
       AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
         activity.title =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_add_profiles_title)
         binding?.adminAuthToolbar?.title =
-          resourceHandler.getStringInLocale(R.string.add_profile_title)
+          resourceHandler.getStringInLocale(R.string.add_profile_activity_add_profile_toolbar_title)
         binding?.adminAuthHeadingTextview?.text =
-          resourceHandler.getStringInLocale(R.string.admin_auth_heading)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_heading)
         binding?.adminAuthSubText?.text =
-          resourceHandler.getStringInLocale(R.string.admin_auth_sub)
+          resourceHandler.getStringInLocale(R.string.admin_auth_activity_admin_auth_sub_text)
       }
     }
   }

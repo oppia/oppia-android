@@ -63,7 +63,7 @@
       android:id="@+id/submitted_answer_recycler_view_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:contentDescription="@{viewModel.isCorrectAnswer ? @string/correct_submitted_answer : @string/incorrect_submitted_answer}"
+      android:contentDescription="@{viewModel.isCorrectAnswer ? @string/submitted_answer_item_activity_correct_submitted_answer : @string/submitted_answer_item_activity_incorrect_submitted_answer}"
       android:orientation="vertical"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">

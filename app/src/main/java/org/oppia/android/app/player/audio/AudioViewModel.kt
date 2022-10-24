@@ -147,7 +147,7 @@ class AudioViewModel @Inject constructor(
 
   fun computeAudioUnavailabilityString(languageName: String): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.audio_unavailable_in_selected_language, languageName
+      R.string.audio_fragment_audio_unavailable_in_selected_language, languageName
     )
   }
 

@@ -43,7 +43,7 @@
       android:id="@+id/build_flavor_label"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@{isOnAlphaFlavor ? @string/splash_screen_alpha_label : isOnBetaFlavor ? @string/splash_screen_beta_label : @string/splash_screen_developer_label}"
+      android:text="@{isOnAlphaFlavor ? @string/splash_screen_activity_splash_screen_alpha_label_text : isOnBetaFlavor ? @string/splash_screen_activity_splash_screen_beta_label_text : @string/splash_screen_activity_splash_screen_developer_label_text}"
       style="@style/Heading2ViewStart"
       android:textSize="24sp"
       android:textColor="@color/color_def_white"

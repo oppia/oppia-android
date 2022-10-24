@@ -40,7 +40,7 @@
       android:minHeight="48dp"
       android:drawablePadding="8dp"
       android:gravity="center_vertical"
-      android:text="@string/bottom_sheet_options_menu_close"
+      android:text="@string/bottom_sheet_options_menu_fragment_close_text"
       android:textColor="@color/color_def_black"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_baseline_close_24" />

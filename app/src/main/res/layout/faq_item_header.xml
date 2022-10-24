@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/faq_item_header_margin_top"
         android:layout_marginEnd="@dimen/faq_item_header_margin_end"
         android:layout_marginBottom="@dimen/faq_item_header_margin_bottom"
-        android:text="@string/featured_questions"
+        android:text="@string/faq_list_activity_featured_questions_text"
         android:textColor="@color/component_color_faq_list_activity_text_color"
         android:textSize="18sp" />
     </LinearLayout>

@@ -22,7 +22,7 @@
       android:layout_marginTop="32dp"
       android:layout_marginEnd="24dp"
       android:layout_marginBottom="20dp"
-      android:hint="@string/admin_settings_label"
+      android:hint="@string/admin_settings_dialog_fragment_input_pin_label_text"
       app:errorMessage="@{viewModel.errorMessage}">
 
       <com.google.android.material.textfield.TextInputEditText

@@ -84,7 +84,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.isSolutionRevealed = isSolutionRevealed
     binding.hintsAndSolutionToolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
     binding.hintsAndSolutionToolbar.setNavigationContentDescription(
-      R.string.hints_andSolution_close_icon_description
+      R.string.hint_and_solution_activity_close_icon_description
     )
     binding.hintsAndSolutionToolbar.setNavigationOnClickListener {
       (fragment.requireActivity() as? HintsAndSolutionListener)?.dismiss()
@@ -268,7 +268,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     if (solutionViewModel.correctAnswer.get().isNullOrEmpty()) {
       binding.solutionCorrectAnswer.text =
         resourceHandler.getStringInLocaleWithoutWrapping(
-          R.string.hints_android_solution_correct_answer,
+          R.string.hint_and_solution_activity_hints_android_solution_correct_answer,
           solutionViewModel.numerator.get().toString(),
           solutionViewModel.denominator.get().toString()
         )

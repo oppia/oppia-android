@@ -39,14 +39,14 @@ class CellularAudioDialogFragment : InjectableDialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.cellular_data_alert_dialog_title)
+      .setTitle(R.string.cellular_audio_dialog_fragment_cellular_data_alert_dialog_title)
       .setView(view)
-      .setMessage(R.string.cellular_data_alert_dialog_description)
-      .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { _, _ ->
+      .setMessage(R.string.cellular_audio_dialog_fragment_cellular_data_alert_dialog_description)
+      .setPositiveButton(R.string.cellular_audio_dialog_fragment_cellular_data_alert_dialog_okay_button_text) { _, _ ->
         cellularDataInterface.enableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
       }
-      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(R.string.cellular_audio_dialog_fragment_cellular_data_alert_dialog_cancel_button_text) { _, _ ->
         cellularDataInterface.disableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
       }

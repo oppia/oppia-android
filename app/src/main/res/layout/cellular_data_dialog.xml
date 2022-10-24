@@ -14,7 +14,7 @@
     android:paddingTop="@dimen/cellular_data_dialog_padding"
     android:paddingEnd="16dp"
     android:paddingBottom="@dimen/cellular_data_dialog_padding"
-    android:text="@string/cellular_data_alert_dialog_checkbox"
+    android:text="@string/cellular_audio_dialog_fragment_cellular_data_alert_dialog_checkbox"
     android:textColor="@color/component_color_cellular_data_dialog_checkbox_color"
     android:textSize="16sp" />
 </RelativeLayout>

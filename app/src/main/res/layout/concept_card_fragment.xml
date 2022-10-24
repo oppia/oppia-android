@@ -23,7 +23,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:title="@string/concept_card_toolbar_title"
+      app:title="@string/concept_card_fragment_concept_card_toolbar_title"
       app:titleTextAppearance="@style/ToolbarTextAppearance"
       app:titleTextColor="@color/color_def_white" />
 

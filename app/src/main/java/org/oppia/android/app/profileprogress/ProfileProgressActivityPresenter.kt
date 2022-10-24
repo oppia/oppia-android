@@ -37,7 +37,7 @@ class ProfileProgressActivityPresenter @Inject constructor(
       R.id.profile_progress_activity_toolbar
     ) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setTitle(R.string.profile)
+    activity.supportActionBar!!.setTitle(R.string.profile_progress_activity_profile_title)
     activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
     activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     toolbar.setNavigationOnClickListener {

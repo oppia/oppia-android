@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif"
-            android:text="@string/no"
+            android:text="@string/walkthrough_final_activity_no"
             android:textColor="@color/oppia_primary_text"
             android:textSize="20sp" />
 
@@ -71,7 +71,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:fontFamily="sans-serif"
-            android:text="@string/pick_a_different_topic"
+            android:text="@string/walkthrough_final_activity_pick_a_different_topic"
             android:textColor="@color/oppia_primary_text"
             android:textSize="12sp" />
         </com.google.android.material.card.MaterialCardView>
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif"
-            android:text="@string/yes"
+            android:text="@string/walkthrough_final_activity_yes"
             android:textColor="@color/oppia_primary"
             android:textSize="20sp" />
 
@@ -104,7 +104,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
             android:fontFamily="sans-serif"
-            android:text="@string/lets_get_started"
+            android:text="@string/walkthrough_final_activity_lets_get_started_text"
             android:textColor="@color/oppia_primary"
             android:textSize="12sp" />
         </com.google.android.material.card.MaterialCardView>
@@ -133,7 +133,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="sans-serif"
-        android:text="@string/great"
+        android:text="@string/walkthrough_final_activity_great_text"
         android:textColor="@color/oppia_primary_text"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"

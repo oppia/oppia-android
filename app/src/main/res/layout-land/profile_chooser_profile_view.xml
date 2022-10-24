@@ -74,7 +74,7 @@
           style="@style/SubtitleLight1Center"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/profile_chooser_admin"
+          android:text="@string/profile_chooser_activity_profile_chooser_admin"
           android:textColor="@color/color_def_white"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
       </LinearLayout>

@@ -47,7 +47,7 @@ class StorySummaryViewModel(
         R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
       )
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.chapter_count_with_story_name, chapterCountText, storyTitle
+      R.string.story_summary_activity_chapter_count_with_story_name, chapterCountText, storyTitle
     )
   }
 
@@ -74,7 +74,7 @@ class StorySummaryViewModel(
 
   private fun computeStoryProgressPercentageText(storyPercentage: Int): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.topic_story_progress_percentage, storyPercentage.toString()
+      R.string.story_summary_activity_topic_story_progress_percentage, storyPercentage.toString()
     )
   }
 

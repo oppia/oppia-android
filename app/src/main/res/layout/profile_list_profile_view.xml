@@ -56,7 +56,7 @@
       android:layout_marginStart="20dp"
       android:layout_marginEnd="20dp"
       android:fontFamily="sans-serif"
-      android:text="@string/profile_chooser_admin"
+      android:text="@string/profile_chooser_activity_profile_chooser_admin"
       android:textColor="@color/component_color_profile_list_activity_profile_view_designation_text_color"
       android:textSize="12sp"
       android:textStyle="italic"

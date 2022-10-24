@@ -20,6 +20,6 @@
       style="@style/Heading2ViewStart"
       android:layout_width="528dp"
       android:layout_gravity="center"
-      android:text="@string/stories_you_can_play" />
+      android:text="@string/topic_lesson_title_activity_stories_you_can_play" />
   </FrameLayout>
 </layout>

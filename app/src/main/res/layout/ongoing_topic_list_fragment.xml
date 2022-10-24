@@ -56,7 +56,7 @@
         android:paddingEnd="@dimen/ongoing_topic_list_fragment_padding_end"
         android:paddingBottom="@dimen/ongoing_topic_list_fragment_padding_bottom"
         android:scrollbars="none"
-        android:tag="@string/ongoing_recycler_view_tag"
+        android:tag="@string/ongoing_list_activity_ongoing_recycler_view_tag"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
       <View

@@ -54,9 +54,9 @@ class ProfilePictureEditDialogFragment : InjectableDialogFragment() {
     }
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.profile_progress_edit_dialog_title)
+      .setTitle(R.string.profile_progress_edit_dialog_activity_title)
       .setView(view)
-      .setNegativeButton(R.string.profile_picture_edit_alert_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(R.string.profile_progress_edit_dialog_activity_cancel_button_text) { _, _ ->
         dismiss()
       }
       .create()
