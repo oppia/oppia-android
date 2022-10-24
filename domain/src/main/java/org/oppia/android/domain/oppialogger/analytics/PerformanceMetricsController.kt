@@ -194,7 +194,7 @@ class PerformanceMetricsController @Inject constructor(
   /** Returns a boolean value indicating whether the application is currently in foreground or not. */
   fun getIsAppInForeground() = this.isAppInForeground
 
-  fun ConnectionStatus.toNetworkType(): OppiaMetricLog.NetworkType {
+  private fun ConnectionStatus.toNetworkType(): OppiaMetricLog.NetworkType {
     return when (this) {
       NetworkConnectionUtil.ProdConnectionStatus.NONE -> OppiaMetricLog.NetworkType.NONE
       NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> OppiaMetricLog.NetworkType.WIFI
