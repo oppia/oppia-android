@@ -11,6 +11,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.networking.ConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -114,6 +115,7 @@ class PerformanceMetricsController @Inject constructor(
       this.isAppInForeground = this@PerformanceMetricsController.isAppInForeground
       this.storageTier = performanceMetricsAssessor.getDeviceStorageTier()
       this.memoryTier = performanceMetricsAssessor.getDeviceMemoryTier()
+      this.networkType = networkConnectionUtil.getCurrentConnectionStatus().toNetworkType()
     }.build()
   }
 
@@ -191,4 +193,13 @@ class PerformanceMetricsController @Inject constructor(
 
   /** Returns a boolean value indicating whether the application is currently in foreground or not. */
   fun getIsAppInForeground() = this.isAppInForeground
+
+  fun ConnectionStatus.toNetworkType(): OppiaMetricLog.NetworkType {
+    return when (this) {
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> OppiaMetricLog.NetworkType.NONE
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> OppiaMetricLog.NetworkType.WIFI
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> OppiaMetricLog.NetworkType.CELLULAR
+      else -> OppiaMetricLog.NetworkType.UNRECOGNIZED
+    }
+  }
 }
