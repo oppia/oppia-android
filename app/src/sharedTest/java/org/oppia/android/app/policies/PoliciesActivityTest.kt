@@ -12,9 +12,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.BundleMatchers.hasEntry
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtras
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -181,8 +183,7 @@ class PoliciesActivityTest {
       )
     ).use { scenario ->
       scenario.onActivity {
-        onView(withId(R.id.policy_description_text_view))
-          .check(matches(isDisplayed()))
+        onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
         // Verify the displayed text is correct & has a clickable span.
         val textView = it.findViewById<TextView>(R.id.policy_description_text_view)
         val spannableString = textView.text as Spannable
@@ -195,14 +196,8 @@ class PoliciesActivityTest {
             .newBuilder()
             .setPolicyPage(PolicyPage.PRIVACY_POLICY)
             .build()
-        Intents.intended(
-          IntentMatchers.hasComponent(
-            ComponentNameMatchers.hasClassName(
-              PoliciesActivity::class.java.getName()
-            )
-          )
-        )
-        IntentMatchers.hasExtras(
+        intended(hasComponent(hasClassName(PoliciesActivity::class.java.getName())))
+        hasExtras(
           hasEntry(
             equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
             equalTo(policiesArguments)

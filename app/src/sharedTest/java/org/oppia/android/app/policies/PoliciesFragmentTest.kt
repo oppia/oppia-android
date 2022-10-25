@@ -139,7 +139,8 @@ class PoliciesFragmentTest {
   @Mock
   lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
 
-  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Captor
   lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
@@ -183,10 +184,7 @@ class PoliciesFragmentTest {
   }
 
   private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
-    return createPoliciesFragmentTestActivity(
-      context,
-      policyPage
-    )
+    return createPoliciesFragmentTestActivity(context, policyPage)
   }
 
   @Test
@@ -197,8 +195,7 @@ class PoliciesFragmentTest {
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
-      onView(withId(R.id.policy_description_text_view))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -241,13 +238,9 @@ class PoliciesFragmentTest {
             "Please visit this page for the latest version of this privacy policy."
           )
         val link = "https://www.oppia.org/privacy-policy"
-        val expectingIntent = allOf(
-          IntentMatchers.hasAction(Intent.ACTION_VIEW),
-          IntentMatchers.hasData(link)
-        )
-        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
-        onView(withId(R.id.policy_web_link_text_view))
-          .perform(openLinkWithText("this page"))
+        val expectingIntent = allOf(hasAction(Intent.ACTION_VIEW), hasData(link))
+        intending(expectingIntent).respondWith(ActivityResult(0, null))
+        onView(withId(R.id.policy_web_link_text_view)).perform(openLinkWithText("this page"))
         intended(expectingIntent)
       }
     }
@@ -261,8 +254,7 @@ class PoliciesFragmentTest {
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
-      onView(withId(R.id.policy_description_text_view))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -276,8 +268,7 @@ class PoliciesFragmentTest {
     ).use { scenario ->
       scenario.onActivity {
         it.mockCallbackListener = mockRouteToPoliciesListener
-        onView(withId(R.id.policy_description_text_view))
-          .check(matches(isDisplayed()))
+        onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
         // Verify the displayed text is correct & has a clickable span.
         val textView = it.findViewById<TextView>(R.id.policy_description_text_view)
         val spannableString = textView.text as Spannable
@@ -325,13 +316,9 @@ class PoliciesFragmentTest {
         assertThat(textView.text.toString())
           .isEqualTo("Please visit this page for the latest version of these terms.")
         val link = "https://www.oppia.org/terms"
-        val expectingIntent = allOf(
-          IntentMatchers.hasAction(Intent.ACTION_VIEW),
-          IntentMatchers.hasData(link)
-        )
-        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
-        onView(withId(R.id.policy_web_link_text_view))
-          .perform(openLinkWithText("this page"))
+        val expectingIntent = allOf(hasAction(Intent.ACTION_VIEW), hasData(link))
+        intending(expectingIntent).respondWith(ActivityResult(0, null))
+        onView(withId(R.id.policy_web_link_text_view)).perform(openLinkWithText("this page"))
         intended(expectingIntent)
       }
     }
