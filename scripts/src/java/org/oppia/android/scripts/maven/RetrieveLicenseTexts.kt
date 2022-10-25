@@ -55,7 +55,7 @@ class RetrieveLicenseTexts(
 
   /** Generates a resource xml file that contains license texts of the third-party dependencies. */
   fun main(args: Array<String>) {
-    if (args.size < 2) {
+    if (args.size < 3) {
       println(
         """
         Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
@@ -67,6 +67,7 @@ class RetrieveLicenseTexts(
 
     val pathToValuesDirectory = args[0]
     val pathToMavenDependenciesPb = args[1]
+    val pathToLargeTextProto = args[2]
     val valuesDirectory = File(pathToValuesDirectory)
     check(valuesDirectory.isDirectory) { "Expected '$pathToValuesDirectory' to be a directory" }
     val thirdPartyDependenciesXml = File(valuesDirectory, "third_party_dependencies.xml")
@@ -177,6 +178,9 @@ class RetrieveLicenseTexts(
     return if (licenseText.length <= MAX_LICENSE_LENGTH) {
       licenseText
     } else {
+      File(pathToLargeTextProto).outputStream().bufferedWriter().use { writer ->
+        TextFormat.printer().print(licenseText, writer)
+      }
       licenseLink
     }
   }
