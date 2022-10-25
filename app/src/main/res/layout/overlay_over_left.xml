@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="presenter"
+      type="org.oppia.android.app.onboarding.SpotlightNavigationListener" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/overlayConstraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+      android:id="@+id/arrow"
+      android:layout_height="@dimen/arrow_height"
+      android:layout_width="@dimen/arrow_width"
+      android:rotationX="180"
+      android:src="@drawable/ic_rounded_arrow_up_right"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/custom_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="this is a custom text"
+      android:textAlignment="center"
+      android:textColor="@android:color/white"
+      android:textSize="24dp"
+      android:textStyle="bold"
+      style="@style/TextViewStart"
+
+      app:layout_constraintStart_toStartOf="@+id/arrow"
+      app:layout_constraintBottom_toTopOf="@id/arrow" />
+
+    <TextView
+      android:id="@+id/close_target"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="50dp"
+      android:layout_marginEnd="10dp"
+      android:onClick="@{(v) -> presenter.clickOnNextTip()}"
+      android:text="next tip"
+      android:textColor="#FFFFFF"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+      android:id="@+id/close_spotlight"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="10dp"
+      android:layout_marginTop="50dp"
+      android:text="dismiss"
+      android:textColor="#FFFFFF"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -112,4 +112,5 @@
   <color name="admin_highlighted">#A5D3EC</color>
   <color name="coming_soon_end">#674172</color>
   <color name="coming_soon_start">#7659B6</color>
+  <color name="spotlightBackground">#BF000000</color>
 </resources>
