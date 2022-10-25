@@ -48,7 +48,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import kotlinx.android.synthetic.main.fraction_interaction_item.*
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -133,7 +132,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -189,6 +187,10 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
+import org.oppia.android.app.customview.interaction.NumericInputInteractionView
+import org.oppia.android.app.customview.interaction.RatioInputInteractionView
+import org.oppia.android.app.customview.interaction.TextInputInteractionView
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -236,7 +238,7 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(false)
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1599,15 +1601,101 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
-      TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(false)
       // Entering text in Fraction Input Interaction
-      typeFractionText("1/2")
+      typeFractionText("34k")
       // Rotating device
       rotateToLandscape()
       it.onActivity {
         val fractionInputInteraction =
           it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
-        assertThat(fractionInputInteraction.text.toString()).isEqualTo("1/2")
+        assertThat(fractionInputInteraction.text.toString()).isEqualTo("34k")
+      }
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      // Entering text in Numeric Input
+      typeNumericInput("12a")
+      // Rotating device
+      rotateToLandscape()
+      it.onActivity {
+        val numericInputInteractionView =
+          it.findViewById<NumericInputInteractionView>(R.id.numeric_input_interaction_view)
+        assertThat(numericInputInteractionView.text.toString()).isEqualTo("12a")
+      }
+      onView(withId(R.id.number_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      // Entering text in Ratio Input Interaction
+      typeRatioExpression("3a:5")
+      // Rotating device
+      rotateToLandscape()
+      it.onActivity {
+        val ratioInputInteraction =
+          it.findViewById<RatioInputInteractionView>(R.id.ratio_input_interaction_view)
+        assertThat(ratioInputInteraction.text.toString()).isEqualTo("3a:5")
+      }
+      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_textInput_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      // Enter text in Text Input Interaction
+      typeTextInput("finnish")
+      // Rotating device
+      rotateToLandscape()
+      it.onActivity {
+        val textInputInteraction =
+          it.findViewById<TextInputInteractionView>(R.id.text_input_interaction_view)
+        assertThat(textInputInteraction.text.toString()).isEqualTo("finnish")
+      }
+    }
+  }
+
+  @Test
+  fun testStateFragment_mathInteractions_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      // Enter text in Math Input Interaction
+      typeNumericExpression("1+2")
+      // Rotating device
+      rotateToLandscape()
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("1+2")
       }
     }
   }
@@ -4321,7 +4409,8 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,

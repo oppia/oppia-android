@@ -92,7 +92,7 @@ class QuestionPlayerFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putProto("Answer", questionPlayerFragmentPresenter.handleOnSavedInstance())
+    outState.putProto("Answer", questionPlayerFragmentPresenter.getRawUserAnswer())
   }
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()

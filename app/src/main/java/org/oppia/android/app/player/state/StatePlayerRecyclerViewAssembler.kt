@@ -145,7 +145,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val rawUserAnswer: RawUserAnswer?,
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -196,7 +197,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
   fun compute(
     ephemeralState: EphemeralState,
     gcsEntityId: String,
-    rawUserAnswer: RawUserAnswer?,
     isSplitView: Boolean
   ): Pair<List<StateItemViewModel>, List<StateItemViewModel>> {
     this.isSplitView.set(isSplitView)
@@ -233,7 +233,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interaction,
           hasPreviousState,
           gcsEntityId,
-          rawUserAnswer,
           ephemeralState.writtenTranslationContext
         )
       }
@@ -308,7 +307,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     interaction: Interaction,
     hasPreviousButton: Boolean,
     gcsEntityId: String,
-    rawUserAnswer: RawUserAnswer?,
     writtenTranslationContext: WrittenTranslationContext
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
@@ -894,7 +892,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+    private val rawUserAnswer: RawUserAnswer?
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1351,7 +1350,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       featureSets += PlayerFeatureSet(conceptCardSupport = true)
       return this
     }
-
     /**
      * Returns a new [StatePlayerRecyclerViewAssembler] based on the builder-specified
      * configuration.
@@ -1360,8 +1358,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       val assembler = StatePlayerRecyclerViewAssembler(
         accessibilityService,
-        /* adapter= */ adapterBuilder.build(),
-        /* rhsAdapter= */ adapterBuilder.build(),
+        /* adapter= */
+        adapterBuilder.build(),
+        /* rhsAdapter= */
+        adapterBuilder.build(),
         playerFeatureSet,
         fragment,
         profileId,
@@ -1380,7 +1380,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         backgroundCoroutineDispatcher,
         hasConversationView,
         resourceHandler,
-        translationController
+        translationController,
+        rawUserAnswer,
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1400,13 +1401,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val resourceHandler: AppLanguageResourceHandler,
       private val translationController: TranslationController,
       private val multiAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
+      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].
        */
-      fun create(resourceBucketName: String, entityType: String, profileId: ProfileId): Builder {
+      fun create(
+        resourceBucketName: String,
+        entityType: String,
+        profileId: ProfileId,
+        rawUserAnswer: RawUserAnswer?
+      ): Builder {
         return Builder(
           accessibilityService,
           htmlParserFactory,
@@ -1420,7 +1426,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           resourceHandler,
           translationController,
           multiAdapterBuilderFactory,
-          singleAdapterFactory
+          singleAdapterFactory,
+          rawUserAnswer
         )
       }
     }

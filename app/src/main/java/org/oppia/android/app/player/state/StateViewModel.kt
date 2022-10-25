@@ -60,11 +60,8 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
   fun getRawUserAnswer(
     retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): RawUserAnswer {
-    return getRawUserAnswerWithError(
-      retrieveAnswerHandler(
-        getAnswerItemList()
-      )
-    ) ?: RawUserAnswer.getDefaultInstance()
+    return retrieveAnswerHandler(getAnswerItemList())?.getRawUserAnswer()
+      ?: RawUserAnswer.getDefaultInstance()
   }
 
   private fun getPendingAnswerWithoutError(
@@ -75,12 +72,6 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     } else {
       null
     }
-  }
-
-  private fun getRawUserAnswerWithError(
-    answerHandler: InteractionAnswerHandler?
-  ): RawUserAnswer? {
-    return answerHandler?.getRawUserAnswer()
   }
 
   private fun getAnswerItemList(): List<StateItemViewModel> {

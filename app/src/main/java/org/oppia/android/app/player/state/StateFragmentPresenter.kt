@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +60,7 @@ const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_f
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_exploration_id"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
+const val STATE_FRAGMENT_RAW_USER_ANSWER_KEY = "StateFragmentPresenter.raw_user_answer"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -125,7 +125,7 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId),
+      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, rawUserAnswer),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
@@ -165,7 +165,7 @@ class StateFragmentPresenter @Inject constructor(
       )
     }
 
-    subscribeToCurrentState(rawUserAnswer)
+    subscribeToCurrentState()
     return binding.root
   }
 
@@ -285,28 +285,27 @@ class StateFragmentPresenter @Inject constructor(
     return getAudioFragment() as? AudioUiManager
   }
 
-  private fun subscribeToCurrentState(rawUserAnswer: RawUserAnswer?) {
+  private fun subscribeToCurrentState() {
     ephemeralStateLiveData.observe(
       fragment,
       { result ->
-        processEphemeralStateResult(result, rawUserAnswer)
+        processEphemeralStateResult(result)
       }
     )
   }
 
   private fun processEphemeralStateResult(
     result: AsyncResult<EphemeralState>,
-    rawUserAnswer: RawUserAnswer?
   ) {
     when (result) {
       is AsyncResult.Failure ->
         oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
       is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
-      is AsyncResult.Success -> processEphemeralState(result.value, rawUserAnswer)
+      is AsyncResult.Success -> processEphemeralState(result.value)
     }
   }
 
-  private fun processEphemeralState(ephemeralState: EphemeralState, rawUserAnswer: RawUserAnswer?) {
+  private fun processEphemeralState(ephemeralState: EphemeralState) {
     explorationCheckpointState = ephemeralState.checkpointState
     val shouldSplit = splitScreenManager.shouldSplitScreen(ephemeralState.state.interaction.id)
     if (shouldSplit) {
@@ -316,8 +315,6 @@ class StateFragmentPresenter @Inject constructor(
       viewModel.isSplitView.set(false)
       viewModel.centerGuidelinePercentage.set(1f)
     }
-
-    Log.d("testAnswer", "Ephemeral State Called")
 
     val isInNewState =
       ::currentStateName.isInitialized && currentStateName != ephemeralState.state.name
@@ -330,7 +327,6 @@ class StateFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
       explorationId,
-      rawUserAnswer,
       shouldSplit
     )
 
@@ -464,12 +460,10 @@ class StateFragmentPresenter @Inject constructor(
   /** Returns the checkpoint state for the current exploration. */
   fun getExplorationCheckpointState() = explorationCheckpointState
 
-  fun handleOnSavedInstance(): RawUserAnswer {
+  fun getRawUserAnswer(): RawUserAnswer {
     return if (isConfigChangeStateRetentionEnabled.value) {
       viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
-    } else {
-      RawUserAnswer.getDefaultInstance()
-    }
+    } else RawUserAnswer.getDefaultInstance()
   }
 
   private fun markExplorationCompleted() {
@@ -515,23 +509,25 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
-    if (isHintUnrevealed) {
-      val hintBulbAnimation = AnimationUtils.loadAnimation(
-        context,
-        R.anim.hint_bulb_animation
-      ).also { it.interpolator = BounceUpAndDownInterpolator() }
+    if (!isConfigChangeStateRetentionEnabled.value) {
+      if (isHintUnrevealed) {
+        val hintBulbAnimation = AnimationUtils.loadAnimation(
+          context,
+          R.anim.hint_bulb_animation
+        ).also { it.interpolator = BounceUpAndDownInterpolator() }
 
-      // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
-      // cases like configuration changes, or returning from a saved checkpoint.
-      lifecycleSafeTimerFactory.run {
-        activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
-          return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
-            if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+        // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
+        // cases like configuration changes, or returning from a saved checkpoint.
+        lifecycleSafeTimerFactory.run {
+          activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
+            return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
+              if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            }
           }
         }
+      } else {
+        binding.hintBulb.clearAnimation()
       }
-    } else {
-      binding.hintBulb.clearAnimation()
     }
   }
 

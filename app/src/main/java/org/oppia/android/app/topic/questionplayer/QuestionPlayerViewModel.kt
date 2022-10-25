@@ -106,17 +106,8 @@ class QuestionPlayerViewModel @Inject constructor(
   fun getRawUserAnswer(
     retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): RawUserAnswer {
-    return getRawUserAnswerWithError(
-      retrieveAnswerHandler(
-        getAnswerItemList()
-      )
-    ) ?: RawUserAnswer.getDefaultInstance()
-  }
-
-  private fun getRawUserAnswerWithError(
-    answerHandler: InteractionAnswerHandler?
-  ): RawUserAnswer? {
-    return answerHandler?.getRawUserAnswer()
+    return retrieveAnswerHandler(getAnswerItemList())?.getRawUserAnswer()
+      ?: RawUserAnswer.getDefaultInstance()
   }
 
   private fun getAnswerItemList(): List<StateItemViewModel> {

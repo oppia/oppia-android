@@ -83,9 +83,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId),
+      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId, rawUserAnswer),
       binding.congratulationsTextView,
-      binding.congratulationsTextConfettiView
+      binding.congratulationsTextConfettiView,
     )
 
     binding.apply {
@@ -105,7 +105,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         helpIndex
       )
     }
-    subscribeToCurrentQuestion(rawUserAnswer)
+    subscribeToCurrentQuestion()
     return binding.root
   }
 
@@ -181,18 +181,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
   }
 
-  private fun subscribeToCurrentQuestion(rawUserAnswer: RawUserAnswer?) {
+  private fun subscribeToCurrentQuestion() {
     ephemeralQuestionLiveData.observe(
       fragment,
       Observer {
-        processEphemeralQuestionResult(it, rawUserAnswer)
+        processEphemeralQuestionResult(it)
       }
     )
   }
 
   private fun processEphemeralQuestionResult(
     result: AsyncResult<EphemeralQuestion>,
-    rawUserAnswer: RawUserAnswer?
   ) {
     when (result) {
       is AsyncResult.Failure -> {
@@ -201,13 +200,12 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         )
       }
       is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
-      is AsyncResult.Success -> processEphemeralQuestion(result.value, rawUserAnswer)
+      is AsyncResult.Success -> processEphemeralQuestion(result.value)
     }
   }
 
   private fun processEphemeralQuestion(
     ephemeralQuestion: EphemeralQuestion,
-    rawUserAnswer: RawUserAnswer?
   ) {
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
@@ -237,7 +235,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     val dataPair = recyclerViewAssembler.compute(
       ephemeralQuestion.ephemeralState,
       skillId,
-      rawUserAnswer,
       isSplitView
     )
 
@@ -337,7 +334,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
-    congratulationsTextConfettiView: KonfettiView
+    congratulationsTextConfettiView: KonfettiView,
   ): StatePlayerRecyclerViewAssembler {
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
@@ -403,11 +400,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
   }
 
-  fun handleOnSavedInstance(): RawUserAnswer {
+  fun getRawUserAnswer(): RawUserAnswer {
     return if (isConfigChangeStateRetentionEnabled.value) {
       questionViewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
-    } else {
-      RawUserAnswer.getDefaultInstance()
-    }
+    } else RawUserAnswer.getDefaultInstance()
   }
 }

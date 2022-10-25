@@ -82,10 +82,9 @@ class StateFragment :
     val storyId = arguments!!.getStringFromBundle(STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY)!!
     val explorationId =
       arguments!!.getStringFromBundle(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
-    var rawUserAnswer: RawUserAnswer? = null
-    if (savedInstanceState != null) {
-      rawUserAnswer = savedInstanceState.getProto("Answer", RawUserAnswer.getDefaultInstance())
-    }
+    val rawUserAnswer = savedInstanceState?.getProto(
+      STATE_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
+    )
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -139,7 +138,10 @@ class StateFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putProto("Answer", stateFragmentPresenter.handleOnSavedInstance())
+    outState.putProto(
+      STATE_FRAGMENT_RAW_USER_ANSWER_KEY,
+      stateFragmentPresenter.getRawUserAnswer()
+    )
   }
 
   fun revealSolution() = stateFragmentPresenter.revealSolution()

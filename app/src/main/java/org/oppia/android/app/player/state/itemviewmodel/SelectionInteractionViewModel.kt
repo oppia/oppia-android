@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
@@ -17,6 +18,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.model.ItemSelectionRawAnswer
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -53,7 +55,11 @@ class SelectionInteractionViewModel private constructor(
     interaction.customizationArgsMap["maxAllowableSelectionCount"]?.signedInt
       ?: minAllowableSelectionCount
   }
-  private val selectedItems: MutableList<Int> = mutableListOf()
+
+  val selectedItems: MutableList<Int> = mutableListOf()
+  val selectedAnswer: MutableList<Int> =
+    rawUserAnswer?.itemSelection?.selectedIndexesList ?: mutableListOf()
+
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
@@ -101,7 +107,11 @@ class SelectionInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    RawUserAnswer.getDefaultInstance()
+    if (selectedItems.size == 1) {
+      itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
+        addSelectedIndexes(selectedItems.first())
+      }.build()
+    }
   }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
