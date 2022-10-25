@@ -173,7 +173,7 @@ class PoliciesActivityTest {
   }
 
   @Test
-  fun testPoliciesActivity_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
+  fun testPoliciesActivity_inTermsOfServicePage_clickOnPrivacyLink_routesToPrivacyPolicy() {
     launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
