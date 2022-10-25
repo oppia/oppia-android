@@ -75,8 +75,9 @@ class TextInputAction {
      * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to match the
      * [expectedHelperText] with the TextInputLayout's helper text.
      */
-    private class HelperTextExistsMatcher(private val expectedHelperText: String) :
-      BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
+    private class HelperTextExistsMatcher(
+      private val expectedHelperText: String
+    ) : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
       override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
         return textInputLayout.helperText == expectedHelperText
       }

@@ -185,7 +185,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputName_hasHelperTextRequired_IsDisplayed() {
+  fun testAddProfileActivity_inputName_hasRequiredHelperTextDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(withId(R.id.add_profile_activity_user_name))
         .check(
@@ -199,7 +199,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputPin_hasHelperTextRequired_IsDisplayed() {
+  fun testAddProfileActivity_inputPin_hasRequiredHelperTextDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
@@ -223,7 +223,7 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_inputConfirmPin_hasHelperTextRequired_IsDisplayed() {
+  fun testAddProfileActivity_inputConfirmPin_hasRequiredHelperTextDisplayed() {
     launch(AddProfileActivity::class.java).use {
       onView(
         allOf(
