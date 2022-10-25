@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.maven
 
+import com.google.protobuf.TextFormat
 import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.license.LicenseFetcherImpl
 import org.oppia.android.scripts.license.model.CopyrightLicense
