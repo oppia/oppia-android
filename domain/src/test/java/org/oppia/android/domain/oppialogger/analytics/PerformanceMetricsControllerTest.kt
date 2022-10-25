@@ -47,6 +47,8 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -376,6 +378,53 @@ class PerformanceMetricsControllerTest {
     // will become the second event in the store.
     assertThat(firstMetricLog.timestampMillis).isEqualTo(1556093110000)
     assertThat(secondMetricLog.timestampMillis).isEqualTo(1556094110000)
+  }
+
+  @Test
+  fun testController_logPerformanceMetrics_withNoNetwork_logsEventWithNoneNetworkType() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val metricLogsProvider = performanceMetricsController.getMetricLogStore()
+    val metricLogs = monitorFactory.waitForNextSuccessfulResult(metricLogsProvider)
+    val loggedEvent = metricLogs.getOppiaMetricLog(0)
+
+    assertThat(loggedEvent.networkType).isEqualTo(OppiaMetricLog.NetworkType.NONE)
+  }
+
+  @Test
+  fun testController_logPerformanceMetrics_withCellularNetwork_logsEventWithCellularNetworkType() {
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(loggedEvent.networkType).isEqualTo(OppiaMetricLog.NetworkType.CELLULAR)
+  }
+
+  @Test
+  fun testController_logPerformanceMetrics_withLocalNetwork_logsEventWithWifiNetworkType() {
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(loggedEvent.networkType).isEqualTo(OppiaMetricLog.NetworkType.WIFI)
   }
 
   @Test
