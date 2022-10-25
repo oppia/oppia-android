@@ -50,15 +50,15 @@
             android:layout_height="120dp"
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
-            android:elevation="4dp"
             android:focusable="true"
+            android:elevation="4dp"
             app:add_shadow="true"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
-            app:srcCompat="@{@drawable/ic_add_profile}" />
+            app:srcCompat="@{@drawable/ic_default_avatar}"/>
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
