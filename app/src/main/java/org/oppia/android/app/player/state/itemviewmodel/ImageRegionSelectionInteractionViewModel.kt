@@ -33,7 +33,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
-  var answerText: CharSequence = rawUserAnswer?.textualAnswer ?: ""
+  var answerText: CharSequence = ""
   val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
     schemaObject?.customSchemaValue?.imageWithRegions?.labelRegionsList ?: listOf()
