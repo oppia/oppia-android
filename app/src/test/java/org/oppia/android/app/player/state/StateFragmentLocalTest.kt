@@ -8,7 +8,6 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -23,7 +22,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -1131,8 +1129,10 @@ class StateFragmentLocalTest {
 
       onView(withId(R.id.solution_summary)).check(
         matches(
-          withContentDescription("Start by dividing the cake into equal parts:\n\nThree of " +
-            "the four equal parts are red. So, the answer is 3/4.\n\n")
+          withContentDescription(
+            "Start by dividing the cake into equal parts:\n\nThree of " +
+              "the four equal parts are red. So, the answer is 3/4.\n\n"
+          )
         )
       )
     }
@@ -1146,7 +1146,7 @@ class StateFragmentLocalTest {
       produceAndViewFourHintsInFractionState2()
 
       submitWrongAnswerToFractionsState2()
-      //Enable screen reader.
+      // Enable screen reader.
       fakeAccessibilityService.setScreenReaderEnabled(true)
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
@@ -1166,7 +1166,7 @@ class StateFragmentLocalTest {
       produceAndViewFourHintsInFractionState2()
 
       submitWrongAnswerToFractionsState2()
-      //Enable screen reader.
+      // Enable screen reader.
       fakeAccessibilityService.setScreenReaderEnabled(false)
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 

@@ -20,7 +20,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -42,6 +41,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -136,6 +136,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -156,13 +157,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
-import org.oppia.android.app.player.exploration.ExplorationActivity
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
-import org.oppia.android.domain.topic.TEST_STORY_ID_0
-import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
-import org.oppia.android.util.accessibility.FakeAccessibilityService
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 

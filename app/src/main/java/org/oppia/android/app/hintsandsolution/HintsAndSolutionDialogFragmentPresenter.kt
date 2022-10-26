@@ -20,11 +20,11 @@ import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.databinding.HintsSummaryBinding
 import org.oppia.android.databinding.ReturnToLessonButtonItemBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
-import org.oppia.android.util.accessibility.AccessibilityService
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 
