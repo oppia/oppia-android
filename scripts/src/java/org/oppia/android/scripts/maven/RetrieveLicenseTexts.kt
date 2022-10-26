@@ -67,8 +67,8 @@ class RetrieveLicenseTexts(
     }
 
     val pathToValuesDirectory = args[0]
+    val pathToLargeTextProto = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesPb = args[1]
-    val pathToLargeTextProto = args[2]
     val valuesDirectory = File(pathToValuesDirectory)
     check(valuesDirectory.isDirectory) { "Expected '$pathToValuesDirectory' to be a directory" }
     val thirdPartyDependenciesXml = File(valuesDirectory, "third_party_dependencies.xml")
