@@ -440,11 +440,11 @@
   <string name="hint_list_item_number">Hint %s</string>
   <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
-  <string name="show_solution">Show</string>
+  <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Show Hint</string>
-  <string name="show_hide_hint_list">Show/Hide hint list</string>
-  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="hide_hint">Hide Hint</string>
+  <string name="hide_solution">Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
   <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>

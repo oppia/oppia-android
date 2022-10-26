@@ -20,6 +20,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -154,6 +156,13 @@ import org.robolectric.annotation.LooperMode
 import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matchers
+import org.oppia.android.app.player.exploration.ExplorationActivity
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_STORY_ID_0
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 
 private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 
@@ -199,6 +208,9 @@ class QuestionPlayerActivityTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -432,7 +444,7 @@ class QuestionPlayerActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  fun testQuestionPlayer_showHintsAndSolution_hasCorrectContentDescription() {
+  fun testQuestionPlayer_showHint_hasCorrectContentDescription() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForSkillList(SKILL_ID_LIST).use {
       // Submit two incorrect answers.
@@ -453,6 +465,40 @@ class QuestionPlayerActivityTest {
             )
           )
         )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Disable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(not(isClickable())))
     }
   }
 
