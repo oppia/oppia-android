@@ -74,6 +74,7 @@ class DragAndDropSortInteractionViewModel private constructor(
           )
         }
       }
+
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
@@ -131,9 +132,12 @@ class DragAndDropSortInteractionViewModel private constructor(
       this@DragAndDropSortInteractionViewModel.writtenTranslationContext
   }.build()
 
-  override fun getRawUserAnswer(): RawUserAnswer {
-    return RawUserAnswer.getDefaultInstance()
-  }
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
+    val selectedLists = _choiceItems.map { it.htmlContent }
+    dragAndDrop = ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+      addAllContentIdLists(selectedLists)
+    }.build()
+  }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
   private fun convertItemsToAnswer(htmlItems: List<StringList>): ListOfSetsOfHtmlStrings {

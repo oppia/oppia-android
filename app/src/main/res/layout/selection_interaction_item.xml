@@ -57,7 +57,6 @@
       app:selectionData="@{viewModel.choiceItems}"
       app:entityId="@{viewModel.entityId}"
       app:writtenTranslationContext="@{viewModel.writtenTranslationContext}"
-      app:selectedItems="@{viewModel.selectedAnswer}"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>

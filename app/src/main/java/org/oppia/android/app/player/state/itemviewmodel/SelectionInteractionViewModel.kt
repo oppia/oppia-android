@@ -74,6 +74,13 @@ class SelectionInteractionViewModel private constructor(
           )
         }
       }
+    if (selectedAnswer.size == 1) {
+      choiceItems[selectedAnswer[0]].handleItemClicked()
+    } else if (selectedAnswer.size > 1) {
+      selectedAnswer.forEach { index ->
+        choiceItems[index].handleItemClicked()
+      }
+    }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
@@ -106,7 +113,11 @@ class SelectionInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    if (selectedItems.size == 1) {
+    if (interactionId == "ItemSelectionInput") {
+      itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
+        addAllSelectedIndexes(selectedItems)
+      }.build()
+    } else if (selectedItems.size == 1) {
       itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
         addSelectedIndexes(selectedItems.first())
       }.build()

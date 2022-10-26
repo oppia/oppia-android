@@ -39,7 +39,6 @@ class SelectionInteractionView @JvmOverloads constructor(
   private lateinit var entityId: String
   private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var dataList: ObservableList<SelectionInteractionContentViewModel>
-  private lateinit var selectedItems: MutableList<Int>
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -59,11 +58,6 @@ class SelectionInteractionView @JvmOverloads constructor(
   //  bound through data-binding.
   fun setEntityId(entityId: String) {
     this.entityId = entityId
-    maybeInitializeAdapter()
-  }
-
-  fun setSelectedItems(selectedItems: MutableList<Int>) {
-    this.selectedItems = selectedItems
     maybeInitializeAdapter()
   }
 

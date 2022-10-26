@@ -215,4 +215,4 @@ const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
 annotation class EnableInteractionConfigChangeStateRetention
 
 /** Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention]. */
-const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = false
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = true

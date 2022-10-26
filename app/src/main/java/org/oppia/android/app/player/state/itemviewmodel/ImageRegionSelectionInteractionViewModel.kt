@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -43,8 +44,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
     schemaObject?.customSchemaValue?.imageWithRegions?.imagePath ?: ""
   }
-
-  val clickedRegions = rawUserAnswer?.imageRegionSelection ?: ClickOnImage.getDefaultInstance()
   val isAnswerAvailable = ObservableField<Boolean>(false)
 
   init {
@@ -57,6 +56,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
           )
         }
       }
+    Log.d("testAnswer", rawUserAnswer?.imageRegionSelection?.clickPosition?.x.toString())
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
@@ -82,14 +82,13 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       R.string.image_interaction_answer_text,
       answerTextString
     )
+    Log.d("testAnswer", answerText.toString())
     this.writtenTranslationContext =
       this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    if (answerText.isNotEmpty()) {
-      imageRegionSelection = parseClickOnImage(answerText.toString())
-    }
+    imageRegionSelection = parseClickOnImage(answerText.toString())
   }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {

@@ -8,8 +8,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.android.R
-import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.utility.ClickableAreasImage
@@ -53,7 +51,6 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var onRegionClicked: OnClickableAreaClickedListener
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
-  private lateinit var clickedRegions: ClickOnImage
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -66,16 +63,6 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
-    maybeInitializeClickableAreas()
-  }
-
-  fun setClickedRegions(clickedRegions: ClickOnImage) {
-    this.clickedRegions = clickedRegions
-    val parentView = this.parent as FrameLayout
-    val newView = View(parentView.context)
-    newView.x = clickedRegions.clickPosition.x
-    newView.y = clickedRegions.clickPosition.y
-    newView.setBackgroundResource(R.drawable.selected_region_background)
     maybeInitializeClickableAreas()
   }
 
