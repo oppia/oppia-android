@@ -575,4 +575,8 @@
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
+  <string name="info_tab_content_description">Info tab</string>
+  <string name="revision_tab_content_description">After completing a lesson, revise your concepts in the revision tab.</string>
+  <string name="practice_tab_content_description">Practice tab</string>
+  <string name="lessons_tab_content_description">Start learning here in the lessons tab.</string>
 </resources>
