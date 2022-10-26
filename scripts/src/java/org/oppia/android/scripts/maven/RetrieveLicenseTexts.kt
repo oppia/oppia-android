@@ -179,6 +179,12 @@ class RetrieveLicenseTexts(
     return if (licenseText.length <= MAX_LICENSE_LENGTH) {
       licenseText
     } else {
+      // create a hashmap
+      var hashMap : HashMap<String, String> = HashMap<String, String> ()
+      hashMap.put(licenseLink, licenseText)
+      // convert this to string
+      // do this com.google.protobuf.StringValue.newBuilder(familyName_).mergeFrom(value).buildPartial();
+      // put in method below,
       File(pathToLargeTextProto).outputStream().bufferedWriter().use { writer ->
         TextFormat.printer().print(licenseText, writer)
       }
