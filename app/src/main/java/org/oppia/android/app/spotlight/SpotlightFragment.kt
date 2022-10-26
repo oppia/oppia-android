@@ -46,6 +46,7 @@ class SpotlightFragment @Inject constructor(
   private var screenWidth: Int = 0
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
+  private var internalProfileId: Int = -1
 
   private var isRTL = false
 
@@ -59,8 +60,9 @@ class SpotlightFragment @Inject constructor(
     isRTL = checkIsRTL()
   }
 
-  fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>) {
+  fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>, profileId: Int) {
     spotlightTargetList = spotlightTargets
+    internalProfileId = profileId
   }
 
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
@@ -132,7 +134,7 @@ class SpotlightFragment @Inject constructor(
 
         override fun onEnded() {
           val profileId = ProfileId.newBuilder()
-            .setInternalId(123)
+            .setInternalId(internalProfileId)
             .build()
           spotlightStateController.markSpotlightViewed(
             profileId,
