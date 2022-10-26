@@ -52,7 +52,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:srcCompat="@{@drawable/ic_default_avatar}"/>
+            app:srcCompat="@{@drawable/ic_add_profile}"/>
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
