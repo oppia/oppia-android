@@ -56,7 +56,7 @@ class ExplorationFragment : InjectableFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    explorationFragmentPresenter.handleViewCreated()
+    explorationFragmentPresenter.handleViewCreated(view)
   }
 
   fun handlePlayAudio() = explorationFragmentPresenter.handlePlayAudio()

@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toolbar
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -19,6 +21,11 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.toolbar.*
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
@@ -26,7 +33,8 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  private val spotlightFragment: SpotlightFragment
 ) {
   /** Handles the [Fragment.onAttach] portion of [ExplorationFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -53,7 +61,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
-  fun handleViewCreated() {
+  fun handleViewCreated(view: View) {
     val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
     profileDataProvider.toLiveData().observe(
       fragment,
@@ -68,6 +76,26 @@ class ExplorationFragmentPresenter @Inject constructor(
         }
       }
     )
+    val toolbar: Toolbar = view.findViewById(R.id.exploration_toolbar)
+      toolbar.forEach {
+      if (it.id == R.id.action_audio_player) {
+        it.post {
+          val targetList = arrayListOf(
+            SpotlightTarget (
+              it,
+              "Would you like Oppia to read for you? Tap on this button to try!",
+              SpotlightShape.Circle,
+              Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+              )
+          )
+
+          spotlightFragment.initialiseTargetList(targetList, 123)
+          fragment.childFragmentManager.beginTransaction()
+            .add(spotlightFragment, "")
+            .commitNow()
+        }
+      }
+    }
   }
 
   fun handlePlayAudio() {
