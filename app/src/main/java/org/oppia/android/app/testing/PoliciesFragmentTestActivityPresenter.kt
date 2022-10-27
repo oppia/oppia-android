@@ -17,28 +17,20 @@ class PoliciesFragmentTestActivityPresenter @Inject constructor(
   /** Handles onCreate() method of the [PoliciesFragmentTestActivity]. */
   fun handleOnCreate(policiesActivityParams: PoliciesActivityParams) {
     activity.setContentView(R.layout.policies_fragment_test_activity)
-    if (getPoliciesFragment() == null) {
-      val policiesFragmentArguments =
-        PoliciesFragmentArguments
-          .newBuilder()
-          .setPolicyPage(policiesActivityParams.policyPage)
-          .build()
-      val policiesFragment: PoliciesFragment =
-        PoliciesFragment.newInstance(policiesFragmentArguments)
+    val policiesFragmentArguments =
+      PoliciesFragmentArguments
+        .newBuilder()
+        .setPolicyPage(policiesActivityParams.policyPage)
+        .build()
+    val policiesFragment: PoliciesFragment =
+      PoliciesFragment.newInstance(policiesFragmentArguments)
 
-      activity
-        .supportFragmentManager
-        .beginTransaction()
-        .add(
-          R.id.policies_fragment_placeholder,
-          policiesFragment
-        ).commitNow()
-    }
-  }
-
-  private fun getPoliciesFragment(): PoliciesFragment? {
-    return activity
+    activity
       .supportFragmentManager
-      .findFragmentById(R.id.policies_fragment_placeholder) as PoliciesFragment?
+      .beginTransaction()
+      .add(
+        R.id.policies_fragment_placeholder,
+        policiesFragment
+      ).commitNow()
   }
 }
