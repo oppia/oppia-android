@@ -39,10 +39,4 @@ class TopicFragment : InjectableFragment() {
       isConfigChanged = savedInstanceState != null
     )
   }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    topicFragmentPresenter.startSpotlight()
-  }
 }

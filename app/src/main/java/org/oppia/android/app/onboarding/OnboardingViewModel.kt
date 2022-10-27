@@ -5,15 +5,13 @@ import androidx.lifecycle.ViewModel
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.domain.spotlight.SpotlightStateController
 import javax.inject.Inject
 
 private const val INITIAL_SLIDE_NUMBER = 0
 
 /** [ViewModel] for [OnboardingFragment]. */
 class OnboardingViewModel @Inject constructor(
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val spotlightStateController: SpotlightStateController
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   val slideNumber = ObservableField(INITIAL_SLIDE_NUMBER)
   val totalNumberOfSlides = TOTAL_NUMBER_OF_SLIDES
