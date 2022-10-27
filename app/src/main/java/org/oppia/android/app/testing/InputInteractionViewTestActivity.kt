@@ -36,6 +36,7 @@ import org.oppia.android.databinding.ActivityInputInteractionViewTestBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl as MathExpViewModelFactoryFactoryImpl
 
 /**
@@ -158,7 +159,7 @@ class InputInteractionViewTestActivity :
     return create(
       entityId = "fake_entity_id",
       hasConversationView = false,
-      rawUserAnswer = null,
+      rawUserAnswer = RawUserAnswer.getDefaultInstance(),
       interaction = interaction,
       interactionAnswerReceiver = this@InputInteractionViewTestActivity,
       answerErrorReceiver = this@InputInteractionViewTestActivity,
