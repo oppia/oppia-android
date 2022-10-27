@@ -28,6 +28,5 @@ class OnboardingFragment : InjectableFragment() {
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
   }
 }

@@ -16,8 +16,6 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
-import java.util.Locale
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
@@ -30,6 +28,8 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.Locale
+import javax.inject.Inject
 
 class SpotlightFragment @Inject constructor(
   private val activity: AppCompatActivity,
@@ -65,7 +65,7 @@ class SpotlightFragment @Inject constructor(
 
     if (accessibilityServiceImpl.isScreenReaderEnabled()) {
       activity.supportFragmentManager.beginTransaction().remove(this)
-    }else {
+    } else {
       calculateScreenSize()
       checkIsRTL()
       spotlightTargetList.forEachIndexed { _, spotlightTarget ->
@@ -118,7 +118,6 @@ class SpotlightFragment @Inject constructor(
       .setOverlay(requestOverlayResource(spotlightTarget))
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -147,7 +146,6 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
-
         }
       })
       .build()
@@ -177,7 +175,8 @@ class SpotlightFragment @Inject constructor(
   private fun checkIsRTL() {
     val locale = Locale.getDefault()
     val directionality: Byte = Character.getDirectionality(locale.displayName[0].toInt())
-    isRTL = directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
+    isRTL = directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+      directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
   }
 
   private fun getArrowWidth(): Float {
@@ -223,7 +222,6 @@ class SpotlightFragment @Inject constructor(
       AnchorPosition.BottomRight -> {
         if (isRTL) {
           configureBottomLeftOverlay(spotlightTarget)
-
         } else {
           configureBottomRightOverlay(spotlightTarget)
         }
@@ -299,7 +297,8 @@ class SpotlightFragment @Inject constructor(
       arrowParams.setMargins(
         10.dp,
         (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
-        screenWidth - (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+        screenWidth -
+          (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         10.dp
       )
     } else {
@@ -330,7 +329,8 @@ class SpotlightFragment @Inject constructor(
       arrowParams.setMargins(
         10.dp,
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
-        screenWidth - (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
+        screenWidth -
+          (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         10.dp
       )
     } else {

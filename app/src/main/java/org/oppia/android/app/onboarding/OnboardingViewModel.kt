@@ -34,6 +34,4 @@ class OnboardingViewModel @Inject constructor(
       totalNumberOfSlides.toString()
     )
   }
-
-
 }

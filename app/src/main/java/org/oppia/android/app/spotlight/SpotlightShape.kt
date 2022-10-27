@@ -4,4 +4,3 @@ sealed class SpotlightShape {
   object RoundedRectangle : SpotlightShape()
   object Circle : SpotlightShape()
 }
-
