@@ -3,7 +3,6 @@ package org.oppia.android.app.spotlight
 import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
@@ -40,24 +39,19 @@ class SpotlightFragment @Inject constructor(
   private var targetList = ArrayList<Target>()
   private var spotlightTargetList = ArrayList<SpotlightTarget>()
   private lateinit var spotlight: Spotlight
-  private val overlay = "overlay"
-  private var counter = 0
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
-
   private var isRTL = false
 
-  init {
+  private fun calculateScreenSize() {
     val displayMetrics = DisplayMetrics()
     activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
 
     screenHeight = displayMetrics.heightPixels
     screenWidth = displayMetrics.widthPixels
-
-    isRTL = checkIsRTL()
   }
 
   fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>, profileId: Int) {
@@ -72,6 +66,8 @@ class SpotlightFragment @Inject constructor(
     if (accessibilityServiceImpl.isScreenReaderEnabled()) {
       activity.supportFragmentManager.beginTransaction().remove(this)
     }else {
+      calculateScreenSize()
+      checkIsRTL()
       spotlightTargetList.forEachIndexed { _, spotlightTarget ->
         checkSpotlightViewState(spotlightTarget)
       }
@@ -79,9 +75,9 @@ class SpotlightFragment @Inject constructor(
   }
 
   private fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
-
+    var counter = 0
     val profileId = ProfileId.newBuilder()
-      .setInternalId(123)
+      .setInternalId(internalProfileId)
       .build()
 
     val featureViewStateLiveData =
@@ -96,14 +92,10 @@ class SpotlightFragment @Inject constructor(
       object : Observer<AsyncResult<SpotlightViewState>> {
         override fun onChanged(it: AsyncResult<SpotlightViewState>?) {
           if (it is AsyncResult.Success) {
-
             val viewState = (it.value)
             if (viewState == SpotlightViewState.SPOTLIGHT_SEEN) {
               return
-            } else if (viewState == SpotlightViewState.SPOTLIGHT_VIEW_STATE_UNSPECIFIED || viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
-
-              Log.d("overlay", viewState.toString())
-              Log.d("overlay", "adding target ")
+            } else if (viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
               createTarget(spotlightTarget)
               counter++
               if (counter == spotlightTargetList.size) {
@@ -114,15 +106,12 @@ class SpotlightFragment @Inject constructor(
           }
         }
       }
-
     )
   }
 
   private fun createTarget(
     spotlightTarget: SpotlightTarget
   ) {
-    spotlightTarget.logParams()
-
     val target = Target.Builder()
       .setAnchor(spotlightTarget.anchor)
       .setShape(getShape(spotlightTarget))
@@ -158,6 +147,7 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
+
         }
       })
       .build()
@@ -184,10 +174,10 @@ class SpotlightFragment @Inject constructor(
     }
   }
 
-  private fun checkIsRTL(): Boolean {
+  private fun checkIsRTL() {
     val locale = Locale.getDefault()
     val directionality: Byte = Character.getDirectionality(locale.displayName[0].toInt())
-    return directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
+    isRTL = directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT || directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
   }
 
   private fun getArrowWidth(): Float {
@@ -195,12 +185,10 @@ class SpotlightFragment @Inject constructor(
   }
 
   private fun getScreenCentreY(): Int {
-    Log.d("overlay screenCentre Y", (screenHeight / 2).toString())
     return screenHeight / 2
   }
 
   private fun getScreenCentreX(): Int {
-    Log.d("overlay screenCentre X", (screenWidth / 2).toString())
     return screenWidth / 2
   }
 
@@ -216,8 +204,6 @@ class SpotlightFragment @Inject constructor(
     } else {
       AnchorPosition.TopLeft
     }
-
-    Log.d(overlay, anchorPosition.toString())
   }
 
   private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View {
@@ -278,7 +264,7 @@ class SpotlightFragment @Inject constructor(
 
     val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    if (false) {
+    if (isRTL) {
       arrowParams.setMargins(
         10.dp,
         (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
@@ -293,9 +279,6 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
-    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
-
     (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverLeftBinding).root
@@ -327,9 +310,6 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
-    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
-
     (overlayBinding as OverlayOverRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayOverRightBinding).root
@@ -361,9 +341,6 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
-    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
-
     (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderRightBinding).root
@@ -395,9 +372,6 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    Log.d("overlay", "arrowLeft: ${arrowParams.leftMargin}")
-    Log.d("overlay", "arrowTop: ${arrowParams.topMargin}")
-
     (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as OverlayUnderLeftBinding).root
@@ -405,62 +379,4 @@ class SpotlightFragment @Inject constructor(
 
   private val Int.dp: Int
     get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-}
-
-data class SpotlightTarget(
-  val anchor: View,
-  val hint: String = "",
-  val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
-  val feature: org.oppia.android.app.model.Spotlight.FeatureCase
-) {
-  val anchorLeft: Float = calculateAnchorLeft()
-  val anchorTop: Float = calculateAnchorTop()
-  val anchorHeight: Int = calculateAnchorHeight()
-  val anchorWidth: Int = calculateAnchorWidth()
-  val anchorCentreX = calculateAnchorCentreX()
-  val anchorCentreY = calculateAnchorCentreY()
-
-  init {
-    calculateAnchorLeft()
-    calculateAnchorTop()
-    calculateAnchorHeight()
-    calculateAnchorWidth()
-    calculateAnchorCentreX()
-    calculateAnchorCentreY()
-  }
-
-  private fun calculateAnchorLeft(): Float {
-    val location = IntArray(2)
-    anchor.getLocationOnScreen(location)
-    val x = location[0]
-    return x.toFloat()
-  }
-
-  private fun calculateAnchorTop(): Float {
-    val location = IntArray(2)
-    anchor.getLocationOnScreen(location)
-    val y = location[1]
-    return y.toFloat()
-  }
-
-  fun logParams() {
-    Log.d("overlay", "anchorLeft: " + anchorLeft.toString())
-    Log.d("overlay", "anchorTop: " + anchorTop.toString())
-  }
-
-  private fun calculateAnchorHeight(): Int {
-    return anchor.height
-  }
-
-  private fun calculateAnchorWidth(): Int {
-    return anchor.width
-  }
-
-  private fun calculateAnchorCentreX(): Float {
-    return anchorLeft + anchorWidth / 2
-  }
-
-  private fun calculateAnchorCentreY(): Float {
-    return anchorTop + anchorHeight / 2
-  }
 }
