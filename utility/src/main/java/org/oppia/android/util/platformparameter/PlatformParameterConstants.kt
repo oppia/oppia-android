@@ -208,7 +208,7 @@ annotation class EnableSpotlightUi
 const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
 
 /**
- * Qualifier for the platform parameter that controls controls whether input interaction state is
+ * Qualifier for the platform parameter that controls whether input interaction state is
  * correctly retained across configuration changes.
  */
 @Qualifier
@@ -216,3 +216,12 @@ annotation class EnableInteractionConfigChangeStateRetention
 
 /** Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention]. */
 const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = true
+
+/**
+ * Qualifier for the platform parameter that controls the animation for hint bulb animation
+ */
+@Qualifier
+annotation class EnableHintBulbAnimation
+
+/** Default value for feature flag corresponding to [EnableHintBulbAnimation]. */
+const val ENABLE_HINT_BULB_ANIMATION = true

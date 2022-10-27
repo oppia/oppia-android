@@ -60,7 +60,7 @@ import org.oppia.android.app.model.MathBinaryOperation.Operator as UnaryOperator
 class MathExpressionInteractionsViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -74,7 +74,7 @@ class MathExpressionInteractionsViewModel private constructor(
    * Defines the current answer text being entered by the learner. This is expected to be directly
    * bound to the corresponding edit text.
    */
-  var answerText: CharSequence = rawUserAnswer?.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -235,7 +235,7 @@ class MathExpressionInteractionsViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

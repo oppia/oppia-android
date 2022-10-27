@@ -25,6 +25,8 @@ import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
+private const val STATE_FRAGMENT_RAW_USER_ANSWER_KEY = "StateFragment.raw_user_answer"
+
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
   InjectableFragment(),
@@ -84,7 +86,7 @@ class StateFragment :
       arguments!!.getStringFromBundle(STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY)!!
     val rawUserAnswer = savedInstanceState?.getProto(
       STATE_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
-    )
+    ) ?: RawUserAnswer.getDefaultInstance()
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,

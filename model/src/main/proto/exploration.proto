@@ -330,7 +330,7 @@ message ItemSelectionRawAnswer {
 // Corresponds to a last raw answer entered by user which is used to retain state on Config Change.
 message RawUserAnswer {
   oneof answer_input_type {
-    // A raw answer entered by user in Text based interactions.
+    // A raw answer entered by user in a text-based interaction.
     string textual_answer = 1;
     // An indices selected in multiple choice selection.
     int32 multiple_choice_selection_index = 2;

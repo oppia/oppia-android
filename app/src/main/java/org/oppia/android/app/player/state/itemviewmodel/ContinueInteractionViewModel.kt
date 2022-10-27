@@ -25,7 +25,7 @@ private const val DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER = "Please continue."
 class ContinueInteractionViewModel private constructor(
   private val interactionAnswerReceiver: InteractionAnswerReceiver,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val isSplitView: Boolean,
@@ -43,7 +43,7 @@ class ContinueInteractionViewModel private constructor(
     this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
   }.build()
 
-  override fun getRawUserAnswer(): RawUserAnswer? {
+  override fun getRawUserAnswer(): RawUserAnswer {
     return RawUserAnswer.getDefaultInstance()
   }
 
@@ -58,7 +58,7 @@ class ContinueInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

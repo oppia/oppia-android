@@ -239,6 +239,7 @@ class StateFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()

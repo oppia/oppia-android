@@ -146,7 +146,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val rawUserAnswer: RawUserAnswer?,
+  private val rawUserAnswer: RawUserAnswer,
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -893,7 +893,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
     private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-    private val rawUserAnswer: RawUserAnswer?
+    private val rawUserAnswer: RawUserAnswer
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1358,10 +1358,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       val assembler = StatePlayerRecyclerViewAssembler(
         accessibilityService,
-        /* adapter= */
-        adapterBuilder.build(),
-        /* rhsAdapter= */
-        adapterBuilder.build(),
+        /* adapter= */ adapterBuilder.build(),
+        /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
         profileId,
@@ -1411,7 +1409,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         resourceBucketName: String,
         entityType: String,
         profileId: ProfileId,
-        rawUserAnswer: RawUserAnswer?
+        rawUserAnswer: RawUserAnswer
       ): Builder {
         return Builder(
           accessibilityService,

@@ -28,7 +28,7 @@ import javax.inject.Inject
 class DragAndDropSortInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   interaction: Interaction,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
@@ -208,7 +208,7 @@ class DragAndDropSortInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

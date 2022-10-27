@@ -52,6 +52,7 @@ import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeSta
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableHintBulbAnimation
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -60,7 +61,6 @@ const val STATE_FRAGMENT_STORY_ID_ARGUMENT_KEY = "StateFragmentPresenter.state_f
 const val STATE_FRAGMENT_EXPLORATION_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_exploration_id"
 private const val TAG_AUDIO_FRAGMENT = "AUDIO_FRAGMENT"
-const val STATE_FRAGMENT_RAW_USER_ANSWER_KEY = "StateFragmentPresenter.raw_user_answer"
 
 /** The presenter for [StateFragment]. */
 @FragmentScope
@@ -77,6 +77,8 @@ class StateFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   @EnableInteractionConfigChangeStateRetention
   private val isConfigChangeStateRetentionEnabled: PlatformParameterValue<Boolean>,
+  @EnableHintBulbAnimation
+  private val isHintBulbAnimationEnabled: PlatformParameterValue<Boolean>,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
   private val oppiaClock: OppiaClock
@@ -111,7 +113,7 @@ class StateFragmentPresenter @Inject constructor(
     internalProfileId: Int,
     topicId: String,
     storyId: String,
-    rawUserAnswer: RawUserAnswer?,
+    rawUserAnswer: RawUserAnswer,
     explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -294,9 +296,7 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processEphemeralStateResult(
-    result: AsyncResult<EphemeralState>,
-  ) {
+  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
     when (result) {
       is AsyncResult.Failure ->
         oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
@@ -509,7 +509,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
-    if (!isConfigChangeStateRetentionEnabled.value) {
+    if (isHintBulbAnimationEnabled.value) {
       if (isHintUnrevealed) {
         val hintBulbAnimation = AnimationUtils.loadAnimation(
           context,

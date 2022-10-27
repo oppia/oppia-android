@@ -23,7 +23,7 @@ import javax.inject.Inject
 /** [StateItemViewModel] for the fraction input interaction. */
 class FractionInteractionViewModel private constructor(
   interaction: Interaction,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
@@ -32,7 +32,7 @@ class FractionInteractionViewModel private constructor(
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = rawUserAnswer?.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
   val hintText: CharSequence = deriveHintText(interaction)
@@ -86,7 +86,7 @@ class FractionInteractionViewModel private constructor(
     return pendingAnswerError
   }
 
-  override fun getRawUserAnswer(): RawUserAnswer? = RawUserAnswer.newBuilder().apply {
+  override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
       textualAnswer = answerText.toString()
     }
@@ -144,7 +144,7 @@ class FractionInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

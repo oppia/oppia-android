@@ -25,7 +25,7 @@ import javax.inject.Inject
 class RatioExpressionInputInteractionViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   val isSplitView: Boolean,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   private val writtenTranslationContext: WrittenTranslationContext,
@@ -33,7 +33,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = rawUserAnswer?.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
@@ -145,7 +145,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

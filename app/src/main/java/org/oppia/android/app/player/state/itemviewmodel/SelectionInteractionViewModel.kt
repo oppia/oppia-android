@@ -29,7 +29,7 @@ enum class SelectionItemInputType {
 class SelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   interaction: Interaction,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
@@ -57,7 +57,7 @@ class SelectionInteractionViewModel private constructor(
 
   val selectedItems: MutableList<Int> = mutableListOf()
   val selectedAnswer: MutableList<Int> =
-    rawUserAnswer?.itemSelection?.selectedIndexesList ?: mutableListOf()
+    rawUserAnswer.itemSelection.selectedIndexesList ?: mutableListOf()
 
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
@@ -192,7 +192,7 @@ class SelectionInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

@@ -21,14 +21,14 @@ import javax.inject.Inject
 class TextInputViewModel private constructor(
   interaction: Interaction,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = rawUserAnswer?.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer : ""
   val hintText: CharSequence = deriveHintText(interaction)
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
@@ -111,7 +111,7 @@ class TextInputViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

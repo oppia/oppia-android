@@ -73,7 +73,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    rawUserAnswer: RawUserAnswer?,
+    rawUserAnswer: RawUserAnswer,
     profileId: ProfileId
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(

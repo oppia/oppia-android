@@ -39,6 +39,9 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.util.platformparameter.ENABLE_HINT_BULB_ANIMATION
+import org.oppia.android.util.platformparameter.EnableHintBulbAnimation
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -198,6 +201,14 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @EnableHintBulbAnimation
+  fun provideEnableHintBulbAnimation(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableHintBulbAnimation
+    )
+  }
+
   companion object {
     private var enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
@@ -206,6 +217,7 @@ class TestPlatformParameterModule {
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
     private var enableInteractionConfigChangeStateRetention =
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+    private var enableHintBulbAnimation = ENABLE_HINT_BULB_ANIMATION
 
     /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -240,6 +252,12 @@ class TestPlatformParameterModule {
     /** Enables forcing [EnableInteractionConfigChangeStateRetention] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableInteractionConfigChangeStateRetention(value: Boolean) {
+      enableInteractionConfigChangeStateRetention = value
+    }
+
+    /** Enables forcing [EnableHintBulbAnimation] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableHintBulbAnimation(value: Boolean) {
       enableInteractionConfigChangeStateRetention = value
     }
   }

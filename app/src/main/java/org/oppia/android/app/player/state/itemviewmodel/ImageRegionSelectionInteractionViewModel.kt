@@ -20,12 +20,13 @@ import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
 import javax.inject.Inject
+import org.oppia.android.app.model.Point2d
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
-  rawUserAnswer: RawUserAnswer?,
+  rawUserAnswer: RawUserAnswer,
   interaction: Interaction,
   private val errorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
   val isSplitView: Boolean,
@@ -56,7 +57,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
           )
         }
       }
-    Log.d("testAnswer", rawUserAnswer?.imageRegionSelection?.clickPosition?.x.toString())
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
@@ -82,7 +82,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       R.string.image_interaction_answer_text,
       answerTextString
     )
-    Log.d("testAnswer", answerText.toString())
     this.writtenTranslationContext =
       this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
   }.build()
@@ -93,10 +92,13 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
-    return ClickOnImage.newBuilder()
-      // The object supports multiple regions in an answer, but neither web nor Android supports this.
-      .addClickedRegions(region?.label ?: "")
-      .build()
+    return ClickOnImage.newBuilder().apply {
+      addClickedRegions(region?.label ?: "")
+      clickPosition = Point2d.newBuilder().apply {
+        x = region?.region?.area?.upperLeft?.x!!
+        y = region.region?.area?.lowerRight?.y!!
+      }.build()
+    }.build()
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
@@ -106,7 +108,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     override fun create(
       entityId: String,
       hasConversationView: Boolean,
-      rawUserAnswer: RawUserAnswer?,
+      rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,

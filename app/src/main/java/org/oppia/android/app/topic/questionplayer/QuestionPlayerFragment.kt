@@ -24,6 +24,9 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
+private const val QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY =
+  "QuestionPlayerFragment.raw_user_answer"
+
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
   InjectableFragment(),
@@ -53,10 +56,9 @@ class QuestionPlayerFragment :
     val args = checkNotNull(arguments) {
       "Expected arguments to be passed to QuestionPlayerFragment"
     }
-    var rawUserAnswer: RawUserAnswer? = null
-    if (savedInstanceState != null) {
-      rawUserAnswer = savedInstanceState.getProto("Answer", RawUserAnswer.getDefaultInstance())
-    }
+    val rawUserAnswer = savedInstanceState?.getProto(
+      QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
+    ) ?: RawUserAnswer.getDefaultInstance()
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     return questionPlayerFragmentPresenter.handleCreateView(
       inflater, container, rawUserAnswer, profileId
@@ -92,7 +94,10 @@ class QuestionPlayerFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putProto("Answer", questionPlayerFragmentPresenter.getRawUserAnswer())
+    outState.putProto(
+      QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY,
+      questionPlayerFragmentPresenter.getRawUserAnswer()
+    )
   }
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
