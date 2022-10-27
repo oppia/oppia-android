@@ -16,16 +16,16 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.onboarding.SpotlightNavigationListener
-import org.oppia.android.databinding.OverlayOverLeftBinding
-import org.oppia.android.databinding.OverlayOverRightBinding
-import org.oppia.android.databinding.OverlayUnderLeftBinding
-import org.oppia.android.databinding.OverlayUnderRightBinding
+import org.oppia.android.databinding.BottomLeftOverlayBinding
+import org.oppia.android.databinding.BottomRightOverlayBinding
+import org.oppia.android.databinding.TopLeftOverlayBinding
+import org.oppia.android.databinding.TopRightOverlayBinding
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
@@ -254,15 +254,15 @@ class SpotlightFragment @Inject constructor(
   }
 
   private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = OverlayOverLeftBinding.inflate(this.layoutInflater)
-    (overlayBinding as OverlayOverLeftBinding).let {
+    overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater)
+    (overlayBinding as BottomLeftOverlayBinding).let {
       it.lifecycleOwner = this
       it.presenter = this
     }
 
-    (overlayBinding as OverlayOverLeftBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
@@ -279,21 +279,21 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams = arrowParams
 
-    return (overlayBinding as OverlayOverLeftBinding).root
+    return (overlayBinding as BottomLeftOverlayBinding).root
   }
 
   private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = OverlayOverRightBinding.inflate(this.layoutInflater)
-    (overlayBinding as OverlayOverRightBinding).let {
+    overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater)
+    (overlayBinding as BottomRightOverlayBinding).let {
       it.lifecycleOwner = this
       it.presenter = this
     }
 
-    (overlayBinding as OverlayOverRightBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as OverlayOverRightBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
@@ -310,21 +310,21 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    (overlayBinding as OverlayOverRightBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams = arrowParams
 
-    return (overlayBinding as OverlayOverRightBinding).root
+    return (overlayBinding as BottomRightOverlayBinding).root
   }
 
   private fun configureTopRightOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = OverlayUnderRightBinding.inflate(layoutInflater)
-    (overlayBinding as OverlayUnderRightBinding).let {
+    overlayBinding = TopRightOverlayBinding.inflate(layoutInflater)
+    (overlayBinding as TopRightOverlayBinding).let {
       it.lifecycleOwner = this
       it.presenter = this
     }
 
-    (overlayBinding as OverlayUnderRightBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as TopRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
@@ -341,21 +341,21 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    (overlayBinding as OverlayUnderRightBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as TopRightOverlayBinding).arrow.layoutParams = arrowParams
 
-    return (overlayBinding as OverlayUnderRightBinding).root
+    return (overlayBinding as TopRightOverlayBinding).root
   }
 
   private fun configureTopLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = OverlayUnderLeftBinding.inflate(this.layoutInflater)
-    (overlayBinding as OverlayUnderLeftBinding).let {
+    overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater)
+    (overlayBinding as TopLeftOverlayBinding).let {
       it.lifecycleOwner = this
       it.presenter = this
     }
 
-    (overlayBinding as OverlayUnderLeftBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
@@ -372,9 +372,9 @@ class SpotlightFragment @Inject constructor(
         10.dp
       )
     }
-    (overlayBinding as OverlayUnderLeftBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams = arrowParams
 
-    return (overlayBinding as OverlayUnderLeftBinding).root
+    return (overlayBinding as TopLeftOverlayBinding).root
   }
 
   private val Int.dp: Int
