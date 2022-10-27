@@ -2,7 +2,6 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
-import okhttp3.internal.platform.Platform
 import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING
 import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
 import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting

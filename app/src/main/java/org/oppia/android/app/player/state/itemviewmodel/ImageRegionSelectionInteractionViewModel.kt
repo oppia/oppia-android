@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
@@ -8,6 +7,7 @@ import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -20,7 +20,6 @@ import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
 import javax.inject.Inject
-import org.oppia.android.app.model.Point2d
 
 /** [StateItemViewModel] for image region selection. */
 class ImageRegionSelectionInteractionViewModel private constructor(
