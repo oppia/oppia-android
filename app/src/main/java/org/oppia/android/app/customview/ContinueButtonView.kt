@@ -47,8 +47,6 @@ class ContinueButtonView @JvmOverloads constructor(
 
   private var isAtAnimationEnd = false
 
-  private val animateContinueButton = MutableLiveData(false)
-
   private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
     explorationProgressController.getCurrentState().toLiveData()
   }
@@ -71,15 +69,18 @@ class ContinueButtonView @JvmOverloads constructor(
 
   private fun processEphemeralState(ephemeralState: EphemeralState) {
     if (!ephemeralState.showContinueButtonAnimation) {
-      animateContinueButton.value = false
+      this.clearAnimation()
+      isAtAnimationEnd = false
     } else {
       val timeLeftToAnimate =
         ephemeralState.continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
       if (timeLeftToAnimate < 0) {
-        animateContinueButton.value = true
+        startAnimating()
+        isAtAnimationEnd = true
       } else {
         lifecycleSafeTimerFactory.createTimer(timeLeftToAnimate).observe(fragment) {
-          animateContinueButton.value = true
+          startAnimating()
+          isAtAnimationEnd = true
         }
       }
     }
@@ -100,7 +101,6 @@ class ContinueButtonView @JvmOverloads constructor(
     // or not.
     if (isVisible && isAtAnimationEnd) {
       startAnimating()
-      animateContinueButton.removeObservers(fragment)
     }
   }
 
@@ -112,14 +112,5 @@ class ContinueButtonView @JvmOverloads constructor(
     viewComponent.inject(this)
 
     subscribeToCurrentState()
-    animateContinueButton.observe(fragment) {
-      if (it) {
-        startAnimating()
-        isAtAnimationEnd = true
-      } else {
-        this.clearAnimation()
-        isAtAnimationEnd = false
-      }
-    }
   }
 }
