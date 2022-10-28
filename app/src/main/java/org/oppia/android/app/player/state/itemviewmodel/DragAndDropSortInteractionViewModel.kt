@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.model.DragAndDropRawAnswer
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -24,7 +25,6 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
-import org.oppia.android.app.model.DragAndDropRawAnswer
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -81,8 +81,7 @@ class DragAndDropSortInteractionViewModel private constructor(
         }
       }
     Log.d("testAnswer", "choiceSubtitledHtmls: $choiceSubtitledHtmls\n ")
-    if (rawUserAnswer != RawUserAnswer.getDefaultInstance())
-    {
+    if (rawUserAnswer != RawUserAnswer.getDefaultInstance()) {
       Log.d("testAnswer", rawUserAnswer.dragAndDrop.listOfSubtitledHtmlsOrBuilderList.toString())
     }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)

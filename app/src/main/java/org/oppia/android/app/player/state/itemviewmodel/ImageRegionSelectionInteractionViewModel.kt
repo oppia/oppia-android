@@ -58,7 +58,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    if(rawUserAnswer != RawUserAnswer.getDefaultInstance()) {
+    if (rawUserAnswer != RawUserAnswer.getDefaultInstance()) {
       val imageRegionLabel = rawUserAnswer.imageRegionSelection.getClickedRegions(0)
       val imageRegionPoint2d = rawUserAnswer.imageRegionSelection.clickPosition
       Log.d("testAnswer", "$imageRegionLabel ${imageRegionPoint2d.x} ${imageRegionPoint2d.y}")
