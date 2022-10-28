@@ -46,6 +46,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     schemaObject?.customSchemaValue?.imageWithRegions?.imagePath ?: ""
   }
   val isAnswerAvailable = ObservableField<Boolean>(false)
+  val lastSelectedRegion = ObservableField<ImageWithRegions>(rawUserAnswer.imageRegionSelection)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -58,11 +59,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
         }
       }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    if (rawUserAnswer != RawUserAnswer.getDefaultInstance()) {
-      val imageRegionLabel = rawUserAnswer.imageRegionSelection.getClickedRegions(0)
-      val imageRegionPoint2d = rawUserAnswer.imageRegionSelection.clickPosition
-      Log.d("testAnswer", "$imageRegionLabel ${imageRegionPoint2d.x} ${imageRegionPoint2d.y}")
-    }
   }
 
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
@@ -92,7 +88,10 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    imageRegionSelection = parseClickOnImage(answerText.toString())
+    val region = selectableRegions.find { it.label == answerText.toString() }
+    imageRegionSelection = ImageWithRegions.newBuilder().apply {
+      addLabelRegions(region)
+    }.build()
   }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
@@ -100,8 +99,8 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     return ClickOnImage.newBuilder().apply {
       addClickedRegions(region?.label ?: "")
       clickPosition = Point2d.newBuilder().apply {
-        x = region?.region?.area?.upperLeft?.x!!
-        y = region.region?.area?.lowerRight?.y!!
+        x = region?.region?.area?.upperLeft?.x ?: 0F
+        y = region?.region?.area?.lowerRight?.y ?: 0F
       }.build()
     }.build()
   }

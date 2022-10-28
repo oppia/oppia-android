@@ -1,6 +1,7 @@
 package org.oppia.android.app.utility
 
 import android.graphics.RectF
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -93,6 +94,7 @@ class ClickableAreasImage(
         getXCoordinate(clickableArea.region.area.lowerRight.x),
         getYCoordinate(clickableArea.region.area.lowerRight.y)
       )
+      Log.d("TAGG", "addRegionViews: "+clickableArea.region.area.upperLeft)
       val layoutParams = FrameLayout.LayoutParams(
         imageRect.width().roundToInt(),
         imageRect.height().roundToInt()
@@ -142,7 +144,9 @@ class ClickableAreasImage(
     }
   }
 
-  private fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
+  //Saturn
+  //You have selected planet Saturn
+  fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
     resetRegionSelectionViews()
     listener.onClickableAreaTouched(
       NamedRegionClickedEvent(
@@ -151,5 +155,37 @@ class ClickableAreasImage(
       )
     )
     newView.setBackgroundResource(R.drawable.selected_region_background)
+  }
+
+  fun highlightBox(clickableArea: ImageWithRegions.LabeledRegion) {
+    // Remove all views other than the default region & selectable image.
+    parentView.children.filter {
+      it.id != imageView.id && it.id != defaultRegionView.id
+    }.forEach(parentView::removeView)
+
+    val imageRect = RectF(
+      getXCoordinate(clickableArea.region.area.upperLeft.x),
+      getYCoordinate(clickableArea.region.area.upperLeft.y),
+      getXCoordinate(clickableArea.region.area.lowerRight.x),
+      getYCoordinate(clickableArea.region.area.lowerRight.y)
+    )
+    val layoutParams = FrameLayout.LayoutParams(
+      imageRect.width().roundToInt(),
+      imageRect.height().roundToInt()
+    )
+    val newView = View(parentView.context)
+
+    ViewCompat.setLayoutDirection(parentView, ViewCompat.LAYOUT_DIRECTION_LTR)
+    newView.layoutParams = layoutParams
+    newView.x = imageRect.left
+    newView.y = imageRect.top
+    newView.isClickable = true
+    newView.isFocusable = true
+    newView.isFocusableInTouchMode = true
+    newView.tag = clickableArea.label
+    newView.contentDescription = clickableArea.contentDescription
+    parentView.addView(newView)
+
+    showOrHideRegion(newView, clickableArea)
   }
 }

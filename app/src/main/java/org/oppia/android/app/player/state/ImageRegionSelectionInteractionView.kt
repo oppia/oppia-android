@@ -1,7 +1,9 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.media.Image
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -23,6 +25,7 @@ import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
+import org.oppia.android.app.model.Point2d
 
 /**
  * A custom [AppCompatImageView] with a list of [ImageWithRegions.LabeledRegion]s to work with
@@ -51,6 +54,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var onRegionClicked: OnClickableAreaClickedListener
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
+  private lateinit var lastSelectedRegion: ImageWithRegions
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -63,6 +67,11 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
 
   fun setEntityId(entityId: String) {
     this.entityId = entityId
+    maybeInitializeClickableAreas()
+  }
+
+  fun setLastSelectedRegion(lastSelectedRegion: ImageWithRegions) {
+    this.lastSelectedRegion = lastSelectedRegion
     maybeInitializeClickableAreas()
   }
 
@@ -120,6 +129,9 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         clickableAreas
       )
       areasImage.addRegionViews()
+      if (lastSelectedRegion.labelRegionsCount > 0) {
+        areasImage.highlightBox(lastSelectedRegion.labelRegionsList[0])
+      }
       performAttachment(areasImage)
     }
   }
