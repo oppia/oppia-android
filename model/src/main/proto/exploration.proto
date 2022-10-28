@@ -336,11 +336,15 @@ message RawUserAnswer {
     int32 multiple_choice_selection_index = 2;
     // A selected index in SelectionInteraction.
     ItemSelectionRawAnswer item_selection = 3;
-    // A list of html content ids selected in DragAndDropInteraction.
-    ListOfSetsOfTranslatableHtmlContentIds drag_and_drop = 4;
+    // A selected html content and answer in DragAndDropInteraction.
+    DragAndDropRawAnswer drag_and_drop = 4;
     // A selected image region in ImageRegionSelectionInteraction.
     ClickOnImage image_region_selection = 5;
   }
+}
+
+message DragAndDropRawAnswer {
+  repeated SubtitledHtml list_of_subtitled_htmls = 1;
 }
 
 message AnswerAndResponse {

@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,7 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.model.DragAndDropRawAnswer
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -43,11 +45,15 @@ class DragAndDropSortInteractionViewModel private constructor(
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
   private val choiceSubtitledHtmls: List<SubtitledHtml> by lazy {
-    interaction.customizationArgsMap["choices"]
-      ?.schemaObjectList
-      ?.schemaObjectList
-      ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
-      ?: listOf()
+    if (rawUserAnswer.hasDragAndDrop()) {
+      rawUserAnswer.dragAndDrop.listOfSubtitledHtmlsList
+    } else {
+      interaction.customizationArgsMap["choices"]
+        ?.schemaObjectList
+        ?.schemaObjectList
+        ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
+        ?: listOf()
+    }
   }
 
   private val contentIdHtmlMap: Map<String, String> =
@@ -74,7 +80,11 @@ class DragAndDropSortInteractionViewModel private constructor(
           )
         }
       }
-
+    Log.d("testAnswer", "choiceSubtitledHtmls: $choiceSubtitledHtmls\n ")
+    if (rawUserAnswer != RawUserAnswer.getDefaultInstance())
+    {
+      Log.d("testAnswer", rawUserAnswer.dragAndDrop.listOfSubtitledHtmlsOrBuilderList.toString())
+    }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
@@ -133,9 +143,20 @@ class DragAndDropSortInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    val selectedLists = _choiceItems.map { it.htmlContent }
-    dragAndDrop = ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
-      addAllContentIdLists(selectedLists)
+    val htmlContentIds = _choiceItems.map { it.htmlContent }
+    val htmlContent = _choiceItems.map { it.computeStringList() }
+    val listofSubtitledHtml = htmlContentIds.zip(htmlContent)
+    val SubtitleHtmlList = mutableListOf<SubtitledHtml>()
+    listofSubtitledHtml.forEach {
+      SubtitleHtmlList.add(
+        SubtitledHtml.newBuilder().apply {
+          contentId = it.first.contentIdsList[0].contentId
+          html = it.second.htmlList.first().toString()
+        }.build()
+      )
+    }
+    dragAndDrop = DragAndDropRawAnswer.newBuilder().apply {
+      addAllListOfSubtitledHtmls(SubtitleHtmlList)
     }.build()
   }.build()
 
