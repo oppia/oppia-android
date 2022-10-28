@@ -50,8 +50,8 @@
       android:adjustViewBounds="true"
       app:clickableAreas="@{viewModel.selectableRegions}"
       app:entityId="@{viewModel.entityId}"
-      app:lastSelectedRegion="@{viewModel.lastSelectedRegion}"
       app:imageUrl="@{viewModel.imagePath}"
+      app:lastSelectedRegion="@{viewModel.lastSelectedRegion}"
       app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
       app:overlayView="@{interactionContainerFrameLayout}" />
 

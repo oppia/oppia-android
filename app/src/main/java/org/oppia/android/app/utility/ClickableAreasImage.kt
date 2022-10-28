@@ -158,11 +158,6 @@ class ClickableAreasImage(
   }
 
   fun highlightBox(clickableArea: ImageWithRegions.LabeledRegion) {
-    // Remove all views other than the default region & selectable image.
-    parentView.children.filter {
-      it.id != imageView.id && it.id != defaultRegionView.id
-    }.forEach(parentView::removeView)
-
     val imageRect = RectF(
       getXCoordinate(clickableArea.region.area.upperLeft.x),
       getYCoordinate(clickableArea.region.area.upperLeft.y),

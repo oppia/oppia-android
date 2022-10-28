@@ -339,7 +339,7 @@ message RawUserAnswer {
     // A selected html content and answer in DragAndDropInteraction.
     DragAndDropRawAnswer drag_and_drop = 4;
     // A selected image region in ImageRegionSelectionInteraction.
-    ImageWithRegions image_region_selection = 5;
+    ImageWithRegions.LabeledRegion image_region_selection = 5;
   }
 }
 

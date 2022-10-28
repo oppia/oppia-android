@@ -54,7 +54,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   private lateinit var onRegionClicked: OnClickableAreaClickedListener
   private lateinit var imageUrl: String
   private lateinit var clickableAreas: List<ImageWithRegions.LabeledRegion>
-  private lateinit var lastSelectedRegion: ImageWithRegions
+  private lateinit var lastSelectedRegion: ImageWithRegions.LabeledRegion
 
   /**
    * Sets the URL for the image & initiates loading it. This is intended to be called via
@@ -70,7 +70,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     maybeInitializeClickableAreas()
   }
 
-  fun setLastSelectedRegion(lastSelectedRegion: ImageWithRegions) {
+  fun setLastSelectedRegion(lastSelectedRegion: ImageWithRegions.LabeledRegion) {
     this.lastSelectedRegion = lastSelectedRegion
     maybeInitializeClickableAreas()
   }
@@ -129,8 +129,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         clickableAreas
       )
       areasImage.addRegionViews()
-      if (lastSelectedRegion.labelRegionsCount > 0) {
-        areasImage.highlightBox(lastSelectedRegion.labelRegionsList[0])
+      if (lastSelectedRegion.hasRegion()) {
+        areasImage.highlightBox(lastSelectedRegion)
       }
       performAttachment(areasImage)
     }
