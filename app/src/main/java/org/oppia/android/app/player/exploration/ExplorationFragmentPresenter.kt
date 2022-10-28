@@ -4,7 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
+import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import org.oppia.android.R
@@ -21,7 +22,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.exploration_activity.*
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
@@ -64,33 +65,58 @@ class ExplorationFragmentPresenter @Inject constructor(
   fun handleViewCreated(view: View) {
     val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
     profileDataProvider.toLiveData().observe(
-      fragment,
-      { result ->
-        val readingTextSize = retrieveArguments().readingTextSize
-        if (result is AsyncResult.Success && result.value.readingTextSize != readingTextSize) {
-          selectNewReadingTextSize(result.value.readingTextSize)
+      fragment
+    ) { result ->
+      val readingTextSize = retrieveArguments().readingTextSize
+      if (result is AsyncResult.Success && result.value.readingTextSize != readingTextSize) {
+        selectNewReadingTextSize(result.value.readingTextSize)
 
-          // Since text views are based on sp for sizing, the activity needs to be recreated so that
-          // sp can be correctly recomputed.
-          fragment.requireActivity().recreate()
-        }
+        // Since text views are based on sp for sizing, the activity needs to be recreated so that
+        // sp can be correctly recomputed.
+        fragment.requireActivity().recreate()
+      } else {
+        showSpotlights()
+//        val toolbar = (fragment.requireActivity() as AppCompatActivity).action_audio_player
+//        toolbar.post {
+//          if (toolbar.visibility == View.GONE) return@post
+//              val targetList = arrayListOf(
+//                SpotlightTarget(
+//                  toolbar,
+//                  "Would you like Oppia to read for you? Tap on this button to try!",
+//                  SpotlightShape.Circle,
+//                  Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+//                )
+//              )
+//
+//              spotlightFragment.initialiseTargetList(targetList, 124)
+//              fragment.requireActivity().supportFragmentManager.beginTransaction()
+//                .add(spotlightFragment, "")
+//                .commitNow()
+//        }
+
+
       }
-    )
-    val toolbar: Toolbar = view.findViewById(R.id.exploration_toolbar)
-      toolbar.forEach {
-      if (it.id == R.id.action_audio_player) {
-        it.post {
+    }
+
+  }
+
+  private fun showSpotlights() {
+    val explorationToolbar = (fragment.requireActivity() as AppCompatActivity).exploration_toolbar
+    explorationToolbar.post {
+      explorationToolbar.forEach {
+        if (it is ImageButton) {
+          // this toolbar contains only one image button, which is the back navigation icon
           val targetList = arrayListOf(
-            SpotlightTarget (
+            SpotlightTarget(
               it,
-              "Would you like Oppia to read for you? Tap on this button to try!",
+              "Exit anytime using this button. We will save your progress.",
               SpotlightShape.Circle,
               Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-              )
+            )
           )
 
-          spotlightFragment.initialiseTargetList(targetList, 123)
-          fragment.childFragmentManager.beginTransaction()
+          spotlightFragment.initialiseTargetList(targetList, 124)
+          fragment.requireActivity().supportFragmentManager.beginTransaction()
             .add(spotlightFragment, "")
             .commitNow()
         }
