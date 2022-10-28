@@ -1,9 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.media.Image
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -25,7 +23,6 @@ import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import javax.inject.Inject
-import org.oppia.android.app.model.Point2d
 
 /**
  * A custom [AppCompatImageView] with a list of [ImageWithRegions.LabeledRegion]s to work with
