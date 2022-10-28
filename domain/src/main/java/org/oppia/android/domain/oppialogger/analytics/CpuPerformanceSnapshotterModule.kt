@@ -20,19 +20,21 @@ class CpuPerformanceSnapshotterModule {
     performanceMetricsLogger: PerformanceMetricsLogger,
     consoleLogger: ConsoleLogger,
     exceptionLogger: ExceptionLogger,
+    performanceMetricsAssessor: PerformanceMetricsAssessor,
+    @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher,
     @ForegroundCpuLoggingTimePeriodMillis foregroundCpuLoggingTimePeriodMillis: Long,
     @BackgroundCpuLoggingTimePeriodMillis backgroundCpuLoggingTimePeriodMillis: Long,
-    @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher,
-    performanceMetricsAssessor: PerformanceMetricsAssessor
+    @InitialIconificationCutOffTimePeriodMillis initialIconificationCutOffTimePeriodMillis: Long
   ): CpuPerformanceSnapshotter = CpuPerformanceSnapshotter(
     backgroundCoroutineDispatcher,
     performanceMetricsLogger,
-    PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND,
+    PerformanceMetricsAssessor.AppIconification.UNINITIALIZED,
     consoleLogger,
     exceptionLogger,
+    performanceMetricsAssessor,
     foregroundCpuLoggingTimePeriodMillis,
     backgroundCpuLoggingTimePeriodMillis,
-    performanceMetricsAssessor
+    initialIconificationCutOffTimePeriodMillis
   )
 
   @Provides
@@ -42,4 +44,8 @@ class CpuPerformanceSnapshotterModule {
   @Provides
   @BackgroundCpuLoggingTimePeriodMillis
   fun provideBackgroundCpuLoggingTimePeriodMillis(): Long = TimeUnit.MINUTES.toMillis(60)
+
+  @Provides
+  @InitialIconificationCutOffTimePeriodMillis
+  fun provideInitialIconificationCutOffTimePeriodMillis(): Long = TimeUnit.SECONDS.toMillis(60)
 }

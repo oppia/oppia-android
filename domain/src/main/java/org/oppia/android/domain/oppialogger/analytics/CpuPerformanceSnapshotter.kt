@@ -8,10 +8,16 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
+import org.oppia.android.app.model.ScreenName.FOREGROUND_SCREEN
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.UNINITIALIZED
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.CpuSnapshot
 
 /**
@@ -24,12 +30,13 @@ class CpuPerformanceSnapshotter(
   private val initialIconification: AppIconification,
   private val consoleLogger: ConsoleLogger,
   private val exceptionLogger: ExceptionLogger,
+  private val performanceMetricsAssessor: PerformanceMetricsAssessor,
   private val foregroundCpuLoggingTimePeriodMillis: Long,
   private val backgroundCpuLoggingTimePeriodMillis: Long,
-  private val performanceMetricsAssessor: PerformanceMetricsAssessor
+  private val initialIconificationCutOffTimePeriodMillis: Long
 ) {
 
-  private val commandQueue by lazy { createCommandQueueActor() }
+  private val commandQueue = createCommandQueueActor()
 
   /** Updates the current [AppIconification] in accordance with the app's state changes. */
   fun updateAppIconification(newIconification: AppIconification) {
@@ -38,8 +45,7 @@ class CpuPerformanceSnapshotter(
 
   private fun createCommandQueueActor(): SendChannel<CommandMessage> {
     var currentIconification = initialIconification
-    var previousSnapshot =
-      performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
+    var previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
     var switchIconificationCount = 0
     val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
     return coroutineScope.actor<CommandMessage>(capacity = Channel.UNLIMITED) {
@@ -47,14 +53,16 @@ class CpuPerformanceSnapshotter(
         when (message) {
           is CommandMessage.SwitchIconification -> {
             ++switchIconificationCount
-            // Since there's a switch in the current iconification of the app, we'd cut short the
-            // existing delay and log the current CPU usage relative to the previously logged one
-            // without this explicit log command.
-            performanceMetricsAssessor.getRelativeCpuUsage(
-              previousSnapshot,
-              performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
-            )?.let { relativeCpuUsage ->
-              sendLogSnapshotDiffCommand(relativeCpuUsage, currentIconification)
+            if (currentIconification != UNINITIALIZED) {
+              // Since there's a switch in the current iconification of the app, we'd cut short the
+              // existing delay and log the current CPU usage relative to the previously logged one
+              // without this explicit log command.
+              performanceMetricsAssessor.getRelativeCpuUsage(
+                previousSnapshot,
+                performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
+              )?.let { relativeCpuUsage ->
+                sendLogSnapshotDiffCommand(relativeCpuUsage, currentIconification)
+              }
             }
             currentIconification = message.newIconification
             previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
@@ -88,7 +96,10 @@ class CpuPerformanceSnapshotter(
       }
     }.also {
       CoroutineScope(backgroundCoroutineDispatcher).launch {
-        sendTakeSnapshotCommand(switchIconificationCount)
+        delay(initialIconificationCutOffTimePeriodMillis)
+        if (currentIconification == UNINITIALIZED) {
+          sendSwitchIconificationCommand(APP_IN_BACKGROUND)
+        }
       }
     }
   }
@@ -110,9 +121,7 @@ class CpuPerformanceSnapshotter(
   private suspend fun sendScheduleTakeSnapshotCommand(
     currentIconification: AppIconification,
     switchId: Int
-  ) {
-    commandQueue.send(CommandMessage.ScheduleTakeSnapshot(currentIconification, switchId))
-  }
+  ) { commandQueue.send(CommandMessage.ScheduleTakeSnapshot(currentIconification, switchId)) }
 
   private suspend fun sendTakeSnapshotCommand(switchId: Int) {
     commandQueue.send(CommandMessage.TakeSnapshot(switchId))
@@ -188,13 +197,15 @@ class CpuPerformanceSnapshotter(
 
   /** Returns an appropriate [ScreenName] on the basis of [AppIconification]. */
   private fun AppIconification.toScreenName(): ScreenName = when (this) {
-    AppIconification.APP_IN_BACKGROUND -> ScreenName.BACKGROUND_SCREEN
-    AppIconification.APP_IN_FOREGROUND -> ScreenName.FOREGROUND_SCREEN
+    APP_IN_BACKGROUND -> BACKGROUND_SCREEN
+    APP_IN_FOREGROUND -> FOREGROUND_SCREEN
+    UNINITIALIZED -> SCREEN_NAME_UNSPECIFIED
   }
 
   /** Returns an appropriate delay time period in millis on the basis of [AppIconification]. */
   private fun AppIconification.getDelay(): Long = when (this) {
-    AppIconification.APP_IN_BACKGROUND -> backgroundCpuLoggingTimePeriodMillis
-    AppIconification.APP_IN_FOREGROUND -> foregroundCpuLoggingTimePeriodMillis
+    APP_IN_BACKGROUND -> backgroundCpuLoggingTimePeriodMillis
+    APP_IN_FOREGROUND -> foregroundCpuLoggingTimePeriodMillis
+    UNINITIALIZED -> initialIconificationCutOffTimePeriodMillis
   }
 }

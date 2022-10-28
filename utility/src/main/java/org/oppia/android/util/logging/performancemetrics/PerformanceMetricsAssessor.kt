@@ -73,6 +73,8 @@ interface PerformanceMetricsAssessor {
 
   /** Represents the different states of the application. */
   enum class AppIconification {
+    /** Indicates that the iconification hasn't been initialized yet. */
+    UNINITIALIZED,
     /** Indicates that the app is in foreground. */
     APP_IN_FOREGROUND,
     /** Indicates that the app is in background. */
