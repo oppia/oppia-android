@@ -725,6 +725,11 @@ class ExplorationProgressController @Inject constructor(
         // Ensure the state has been started the first time it's reached.
         maybeStartState(explorationProgress.stateDeck.getViewedStateCount())
       }
+
+      if (!isContinueButtonAnimationSeen) {
+        profileManagementController.markContinueButtonAnimationSeen(profileId)
+      }
+      isContinueButtonAnimationSeen = true
     }
   }
 
@@ -1125,13 +1130,9 @@ class ExplorationProgressController @Inject constructor(
     }
 
     /** Ends state-based logging for the current state and logs that the card has ended. */
-    suspend fun endState() {
+    fun endState() {
       stateAnalyticsLogger?.logEndCard()
       explorationAnalyticsLogger.endCard()
-      if (!isContinueButtonAnimationSeen) {
-        profileManagementController.markContinueButtonAnimationSeen(profileId)
-      }
-      isContinueButtonAnimationSeen = true
     }
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
