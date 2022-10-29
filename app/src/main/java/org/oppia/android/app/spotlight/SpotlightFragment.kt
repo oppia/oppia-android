@@ -133,13 +133,13 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
-          val profileId = ProfileId.newBuilder()
-            .setInternalId(internalProfileId)
-            .build()
-          spotlightStateController.markSpotlightViewed(
-            profileId,
-            spotlightTarget.feature
-          )
+//          val profileId = ProfileId.newBuilder()
+//            .setInternalId(internalProfileId)
+//            .build()
+//          spotlightStateController.markSpotlightViewed(
+//            profileId,
+//            spotlightTarget.feature
+//          )
         }
       })
       .build()
