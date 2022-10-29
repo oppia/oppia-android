@@ -6,7 +6,6 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
