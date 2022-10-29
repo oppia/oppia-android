@@ -56,7 +56,7 @@ class SelectionInteractionViewModel private constructor(
   }
 
   val selectedItems: MutableList<Int> = mutableListOf()
-  val selectedAnswer: MutableList<Int> =
+  private val selectedAnswer: MutableList<Int> =
     rawUserAnswer.itemSelection.selectedIndexesList ?: mutableListOf()
 
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
@@ -75,10 +75,15 @@ class SelectionInteractionViewModel private constructor(
         }
       }
     if (selectedAnswer.size == 1) {
-      choiceItems[selectedAnswer[0]].handleItemClicked()
+      val selectedIndex = selectedAnswer[0]
+      val isAnswerUpdated =
+        updateSelection(selectedIndex, choiceItems[selectedIndex].isAnswerSelected.get())
+      choiceItems[selectedIndex].isAnswerSelected.set(isAnswerUpdated)
     } else if (selectedAnswer.size > 1) {
       selectedAnswer.forEach { index ->
-        choiceItems[index].handleItemClicked()
+        val isAnswerUpdated =
+          updateSelection(index, choiceItems[index].isAnswerSelected.get())
+        choiceItems[index].isAnswerSelected.set(isAnswerUpdated)
       }
     }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
@@ -113,15 +118,13 @@ class SelectionInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    if (interactionId == "ItemSelectionInput") {
-      itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
+    itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
+      if (interactionId == "ItemSelectionInput") {
         addAllSelectedIndexes(selectedItems)
-      }.build()
-    } else if (selectedItems.size == 1) {
-      itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
+      } else if (selectedItems.size == 1) {
         addSelectedIndexes(selectedItems.first())
-      }.build()
-    }
+      }
+    }.build()
   }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */

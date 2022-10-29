@@ -322,23 +322,22 @@ message UserAnswer {
   WrittenTranslationContext written_translation_context = 6;
 }
 
-// Corresponds to a raw item selection answer that user has submitted.
+// Corresponds to a raw item selection answer that user has selected.
 message ItemSelectionRawAnswer {
   repeated int32 selected_indexes = 1;
 }
 
-// Corresponds to a last raw answer entered by user which is used to retain state on Config Change.
+// Corresponds to a raw representation of the current answer entered by the user which is used to
+// retain state on configuration changes.
 message RawUserAnswer {
   oneof answer_input_type {
-    // A raw answer entered by user in a text-based interaction.
+    // A raw answer entered by user in a text-based interactions.
     string textual_answer = 1;
-    // An indices selected in multiple choice selection.
-    int32 multiple_choice_selection_index = 2;
-    // A selected index in SelectionInteraction.
+    // A user's selection for item selection and multiple choice interactions.
     ItemSelectionRawAnswer item_selection = 3;
-    // A selected html content and answer in DragAndDropInteraction.
+    // A user's selection for drag and drop interactions.
     DragAndDropRawAnswer drag_and_drop = 4;
-    // A selected image region in ImageRegionSelectionInteraction.
+    // A user's selection for image region selection interaction.
     ImageWithRegions.LabeledRegion image_region_selection = 5;
   }
 }

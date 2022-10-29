@@ -144,16 +144,38 @@ class DragAndDropSortInteractionViewModel private constructor(
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     val htmlContentIds = _choiceItems.map { it.htmlContent }
     val htmlContent = _choiceItems.map { it.computeStringList() }
-    val listofSubtitledHtml = htmlContentIds.zip(htmlContent)
+    val listofHtmlContentIds = mutableListOf<String>()
+    val listofHtmlContent = mutableListOf<String>()
+    htmlContentIds.forEach {
+      if (it.contentIdsCount > 1) {
+        it.contentIdsList.forEach {
+          listofHtmlContentIds.add(it.contentId)
+        }
+      } else {
+        listofHtmlContentIds.add(it.contentIdsList[0].contentId)
+      }
+    }
+    htmlContent.forEach {
+      if (it.htmlCount > 1) {
+        it.htmlList.forEach {
+          listofHtmlContent.add(it)
+        }
+      } else {
+        listofHtmlContent.add(it.htmlList.first().toString())
+      }
+    }
+    val listofSubtitledHtml = listofHtmlContentIds.zip(listofHtmlContent)
+    Log.d("TAGG", "getRawUserAnswer: listOfSubtitledHtml $_choiceItems")
     val SubtitleHtmlList = mutableListOf<SubtitledHtml>()
     listofSubtitledHtml.forEach {
       SubtitleHtmlList.add(
         SubtitledHtml.newBuilder().apply {
-          contentId = it.first.contentIdsList[0].contentId
-          html = it.second.htmlList.first().toString()
+          contentId = it.first
+          html = it.second
         }.build()
       )
     }
+    Log.d("TAGG", "getRawUserAnswer: SubtitleHtmlList " + SubtitleHtmlList.toString())
     dragAndDrop = DragAndDropRawAnswer.newBuilder().apply {
       addAllListOfSubtitledHtmls(SubtitleHtmlList)
     }.build()

@@ -43,10 +43,6 @@ class ContinueInteractionViewModel private constructor(
     this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
   }.build()
 
-  override fun getRawUserAnswer(): RawUserAnswer {
-    return RawUserAnswer.getDefaultInstance()
-  }
-
   fun handleButtonClicked() {
     interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
   }

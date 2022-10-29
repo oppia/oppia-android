@@ -190,9 +190,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
   }
 
-  private fun processEphemeralQuestionResult(
-    result: AsyncResult<EphemeralQuestion>,
-  ) {
+  private fun processEphemeralQuestionResult(result: AsyncResult<EphemeralQuestion>) {
     when (result) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
@@ -204,9 +202,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun processEphemeralQuestion(
-    ephemeralQuestion: EphemeralQuestion,
-  ) {
+  private fun processEphemeralQuestion(ephemeralQuestion: EphemeralQuestion) {
     // TODO(#497): Update this to properly link to question assets.
     val skillId = ephemeralQuestion.question.linkedSkillIdsList.firstOrNull() ?: ""
 
@@ -334,7 +330,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun createRecyclerViewAssembler(
     builder: StatePlayerRecyclerViewAssembler.Builder,
     congratulationsTextView: TextView,
-    congratulationsTextConfettiView: KonfettiView,
+    congratulationsTextConfettiView: KonfettiView
   ): StatePlayerRecyclerViewAssembler {
     // TODO(#501): Add support early exit detection & message, which requires changes in the training progress
     //  controller & possibly the ephemeral question data model.
