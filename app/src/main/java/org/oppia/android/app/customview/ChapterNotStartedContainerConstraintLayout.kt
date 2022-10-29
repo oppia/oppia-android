@@ -2,7 +2,6 @@ package org.oppia.android.app.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
