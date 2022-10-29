@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -165,7 +165,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -314,7 +314,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -482,7 +482,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
@@ -612,7 +612,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
     env:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
