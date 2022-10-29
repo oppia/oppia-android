@@ -345,7 +345,7 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
     setUpTestApplicationWithPerformanceMetricsCollection()
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
@@ -358,6 +358,7 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
     setUpTestApplicationWithPerformanceMetricsCollection()
+    applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
