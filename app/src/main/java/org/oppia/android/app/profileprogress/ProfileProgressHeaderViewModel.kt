@@ -6,9 +6,13 @@ import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 
 /** Header [ViewModel] for the recycler view in [ProfileProgressFragment]. */
-class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Fragment) :
+class ProfileProgressHeaderViewModel(
+  activity: AppCompatActivity,
+  fragment: Fragment,
+) :
   ProfileProgressItemViewModel() {
   private val routeToCompletedStoryListListener = activity as RouteToCompletedStoryListListener
   private val routeToOngoingTopicListListener = activity as RouteToOngoingTopicListListener
@@ -20,6 +24,13 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Frag
   val completedStoryCount = ObservableField(0)
 
   private var recentlyPlayedTopicCount: Int = 0
+
+  private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle {
+    return when (completedStoryCount.get()) {
+      in 2..Int.MAX_VALUE -> RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
+      else -> RecentlyPlayedActivityTitle.STORIES_FOR_YOU
+    }
+  }
 
   fun setProfile(currentProfile: Profile) {
     profile.set(currentProfile)
@@ -42,7 +53,7 @@ class ProfileProgressHeaderViewModel(activity: AppCompatActivity, fragment: Frag
   }
 
   fun clickOnViewAll() {
-    routeToRecentlyPlayedActivity.routeToRecentlyPlayed()
+    routeToRecentlyPlayedActivity.routeToRecentlyPlayed(getRecentlyPlayedActivityTitle())
   }
 
   fun clickOnProfilePicture() {

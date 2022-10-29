@@ -12,6 +12,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import javax.inject.Inject
 
 private const val DEFAULT_HINT_AND_SOLUTION_SUMMARY = ""
@@ -79,16 +80,24 @@ class HintsViewModel @Inject constructor(
     return itemList
   }
 
-  fun computeHintListDropDownIconContentDescription(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.show_hide_hint_list,
-      hintsAndSolutionSummary.get() ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
-    )
+  fun computeHintContentDescription(): String {
+    return hintsAndSolutionSummary.get()?.let {
+      CustomHtmlContentHandler.fromHtml(
+        it,
+        imageRetriever = null,
+        customTagHandlers = mapOf()
+      ).toString()
+    } ?: DEFAULT_HINT_AND_SOLUTION_SUMMARY
   }
 
   private fun addHintToList(hintIndex: Int, hint: Hint) {
     val hintsViewModel = HintsViewModel(resourceHandler, translationController)
-    hintsViewModel.title.set(hint.hintContent.contentId)
+    hintsViewModel.title.set(
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.hint_list_item_number,
+        resourceHandler.toHumanReadableString(hintIndex + 1)
+      )
+    )
     val hintContentHtml =
       translationController.extractString(hint.hintContent, writtenTranslationContext)
     hintsViewModel.hintsAndSolutionSummary.set(hintContentHtml)

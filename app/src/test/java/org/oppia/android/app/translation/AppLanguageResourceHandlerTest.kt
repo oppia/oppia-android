@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.ActivityIntentFactoriesModule
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -466,6 +467,16 @@ class AppLanguageResourceHandlerTest {
   }
 
   @Test
+  fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglish() {
+    updateAppLanguageTo(OppiaLanguage.ENGLISH)
+    val handler = retrieveAppLanguageResourceHandler()
+
+    val formattedString = handler.toHumanReadableString(1)
+
+    assertThat(formattedString).contains("1")
+  }
+
+  @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
@@ -585,7 +596,7 @@ class AppLanguageResourceHandlerTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

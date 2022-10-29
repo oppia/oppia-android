@@ -1,0 +1,29 @@
+"""
+Constructs for setting up activity routing support in the Dagger graph.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+# TODO(#59): Define these exported files as separate libraries from top-level targets.
+exports_files([
+    "ActivityRouterModule.kt",
+])
+
+kt_android_library(
+    name = "activity_router",
+    srcs = [
+        "ActivityRouter.kt",
+        "Route.kt",
+        "RouteKey.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//model/src/main/proto:arguments_java_proto_lite",
+        "//third_party:androidx_appcompat_appcompat",
+        "//utility/src/main/java/org/oppia/android/util/logging:console_logger",
+    ],
+)
+
+dagger_rules()

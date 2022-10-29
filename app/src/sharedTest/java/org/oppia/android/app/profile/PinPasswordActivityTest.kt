@@ -27,6 +27,7 @@ import androidx.test.rule.ActivityTestRule
 import com.google.android.material.textfield.TextInputEditText
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -36,6 +37,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -1105,6 +1107,37 @@ class PinPasswordActivityTest {
     }
   }
 
+  @Test
+  fun testPinPassword_clickForgotPin_enterAdminPin_clickSubmit_dialogMessageIsCorrect() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.forgot_pin)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.admin_settings_input_pin_edit_text),
+          isDescendantOfA(withId(R.id.admin_settings_input_pin))
+        )
+      ).inRoot(isDialog())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        withText(
+          containsString(
+            context.resources.getString(R.string.reset_pin_enter_dialog_message, "Ben")
+          )
+        )
+      ).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+  }
+
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
@@ -1136,7 +1169,7 @@ class PinPasswordActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -29,6 +29,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -107,6 +108,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
+
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -149,7 +152,7 @@ class RevisionCardActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
-      context, 1, FRACTIONS_TOPIC_ID, 1
+      context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
@@ -263,9 +266,9 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId
+    context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
@@ -305,7 +308,7 @@ class RevisionCardActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

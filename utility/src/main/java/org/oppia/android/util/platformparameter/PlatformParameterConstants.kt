@@ -11,6 +11,25 @@ import javax.inject.Qualifier
  */
 
 /**
+ * Qualifier for the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+@Qualifier
+annotation class AutomaticUpdateTopicSetting
+
+/**
+ * Name of the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+const val AUTOMATIC_UPDATE_TOPIC_SETTING = "automatically_update_topic"
+
+/**
+ * Default value of the platform parameter that automatically updates topics when a user toggles the
+ * switch in the [AdministratorControlsFragmentPresenter].
+ */
+const val AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE = false
+
+/**
  * Qualifier for the platform parameter that controls the visibility of splash screen welcome
  * message toast in the [SplashTestActivity].
  */
@@ -187,3 +206,13 @@ annotation class EnableSpotlightUi
 
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
 const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
+
+/**
+ * Qualifier for the platform parameter that controls controls whether input interaction state is
+ * correctly retained across configuration changes.
+ */
+@Qualifier
+annotation class EnableInteractionConfigChangeStateRetention
+
+/** Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention]. */
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = false

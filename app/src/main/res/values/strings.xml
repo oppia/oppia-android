@@ -6,6 +6,7 @@
   <string name="menu_help">Help</string>
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="help_activity_title">Help</string>
+  <string name="bottom_sheet_options_menu_close">Close</string>
   <string name="menu_switch_profile">Switch Profile</string>
   <string name="developer_options">Developer Options</string>
   <string name="administrator_controls">Administrator Controls</string>
@@ -325,6 +326,7 @@
   <string name="admin_settings_enter_user_new_pin">%1$s\'s New PIN.</string>
   <!-- ResetPinDialogFragment -->
   <string name="reset_pin_enter">Enter a New Pin</string>
+  <string name="reset_pin_enter_dialog_message">This PIN will be %s\'s new PIN and will be required when signing in.</string>
   <!-- MyDownloadsActivity -->
   <string name="my_downloads_activity_title">My Downloads</string>
   <string name="tab_downloads">Downloads</string>
@@ -435,13 +437,14 @@
   <string name="new_hint_available">New hint available</string>
   <string name="no_new_hint_available">No new hint available</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
+  <string name="hint_list_item_number">Hint %s</string>
   <string name="hints_andSolution_close_icon_description">Navigate up</string>
   <string name="hints_toolbar_title">Hints</string>
-  <string name="show_solution">Show</string>
+  <string name="show_solution">Show solution</string>
   <string name="reveal_solution">Reveal Solution</string>
   <string name="reveal_hint">Show Hint</string>
-  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
-  <string name="show_hide_solution_list">Show/Hide solution</string>
+  <string name="hide_hint">Hide Hint</string>
+  <string name="hide_solution">Hide solution</string>
   <string name="the_only_solution_is">The only solution is :  </string>
   <string name="this_will_reveal_the_solution">This will reveal the solution. Are you sure?</string>
   <string name="reveal">Reveal</string>
@@ -571,4 +574,5 @@
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  <string name="revision_navigation_cards_header">Continue Studying</string>
 </resources>
