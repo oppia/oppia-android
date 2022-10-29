@@ -81,6 +81,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     application.registerActivityLifecycleCallbacks(this)
     logApplicationStartupMetrics()
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
   }
 
   // Use a large Long value such that the time difference based on any timestamp will be negative

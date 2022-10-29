@@ -9,6 +9,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,12 +41,10 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.UNINITIALIZED
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TEST_CPU_USAGE_ONE = 0.07192
 private const val TEST_CPU_USAGE_TWO = 0.32192
@@ -80,6 +81,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_updateIconificationToBackground_logsCpuUsageInBackgroundState() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -94,6 +96,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_updateIconificationToForeground_logsCpuUsageInForegroundState() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -108,6 +111,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToForeground_moveToBackground_logsSequentially() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
@@ -133,6 +137,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToForegorund_logsCpuUsage_logsCpuUsageAfterCorrectDelay() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -155,6 +160,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToFg_logsCpuUsage_failsToLogSecondCpuLogBeforeCorrectDelay() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -167,6 +173,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToBackgorund_logsCpuUsage_logsCpuUsageAfterCorrectDelay() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -189,6 +196,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToBg_logsCpuUsage_failsToLogSecondCpuLogBeforeCorrectDelay() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -201,6 +209,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_moveToBg_logsCpuUsage_moveToFg_logsTailEventBeforeNewEvent() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     testCoroutineDispatchers.runCurrent()
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
@@ -220,6 +229,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_logCpuUsage_correctCpuUsageValueIsLogged() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(TEST_CPU_USAGE_ONE)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -233,6 +243,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Test
   fun testSnapshotter_relativeCpuUsageEqualsNull_doesNotLogCpuUsage() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
     fakePerformanceMetricAssessor.setRelativeCpuUsage(null)
     cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     testCoroutineDispatchers.runCurrent()
@@ -244,7 +255,7 @@ class CpuPerformanceSnapshotterTest {
   fun testSnapshotter_onCreate_moveToForegroundBeforeCutOff_logsCpuUsageInForegroundAfterDelay() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
-    // clearing up all app startup performance metrics: apk size and storage usage.
+    // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     testCoroutineDispatchers.advanceTimeBy(1000)
     applicationLifecycleObserver.onAppInForeground()
@@ -255,7 +266,6 @@ class CpuPerformanceSnapshotterTest {
     val event = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(count).isEqualTo(1)
-    assertThat(event).isNotNull()
     assertThat(event.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
   }
 
@@ -263,7 +273,7 @@ class CpuPerformanceSnapshotterTest {
   fun testSnapshotter_moveToFgBeforeCutOff_moveToBgBeforeDelayEnds_logsInFg_logsInBgAfterDelay() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
-    // clearing up all app startup performance metrics: apk size and storage usage.
+    // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     testCoroutineDispatchers.advanceTimeBy(1000)
     applicationLifecycleObserver.onAppInForeground()
@@ -285,7 +295,7 @@ class CpuPerformanceSnapshotterTest {
   fun testSnapshotter_moveToFgBeforeCutOff_moveToBgAfterFirstDelay_logsCpuWithCorrectIcon() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
-    // clearing up all app startup performance metrics: apk size and storage usage.
+    // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     testCoroutineDispatchers.advanceTimeBy(1000)
     applicationLifecycleObserver.onAppInForeground()
@@ -309,10 +319,11 @@ class CpuPerformanceSnapshotterTest {
   fun testSnapshotter_onCreate_setsIconificationToBgAfterCutOff_logsCpuInBgAfterCorrectDelay() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
-    // clearing up all app startup performance metrics: apk size and storage usage.
+    // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
-    testCoroutineDispatchers.advanceTimeBy(initialIconificationCutOffTimePeriodMillis)
-    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
+    testCoroutineDispatchers.advanceTimeBy(
+      initialIconificationCutOffTimePeriodMillis + backgroundCpuLoggingTimePeriodMillis
+    )
 
     val count = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
     val events = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(count)
@@ -325,7 +336,7 @@ class CpuPerformanceSnapshotterTest {
   fun testSnapshotter_onCreate_setsIconToBgAfterCutOff_moveToFgAndLogsCpuInBg_logsCpuInFg() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
-    // clearing up all app startup performance metrics: apk size and storage usage.
+    // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(5))
     applicationLifecycleObserver.onAppInForeground()
@@ -344,10 +355,13 @@ class CpuPerformanceSnapshotterTest {
   fun testSnapshotter_setsIconToBgAfterCutOff_logsCpuInBg_moveToFgAndLogsCpuInBg_logsCpuInFg() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
-    // clearing up all app startup performance metrics: apk size and storage usage.
+    // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
-    testCoroutineDispatchers.advanceTimeBy(backgroundCpuLoggingTimePeriodMillis)
-    testCoroutineDispatchers.advanceTimeBy(TimeUnit.MINUTES.toMillis(3))
+    testCoroutineDispatchers.advanceTimeBy(
+      backgroundCpuLoggingTimePeriodMillis + TimeUnit.MINUTES.toMillis(
+        3
+      )
+    )
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
     testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
@@ -360,6 +374,47 @@ class CpuPerformanceSnapshotterTest {
     assertThat(events[1].currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
     assertThat(events[2].currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
   }
+
+  @Test
+  fun testSnapshotter_updateIconification_withoutInitialization_doesNotLogAnyCpuUsage() {
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_updateToUninitializedIcon_withoutInitializingSnapshotter_noCpuLogExists() {
+    cpuPerformanceSnapshotter.updateAppIconification(UNINITIALIZED)
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_updateToUninitializedIcon_withInitializedSnapshotter_noCpuLogExists() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
+    cpuPerformanceSnapshotter.updateAppIconification(UNINITIALIZED)
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_withoutInitializing_doesNotLogEventAfterAutomaticBackgroundIconDelay() {
+    testCoroutineDispatchers.advanceTimeBy(
+      initialIconificationCutOffTimePeriodMillis + backgroundCpuLoggingTimePeriodMillis
+    )
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_withoutInitializing_updateIconToFg_doesNotLogEventAfterFgIconDelay() {
+    cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
+
+    assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

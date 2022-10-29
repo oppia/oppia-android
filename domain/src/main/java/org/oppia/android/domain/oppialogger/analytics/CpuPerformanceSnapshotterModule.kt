@@ -28,7 +28,6 @@ class CpuPerformanceSnapshotterModule {
   ): CpuPerformanceSnapshotter = CpuPerformanceSnapshotter(
     backgroundCoroutineDispatcher,
     performanceMetricsLogger,
-    PerformanceMetricsAssessor.AppIconification.UNINITIALIZED,
     consoleLogger,
     exceptionLogger,
     performanceMetricsAssessor,

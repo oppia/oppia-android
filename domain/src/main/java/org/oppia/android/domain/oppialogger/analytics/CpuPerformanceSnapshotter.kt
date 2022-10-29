@@ -27,7 +27,6 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 class CpuPerformanceSnapshotter(
   private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
-  private val initialIconification: AppIconification,
   private val consoleLogger: ConsoleLogger,
   private val exceptionLogger: ExceptionLogger,
   private val performanceMetricsAssessor: PerformanceMetricsAssessor,
@@ -36,15 +35,29 @@ class CpuPerformanceSnapshotter(
   private val initialIconificationCutOffTimePeriodMillis: Long
 ) {
 
-  private val commandQueue = createCommandQueueActor()
+  private var isSnapshotterInitialized = false
+  private val commandQueue by lazy { createCommandQueueActor() }
 
-  /** Updates the current [AppIconification] in accordance with the app's state changes. */
+  /** Initialises the snapshotter by calling the commandQueue to start recording CPU Usage. */
+  fun initialiseSnapshotter() {
+    commandQueue
+    isSnapshotterInitialized = true
+  }
+
+  /**
+   * Updates the current [AppIconification] in accordance with the app's state changes.
+   *
+   * This update only takes place if the app has been previously initialized and the
+   * [newIconification] does not equal to UNINITIALIZED.
+   */
   fun updateAppIconification(newIconification: AppIconification) {
-    sendSwitchIconificationCommand(newIconification)
+    if (newIconification != UNINITIALIZED && isSnapshotterInitialized) {
+      sendSwitchIconificationCommand(newIconification)
+    }
   }
 
   private fun createCommandQueueActor(): SendChannel<CommandMessage> {
-    var currentIconification = initialIconification
+    var currentIconification = UNINITIALIZED
     var previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
     var switchIconificationCount = 0
     val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
