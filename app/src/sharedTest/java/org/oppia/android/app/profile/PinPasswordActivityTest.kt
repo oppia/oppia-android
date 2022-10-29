@@ -113,6 +113,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.not
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -233,6 +234,7 @@ class PinPasswordActivityTest {
         profileId = adminId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(closeSoftKeyboard())
         .perform(editTextInputAction.appendText("54321"), closeSoftKeyboard())
@@ -269,12 +271,35 @@ class PinPasswordActivityTest {
         profileId = userId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
         editTextInputAction.appendText("321"), closeSoftKeyboard()
       )
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
           hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin))
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_inputCorrectPin_doesNotShowIncorrectPin() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
+        editTextInputAction.appendText("123"), closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin)).check(
+        matches(
+          not(hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin)))
         )
       )
     }
@@ -928,6 +953,7 @@ class PinPasswordActivityTest {
         profileId = adminId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       closeSoftKeyboard()
       onView(withId(R.id.pin_password_input_pin_edit_text)).perform(
         editTextInputAction.appendText("54321"),
