@@ -9,9 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,6 +42,9 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TEST_CPU_USAGE_ONE = 0.07192
 private const val TEST_CPU_USAGE_TWO = 0.32192
@@ -414,7 +414,6 @@ class CpuPerformanceSnapshotterTest {
 
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
   }
-
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
