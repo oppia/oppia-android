@@ -12,7 +12,7 @@ on:
 jobs:
   check_codeowners:
     name: Check CODEOWNERS & Repository files
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
@@ -23,7 +23,7 @@ jobs:
 
   check_base_branch:
     name: Check base branch
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     if: github.event_name == 'pull_request'
     steps:
       - name: "Branch is not based on develop or release branch"
@@ -44,7 +44,7 @@ jobs:
 
   linters:
     name: Lint Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
@@ -95,7 +95,7 @@ jobs:
 
   script_checks:
     name: Script Checks
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -190,7 +190,7 @@ jobs:
   # ensure the results exactly match the current state of the repository).
   third_party_dependencies_check:
     name: Maven Dependencies Checks
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
