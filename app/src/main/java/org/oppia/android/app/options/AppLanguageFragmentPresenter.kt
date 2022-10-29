@@ -12,7 +12,8 @@ import javax.inject.Inject
 /** The presenter for [AppLanguageFragment]. */
 class AppLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel
+  private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel,
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var prefSummaryValue: String
   fun handleOnCreateView(
@@ -41,9 +42,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<AppLanguageItemViewModel> {
-    return BindableAdapter.SingleTypeBuilder
-      .newBuilder<AppLanguageItemViewModel>()
-      .setLifecycleOwner(fragment)
+    return singleTypeBuilderFactory.create<AppLanguageItemViewModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = AppLanguageItemBinding::inflate,
         setViewModel = AppLanguageItemBinding::setViewModel

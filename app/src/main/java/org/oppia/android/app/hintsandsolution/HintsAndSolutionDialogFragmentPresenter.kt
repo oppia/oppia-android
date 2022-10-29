@@ -20,6 +20,7 @@ import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.databinding.HintsSummaryBinding
 import org.oppia.android.databinding.ReturnToLessonButtonItemBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
@@ -35,9 +36,12 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @ExplorationHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
 
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
   private var index: Int? = null
   private var expandedItemsList = ArrayList<Int>()
   private var isHintRevealed: Boolean? = null
@@ -162,34 +166,29 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<HintsAndSolutionItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
-          is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
-          is ReturnToLessonViewModel -> ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is HintsViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
+        is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
+        is ReturnToLessonViewModel -> ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_HINT_ITEM,
-        inflateDataBinding = HintsSummaryBinding::inflate,
-        setViewModel = this::bindHintsViewModel,
-        transformViewModel = { it as HintsViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_SOLUTION_ITEM,
-        inflateDataBinding = SolutionSummaryBinding::inflate,
-        setViewModel = this::bindSolutionViewModel,
-        transformViewModel = { it as SolutionViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM,
-        inflateDataBinding = ReturnToLessonButtonItemBinding::inflate,
-        setViewModel = this::bindReturnToLessonViewModel,
-        transformViewModel = { it as ReturnToLessonViewModel }
-      )
-      .build()
+    }.registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_HINT_ITEM,
+      inflateDataBinding = HintsSummaryBinding::inflate,
+      setViewModel = this::bindHintsViewModel,
+      transformViewModel = { it as HintsViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_SOLUTION_ITEM,
+      inflateDataBinding = SolutionSummaryBinding::inflate,
+      setViewModel = this::bindSolutionViewModel,
+      transformViewModel = { it as SolutionViewModel }
+    ).registerViewDataBinder(
+      viewType = ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM,
+      inflateDataBinding = ReturnToLessonButtonItemBinding::inflate,
+      setViewModel = this::bindReturnToLessonViewModel,
+      transformViewModel = { it as ReturnToLessonViewModel }
+    ).build()
   }
 
   private fun bindHintsViewModel(
@@ -210,8 +209,6 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
-    binding.hintTitle.text =
-      resourceHandler.capitalizeForHumans(hintsViewModel.title.get()!!.replace("_", " "))
     binding.hintsAndSolutionSummary.text =
       htmlParserFactory.create(
         resourceBucketName,
@@ -234,10 +231,24 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
+    binding.expandHintListIcon.setOnClickListener {
+      if (hintsViewModel.isHintRevealed.get()!!) {
+        expandOrCollapseItem(position)
+      }
+    }
+
     binding.root.setOnClickListener {
       if (hintsViewModel.isHintRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
+    }
+
+    if (accessibilityService.isScreenReaderEnabled()) {
+      binding.root.isClickable = false
+      binding.expandHintListIcon.isClickable = true
+    } else {
+      binding.root.isClickable = true
+      binding.expandHintListIcon.isClickable = false
     }
   }
 
@@ -295,10 +306,24 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
+    binding.expandSolutionListIcon.setOnClickListener {
+      if (solutionViewModel.isSolutionRevealed.get()!!) {
+        expandOrCollapseItem(position)
+      }
+    }
+
     binding.root.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
+    }
+
+    if (accessibilityService.isScreenReaderEnabled()) {
+      binding.root.isClickable = false
+      binding.expandSolutionListIcon.isClickable = true
+    } else {
+      binding.root.isClickable = true
+      binding.expandSolutionListIcon.isClickable = false
     }
   }
 

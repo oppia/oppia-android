@@ -38,10 +38,7 @@
     <p>
       For more information about how we use your personal information and what
       types of information we collect and why, please refer to our
-      <a href="/privacy-policy"
-         [routerLink]="'/' + PAGES_REGISTERED_WITH_FRONTEND.PRIVACY.ROUTE">
-         Privacy Policy
-      </a>.
+      <oppia-noninteractive-policy link=\"privacy\">Privacy Policy</oppia-noninteractive-policy>.
     </p>
 
     <h2>Hosted Created Content and Intellectual Property</h2>

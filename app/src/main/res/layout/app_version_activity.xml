@@ -19,7 +19,7 @@
       android:id="@+id/app_version_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/oppia_primary"
+      android:background="@color/component_color_app_version_activity_toolbar_color"
       android:minHeight="?attr/actionBarSize"
       android:textSize="20sp"
       app:navigationContentDescription="@string/navigate_up"

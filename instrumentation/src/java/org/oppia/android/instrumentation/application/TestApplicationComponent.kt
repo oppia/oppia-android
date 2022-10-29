@@ -1,6 +1,7 @@
 package org.oppia.android.instrumentation.application
 
 import dagger.Component
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
@@ -98,7 +99,8 @@ import javax.inject.Singleton
     SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
     MetricLogSchedulerModule::class, ActivityLifecycleObserverModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-    TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class
+    TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
+    ActivityRouterModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

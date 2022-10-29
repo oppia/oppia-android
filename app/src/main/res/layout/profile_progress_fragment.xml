@@ -11,7 +11,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/component_color_profile_progress_activity_background_color">
 
     <FrameLayout
       android:layout_width="match_parent"

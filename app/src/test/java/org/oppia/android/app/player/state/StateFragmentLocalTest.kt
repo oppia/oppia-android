@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -53,6 +54,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -208,6 +210,9 @@ class StateFragmentLocalTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
@@ -1220,6 +1225,71 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_showSolution_hasCorrectContentDescription() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+
+      onView(withId(R.id.solution_summary)).check(
+        matches(
+          withContentDescription(
+            "Start by dividing the cake into equal parts:\n\nThree of " +
+              "the four equal parts are red. So, the answer is 3/4.\n\n"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_checkExpandListIconWithScreenReader_isClickable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_solution_list_icon)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_showSolution_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+      produceAndViewFourHintsInFractionState2()
+
+      submitWrongAnswerToFractionsState2()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
+
+      openHintsAndSolutionsDialog()
+      showRevealSolutionDialog()
+      clickConfirmRevealSolutionButton(scenario)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_solution_list_icon)).check(matches(not(isClickable())))
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_viewRevealSolutionDialog_clickCancel_solutionIsNotRevealed() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { scenario ->
       startPlayingExploration()
@@ -1253,7 +1323,7 @@ class StateFragmentLocalTest {
       showRevealSolutionDialog()
       clickCancelInRevealSolutionDialog(scenario)
 
-      onView(withText("Show"))
+      onView(withText("SHOW SOLUTION"))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1385,6 +1455,32 @@ class StateFragmentLocalTest {
       // The new hint indicator should be shown since a solution is now available.
       onView(withId(R.id.hint_bulb))
         .check(matches(withDrawable(R.drawable.ic_hint_bulb_filled_yellow_48dp)))
+    }
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = ENGLISH_VALUE,
+    appStringIetfTag = "en",
+    appStringAndroidLanguageId = ""
+  )
+  fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
+    // Ensure the system locale matches the initial locale context.
+    forceDefaultLocale(Locale.ENGLISH)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // The hint title text should be in English with the correct number
+      onView(withId(R.id.hint_title))
+        .check(matches(withText(containsString("Hint 1"))))
     }
   }
 
@@ -2430,7 +2526,7 @@ class StateFragmentLocalTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

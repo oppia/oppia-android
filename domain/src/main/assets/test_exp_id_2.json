@@ -443,7 +443,7 @@
           },
           "hints": [{
             "hint_content": {
-              "content_id": "hint_1",
+              "content_id": "hint_6",
               "html": "<p>Remember that two halves, when added together, make one whole.</p>"
             }
           }],
@@ -465,7 +465,7 @@
         "recorded_voiceovers": {
           "voiceovers_mapping": {
             "feedback_1": {},
-            "hint_1": {},
+            "hint_6": {},
             "solution": {},
             "content": {},
             "default_outcome": {}
@@ -485,7 +485,7 @@
                 "needs_update": false
               }
             },
-            "hint_1": {
+            "hint_6": {
               "pt": {
                 "data_format": "html",
                 "translation": {"translation" : "<p> Lembre-se de que duas metades, quando adicionadas, faça um todo. </p>"},

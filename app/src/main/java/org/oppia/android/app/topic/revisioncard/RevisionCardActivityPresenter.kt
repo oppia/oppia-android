@@ -38,7 +38,12 @@ class RevisionCardActivityPresenter @Inject constructor(
   private lateinit var topicId: String
   private var subtopicId: Int = 0
 
-  fun handleOnCreate(internalProfileId: Int, topicId: String, subtopicId: Int) {
+  fun handleOnCreate(
+    internalProfileId: Int,
+    topicId: String,
+    subtopicId: Int,
+    subtopicListSize: Int
+  ) {
     val binding = DataBindingUtil.setContentView<RevisionCardActivityBinding>(
       activity,
       R.layout.revision_card_activity
@@ -72,7 +77,7 @@ class RevisionCardActivityPresenter @Inject constructor(
     if (getReviewCardFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.revision_card_fragment_placeholder,
-        RevisionCardFragment.newInstance(topicId, subtopicId, profileId)
+        RevisionCardFragment.newInstance(topicId, subtopicId, profileId, subtopicListSize)
       ).commitNow()
     }
   }
