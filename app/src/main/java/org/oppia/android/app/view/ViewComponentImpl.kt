@@ -3,6 +3,7 @@ package org.oppia.android.app.view
 import android.view.View
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.android.app.customview.ChapterNotStartedContainerConstraintLayout
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.customview.SegmentedCircularProgressView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
@@ -33,4 +34,5 @@ interface ViewComponentImpl : ViewComponent {
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
   fun inject(promotedStoryListView: PromotedStoryListView)
   fun inject(segmentedCircularProgressView: SegmentedCircularProgressView)
+  fun inject(chapterNotStartedContainerConstraintLayout: ChapterNotStartedContainerConstraintLayout)
 }
