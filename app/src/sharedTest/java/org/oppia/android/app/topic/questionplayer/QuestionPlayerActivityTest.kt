@@ -20,9 +20,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -39,6 +41,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -134,6 +137,7 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
@@ -199,6 +203,9 @@ class QuestionPlayerActivityTest {
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -427,6 +434,66 @@ class QuestionPlayerActivityTest {
       // The hint explanation should be in English.
       onView(withId(R.id.hints_and_solution_summary))
         .check(matches(withText(containsString("number of pieces in the whole"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_hasCorrectContentDescription() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Ensure the hint description is correct and doesn't contain any HTML.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(
+          matches(
+            withContentDescription(
+              "To write a fraction, you need to know its denominator, which is the total " +
+                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Disable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(not(isClickable())))
     }
   }
 
