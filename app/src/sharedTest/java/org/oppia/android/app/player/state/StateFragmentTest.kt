@@ -1703,7 +1703,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_selectionInteraction_ratioButton_retainStateOnConfigurationChange() {
