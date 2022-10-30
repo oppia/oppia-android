@@ -81,7 +81,7 @@ class SpotlightFragment @Inject constructor(
   private fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
 
     val profileId = ProfileId.newBuilder()
-      .setInternalId(123)
+      .setInternalId(internalProfileId)
       .build()
 
     val featureViewStateLiveData =
@@ -133,13 +133,13 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
-//          val profileId = ProfileId.newBuilder()
-//            .setInternalId(internalProfileId)
-//            .build()
-//          spotlightStateController.markSpotlightViewed(
-//            profileId,
-//            spotlightTarget.feature
-//          )
+          val profileId = ProfileId.newBuilder()
+            .setInternalId(internalProfileId)
+            .build()
+          spotlightStateController.markSpotlightViewed(
+            profileId,
+            spotlightTarget.feature
+          )
         }
       })
       .build()
@@ -158,6 +158,7 @@ class SpotlightFragment @Inject constructor(
         }
 
         override fun onEnded() {
+          this@SpotlightFragment.childFragmentManager.popBackStack()
         }
       })
       .build()
@@ -192,6 +193,10 @@ class SpotlightFragment @Inject constructor(
 
   private fun getArrowWidth(): Float {
     return this.resources.getDimension(R.dimen.arrow_width)
+  }
+
+  private fun getArrowHeight(): Float {
+    return this.resources.getDimension(R.dimen.arrow_height)
   }
 
   private fun getScreenCentreY(): Int {
@@ -278,17 +283,17 @@ class SpotlightFragment @Inject constructor(
 
     val arrowParams = (overlayBinding as OverlayOverLeftBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    if (false) {
+    if (isRTL) {
       arrowParams.setMargins(
         10.dp,
-        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight() - 5.dp).toInt(),
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         10.dp
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight() - 5.dp).toInt(),
         10.dp,
         10.dp
       )
