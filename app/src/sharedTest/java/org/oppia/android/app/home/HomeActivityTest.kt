@@ -31,6 +31,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
@@ -141,9 +144,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -317,6 +317,48 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.recently_played_stories_text_view)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightNeverSeenBefore_checkSpotlightShown() {
+    logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.custom_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.custom_text)).check(
+        matches(
+          withText(
+            "From now, here you can view stories you might be interested in"
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightAlreadySeenBefore_checkSpotlightIsNotShown() {
+    logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        it.finish()
+      }
+    }
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.custom_text)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.custom_text)).check(doesNotExist())
     }
   }
 
