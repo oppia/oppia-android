@@ -122,7 +122,12 @@ class StateDeck constructor(
    * @param prohibitSameStateName whether to enable a sanity check to ensure the same state isn't
    *     routed to twice
    */
-  fun pushState(state: State, prohibitSameStateName: Boolean) {
+  fun pushState(
+    state: State,
+    prohibitSameStateName: Boolean,
+    timestamp: Long,
+    isContinueButtonAnimationSeen: Boolean
+  ) {
     check(isCurrentStateTopOfDeck()) {
       "Cannot push a new state unless the learner is at the most recent state."
     }
@@ -143,7 +148,8 @@ class StateDeck constructor(
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
-      .setShowContinueButtonAnimation()
+      .setContinueButtonAnimationTimestampMs(timestamp)
+      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
       .build()
     currentDialogInteractions.clear()
     pendingTopState = state

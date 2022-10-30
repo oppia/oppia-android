@@ -538,7 +538,7 @@ class QuestionAssessmentProgressController @Inject constructor(
             // Otherwise, push a synthetic state for the end of the session.
             State.getDefaultInstance()
           }
-          progress.stateDeck.pushState(newState, prohibitSameStateName = false)
+          progress.stateDeck.pushState(newState, prohibitSameStateName = false, timestamp = 0, isContinueButtonAnimationSeen = true)
           hintHandler.finishState(newState)
         } else {
           // Schedule a new hints or solution or show a new hint or solution immediately based on
