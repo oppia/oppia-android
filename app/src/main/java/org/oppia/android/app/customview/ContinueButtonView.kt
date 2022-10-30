@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralState
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.domain.exploration.ExplorationProgressController

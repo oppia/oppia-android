@@ -35,7 +35,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding

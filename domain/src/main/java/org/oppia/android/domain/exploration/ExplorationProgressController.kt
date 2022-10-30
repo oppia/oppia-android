@@ -604,7 +604,7 @@ class ExplorationProgressController @Inject constructor(
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
             endState()
             val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-            explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true)
+            explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true )
             hintHandler.finishState(newState)
           }
           ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
