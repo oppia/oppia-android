@@ -224,4 +224,4 @@ const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = true
 annotation class EnableHintBulbAnimation
 
 /** Default value for feature flag corresponding to [EnableHintBulbAnimation]. */
-const val ENABLE_HINT_BULB_ANIMATION = true
+const val ENABLE_HINT_BULB_ANIMATION = false

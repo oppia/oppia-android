@@ -28,6 +28,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
@@ -1599,6 +1600,7 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -1698,6 +1700,100 @@ class StateFragmentTest {
           )
         assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("1+2")
       }
+    }
+  }
+
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_selectionInteraction_ratioButton_retainStateOnConfigurationChange() {
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      // Select answer.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      // Rotating device.
+      rotateToLandscape()
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_radio_button
+        )
+      ).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_selectionInteraction_multipleSelection_retainStateOnConfigurationChange() {
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      // Select answer.
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      // Rotating device.
+      rotateToLandscape()
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 0,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_checkbox
+        )
+      ).check(matches(isChecked()))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_dragAndDrop_retainStateOnConfigurationChange() {
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      // Rotating device.
+      rotateToLandscape()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 3,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("0.35"))))
     }
   }
 
