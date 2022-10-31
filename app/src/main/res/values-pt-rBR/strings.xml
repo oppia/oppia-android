@@ -383,11 +383,9 @@
   <string name="show_hints_and_solution">Mostrar dicas e solução</string>
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
-  <string name="show_solution">Exibir</string>
+  <string name="show_solution" fuzzy="true">Exibir</string>
   <string name="reveal_solution">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
-  <string name="show_hide_hint_list">Mostrar/Esconder lista de dicas de %s</string>
-  <string name="show_hide_solution_list">Mostrar/Esconder solução</string>
   <string name="the_only_solution_is">A única solução é :</string>
   <string name="this_will_reveal_the_solution">Isso revelará a solução. Tem certeza?</string>
   <string name="reveal">Revelar</string>
