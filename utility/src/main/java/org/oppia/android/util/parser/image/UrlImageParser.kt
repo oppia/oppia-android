@@ -153,7 +153,7 @@ class UrlImageParser private constructor(
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = retrieveDrawable(resource)
       // This statement is logged correctly
-      Log.d("TAGG", "onResourceReady: Top "+htmlContentTextView.text)
+      Log.d("TAGG", "onResourceReady: Top " + htmlContentTextView.text)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
           val padding =
@@ -167,7 +167,7 @@ class UrlImageParser private constructor(
           htmlContentTextView.text = htmlContentTextView.text
           // This is not getting logged, it get's logged only when we go in background and
           // open app again
-          Log.d("TAGG", "onResourceReady: Inside "+htmlContentTextView.text)
+          Log.d("TAGG", "onResourceReady: Inside " + htmlContentTextView.text)
           htmlContentTextView.invalidate()
         }
       }
