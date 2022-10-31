@@ -26,7 +26,7 @@
 
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/exploration_toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="wrap_content"
         android:background="@color/component_color_exploration_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
