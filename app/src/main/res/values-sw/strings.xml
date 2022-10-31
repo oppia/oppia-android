@@ -363,8 +363,6 @@
   <string name="hints_toolbar_title">Vidokezo</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">Fichua Suluhisho</string>
   <string name="hints_summary_activity_reveal_hint_button_text" fuzzy="true">Fichua Kidokezo</string>
-  <string name="show_hide_hint_list">Onyesha/Ficha orodha ya vidokezo ya %s</string>
-  <string name="solution_summary_activity_show_hide_solution_list">Onyesha/Ficha suluhisho</string>
   <string name="solution_summary_activity_solution_correct_answer_label_text">Suluhisho pekee ni:</string>
   <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">Hii itafichua suluhisho. Una uhakika?</string>
   <string name="reveal_solution_dialog_fragment_reveal_text">Fichua</string>

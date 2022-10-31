@@ -31,7 +31,7 @@
     <!-- TODO(#3619): Remove Redefined activities. -->
     <activity
       android:name=".app.administratorcontrols.AdministratorControlsActivity"
-      android:label="@string/administrator_controls_title"
+      android:label="@string/administrator_controls_activity_label_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"

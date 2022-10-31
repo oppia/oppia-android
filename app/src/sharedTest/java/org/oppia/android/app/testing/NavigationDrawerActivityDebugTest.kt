@@ -324,7 +324,7 @@ class NavigationDrawerActivityDebugTest {
   }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.drawer_open_content_description))
+    onView(withContentDescription(R.string.navigation_drawer_activity_drawer_open_content_description))
       .check(matches(isCompletelyDisplayed()))
       .perform(click())
 

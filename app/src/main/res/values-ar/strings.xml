@@ -356,8 +356,6 @@
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">عرض الحل</string>
   <string name="hints_summary_activity_reveal_hint_button_text" fuzzy="true">عرض الملاحظة</string>
-  <string name="show_hide_hint_list">عرض/إخفاء قائمة الملاحظات الخاصة ب%s</string>
-  <string name="solution_summary_activity_show_hide_solution_list">عرض/إخفاء الحل</string>
   <string name="solution_summary_activity_solution_correct_answer_label_text">الحل الوحيد هو :</string>
   <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
   <string name="reveal_solution_dialog_fragment_reveal_text">إظهار</string>

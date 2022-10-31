@@ -178,7 +178,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_is_admin_text,
-        stringToMatch = context.getString(R.string.profile_chooser_admin)
+        stringToMatch = context.getString(R.string.profile_chooser_activity_profile_chooser_admin)
       )
       scrollToPosition(position = 1)
       verifyTextOnProfileListItemAtPosition(

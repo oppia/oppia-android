@@ -164,10 +164,12 @@
   <string name="help_activity_terms_of_service_title">Terms of Service</string>
   <!-- HintsAndSolutionDialogFragment -->
   <string name="hint_and_solution_activity_close_icon_description">Navigate up</string>
-  <string name="solution_summary_activity_show_solution_button_text">Show</string>
+  <string name="solution_summary_activity_show_solution_button_text">Show solution</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">Reveal Solution</string>
+  <string name="hints_summary_activity_hide_hint_button_text">Hide Hint</string>
   <string name="hints_summary_activity_reveal_hint_button_text">Show Hint</string>
-  <string name="solution_summary_activity_show_hide_solution_list">Show/Hide solution</string>
+  <string name="solution_summary_activity_hide_solution">Hide solution</string>
+  <string name="solution_summary_activity_show_solution">Show solution</string>
   <string name="solution_summary_activity_solution_correct_answer_label_text">The only solution is :  </string>
   <string name="reveal_solution_dialog_fragment_this_will_reveal_the_solution_message">This will reveal the solution. Are you sure?</string>
   <string name="reveal_solution_dialog_fragment_reveal_text">Reveal</string>
@@ -447,7 +449,6 @@
   <string name="developer_options">Developer Options</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="show_hide_hint_list">Show/Hide hint list of %s</string>
   <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
   <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
   <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
