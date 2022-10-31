@@ -184,7 +184,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_profile_view_administrator_controls_edit_profiles_text
+        stringIdToMatch = R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text
       )
     }
   }
@@ -256,7 +256,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_app_information_view_administrator_controls_app_version_text
+        stringIdToMatch = R.string.administrator_controls_app_information_view_administrator_controls_app_version_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 4,

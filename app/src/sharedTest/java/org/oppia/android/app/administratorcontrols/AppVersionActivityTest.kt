@@ -177,7 +177,7 @@ class AppVersionActivityTest {
       onView(
         withText(
           String.format(
-            context.resources.getString(R.string.administrator_controls_activity_label_title_app_version_activity_app_version_name),
+            context.resources.getString(R.string.administrator_controls_app_version_activity_app_version_name),
             context.getVersionName()
           )
         )
@@ -185,7 +185,7 @@ class AppVersionActivityTest {
       onView(
         withText(
           String.format(
-            context.resources.getString(R.string.administrator_controls_activity_label_title_app_version_activity_app_last_update_date),
+            context.resources.getString(R.string.administrator_controls_app_version_activity_app_last_update_date),
             lastUpdateDate
           )
         )
@@ -208,7 +208,7 @@ class AppVersionActivityTest {
         matches(
           withText(
             String.format(
-              context.resources.getString(R.string.administrator_controls_activity_label_title_app_version_activity_app_version_name),
+              context.resources.getString(R.string.administrator_controls_app_version_activity_app_version_name),
               context.getVersionName()
             )
           )
@@ -222,7 +222,7 @@ class AppVersionActivityTest {
         matches(
           withText(
             String.format(
-              context.resources.getString(R.string.administrator_controls_activity_label_title_app_version_activity_app_last_update_date),
+              context.resources.getString(R.string.administrator_controls_app_version_activity_app_last_update_date),
               lastUpdateDate
             )
           )

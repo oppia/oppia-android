@@ -187,7 +187,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
     when (currentFragment) {
       is ProfileEditFragment -> {
         setExtraControlsTitle(
-          resourceHandler.getStringInLocale(R.string.administrator_controls_activity_label_title_profile_view_administrator_controls_edit_profiles_text)
+          resourceHandler.getStringInLocale(R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text)
         )
         loadProfileList()
       }

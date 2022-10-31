@@ -73,7 +73,7 @@ class StringToRatioParser {
   /** Enum to store the errors of [RatioInputInteractionView]. */
   enum class RatioParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
-    INVALID_CHARS(error = R.string.input_interaction_activity_input_interaction_activity_ratio_error_invalid_chars),
+    INVALID_CHARS(error = R.string.input_interaction_activity_ratio_error_invalid_chars),
     INVALID_FORMAT(error = R.string.input_interaction_activity_ratio_error_invalid_format),
     INVALID_COLONS(error = R.string.input_interaction_activity_ratio_error_invalid_colons),
     INVALID_SIZE(error = R.string.input_interaction_activity_ratio_error_invalid_size),
