@@ -5,9 +5,9 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
