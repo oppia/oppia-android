@@ -25,6 +25,7 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.app.model.GroupSubtitledHtml
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -45,15 +46,11 @@ class DragAndDropSortInteractionViewModel private constructor(
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
   private val choiceSubtitledHtmls: List<SubtitledHtml> by lazy {
-    if (rawUserAnswer.hasDragAndDrop()) {
-      rawUserAnswer.dragAndDrop.listOfSubtitledHtmlsList
-    } else {
       interaction.customizationArgsMap["choices"]
         ?.schemaObjectList
         ?.schemaObjectList
         ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
         ?: listOf()
-    }
   }
 
   private val contentIdHtmlMap: Map<String, String> =
@@ -80,10 +77,7 @@ class DragAndDropSortInteractionViewModel private constructor(
           )
         }
       }
-    Log.d("testAnswer", "choiceSubtitledHtmls: $choiceSubtitledHtmls\n ")
-    if (rawUserAnswer != RawUserAnswer.getDefaultInstance()) {
-      Log.d("testAnswer", rawUserAnswer.dragAndDrop.listOfSubtitledHtmlsOrBuilderList.toString())
-    }
+    Log.d("TAGG", "INIT: "+rawUserAnswer.dragAndDrop.listOfGroupSubtitledHtmlList)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
@@ -142,43 +136,29 @@ class DragAndDropSortInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    val htmlContentIds = _choiceItems.map { it.htmlContent }
-    val htmlContent = _choiceItems.map { it.computeStringList() }
-    val listofHtmlContentIds = mutableListOf<String>()
-    val listofHtmlContent = mutableListOf<String>()
-    htmlContentIds.forEach {
-      if (it.contentIdsCount > 1) {
-        it.contentIdsList.forEach {
-          listofHtmlContentIds.add(it.contentId)
-        }
-      } else {
-        listofHtmlContentIds.add(it.contentIdsList[0].contentId)
-      }
-    }
-    htmlContent.forEach {
-      if (it.htmlCount > 1) {
-        it.htmlList.forEach {
-          listofHtmlContent.add(it)
-        }
-      } else {
-        listofHtmlContent.add(it.htmlList.first().toString())
-      }
-    }
-    val listofSubtitledHtml = listofHtmlContentIds.zip(listofHtmlContent)
-    Log.d("TAGG", "getRawUserAnswer: listOfSubtitledHtml $_choiceItems")
-    val SubtitleHtmlList = mutableListOf<SubtitledHtml>()
+    val htmlContentIds = _choiceItems.map { it.htmlContent.contentIdsList.toList() }
+    val htmlContent = _choiceItems.map { it.computeStringList().htmlList.toList() }
+    val listofSubtitledHtml = htmlContentIds.zip(htmlContent)
+    val GroupSubtitleHtmlList = mutableListOf<GroupSubtitledHtml>()
     listofSubtitledHtml.forEach {
-      SubtitleHtmlList.add(
-        SubtitledHtml.newBuilder().apply {
-          contentId = it.first
-          html = it.second
-        }.build()
+      val newListofSubtitleHtml = mutableListOf<SubtitledHtml>()
+      it.first.zip(it.second).forEach {
+        newListofSubtitleHtml.add(
+          SubtitledHtml.newBuilder().apply {
+            contentId = it.first.contentId
+            html = it.second
+          }.build()
+        )
+      }
+      GroupSubtitleHtmlList.add(
+        GroupSubtitledHtml.newBuilder()
+          .addAllListOfSubtitledHtmls(newListofSubtitleHtml)
+          .build()
       )
     }
-    Log.d("TAGG", "getRawUserAnswer: SubtitleHtmlList " + SubtitleHtmlList.toString())
-    dragAndDrop = DragAndDropRawAnswer.newBuilder().apply {
-      addAllListOfSubtitledHtmls(SubtitleHtmlList)
-    }.build()
+    dragAndDrop = DragAndDropRawAnswer.newBuilder()
+      .addAllListOfGroupSubtitledHtml(GroupSubtitleHtmlList)
+      .build()
   }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */

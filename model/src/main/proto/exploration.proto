@@ -342,7 +342,15 @@ message RawUserAnswer {
   }
 }
 
+// Corresponds to a current drag and drop answer
 message DragAndDropRawAnswer {
+  // list of group subtitled html
+  repeated GroupSubtitledHtml list_of_group_subtitled_html = 1;
+}
+
+// A list of subtitled html
+message GroupSubtitledHtml {
+  // list of subtitled html
   repeated SubtitledHtml list_of_subtitled_htmls = 1;
 }
 
