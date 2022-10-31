@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -151,6 +152,8 @@ class UrlImageParser private constructor(
 
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = retrieveDrawable(resource)
+      // This statement is logged correctly
+      Log.d("TAGG", "onResourceReady: Top "+htmlContentTextView.text)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
           val padding =
@@ -162,6 +165,9 @@ class UrlImageParser private constructor(
             )
           proxyDrawable.initialize(drawable, computeBounds(context, drawable, viewWidth, padding))
           htmlContentTextView.text = htmlContentTextView.text
+          // This is not getting logged, it get's logged only when we go in background and
+          // open app again
+          Log.d("TAGG", "onResourceReady: Inside "+htmlContentTextView.text)
           htmlContentTextView.invalidate()
         }
       }
