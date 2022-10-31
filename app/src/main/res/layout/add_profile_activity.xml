@@ -188,6 +188,7 @@
               android:clickable="@{viewModel.validPin ? true : false}"
               android:focusable="true"
               android:importantForAccessibility="yes"
+              android:visibility="@{viewModel.showAllowDownloadAccess ? View.VISIBLE : View.GONE}"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_confirm_pin">
 
               <TextView

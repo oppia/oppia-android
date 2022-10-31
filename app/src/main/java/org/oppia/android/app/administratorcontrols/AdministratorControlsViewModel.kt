@@ -20,11 +20,11 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -36,7 +36,7 @@ class AdministratorControlsViewModel @Inject constructor(
   @EnableEditAccountsOptionsUi
   private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>,
   @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>,
-  @AutomaticUpdateTopicSetting private val automaticallyUpdateTopic: PlatformParameterValue<Boolean>
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -94,16 +94,17 @@ class AdministratorControlsViewModel @Inject constructor(
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
 
-    itemViewModelList.add(
-      AdministratorControlsDownloadPermissionsViewModel(
-        fragment,
-        oppiaLogger,
-        profileManagementController,
-        userProfileId,
-        deviceSettings,
-        automaticallyUpdateTopic.value
+    if (enableDownloadsSupport.value) {
+      itemViewModelList.add(
+        AdministratorControlsDownloadPermissionsViewModel(
+          fragment,
+          oppiaLogger,
+          profileManagementController,
+          userProfileId,
+          deviceSettings
+        )
       )
-    )
+    }
 
     itemViewModelList.add(AdministratorControlsAppInformationViewModel(activity))
     itemViewModelList.add(

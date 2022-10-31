@@ -12,12 +12,15 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** The ViewModel for [ProfileEditActivity]. */
 @FragmentScope
 class ProfileEditViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController
+  private val profileManagementController: ProfileManagementController,
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
 
@@ -32,6 +35,12 @@ class ProfileEditViewModel @Inject constructor(
       profileManagementController.getProfile(profileId).toLiveData(),
       ::processGetProfileResult
     )
+  }
+
+  val showEditDownloadAccess: LiveData<Boolean> by lazy {
+    Transformations.map(profile) { profile ->
+      enableDownloadsSupport.value && !profile.isAdmin
+    }
   }
 
   /** Whether the user is an admin. */

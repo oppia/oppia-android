@@ -143,7 +143,7 @@ class AdministratorControlsFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
@@ -216,7 +216,7 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(false)
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
