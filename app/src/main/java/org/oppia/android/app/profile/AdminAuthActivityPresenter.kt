@@ -108,7 +108,7 @@ class AdminAuthActivityPresenter @Inject constructor(
         activity.title =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_access_controls_title)
         binding?.adminAuthToolbar?.title =
-          resourceHandler.getStringInLocale(R.string.administrator_controls)
+          resourceHandler.getStringInLocale(R.string.administrator_controls_activity_label_title)
         binding?.adminAuthHeadingTextview?.text =
           resourceHandler.getStringInLocale(R.string.admin_auth_activity_heading)
         binding?.adminAuthSubText?.text =

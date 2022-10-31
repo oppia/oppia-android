@@ -8,7 +8,7 @@
   <string name="menu_options">خيارات</string>
   <string name="navigation_drawer_activity_menu_my_downloads">التنزيلات</string>
   <string name="menu_help">مساعدة</string>
-  <string name="exploration_activity_label_title">مشغل رحلة الاستكشاف</string>
+  <string name="exploration_activity_title">مشغل رحلة الاستكشاف</string>
   <string name="help_activity_label_title">المساعدة</string>
   <string name="navigation_drawer_activity_menu_switch_profile">تغيير الملف الشخصي</string>
   <string name="developer_options">خيارات المطورين</string>
@@ -63,7 +63,7 @@
   <string name="FAQs">الأسئلة المتكررة</string>
   <string name="faq_list_activity_featured_questions_text">الأسئلة المميزة</string>
   <string name="frequently_asked_questions">الأسئلة المتكررة</string>
-  <string name="faq_activity_title">الأسئلة المتكررة</string>
+  <string name="faq_single_activity_title">الأسئلة المتكررة</string>
   <string name="pin_password_activity_pin_password_activity_label_title">التحقق من رقم التعريف الشخصي</string>
   <string name="onboarding_activity_title">مقدمة</string>
   <string name="help_activity_frequently_asked_questions_FAQ_text">الأسئلة الأكثر تكرارا</string>
@@ -112,18 +112,18 @@
   <string name="preferences">التفضيلات</string>
   <string name="profile_progress_activity_title">صفحة تقدم الملف الشخصي</string>
   <string name="search">بحث</string>
-  <string name="fraction_error_invalid_chars">من فضلك قم باستخدام أرقام، أو مسافات، أو الرمز (/)</string>
-  <string name="fraction_error_invalid_format">من فضلك أدخل كسر عشري صالح (5/3 أو 1 2/3 على سبيل المثال)</string>
-  <string name="fraction_error_divide_by_zero">من فضلك لا تضع 0 في المقام</string>
-  <string name="fraction_error_larger_than_seven_digits">لا يجب أن يحتوي أي رقم في الكسر العشري على أكثر من 7 أرقام.</string>
-  <string name="number_error_starting_with_floating_point">من فضلك إبدأ إجابتك برقم (0 او 0.5 على سبيل المثال)</string>
-  <string name="number_error_invalid_format">من فضلك قم بإدخال رقم صالح.</string>
-  <string name="number_error_larger_than_fifteen_characters">يمكن أن تحتوي الإجابة على 15 رقمًا (0-9) على الأكثر أو الرموز (. أو -)</string>
-  <string name="ratio_error_invalid_chars">من فضلك قم بكتابة نسبة تتكون من أرقام مفصولة بنقطتين رأسيتين (1:2 أو 1:2:3 على سبيل المثال).</string>
-  <string name="ratio_error_invalid_format">من فضلك أدخل نسبة صحيحة (1:2 أو 1:2:3 على سبيل المثال)</string>
-  <string name="ratio_error_invalid_colons">إجابتك تحتوي على نقطتين رأسيتين (:) متتاليتين.</string>
-  <string name="ratio_error_invalid_size">عدد الحدود لا يساوي العدد المطلوب.</string>
-  <string name="ratio_error_includes_zero">لا يمكن أن تحتوي النسب على 0 كعنصر.</string>
+  <string name="input_interaction_activity_fraction_error_invalid_chars">من فضلك قم باستخدام أرقام، أو مسافات، أو الرمز (/)</string>
+  <string name="input_interaction_activity_fraction_error_invalid_format">من فضلك أدخل كسر عشري صالح (5/3 أو 1 2/3 على سبيل المثال)</string>
+  <string name="input_interaction_activity_fraction_error_divide_by_zero">من فضلك لا تضع 0 في المقام</string>
+  <string name="input_interaction_activity_fraction_error_larger_than_seven_digits">لا يجب أن يحتوي أي رقم في الكسر العشري على أكثر من 7 أرقام.</string>
+  <string name="input_interaction_activity_number_error_starting_with_floating_point">من فضلك إبدأ إجابتك برقم (0 او 0.5 على سبيل المثال)</string>
+  <string name="input_interaction_activity_number_error_invalid_format">من فضلك قم بإدخال رقم صالح.</string>
+  <string name="input_interaction_activity_number_error_larger_than_fifteen_characters">يمكن أن تحتوي الإجابة على 15 رقمًا (0-9) على الأكثر أو الرموز (. أو -)</string>
+  <string name="input_interaction_activity_ratio_error_invalid_chars">من فضلك قم بكتابة نسبة تتكون من أرقام مفصولة بنقطتين رأسيتين (1:2 أو 1:2:3 على سبيل المثال).</string>
+  <string name="input_interaction_activity_ratio_error_invalid_format">من فضلك أدخل نسبة صحيحة (1:2 أو 1:2:3 على سبيل المثال)</string>
+  <string name="input_interaction_activity_ratio_error_invalid_colons">إجابتك تحتوي على نقطتين رأسيتين (:) متتاليتين.</string>
+  <string name="input_interaction_activity_ratio_error_invalid_size">عدد الحدود لا يساوي العدد المطلوب.</string>
+  <string name="input_interaction_activity_ratio_error_includes_zero">لا يمكن أن تحتوي النسب على 0 كعنصر.</string>
   <string name="topic_info_activity_unknown_size">الحجم مجهول</string>
   <string name="size_bytes" fuzzy="true">%s بايت</string>
   <string name="size_kb" fuzzy="true">%s ك.ب</string>
@@ -304,7 +304,7 @@
   <string name="administrator_controls_general_view_administrator_controls_edit_account_text">تعديل الحساب</string>
   <string name="administrator_controls_profile_view_administrator_controls_profile_management_label_text">إدارة الملف الشخصي</string>
   <string name="administrator_controls_profile_view_administrator_controls_edit_profiles_text">تعديل الملفات الشخصية</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_download_permissions_label_text">أُذونات التنزيل</string>
+  <string name="administrator_controls_download_permissions_view_download_permissions_label_text">أُذونات التنزيل</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_title">تنزيل وتحديث عن طريق شبكة الوايفاي فقط</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_message">سيتم تحميل وتحديث المواضيع عن طريق شبكة الوايفاي فقط. أي تنزيلات أو تحديثات عن طريق بيانات الهاتف سيتم وضعها في قائمة الانتظار.</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">تحديث المواضيع تلقائيًا</string>
@@ -319,7 +319,7 @@
   <string name="administrator_controls_app_version_activity_app_version_name">إصدار التطبيق %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">تم تثبيت آخر إصدار في %s. قم باستخدام رقم الإصدار في الأعلى للإبلاغ عن أعطال التطبيق.</string>
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">إصدار التطبيق</string>
-  <string name="app_language_activity_toolbar_title">لغة التطبيق</string>
+  <string name="app_language_activity_title">لغة التطبيق</string>
   <string name="audio_language_activity_title">لغة الصوت الافتراضية</string>
   <string name="reading_text_size">حجم النص المقروء</string>
   <string name="reading_text_size_activity_title">حجم النص المقروء</string>
@@ -399,14 +399,14 @@
   <string name="topic_revision_activity_topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_list_activity_ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="selection_interaction_item_activity_item_selection_text" fuzzy="true">برجاء اختيار خيار واحد على الأقل.</string>
-  <string name="unsupported_app_version_dialog_title">إصدار تطبيق غير مدعوم</string>
+  <string name="splash_activity_unsupported_app_version_dialog_title">إصدار تطبيق غير مدعوم</string>
   <string name="unsupported_app_version_dialog_message">هذا الإصدار من التطبيق لم يعد مدعومًا. من فضلك قم بتحديث التطبيق من خلال متجر بلاي (Play Store)</string>
-  <string name="unsupported_app_version_dialog_close_button_text">إغلاق التطبيق</string>
+  <string name="splash_activity_unsupported_app_version_dialog_close_button_text">إغلاق التطبيق</string>
   <string name="ratio_content_description_separator">إلى</string>
   <string name="ratio_default_hint_text">أدخل نسبة في الصيغة س:ص.</string>
   <string name="smallest_text_size_content_description">أصغر حجمًا للنص</string>
   <string name="largest_text_size_content_description">أكبر حجمًا للنص</string>
-  <string name="coming_soon_topic_list_activity_coming_soon">قريباً</string>
+  <string name="coming_soon_topic_list_activity_title">قريباً</string>
   <string name="recommended_stories">قصص موصّى بها</string>
   <string name="stories_for_you">قصص من أجلك</string>
   <string name="question_player_activity_title">وضع الممارسة</string>
@@ -426,7 +426,7 @@
   <string name="help_activity_back_arrow_description">انتقل مرة أخرى إلى %s</string>
   <string name="help_activity_third_party_dependencies_list">قائمة تبعيات الطرف الثالث</string>
   <string name="help_activity_copyright_licenses_list">قائمة تراخيص حقوق النشر</string>
-  <string name="resume_lesson_activity_toolbar_title">استئناف الدرس</string>
+  <string name="R.string.resume_lesson_activity_title">استئناف الدرس</string>
   <string name="resume_lesson_activity_resume_lesson_button_text">تابع</string>
   <string name="resume_lesson_activity_start_over_lesson_button_text">ابدأ من جديد</string>
   <string name="date_time_util_home_screen_good_morning_greeting_fragment">صباح الخير</string>

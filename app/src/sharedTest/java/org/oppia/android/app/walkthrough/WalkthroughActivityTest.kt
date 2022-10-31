@@ -190,7 +190,7 @@ class WalkthroughActivityTest {
           withId(R.id.walkthrough_welcome_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.walkthrough_welcome_description)))
+      ).check(matches(withText(R.string.walkthrough_welcome_activity_walkthrough_welcome_description)))
     }
   }
 
@@ -219,7 +219,7 @@ class WalkthroughActivityTest {
     launch(WalkthroughActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         val title = activity.title
-        assertThat(title).isEqualTo(context.getString(R.string.walkthrough_activity_title))
+        assertThat(title).isEqualTo(context.getString(R.string.walkthrough_activity_label_text))
       }
     }
   }

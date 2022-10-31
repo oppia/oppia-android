@@ -238,7 +238,7 @@ class ProfileEditActivityTest {
       )
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive))
+      onView(withText(R.string.profile_edit_activity_profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -260,7 +260,7 @@ class ProfileEditActivityTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
-      onView(withText(R.string.profile_edit_delete_dialog_positive))
+      onView(withText(R.string.profile_edit_activity_profile_edit_delete_dialog_positive))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()

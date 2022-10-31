@@ -178,7 +178,7 @@ class AdminAuthActivityTest {
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
     ).use {
-      onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
+      onView(withContentDescription(R.string.admin_auth_activity_close_button_text)).check(matches(isDisplayed()))
     }
   }
 
@@ -305,7 +305,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
             )
           )
         )
@@ -336,7 +336,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
             )
           )
         )
@@ -422,7 +422,7 @@ class AdminAuthActivityTest {
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
+              R.string.admin_auth_activity_heading
             )
           )
         )
@@ -432,7 +432,7 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_admin_controls_sub
+                R.string.admin_auth_activity_admin_auth_admin_controls_sub_text
               )
             )
           )
@@ -442,7 +442,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             withText(
-              context.resources.getString(R.string.admin_auth_admin_controls_sub)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_admin_controls_sub_text)
             )
           )
         )
@@ -450,7 +450,7 @@ class AdminAuthActivityTest {
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
+              R.string.admin_auth_activity_heading
             )
           )
         )
@@ -473,7 +473,7 @@ class AdminAuthActivityTest {
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
+              R.string.admin_auth_activity_heading
             )
           )
         )
@@ -483,7 +483,7 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_sub
+                R.string.admin_auth_activity_admin_auth_sub_text
               )
             )
           )
@@ -494,7 +494,7 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_sub
+                R.string.admin_auth_activity_admin_auth_sub_text
               )
             )
           )
@@ -503,7 +503,7 @@ class AdminAuthActivityTest {
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
+              R.string.admin_auth_activity_heading
             )
           )
         )
@@ -570,7 +570,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
             )
           )
         )
@@ -579,7 +579,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
             )
           )
         )
@@ -610,7 +610,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
             )
           )
         )
@@ -619,7 +619,7 @@ class AdminAuthActivityTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
+              context.resources.getString(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
             )
           )
         )

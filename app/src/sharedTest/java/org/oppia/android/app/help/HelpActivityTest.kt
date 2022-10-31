@@ -123,7 +123,7 @@ class HelpActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.help_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.help_activity_label_title))
   }
 
   private fun setUpTestApplicationComponent() {

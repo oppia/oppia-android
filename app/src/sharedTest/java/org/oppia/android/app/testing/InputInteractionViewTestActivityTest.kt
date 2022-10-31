@@ -323,7 +323,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
+            R.string.input_interaction_activity_fraction_error_invalid_format
           )
         )
       )
@@ -344,7 +344,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
+            R.string.input_interaction_activity_fraction_error_invalid_format
           )
         )
       )
@@ -365,7 +365,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
+            R.string.input_interaction_activity_fraction_error_invalid_format
           )
         )
       )
@@ -386,7 +386,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
+            R.string.input_interaction_activity_fraction_error_invalid_format
           )
         )
       )
@@ -424,7 +424,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
+            R.string.input_interaction_activity_fraction_error_invalid_format
           )
         )
       )
@@ -479,7 +479,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_divide_by_zero
+            R.string.input_interaction_activity_fraction_error_divide_by_zero
           )
         )
       )
@@ -500,7 +500,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.fraction_error_invalid_chars
+              R.string.input_interaction_activity_fraction_error_invalid_chars
             )
           )
         )
@@ -525,7 +525,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.fraction_error_larger_than_seven_digits
+              R.string.input_interaction_activity_fraction_error_larger_than_seven_digits
             )
           )
         )
@@ -642,7 +642,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.number_error_invalid_format
+              R.string.input_interaction_activity_number_error_invalid_format
             )
           )
         )
@@ -667,7 +667,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.number_error_larger_than_fifteen_characters
+              R.string.input_interaction_activity_number_error_larger_than_fifteen_characters
             )
           )
         )
@@ -692,7 +692,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.number_error_larger_than_fifteen_characters
+              R.string.input_interaction_activity_number_error_larger_than_fifteen_characters
             )
           )
         )
@@ -717,7 +717,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.number_error_invalid_format
+              R.string.input_interaction_activity_number_error_invalid_format
             )
           )
         )
@@ -735,7 +735,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.number_error_invalid_format
+            R.string.input_interaction_activity_number_error_invalid_format
           )
         )
       )
@@ -756,7 +756,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.number_error_invalid_format
+            R.string.input_interaction_activity_number_error_invalid_format
           )
         )
       )
@@ -777,7 +777,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.number_error_invalid_format
+            R.string.input_interaction_activity_number_error_invalid_format
           )
         )
       )
@@ -794,7 +794,7 @@ class InputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.number_error_starting_with_floating_point
+            R.string.input_interaction_activity_number_error_starting_with_floating_point
           )
         )
       )
@@ -922,7 +922,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.ratio_error_invalid_colons
+              R.string.input_interaction_activity_ratio_error_invalid_colons
             )
           )
         )
@@ -944,7 +944,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.ratio_error_invalid_chars
+              R.string.input_interaction_activity_ratio_error_invalid_chars
             )
           )
         )
@@ -970,7 +970,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.ratio_error_includes_zero
+              R.string.input_interaction_activity_ratio_error_includes_zero
             )
           )
         )
@@ -998,7 +998,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.ratio_error_invalid_format
+              R.string.input_interaction_activity_ratio_error_invalid_format
             )
           )
         )
@@ -1025,7 +1025,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.ratio_error_invalid_size
+              R.string.input_interaction_activity_ratio_error_invalid_size
             )
           )
         )
@@ -1052,7 +1052,7 @@ class InputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.ratio_error_invalid_size
+              R.string.input_interaction_activity_ratio_error_invalid_size
             )
           )
         )

@@ -27,7 +27,7 @@
       android:fontFamily="sans-serif-medium"
       android:gravity="center|start"
       android:minHeight="48dp"
-      android:text="@string/coming_soon_topic_list_activity_coming_soon"
+      android:text="@string/coming_soon_topic_list_activity_title"
       android:textColor="@color/oppia_primary_text"
       android:textSize="18sp"
       android:paddingStart="@dimen/coming_soon_text_padding_start"

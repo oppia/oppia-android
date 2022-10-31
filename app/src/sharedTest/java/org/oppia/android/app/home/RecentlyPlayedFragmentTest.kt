@@ -265,7 +265,7 @@ class RecentlyPlayedFragmentTest {
           withParent(withId(R.id.recently_played_toolbar))
         )
       ).check(
-        matches(withText(R.string.recently_played_activity))
+        matches(withText(R.string.recently_played_activity_toolbar_title))
       )
     }
   }
@@ -293,7 +293,7 @@ class RecentlyPlayedFragmentTest {
           withParent(withId(R.id.recently_played_toolbar))
         )
       ).check(
-        matches(withText(R.string.recently_played_activity))
+        matches(withText(R.string.recently_played_activity_toolbar_title))
       )
     }
   }
@@ -356,7 +356,7 @@ class RecentlyPlayedFragmentTest {
           targetViewId = R.id.section_title_text_view
         )
       ).check(
-        matches(withText(R.string.ongoing_story_last_week))
+        matches(withText(R.string.recently_played_activity_ongoing_story_last_week))
       )
     }
   }
@@ -1035,7 +1035,7 @@ class RecentlyPlayedFragmentTest {
           targetViewId = R.id.section_title_text_view
         )
       ).check(
-        matches(withText(R.string.ongoing_story_last_month))
+        matches(withText(R.string.recently_played_activity_ongoing_story_last_month))
       )
     }
   }
@@ -1093,7 +1093,7 @@ class RecentlyPlayedFragmentTest {
       onView(
         allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
       ).check(
-        matches(withText(R.string.recently_played_activity))
+        matches(withText(R.string.recently_played_activity_toolbar_title))
       )
     }
   }
@@ -1119,7 +1119,7 @@ class RecentlyPlayedFragmentTest {
       onView(
         allOf(instanceOf(TextView::class.java), withParent(withId(R.id.recently_played_toolbar)))
       ).check(
-        matches(withText(R.string.recently_played_activity))
+        matches(withText(R.string.recently_played_activity_toolbar_title))
       )
     }
   }
@@ -1187,7 +1187,7 @@ class RecentlyPlayedFragmentTest {
           targetViewId = R.id.section_title_text_view
         )
       ).check(
-        matches(withText(R.string.ongoing_story_last_week))
+        matches(withText(R.string.recently_played_activity_ongoing_story_last_week))
       )
     }
   }
@@ -1327,7 +1327,7 @@ class RecentlyPlayedFragmentTest {
           targetViewId = R.id.section_title_text_view
         )
       ).check(
-        matches(withText(R.string.ongoing_story_last_month))
+        matches(withText(R.string.recently_played_activity_ongoing_story_last_month))
       )
     }
   }

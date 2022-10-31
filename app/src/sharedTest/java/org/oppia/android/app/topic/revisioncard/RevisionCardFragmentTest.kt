@@ -271,7 +271,7 @@ class RevisionCardFragmentTest {
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close)))
+      onView(withText(context.getString(R.string.bottom_sheet_options_menu_fragment_close_text)))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()

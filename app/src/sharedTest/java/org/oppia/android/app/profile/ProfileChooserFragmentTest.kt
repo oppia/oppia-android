@@ -161,7 +161,7 @@ class ProfileChooserFragmentTest {
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
+    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label_text))
   }
 
   @Test
@@ -197,7 +197,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_add)
+        stringToMatch = context.getString(R.string.profile_chooser_activity_profile_chooser_add)
       )
     }
   }
@@ -403,7 +403,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.set_up_multiple_profiles)
+        stringToMatch = context.getString(R.string.profile_chooser_activity_set_up_multiple_profiles)
       )
     }
   }
@@ -431,7 +431,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_add)
+        stringToMatch = context.getString(R.string.profile_chooser_activity_profile_chooser_add)
       )
     }
   }

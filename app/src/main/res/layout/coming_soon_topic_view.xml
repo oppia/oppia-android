@@ -46,7 +46,7 @@
         android:paddingTop="6dp"
         android:paddingEnd="12dp"
         android:paddingBottom="6dp"
-        android:text="@string/coming_soon_topic_list_activity_coming_soon"
+        android:text="@string/coming_soon_topic_list_activity_title"
         android:textAllCaps="true"
         android:textColor="@color/color_def_white"
         android:textSize="12sp"

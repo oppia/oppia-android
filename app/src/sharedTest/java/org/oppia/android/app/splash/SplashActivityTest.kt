@@ -211,7 +211,7 @@ class SplashActivityTest {
 
     launchSplashActivityFully {
       // The current app is expired.
-      onView(withText(R.string.unsupported_app_version_dialog_title))
+      onView(withText(R.string.splash_activity_unsupported_app_version_dialog_title))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -224,7 +224,7 @@ class SplashActivityTest {
     setAutoAppExpirationDate(dateStringBeforeToday())
 
     launchSplashActivityFully { scenario ->
-      onView(withText(R.string.unsupported_app_version_dialog_close_button_text))
+      onView(withText(R.string.splash_activity_unsupported_app_version_dialog_close_button_text))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.advanceUntilIdle()
@@ -272,7 +272,7 @@ class SplashActivityTest {
 
     launchSplashActivityFully {
       // Reopening the app after it expires should prevent further access.
-      onView(withText(R.string.unsupported_app_version_dialog_title))
+      onView(withText(R.string.splash_activity_unsupported_app_version_dialog_title))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -411,7 +411,7 @@ class SplashActivityTest {
     initializeTestApplicationWithFlavor(secondOpenFlavor)
 
     launchSplashActivityFully {
-      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.beta_notice_dialog_activity_title)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
     }
   }
@@ -429,7 +429,7 @@ class SplashActivityTest {
 
     launchSplashActivityFully {
       // Close the notice.
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       // The user should be routed to the onboarding flow after seeing the beta notice.
@@ -451,7 +451,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       // Close the notice after selecting to never show it again.
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox)).perform(click())
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       // The user should be routed to the onboarding flow after seeing the beta notice.
@@ -465,7 +465,7 @@ class SplashActivityTest {
     simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
     launchSplashActivityFully {
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text)).perform(click())
       testCoroutineDispatchers.runCurrent()
     }
 
@@ -486,7 +486,7 @@ class SplashActivityTest {
     simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
     launchSplashActivityFully {
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text)).perform(click())
       testCoroutineDispatchers.runCurrent()
     }
 
@@ -498,7 +498,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       // The user should see the beta notice again despite dismissing it since the beta notice
       // condition again occurred.
-      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.beta_notice_dialog_activity_title)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
     }
   }
@@ -510,7 +510,7 @@ class SplashActivityTest {
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
     launchSplashActivityFully {
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox)).perform(click())
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text)).perform(click())
       testCoroutineDispatchers.runCurrent()
     }
 
@@ -548,7 +548,7 @@ class SplashActivityTest {
     initializeTestApplicationWithFlavor(secondOpenFlavor)
 
     launchSplashActivityFully {
-      onDialogView(withText(R.string.general_availability_notice_dialog_title))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_activity_title))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
     }
@@ -565,7 +565,7 @@ class SplashActivityTest {
 
     launchSplashActivityFully {
       // Close the notice.
-      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -586,7 +586,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       // Close the notice after selecting to never show it again.
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).perform(click())
-      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -601,7 +601,7 @@ class SplashActivityTest {
     simulateAppAlreadyOnboardedWithFlavor(BuildFlavor.BETA)
     initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
     launchSplashActivityFully {
-      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
     }
@@ -623,7 +623,7 @@ class SplashActivityTest {
     simulateAppAlreadyOpenedWithFlavor(BuildFlavor.ALPHA)
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
     launchSplashActivityFully {
-      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
     }
@@ -636,7 +636,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       // The user should see the GA upgrade notice again despite dismissing it since the notice
       // condition again occurred.
-      onDialogView(withText(R.string.general_availability_notice_dialog_title))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_activity_title))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
     }
@@ -649,7 +649,7 @@ class SplashActivityTest {
     initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
     launchSplashActivityFully {
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).perform(click())
-      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
     }
@@ -678,7 +678,7 @@ class SplashActivityTest {
 
     // The GA upgrade notice should be the one to show since it's more recent.
     launchSplashActivityFully {
-      onDialogView(withText(R.string.general_availability_notice_dialog_title))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_activity_title))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
     }
@@ -691,7 +691,7 @@ class SplashActivityTest {
     initializeTestApplicationWithFlavor(BuildFlavor.GENERAL_AVAILABILITY)
     launchSplashActivityFully {
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).perform(click())
-      onDialogView(withText(R.string.general_availability_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
     }
@@ -719,7 +719,7 @@ class SplashActivityTest {
 
     // The beta notice should be the one to show since it's more recent.
     launchSplashActivityFully {
-      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.beta_notice_dialog_activity_title)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
     }
   }
@@ -731,7 +731,7 @@ class SplashActivityTest {
     initializeTestApplicationWithFlavor(BuildFlavor.BETA)
     launchSplashActivityFully {
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox)).perform(click())
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text)).perform(click())
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text)).perform(click())
       testCoroutineDispatchers.runCurrent()
     }
     reopenAppWithNewFlavor(BuildFlavor.GENERAL_AVAILABILITY)
@@ -853,7 +853,7 @@ class SplashActivityTest {
     // The current app is expired, so the deprecation notice should show regardless of the build
     // flavor notices that would normally show.
     launchSplashActivityFully {
-      onView(withText(R.string.unsupported_app_version_dialog_title))
+      onView(withText(R.string.splash_activity_unsupported_app_version_dialog_title))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -881,7 +881,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
       onView(withId(R.id.build_flavor_label))
-        .check(matches(withText(R.string.splash_screen_developer_label)))
+        .check(matches(withText(R.string.splash_activity_splash_screen_developer_label_text)))
     }
   }
 
@@ -895,7 +895,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
       onView(withId(R.id.build_flavor_label))
-        .check(matches(withText(R.string.splash_screen_alpha_label)))
+        .check(matches(withText(R.string.splash_activity_splash_screen_alpha_label_text)))
     }
   }
 
@@ -909,7 +909,7 @@ class SplashActivityTest {
     launchSplashActivityFully {
       onView(withId(R.id.build_flavor_label)).check(matches(isDisplayed()))
       onView(withId(R.id.build_flavor_label))
-        .check(matches(withText(R.string.splash_screen_beta_label)))
+        .check(matches(withText(R.string.splash_activity_splash_screen_beta_label_text)))
     }
   }
 

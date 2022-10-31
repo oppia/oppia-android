@@ -304,7 +304,7 @@ class StoryFragmentTest {
           position = 1,
           targetViewId = R.id.chapter_completed_tick
         )
-      ).check(matches(withContentDescription(R.string.chapter_completed)))
+      ).check(matches(withContentDescription(R.string.chapter_summary_activity_chapter_completed)))
     }
   }
 

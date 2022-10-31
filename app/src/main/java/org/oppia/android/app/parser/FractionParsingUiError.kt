@@ -11,16 +11,16 @@ enum class FractionParsingUiError(@StringRes private var error: Int?) {
   VALID(error = null),
 
   /** Corresponds to [FractionParsingError.INVALID_CHARS]. */
-  INVALID_CHARS(error = R.string.fraction_error_invalid_chars),
+  INVALID_CHARS(error = R.string.input_interaction_activity_fraction_error_invalid_chars),
 
   /** Corresponds to [FractionParsingError.INVALID_FORMAT]. */
-  INVALID_FORMAT(error = R.string.fraction_error_invalid_format),
+  INVALID_FORMAT(error = R.string.input_interaction_activity_fraction_error_invalid_format),
 
   /** Corresponds to [FractionParsingError.DIVISION_BY_ZERO]. */
-  DIVISION_BY_ZERO(error = R.string.fraction_error_divide_by_zero),
+  DIVISION_BY_ZERO(error = R.string.input_interaction_activity_fraction_error_divide_by_zero),
 
   /** Corresponds to [FractionParsingError.NUMBER_TOO_LONG]. */
-  NUMBER_TOO_LONG(error = R.string.fraction_error_larger_than_seven_digits);
+  NUMBER_TOO_LONG(error = R.string.input_interaction_activity_fraction_error_larger_than_seven_digits);
 
   /**
    * Returns the string corresponding to this error's string resources, or null if there is none.

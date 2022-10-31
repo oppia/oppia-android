@@ -69,7 +69,7 @@ class HelpActivity :
       savedInstanceState?.getInt(THIRD_PARTY_DEPENDENCY_INDEX_SAVED_KEY) ?: 0
     val selectedLicenseIndex = savedInstanceState?.getInt(LICENSE_INDEX_SAVED_KEY) ?: 0
     selectedHelpOptionsTitle = savedInstanceState?.getStringFromBundle(HELP_OPTIONS_TITLE_SAVED_KEY)
-      ?: resourceHandler.getStringInLocale(R.string.faq_activity_title)
+      ?: resourceHandler.getStringInLocale(R.string.faq_single_activity_title)
     val policiesActivityParams = savedInstanceState?.getProto(
       POLICIES_ARGUMENT_PROTO,
       PoliciesActivityParams.getDefaultInstance()

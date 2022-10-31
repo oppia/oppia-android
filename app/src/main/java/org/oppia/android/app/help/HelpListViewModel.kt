@@ -24,10 +24,10 @@ class HelpListViewModel @Inject constructor(
           R.string.third_party_dependency_list_activity_title
         )
         HelpItems.PRIVACY_POLICY -> resourceHandler.getStringInLocale(
-          R.string.help_activity_privacy_policy_title
+          R.string.privacy_policy_activity_title
         )
         HelpItems.TERMS_OF_SERVICE -> resourceHandler.getStringInLocale(
-          R.string.help_activity_terms_of_service_title
+          R.string.terms_of_service_activity_title
         )
       }
       arrayList += HelpItemViewModel(

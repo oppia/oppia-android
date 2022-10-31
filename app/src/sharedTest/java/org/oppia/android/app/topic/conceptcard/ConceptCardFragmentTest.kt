@@ -167,7 +167,7 @@ class ConceptCardFragmentTest {
       onView(withId(R.id.open_dialog_0)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withContentDescription(R.string.concept_card_close_icon_description))
+      onView(withContentDescription(R.string.concept_card_fragment_concept_card_close_icon_description))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -187,7 +187,7 @@ class ConceptCardFragmentTest {
           instanceOf(TextView::class.java),
           withParent(withId(R.id.concept_card_toolbar))
         )
-      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
+      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_fragment_concept_card_toolbar_title)))
     }
   }
 
@@ -204,7 +204,7 @@ class ConceptCardFragmentTest {
           instanceOf(TextView::class.java),
           withParent(withId(R.id.concept_card_toolbar))
         )
-      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
+      ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_fragment_concept_card_toolbar_title)))
     }
   }
 

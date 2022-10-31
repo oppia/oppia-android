@@ -50,11 +50,11 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.FAQListActivity"
-      android:label="@string/faq_activity_title"
+      android:label="@string/faq_single_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.faq.faqsingle.FAQSingleActivity"
-      android:label="@string/faq_activity_title"
+      android:label="@string/faq_single_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.help.HelpActivity"
@@ -102,7 +102,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AppLanguageActivity"
-      android:label="@string/app_language_activity_toolbar_title"
+      android:label="@string/app_language_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.options.AudioLanguageActivity"
@@ -118,7 +118,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.player.exploration.ExplorationActivity"
-      android:label="@string/exploration_activity_label_title"
+      android:label="@string/exploration_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar"
       android:windowSoftInputMode="adjustResize" />
     <activity
@@ -298,7 +298,7 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.resumelesson.ResumeLessonActivity"
-      android:label="@string/resume_lesson_activity_toolbar_title"
+      android:label="@string/R.string.resume_lesson_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.testing.activity.TestActivity"

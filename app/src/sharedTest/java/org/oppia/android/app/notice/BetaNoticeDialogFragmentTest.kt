@@ -128,7 +128,7 @@ class BetaNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedTitle() {
     launchBetaNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.beta_notice_dialog_title)).check(matches(isDisplayed()))
+      onDialogView(withText(R.string.beta_notice_dialog_activity_title)).check(matches(isDisplayed()))
     }
   }
 
@@ -137,9 +137,9 @@ class BetaNoticeDialogFragmentTest {
     launchBetaNoticeDialogFragmentTestActivity {
       onDialogView(withId(R.id.beta_notice_dialog_message)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_message))
-        .check(matches(withText(R.string.beta_notice_dialog_message)))
+        .check(matches(withText(R.string.beta_notice_dialog_content_activity_message)))
       onDialogView(withId(R.id.beta_notice_dialog_message))
-        .check(isCompletelyBelow(withText(R.string.beta_notice_dialog_title)))
+        .check(isCompletelyBelow(withText(R.string.beta_notice_dialog_activity_title)))
     }
   }
 
@@ -158,9 +158,9 @@ class BetaNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedAcknowledgementButtonUnderDoNotShowAgainCheckbox() {
     launchBetaNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text))
         .check(matches(isDisplayed()))
-      onDialogView(withText(R.string.beta_notice_dialog_close_button_text))
+      onDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text))
         .check(isCompletelyBelow(withId(R.id.beta_notice_dialog_preference_checkbox)))
     }
   }
@@ -168,7 +168,7 @@ class BetaNoticeDialogFragmentTest {
   @Test
   fun testFragment_clickAcknowledgeButton_callsCallbackListenerWithFalse() {
     launchBetaNoticeDialogFragmentTestActivity {
-      clickOnDialogView(withText(R.string.beta_notice_dialog_close_button_text))
+      clickOnDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text))
 
       verify(mockBetaNoticeClosedListener).onBetaNoticeOkayButtonClicked(false)
     }
@@ -179,7 +179,7 @@ class BetaNoticeDialogFragmentTest {
     launchBetaNoticeDialogFragmentTestActivity {
       clickOnDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
 
-      clickOnDialogView(withText(R.string.beta_notice_dialog_close_button_text))
+      clickOnDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text))
 
       verify(mockBetaNoticeClosedListener).onBetaNoticeOkayButtonClicked(true)
     }
@@ -192,7 +192,7 @@ class BetaNoticeDialogFragmentTest {
       clickOnDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
       clickOnDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
 
-      clickOnDialogView(withText(R.string.beta_notice_dialog_close_button_text))
+      clickOnDialogView(withText(R.string.beta_notice_dialog_activity_close_button_text))
 
       verify(mockBetaNoticeClosedListener).onBetaNoticeOkayButtonClicked(false)
     }

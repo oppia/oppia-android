@@ -18,9 +18,9 @@ class AutomaticAppDeprecationNoticeDialogFragmentPresenter @Inject constructor(
 
   fun handleOnCreateDialog(): Dialog {
     val dialog = AlertDialog.Builder(activity)
-      .setTitle(R.string.unsupported_app_version_dialog_title)
+      .setTitle(R.string.splash_activity_unsupported_app_version_dialog_title)
       .setMessage(R.string.unsupported_app_version_dialog_message)
-      .setNegativeButton(R.string.unsupported_app_version_dialog_close_button_text) { _, _ ->
+      .setNegativeButton(R.string.splash_activity_unsupported_app_version_dialog_close_button_text) { _, _ ->
         deprecationNoticeExitAppListener.onCloseAppButtonClicked()
       }
       .setCancelable(false)

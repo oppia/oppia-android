@@ -13,7 +13,7 @@
   <string name="menu_options">Opções</string>
   <string name="navigation_drawer_activity_menu_my_downloads">Meus Downloads</string>
   <string name="menu_help">Ajuda</string>
-  <string name="exploration_activity_label_title">Reprodutor de Exploração</string>
+  <string name="exploration_activity_title">Reprodutor de Exploração</string>
   <string name="help_activity_label_title">Ajuda</string>
   <string name="bottom_sheet_options_menu_fragment_close_text">Fechar</string>
   <string name="navigation_drawer_activity_menu_switch_profile">Trocar Perfil</string>
@@ -70,7 +70,7 @@
   <string name="FAQs">FAQs</string>
   <string name="faq_list_activity_featured_questions_text">Perguntas em Destaque</string>
   <string name="frequently_asked_questions">Perguntas Frequentes</string>
-  <string name="faq_activity_title">FAQs (Perguntas Frequentes)</string>
+  <string name="faq_single_activity_title">FAQs (Perguntas Frequentes)</string>
   <string name="pin_password_activity_pin_password_activity_label_title">Verificação de PIN</string>
   <string name="onboarding_activity_title">Introdução</string>
   <string name="help_activity_frequently_asked_questions_FAQ_text">Perguntas Frequentes (FAQs)</string>
@@ -153,18 +153,18 @@
   <string name="preferences">Preferências</string>
   <string name="profile_progress_activity_title">Página de Progresso do Perfil</string>
   <string name="search">Buscar</string>
-  <string name="fraction_error_invalid_chars">Use apenas dígitos numéricos, espaços ou barras (/)</string>
-  <string name="fraction_error_invalid_format">Insira uma fração válida (por exemplo, 5/3 ou 1 2/3)</string>
-  <string name="fraction_error_divide_by_zero">Por favor, não coloque 0 no denominador</string>
-  <string name="fraction_error_larger_than_seven_digits">Nenhum dos números da fração deve ter mais de 7 dígitos.</string>
-  <string name="number_error_starting_with_floating_point">Comece sua resposta com um número (por exemplo, \"0\" em 0,5)</string>
-  <string name="number_error_invalid_format">Por favor, insira um número válido.</string>
-  <string name="number_error_larger_than_fifteen_characters">A resposta pode conter no máximo 15 dígitos (0–9) ou símbolos (. ou -).</string>
-  <string name="ratio_error_invalid_chars">Escreva uma proporção que consista em dígitos separados por dois pontos (por exemplo, 1:2 ou 1:2:3).</string>
-  <string name="ratio_error_invalid_format">Insira uma proporção válida (por exemplo, 1:2 ou 1:2:3).</string>
-  <string name="ratio_error_invalid_colons">Sua resposta tem dois dois-pontos (:) do lado um do outro.</string>
-  <string name="ratio_error_invalid_size">O número de termos não é igual ao exigido.</string>
-  <string name="ratio_error_includes_zero">Proporções não podem ter 0 como elemento.</string>
+  <string name="input_interaction_activity_fraction_error_invalid_chars">Use apenas dígitos numéricos, espaços ou barras (/)</string>
+  <string name="input_interaction_activity_fraction_error_invalid_format">Insira uma fração válida (por exemplo, 5/3 ou 1 2/3)</string>
+  <string name="input_interaction_activity_fraction_error_divide_by_zero">Por favor, não coloque 0 no denominador</string>
+  <string name="input_interaction_activity_fraction_error_larger_than_seven_digits">Nenhum dos números da fração deve ter mais de 7 dígitos.</string>
+  <string name="input_interaction_activity_number_error_starting_with_floating_point">Comece sua resposta com um número (por exemplo, \"0\" em 0,5)</string>
+  <string name="input_interaction_activity_number_error_invalid_format">Por favor, insira um número válido.</string>
+  <string name="input_interaction_activity_number_error_larger_than_fifteen_characters">A resposta pode conter no máximo 15 dígitos (0–9) ou símbolos (. ou -).</string>
+  <string name="input_interaction_activity_ratio_error_invalid_chars">Escreva uma proporção que consista em dígitos separados por dois pontos (por exemplo, 1:2 ou 1:2:3).</string>
+  <string name="input_interaction_activity_ratio_error_invalid_format">Insira uma proporção válida (por exemplo, 1:2 ou 1:2:3).</string>
+  <string name="input_interaction_activity_ratio_error_invalid_colons">Sua resposta tem dois dois-pontos (:) do lado um do outro.</string>
+  <string name="input_interaction_activity_ratio_error_invalid_size">O número de termos não é igual ao exigido.</string>
+  <string name="input_interaction_activity_ratio_error_includes_zero">Proporções não podem ter 0 como elemento.</string>
   <string name="topic_info_activity_unknown_size">Tamanho desconhecido</string>
   <string name="size_bytes">%s Bytes</string>
   <string name="size_kb">%s KB</string>
@@ -332,7 +332,7 @@
   <string name="administrator_controls_general_view_administrator_controls_edit_account_text">Editar conta</string>
   <string name="administrator_controls_profile_view_administrator_controls_profile_management_label_text">Gerenciamento de Perfil</string>
   <string name="administrator_controls_profile_view_administrator_controls_edit_profiles_text">Editar perfis</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_download_permissions_label_text">Permissões de Download</string>
+  <string name="administrator_controls_download_permissions_view_download_permissions_label_text">Permissões de Download</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_title">Baixar e atualizar apenas com Wi-fi</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_message">Os tópicos serão baixados e atualizados apenas com Wi-fi. Quaisquer downloads ou atualizações de dados do celular serão enfileirados.</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Atualizar tópicos automaticamente</string>
@@ -347,7 +347,7 @@
   <string name="administrator_controls_app_version_activity_app_version_name">Versão do Aplicativo %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">A última atualização foi instalada em %s. Use o número da versão acima para enviar feedback sobre erros.</string>
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">Versão do Aplicativo</string>
-  <string name="app_language_activity_toolbar_title">Idioma do Aplicativo</string>
+  <string name="app_language_activity_title">Idioma do Aplicativo</string>
   <string name="audio_language_activity_title">Idioma Padrão de Áudio</string>
   <string name="reading_text_size">Tamanho do Texto de Leitura</string>
   <string name="reading_text_size_activity_title">Tamanho do Texto de Leitura</string>
@@ -420,12 +420,12 @@
   <string name="topic_revision_activity_topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_list_activity_ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="selection_interaction_item_activity_item_selection_text">Por favor, selecione todas as alternativas corretas.</string>
-  <string name="unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
+  <string name="splash_activity_unsupported_app_version_dialog_title">Versão do aplicativo não suportada</string>
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
-  <string name="unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
-  <string name="splash_screen_activity_splash_screen_developer_label_text">Versão do desenvolvedor</string>
-  <string name="splash_screen_activity_splash_screen_alpha_label_text">Alfa</string>
-  <string name="splash_screen_activity_splash_screen_beta_label_text">Beta</string>
+  <string name="splash_activity_unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
+  <string name="splash_activity_splash_screen_developer_label_text">Versão do desenvolvedor</string>
+  <string name="splash_activity_splash_screen_alpha_label_text">Alfa</string>
+  <string name="splash_activity_unsupported_app_version_dialog_title">Beta</string>
   <string name="beta_notice_dialog_activity_title">Aviso Beta</string>
   <string name="beta_notice_dialog_content_activity_message">Olá! Seu aplicativo está sendo atualizado para a versão Beta. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
   <string name="beta_notice_dialog_content_activity_do_not_show_again_text">Não exibir esta mensagem novamente</string>
@@ -439,7 +439,7 @@
   <string name="text_input_default_hint_text">Clique aqui para inserir texto.</string>
   <string name="smallest_text_size_content_description">Menor tamanho de texto</string>
   <string name="largest_text_size_content_description">Maior tamanho de texto</string>
-  <string name="coming_soon_topic_list_activity_coming_soon">Em Breve</string>
+  <string name="coming_soon_topic_list_activity_title">Em Breve</string>
   <string name="recommended_stories">Histórias Recomendadas</string>
   <string name="stories_for_you">Histórias Para Você</string>
   <string name="question_player_activity_title">Modo de Prática</string>
@@ -459,16 +459,16 @@
   <string name="help_activity_back_arrow_description">Voltar para %s</string>
   <string name="help_activity_third_party_dependencies_list">lista de dependências de terceiros</string>
   <string name="help_activity_copyright_licenses_list">lista de licenças de direitos autorais</string>
-  <string name="resume_lesson_activity_toolbar_title">Retomar lição</string>
+  <string name="R.string.resume_lesson_activity_title">Retomar lição</string>
   <string name="resume_lesson_activity_resume_lesson_button_text">Continuar</string>
   <string name="resume_lesson_activity_start_over_lesson_button_text">Recomeçar</string>
   <string name="date_time_util_home_screen_good_morning_greeting_fragment">Bom dia,</string>
   <string name="date_time_util_home_screen_good_afternoon_greeting_fragment">Boa tarde,</string>
   <string name="date_time_util_home_screen_good_evening_greeting_fragment">Boa noite,</string>
   <string name="policy_activity_label_title">Página de Política</string>
-  <string name="help_activity_privacy_policy_title">Política de Privacidade</string>
+  <string name="privacy_policy_activity_title">Política de Privacidade</string>
   <string name="privacy_policy_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;esta páginage&lt;/a&gt; para acessar a última versão desta política de privacidade.</string>
-  <string name="help_activity_terms_of_service_title">Termos de Serviço</string>
+  <string name="terms_of_service_activity_title">Termos de Serviço</string>
   <string name="onboarding_activity_agree_to_terms">Ao usar %s, você concorda com nossos &lt;br&gt; &lt;oppia-noninteractive-policy link=\"tos\"&gt;Termos de Serviço&lt;/oppia-noninteractive-policy&gt; e &lt;oppia-noninteractive-policy link=\"privacy\"&gt;Política de Privacidade&lt;/oppia-noninteractive-policy&gt;.</string>
   <string name="policy_fragment_activity_terms_of_service_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/terms\"&gt;esta página&lt;/a&gt; para acessar a última versão destes termos.</string>
   <string name="faq_question_1">Como posso criar um novo perfil?</string>

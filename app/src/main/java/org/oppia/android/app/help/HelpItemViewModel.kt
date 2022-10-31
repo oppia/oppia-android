@@ -36,10 +36,10 @@ class HelpItemViewModel(
           routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()
         }
       }
-      resourceHandler.getStringInLocale(R.string.help_activity_privacy_policy_title) -> {
+      resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title) -> {
         loadPolicyPage(PolicyPage.PRIVACY_POLICY)
       }
-      resourceHandler.getStringInLocale(R.string.help_activity_terms_of_service_title) -> {
+      resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title) -> {
         loadPolicyPage(PolicyPage.TERMS_OF_SERVICE)
       }
     }

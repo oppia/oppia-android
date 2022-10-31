@@ -2,7 +2,6 @@
 <resources>
   <!-- AdministratorControlActivity -->
   <string name="administrator_controls_activity_label_title">Administrator Controls</string>
-  <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <!-- AdminAuthActivity -->
   <string name="admin_auth_activity_toolbar_title">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
@@ -30,7 +29,7 @@
   <string name="administrator_controls_general_view_administrator_controls_edit_account_text">Edit account</string>
   <string name="administrator_controls_profile_view_administrator_controls_profile_management_label_text">Profile Management</string>
   <string name="administrator_controls_profile_view_administrator_controls_edit_profiles_text">Edit profiles</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_download_permissions_label_text">Download Permissions</string>
+  <string name="administrator_controls_download_permissions_view_download_permissions_label_text">Download Permissions</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Automatically update topics</string>
@@ -104,9 +103,9 @@
   <!-- CompletedStoryListActivity -->
   <string name="completed_story_list_activity_toolbar_title">Stories Completed</string>
   <!-- ComingSoonTopicActivity -->
-  <string name="coming_soon_topic_list_activity_coming_soon">Coming Soon</string>
+  <string name="coming_soon_topic_list_activity_title">Coming Soon</string>
   <!-- ExplorationActivity -->
-  <string name="exploration_activity_label_title">Exploration Player</string>
+  <string name="exploration_activity_title">Exploration Player</string>
   <string name="exploration_activity_audio_player_on">Audio, ON</string>
   <string name="exploration_activity_audio_player_off">Audio, OFF</string>
   <!-- UnsavedExplorationDialogFragment -->
@@ -122,6 +121,8 @@
   <string name="unsaved_exploration_dialog_fragment_state_end_exploration_button_text">Return To Topic</string>
   <!-- FAQListActivity -->
   <string name="faq_list_activity_featured_questions_text">Featured Questions</string>
+  <!-- FAQSingleActivity -->
+  <string name="faq_single_activity_title">FAQs (Frequently Asked Questions)</string>
   <!-- Frequently asked questions & generic app help. -->
   <string name="faq_question_1">How can I create a new profile?</string>
   <string name="faq_question_2">How can I delete a profile?</string>
@@ -132,8 +133,10 @@
   <string name="faq_question_7">Why is my audio not playing?</string>
   <string name="faq_question_8">How do I download a Topic?</string>
   <string name="faq_question_9">I can\'t find my question here. What now?</string>
+  <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_2"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_3"><![CDATA[<p>To change your email/phone number:</p><ol><li>From the Administrator\'s Home Page, tap on the menu button on the top left.</li><li>Tap on <strong>Administrator Controls</strong>.</li><li>Tap on <strong>Edit Account</strong>.</li></ol><p><br></p> <p>If you want to change your email:</p><ol><li>Enter your new email and tap <strong>Save</strong>.</li><li>A confirmation link is sent to confirm your new email. The link will expire after 24 hours and must be clicked on to be associated with your account.</li></ol><p><br></p> <p>If changing your phone number:</p><ol><li> Enter your new phone number and tap <strong>Verify</strong>.</li><li> A code is sent to confirm your new number. The code will expire after 5 minutes and must be entered in the new screen to be associated with your account.</li></ol>]]></string>
+  <string name="faq_answer_4"><![CDATA[<p>%1$s <i>\"O-pee-yah\"</i> (Finnish) - \"to learn\"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
   <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as downloading Topics, changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has \"Administrator\" written under their name is the Administrator. </p>]]></string>
   <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
   <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
@@ -160,8 +163,7 @@
   <string name="help_activity_third_party_dependencies_list">third-party dependencies list</string>
   <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
   <string name="help_activity_frequently_asked_questions_FAQ_text">Frequently Asked Questions (FAQs)</string>
-  <string name="help_activity_privacy_policy_title">Privacy Policy</string>
-  <string name="help_activity_terms_of_service_title">Terms of Service</string>
+
   <!-- HintsAndSolutionDialogFragment -->
   <string name="hint_and_solution_activity_close_icon_description">Navigate up</string>
   <string name="solution_summary_activity_show_solution_button_text">Show solution</string>
@@ -177,8 +179,32 @@
   <!-- InputInteractionActivity -->
   <string name="text_input_interaction_item_activity_text_input_default_content_description">Enter text.</string>
   <string name="numeric_input_interaction_item_activity_numeric_input_hint">Enter a number.</string>
+  <string name="input_interaction_activity_fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
+  <string name="input_interaction_activity_fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
+  <string name="input_interaction_activity_fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
+  <string name="input_interaction_activity_fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
+  <string name="input_interaction_activity_number_error_invalid_format">Please enter a valid number.</string>
+  <string name="input_interaction_activity_number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
+  <string name="input_interaction_activity_number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
+  <string name="input_interaction_activity_ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">
+    Your answer has two colons (:) next to each other.
+  </string>
+  <string name="input_interaction_activity_ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">
+    Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
+  </string>
+  <string name="input_interaction_activity_ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
+    Ratios cannot have 0 as an element.
+  </string>
+  <string name="input_interaction_activity_ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
+    Please enter a valid ratio (e.g. 1:2 or 1:2:3).
+  </string>
+  <string name="input_interaction_activity_ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
+    Number of terms is not equal to the required terms.
+  </string>
   <!-- LicenseTextViewerActivity -->
   <string name="license_text_viewer_activity_title">Copyright License Viewer</string>
+  <!-- LicenseListActivity -->
+  <string name="license_list_activity_title">Copyright Licenses</string>
   <!-- MathExpressionActivity -->
   <string name="numeric_expression_default_hint_text">Type an expression here, using only numbers.</string>
   <string name="algebraic_expression_default_hint_text">Type an expression here.</string>
@@ -224,6 +250,8 @@
   <string name="navigation_drawer_activity_drawer_open_content_description">Navigation Menu Open</string>
   <string name="navigation_drawer_activity_drawer_close_content_description">Navigation Menu Close</string>
   <string name="navigation_drawer_activity_bar_separator">\u0020|\u0020</string>
+  <!-- OngoingListActivity -->
+  <string name="ongoing_topic_list_activity_title">Topics in Progress</string>
   <!-- OnboardingActivity -->
   <string name="onboarding_activity_onboarding_slide_0_title">Welcome to %s!</string>
   <string name="onboarding_activity_onboarding_slide_0_description">Learn anything you want in an effective and enjoyable way.</string>
@@ -241,7 +269,7 @@
   <!-- OptionsActivity -->
   <string name="options_activity_title">Options</string>
   <string name="app_language_activity_label_text">App Language</string>
-  <string name="app_language_activity_toolbar_title">App Language</string>
+  <string name="app_language_activity_title">App Language</string>
   <string name="audio_language_activity_title">Default Audio Language</string>
   <string name="reading_text_size_activity_title">Reading Text Size</string>
   <string name="reading_text_size_activity_toolbar_title_text">Reading Text Size</string>
@@ -323,6 +351,7 @@
   <string name="profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
   <string name="profile_reset_pin_activity_profile_reset_pin_activity_enter_user_new_pin">%1$s\'s New PIN.</string>
   <!-- Privacy Policy -->
+  <string name="privacy_policy_activity_title">Privacy Policy</string>
   <string name="policy_activity_label_title">Policy Page</string>
   <!-- QuestionPlayerActivity -->
   <string name="question_player_activity_title">Practice Mode</string>
@@ -345,13 +374,19 @@
   <string name="reset_pin_dialog_fragment_reset_pin_enter_text">Enter a New Pin</string>
   <string name="reset_pin_dialog_fragment_reset_pin_enter_dialog_message">This PIN will be %s\'s new PIN and will be required when signing in.</string>
   <!-- ResumeLessonActivity -->
-  <string name="resume_lesson_activity_toolbar_title">Resume Lesson</string>
+  <string name="R.string.resume_lesson_activity_title">Resume Lesson</string>
   <string name="resume_lesson_activity_resume_lesson_button_text">Continue</string>
   <string name="resume_lesson_activity_start_over_lesson_button_text">Start Over</string>
   <!-- SplashActivity -->
-  <string name="splash_screen_activity_splash_screen_developer_label_text">Developer Build</string>
-  <string name="splash_screen_activity_splash_screen_alpha_label_text">Alpha</string>
-  <string name="splash_screen_activity_splash_screen_beta_label_text">Beta</string>
+  <string name="splash_activity_splash_screen_developer_label_text">Developer Build</string>
+  <string name="splash_activity_splash_screen_alpha_label_text">Alpha</string>
+  <string name="splash_activity_splash_screen_beta_label_text">Beta</string>
+  <string name="splash_activity_unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
+    Unsupported app version
+  </string>
+  <string name="splash_activity_unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
+    Close app
+  </string>
   <!-- SubmittedAnswerActivity -->
   <string name="submitted_answer_item_activity_correct_submitted_answer">Correct submitted answer</string>
   <string name="submitted_answer_item_activity_correct_submitted_answer_with_append">Correct submitted answer: %s</string>
@@ -391,7 +426,9 @@
   <string name="drag_and_drop_interaction_item_activity_group_merge_hint_text">If two items are equal, merge them.</string>
   <!-- ThirdPartyDependencyListActivity -->
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
+  <string name="third_party_dependency_version_formatter">version %s</string>
   <!-- Terms of Service -->
+  <string name="terms_of_service_activity_title">Terms of Service</string>
   <string name="policy_fragment_activity_terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- ViewTags -->
   <string name="topic_revision_activity_topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
@@ -421,14 +458,10 @@
   <string name="admin_settings_submit">Submit</string>
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <string name="FAQs">FAQs</string>
-  <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
-  <string name="faq_answer_4"><![CDATA[<p>%1$s <i>\"O-pee-yah\"</i> (Finnish) - \"to learn\"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
-  <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
   <string name="new_hint_available">New hint available</string>
   <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hints_toolbar_title">Hints</string>
-  <string name="license_list_activity_title">Copyright Licenses</string>
   <string name="menu_options">Options</string>
   <string name="menu_help">Help</string>
   <string name="get_started">Get Started</string>
@@ -449,29 +482,7 @@
   <string name="developer_options">Developer Options</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="hint_list_item_number">Hint %s</string>
-  <string name="fraction_error_invalid_chars">Please only use numerical digits, spaces or forward slashes (/)</string>
-  <string name="fraction_error_invalid_format">Please enter a valid fraction (e.g., 5/3 or 1 2/3)</string>
-  <string name="fraction_error_divide_by_zero">Please do not put 0 in the denominator</string>
-  <string name="fraction_error_larger_than_seven_digits">None of the numbers in the fraction should have more than 7 digits.</string>
-  <string name="number_error_starting_with_floating_point">Please begin your answer with a number (e.g.,”0” in 0.5).</string>
-  <string name="number_error_invalid_format">Please enter a valid number.</string>
-  <string name="number_error_larger_than_fifteen_characters">The answer can contain at most 15 digits (0–9) or symbols (. or -).</string>
   <string name="number_with_units_input_hint_text">Write numbers with units here.</string>
-  <string name="ratio_error_invalid_chars" description="The error message for ratio when there is any other character used than 0123456789:. ">
-    Please write a ratio that consists of digits separated by colons (e.g. 1:2 or 1:2:3).
-  </string>
-  <string name="ratio_error_invalid_format" description="The error message for ratio when the format is invalid. For e.g. 1:2:3: or 1:2 3:4 ">
-    Please enter a valid ratio (e.g. 1:2 or 1:2:3).
-  </string>
-  <string name="ratio_error_invalid_colons" description="The error message for ratio when there is colons next to each other.">
-    Your answer has two colons (:) next to each other.
-  </string>
-  <string name="ratio_error_invalid_size" description="The error message for ratio when there is less number of terms than the creator has specified in customization arg.">
-    Number of terms is not equal to the required terms.
-  </string>
-  <string name="ratio_error_includes_zero" description="The error message for ratio when there is 0 term in the ratio.">
-    Ratios cannot have 0 as an element.
-  </string>
   <string name="nav_header_desc">Navigation header</string>
   <string name="story_text_will_look_like_this">Story text will look like this.</string>
   <string name="constant_string_for_text_size">A</string>
@@ -578,7 +589,6 @@
     <item quantity="one">a day</item>
     <item quantity="other">%s days</item>
   </plurals>
-  <string name="third_party_dependency_version_formatter">version %s</string>
   <string name="return_to_topic">Return to topic</string>
   <string name="explanation">Explanation:</string>
   <string name="link_to_item_below">Link to item %s</string>
@@ -588,14 +598,8 @@
   <string name="up_button_disabled">Up</string>
   <string name="down_button_disabled">Down</string>
   <string name="profile_last_visited">%s %s</string>
-  <string name="unsupported_app_version_dialog_title" description="The title of the dialog shown when a user's pre-release app has expired.">
-    Unsupported app version
-  </string>
   <string name="unsupported_app_version_dialog_message" description="The main message of the dialog shown when a user's pre-release app has expired.">
     This version of the app is no longer supported. Please update it through the Play Store.
-  </string>
-  <string name="unsupported_app_version_dialog_close_button_text" description="The close button text of the dialog shown when a user's pre-release app has expired.">
-    Close app
   </string>
   <string name="ratio_content_description_separator" description="The separator that would be used to build the text that would be read out for ratio interaction.For e.g if the input is 1:2:3 the read out text would be 1 to 2 to 3">
     \u0020to\u0020

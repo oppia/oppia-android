@@ -44,9 +44,9 @@ class PoliciesActivityPresenter @Inject constructor(
 
     toolbar.title = when (policyPage) {
       PolicyPage.PRIVACY_POLICY ->
-        resourceHandler.getStringInLocale(R.string.help_activity_privacy_policy_title)
+        resourceHandler.getStringInLocale(R.string.privacy_policy_activity_title)
       PolicyPage.TERMS_OF_SERVICE ->
-        resourceHandler.getStringInLocale(R.string.help_activity_terms_of_service_title)
+        resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title)
       PolicyPage.POLICY_PAGE_UNSPECIFIED,
       PolicyPage.UNRECOGNIZED -> ""
     }

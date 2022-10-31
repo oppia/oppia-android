@@ -189,7 +189,7 @@ class MyDownloadsFragmentTest {
     launch(MyDownloadsActivity::class.java).use {
       onView(
         allOf(
-          withText(R.string.tab_updates),
+          withText(R.string.my_downloads_activity_tab_updates),
           isDescendantOfA(withId(R.id.my_downloads_tabs_container))
         )
       ).perform(click())

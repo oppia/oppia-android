@@ -322,7 +322,7 @@ class ProfileProgressFragmentTest {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       testCoroutineDispatchers.runCurrent()
-      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_activity_title))
     }
   }
 
@@ -331,9 +331,9 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
-      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_activity_title))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(R.string.profile_progress_edit_dialog_title)).check(matches(isDisplayed()))
+      onView(withText(R.string.profile_progress_edit_dialog_activity_title)).check(matches(isDisplayed()))
     }
   }
 
@@ -348,8 +348,8 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
-      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
-      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_activity_title))
+      onView(withText(R.string.profile_progress_edit_dialog_activity_choose_from_library_text))
         .perform(click())
       intended(expectedIntent)
     }
@@ -366,8 +366,8 @@ class ProfileProgressFragmentTest {
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
-      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
-      onView(withText(R.string.profile_picture_edit_alert_dialog_choose_from_library))
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_activity_title))
+      onView(withText(R.string.profile_progress_edit_dialog_activity_choose_from_library_text))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(expectedIntent)
@@ -376,7 +376,7 @@ class ProfileProgressFragmentTest {
       intended(expectedIntent)
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.profile_edit_image)
       // The dialog should still be open after a configuration change.
-      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_title))
+      verifyTextInDialog(context.getString(R.string.profile_progress_edit_dialog_activity_title))
     }
   }
 
@@ -451,7 +451,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.topics_in_progress)
+        stringToMatch = context.getString(R.string.profile_progress_header_activity_topics_in_progress)
       )
     }
   }
@@ -476,7 +476,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.topics_in_progress)
+        stringToMatch = context.getString(R.string.profile_progress_header_activity_topics_in_progress)
       )
     }
   }
@@ -503,7 +503,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.topics_in_progress)
+        stringToMatch = context.getString(R.string.profile_progress_header_activity_topics_in_progress)
       )
     }
   }
@@ -548,7 +548,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_description_text_view,
-        stringToMatch = context.getString(R.string.stories_completed)
+        stringToMatch = context.getString(R.string.profile_progress_header_activity_stories_completed)
       )
     }
   }
@@ -568,7 +568,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_description_text_view,
-        stringToMatch = context.getString(R.string.stories_completed)
+        stringToMatch = context.getString(R.string.profile_progress_header_activity_stories_completed)
       )
     }
   }

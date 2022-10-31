@@ -165,7 +165,7 @@ class AdministratorControlsActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_label_title))
+    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_label_title_activity_label_title))
   }
 
   @Before
@@ -215,7 +215,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_general_view_administrator_controls_edit_account_text
+        stringIdToMatch = R.string.administrator_controls_activity_label_title_general_view_administrator_controls_edit_account_text
       )
     }
   }
@@ -256,7 +256,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text
+        stringIdToMatch = R.string.administrator_controls_activity_label_title_profile_view_administrator_controls_edit_profiles_text
       )
     }
   }
@@ -272,8 +272,8 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message)
-      onView(withText(R.string.administrator_controls_view_log_out_dialog_fragment_okay_button_text)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_message)
+      onView(withText(R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_okay_button_text)).perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
@@ -302,7 +302,7 @@ class AdministratorControlsActivityTest {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .perform(click())
-      onView(withText(context.getString(R.string.administrator_controls_general_view_administrator_controls_edit_account_text)))
+      onView(withText(context.getString(R.string.administrator_controls_activity_label_title_general_view_administrator_controls_edit_account_text)))
         .check(matches(isDisplayed()))
     }
   }
@@ -317,9 +317,9 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message)
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_okay_button_text)
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button_text)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_message)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_okay_button_text)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_cancel_button_text)
     }
   }
 
@@ -335,9 +335,9 @@ class AdministratorControlsActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message)
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_okay_button_text)
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button_text)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_message)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_okay_button_text)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_cancel_button_text)
     }
   }
 
@@ -352,9 +352,9 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message)
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_okay_button_text)
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button_text)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_message)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_okay_button_text)
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_cancel_button_text)
     }
   }
 
@@ -368,8 +368,8 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
       onView(withId(R.id.log_out_text_view)).perform(click())
-      verifyTextInDialog(textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message)
-      onView(withText(R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button_text)).perform(click())
+      verifyTextInDialog(textInDialogId = R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_message)
+      onView(withText(R.string.administrator_controls_activity_label_title_view_log_out_dialog_fragment_cancel_button_text)).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
     }
   }
@@ -410,7 +410,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       onView(withId(R.id.extra_controls_title))
-        .check(matches(withText(R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text)))
+        .check(matches(withText(R.string.administrator_controls_activity_label_title_profile_view_administrator_controls_edit_profiles_text)))
     }
   }
 
@@ -424,7 +424,7 @@ class AdministratorControlsActivityTest {
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.extra_controls_title))
-        .check(matches(withText(R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text)))
+        .check(matches(withText(R.string.administrator_controls_activity_label_title_profile_view_administrator_controls_edit_profiles_text)))
     }
   }
 

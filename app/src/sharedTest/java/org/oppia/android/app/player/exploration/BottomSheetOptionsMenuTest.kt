@@ -144,7 +144,7 @@ class BottomSheetOptionsMenuTest {
   fun bottomSheetOptionsMenu_selectClose_closesBottomSheet() {
     launchBottomSheetOptionsMenuTestActivity {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.bottom_sheet_options_menu_close)).inRoot(isDialog()).perform(click())
+      onView(withText(R.string.bottom_sheet_options_menu_fragment_close_text)).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }

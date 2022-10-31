@@ -189,7 +189,7 @@ class AdminPinActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.admin_pin_activity_title))
+    assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
   }
 
   @Test
@@ -431,7 +431,7 @@ class AdminPinActivityTest {
           matches(
             hasErrorText(
               context.resources.getString(
-                R.string.admin_pin_error_pin_confirm_wrong
+                R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
               )
             )
           )
@@ -472,7 +472,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
           )
         )
       )
@@ -574,7 +574,7 @@ class AdminPinActivityTest {
         adminPinEnum = 1
       )
     ).use {
-      onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
+      onView(withContentDescription(R.string.admin_auth_activity_close_button_text)).check(matches(isDisplayed()))
     }
   }
 
@@ -824,7 +824,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
           )
         )
       )
@@ -867,7 +867,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
           )
         )
       )
@@ -1003,7 +1003,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
           )
         )
       )
@@ -1044,7 +1044,7 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_error_pin_confirm_wrong)
+            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
           )
         )
       )

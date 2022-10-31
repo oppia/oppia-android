@@ -248,7 +248,7 @@ class HomeActivityTest {
     launch(HomeActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         val title = activity.title
-        assertThat(title).isEqualTo(context.getString(R.string.home_activity_title))
+        assertThat(title).isEqualTo(context.getString(R.string.home_activity_label_title))
       }
     }
   }
@@ -362,7 +362,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.view_all_text_view,
-        stringToMatch = context.getString(R.string.view_all)
+        stringToMatch = context.getString(R.string.profile_progress_header_activity_view_all)
       )
     }
   }
@@ -549,7 +549,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
-        stringToMatch = context.getString(R.string.coming_soon)
+        stringToMatch = context.getString(R.string.coming_soon_topic_list_activity_title)
       )
       scrollToPositionOfComingSoonList(position = 1)
       verifyTextOnComingSoonItemAtPosition(
@@ -574,7 +574,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
-        stringToMatch = context.getString(R.string.coming_soon)
+        stringToMatch = context.getString(R.string.coming_soon_topic_list_activity_title)
       )
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
@@ -673,7 +673,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
-        stringToMatch = context.getString(R.string.coming_soon)
+        stringToMatch = context.getString(R.string.coming_soon_topic_list_activity_title)
       )
       scrollToPositionOfComingSoonList(position = 1)
       verifyTextOnComingSoonItemAtPosition(
@@ -1102,7 +1102,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
-      onView(withText(R.string.home_activity_back_dialog_message))
+      onView(withText(R.string.exit_profile_dialog_fragment_home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1115,7 +1115,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(R.string.home_activity_back_dialog_message))
+      onView(withText(R.string.exit_profile_dialog_fragment_home_activity_back_dialog_message))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1126,7 +1126,7 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       pressBack()
-      onView(withText(R.string.home_activity_back_dialog_exit))
+      onView(withText(R.string.exit_profile_dialog_fragment_home_activity_back_dialog_exit))
         .inRoot(isDialog())
         .perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
