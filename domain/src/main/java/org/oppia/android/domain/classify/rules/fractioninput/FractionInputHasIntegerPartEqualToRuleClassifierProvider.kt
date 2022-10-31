@@ -22,7 +22,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject construct
   override fun createRuleClassifier(): RuleClassifier {
     return classifierFactory.createMultiTypeSingleInputClassifier(
       InteractionObject.ObjectTypeCase.FRACTION,
-      InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+      InteractionObject.ObjectTypeCase.SIGNED_INT,
       "x",
       this
     )
