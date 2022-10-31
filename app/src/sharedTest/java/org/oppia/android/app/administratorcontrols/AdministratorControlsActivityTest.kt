@@ -165,7 +165,7 @@ class AdministratorControlsActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_label_title_activity_label_title))
+    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_activity_label_title))
   }
 
   @Before
@@ -215,7 +215,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_general_view_administrator_controls_edit_account_text
+        stringIdToMatch = R.string.administrator_controls_general_view_administrator_controls_edit_account_text
       )
     }
   }
@@ -302,7 +302,7 @@ class AdministratorControlsActivityTest {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
         .perform(click())
-      onView(withText(context.getString(R.string.administrator_controls_activity_label_title_general_view_administrator_controls_edit_account_text)))
+      onView(withText(context.getString(R.string.administrator_controls_general_view_administrator_controls_edit_account_text)))
         .check(matches(isDisplayed()))
     }
   }

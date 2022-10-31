@@ -175,7 +175,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_general_view_administrator_controls_edit_account_text
+        stringIdToMatch = R.string.administrator_controls_general_view_administrator_controls_edit_account_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
@@ -200,7 +200,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_download_permissions_view_download_permissions_label_text
+        stringIdToMatch = R.string.administrator_controls_download_permissions_view_download_permissions_label_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -226,7 +226,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_download_permissions_view_download_permissions_label_text
+        stringIdToMatch = R.string.administrator_controls_download_permissions_view_download_permissions_label_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -265,7 +265,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
-        stringIdToMatch = R.string.administrator_controls_activity_label_title_account_actions_view_administrator_controls_log_out_text
+        stringIdToMatch = R.string.administrator_controls_account_actions_view_administrator_controls_log_out_text
       )
     }
   }
