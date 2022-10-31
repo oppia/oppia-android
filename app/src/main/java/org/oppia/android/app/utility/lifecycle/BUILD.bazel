@@ -1,0 +1,18 @@
+"""
+Constructs for setting up views for injection in the Dagger graph.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "lifecycle_safe_timer_factory",
+    srcs = [
+        "LifecycleSafeTimerFactory.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = [
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+dagger_rules()
