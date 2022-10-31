@@ -5,6 +5,7 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.model.DragAndDropRawAnswer
+import org.oppia.android.app.model.GroupSubtitledHtml
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -25,7 +26,6 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
-import org.oppia.android.app.model.GroupSubtitledHtml
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -46,11 +46,11 @@ class DragAndDropSortInteractionViewModel private constructor(
     interaction.customizationArgsMap["allowMultipleItemsInSamePosition"]?.boolValue ?: false
   }
   private val choiceSubtitledHtmls: List<SubtitledHtml> by lazy {
-      interaction.customizationArgsMap["choices"]
-        ?.schemaObjectList
-        ?.schemaObjectList
-        ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
-        ?: listOf()
+    interaction.customizationArgsMap["choices"]
+      ?.schemaObjectList
+      ?.schemaObjectList
+      ?.map { schemaObject -> schemaObject.customSchemaValue.subtitledHtml }
+      ?: listOf()
   }
 
   private val contentIdHtmlMap: Map<String, String> =
@@ -77,7 +77,7 @@ class DragAndDropSortInteractionViewModel private constructor(
           )
         }
       }
-    Log.d("TAGG", "INIT: "+rawUserAnswer.dragAndDrop.listOfGroupSubtitledHtmlList)
+    Log.d("TAGG", "INIT: " + rawUserAnswer.dragAndDrop.listOfGroupSubtitledHtmlList)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
