@@ -18,6 +18,15 @@ kt_jvm_library(
 )
 
 kt_jvm_library(
+    name = "file_utils",
+    srcs = ["FileUtils.kt"],
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        "//third_party:com_google_protobuf_protobuf-javalite",
+    ],
+)
+
+kt_jvm_library(
     name = "git_client",
     srcs = [
         "GitClient.kt",
@@ -34,8 +43,13 @@ kt_jvm_library(
         "CommandExecutor.kt",
         "CommandExecutorImpl.kt",
         "CommandResult.kt",
+        "TaskRunner.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [
+        ":file_utils",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+    ],
 )
 
 kt_jvm_library(

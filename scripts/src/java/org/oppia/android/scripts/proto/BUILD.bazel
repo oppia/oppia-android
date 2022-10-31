@@ -21,6 +21,21 @@ java_lite_proto_library(
 )
 
 oppia_proto_library(
+    name = "device_configurations_proto",
+    srcs = ["device_configurations.proto"],
+    visibility = [
+        "//:oppia_e2e_testing_visibility",
+        "//scripts:oppia_script_binary_visibility",
+    ],
+)
+
+java_lite_proto_library(
+    name = "device_configurations_java_proto_lite",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":device_configurations_proto"],
+)
+
+oppia_proto_library(
     name = "filename_pattern_validation_checks_proto",
     srcs = ["filename_pattern_validation_checks.proto"],
     visibility = ["//scripts:oppia_script_binary_visibility"],

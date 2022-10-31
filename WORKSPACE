@@ -15,6 +15,20 @@ android_sdk_repository(
     build_tools_version = "29.0.2",
 )
 
+# Include Skylib.
+http_archive(
+    name = "bazel_skylib",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["skylib"]["sha"],
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/{0}/bazel-skylib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["skylib"]["version"]),
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/{0}/bazel-skylib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["skylib"]["version"]),
+    ],
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
 # Add support for JVM rules: https://github.com/bazelbuild/rules_jvm_external
 http_archive(
     name = "rules_jvm_external",
@@ -190,3 +204,13 @@ maven_install(
 load("@maven//:defs.bzl", "pinned_maven_install")
 
 pinned_maven_install()
+
+load("//third_party:system_images.bzl", "provide_system_image_archives", "system_image_archive")
+load("//third_party:system_images_list.bzl", "SYSTEM_IMAGES_LIST")
+
+provide_system_image_archives()
+
+[
+    system_image_archive(path, os_split_system_image)
+    for path, os_split_system_image in SYSTEM_IMAGES_LIST.items()
+]

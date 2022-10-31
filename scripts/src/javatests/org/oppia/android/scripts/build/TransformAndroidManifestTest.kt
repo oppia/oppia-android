@@ -62,7 +62,8 @@ class TransformAndroidManifestTest {
 
   @Before
   fun setUp() {
-    testGitRepository = TestGitRepository(tempFolder, CommandExecutorImpl())
+    testGitRepository =
+      TestGitRepository(tempFolder, CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder())
   }
 
   @Test

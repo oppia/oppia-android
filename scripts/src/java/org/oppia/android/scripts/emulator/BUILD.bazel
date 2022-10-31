@@ -1,0 +1,79 @@
+"""
+Libraries corresponding to setting up and managing Android emulators through Bazel.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "adb_client",
+    testonly = True,
+    srcs = ["AdbClient.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "avd_client",
+    testonly = True,
+    srcs = [
+        "AndroidVirtualDevice.kt",
+        "AvdClient.kt",
+    ],
+    deps = [
+        ":emulator_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:file_utils",
+        "//scripts/src/java/org/oppia/android/scripts/proto:device_configurations_java_proto_lite",
+        "//third_party:de_waldheinz_fat32-lib",
+        "//third_party:org_anarres_parallelgzip",
+        "//third_party:org_apache_commons_commons-compress",
+    ],
+)
+
+kt_jvm_library(
+    name = "create_avd_lib",
+    testonly = True,
+    srcs = ["CreateAvd.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":adb_client",
+        ":avd_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/proto:device_configurations_java_proto_lite",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-cli-jvm",
+    ],
+)
+
+kt_jvm_library(
+    name = "emulator_client",
+    testonly = True,
+    srcs = ["EmulatorClient.kt"],
+    deps = [
+        ":adb_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+    ],
+)
+
+kt_jvm_library(
+    name = "run_emulator_lib",
+    testonly = True,
+    srcs = ["RunEmulator.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        ":adb_client",
+        ":avd_client",
+        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
+        "//scripts/src/java/org/oppia/android/scripts/proto:device_configurations_java_proto_lite",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-cli-jvm",
+    ],
+)
+
+kt_jvm_library(
+    name = "system_image_list_generator_lib",
+    testonly = True,
+    srcs = ["SystemImageListGenerator.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/proto:device_configurations_java_proto_lite",
+    ],
+)

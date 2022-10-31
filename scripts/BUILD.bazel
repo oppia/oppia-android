@@ -7,11 +7,18 @@ load("@rules_java//java:defs.bzl", "java_binary")
 load(
     "//scripts:script_assets.bzl",
     "generate_accessibility_label_assets_list_from_text_protos",
+    "generate_available_system_images_text_proto",
+    "generate_device_hardware_profiles_text_protos",
     "generate_kdoc_validity_assets_list_from_text_protos",
     "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
     "generate_test_file_assets_list_from_text_protos",
     "generate_todo_assets_list_from_text_protos",
+)
+
+# TODO: Add documentation.
+exports_files(
+    ["assets/device_hardware_profiles.textproto"],
 )
 
 # Visibility for libraries that should be accessible to script tests.
@@ -238,5 +245,52 @@ java_binary(
     ],
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/build:transform_android_manifest_lib",
+    ],
+)
+
+DEVICE_HARDWARE_PROFILES_ASSETS = generate_device_hardware_profiles_text_protos(
+    name = "device_hardware_profiles",
+    device_hardware_profiles = ["device_hardware_profiles"],
+)
+
+java_binary(
+    name = "create_avd",
+    testonly = True,
+    data = DEVICE_HARDWARE_PROFILES_ASSETS,
+    main_class = "org.oppia.android.scripts.emulator.CreateAvdKt",
+    visibility = [
+        "//:oppia_e2e_testing_visibility",
+        "//:oppia_testing_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/emulator:create_avd_lib",
+    ],
+)
+
+java_binary(
+    name = "run_emulator",
+    testonly = True,
+    data = DEVICE_HARDWARE_PROFILES_ASSETS,
+    main_class = "org.oppia.android.scripts.emulator.RunEmulatorKt",
+    visibility = [
+        "//:oppia_e2e_testing_visibility",
+        "//:oppia_testing_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/emulator:run_emulator_lib",
+    ],
+)
+
+AVAILABLE_SYSTEM_IMAGES_ASSET = generate_available_system_images_text_proto(
+    name = "available_system_images",
+)
+
+java_binary(
+    name = "system_image_list_generator",
+    testonly = True,
+    data = [AVAILABLE_SYSTEM_IMAGES_ASSET],
+    main_class = "org.oppia.android.scripts.emulator.SystemImageListGeneratorKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/emulator:system_image_list_generator_lib",
     ],
 )

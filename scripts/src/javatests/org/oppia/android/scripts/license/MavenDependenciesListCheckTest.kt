@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
+import org.oppia.android.scripts.common.CommandExecutor
 
 /** Tests for [MavenDependenciesListCheck]. */
 class MavenDependenciesListCheckTest {
@@ -83,7 +84,7 @@ class MavenDependenciesListCheckTest {
   private val originalOut: PrintStream = System.out
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
-  private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val commandExecutorBuilder by lazy { initializeExecutorBuilderWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Rule
@@ -113,7 +114,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -189,7 +190,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -253,7 +254,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -329,7 +330,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -408,7 +409,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -484,7 +485,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -562,7 +563,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -640,7 +641,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -720,7 +721,7 @@ class MavenDependenciesListCheckTest {
 
     MavenDependenciesListCheck(
       mockLicenseFetcher,
-      commandExecutor
+      commandExecutorBuilder
     ).main(
       arrayOf(
         "${tempFolder.root}",
@@ -773,7 +774,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -822,7 +823,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -877,7 +878,7 @@ class MavenDependenciesListCheckTest {
     val exception = assertThrows(Exception::class) {
       MavenDependenciesListCheck(
         mockLicenseFetcher,
-        commandExecutor
+        commandExecutorBuilder
       ).main(
         arrayOf(
           "${tempFolder.root}",
@@ -1023,8 +1024,9 @@ class MavenDependenciesListCheckTest {
     )
   }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  private fun initializeExecutorBuilderWithLongProcessWaitTime(): CommandExecutor.Builder {
+    val builder = CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
+    return builder.setProcessTimeout(timeout = 5, timeoutUnit = TimeUnit.MINUTES)
   }
 
   /** Returns a mock for the [LicenseFetcher]. */

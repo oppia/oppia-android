@@ -10,7 +10,6 @@ kt_jvm_test(
     size = "large",
     srcs = ["GenerateMavenDependenciesListTest.kt"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/maven:generate_maven_dependencies_list_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",

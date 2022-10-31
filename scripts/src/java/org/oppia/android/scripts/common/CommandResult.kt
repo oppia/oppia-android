@@ -1,6 +1,6 @@
 package org.oppia.android.scripts.common
 
-/** The result of executing a command using [CommandExecutorImpl.executeCommand]. */
+/** The result of executing a command using [CommandExecutorImpl.executeCommandInForeground]. */
 data class CommandResult(
   /** The exit code of the application. */
   val exitCode: Int,
@@ -10,4 +10,13 @@ data class CommandResult(
   val errorOutput: List<String>,
   /** The fully-formed command line executed by the application to achieve this result. */
   val command: List<String>,
-)
+) {
+  val commandLine: String
+    get() = command.joinToString(separator = " ")
+
+  val outputLines: String
+    get() = output.joinToString(separator = "\n")
+
+  val errorLines: String
+    get() = errorOutput.joinToString(separator = "\n")
+}

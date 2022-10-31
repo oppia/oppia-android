@@ -10,7 +10,6 @@ import org.junit.rules.TemporaryFolder
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
-import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.proto.DirectLinkOnly
 import org.oppia.android.scripts.proto.ExtractedCopyLink
@@ -23,7 +22,6 @@ import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
-import java.util.concurrent.TimeUnit
 
 /** Tests for [GenerateMavenDependenciesList]. */
 class GenerateMavenDependenciesListTest {
@@ -68,7 +66,6 @@ class GenerateMavenDependenciesListTest {
   private val originalOut: PrintStream = System.out
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
-  private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
 
   @Rule
@@ -97,10 +94,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -181,10 +175,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -205,10 +196,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -247,10 +235,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -314,10 +299,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -356,10 +338,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -424,10 +403,7 @@ class GenerateMavenDependenciesListTest {
       listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
     setUpBazelEnvironment(coordsList)
 
-    GenerateMavenDependenciesList(
-      mockLicenseFetcher,
-      commandExecutor
-    ).main(
+    GenerateMavenDependenciesList(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
@@ -517,10 +493,7 @@ class GenerateMavenDependenciesListTest {
     val coordsList = listOf(DEP_WITH_DIRECT_LINK_ONLY_LICENSE, DEP_WITH_NO_LICENSE)
     setUpBazelEnvironment(coordsList)
 
-    GenerateMavenDependenciesList(
-      mockLicenseFetcher,
-      commandExecutor
-    ).main(
+    GenerateMavenDependenciesList(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
@@ -615,10 +588,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -678,10 +648,7 @@ class GenerateMavenDependenciesListTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    GenerateMavenDependenciesList(
-      mockLicenseFetcher,
-      commandExecutor
-    ).main(
+    GenerateMavenDependenciesList(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
@@ -791,10 +758,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -916,10 +880,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -1029,10 +990,7 @@ class GenerateMavenDependenciesListTest {
     setUpBazelEnvironment(coordsList)
 
     val exception = assertThrows(Exception::class) {
-      GenerateMavenDependenciesList(
-        mockLicenseFetcher,
-        commandExecutor
-      ).main(
+      GenerateMavenDependenciesList(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}",
           "scripts/assets/maven_install.json",
@@ -1148,10 +1106,7 @@ class GenerateMavenDependenciesListTest {
     )
     setUpBazelEnvironment(coordsList)
 
-    GenerateMavenDependenciesList(
-      mockLicenseFetcher,
-      commandExecutor
-    ).main(
+    GenerateMavenDependenciesList(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
@@ -1397,10 +1352,6 @@ class GenerateMavenDependenciesListTest {
       }  
       """.trimIndent()
     )
-  }
-
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
   }
 
   /** Returns a mock for the [LicenseFetcher]. */

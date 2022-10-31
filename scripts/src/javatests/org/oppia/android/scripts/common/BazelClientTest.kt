@@ -14,6 +14,9 @@ import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.mockito.anyOrNull
 import java.io.File
 import java.util.concurrent.TimeUnit
+import org.mockito.Mockito.anyLong
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.mock
 
 /**
  * Tests for [BazelClient].
@@ -25,19 +28,14 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
-  @Rule
-  @JvmField
-  var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] var tempFolder = TemporaryFolder()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @Mock lateinit var mockCommandExecutor: CommandExecutor
 
-  private val commandExecutor by lazy { initiazeCommandExecutorWithLongProcessWaitTime() }
+  private val commandExecutorBuilder by lazy { initializeExecutorBuilderWithLongProcessWaitTime() }
+  private val mockCommandExecutorBuilder by lazy { initializeMockCommandExecutorBuilder() }
   private lateinit var testBazelWorkspace: TestBazelWorkspace
-
-  @Mock
-  lateinit var mockCommandExecutor: CommandExecutor
 
   @Before
   fun setUp() {
@@ -96,7 +94,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTestTargets_resultsJumbled_returnsCorrectTestTargets() {
-    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutorBuilder)
     fakeCommandExecutorWithResult(singleLine = "//:FirstTest//:SecondTest")
 
     val testTargets = bazelClient.retrieveAllTestTargets()
@@ -147,7 +145,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveBazelTargets_resultsJumbled_returnsCorrectBazelTargets() {
-    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutorBuilder)
     fakeCommandExecutorWithResult(singleLine = "//:FirstTest.kt//:SecondTest.kt")
 
     val fileTargets = bazelClient.retrieveBazelTargets(listOf("FirstTest.kt", "SecondTest.kt"))
@@ -216,7 +214,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveRelatedTestTargets_resultsJumbled_returnsCorrectTestTargets() {
-    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutorBuilder)
     fakeCommandExecutorWithResult(singleLine = "//:FirstTest//:SecondTest")
 
     val testTargets =
@@ -315,7 +313,7 @@ class BazelClientTest {
 
   @Test
   fun testRetrieveTransitiveTestTargets_resultsJumbled_returnsCorrectTestTargets() {
-    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutorBuilder)
     fakeCommandExecutorWithResult(singleLine = "//:FirstTest//:SecondTest")
 
     val testTargets = bazelClient.retrieveTransitiveTestTargets(listOf("WORKSPACE"))
@@ -341,7 +339,7 @@ class BazelClientTest {
       artifactName = "com.android.support:support-annotations:28.0.0",
       buildFile = thirdPartyBuild
     )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutorBuilder)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
@@ -371,7 +369,7 @@ class BazelClientTest {
       artifactName = "com.android.support:support-annotations:28.0.0",
       buildFile = testBazelWorkspace.rootBuildFile
     )
-    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    val bazelClient = BazelClient(tempFolder.root, commandExecutorBuilder)
     val thirdPartyDependenciesList =
       bazelClient.retrieveThirdPartyMavenDepsListForBinary("//:test_oppia")
 
@@ -384,15 +382,21 @@ class BazelClientTest {
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
     // circumstances where they occur, and the only way to guarantee this happens in the test
     // environment is to force the command output.
-    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
-      .thenReturn(
-        CommandResult(
-          exitCode = 0,
-          output = listOf(singleLine),
-          errorOutput = listOf(),
-          command = listOf()
-        )
+    `when`(
+      mockCommandExecutor.executeCommandInForeground(
+        anyOrNull(),
+        anyOrNull(),
+        stdoutRedirection = anyOrNull(),
+        stderrRedirection = anyOrNull()
       )
+    ).thenReturn(
+      CommandResult(
+        exitCode = 0,
+        output = listOf(singleLine),
+        errorOutput = listOf(),
+        command = listOf()
+      )
+    )
   }
 
   private fun createAndroidLibrary(artifactName: String, buildFile: File) {
@@ -463,8 +467,17 @@ class BazelClientTest {
     return secondNewFile
   }
 
-  private fun initiazeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  private fun initializeExecutorBuilderWithLongProcessWaitTime(): CommandExecutor.Builder {
+    val builder = CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
+    return builder.setProcessTimeout(timeout = 5, timeoutUnit = TimeUnit.MINUTES)
+  }
+
+  private fun initializeMockCommandExecutorBuilder(): CommandExecutor.Builder {
+    return mock(CommandExecutor.Builder::class.java).also {
+      `when`(it.setProcessTimeout(anyLong(), anyOrNull())).thenReturn(it)
+      `when`(it.setEnvironmentVariable(anyString(), anyString())).thenReturn(it)
+      `when`(it.create(anyOrNull())).thenReturn(mockCommandExecutor)
+    }
   }
 
   private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {

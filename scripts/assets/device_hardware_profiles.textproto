@@ -1,0 +1,16 @@
+# Use https://www.gsmarena.com/search.php3 to find the necessary information when adding new
+# devices.
+device_hardware_profile {
+  # Reference: https://www.gsmarena.com/google_pixel_xl-8345.php.
+  name: "pixel_xl"
+  diagonal_size_inches: 5.5
+  resolution_width_px: 1440
+  resolution_height_px: 2560
+}
+device_hardware_profile {
+  # Reference: https://www.gsmarena.com/samsung_google_nexus_10_p8110-5084.php.
+  name: "nexus_10"
+  diagonal_size_inches: 10.1
+  resolution_width_px: 2560
+  resolution_height_px: 1600
+}

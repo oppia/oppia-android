@@ -1,7 +1,5 @@
 package org.oppia.android.scripts.maven
 
-import org.oppia.android.scripts.common.CommandExecutor
-import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.license.LicenseFetcherImpl
 import org.oppia.android.scripts.license.MavenDependenciesRetriever
@@ -31,10 +29,7 @@ fun main(args: Array<String>) {
 }
 
 /** Wrapper class to pass dependencies to be utilized by the the main method. */
-class GenerateMavenDependenciesList(
-  private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
-) {
+class GenerateMavenDependenciesList(private val licenseFetcher: LicenseFetcher) {
   /**
    * Compiles a list of third-party maven dependencies along with their license links on
    * which Oppia Android depends and write them in maven_dependencies.textproto.

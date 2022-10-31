@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
+import org.oppia.android.scripts.common.CommandExecutor
 
 /** Tests for [MavenDependenciesRetriever]. */
 class MavenDependenciesRetrieverTest {
@@ -77,7 +78,7 @@ class MavenDependenciesRetrieverTest {
   private val originalOut: PrintStream = System.out
 
   private val mockLicenseFetcher by lazy { initializeLicenseFetcher() }
-  private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val commandExecutorBuilder by lazy { initializeExecutorBuilderWithLongProcessWaitTime() }
   private val mavenDependenciesRetriever by lazy {
     initializeMavenDependenciesRetriever()
   }
@@ -1225,8 +1226,9 @@ class MavenDependenciesRetrieverTest {
     )
   }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES)
+  private fun initializeExecutorBuilderWithLongProcessWaitTime(): CommandExecutor.Builder {
+    val builder = CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
+    return builder.setProcessTimeout(timeout = 5, timeoutUnit = TimeUnit.MINUTES)
   }
 
   /** Returns a mock for the [LicenseFetcher]. */
@@ -1303,7 +1305,7 @@ class MavenDependenciesRetrieverTest {
     return MavenDependenciesRetriever(
       "${tempFolder.root}",
       mockLicenseFetcher,
-      commandExecutor
+      commandExecutorBuilder
     )
   }
 }

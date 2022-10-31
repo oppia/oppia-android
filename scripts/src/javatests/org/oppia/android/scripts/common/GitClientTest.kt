@@ -10,6 +10,7 @@ import org.oppia.android.scripts.testing.TestGitRepository
 import org.oppia.android.testing.assertThrows
 import java.io.File
 import java.lang.IllegalStateException
+import org.oppia.android.scripts.common.CommandExecutor.OutputRedirectionStrategy.TRACK_AS_OUTPUT
 
 /**
  * Tests for [GitClient].
@@ -25,11 +26,13 @@ class GitClientTest {
   var tempFolder = TemporaryFolder()
 
   private lateinit var testGitRepository: TestGitRepository
-  private val commandExecutor by lazy { CommandExecutorImpl() }
+  private val commandExecutorBuilder by lazy {
+    CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
+  }
 
   @Before
   fun setUp() {
-    testGitRepository = TestGitRepository(tempFolder, commandExecutor)
+    testGitRepository = TestGitRepository(tempFolder, commandExecutorBuilder)
   }
 
   @After
@@ -226,8 +229,9 @@ class GitClientTest {
 
   private fun getMostRecentCommitOnCurrentBranch(): String {
     // See https://stackoverflow.com/a/949391 for a reference to validate that this is correct.
-    return commandExecutor.executeCommand(
-      tempFolder.root, "git", "rev-parse", "HEAD"
+    val executor = commandExecutorBuilder.create(tempFolder.root)
+    return executor.executeCommandInForeground(
+      "git", "rev-parse", "HEAD", stderrRedirection = TRACK_AS_OUTPUT
     ).output.single()
   }
 

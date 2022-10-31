@@ -3,6 +3,7 @@ package org.oppia.android.scripts.common
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.Locale
+import org.oppia.android.scripts.common.CommandExecutor.OutputRedirectionStrategy.TRACK_AS_OUTPUT
 
 /**
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
@@ -10,8 +11,11 @@ import java.util.Locale
  */
 class BazelClient(
   private val rootDirectory: File,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val commandExecutorBuilder: CommandExecutor.Builder =
+    CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
 ) {
+  private val commandExecutor by lazy { commandExecutorBuilder.create(rootDirectory) }
+
   /** Returns all Bazel test targets in the workspace. */
   fun retrieveAllTestTargets(): List<String> {
     return correctPotentiallyBrokenTargetNames(
@@ -172,10 +176,7 @@ class BazelClient(
     vararg arguments: String,
     allowPartialFailures: Boolean = false
   ): List<String> {
-    val result =
-      commandExecutor.executeCommand(
-        rootDirectory, command = "bazel", *arguments, includeErrorOutput = false
-      )
+    val result = commandExecutor.executeCommandInForeground(command = "bazel", *arguments)
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to
     // valid targets. Note that this COULD result in legitimate issues being ignored, but it's

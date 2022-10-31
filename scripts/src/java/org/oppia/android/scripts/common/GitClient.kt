@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.common
 
 import java.io.File
+import org.oppia.android.scripts.common.CommandExecutor.OutputRedirectionStrategy.TRACK_AS_OUTPUT
 
 /**
  * General utility for interfacing with a Git repository located at the specified working directory
@@ -11,7 +12,9 @@ class GitClient(
   private val workingDirectory: File,
   private val baseDevelopBranchReference: String
 ) {
-  private val commandExecutor by lazy { CommandExecutorImpl() }
+  private val commandExecutor by lazy {
+    CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder().create(workingDirectory)
+  }
 
   /** The name of the current branch of the local Git repository. */
   val currentBranch: String by lazy { retrieveCurrentBranch() }
@@ -65,8 +68,10 @@ class GitClient(
 
   private fun executeGitCommand(argumentsLine: String): List<String> {
     val result =
-      commandExecutor.executeCommand(
-        workingDirectory, command = "git", *argumentsLine.split(" ").toTypedArray()
+      commandExecutor.executeCommandInForeground(
+        command = "git",
+        *argumentsLine.split(" ").toTypedArray(),
+        stderrRedirection = TRACK_AS_OUTPUT
       )
     check(result.exitCode == 0) {
       "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +

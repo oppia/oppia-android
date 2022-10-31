@@ -8,6 +8,12 @@ Note that:
 
 exports_files(["src/javatests/AndroidManifest.xml"])
 
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("//model:text_proto_assets.bzl", "gen_binary_proto_from_text")
+load("//third_party:system_images.bzl", "image_path_to_target_name")
+load("//third_party:system_images_list.bzl", "SYSTEM_IMAGES_LIST")
+load(":oppia_instrumentation_test.bzl", "create_runnable_emulator", "define_android_virtual_device")
+
 # Visibility for end-to-end utilities & infrastructure.
 package_group(
     name = "instrumentation_infrastructure_visibility",
@@ -22,6 +28,42 @@ package_group(
     packages = [
         "//instrumentation/src/javatests/...",
     ],
+)
+
+bool_flag(
+    name = "disable_emulator_rendering",
+    build_setting_default = 0,
+)
+
+bool_flag(
+    name = "disable_emulator_acceleration",
+    build_setting_default = 0,
+)
+
+bool_flag(
+    name = "disable_emulator_fastboot",
+    build_setting_default = 0,
+)
+
+config_setting(
+    name = "disable_emulator_rendering_config",
+    flag_values = {
+        ":disable_emulator_rendering": "true",
+    },
+)
+
+config_setting(
+    name = "disable_emulator_acceleration_config",
+    flag_values = {
+        ":disable_emulator_acceleration": "true",
+    },
+)
+
+config_setting(
+    name = "disable_emulator_fastboot_config",
+    flag_values = {
+        ":disable_emulator_fastboot": "true",
+    },
 )
 
 # Used for end-to-end tests
@@ -45,3 +87,48 @@ android_binary(
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
     ],
 )
+
+device_hardware_profile_binary_proto = gen_binary_proto_from_text(
+    name = "generate_binary_proto_for_text_proto_device_hardware_profiles",
+    input_file = "//scripts:assets/device_hardware_profiles.textproto",
+    output_file = "assets/device_hardware_profiles.pb",
+    proto_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/proto:device_configurations_proto",
+    ],
+    proto_type_name = "proto.DeviceHardwareProfiles",
+)
+
+# keep sorted
+AVAILABLE_HARDWARE_PROFILES = [
+    "nexus_10",
+    "pixel_xl",
+]
+
+[
+    define_android_virtual_device(
+        name = "%s_%s_avd" % (
+            image_path_to_target_name(path),
+            hw_profile_name,
+        ),
+        hardware_profile = hw_profile_name,
+        hardware_profiles_proto = device_hardware_profile_binary_proto,
+        target_system_image_files = "@%s//:package_files" % image_path_to_target_name(path),
+    )
+    for path in SYSTEM_IMAGES_LIST.keys()
+    for hw_profile_name in AVAILABLE_HARDWARE_PROFILES
+]
+
+[
+    create_runnable_emulator(
+        name = "emulator_%s_%s" % (
+            image_path_to_target_name(path),
+            hw_profile_name,
+        ),
+        avd_bundle = ":%s_%s_avd" % (
+            image_path_to_target_name(path),
+            hw_profile_name,
+        ),
+    )
+    for path in SYSTEM_IMAGES_LIST.keys()
+    for hw_profile_name in AVAILABLE_HARDWARE_PROFILES
+]

@@ -5,6 +5,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandResult
 import java.io.File
+import org.oppia.android.scripts.common.CommandExecutor.OutputRedirectionStrategy.TRACK_AS_OUTPUT
 
 /**
  * Test utility for interacting with a local Git repository on the filesystem, located in the
@@ -16,9 +17,10 @@ import java.io.File
  */
 class TestGitRepository(
   private val temporaryRootFolder: TemporaryFolder,
-  private val commandExecutor: CommandExecutor
+  private val commandExecutorBuilder: CommandExecutor.Builder
 ) {
   private val rootDirectory by lazy { temporaryRootFolder.root }
+  private val commandExecutor by lazy { commandExecutorBuilder.create(rootDirectory) }
 
   /** Creates the repository using git init. */
   fun init() {
@@ -88,11 +90,18 @@ class TestGitRepository(
 
   /** Returns the result of git status. */
   fun status(): String {
-    return commandExecutor.executeCommand(rootDirectory, "git", "status").output.joinOutputString()
+    return commandExecutor.executeCommandInForeground(
+      "git", "status", stderrRedirection = TRACK_AS_OUTPUT
+    ).output.joinOutputString()
   }
 
   private fun executeSuccessfulGitCommand(vararg arguments: String) {
-    verifySuccessfulCommand(commandExecutor.executeCommand(rootDirectory, "git", *arguments))
+    verifySuccessfulCommand(
+      commandExecutor.executeCommandInForeground(
+        "git",
+        *arguments,
+        stderrRedirection = TRACK_AS_OUTPUT)
+    )
   }
 
   private fun verifySuccessfulCommand(result: CommandResult) {

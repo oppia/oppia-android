@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Represents an Android device hardware profile with the necessary information to be able to
+// emulate the resolution and display density of that profile. See this reference for display
+// densities of different devices: https://material.io/resources/devices/.
+message DeviceHardwareProfile {
+  // A human-readable name to represent the device hardware profile.
+  string name = 1;
+
+  // The diagonal screen size, in US inches, per the phone's specification (one can use
+  // https://www.gsmarena.com/search.php3 to find this). This is used in conjunction with the
+  // device's resolution to compute its display density.
+  double diagonal_size_inches = 2;
+
+  // The device's resolution width, in pixels.
+  int32 resolution_width_px = 3;
+
+  // The device's resolution height, in pixels.
+  int32 resolution_height_px = 4;
+}
+
+message DeviceHardwareProfiles {
+  repeated DeviceHardwareProfile device_hardware_profile = 1;
+}
+
+message AvailableSystemImage {
+  string url = 1;
+  string sha1 = 2;
+  string sha256 = 3;
+}
+
+message OsSplitSystemImage {
+  oneof os_type {
+    AvailableSystemImage linux = 1;
+    AvailableSystemImage mac_osx = 2;
+    AvailableSystemImage windows = 3;
+  }
+}
+
+message OsSplitSystemImages {
+  repeated OsSplitSystemImage os_split_images = 1;
+}
+
+message AvailableSystemImages {
+  map<string, OsSplitSystemImages> available_system_image = 1;
+  repeated string requested_system_image = 2;
+}

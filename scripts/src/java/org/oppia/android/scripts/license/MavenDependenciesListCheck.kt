@@ -33,7 +33,8 @@ fun main(args: Array<String>) {
  */
 class MavenDependenciesListCheck(
   private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val commandExecutorBuilder: CommandExecutor.Builder =
+    CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
 ) {
 
   /**
@@ -48,7 +49,7 @@ class MavenDependenciesListCheck(
     val mavenDependenciesRetriever = MavenDependenciesRetriever(
       pathToRoot,
       licenseFetcher,
-      commandExecutor
+      commandExecutorBuilder
     )
 
     val bazelQueryDepsList =

@@ -41,7 +41,8 @@ class ComputeAffectedTestsTest {
   @Before
   fun setUp() {
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    testGitRepository = TestGitRepository(tempFolder, CommandExecutorImpl())
+    testGitRepository =
+      TestGitRepository(tempFolder, CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder())
 
     // Redirect script output for testing purposes.
     pendingOutputStream = ByteArrayOutputStream()

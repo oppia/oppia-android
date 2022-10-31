@@ -12,6 +12,11 @@ build --host_force_python=PY2
 # Show all test output by default (for better debugging).
 test --test_output=all
 
+# Custom configurations that can be used to tweak emulator start-up behavior.
+build --flag_alias=disable_emulator_rendering=//instrumentation:disable_emulator_rendering
+build --flag_alias=disable_emulator_acceleration=//instrumentation:disable_emulator_acceleration
+build --flag_alias=disable_emulator_fastboot=//instrumentation:disable_emulator_fastboot
+
 # These configurations come from https://bazel.build/docs/android-instrumentation-test#running-tests
 # to make it easier to run instrumentation tests on a headless emulator, displayed emulator, or
 # local device (which could be either a physical device or a physical device).

@@ -2,7 +2,8 @@
 Macro for retrieving the proto assets for script checks.
 """
 
-load("//model:text_proto_assets.bzl", "generate_proto_binary_assets")
+load("//model:text_proto_assets.bzl", "gen_binary_proto_from_text", "generate_proto_binary_assets")
+load("//third_party:system_images_list.bzl", "REQUESTED_SYSTEM_IMAGE_LIST", "SYSTEM_IMAGES_LIST")
 
 def generate_regex_assets_list_from_text_protos(
         name,
@@ -159,4 +160,91 @@ def generate_todo_assets_list_from_text_protos(
         asset_dir = "assets",
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
+    )
+
+def generate_device_hardware_profiles_text_protos(
+        name,
+        device_hardware_profiles):
+    """
+    Converts a single list of text proto assets to binary.
+
+    Args:
+        name: str. The name of this generation instance. This will be a prefix for derived targets.
+        device_hardware_profiles: list of str. The list of textprotos to convert.
+
+    Returns:
+        list of str. The list of new proto binary asset files that were generated.
+    """
+    return generate_proto_binary_assets(
+        name = name,
+        names = device_hardware_profiles,
+        proto_dep_name = "device_configurations",
+        proto_type_name = "DeviceHardwareProfiles",
+        name_prefix = "device_hardware_profiles",
+        asset_dir = "assets",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
+        proto_package = "proto",
+    )
+
+def _generate_available_system_images_text_proto_impl(ctx):
+    output_file = ctx.outputs.output_file
+
+    # Generate a parsable textproto based on the available system images list.
+    text_proto_lines = []
+    for requested_image_path in REQUESTED_SYSTEM_IMAGE_LIST:
+        text_proto_lines.append("requested_system_image: \"%s\"" % requested_image_path)
+    for path, os_split_definitions in SYSTEM_IMAGES_LIST.items():
+        text_proto_lines.append("available_system_image {")
+        text_proto_lines.append("  key: \"%s\"" % path)
+        text_proto_lines.append("  value {")
+        for os_name, definition in os_split_definitions.items():
+            text_proto_lines.append("    os_split_images {")
+            text_proto_lines.append("      %s {" % os_name)
+            text_proto_lines.append("        url: \"%s\"" % definition["url"])
+            text_proto_lines.append("        sha1: \"%s\"" % definition["sha1"])
+            text_proto_lines.append("        sha256: \"%s\"" % definition["sha256"])
+            text_proto_lines.append("      }")
+            text_proto_lines.append("    }")
+        text_proto_lines.append("  }")
+        text_proto_lines.append("}")
+    text_proto_contents = "\n".join(text_proto_lines)
+    ctx.actions.write(output_file, text_proto_contents)
+
+    return DefaultInfo(
+        files = depset([output_file]),
+        runfiles = ctx.runfiles(files = [output_file]),
+    )
+
+_generate_available_system_images_text_proto = rule(
+    attrs = {
+        "output_file": attr.output(
+            mandatory = True,
+        ),
+    },
+    implementation = _generate_available_system_images_text_proto_impl,
+)
+
+def generate_available_system_images_text_proto(name):
+    """
+    Generates a textproto for available system images, then converts it to a binary proto.
+
+    Args:
+        name: str. The name of this generation instance. This will be a prefix for derived targets.
+
+    Returns:
+        str. The path to the newly generated binary file.
+    """
+    _generate_available_system_images_text_proto(
+        name = "%s_generate_textproto" % name,
+        output_file = "%s_generated.textproto" % name,
+    )
+
+    return gen_binary_proto_from_text(
+        name = "generate_binary_proto_for_text_proto_%s" % name,
+        input_file = "%s_generate_textproto" % name,
+        output_file = "%s.pb" % name,
+        proto_deps = [
+            "//scripts/src/java/org/oppia/android/scripts/proto:device_configurations_proto",
+        ],
+        proto_type_name = "proto.AvailableSystemImages",
     )

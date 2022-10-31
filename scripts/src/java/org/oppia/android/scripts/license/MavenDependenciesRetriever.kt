@@ -24,9 +24,9 @@ private const val MAVEN_PREFIX = "@maven//:"
 class MavenDependenciesRetriever(
   private val rootPath: String,
   private val licenseFetcher: LicenseFetcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl()
+  private val commandExecutorBuilder: CommandExecutor.Builder =
+    CommandExecutorImpl.BuilderImpl.FactoryImpl().createBuilder()
 ) {
-
   private val bazelClient by lazy {
     initializeBazelClient(rootPath)
   }
@@ -324,6 +324,6 @@ class MavenDependenciesRetriever(
   }
 
   private fun initializeBazelClient(rootPath: String): BazelClient {
-    return BazelClient(File(rootPath), commandExecutor)
+    return BazelClient(File(rootPath), commandExecutorBuilder)
   }
 }

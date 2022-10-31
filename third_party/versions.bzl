@@ -96,14 +96,19 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "com.google.truth:truth": "0.43",
     "com.squareup.okhttp3:mockwebserver": "4.7.2",
     "com.squareup.retrofit2:retrofit-mock": "2.5.0",
+    "de.waldheinz:fat32-lib": "0.6.5",
     "javax.annotation:javax.annotation-api": "1.3.2",
     "junit:junit": "4.12",
+    "org.anarres:parallelgzip": "1.0.5",
+    "org.apache.commons:commons-compress": "1.21",
     "org.jetbrains.kotlin:kotlin-compiler-embeddable": "1.5.0",
     "org.jetbrains.kotlin:kotlin-reflect": "1.3.41",
     "org.jetbrains.kotlin:kotlin-test-junit": "1.3.72",
+    "org.jetbrains.kotlinx:kotlinx-cli-jvm": "0.3.1",
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
+    "org.mp4parser:isoparser": "1.9.27",
     "org.robolectric:annotations": "4.5",
     "org.robolectric:robolectric": "4.5",
 }
@@ -136,6 +141,10 @@ HTTP_DEPENDENCY_VERSIONS = {
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
+    },
+    "skylib": {
+        "sha": "f7be3474d42aae265405a592bb7da8e171919d74c16f082a5457840f06054728",
+        "version": "1.2.1",
     },
 }
 
