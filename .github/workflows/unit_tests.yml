@@ -15,7 +15,7 @@ on:
 jobs:
   bazel_compute_affected_targets:
     name: Compute affected tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
       have_tests_to_run: ${{ steps.compute-test-matrix.outputs.have_tests_to_run }}
@@ -94,7 +94,7 @@ jobs:
     name: Run Bazel Test
     needs: bazel_compute_affected_targets
     if: ${{ needs.bazel_compute_affected_targets.outputs.have_tests_to_run == 'true' }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -319,7 +319,7 @@ jobs:
       name: Check Bazel Test Results
       needs: [bazel_compute_affected_targets, bazel_run_test]
       if: ${{ always() }}
-      runs-on: ubuntu-18.04
+      runs-on: ubuntu-20.04
       steps:
         # This step will be skipped if there are no tests to run, so the overall job should pass.
         - name: Check tests passed (for tests that ran)
