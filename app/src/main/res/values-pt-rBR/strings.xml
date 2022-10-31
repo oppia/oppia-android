@@ -379,9 +379,9 @@
   <string name="walkthrough_final_activity_no">Não...</string>
   <string name="walkthrough_final_activity_pick_a_different_topic">Escolha um\ntópico diferente.</string>
   <string name="walkthrough_final_activity_are_you_interested">Você está interessado em:\n%s?</string>
-  <string name="new_hint_available">Nova dica disponível</string>
-  <string name="state_fragment_activity_hint_bulb_no_new_hint_available_text">Nova dica disponível</string>
-  <string name="show_hints_and_solution">Mostrar dicas e solução</string>
+  <string name="state_activity_new_hint_available">Nova dica disponível</string>
+  <string name="state_fragment_activity_hint_bulb_no_state_activity_new_hint_available_text">Nova dica disponível</string>
+  <string name="question_player_activity_show_hints_and_solution">Mostrar dicas e solução</string>
   <string name="hint_and_solution_activity_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
   <string name="solution_summary_activity_show_solution_button_text">Exibir</string>
@@ -458,7 +458,7 @@
   <string name="help_activity_back_arrow_description">Voltar para %s</string>
   <string name="help_activity_third_party_dependencies_list">lista de dependências de terceiros</string>
   <string name="help_activity_copyright_licenses_list">lista de licenças de direitos autorais</string>
-  <string name="R.string.resume_lesson_activity_title">Retomar lição</string>
+  <string name="resume_lesson_activity_title">Retomar lição</string>
   <string name="resume_lesson_activity_resume_lesson_button_text">Continuar</string>
   <string name="resume_lesson_activity_start_over_lesson_button_text">Recomeçar</string>
   <string name="date_time_util_home_screen_good_morning_greeting_fragment">Bom dia,</string>

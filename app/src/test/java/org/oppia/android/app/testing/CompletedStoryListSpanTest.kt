@@ -108,7 +108,7 @@ class CompletedStoryListSpanTest {
     val completedStoryListRecyclerVIew =
       completedStoryListFragment?.view?.findViewWithTag<RecyclerView>(
         activity.resources.getString(
-          R.string.completed_story_list_recyclerview_tag
+          R.string.completed_story_list_activity_completed_story_list_recyclerview_tag
         )
       )
     return (completedStoryListRecyclerVIew?.layoutManager as GridLayoutManager).spanCount

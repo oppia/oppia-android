@@ -22,7 +22,7 @@
         android:theme="@style/Widget.AppCompat.ActionBar"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/R.string.resume_lesson_activity_title"
+        app:title="@string/resume_lesson_activity_title"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/color_def_white" />
     </com.google.android.material.appbar.AppBarLayout>

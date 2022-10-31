@@ -139,7 +139,7 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
     launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity {
       onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_message))
-        .check(matches(withText(R.string.general_availability_notice_dialog_message)))
+        .check(matches(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_message)))
       onDialogView(withId(R.id.ga_update_notice_dialog_message))
         .check(isCompletelyBelow(withText(R.string.general_availability_upgrade_notice_dialog_activity_title)))
     }

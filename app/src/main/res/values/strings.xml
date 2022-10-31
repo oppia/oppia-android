@@ -360,6 +360,7 @@
   <string name="question_player_activity_question_training_session_progress_finished">Complete</string>
   <string name="question_player_activity_question_training_session_finished_header_text">Finished</string>
   <string name="question_player_activity_question_training_session_finished_message">You have finished all of the questions! You can choose to play another set of questions, or return to the topic.</string>
+  <string name="question_player_activity_show_hints_and_solution">Show hints and solution</string>
   <!-- RevisionCardActivity -->
   <string name="revision_card_activity_title">Skill revision page</string>
   <string name="revision_card_activity_toolbar_title">Revision Card</string>
@@ -374,7 +375,7 @@
   <string name="reset_pin_dialog_fragment_reset_pin_enter_text">Enter a New Pin</string>
   <string name="reset_pin_dialog_fragment_reset_pin_enter_dialog_message">This PIN will be %s\'s new PIN and will be required when signing in.</string>
   <!-- ResumeLessonActivity -->
-  <string name="R.string.resume_lesson_activity_title">Resume Lesson</string>
+  <string name="resume_lesson_activity_title">Resume Lesson</string>
   <string name="resume_lesson_activity_resume_lesson_button_text">Continue</string>
   <string name="resume_lesson_activity_start_over_lesson_button_text">Start Over</string>
   <!-- SplashActivity -->
@@ -395,7 +396,8 @@
   <!-- StateActivity -->
   <string name="submit_button_item_activity_state_submit_button_text">Submit</string>
   <string name="state_fragment_activity_correct_text">Correct!</string>
-  <string name="state_fragment_activity_hint_bulb_no_new_hint_available_text">No new hint available</string>
+  <string name="state_fragment_activity_hint_bulb_no_state_activity_new_hint_available_text">No new hint available</string>
+  <string name="state_activity_new_hint_available">New hint available</string>
   <!-- StoryActivity -->
   <string name="story_activity_title">Chapter List</string>
   <string name="story_summary_activity_topic_story_progress_percentage">%s\%%</string>
@@ -459,8 +461,6 @@
   <string name="admin_settings_incorrect">Incorrect Administrator PIN. Please try again.</string>
   <string name="FAQs">FAQs</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
-  <string name="new_hint_available">New hint available</string>
-  <string name="show_hints_and_solution">Show hints and solution</string>
   <string name="hints_toolbar_title">Hints</string>
   <string name="menu_options">Options</string>
   <string name="menu_help">Help</string>

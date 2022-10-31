@@ -147,7 +147,7 @@
         android:layout_height="6dp"
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
-        android:contentDescription="@string/new_hint_available"
+        android:contentDescription="@string/state_activity_new_hint_available"
         app:srcCompat="@drawable/ic_dot_yellow_24dp"
         android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
 
@@ -156,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:contentDescription="@string/show_hints_and_solution"
+        android:contentDescription="@string/question_player_activity_show_hints_and_solution"
         app:srcCompat="@drawable/ic_hint_bulb_white_24dp" />
     </FrameLayout>
 

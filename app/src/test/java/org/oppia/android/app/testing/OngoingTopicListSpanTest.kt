@@ -111,7 +111,7 @@ class OngoingTopicListSpanTest {
 
   private fun getOngoingRecyclerView(activity: OngoingTopicListActivity): RecyclerView {
     return getOngoingTopicListFragment(activity).view?.findViewWithTag<View>(
-      activity.resources.getString(R.string.ongoing_recycler_view_tag)
+      activity.resources.getString(R.string.ongoing_list_activity_ongoing_recycler_view_tag)
     )!! as RecyclerView
   }
 

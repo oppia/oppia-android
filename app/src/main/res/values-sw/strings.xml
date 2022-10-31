@@ -357,8 +357,8 @@
   <string name="walkthrough_final_activity_no">Hapana…</string>
   <string name="walkthrough_final_activity_pick_a_different_topic">Chagua \nmada tofauti.</string>
   <string name="walkthrough_final_activity_are_you_interested">Je, unavutiwa na:\n%s?</string>
-  <string name="new_hint_available">Kidokezo kipya kinapatikana</string>
-  <string name="show_hints_and_solution">Onyesha vidokezo na suluhisho</string>
+  <string name="state_activity_new_hint_available">Kidokezo kipya kinapatikana</string>
+  <string name="question_player_activity_show_hints_and_solution">Onyesha vidokezo na suluhisho</string>
   <string name="hint_and_solution_activity_close_icon_description">Nenda juu</string>
   <string name="hints_toolbar_title">Vidokezo</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">Fichua Suluhisho</string>
@@ -422,7 +422,7 @@
   <string name="help_activity_back_arrow_description">Nenda nyuma hadi %s</string>
   <string name="help_activity_third_party_dependencies_list">orodha ya tegemezi ya mhusika wa tatu</string>
   <string name="help_activity_copyright_licenses_list">orodha ya leseni za hakimiliki</string>
-  <string name="R.string.resume_lesson_activity_title">Rejesha Somo</string>
+  <string name="resume_lesson_activity_title">Rejesha Somo</string>
   <string name="resume_lesson_activity_resume_lesson_button_text">Endelea</string>
   <string name="resume_lesson_activity_start_over_lesson_button_text">Anza tena</string>
   <string name="date_time_util_home_screen_good_morning_greeting_fragment">Habari ya asubuhi,</string>
