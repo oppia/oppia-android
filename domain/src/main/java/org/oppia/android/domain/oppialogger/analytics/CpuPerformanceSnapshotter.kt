@@ -35,13 +35,27 @@ class CpuPerformanceSnapshotter(
   private val initialIconificationCutOffTimePeriodMillis: Long
 ) {
 
+  private var currentIconification = UNINITIALIZED
   private var isSnapshotterInitialized = false
   private val commandQueue by lazy { createCommandQueueActor() }
 
-  /** Initialises the snapshotter by calling the commandQueue to start recording CPU Usage. */
+  /**
+   * Initialises the snapshotter by calling the commandQueue to start recording CPU Usage.
+   *
+   * It must be noted that the class can only be initialized once in the app's lifecycle. In case
+   * a re-initialization is attempted, the app will throw error.
+   */
   fun initialiseSnapshotter() {
-    commandQueue
+    require(!isSnapshotterInitialized) {
+      "CpuPerformanceSnapshotter: Class has already been initialized."
+    }
     isSnapshotterInitialized = true
+    CoroutineScope(backgroundCoroutineDispatcher).launch {
+      delay(initialIconificationCutOffTimePeriodMillis)
+      if (currentIconification == UNINITIALIZED) {
+        sendSwitchIconificationCommand(APP_IN_BACKGROUND)
+      }
+    }
   }
 
   /**
@@ -57,11 +71,10 @@ class CpuPerformanceSnapshotter(
   }
 
   private fun createCommandQueueActor(): SendChannel<CommandMessage> {
-    var currentIconification = UNINITIALIZED
     var previousSnapshot = performanceMetricsAssessor.computeCpuSnapshotAtCurrentTime()
     var switchIconificationCount = 0
     val coroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
-    return coroutineScope.actor<CommandMessage>(capacity = Channel.UNLIMITED) {
+    return coroutineScope.actor(capacity = Channel.UNLIMITED) {
       for (message in channel) {
         when (message) {
           is CommandMessage.SwitchIconification -> {
@@ -105,13 +118,6 @@ class CpuPerformanceSnapshotter(
               message.relativeCpuUsage
             )
           }
-        }
-      }
-    }.also {
-      CoroutineScope(backgroundCoroutineDispatcher).launch {
-        delay(initialIconificationCutOffTimePeriodMillis)
-        if (currentIconification == UNINITIALIZED) {
-          sendSwitchIconificationCommand(APP_IN_BACKGROUND)
         }
       }
     }

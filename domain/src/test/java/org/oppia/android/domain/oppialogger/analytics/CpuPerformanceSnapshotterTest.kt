@@ -22,6 +22,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -413,6 +414,14 @@ class CpuPerformanceSnapshotterTest {
     testCoroutineDispatchers.advanceTimeBy(foregroundCpuLoggingTimePeriodMillis)
 
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
+  }
+
+  @Test
+  fun testSnapshotter_initializeOnce_initializeAgain_throwsErrorOnReinitialization() {
+    cpuPerformanceSnapshotter.initialiseSnapshotter()
+    assertThrows(IllegalArgumentException::class) {
+      cpuPerformanceSnapshotter.initialiseSnapshotter()
+    }
   }
 
   private fun setUpTestApplicationComponent() {
