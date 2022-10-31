@@ -20,6 +20,7 @@ import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
 import org.oppia.android.databinding.HintsSummaryBinding
 import org.oppia.android.databinding.ReturnToLessonButtonItemBinding
 import org.oppia.android.databinding.SolutionSummaryBinding
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
@@ -39,6 +40,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
 
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
   private var index: Int? = null
   private var expandedItemsList = ArrayList<Int>()
   private var isHintRevealed: Boolean? = null
@@ -228,10 +231,24 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
+    binding.expandHintListIcon.setOnClickListener {
+      if (hintsViewModel.isHintRevealed.get()!!) {
+        expandOrCollapseItem(position)
+      }
+    }
+
     binding.root.setOnClickListener {
       if (hintsViewModel.isHintRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
+    }
+
+    if (accessibilityService.isScreenReaderEnabled()) {
+      binding.root.isClickable = false
+      binding.expandHintListIcon.isClickable = true
+    } else {
+      binding.root.isClickable = true
+      binding.expandHintListIcon.isClickable = false
     }
   }
 
@@ -289,10 +306,24 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       }
     }
 
+    binding.expandSolutionListIcon.setOnClickListener {
+      if (solutionViewModel.isSolutionRevealed.get()!!) {
+        expandOrCollapseItem(position)
+      }
+    }
+
     binding.root.setOnClickListener {
       if (solutionViewModel.isSolutionRevealed.get()!!) {
         expandOrCollapseItem(position)
       }
+    }
+
+    if (accessibilityService.isScreenReaderEnabled()) {
+      binding.root.isClickable = false
+      binding.expandSolutionListIcon.isClickable = true
+    } else {
+      binding.root.isClickable = true
+      binding.expandSolutionListIcon.isClickable = false
     }
   }
 

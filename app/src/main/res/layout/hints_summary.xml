@@ -17,7 +17,8 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:importantForAccessibility="no">
 
     <com.google.android.material.card.MaterialCardView
       android:id="@+id/hint_summary_container"
@@ -85,8 +86,8 @@
             app:layout_constraintStart_toEndOf="@+id/hint_title"
             app:layout_constraintTop_toTopOf="parent" />
 
-          <ImageView
-            android:id="@+id/expand_list_icon"
+          <ImageButton
+            android:id="@+id/expand_hint_list_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -94,7 +95,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:contentDescription="@{viewModel.computeHintListDropDownIconContentDescription()}"
+            android:contentDescription="@{isListExpanded? @string/hide_hint : @string/reveal_hint}"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"
@@ -123,6 +124,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:background="@color/component_color_hints_and_solution_summary_bottom_background_color"
+          android:contentDescription="@{viewModel.computeHintContentDescription()}"
           android:fontFamily="sans-serif"
           android:paddingStart="12dp"
           android:paddingTop="16dp"
