@@ -14,7 +14,9 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity for displaying the app policies. */
-class PoliciesActivity : InjectableAppCompatActivity() {
+class PoliciesActivity :
+  InjectableAppCompatActivity(),
+  RouteToPoliciesListener {
 
   @Inject
   lateinit var policiesActivityPresenter: PoliciesActivityPresenter
@@ -47,5 +49,9 @@ class PoliciesActivity : InjectableAppCompatActivity() {
         it.decorateWithScreenName(POLICIES_ACTIVITY)
       }
     }
+  }
+
+  override fun onRouteToPolicies(policyPage: PolicyPage) {
+    startActivity(createPoliciesActivityIntent(this, policyPage))
   }
 }
