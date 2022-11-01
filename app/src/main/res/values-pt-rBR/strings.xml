@@ -424,6 +424,7 @@
   <string name="unsupported_app_version_dialog_message">Esta versão do aplicativo não é mais suportada. Atualize-a na Play Store.</string>
   <string name="splash_activity_unsupported_app_version_dialog_close_button_text">Fechar aplicativo</string>
   <string name="splash_activity_splash_screen_developer_label_text">Versão do desenvolvedor</string>
+  <string name="splash_activity_splash_screen_beta_label_text">Beta</string>
   <string name="splash_activity_splash_screen_alpha_label_text">Alfa</string>
   <string name="beta_notice_dialog_activity_title">Aviso Beta</string>
   <string name="beta_notice_dialog_content_activity_message">Olá! Seu aplicativo está sendo atualizado para a versão Beta. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
