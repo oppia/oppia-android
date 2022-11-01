@@ -147,6 +147,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
       hasConversationView: Boolean,
       rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
+      isSubmitAnswerEnabled: Boolean,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,

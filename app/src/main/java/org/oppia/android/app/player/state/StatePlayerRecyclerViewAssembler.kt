@@ -315,6 +315,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasConversationView,
       rawUserAnswer,
       interaction,
+      canSubmitAnswer?.get() ?: false,
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton,

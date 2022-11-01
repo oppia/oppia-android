@@ -161,6 +161,7 @@ class InputInteractionViewTestActivity :
       hasConversationView = false,
       rawUserAnswer = RawUserAnswer.getDefaultInstance(),
       interaction = interaction,
+      isSubmitAnswerEnabled = false,
       interactionAnswerReceiver = this@InputInteractionViewTestActivity,
       answerErrorReceiver = this@InputInteractionViewTestActivity,
       hasPreviousButton = false,
