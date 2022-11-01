@@ -167,6 +167,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -366,6 +367,37 @@ class StateFragmentLocalTest {
       scrollToViewType(CONTINUE_INTERACTION)
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
       onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION))
+      typeTextIntoInteraction("1+2", interactionViewId = R.id.math_expression_input_interaction_view)
+      clickSubmitAnswerButton()
+
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION))
+      typeTextIntoInteraction("1+2", interactionViewId = R.id.math_expression_input_interaction_view)
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION))
+      typeTextIntoInteraction("1+2", interactionViewId = R.id.math_expression_input_interaction_view)
+      clickSubmitAnswerButton()
+      testCoroutineDispatchers.advanceTimeBy((TimeUnit.SECONDS.toMillis(45)))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }
 
