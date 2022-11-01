@@ -128,6 +128,9 @@ class EventBundleCreator @Inject constructor(
    * [OppiaMetricLog.LoggableMetric.getLoggableMetricTypeCase]).
    */
   fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
+    bundle.putInt("android_sdk", androidSdkVersion)
+    bundle.putString("app_version_name", appVersionName)
+    bundle.putInt("app_version_code", appVersionCode)
     bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
     bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
     bundle.putString("is_app_in_foreground", oppiaMetricLog.isAppInForeground.toString())
@@ -237,6 +240,7 @@ class EventBundleCreator @Inject constructor(
       if (!isSensitive || allowUserIds) {
         val propertyName = computePropertyName(valueName)
         when (value) {
+          is Double -> bundle.putDouble(propertyName, value)
           is Long -> bundle.putLong(propertyName, value)
           is Iterable<*> -> bundle.putString(propertyName, value.joinToString(separator = ","))
           else -> bundle.putString(propertyName, value.toString())
@@ -610,5 +614,6 @@ class EventBundleCreator @Inject constructor(
     ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
     ScreenName.POLICIES_ACTIVITY -> "policies_activity"
     ScreenName.UNRECOGNIZED -> "unrecognized"
+    ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
   }
 }
