@@ -9,6 +9,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,9 +46,6 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TEST_CPU_USAGE_ONE = 0.07192
 private const val TEST_CPU_USAGE_TWO = 0.32192
@@ -58,12 +58,18 @@ private const val TEST_CPU_USAGE_TWO = 0.32192
 @Config(application = CpuPerformanceSnapshotterTest.TestApplication::class)
 class CpuPerformanceSnapshotterTest {
 
-  @Inject lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
-  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
-  @Inject lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
+  @Inject
+  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+  @Inject
+  lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
@@ -419,9 +425,12 @@ class CpuPerformanceSnapshotterTest {
   @Test
   fun testSnapshotter_initializeOnce_initializeAgain_throwsErrorOnReinitialization() {
     cpuPerformanceSnapshotter.initialiseSnapshotter()
-    assertThrows(IllegalArgumentException::class) {
+    val exception = assertThrows(IllegalArgumentException::class) {
       cpuPerformanceSnapshotter.initialiseSnapshotter()
     }
+
+    assertThat(exception).hasMessageThat()
+      .contains("CpuPerformanceSnapshotter: Class has already been initialized.")
   }
 
   private fun setUpTestApplicationComponent() {
