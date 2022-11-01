@@ -26,7 +26,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/completed_story_list_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/component_color_completed_progress_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"

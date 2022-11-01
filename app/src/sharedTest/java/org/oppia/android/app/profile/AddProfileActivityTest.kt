@@ -86,6 +86,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -97,6 +98,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasHelperText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -184,11 +186,82 @@ class AddProfileActivityTest {
   }
 
   @Test
-  fun testAddProfileActivity_hasRequiredTextPrefixedWithStar() {
+  fun testAddProfileActivity_inputName_hasRequiredHelperTextDisplayed() {
     launch(AddProfileActivity::class.java).use {
-      onView(allOf(withId(R.id.add_profile_activity_required_heading_text_view))).check(
-        matches(withText("*" + context.getString(R.string.add_profile_required)))
+      onView(withId(R.id.add_profile_activity_user_name))
+        .check(
+          matches(
+            hasHelperText(
+              context.resources.getString(R.string.add_profile_required)
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputPin_hasRequiredHelperTextDisplayed() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(
+        editTextInputAction.appendText("test"), closeSoftKeyboard()
       )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(withId(R.id.add_profile_activity_pin))
+        .check(
+          matches(
+            hasHelperText(
+              context.resources.getString(R.string.add_profile_required)
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  fun testAddProfileActivity_inputConfirmPin_hasRequiredHelperTextDisplayed() {
+    launch(AddProfileActivity::class.java).use {
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_user_name_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_user_name))
+        )
+      ).perform(
+        editTextInputAction.appendText("test"),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.add_profile_activity_pin_check_box)).perform(click())
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_pin))
+        )
+      ).perform(
+        scrollTo(),
+        editTextInputAction.appendText("123"),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        allOf(
+          withId(R.id.add_profile_activity_confirm_pin_edit_text),
+          isDescendantOfA(withId(R.id.add_profile_activity_confirm_pin))
+        )
+      ).perform(scrollTo())
+      onView(withId(R.id.add_profile_activity_confirm_pin))
+        .check(
+          matches(
+            hasHelperText(
+              context.resources.getString(R.string.add_profile_required)
+            )
+          )
+        )
     }
   }
 
@@ -1744,7 +1817,8 @@ class AddProfileActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
