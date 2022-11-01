@@ -208,8 +208,8 @@
   <string name="admin_pin_activity_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="add_profile_activity_label">إضافة ملف شخصي</string>
   <string name="add_profile_title">إضافة ملف شخصي</string>
-  <string name="add_profile_input_name">الاسم*</string>
-  <string name="add_profile_input_pin">رقم تعريف شخصي مكون من 3 أرقام*</string>
+  <string name="add_profile_input_name">الاسم</string>
+  <string name="add_profile_input_pin">رقم تعريف شخصي مكون من 3 أرقام</string>
   <string name="add_profile_input_confirm_pin">تأكيد رقم التعريف الشخصي المكون من 3 أرقام</string>
   <string name="add_profile_allow_download_heading">السماح بالوصول للتنزيل</string>
   <string name="add_profile_allow_download_sub">المستخدم قادر على تنزيل ومسح المحتوى بدون رقم التعريف الشخصي الخاص بالمشرف.</string>
@@ -223,7 +223,6 @@
   <string name="add_profile_error_pin_length">رقم التعريف الشخصي يجب أن يتكون من 3 أرقام.</string>
   <string name="add_profile_error_pin_confirm_wrong">برجاء التأكد من تطابق رقمي التعريف الشخصي.</string>
   <string name="add_profile_info_content_description">المزيد من المعلومات عن رقم التعريف الشخصي المكون من 3 أرقام.</string>
-  <string name="required_fields_content_description">الحقول المعلمة بـ* مطلوبة.</string>
   <string name="current_profile_picture_content_description">صورة الملف الشخصي الحالية.</string>
   <string name="edit_profile_picture_content_description">تعديل صورة الملف الشخصي</string>
   <string name="onboarding_slide_0_title">مرحبًا بكم في %s</string>

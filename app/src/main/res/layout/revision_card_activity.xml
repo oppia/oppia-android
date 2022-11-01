@@ -21,7 +21,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/revision_card_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/component_color_concept_card_fragment_toolbar_color"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
