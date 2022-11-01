@@ -14,7 +14,7 @@
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/ongoing_story_recycler_view"
       android:layout_width="match_parent"
-      android:layout_height="?attr/actionBarSize"
+      android:layout_height="match_parent"
       android:clipToPadding="false"
       android:overScrollMode="never"
       android:paddingTop="@dimen/recently_played_fragment_padding_top"
