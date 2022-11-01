@@ -134,7 +134,7 @@ class EventBundleCreatorTest {
     private const val TEST_CONTENT_ID = "test_content_id"
     private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
     private const val TEST_APP_VERSION_CODE = 125
-    private const val TEST_CPU_USAGE = Long.MAX_VALUE
+    private const val TEST_CPU_USAGE = Double.MAX_VALUE
     private const val TEST_APK_SIZE = Long.MAX_VALUE
     private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
     private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
@@ -188,7 +188,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("unknown_loggable_metric")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(0)
     assertThat(bundle).string("priority").isEqualTo("unspecified_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("false")
@@ -196,6 +196,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("storage_tier").isEqualTo("unspecified_storage_tier")
     assertThat(bundle).string("network_type").isEqualTo("unspecified_network_type")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -258,7 +261,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("unknown_loggable_metric")
-    assertThat(bundle).hasSize(7)
+    assertThat(bundle).hasSize(10)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -266,6 +269,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -451,7 +457,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("apk_size_metric")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -460,6 +466,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("apk_size_bytes").isEqualTo(TEST_APK_SIZE)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -475,7 +484,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("storage_usage_metric")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -484,6 +493,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("storage_usage_bytes").isEqualTo(TEST_STORAGE_USAGE)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -499,7 +511,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("startup_latency_metric")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -508,6 +520,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("startup_latency_millis").isEqualTo(TEST_STARTUP_LATENCY)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -523,7 +538,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("memory_usage_metric")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -532,6 +547,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("total_pss_bytes").isEqualTo(TEST_MEMORY_USAGE)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -547,7 +565,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("network_usage_metric")
-    assertThat(bundle).hasSize(9)
+    assertThat(bundle).hasSize(12)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -557,6 +575,9 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
     assertThat(bundle).longInt("bytes_received").isEqualTo(TEST_NETWORK_USAGE)
     assertThat(bundle).longInt("bytes_sent").isEqualTo(TEST_NETWORK_USAGE)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -572,7 +593,7 @@ class EventBundleCreatorTest {
     )
 
     assertThat(typeName).isEqualTo("cpu_usage_metric")
-    assertThat(bundle).hasSize(8)
+    assertThat(bundle).hasSize(11)
     assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
     assertThat(bundle).string("priority").isEqualTo("high_priority")
     assertThat(bundle).string("is_app_in_foreground").isEqualTo("true")
@@ -580,7 +601,10 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("storage_tier").isEqualTo("high_storage")
     assertThat(bundle).string("network_type").isEqualTo("wifi")
     assertThat(bundle).string("current_screen").isEqualTo("screen_name_unspecified")
-    assertThat(bundle).longInt("cpu_usage").isEqualTo(TEST_CPU_USAGE)
+    assertThat(bundle.getDouble("cpu_usage")).isWithin(1e-5).of(TEST_CPU_USAGE)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
   }
 
   @Test
@@ -1615,6 +1639,7 @@ class EventBundleCreatorTest {
     Iteration("adminPin", "name=ADMIN_PIN_ACTIVITY", "expNameStr=admin_pin_activity"),
     Iteration("policies", "name=POLICIES_ACTIVITY", "expNameStr=policies_activity"),
     Iteration("unspecified", "name=SCREEN_NAME_UNSPECIFIED", "expNameStr=screen_name_unspecified"),
+    Iteration("foreground", "name=FOREGROUND_SCREEN", "expNameStr=foreground_screen"),
   )
   fun testMetricsBundle_addScreenName_verifyConversionToCorrectAnalyticalName() {
     setUpTestApplicationComponent()
