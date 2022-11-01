@@ -46,8 +46,12 @@ class MyDownloadsFragmentPresenter @Inject constructor(
 
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       when (position) {
-        0 -> tab.text = resourceHandler.getStringInLocale(R.string.my_downloads_activity_tab_downloads)
-        1 -> tab.text = resourceHandler.getStringInLocale(R.string.my_downloads_activity_tab_updates)
+        0 -> tab.text = resourceHandler.getStringInLocale(
+          R.string.my_downloads_activity_tab_downloads
+        )
+        1 -> tab.text = resourceHandler.getStringInLocale(
+          R.string.my_downloads_activity_tab_updates
+        )
       }
     }.attach()
   }

@@ -19,7 +19,9 @@ class HelpListViewModel @Inject constructor(
   private fun getRecyclerViewItemList(): ArrayList<HelpItemViewModel> {
     for (item in HelpItems.values()) {
       val category = when (item) {
-        HelpItems.FAQ -> resourceHandler.getStringInLocale(R.string.help_activity_frequently_asked_questions_FAQ_text)
+        HelpItems.FAQ -> resourceHandler.getStringInLocale(
+          R.string.help_activity_frequently_asked_questions_FAQ_text
+        )
         HelpItems.THIRD_PARTY -> resourceHandler.getStringInLocale(
           R.string.third_party_dependency_list_activity_title
         )

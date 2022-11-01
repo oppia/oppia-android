@@ -176,7 +176,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_general_view_administrator_controls_edit_account_text
+        stringIdToMatch = R.string.administrator_controls_general_view_administrator_edit_account
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
@@ -185,7 +185,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text
+        stringIdToMatch = R.string.administrator_controls_profile_view_administrator_edit_profiles
       )
     }
   }
@@ -201,7 +201,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_view_download_permissions_label_text
+        stringIdToMatch = R.string.administrator_controls_download_permissions_view_label_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -227,7 +227,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_view_download_permissions_label_text
+        stringIdToMatch = R.string.administrator_controls_download_permissions_view_label_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -257,7 +257,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringIdToMatch = R.string.administrator_controls_app_information_view_administrator_controls_app_version_text
+        stringIdToMatch = R.string.administrator_controls_app_information_view_administrator_controls_app_version
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 4,

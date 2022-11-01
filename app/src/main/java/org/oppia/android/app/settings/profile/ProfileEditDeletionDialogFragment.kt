@@ -50,10 +50,14 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     val alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
       .setTitle(R.string.profile_edit_activity_profile_edit_delete_dialog_title)
       .setMessage(R.string.profile_edit_activity_profile_edit_delete_dialog_message)
-      .setNegativeButton(R.string.profile_edit_activity_profile_edit_delete_dialog_negative) { dialog, _ ->
+      .setNegativeButton(
+        R.string.profile_edit_activity_profile_edit_delete_dialog_negative
+      ) { dialog, _ ->
         dialog.dismiss()
       }
-      .setPositiveButton(R.string.profile_edit_activity_profile_edit_delete_dialog_positive) { dialog, _ ->
+      .setPositiveButton(
+        R.string.profile_edit_activity_profile_edit_delete_dialog_positive
+      ) { dialog, _ ->
         profileEditDialogInterface.deleteProfileByInternalProfileId(internalProfileId)
       }
       .create()

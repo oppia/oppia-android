@@ -79,10 +79,14 @@ class AddProfileActivityPresenter @Inject constructor(
     }
     val toolbar = activity.findViewById<View>(R.id.add_profile_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)
-    activity.supportActionBar?.title = resourceHandler.getStringInLocale(R.string.add_profile_activity_add_profile_toolbar_title)
+    activity.supportActionBar?.title = resourceHandler.getStringInLocale(
+      R.string.add_profile_activity_add_profile_toolbar_title
+    )
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
-    activity.supportActionBar?.setHomeActionContentDescription(R.string.admin_auth_activity_close_button_text)
+    activity.supportActionBar?.setHomeActionContentDescription(
+      R.string.admin_auth_activity_close_button_text
+    )
 
     uploadImageView = binding.addProfileActivityUserImageView
     Glide.with(activity)
@@ -305,7 +309,9 @@ class AddProfileActivityPresenter @Inject constructor(
     profileViewModel.showInfoAlertPopup.set(true)
     alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
       .setMessage(R.string.add_profile_activity_add_profile_info_dialog_message_text)
-      .setPositiveButton(R.string.add_profile_activity_add_profile_info_dialog_close_text) { dialog, _ ->
+      .setPositiveButton(
+        R.string.add_profile_activity_add_profile_info_dialog_close_text
+      ) { dialog, _ ->
         profileViewModel.showInfoAlertPopup.set(false)
         dialog.dismiss()
       }

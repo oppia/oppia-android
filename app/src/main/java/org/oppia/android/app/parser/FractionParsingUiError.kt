@@ -20,7 +20,9 @@ enum class FractionParsingUiError(@StringRes private var error: Int?) {
   DIVISION_BY_ZERO(error = R.string.input_interaction_activity_fraction_error_divide_by_zero),
 
   /** Corresponds to [FractionParsingError.NUMBER_TOO_LONG]. */
-  NUMBER_TOO_LONG(error = R.string.input_interaction_activity_fraction_error_larger_than_seven_digits);
+  NUMBER_TOO_LONG(
+    error = R.string.input_interaction_activity_fraction_error_larger_than_seven_digits
+  );
 
   /**
    * Returns the string corresponding to this error's string resources, or null if there is none.

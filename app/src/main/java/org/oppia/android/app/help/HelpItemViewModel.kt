@@ -16,7 +16,9 @@ class HelpItemViewModel(
 ) : ObservableViewModel() {
   fun onClick(title: String) {
     when (title) {
-      resourceHandler.getStringInLocale(R.string.help_activity_frequently_asked_questions_FAQ_text) -> {
+      resourceHandler.getStringInLocale(
+        R.string.help_activity_frequently_asked_questions_FAQ_text
+      ) -> {
         if (isMultipane) {
           val loadFaqListFragmentListener = activity as LoadFaqListFragmentListener
           loadFaqListFragmentListener.loadFaqListFragment()

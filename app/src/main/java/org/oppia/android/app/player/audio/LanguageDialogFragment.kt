@@ -75,13 +75,17 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       .setSingleChoiceItems(options, selectedIndex) { dialog, which ->
         selectedIndex = which
       }
-      .setPositiveButton(R.string.language_dialog_fragment_audio_language_select_dialog_okay_button) { _, _ ->
+      .setPositiveButton(
+        R.string.language_dialog_fragment_audio_language_select_dialog_okay_button
+      ) { _, _ ->
         if (selectedIndex != -1) {
           languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
         }
         dismiss()
       }
-      .setNegativeButton(R.string.language_dialog_fragment_audio_language_select_dialog_cancel_button) { _, _ ->
+      .setNegativeButton(
+        R.string.language_dialog_fragment_audio_language_select_dialog_cancel_button
+      ) { _, _ ->
         dismiss()
       }
       .create()

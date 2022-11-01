@@ -1287,7 +1287,7 @@ class ExplorationActivityTest {
       onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
       onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_title)).inRoot(isDialog())
         .check(matches(isDisplayed()))
-      onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_back_to_lesson_button))
+      onView(withText(R.string.progress_database_full_dialog_activity_back_to_lesson_button))
         .inRoot(isDialog()).perform(click())
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -1325,7 +1325,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_continue_button))
+      onView(withText(R.string.progress_database_full_dialog_activity_continue_button))
         .inRoot(isDialog()).perform(click())
 
       assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
@@ -1365,7 +1365,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_leave_without_saving_progress_button))
+      onView(withText(R.string.progress_database_full_dialog_activity_leave_without_saving_progress_button))
         .inRoot(isDialog()).perform(click())
 
       assertThat(explorationActivityTestRule.activity.isFinishing).isTrue()
@@ -1404,7 +1404,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_leave_without_saving_progress_button))
+      onView(withText(R.string.progress_database_full_dialog_activity_leave_without_saving_progress_button))
         .inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -1455,7 +1455,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_continue_button))
+      onView(withText(R.string.progress_database_full_dialog_activity_continue_button))
         .inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -1506,7 +1506,7 @@ class ExplorationActivityTest {
 
       pressBack()
 
-      onView(withText(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_back_to_lesson_button))
+      onView(withText(R.string.progress_database_full_dialog_activity_back_to_lesson_button))
         .inRoot(isDialog()).perform(click())
 
       explorationCheckpointTestHelper.verifyExplorationProgressIsSaved(

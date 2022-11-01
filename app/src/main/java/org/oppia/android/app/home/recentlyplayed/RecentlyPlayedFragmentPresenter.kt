@@ -113,7 +113,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     itemList.clear()
     val recentSectionTitleViewModel =
       SectionTitleViewModel(
-        resourceHandler.getStringInLocale(R.string.recently_played_activity_ongoing_story_last_week), false
+        resourceHandler.getStringInLocale(
+          R.string.recently_played_activity_ongoing_story_last_week
+        ), false
       )
     itemList.add(recentSectionTitleViewModel)
     recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
@@ -141,7 +143,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     val showDivider = itemList.isNotEmpty()
     val olderSectionTitleViewModel =
       SectionTitleViewModel(
-        resourceHandler.getStringInLocale(R.string.recently_played_activity_ongoing_story_last_month),
+        resourceHandler.getStringInLocale(
+          R.string.recently_played_activity_ongoing_story_last_month
+        ),
         showDivider
       )
     itemList.add(olderSectionTitleViewModel)

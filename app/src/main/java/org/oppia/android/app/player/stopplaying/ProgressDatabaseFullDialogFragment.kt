@@ -65,23 +65,26 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
       .setTitle(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_title)
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.progress_database_full_dialog_activity_progress_database_full_dialog_description, oldestSavedExplorationTitle
+          R.string.progress_database_full_dialog_activity_progress_database_full_dialog_description, 
+          oldestSavedExplorationTitle
         )
       )
-      .setPositiveButton(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_continue_button) { _, _ ->
+      .setPositiveButton(
+        R.string.progress_database_full_dialog_activity_continue_button
+      ) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteOldestProgressAndStopSession()
         dismiss()
       }
       .setNeutralButton(
-        R.string.progress_database_full_dialog_activity_progress_database_full_dialog_leave_without_saving_progress_button
+        R.string.progress_database_full_dialog_activity_leave_without_saving_progress_button
       ) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteCurrentProgressAndStopSession(isCompletion = false)
         dismiss()
       }
       .setNegativeButton(
-        R.string.progress_database_full_dialog_activity_progress_database_full_dialog_back_to_lesson_button
+        R.string.progress_database_full_dialog_activity_back_to_lesson_button
       ) { _, _ ->
         dismiss()
       }

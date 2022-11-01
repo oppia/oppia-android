@@ -26,20 +26,20 @@
   <!-- AdministratorControlsFragment -->
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="administrator_controls_general_view_administrator_controls_general_label_text">General</string>
-  <string name="administrator_controls_general_view_administrator_controls_edit_account_text">Edit account</string>
+  <string name="administrator_controls_general_view_administrator_edit_account">Edit account</string>
   <string name="administrator_controls_profile_view_administrator_controls_profile_management_label_text">Profile Management</string>
-  <string name="administrator_controls_profile_view_administrator_controls_edit_profiles_text">Edit profiles</string>
-  <string name="administrator_controls_download_permissions_view_download_permissions_label_text">Download Permissions</string>
+  <string name="administrator_controls_profile_view_administrator_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_download_permissions_view_label_text">Download Permissions</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Automatically update topics</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
   <string name="administrator_controls_app_information_view_administrator_controls_app_information_label_text">App Information</string>
-  <string name="administrator_controls_app_information_view_administrator_controls_app_version_text">App Version</string>
+  <string name="administrator_controls_app_information_view_administrator_controls_app_version">App Version</string>
   <string name="administrator_controls_account_actions_view_administrator_controls_account_actions_label_text">Account Actions</string>
   <string name="administrator_controls_account_actions_view_administrator_controls_log_out_text">Log Out</string>
-  <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button_text">Cancel</string>
-  <string name="administrator_controls_view_log_out_dialog_fragment_okay_button_text">Ok</string>
+  <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button">Cancel</string>
+  <string name="administrator_controls_view_log_out_dialog_fragment_okay_button">Ok</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_message">Are you sure you want to log out of your profile?</string>
   <!-- AppVersionFragment -->
   <string name="administrator_controls_app_version_activity_app_version_name">App Version %s</string>
@@ -275,9 +275,9 @@
   <!-- ProgressDatabaseFullDialogActivity -->
   <string name="progress_database_full_dialog_activity_progress_database_full_dialog_title">Maximum storage capacity reached</string>
   <string name="progress_database_full_dialog_activity_progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
-  <string name="progress_database_full_dialog_activity_progress_database_full_dialog_continue_button">Continue</string>
-  <string name="progress_database_full_dialog_activity_progress_database_full_dialog_leave_without_saving_progress_button">Leave without saving progress</string>
-  <string name="progress_database_full_dialog_activity_progress_database_full_dialog_back_to_lesson_button">Back to lesson</string>
+  <string name="progress_database_full_dialog_activity_continue_button">Continue</string>
+  <string name="progress_database_full_dialog_activity_leave_without_saving_progress_button">Leave without saving progress</string>
+  <string name="progress_database_full_dialog_activity_back_to_lesson_button">Back to lesson</string>
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_activity_label_text">Profile selection page</string>
   <string name="profile_chooser_activity_profile_chooser_admin">Administrator</string>

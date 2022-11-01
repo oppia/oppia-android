@@ -146,7 +146,9 @@ class AdministratorControlsActivity :
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_profile_view_administrator_controls_edit_profiles_text)
+        resourceHandler.getStringInLocale(
+          R.string.administrator_controls_profile_view_administrator_edit_profiles
+        )
       )
     administratorControlsActivityPresenter.loadProfileList()
   }
@@ -155,7 +157,9 @@ class AdministratorControlsActivity :
     lastLoadedFragment = APP_VERSION_FRAGMENT
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_app_information_view_administrator_controls_app_version_text)
+        resourceHandler.getStringInLocale(
+          R.string.administrator_controls_app_information_view_administrator_controls_app_version
+        )
       )
     administratorControlsActivityPresenter.loadAppVersion()
   }

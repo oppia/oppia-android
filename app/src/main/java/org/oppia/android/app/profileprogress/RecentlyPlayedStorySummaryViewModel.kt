@@ -40,7 +40,8 @@ class RecentlyPlayedStorySummaryViewModel(
 
   fun computeLessonThumbnailContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.recently_played_story_summary_activity_lesson_thumbnail_content_description, nextChapterTitle
+      R.string.recently_played_story_summary_activity_lesson_thumbnail_content_description,
+      nextChapterTitle
     )
   }
 

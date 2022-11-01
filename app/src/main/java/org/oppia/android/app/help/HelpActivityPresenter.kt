@@ -222,7 +222,9 @@ class HelpActivityPresenter @Inject constructor(
   }
 
   private fun selectFAQListFragment() {
-    setMultipaneContainerTitle(resourceHandler.getStringInLocale(R.string.faq_single_activity_title))
+    setMultipaneContainerTitle(resourceHandler.getStringInLocale(
+      R.string.faq_single_activity_title
+    ))
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = FAQ_LIST_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()

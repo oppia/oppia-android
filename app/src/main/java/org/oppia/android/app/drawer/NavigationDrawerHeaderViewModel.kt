@@ -48,7 +48,9 @@ class NavigationDrawerHeaderViewModel @Inject constructor(
       resourceHandler.getQuantityStringInLocaleWithWrapping(
         R.plurals.ongoing_topic_count, ongoingTopicCount, ongoingTopicCount.toString()
       )
-    val barSeparator = resourceHandler.getStringInLocale(R.string.navigation_drawer_activity_bar_separator)
+    val barSeparator = resourceHandler.getStringInLocale(
+      R.string.navigation_drawer_activity_bar_separator
+    )
     return "$completedStoryCountText$barSeparator$ongoingTopicCountText"
   }
 }

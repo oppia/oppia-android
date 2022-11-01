@@ -43,7 +43,8 @@ class TopicViewModel @Inject constructor(
         translationController.extractString(
           ephemeralTopic.topic.title, ephemeralTopic.writtenTranslationContext
         )
-      resourceHandler.getStringInLocaleWithWrapping(R.string.topic_view_activity_topic_name, topicTitle)
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.topic_view_activity_topic_name, topicTitle)
     }
   }
 

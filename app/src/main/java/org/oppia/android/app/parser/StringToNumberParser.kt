@@ -56,8 +56,12 @@ class StringToNumberParser {
   enum class NumericInputParsingError(@StringRes private var error: Int?) {
     VALID(error = null),
     INVALID_FORMAT(error = R.string.input_interaction_activity_number_error_invalid_format),
-    STARTING_WITH_FLOATING_POINT(error = R.string.input_interaction_activity_number_error_starting_with_floating_point),
-    NUMBER_TOO_LONG(error = R.string.input_interaction_activity_number_error_larger_than_fifteen_characters);
+    STARTING_WITH_FLOATING_POINT(
+      error = R.string.input_interaction_activity_number_error_starting_with_floating_point
+    ),
+    NUMBER_TOO_LONG(
+      error = R.string.input_interaction_activity_number_error_larger_than_fifteen_characters
+    );
 
     /**
      * Returns the string corresponding to this error's string resources, or null if there is none.

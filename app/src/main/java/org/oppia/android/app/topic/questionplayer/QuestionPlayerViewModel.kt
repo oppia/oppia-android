@@ -82,7 +82,9 @@ class QuestionPlayerViewModel @Inject constructor(
     isAtEndOfSession: Boolean
   ): String {
     return if (isAtEndOfSession) {
-      resourceHandler.getStringInLocale(R.string.question_player_activity_question_training_session_progress_finished)
+      resourceHandler.getStringInLocale(
+        R.string.question_player_activity_question_training_session_progress_finished
+      )
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
         R.string.question_player_activity_question_training_session_progress,
