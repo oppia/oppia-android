@@ -5,6 +5,12 @@ package proto;
 option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
 
+// Represents the map of all licenceUrl and there corresponding large scrapped texts.
+message LargeLicenseHashMap {
+  // Stores the list of all large licence strings extracted from there scrappable links.
+  map<string, string> largeText = 5;
+}
+
 // Represents the list of all third-party maven dependencies.
 message MavenDependencyList {
   // Stores the list of all third-party maven dependencies.

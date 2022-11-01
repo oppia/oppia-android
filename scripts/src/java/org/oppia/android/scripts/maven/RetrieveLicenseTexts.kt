@@ -5,6 +5,7 @@ import org.oppia.android.scripts.license.LicenseFetcher
 import org.oppia.android.scripts.license.LicenseFetcherImpl
 import org.oppia.android.scripts.license.model.CopyrightLicense
 import org.oppia.android.scripts.license.model.Dependency
+import org.oppia.android.scripts.proto.LargeLicenseHashMap
 import org.oppia.android.scripts.proto.License
 import org.oppia.android.scripts.proto.MavenDependency
 import org.oppia.android.scripts.proto.MavenDependencyList
@@ -32,15 +33,16 @@ const val MAX_LICENSE_LENGTH = 16383
  *
  * Usage:
  *   bazel run //scripts:retrieve_license_texts -- <path_to_directory_values>
- *     <path_to_maven_dependenices.pb>
+ *     <path_to_maven_dependenices.pb> <path_to_large_strings.textproto>
  *
  * Arguments:
  * - path_to_directory_values: directory path to the values folder of the Oppia Android repository.
  * - path_to_maven_dependenices.pb: relative path to the maven_dependencies.pb
+ * - path_to_large_strings.textproto: relative path to the large_string.textproto
 
  * Example:
  *   bazel run //scripts:retrieve_license_texts -- $(pwd)/app/src/main/res/values
- *   scripts/assets/maven_dependencies.pb
+ *   scripts/assets/maven_dependencies.pb $(pwd)/domain/src/main/assets/large_strings.textproto
  */
 fun main(args: Array<String>) {
   RetrieveLicenseTexts(LicenseFetcherImpl()).main(args)
@@ -60,15 +62,15 @@ class RetrieveLicenseTexts(
       println(
         """
         Usage: bazel run //scripts:generate_license_texts -- <path_to_directory_values>
-        <path_to_pb_file>  
+        <path_to_pb_file> <path_to_large_strings.textproto>
         """.trimIndent()
       )
       throw Exception("Too few arguments passed.")
     }
 
     val pathToValuesDirectory = args[0]
-    val pathToLargeTextProto = "$pathToRoot/${args[1]}"
     val pathToMavenDependenciesPb = args[1]
+    val pathToLargeFiles = "${args[2]}"
     val valuesDirectory = File(pathToValuesDirectory)
     check(valuesDirectory.isDirectory) { "Expected '$pathToValuesDirectory' to be a directory" }
     val thirdPartyDependenciesXml = File(valuesDirectory, "third_party_dependencies.xml")
@@ -77,8 +79,8 @@ class RetrieveLicenseTexts(
     if (mavenDependencyList.isEmpty()) {
       throw Exception(MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE)
     }
-    val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList)
-    val dependencyList = retrieveDependencyList(mavenDependencyList)
+    val copyrightLicenseSet = retrieveAllLicensesSet(mavenDependencyList, pathToLargeFiles)
+    val dependencyList = retrieveDependencyList(mavenDependencyList, pathToLargeFiles)
 
     val dependencyNamesList = retrieveArtifactsNamesList(dependencyList)
     val dependencyVersionsList = retrieveArtifactsVersionsList(dependencyList)
@@ -126,23 +128,25 @@ class RetrieveLicenseTexts(
   }
 
   private fun retrieveAllLicensesSet(
-    mavenDependencyList: List<MavenDependency>
+    mavenDependencyList: List<MavenDependency>,
+    pathToLargeFiles: String
   ): Set<CopyrightLicense> {
     return mavenDependencyList.flatMap { dependency ->
       val licenseList = dependency.licenseList
       check(licenseList.isNotEmpty()) { MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE }
       return@flatMap licenseList.map { license ->
-        retrieveCopyrightLicense(license)
+        retrieveCopyrightLicense(license, pathToLargeFiles)
       }
     }.toSet()
   }
 
   private fun retrieveDependencyList(
-    mavenDependencyList: List<MavenDependency>
+    mavenDependencyList: List<MavenDependency>,
+    pathToLargeFiles: String
   ): List<Dependency> {
     return mavenDependencyList.map { mavenDependency ->
       val copyrightLicenseList = mavenDependency.licenseList.map { license ->
-        retrieveCopyrightLicense(license)
+        retrieveCopyrightLicense(license, pathToLargeFiles)
       }
       Dependency(
         mavenDependency.artifactName,
@@ -152,16 +156,19 @@ class RetrieveLicenseTexts(
     }
   }
 
-  private fun retrieveCopyrightLicense(license: License): CopyrightLicense {
+  private fun retrieveCopyrightLicense(
+    license: License,
+    pathToLargeFiles: String
+  ): CopyrightLicense {
     var licenseText: String
     val licenseLink: String
     when (license.verifiedLinkCase) {
       License.VerifiedLinkCase.SCRAPABLE_LINK -> {
-        licenseText = fetchViewableLicenseText(license.scrapableLink.url)
+        licenseText = fetchViewableLicenseText(license.scrapableLink.url, pathToLargeFiles)
         licenseLink = license.scrapableLink.url
       }
       License.VerifiedLinkCase.EXTRACTED_COPY_LINK -> {
-        licenseText = fetchViewableLicenseText(license.extractedCopyLink.url)
+        licenseText = fetchViewableLicenseText(license.extractedCopyLink.url, pathToLargeFiles)
         licenseLink = license.extractedCopyLink.url
       }
       License.VerifiedLinkCase.DIRECT_LINK_ONLY -> {
@@ -173,20 +180,18 @@ class RetrieveLicenseTexts(
     return CopyrightLicense(license.licenseName, licenseLink, licenseText)
   }
 
-  private fun fetchViewableLicenseText(licenseLink: String): String {
+  private fun fetchViewableLicenseText(licenseLink: String, pathToLargeFiles: String): String {
     val licenseText = fetchLicenseText(licenseLink)
     // TODO(#3738): Ensure entire license text is displayed for all the copyright licenses
     return if (licenseText.length <= MAX_LICENSE_LENGTH) {
       licenseText
     } else {
-      // create a hashmap
-      var hashMap : HashMap<String, String> = HashMap<String, String> ()
-      hashMap.put(licenseLink, licenseText)
-      // convert this to string
-      // do this com.google.protobuf.StringValue.newBuilder(familyName_).mergeFrom(value).buildPartial();
-      // put in method below,
-      File(pathToLargeTextProto).outputStream().bufferedWriter().use { writer ->
-        TextFormat.printer().print(licenseText, writer)
+      val map: HashMap<String, String> = HashMap<String, String>()
+      map.put(licenseLink, licenseText)
+      File(pathToLargeFiles).outputStream().bufferedWriter().use { writer ->
+        TextFormat.printer().print(LargeLicenseHashMap.newBuilder().apply {
+          this.putAllLargeText(map)
+        }.build(), writer)
       }
       licenseLink
     }
