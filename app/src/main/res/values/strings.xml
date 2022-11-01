@@ -163,7 +163,6 @@
   <string name="help_activity_third_party_dependencies_list">third-party dependencies list</string>
   <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
   <string name="help_activity_frequently_asked_questions_FAQ_text">Frequently Asked Questions (FAQs)</string>
-
   <!-- HintsAndSolutionDialogFragment -->
   <string name="hint_and_solution_activity_close_icon_description">Navigate up</string>
   <string name="solution_summary_activity_show_solution_button_text">Show solution</string>
@@ -308,6 +307,9 @@
   <string name="pin_password_activity_admin_confirm_app_wipe_negative_button_text">No</string>
   <string name="pin_password_activity_pin_password_toolbar_title">Enter PIN</string>
   <string name="pin_password_activity_pin_password_activity_label_title">PIN verification</string>
+  <string name="pin_password_activity_password_shown_icon">Password shown icon</string>
+  <string name="pin_password_activity_password_hidden_icon">Password hidden icon</string>
+  <string name="pin_password_activity_pin_password_hello">Hi, %s!</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
@@ -451,8 +453,6 @@
   <string name="walkthrough_final_activity_no">No…</string>
   <string name="walkthrough_final_activity_pick_a_different_topic">Pick a \ndifferent topic.</string>
   <string name="walkthrough_final_activity_are_you_interested">Are you interested in:\n%s?</string>
-
-
   <!-- Multi-screen -->
   <string name="current_profile_picture_content_description">Current profile picture</string>
   <string name="edit_profile_picture_content_description">Edit profile picture</string>
@@ -471,10 +471,7 @@
   <string name="status_completed">Completed</string>
   <string name="recommended_stories">Recommended Stories</string>
   <string name="stories_for_you">Stories For You</string>
-
-
   <!-- TO BE PLACED -->
-  <string name="administrator_controls">Administrator Controls</string>
   <string name="add_profile_error_image_failed_store">We failed to store your avatar image. Please try again.</string>
   <string name="play_pause_audio">Play/Pause Audio</string>
   <string name="enable_audio_playback_content_description">Enable audio voiceover for this lesson.</string>
@@ -496,9 +493,6 @@
   <string name="last_played_stories">Last-Played Stories</string>
   <string name="show_hide_password_icon">Show/Hide password icon</string>
   <string name="enter_your_pin">Enter your PIN</string>
-  <string name="pin_password_activity_password_shown_icon">Password shown icon</string>
-  <string name="pin_password_activity_password_hidden_icon">Password hidden icon</string>
-  <string name="pin_password_hello">Hi, %s!</string>
   <string name="welcome_profile_name">%s!</string>
   <string name="profile_edit_created">Created on %s</string>
   <string name="profile_last_used">Last used </string>

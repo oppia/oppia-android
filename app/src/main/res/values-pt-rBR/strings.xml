@@ -18,7 +18,6 @@
   <string name="bottom_sheet_options_menu_fragment_close_text">Fechar</string>
   <string name="navigation_drawer_activity_menu_switch_profile">Trocar Perfil</string>
   <string name="developer_options">Opções de Desenvolvedor</string>
-  <string name="administrator_controls">Controles de Administrador</string>
   <string name="navigation_drawer_activity_drawer_open_content_description">Menu de Navegação Aberto</string>
   <string name="navigation_drawer_activity_drawer_close_content_description">Fechar Menu de Navegação</string>
   <string name="audio_fragment_audio_play_description">Tocar áudio</string>
@@ -258,7 +257,7 @@
   <string name="onboarding_activity_next_arrow">Próximo</string>
   <string name="get_started">Começar</string>
   <string name="onboarding_activity_onboarding_slide_dots_content_description">Slide %s de %s</string>
-  <string name="pin_password_hello">Olá, %s!</string>
+  <string name="pin_password_activity_pin_password_hello">Olá, %s!</string>
   <string name="pin_password_activity_pin_password_admin_enter">Por favor, insira o PIN do Administrador.</string>
   <string name="pin_password_activity_pin_password_user_enter">Por favor, insira seu PIN.</string>
   <string name="pin_password_activity_input_pin_password_as_admin">PIN de 5 dígitos do administrador.</string>

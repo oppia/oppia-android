@@ -106,7 +106,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/administrator_controls"
+            android:text="@string/administrator_controls_activity_label_title"
             android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_drawer_fragment_admin_controls_text_color}"
             android:textSize="14sp" />
         </LinearLayout>

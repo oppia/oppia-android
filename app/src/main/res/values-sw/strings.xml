@@ -12,7 +12,6 @@
   <string name="help_activity_label_title">Msaada</string>
   <string name="navigation_drawer_activity_menu_switch_profile">Badili Wasifu</string>
   <string name="developer_options">Chaguzi za Msanidi</string>
-  <string name="administrator_controls">Vidhibiti vya Msimamizi</string>
   <string name="navigation_drawer_activity_drawer_open_content_description">Orodha ya Uelekezaji Fungua</string>
   <string name="navigation_drawer_activity_drawer_close_content_description">Orodha ya Uelekezaji Funga</string>
   <string name="audio_fragment_audio_play_description">Cheza Sauti</string>
@@ -241,7 +240,7 @@
   <string name="onboarding_activity_next_arrow">Inayofuata</string>
   <string name="get_started">Anza</string>
   <string name="onboarding_activity_onboarding_slide_dots_content_description">Slaidi %s ya %s</string>
-  <string name="pin_password_hello">Habari, %s!</string>
+  <string name="pin_password_activity_pin_password_hello">Habari, %s!</string>
   <string name="pin_password_activity_pin_password_admin_enter">Tafadhali weka Nambari yako ya Siri ya Msimamizi.</string>
   <string name="pin_password_activity_pin_password_user_enter">Tafadhali weka Nambari yako ya Siri.</string>
   <string name="pin_password_activity_input_pin_password_as_admin">Nambari ya Siri ya Tarakimu 5 ya Msimamizi.</string>

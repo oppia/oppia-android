@@ -12,7 +12,6 @@
   <string name="help_activity_label_title">المساعدة</string>
   <string name="navigation_drawer_activity_menu_switch_profile">تغيير الملف الشخصي</string>
   <string name="developer_options">خيارات المطورين</string>
-  <string name="administrator_controls">أدوات تحكم المشرف</string>
   <string name="navigation_drawer_activity_drawer_open_content_description">فتح قائمة التنقل</string>
   <string name="navigation_drawer_activity_drawer_close_content_description">غلق قائمة التنقل</string>
   <string name="audio_fragment_audio_play_description">تشغيل الصوت</string>
@@ -239,7 +238,7 @@
   <string name="onboarding_activity_next_arrow">التالي</string>
   <string name="get_started">ابدأ</string>
   <string name="onboarding_activity_onboarding_slide_dots_content_description">شاشة العرض %s من %s</string>
-  <string name="pin_password_hello">أهلًا، %s!</string>
+  <string name="pin_password_activity_pin_password_hello">أهلًا، %s!</string>
   <string name="pin_password_activity_pin_password_admin_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
   <string name="pin_password_activity_pin_password_user_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بك.</string>
   <string name="pin_password_activity_pin_password_forgot_pin" fuzzy="true">نسيت رقم التعريف الشخصي الخاص بي.</string>

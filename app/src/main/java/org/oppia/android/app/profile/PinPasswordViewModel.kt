@@ -39,7 +39,7 @@ class PinPasswordViewModel @Inject constructor(
 
   val helloText: LiveData<String> by lazy {
     Transformations.map(profile) { profile ->
-      resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_hello, profile.name)
+      resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_activity_pin_password_hello, profile.name)
     }
   }
 
