@@ -1119,7 +1119,11 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -1136,7 +1140,11 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -1483,7 +1491,11 @@ class StateFragmentTest {
 
       // Verify that the user is now on the sixth state.
       verifyViewTypeIsPresent(NUMERIC_INPUT_INTERACTION)
-      verifyHint(context.resources.getString(R.string.numeric_input_interaction_item_activity_numeric_input_hint))
+      verifyHint(
+        context.resources.getString(
+          R.string.numeric_input_interaction_item_activity_numeric_input_hint
+        )
+      )
     }
   }
 
@@ -2410,7 +2422,11 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -3277,7 +3293,11 @@ class StateFragmentTest {
       // Verify that the user is now on the tenth state.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -3296,7 +3316,11 @@ class StateFragmentTest {
       // in this interaction.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -3315,7 +3339,11 @@ class StateFragmentTest {
       // interaction.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -3334,7 +3362,11 @@ class StateFragmentTest {
       // different expressions will match if they evaluate to the same value).
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -3371,7 +3403,11 @@ class StateFragmentTest {
       // different expressions will match if they evaluate to the same value).
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }
@@ -3390,7 +3426,11 @@ class StateFragmentTest {
       // the '='.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text))
+        matches(
+          withText(
+            R.string.unsaved_exploration_dialog_fragment_state_end_exploration_button_text
+          )
+        )
       )
     }
   }

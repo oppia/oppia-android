@@ -145,7 +145,11 @@ class AppVersionActivityTest {
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.administrator_controls_app_version_activity_app_version_activity_label_title))
+    assertThat(title).isEqualTo(
+      context.getString(
+        R.string.administrator_controls_app_version_activity_app_version_activity_label_title
+      )
+    )
   }
 
   private fun createAppVersionActivityIntent(): Intent {
@@ -178,7 +182,9 @@ class AppVersionActivityTest {
       onView(
         withText(
           String.format(
-            context.resources.getString(R.string.administrator_controls_app_version_activity_app_version_name),
+            context.resources.getString(
+              R.string.administrator_controls_app_version_activity_app_version_name
+            ),
             context.getVersionName()
           )
         )
@@ -186,7 +192,9 @@ class AppVersionActivityTest {
       onView(
         withText(
           String.format(
-            context.resources.getString(R.string.administrator_controls_app_version_activity_app_last_update_date),
+            context.resources.getString(
+              R.string.administrator_controls_app_version_activity_app_last_update_date
+            ),
             lastUpdateDate
           )
         )
@@ -209,7 +217,9 @@ class AppVersionActivityTest {
         matches(
           withText(
             String.format(
-              context.resources.getString(R.string.administrator_controls_app_version_activity_app_version_name),
+              context.resources.getString(
+                R.string.administrator_controls_app_version_activity_app_version_name
+              ),
               context.getVersionName()
             )
           )
@@ -223,7 +233,9 @@ class AppVersionActivityTest {
         matches(
           withText(
             String.format(
-              context.resources.getString(R.string.administrator_controls_app_version_activity_app_last_update_date),
+              context.resources.getString(
+                R.string.administrator_controls_app_version_activity_app_last_update_date
+              ),
               lastUpdateDate
             )
           )
@@ -245,7 +257,13 @@ class AppVersionActivityTest {
           3
         )
       )
-      onView(withText(R.string.administrator_controls_app_version_activity_app_version_activity_label_title)).perform(click())
+      onView(
+        withText(
+          R.string.administrator_controls_app_version_activity_app_version_activity_label_title
+        )
+      ).perform(
+        click()
+      )
       intended(hasComponent(AppVersionActivity::class.java.name))
       onView(isRoot()).perform(pressBack())
       onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))

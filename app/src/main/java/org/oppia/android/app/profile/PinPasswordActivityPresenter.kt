@@ -173,7 +173,8 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setTitle(R.string.pin_password_activity_pin_password_forgot_title)
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_password_activity_admin_forgot_pin_message, appName)
+          R.string.pin_password_activity_admin_forgot_pin_message, appName
+        )
       )
       .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
         pinViewModel.showAdminPinForgotPasswordPopUp.set(false)

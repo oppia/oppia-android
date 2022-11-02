@@ -113,7 +113,8 @@ class BetaNoticeDialogFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -129,7 +130,11 @@ class BetaNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedTitle() {
     launchBetaNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.beta_notice_dialog_activity_title)).check(matches(isDisplayed()))
+      onDialogView(
+        withText(
+          R.string.beta_notice_dialog_activity_title
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -150,7 +155,13 @@ class BetaNoticeDialogFragmentTest {
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
-        .check(matches(withText(R.string.beta_notice_dialog_content_activity_do_not_show_again_text)))
+        .check(
+          matches(
+            withText(
+              R.string.beta_notice_dialog_content_activity_do_not_show_again_text
+            )
+          )
+        )
       onDialogView(withId(R.id.beta_notice_dialog_preference_checkbox))
         .check(isCompletelyBelow(withId(R.id.beta_notice_dialog_message)))
     }

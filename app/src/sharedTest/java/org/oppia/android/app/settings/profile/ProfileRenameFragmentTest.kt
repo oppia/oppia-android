@@ -324,7 +324,9 @@ class ProfileRenameFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.add_profile_activity_add_profile_error_text_name_only_letters)
+              context.resources.getString(
+                R.string.add_profile_activity_add_profile_error_text_name_only_letters
+              )
             )
           )
         )
@@ -418,7 +420,9 @@ class ProfileRenameFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.add_profile_activity_add_profile_error_text_name_not_unique)
+              context.resources.getString(
+                R.string.add_profile_activity_add_profile_error_text_name_not_unique
+              )
             )
           )
         )

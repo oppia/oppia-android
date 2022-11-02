@@ -35,9 +35,9 @@
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Automatically update topics</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
   <string name="administrator_controls_app_information_view_administrator_controls_app_information_label_text">App Information</string>
-  <string name="administrator_controls_app_information_view_administrator_controls_app_version">App Version</string>
+  <string name="administrator_controls_app_information_view_app_version">App Version</string>
   <string name="administrator_controls_account_actions_view_administrator_controls_account_actions_label_text">Account Actions</string>
-  <string name="administrator_controls_account_actions_view_administrator_controls_log_out_text">Log Out</string>
+  <string name="administrator_controls_account_actions_view_log_out_text">Log Out</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button">Cancel</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_okay_button">Ok</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_message">Are you sure you want to log out of your profile?</string>

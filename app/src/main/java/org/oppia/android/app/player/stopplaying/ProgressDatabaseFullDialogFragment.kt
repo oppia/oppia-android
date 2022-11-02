@@ -58,14 +58,14 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
         ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
-        activity as StopStatePlayingSessionWithSavedProgressListener
+      activity as StopStatePlayingSessionWithSavedProgressListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_title)
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.progress_database_full_dialog_activity_progress_database_full_dialog_description, 
+          R.string.progress_database_full_dialog_activity_progress_database_full_dialog_description,
           oldestSavedExplorationTitle
         )
       )

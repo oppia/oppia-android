@@ -166,7 +166,13 @@ class ProfileListFragmentTest {
           targetViewId = R.id.profile_list_admin_text
         )
       ).check(
-        matches(withText(context.getString(R.string.profile_chooser_activity_profile_chooser_admin)))
+        matches(
+          withText(
+            context.getString(
+              R.string.profile_chooser_activity_profile_chooser_admin
+            )
+          )
+        )
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -221,7 +227,13 @@ class ProfileListFragmentTest {
           targetViewId = R.id.profile_list_admin_text
         )
       ).check(
-        matches(withText(context.getString(R.string.profile_chooser_activity_profile_chooser_admin)))
+        matches(
+          withText(
+            context.getString(
+              R.string.profile_chooser_activity_profile_chooser_admin
+            )
+          )
+        )
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(

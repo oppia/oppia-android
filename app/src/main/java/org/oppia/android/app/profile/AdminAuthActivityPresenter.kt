@@ -96,7 +96,9 @@ class AdminAuthActivityPresenter @Inject constructor(
         }
       } else if (inputPin.length == adminPin.length) {
         authViewModel.errorMessage.set(
-          resourceHandler.getStringInLocale(R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message)
+          resourceHandler.getStringInLocale(
+            R.string.admin_auth_activity_admin_auth_incorrect_pin_error_message
+          )
         )
       }
     }

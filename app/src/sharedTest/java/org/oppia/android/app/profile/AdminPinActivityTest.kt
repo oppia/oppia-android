@@ -575,7 +575,11 @@ class AdminPinActivityTest {
         adminPinEnum = 1
       )
     ).use {
-      onView(withContentDescription(R.string.admin_auth_activity_close_button_text)).check(matches(isDisplayed()))
+      onView(
+        withContentDescription(
+          R.string.admin_auth_activity_close_button_text
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -825,7 +829,9 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+            context.resources.getString(
+              R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+            )
           )
         )
       )
@@ -868,7 +874,9 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+            context.resources.getString(
+              R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+            )
           )
         )
       )
@@ -1004,7 +1012,9 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+            context.resources.getString(
+              R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+            )
           )
         )
       )
@@ -1045,7 +1055,9 @@ class AdminPinActivityTest {
       onView(withId(R.id.admin_pin_input_confirm_pin)).check(
         matches(
           hasErrorText(
-            context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+            context.resources.getString(
+              R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+            )
           )
         )
       )

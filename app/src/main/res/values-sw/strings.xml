@@ -315,9 +315,9 @@
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Sasisha mada moja kwa moja</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_message">Mada zilizopakuliwa ambazo zina maudhui mapya zinazopatikana zitasasishwa moja kwa moja.</string>
   <string name="administrator_controls_app_information_view_administrator_controls_app_information_label_text">Maelezo ya programu.</string>
-  <string name="administrator_controls_app_information_view_administrator_controls_app_version">Toleo la Programu</string>
+  <string name="administrator_controls_app_information_view_app_version">Toleo la Programu</string>
   <string name="administrator_controls_account_actions_view_administrator_controls_account_actions_label_text">Vitendo vya akaunti</string>
-  <string name="administrator_controls_account_actions_view_administrator_controls_log_out_text">Toka</string>
+  <string name="administrator_controls_account_actions_view_log_out_text">Toka</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button">Ghairi</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_okay_button">Sawa</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_message">Je,una uhakika unataka kutoka kwenye wasifu wako?</string>

@@ -337,9 +337,9 @@
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Atualizar tópicos automaticamente</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_message">Os tópicos baixados com novo conteúdo disponível serão atualizados automaticamente.</string>
   <string name="administrator_controls_app_information_view_administrator_controls_app_information_label_text">Informações do Aplicativo</string>
-  <string name="administrator_controls_app_information_view_administrator_controls_app_version">Versão do Aplicativo</string>
+  <string name="administrator_controls_app_information_view_app_version">Versão do Aplicativo</string>
   <string name="administrator_controls_account_actions_view_administrator_controls_account_actions_label_text">Ações da Conta</string>
-  <string name="administrator_controls_account_actions_view_administrator_controls_log_out_text">Sair</string>
+  <string name="administrator_controls_account_actions_view_log_out_text">Sair</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button">Cancelar</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_okay_button">Ok</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_message">Tem certeza que deseja sair do seu perfil?</string>

@@ -158,7 +158,7 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
         resourceHandler.getStringInLocale(
-          R.string.administrator_controls_app_information_view_administrator_controls_app_version
+          R.string.administrator_controls_app_information_view_app_version
         )
       )
     administratorControlsActivityPresenter.loadAppVersion()
