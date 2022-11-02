@@ -114,7 +114,8 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -140,9 +141,21 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
     launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity {
       onDialogView(withId(R.id.ga_update_notice_dialog_message)).check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_message))
-        .check(matches(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_message)))
+        .check(
+          matches(
+            withText(
+              R.string.general_availability_upgrade_notice_dialog_content_activity_message
+            )
+          )
+        )
       onDialogView(withId(R.id.ga_update_notice_dialog_message))
-        .check(isCompletelyBelow(withText(R.string.general_availability_upgrade_notice_dialog_activity_title)))
+        .check(
+          isCompletelyBelow(
+            withText(
+              R.string.general_availability_upgrade_notice_dialog_activity_title
+            )
+          )
+        )
     }
   }
 
@@ -152,7 +165,11 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).check(
-        matches(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_do_not_show_again_text))
+        matches(
+          withText(
+            R.string.general_availability_upgrade_notice_dialog_activity_do_not_show_again
+          )
+        )
       )
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
         .check(isCompletelyBelow(withId(R.id.ga_update_notice_dialog_message)))
@@ -162,9 +179,17 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
   @Test
   fun testFragment_hasExpectedAcknowledgementButtonUnderDoNotShowAgainCheckbox() {
     launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity {
-      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
+      onDialogView(
+        withText(
+          R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text
+        )
+      )
         .check(matches(isDisplayed()))
-      onDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
+      onDialogView(
+        withText(
+          R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text
+        )
+      )
         .check(isCompletelyBelow(withId(R.id.ga_update_notice_dialog_preference_checkbox)))
     }
   }
@@ -172,7 +197,11 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
   @Test
   fun testFragment_clickAcknowledgeButton_callsCallbackListenerWithFalse() {
     launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity {
-      clickOnDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
+      clickOnDialogView(
+        withText(
+          R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text
+        )
+      )
 
       verify(mockNoticeClosedListener).onGaUpgradeNoticeOkayButtonClicked(false)
     }
@@ -183,7 +212,11 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
     launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity {
       clickOnDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
 
-      clickOnDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
+      clickOnDialogView(
+        withText(
+          R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text
+        )
+      )
 
       verify(mockNoticeClosedListener).onGaUpgradeNoticeOkayButtonClicked(true)
     }
@@ -196,7 +229,11 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
       clickOnDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
       clickOnDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
 
-      clickOnDialogView(withText(R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text))
+      clickOnDialogView(
+        withText(
+          R.string.general_availability_upgrade_notice_dialog_content_activity_close_button_text
+        )
+      )
 
       verify(mockNoticeClosedListener).onGaUpgradeNoticeOkayButtonClicked(false)
     }

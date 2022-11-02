@@ -156,7 +156,13 @@ class WalkthroughWelcomeFragmentTest {
           withId(R.id.walkthrough_welcome_description_text_view),
           isCompletelyDisplayed()
         )
-      ).check(matches(withText(R.string.walkthrough_welcome_activity_walkthrough_welcome_description)))
+      ).check(
+        matches(
+          withText(
+            R.string.walkthrough_welcome_activity_walkthrough_welcome_description
+          )
+        )
+      )
     }
   }
 

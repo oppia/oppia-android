@@ -106,7 +106,9 @@ class TopicRevisionSpanTest {
     val revisionFragment = activity
       .supportFragmentManager
       .findFragmentByTag(TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_TAG)
-    val recyclerviewTag = activity.resources.getString(R.string.topic_revision_activity_topic_revision_recyclerview_tag)
+    val recyclerviewTag = activity.resources.getString(
+      R.string.topic_revision_activity_topic_revision_recyclerview_tag
+    )
     val recyclerView =
       revisionFragment?.view?.findViewWithTag<RecyclerView>(recyclerviewTag)
     return (recyclerView?.layoutManager as GridLayoutManager).spanCount

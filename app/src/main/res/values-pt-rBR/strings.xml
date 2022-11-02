@@ -431,7 +431,7 @@
   <string name="beta_notice_dialog_activity_close_button_text">OK</string>
   <string name="general_availability_upgrade_notice_dialog_activity_title">Aviso de disponibilidade geral</string>
   <string name="general_availability_upgrade_notice_dialog_content_activity_message">Olá! Seu aplicativo está sendo atualizado para a versão de disponibilidade geral. Se você tiver problemas ao usar o aplicativo ou tiver dúvidas, entre em contato conosco em android-feedback@oppia.org.</string>
-  <string name="general_availability_upgrade_notice_dialog_content_activity_do_not_show_again_text">Não exibir esta mensagem novamente</string>
+  <string name="general_availability_upgrade_notice_dialog_activity_do_not_show_again">Não exibir esta mensagem novamente</string>
   <string name="general_availability_upgrade_notice_dialog_content_activity_close_button_text">OK</string>
   <string name="ratio_content_description_separator">para</string>
   <string name="ratio_default_hint_text">Insira uma razão no formato x:y.</string>

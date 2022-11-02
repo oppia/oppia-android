@@ -858,7 +858,11 @@ class NavigationDrawerActivityProdTest {
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withText(R.string.exit_profile_dialog_fragment_home_activity_back_dialog_message)).check(matches(isDisplayed()))
+      onView(
+        withText(
+          R.string.exit_profile_dialog_fragment_home_activity_back_dialog_message
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -874,7 +878,11 @@ class NavigationDrawerActivityProdTest {
   }
 
   private fun ActivityScenario<NavigationDrawerTestActivity>.openNavigationDrawer() {
-    onView(withContentDescription(R.string.navigation_drawer_activity_drawer_open_content_description))
+    onView(
+      withContentDescription(
+        R.string.navigation_drawer_activity_drawer_open_content_description
+      )
+    )
       .check(matches(isCompletelyDisplayed()))
       .perform(click())
 

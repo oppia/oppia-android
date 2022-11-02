@@ -347,7 +347,13 @@ class TopicInfoFragmentTest {
       )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_info_activity_see_more_text)))
+      onView(withId(R.id.see_more_text_view)).check(
+        matches(
+          withText(
+            R.string.topic_info_activity_see_more_text
+          )
+        )
+      )
     }
   }
 
@@ -391,7 +397,13 @@ class TopicInfoFragmentTest {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_info_activity_see_less)))
+      onView(withId(R.id.see_more_text_view)).check(
+        matches(
+          withText(
+            R.string.topic_info_activity_see_less
+          )
+        )
+      )
     }
   }
 
@@ -404,7 +416,13 @@ class TopicInfoFragmentTest {
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_info_activity_see_more_text)))
+      onView(withId(R.id.see_more_text_view)).check(
+        matches(
+          withText(
+            R.string.topic_info_activity_see_more_text
+          )
+        )
+      )
     }
   }
 
@@ -418,7 +436,13 @@ class TopicInfoFragmentTest {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
-      onView(withId(R.id.see_more_text_view)).check(matches(withText(R.string.topic_info_activity_see_less)))
+      onView(withId(R.id.see_more_text_view)).check(
+        matches(
+          withText(
+            R.string.topic_info_activity_see_less
+          )
+        )
+      )
     }
   }
 
