@@ -152,21 +152,26 @@ class UrlImageParser private constructor(
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = retrieveDrawable(resource)
       // This statement is logged correctly
-      htmlContentTextView.post {
-        val padding =
-          Rect(
-            htmlContentTextView.paddingLeft,
-            htmlContentTextView.paddingTop,
-            htmlContentTextView.paddingRight,
-            htmlContentTextView.paddingBottom
+      htmlContentTextView.viewTreeObserver.addOnPreDrawListener(object :
+        ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+          val padding =
+            Rect(
+              htmlContentTextView.paddingLeft,
+              htmlContentTextView.paddingTop,
+              htmlContentTextView.paddingRight,
+              htmlContentTextView.paddingBottom
+            )
+          proxyDrawable.initialize(
+            drawable,
+            computeBounds(context, drawable, htmlContentTextView.width, padding)
           )
-        proxyDrawable.initialize(
-          drawable,
-          computeBounds(context, drawable, htmlContentTextView.width, padding)
-        )
-        htmlContentTextView.text = htmlContentTextView.text
-        htmlContentTextView.invalidate()
-      }
+          htmlContentTextView.text = htmlContentTextView.text
+          htmlContentTextView.invalidate()
+          htmlContentTextView.viewTreeObserver.removeOnPreDrawListener(this)
+          return true
+        }
+      })
     }
 
     /** Returns the drawable corresponding to the specified loaded resource. */
