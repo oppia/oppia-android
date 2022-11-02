@@ -191,8 +191,8 @@ class RetrieveLicenseTexts(
       File(pathToLargeFiles).outputStream().bufferedWriter().use { writer ->
         TextFormat.printer().print(
           LargeLicenseHashMap.newBuilder().apply {
-          this.putAllLargeText(map)
-        }.build(),
+            this.putAllLargeText(map)
+          }.build(),
           writer
         )
       }
