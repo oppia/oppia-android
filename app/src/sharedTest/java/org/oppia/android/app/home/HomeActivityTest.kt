@@ -342,10 +342,8 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
 
-      it.onActivity {
-        it.finish()
-      }
     }
+
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
