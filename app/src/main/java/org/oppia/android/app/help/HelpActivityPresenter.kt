@@ -222,9 +222,11 @@ class HelpActivityPresenter @Inject constructor(
   }
 
   private fun selectFAQListFragment() {
-    setMultipaneContainerTitle(resourceHandler.getStringInLocale(
-      R.string.faq_single_activity_title
-    ))
+    setMultipaneContainerTitle(
+      resourceHandler.getStringInLocale(
+        R.string.faq_single_activity_title
+      )
+    )
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = FAQ_LIST_FRAGMENT_TAG
     selectedHelpOptionTitle = getMultipaneContainerTitle()
@@ -344,7 +346,7 @@ class HelpActivityPresenter @Inject constructor(
       PolicyPage.TERMS_OF_SERVICE -> setMultipaneContainerTitle(
         resourceHandler.getStringInLocale(R.string.terms_of_service_activity_title)
       )
-      else -> { }
+      else -> {}
     }
     setMultipaneBackButtonVisibility(View.GONE)
     selectedFragmentTag = POLICIES_FRAGMENT_TAG
