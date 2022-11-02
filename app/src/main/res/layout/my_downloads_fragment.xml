@@ -19,7 +19,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_downloads_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/oppia_primary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/my_downloads_activity_title"
