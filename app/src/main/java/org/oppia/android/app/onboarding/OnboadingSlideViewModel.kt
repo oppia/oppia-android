@@ -20,9 +20,11 @@ class OnboardingSlideViewModel(
   val title =
     ObservableField(getOnboardingSlide0Title())
   val description =
-    ObservableField(resourceHandler.getStringInLocale(
-      R.string.onboarding_activity_onboarding_slide_0_description
-    ))
+    ObservableField(
+      resourceHandler.getStringInLocale(
+        R.string.onboarding_activity_onboarding_slide_0_description
+      )
+    )
   private val orientation = Resources.getSystem().configuration.orientation
 
   init {
@@ -42,9 +44,11 @@ class OnboardingSlideViewModel(
           slideImage.set(R.drawable.ic_portrait_onboarding_0)
         }
         title.set(getOnboardingSlide0Title())
-        description.set(resourceHandler.getStringInLocale(
-          R.string.onboarding_activity_onboarding_slide_0_description
-        ))
+        description.set(
+          resourceHandler.getStringInLocale(
+            R.string.onboarding_activity_onboarding_slide_0_description
+          )
+        )
       }
       ViewPagerSlide.SLIDE_1 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -56,12 +60,16 @@ class OnboardingSlideViewModel(
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_1)
         }
-        title.set(resourceHandler.getStringInLocale(
-          R.string.onboarding_activity_onboarding_slide_1_title
-        ))
-        description.set(resourceHandler.getStringInLocale(
-          R.string.onboarding_activity_onboarding_slide_1_description
-        ))
+        title.set(
+          resourceHandler.getStringInLocale(
+            R.string.onboarding_activity_onboarding_slide_1_title
+          )
+        )
+        description.set(
+          resourceHandler.getStringInLocale(
+            R.string.onboarding_activity_onboarding_slide_1_description
+          )
+        )
       }
       ViewPagerSlide.SLIDE_2 -> {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -73,12 +81,16 @@ class OnboardingSlideViewModel(
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
           slideImage.set(R.drawable.ic_portrait_onboarding_2)
         }
-        title.set(resourceHandler.getStringInLocale(
-          R.string.onboarding_activity_onboarding_slide_2_title
-        ))
-        description.set(resourceHandler.getStringInLocale(
-          R.string.onboarding_activity_onboarding_slide_2_description
-        ))
+        title.set(
+          resourceHandler.getStringInLocale(
+            R.string.onboarding_activity_onboarding_slide_2_title
+          )
+        )
+        description.set(
+          resourceHandler.getStringInLocale(
+            R.string.onboarding_activity_onboarding_slide_2_description
+          )
+        )
       }
     }
   }
@@ -86,6 +98,7 @@ class OnboardingSlideViewModel(
   private fun getOnboardingSlide0Title(): String {
     val appName = resourceHandler.getStringInLocale(R.string.app_name)
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.onboarding_activity_onboarding_slide_0_title, appName)
+      R.string.onboarding_activity_onboarding_slide_0_title, appName
+    )
   }
 }

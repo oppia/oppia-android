@@ -39,7 +39,7 @@
       android:paddingTop="20dp"
       android:paddingEnd="@dimen/administrator_controls_app_information_view_app_version_text_view_padding_end"
       android:paddingBottom="20dp"
-      android:text="@string/administrator_controls_app_information_view_administrator_controls_app_version"
+      android:text="@string/administrator_controls_app_information_view_app_version"
       android:textColor="@color/component_color_admin_controls_menu_options_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

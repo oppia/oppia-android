@@ -309,9 +309,9 @@
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">تحديث المواضيع تلقائيًا</string>
   <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_message">سيتم تحديث الموضوعات التي تم تنزيلها والتي يتوفر بها محتوى جديد تلقائيًا.</string>
   <string name="administrator_controls_app_information_view_administrator_controls_app_information_label_text">معلومات التطبيق</string>
-  <string name="administrator_controls_app_information_view_administrator_controls_app_version">إصدار التطبيق</string>
+  <string name="administrator_controls_app_information_view_app_version">إصدار التطبيق</string>
   <string name="administrator_controls_account_actions_view_administrator_controls_account_actions_label_text">إجراءات الحساب</string>
-  <string name="administrator_controls_account_actions_view_administrator_controls_log_out_text">تسجيل الخروج</string>
+  <string name="administrator_controls_account_actions_view_log_out_text">تسجيل الخروج</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button">إلغاء</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_okay_button">حسنا</string>
   <string name="administrator_controls_view_log_out_dialog_fragment_message">هل أنت متأكد من رغبتك في تسجيل الخروج من ملفك الشخصي؟</string>

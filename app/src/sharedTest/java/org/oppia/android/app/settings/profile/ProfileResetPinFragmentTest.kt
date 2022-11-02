@@ -331,7 +331,9 @@ class ProfileResetPinFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length)
+              context.resources.getString(
+                R.string.profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length
+              )
             )
           )
         )
@@ -372,7 +374,9 @@ class ProfileResetPinFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length)
+              context.resources.getString(
+                R.string.profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length
+              )
             )
           )
         )
@@ -478,7 +482,9 @@ class ProfileResetPinFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+              context.resources.getString(
+                R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+              )
             )
           )
         )
@@ -520,7 +526,9 @@ class ProfileResetPinFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+              context.resources.getString(
+                R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+              )
             )
           )
         )
@@ -650,7 +658,9 @@ class ProfileResetPinFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.profile_reset_pin_activity_profile_reset_pin_error_user_pin_length)
+              context.resources.getString(
+                R.string.profile_reset_pin_activity_profile_reset_pin_error_user_pin_length
+              )
             )
           )
         )
@@ -722,7 +732,9 @@ class ProfileResetPinFragmentTest {
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text)
+              context.resources.getString(
+                R.string.admin_pin_activity_wrong_confirm_admin_pin_error_text
+              )
             )
           )
         )

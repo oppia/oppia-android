@@ -581,11 +581,11 @@ class AdminPinActivityTest {
         adminPinEnum = 1
       )
     ).use {
-      onView(withContentDescription(R.string.admin_auth_activity_close_button_text)).check(
-        matches(
-          isDisplayed()
+      onView(
+        withContentDescription(
+          R.string.admin_auth_activity_close_button_text
         )
-      )
+      ).check(matches(isDisplayed()))
     }
   }
 

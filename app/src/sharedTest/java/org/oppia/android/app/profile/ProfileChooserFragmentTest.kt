@@ -404,7 +404,9 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_activity_set_up_multiple_profiles)
+        stringToMatch = context.getString(
+          R.string.profile_chooser_activity_set_up_multiple_profiles
+        )
       )
     }
   }
