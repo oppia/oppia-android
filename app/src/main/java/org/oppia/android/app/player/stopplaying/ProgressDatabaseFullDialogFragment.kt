@@ -62,16 +62,16 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
-      .setTitle(R.string.progress_database_full_dialog_activity_progress_database_full_dialog_title)
+      .setTitle(
+        R.string.progress_database_full_dialog_activity_progress_database_full_dialog_title
+      )
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
           R.string.progress_database_full_dialog_activity_progress_database_full_dialog_description,
           oldestSavedExplorationTitle
         )
       )
-      .setPositiveButton(
-        R.string.progress_database_full_dialog_activity_continue_button
-      ) { _, _ ->
+      .setPositiveButton(R.string.progress_database_full_dialog_activity_continue_button) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteOldestProgressAndStopSession()
         dismiss()
