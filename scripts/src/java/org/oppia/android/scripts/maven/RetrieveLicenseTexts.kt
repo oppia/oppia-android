@@ -189,9 +189,12 @@ class RetrieveLicenseTexts(
       val map: HashMap<String, String> = HashMap<String, String>()
       map.put(licenseLink, licenseText)
       File(pathToLargeFiles).outputStream().bufferedWriter().use { writer ->
-        TextFormat.printer().print(LargeLicenseHashMap.newBuilder().apply {
+        TextFormat.printer().print(
+          LargeLicenseHashMap.newBuilder().apply {
           this.putAllLargeText(map)
-        }.build(), writer)
+        }.build(),
+          writer
+        )
       }
       licenseLink
     }
