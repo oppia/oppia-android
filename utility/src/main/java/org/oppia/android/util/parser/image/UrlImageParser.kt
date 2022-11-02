@@ -153,23 +153,20 @@ class UrlImageParser private constructor(
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = retrieveDrawable(resource)
       // This statement is logged correctly
-      Log.d("TAGG", "onResourceReady: Top " + htmlContentTextView.text)
       htmlContentTextView.post {
-        htmlContentTextView.width { viewWidth ->
-          val padding =
-            Rect(
-              htmlContentTextView.paddingLeft,
-              htmlContentTextView.paddingTop,
-              htmlContentTextView.paddingRight,
-              htmlContentTextView.paddingBottom
-            )
-          proxyDrawable.initialize(drawable, computeBounds(context, drawable, viewWidth, padding))
-          htmlContentTextView.text = htmlContentTextView.text
-          // This is not getting logged, it get's logged only when we go in background and
-          // open app again
-          Log.d("TAGG", "onResourceReady: Inside " + htmlContentTextView.text)
-          htmlContentTextView.invalidate()
-        }
+        val padding =
+          Rect(
+            htmlContentTextView.paddingLeft,
+            htmlContentTextView.paddingTop,
+            htmlContentTextView.paddingRight,
+            htmlContentTextView.paddingBottom
+          )
+        proxyDrawable.initialize(
+          drawable,
+          computeBounds(context, drawable, htmlContentTextView.width, padding)
+        )
+        htmlContentTextView.text = htmlContentTextView.text
+        htmlContentTextView.invalidate()
       }
     }
 
