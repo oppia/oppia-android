@@ -1,11 +1,8 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.app.model.DragAndDropRawAnswer
-import org.oppia.android.app.model.GroupSubtitledHtml
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -61,7 +58,13 @@ class DragAndDropSortInteractionViewModel private constructor(
     }
 
   private val _choiceItems: MutableList<DragDropInteractionContentViewModel> =
-    computeChoiceItems(contentIdHtmlMap, choiceSubtitledHtmls, this, resourceHandler)
+    computeChoiceItems(
+      contentIdHtmlMap,
+      choiceSubtitledHtmls,
+      this,
+      resourceHandler,
+      rawUserAnswer.listOfSetsOfTranslatableHtmlContentIds
+    )
 
   val choiceItems: List<DragDropInteractionContentViewModel> = _choiceItems
 
@@ -77,7 +80,6 @@ class DragAndDropSortInteractionViewModel private constructor(
           )
         }
       }
-    Log.d("TAGG", "INIT: " + rawUserAnswer.dragAndDrop.listOfGroupSubtitledHtmlList)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.set(true) // For drag drop submit button will be enabled by default.
   }
@@ -136,29 +138,11 @@ class DragAndDropSortInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    val htmlContentIds = _choiceItems.map { it.htmlContent.contentIdsList.toList() }
-    val htmlContent = _choiceItems.map { it.computeStringList().htmlList.toList() }
-    val listofSubtitledHtml = htmlContentIds.zip(htmlContent)
-    val GroupSubtitleHtmlList = mutableListOf<GroupSubtitledHtml>()
-    listofSubtitledHtml.forEach {
-      val newListofSubtitleHtml = mutableListOf<SubtitledHtml>()
-      it.first.zip(it.second).forEach {
-        newListofSubtitleHtml.add(
-          SubtitledHtml.newBuilder().apply {
-            contentId = it.first.contentId
-            html = it.second
-          }.build()
-        )
-      }
-      GroupSubtitleHtmlList.add(
-        GroupSubtitledHtml.newBuilder()
-          .addAllListOfSubtitledHtmls(newListofSubtitleHtml)
-          .build()
-      )
-    }
-    dragAndDrop = DragAndDropRawAnswer.newBuilder()
-      .addAllListOfGroupSubtitledHtml(GroupSubtitleHtmlList)
-      .build()
+    val htmlContentIds = _choiceItems.map { it.htmlContent }
+    listOfSetsOfTranslatableHtmlContentIds =
+      ListOfSetsOfTranslatableHtmlContentIds.newBuilder().apply {
+        addAllContentIdLists(htmlContentIds)
+      }.build()
   }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
@@ -258,24 +242,54 @@ class DragAndDropSortInteractionViewModel private constructor(
       contentIdHtmlMap: Map<String, String>,
       choiceStrings: List<SubtitledHtml>,
       dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-      resourceHandler: AppLanguageResourceHandler
+      resourceHandler: AppLanguageResourceHandler,
+      listOfSetsOfTranslatableHtmlContentIds: ListOfSetsOfTranslatableHtmlContentIds
     ): MutableList<DragDropInteractionContentViewModel> {
-      return choiceStrings.mapIndexed { index, subtitledHtml ->
-        DragDropInteractionContentViewModel(
-          contentIdHtmlMap = contentIdHtmlMap,
-          htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-            addContentIds(
-              TranslatableHtmlContentId.newBuilder().apply {
-                contentId = subtitledHtml.contentId
-              }
-            )
-          }.build(),
-          itemIndex = index,
-          listSize = choiceStrings.size,
-          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-          resourceHandler = resourceHandler
+      val listOfDragDropInteractionContentViewModel =
+        mutableListOf<DragDropInteractionContentViewModel>()
+      choiceStrings.mapIndexed { index, subtitledHtml ->
+        listOfDragDropInteractionContentViewModel.add(
+          DragDropInteractionContentViewModel(
+            contentIdHtmlMap = contentIdHtmlMap,
+            htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+              addContentIds(
+                TranslatableHtmlContentId.newBuilder().apply {
+                  contentId = subtitledHtml.contentId
+                }
+              )
+            }.build(),
+            itemIndex = index,
+            listSize = choiceStrings.size,
+            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+            resourceHandler = resourceHandler
+          )
         )
-      }.toMutableList()
+      }
+      listOfSetsOfTranslatableHtmlContentIds.contentIdListsList.mapIndexed { itemIndex, contentId ->
+        if (contentId.contentIdsCount == 1) {
+          listOfDragDropInteractionContentViewModel[itemIndex].htmlContent =
+            SetOfTranslatableHtmlContentIds.newBuilder()
+              .addAllContentIds(contentId.contentIdsList)
+              .build()
+        } else if (contentId.contentIdsCount > 1) {
+          val item = listOfDragDropInteractionContentViewModel[itemIndex]
+          val nextItem = listOfDragDropInteractionContentViewModel[itemIndex + 1]
+          nextItem.htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+            addAllContentIds(nextItem.htmlContent.contentIdsList)
+            addAllContentIds(item.htmlContent.contentIdsList)
+          }.build()
+          listOfDragDropInteractionContentViewModel[itemIndex + 1] = nextItem
+
+          listOfDragDropInteractionContentViewModel.removeAt(itemIndex)
+
+          listOfDragDropInteractionContentViewModel.forEachIndexed { index, viewModel ->
+            viewModel.itemIndex = index
+            viewModel.listSize =
+              listOfDragDropInteractionContentViewModel.size
+          }
+        }
+      }
+      return listOfDragDropInteractionContentViewModel
     }
   }
 }

@@ -1599,8 +1599,8 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
-    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -1618,6 +1618,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1640,6 +1641,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1663,6 +1665,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_textInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1686,6 +1689,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_mathInteractions_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1793,6 +1797,27 @@ class StateFragmentTest {
           targetViewId = R.id.drag_drop_content_text_view
         )
       ).check(matches(withText(containsString("0.35"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_dragAndDropSort_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+
+      // Rotating device.
+      rotateToLandscape()
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
     }
   }
 

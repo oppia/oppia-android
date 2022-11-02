@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -461,6 +462,7 @@ class StateFragmentPresenter @Inject constructor(
   fun getExplorationCheckpointState() = explorationCheckpointState
 
   fun getRawUserAnswer(): RawUserAnswer {
+    Log.d("TAGG", "getRawUserAnswer: " + isConfigChangeStateRetentionEnabled.value)
     return if (isConfigChangeStateRetentionEnabled.value) {
       viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
     } else RawUserAnswer.getDefaultInstance()
@@ -509,6 +511,7 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
+    Log.d("TAGG", "setHintOpenedAndUnRevealed: " + isHintBulbAnimationEnabled.value)
     if (isHintBulbAnimationEnabled.value) {
       if (isHintUnrevealed) {
         val hintBulbAnimation = AnimationUtils.loadAnimation(

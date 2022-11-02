@@ -1,7 +1,6 @@
 package org.oppia.android.app.utility
 
 import android.graphics.RectF
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -94,7 +93,6 @@ class ClickableAreasImage(
         getXCoordinate(clickableArea.region.area.lowerRight.x),
         getYCoordinate(clickableArea.region.area.lowerRight.y)
       )
-      Log.d("TAGG", "addRegionViews: " + clickableArea.region.area.upperLeft)
       val layoutParams = FrameLayout.LayoutParams(
         imageRect.width().roundToInt(),
         imageRect.height().roundToInt()
@@ -144,8 +142,6 @@ class ClickableAreasImage(
     }
   }
 
-  // Saturn
-  // You have selected planet Saturn
   fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
     resetRegionSelectionViews()
     listener.onClickableAreaTouched(

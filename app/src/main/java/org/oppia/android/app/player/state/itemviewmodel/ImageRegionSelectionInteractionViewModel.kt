@@ -7,7 +7,6 @@ import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -94,11 +93,9 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
     return ClickOnImage.newBuilder().apply {
+      // The object supports multiple regions in an answer, but neither web nor Android
+      // supports this.
       addClickedRegions(region?.label ?: "")
-      clickPosition = Point2d.newBuilder().apply {
-        x = region?.region?.area?.upperLeft?.x ?: 0F
-        y = region?.region?.area?.lowerRight?.y ?: 0F
-      }.build()
     }.build()
   }
 

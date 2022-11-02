@@ -215,7 +215,7 @@ const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
 annotation class EnableInteractionConfigChangeStateRetention
 
 /** Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention]. */
-const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = true
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = false
 
 /**
  * Qualifier for the platform parameter that controls the animation for hint bulb animation
@@ -224,4 +224,4 @@ const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = true
 annotation class EnableHintBulbAnimation
 
 /** Default value for feature flag corresponding to [EnableHintBulbAnimation]. */
-const val ENABLE_HINT_BULB_ANIMATION = false
+const val ENABLE_HINT_BULB_ANIMATION = true
