@@ -115,7 +115,8 @@ class RetrieveLicenseTextsTest {
       RetrieveLicenseTexts(mockLicenseFetcher).main(
         arrayOf(
           "${tempFolder.root}/values",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+          "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          "${tempFolder.root}/large_strings.textproto"
         )
       )
     }
@@ -244,7 +245,8 @@ class RetrieveLicenseTextsTest {
     RetrieveLicenseTexts(mockLicenseFetcher).main(
       arrayOf(
         "${tempFolder.root}/values",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+        "${tempFolder.root}/large_strings.textproto"
       )
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_INDICATOR)
