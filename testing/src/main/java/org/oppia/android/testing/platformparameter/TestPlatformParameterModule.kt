@@ -254,7 +254,7 @@ class TestPlatformParameterModule {
     fun forceEnableHintBulbAnimation(value: Boolean) {
       enableInteractionConfigChangeStateRetention = value
     }
-    
+
     /** Enables forcing [EnablePerformanceMetricsCollection] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnablePerformanceMetricsCollection(value: Boolean) {
