@@ -1599,8 +1599,9 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1618,8 +1619,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1641,8 +1642,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1665,8 +1666,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_textInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -1689,8 +1690,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_mathInteractions_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1708,8 +1709,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_selectionInteraction_ratioButton_retainStateOnConfigurationChange() {
     TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -1731,8 +1732,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_selectionInteraction_multipleSelection_retainStateOnConfigurationChange() {
     TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -1772,8 +1773,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_dragAndDrop_retainStateOnConfigurationChange() {
     TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -1801,8 +1802,8 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_dragAndDropSort_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
