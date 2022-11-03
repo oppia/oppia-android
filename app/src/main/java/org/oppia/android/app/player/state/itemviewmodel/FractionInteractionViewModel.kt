@@ -32,7 +32,7 @@ class FractionInteractionViewModel private constructor(
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.fraction ?: ""
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
   val hintText: CharSequence = deriveHintText(interaction)
@@ -88,7 +88,7 @@ class FractionInteractionViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
-      textualAnswer = answerText.toString()
+      fraction = answerText.toString()
     }
   }.build()
 

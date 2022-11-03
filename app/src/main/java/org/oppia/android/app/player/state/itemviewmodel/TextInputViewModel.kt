@@ -28,7 +28,7 @@ class TextInputViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.text ?: ""
   val hintText: CharSequence = deriveHintText(interaction)
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
@@ -78,7 +78,7 @@ class TextInputViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
-      textualAnswer = answerText.toString()
+      text = answerText.toString()
     }
   }.build()
 

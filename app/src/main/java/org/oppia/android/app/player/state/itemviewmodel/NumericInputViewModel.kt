@@ -26,7 +26,7 @@ class NumericInputViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.numeric ?: ""
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
   var isAnswerAvailable = ObservableField<Boolean>(false)
@@ -96,7 +96,7 @@ class NumericInputViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
-      textualAnswer = answerText.toString()
+      numeric = answerText.toString()
     }
   }.build()
 

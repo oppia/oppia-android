@@ -331,14 +331,22 @@ message ItemSelectionRawAnswer {
 // retain state on configuration changes.
 message RawUserAnswer {
   oneof answer_input_type {
-    // A raw answer entered by user in a text-based interactions.
-    string textual_answer = 1;
+    // A raw answer entered by user in text input interaction.
+    string text = 1;
+    // A raw answer entered by user in fraction input interaction.
+    string fraction = 2;
+    // A raw answer entered by user in numeric input interaction.
+    string numeric = 3;
+    // A raw answer entered by user in ratio input interaction.
+    string ratio_input = 4;
+    // A raw answer entered by user in ratio input interaction.
+    string math_expression = 5;
     // A user's selection for item selection and multiple choice interactions.
-    ItemSelectionRawAnswer item_selection = 3;
+    ItemSelectionRawAnswer item_selection = 6;
     // A user's selection for drag and drop interactions.
-    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 7;
     // A user's selection for image region selection interaction.
-    ImageWithRegions.LabeledRegion image_region_selection = 5;
+    ImageWithRegions.LabeledRegion image_region_selection = 8;
   }
 }
 

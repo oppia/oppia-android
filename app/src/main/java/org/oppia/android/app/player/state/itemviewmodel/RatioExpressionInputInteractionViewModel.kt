@@ -33,7 +33,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.ratioInput ?: ""
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
 
@@ -73,7 +73,7 @@ class RatioExpressionInputInteractionViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
-      textualAnswer = answerText.toString()
+      ratioInput = answerText.toString()
     }
   }.build()
 
