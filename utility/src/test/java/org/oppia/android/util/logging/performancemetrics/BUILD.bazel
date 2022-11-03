@@ -49,6 +49,7 @@ oppia_android_test(
         "//third_party:com_google_truth_truth",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",

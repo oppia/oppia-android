@@ -35,4 +35,49 @@ interface PerformanceMetricsAssessor {
    * capacity of the device.
    */
   fun getDeviceMemoryTier(): OppiaMetricLog.MemoryTier
+
+  /** Returns a [CpuSnapshot] with current values for CPU usage calculations. */
+  fun computeCpuSnapshotAtCurrentTime(): CpuSnapshot
+
+  /**
+   * Returns the relative CPU usage after comparing [firstCpuSnapshot] and [secondCpuSnapshot].
+   *
+   * This value will return null in case any of the following cases return true:
+   * a) greater CPU time of [firstCpuSnapshot] than of [secondCpuSnapshot].
+   * b) greater app time of [firstCpuSnapshot] than of [secondCpuSnapshot].
+   * c) number of online CPU cores of either [firstCpuSnapshot] or [secondCpuSnapshot] are less
+   * than or equal to 0.
+   */
+  fun getRelativeCpuUsage(firstCpuSnapshot: CpuSnapshot, secondCpuSnapshot: CpuSnapshot): Double?
+
+  /**
+   * Container that consists of all the necessary values that are required for calculating CPU usage
+   * at that point of time.
+   *
+   * @property appTimeMillis denotes the amount of time since the current instance of the app begun
+   * @property cpuTimeMillis denotes the amount of time CPU ran for this process
+   * @property numberOfOnlineCores denotes the number of currently online/available CPU cores
+   */
+  data class CpuSnapshot(
+    val appTimeMillis: Long,
+    val cpuTimeMillis: Long,
+    val numberOfOnlineCores: Int
+  ) {
+    /** Returns whether the current [CpuSnapshot] is newer than the [otherCpuSnapshot]. */
+    fun isNewer(otherCpuSnapshot: CpuSnapshot) = cpuTimeMillis > otherCpuSnapshot.cpuTimeMillis ||
+      appTimeMillis > otherCpuSnapshot.appTimeMillis
+
+    /** Returns whether the current [CpuSnapshot] has invalid number of online CPU cores or not. */
+    fun doesNotHaveValidNumberOfOnlineCores(): Boolean = numberOfOnlineCores <= 0
+  }
+
+  /** Represents the different states of the application. */
+  enum class AppIconification {
+    /** Indicates that the iconification hasn't been initialized yet. */
+    UNINITIALIZED,
+    /** Indicates that the app is in foreground. */
+    APP_IN_FOREGROUND,
+    /** Indicates that the app is in background. */
+    APP_IN_BACKGROUND
+  }
 }
