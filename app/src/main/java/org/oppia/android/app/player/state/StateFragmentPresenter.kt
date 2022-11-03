@@ -511,7 +511,6 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
-    Log.d("TAGG", "setHintOpenedAndUnRevealed: " + isHintBulbAnimationEnabled.value)
     if (isHintBulbAnimationEnabled.value) {
       if (isHintUnrevealed) {
         val hintBulbAnimation = AnimationUtils.loadAnimation(

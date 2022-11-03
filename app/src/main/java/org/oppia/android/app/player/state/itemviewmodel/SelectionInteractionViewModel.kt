@@ -56,7 +56,7 @@ class SelectionInteractionViewModel private constructor(
       ?: minAllowableSelectionCount
   }
 
-  val selectedItems: MutableList<Int> = mutableListOf()
+  private val selectedItems: MutableList<Int> = mutableListOf()
   private val selectedAnswer: MutableList<Int> =
     rawUserAnswer.itemSelection.selectedIndexesList ?: mutableListOf()
 
@@ -75,16 +75,11 @@ class SelectionInteractionViewModel private constructor(
           )
         }
       }
-    if (selectedAnswer.size == 1 && isSubmitAnswerEnabled) {
-      val selectedIndex = selectedAnswer[0]
-      val isAnswerUpdated =
-        updateSelection(selectedIndex, choiceItems[selectedIndex].isAnswerSelected.get())
-      choiceItems[selectedIndex].isAnswerSelected.set(isAnswerUpdated)
-    } else if (selectedAnswer.size > 1 && isSubmitAnswerEnabled) {
+    if (selectedAnswer.size > 0 && isSubmitAnswerEnabled) {
       selectedAnswer.forEach { index ->
-        val isAnswerUpdated =
-          updateSelection(index, choiceItems[index].isAnswerSelected.get())
-        choiceItems[index].isAnswerSelected.set(isAnswerUpdated)
+        selectedItems += index
+        updateIsAnswerAvailable()
+        choiceItems[index].isAnswerSelected.set(true)
       }
     }
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
@@ -120,11 +115,7 @@ class SelectionInteractionViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
-      if (interactionId == "ItemSelectionInput") {
-        addAllSelectedIndexes(selectedItems)
-      } else if (selectedItems.size == 1) {
-        addSelectedIndexes(selectedItems.first())
-      }
+      addAllSelectedIndexes(selectedItems)
     }.build()
   }.build()
 

@@ -87,32 +87,10 @@ class ClickableAreasImage(
       it.id != imageView.id && it.id != defaultRegionView.id
     }.forEach(parentView::removeView)
     clickableAreas.forEach { clickableArea ->
-      val imageRect = RectF(
-        getXCoordinate(clickableArea.region.area.upperLeft.x),
-        getYCoordinate(clickableArea.region.area.upperLeft.y),
-        getXCoordinate(clickableArea.region.area.lowerRight.x),
-        getYCoordinate(clickableArea.region.area.lowerRight.y)
-      )
-      val layoutParams = FrameLayout.LayoutParams(
-        imageRect.width().roundToInt(),
-        imageRect.height().roundToInt()
-      )
-      val newView = View(parentView.context)
-      // ClickableArea coordinates are not laid-out properly in RTL. The image region coordinates
-      // are from left-to-right with an upper left origin and touch coordinates from Android start
-      // from the right in RTL mode. Thus, to avoid this situation, force layout direction to LTR in
-      // all situations.
-      ViewCompat.setLayoutDirection(parentView, ViewCompat.LAYOUT_DIRECTION_LTR)
-      newView.layoutParams = layoutParams
-      newView.x = imageRect.left
-      newView.y = imageRect.top
-      newView.isClickable = true
-      newView.isFocusable = true
-      newView.isFocusableInTouchMode = true
-      newView.tag = clickableArea.label
+      val newView = createSelectableView(clickableArea)
       newView.setOnTouchListener { _, event ->
         if (event.action == MotionEvent.ACTION_DOWN) {
-          showOrHideRegion(newView, clickableArea)
+          showOrHideRegion(clickableArea)
         }
         return@setOnTouchListener true
       }
@@ -120,11 +98,9 @@ class ClickableAreasImage(
         // Make default region visibility gone when talkback enabled to avoid any accidental touch.
         defaultRegionView.isVisible = false
         newView.setOnClickListener {
-          showOrHideRegion(newView, clickableArea)
+          showOrHideRegion(clickableArea)
         }
       }
-      newView.contentDescription = clickableArea.contentDescription
-      parentView.addView(newView)
     }
 
     // Ensure that the children views are properly computed. The specific flow below is recommended
@@ -142,7 +118,12 @@ class ClickableAreasImage(
     }
   }
 
-  fun showOrHideRegion(newView: View, clickableArea: ImageWithRegions.LabeledRegion) {
+  /**
+   * Called to show or hide selected image region
+   *
+   * @param clickableArea a clickable image region which we want to show or hide
+   */
+  fun showOrHideRegion(clickableArea: ImageWithRegions.LabeledRegion) {
     resetRegionSelectionViews()
     listener.onClickableAreaTouched(
       NamedRegionClickedEvent(
@@ -150,10 +131,11 @@ class ClickableAreasImage(
         clickableArea.contentDescription
       )
     )
+    val newView = createSelectableView(clickableArea)
     newView.setBackgroundResource(R.drawable.selected_region_background)
   }
 
-  fun highlightBox(clickableArea: ImageWithRegions.LabeledRegion) {
+  private fun createSelectableView(clickableArea: ImageWithRegions.LabeledRegion): View {
     val imageRect = RectF(
       getXCoordinate(clickableArea.region.area.upperLeft.x),
       getYCoordinate(clickableArea.region.area.upperLeft.y),
@@ -177,6 +159,6 @@ class ClickableAreasImage(
     newView.contentDescription = clickableArea.contentDescription
     parentView.addView(newView)
 
-    showOrHideRegion(newView, clickableArea)
+    return newView
   }
 }
