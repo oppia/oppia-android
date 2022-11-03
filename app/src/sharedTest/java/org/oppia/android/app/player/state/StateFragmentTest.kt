@@ -1599,7 +1599,6 @@ class StateFragmentTest {
     }
   }
 
-
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
