@@ -340,7 +340,7 @@
   <dimen name="pin_password_activity_padding_top">48dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
-  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">-1px</dimen>
 
   <!-- Add Profile -->
   <dimen name="add_profile_container_width">360dp</dimen>

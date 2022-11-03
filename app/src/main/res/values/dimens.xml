@@ -200,7 +200,7 @@
   <dimen name="pin_password_activity_padding_top">40dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_start">0dp</dimen>
   <dimen name="pin_password_activity_hello_text_view_margin_end">0dp</dimen>
-  <dimen name="pin_password_activity_input_with_icon_width">0dp</dimen>
+  <dimen name="pin_password_activity_input_with_icon_width">-1px</dimen>
 
   <dimen name="submitted_answer_question_view_margin_end">64dp</dimen>
   <dimen name="submitted_answer_question_view_margin_start">64dp</dimen>
