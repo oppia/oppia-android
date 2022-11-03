@@ -511,8 +511,8 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
-    if (isHintBulbAnimationEnabled.value) {
-      if (isHintUnrevealed) {
+    if (!isHintBulbAnimationEnabled.value)
+      return if (isHintUnrevealed) {
         val hintBulbAnimation = AnimationUtils.loadAnimation(
           context,
           R.anim.hint_bulb_animation
@@ -530,7 +530,6 @@ class StateFragmentPresenter @Inject constructor(
       } else {
         binding.hintBulb.clearAnimation()
       }
-    }
   }
 
   /**
