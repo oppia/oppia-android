@@ -24,7 +24,7 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:activity_lifecycle_observer",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:application_lifecycle_observer",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/util:extensions",

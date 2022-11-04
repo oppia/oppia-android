@@ -21,7 +21,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
@@ -177,7 +180,8 @@ class FakeLogSchedulerTest {
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      SyncStatusModule::class
+      SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
