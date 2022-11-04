@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -121,7 +122,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun startSpotlights() {
     val audioLanguageIconView = binding.audioLanguageIcon
-    audioLanguageIconView.post {
+    audioLanguageIconView.doOnPreDraw {
       val targetList = arrayListOf(
         SpotlightTarget(
           audioLanguageIconView,

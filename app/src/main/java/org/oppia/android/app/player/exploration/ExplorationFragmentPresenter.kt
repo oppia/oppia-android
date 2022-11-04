@@ -8,25 +8,31 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import javax.inject.Inject
+import kotlinx.android.synthetic.main.exploration_activity.*
+import kotlinx.android.synthetic.main.exploration_activity.view.*
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.StateFragment
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import javax.inject.Inject
-import kotlinx.android.synthetic.main.exploration_activity.*
-import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.spotlight.SpotlightFragment
-import org.oppia.android.app.spotlight.SpotlightShape
-import org.oppia.android.app.spotlight.SpotlightTarget
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
@@ -35,8 +41,12 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val profileManagementController: ProfileManagementController,
-  private val spotlightFragment: SpotlightFragment
+  private val spotlightFragment: SpotlightFragment,
+  private val topicListController: TopicListController
 ) {
+
+  private var internalProfileId: Int = -1
+
   /** Handles the [Fragment.onAttach] portion of [ExplorationFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
     fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
@@ -47,6 +57,7 @@ class ExplorationFragmentPresenter @Inject constructor(
     val args = retrieveArguments()
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
+    internalProfileId = args.profileId.internalId
     val stateFragment =
       StateFragment.newInstance(
         args.profileId.internalId, args.topicId, args.storyId, args.explorationId
@@ -62,7 +73,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
-  fun handleViewCreated(view: View) {
+  fun handleViewCreated() {
     val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
     profileDataProvider.toLiveData().observe(
       fragment
@@ -94,32 +105,82 @@ class ExplorationFragmentPresenter @Inject constructor(
 //                .commitNow()
 //        }
 
-
       }
     }
 
   }
 
   private fun showSpotlights() {
-    val explorationToolbar = (fragment.requireActivity() as AppCompatActivity).exploration_toolbar
-    explorationToolbar.post {
-      explorationToolbar.forEach {
-        if (it is ImageButton) {
-          // this toolbar contains only one image button, which is the back navigation icon
-          val targetList = arrayListOf(
-            SpotlightTarget(
-              it,
-              "Exit anytime using this button. We will save your progress.",
-              SpotlightShape.Circle,
-              Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-            )
-          )
+    numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
+      if (numberOfChaptersCompleted != -1) {
+        val explorationToolbar =
+          (fragment.requireActivity() as AppCompatActivity).exploration_toolbar
+        explorationToolbar.post {
+          explorationToolbar.forEach {
+            if (it is ImageButton) {
+              // this toolbar contains only one image button, which is the back navigation icon
+              val targetList = arrayListOf(
+                SpotlightTarget(
+                  it,
+                  "Exit anytime using this button. We will save your progress.",
+                  SpotlightShape.Circle,
+                  Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+                )
+              )
 
-          spotlightFragment.initialiseTargetList(targetList, 124)
-          fragment.requireActivity().supportFragmentManager.beginTransaction()
-            .add(spotlightFragment, "")
-            .commitNow()
+              if (
+                numberOfChaptersCompleted >= 1 &&
+                explorationToolbar.action_audio_player.visibility == View.VISIBLE
+              ) {
+                targetList.add(
+                  SpotlightTarget(
+                    explorationToolbar.action_audio_player,
+                    "Would you like Oppia to read for you? Tap on this button to try!",
+                    SpotlightShape.Circle,
+                    Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+                  )
+                )
+              }
+
+              spotlightFragment.initialiseTargetList(targetList, internalProfileId)
+              fragment.requireActivity().supportFragmentManager.beginTransaction()
+                .add(spotlightFragment, "")
+                .commitNow()
+            }
+          }
         }
+      }
+    }
+  }
+
+  private val topicListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
+    topicListController.getPromotedActivityList(
+      ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    ).toLiveData()
+  }
+
+  val numberOfChaptersCompletedLiveData: LiveData<Int> by lazy {
+    Transformations.map(topicListResultLiveData, ::computeNumberOfChaptersCompleted)
+  }
+
+  private fun computeNumberOfChaptersCompleted(
+    topicListResult: AsyncResult<PromotedActivityList>
+  ): Int {
+    return when (topicListResult) {
+      is AsyncResult.Failure -> -1
+      is AsyncResult.Pending -> -1
+      is AsyncResult.Success -> {
+        var numberOfChaptersCompleted = 0
+        topicListResult.value.promotedStoryList.recentlyPlayedStoryList.forEach {
+          numberOfChaptersCompleted += it.completedChapterCount
+        }
+        topicListResult.value.promotedStoryList.suggestedStoryList.forEach {
+          numberOfChaptersCompleted += it.completedChapterCount
+        }
+        topicListResult.value.promotedStoryList.olderPlayedStoryList.forEach {
+          numberOfChaptersCompleted += it.completedChapterCount
+        }
+        numberOfChaptersCompleted
       }
     }
   }
