@@ -1,12 +1,9 @@
 package org.oppia.android.app.help.thirdparty
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import java.io.FileInputStream
 import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-
 
 /** Content view model for the in [LicenseTextViewerFragment] that contains the license text. */
 class LicenseTextViewModel(
@@ -25,5 +22,5 @@ class LicenseTextViewModel(
   private val licenseTextsArray: List<String> =
     resourceHandler.getStringArrayInLocale(licenseTextsArrayId)
   /** Text of the license to be displayed in [LicenseTextViewerFragment]. */
-   val licenseText = licenseTextsArray[licenseIndex]
+  val licenseText = licenseTextsArray[licenseIndex]
 }
