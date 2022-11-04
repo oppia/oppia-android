@@ -41,4 +41,5 @@ class TopicFragment : InjectableFragment() {
   }
 
 
+  }
 }
