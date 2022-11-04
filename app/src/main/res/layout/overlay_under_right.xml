@@ -16,8 +16,8 @@
     android:id="@+id/overlayConstraintLayout"
     android:layout_width="match_parent"
     android:focusable="true"
+    android:background="@drawable/transparent_background"
     android:clickable="true"
-    android:background="@color/spotlightBackground"
     android:layout_height="match_parent">
 
     <ImageView
