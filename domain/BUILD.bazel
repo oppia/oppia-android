@@ -82,6 +82,9 @@ DOMAIN_ASSETS = generate_assets_list_from_text_protos(
     topic_list_file_names = [
         "topics",
     ],
+    large_strings_file_names = [
+        "large_strings",
+    ],
 )
 
 kt_android_library(
@@ -122,6 +125,7 @@ kt_android_library(
         "//model/src/main/proto:platform_parameter_java_proto_lite",
         "//model/src/main/proto:question_java_proto_lite",
         "//model/src/main/proto:topic_java_proto_lite",
+        "//scripts/src/java/org/oppia/android/scripts/proto:maven_dependencies_java_proto_lite",
         "//third_party:androidx_work_work-runtime-ktx",
         "//utility/src/main/java/org/oppia/android/util/caching:topic_list_to_cache",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
