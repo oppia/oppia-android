@@ -55,7 +55,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
@@ -98,7 +98,7 @@ class LogUploadWorkerTest {
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-  @field:[Inject MockEventLogger] lateinit var mockEventLogger: EventLogger
+  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
 
   private lateinit var context: Context
 
@@ -317,8 +317,9 @@ class LogUploadWorkerTest {
   private fun setUpEventLoggerToFail() {
     // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
     // to remove the default stubbing for the mock so that it can properly trigger a failure.
-    reset(mockEventLogger)
-    `when`(mockEventLogger.logEvent(anyOrNull())).thenThrow(IllegalStateException("Failure."))
+    reset(mockAnalyticsEventLogger)
+    `when`(mockAnalyticsEventLogger.logEvent(anyOrNull()))
+      .thenThrow(IllegalStateException("Failure."))
   }
 
   /**
@@ -354,8 +355,8 @@ class LogUploadWorkerTest {
     @Provides
     @Singleton
     @MockEventLogger
-    fun bindMockEventLogger(fakeLogger: FakeEventLogger): EventLogger {
-      return mock(EventLogger::class.java).also {
+    fun bindMockEventLogger(fakeLogger: FakeEventLogger): AnalyticsEventLogger {
+      return mock(AnalyticsEventLogger::class.java).also {
         `when`(it.logEvent(anyOrNull())).then { answer ->
           fakeLogger.logEvent(answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java))
           return@then null
@@ -364,7 +365,8 @@ class LogUploadWorkerTest {
     }
 
     @Provides
-    fun bindFakeEventLogger(@MockEventLogger delegate: EventLogger): EventLogger = delegate
+    fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
+      AnalyticsEventLogger = delegate
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger

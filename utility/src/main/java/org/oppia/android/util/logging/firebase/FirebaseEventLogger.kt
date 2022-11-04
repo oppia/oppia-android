@@ -6,8 +6,8 @@ import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EventBundleCreator
-import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.util.Locale
@@ -21,7 +21,7 @@ class FirebaseEventLogger private constructor(
   private val firebaseAnalytics: FirebaseAnalytics,
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val eventBundleCreator: EventBundleCreator
-) : EventLogger, PerformanceMetricsEventLogger {
+) : AnalyticsEventLogger, PerformanceMetricsEventLogger {
   /**
    * Logs an event to Firebase Analytics with [NETWORK_USER_PROPERTY] and [COUNTRY_USER_PROPERTY].
    */
@@ -76,10 +76,10 @@ class FirebaseEventLogger private constructor(
      *
      * Generally, only one of these needs to be created per application.
      *
-     * This [FirebaseEventLogger] implements the [EventLogger] for facilitating analytics log
+     * This [FirebaseEventLogger] implements the [AnalyticsEventLogger] for facilitating analytics log
      * reporting.
      */
-    fun create(): EventLogger =
+    fun create(): AnalyticsEventLogger =
       FirebaseEventLogger(firebaseAnalytics, networkConnectionUtil, eventBundleCreator)
 
     /**

@@ -20,7 +20,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.system.OppiaClockModule
@@ -68,7 +68,7 @@ class PerformanceMetricsAssessorModuleTest {
     fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
     @Binds
-    fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger
+    fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): AnalyticsEventLogger
 
     @Binds
     fun bindFakePerformanceMetricsEventLogger(

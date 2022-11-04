@@ -51,7 +51,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
@@ -225,7 +225,8 @@ class MetricLogSchedulingWorkerTest {
     fun provideContext(application: Application): Context = application
 
     @Provides
-    fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): EventLogger = fakeEventLogger
+    fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger):
+      AnalyticsEventLogger = fakeEventLogger
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger

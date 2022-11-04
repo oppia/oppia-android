@@ -1,14 +1,14 @@
 package org.oppia.android.testing
 
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**  A test specific fake for the event logger. */
 @Singleton
-class FakeEventLogger @Inject constructor() : EventLogger {
+class FakeEventLogger @Inject constructor() : AnalyticsEventLogger {
   private val eventList = CopyOnWriteArrayList<EventLog>()
 
   override fun logEvent(eventLog: EventLog) {

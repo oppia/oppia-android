@@ -19,7 +19,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.logging.EventLogger
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -50,7 +50,7 @@ class LogReportingModuleTest {
   lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
 
   @Inject
-  lateinit var eventLogger: EventLogger
+  lateinit var analyticsEventLogger: AnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -59,7 +59,7 @@ class LogReportingModuleTest {
 
   @Test
   fun testModule_injectsProductionImplementationOfEventLogger() {
-    assertThat(eventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(analyticsEventLogger).isInstanceOf(FirebaseEventLogger::class.java)
   }
 
   @Test
