@@ -344,10 +344,22 @@ message RawUserAnswer {
     // A user's selection for item selection and multiple choice interactions.
     ItemSelectionRawAnswer item_selection = 6;
     // A user's selection for drag and drop interactions.
-    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 7;
+    DragAndDropRawAnswer drag_and_drop = 7;
     // A user's selection for image region selection interaction.
     ImageWithRegions.LabeledRegion image_region_selection = 8;
   }
+}
+
+// Corresponds to a current drag and drop answer
+message DragAndDropRawAnswer {
+  // list of group subtitled html
+  repeated GroupSubtitledHtml list_of_group_subtitled_html = 1;
+}
+
+// A list of subtitled html
+message GroupSubtitledHtml {
+  // list of subtitled html
+  repeated SubtitledHtml list_of_subtitled_htmls = 1;
 }
 
 message AnswerAndResponse {
