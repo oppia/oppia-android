@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -464,7 +463,7 @@ private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float
   return margin.coerceAtLeast(0f)
 }
 
-// Reference: https://stackoverflow.com/a/60875668/12314934
+// Reference: https://stackoverflow.com/a/57495622/12314934
 private fun View.afterLayout(what: () -> Unit) {
   if (isLaidOut) {
     what.invoke()
