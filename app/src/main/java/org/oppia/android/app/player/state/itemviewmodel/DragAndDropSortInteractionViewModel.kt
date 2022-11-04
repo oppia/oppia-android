@@ -3,6 +3,8 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.RecyclerView
+import org.oppia.android.app.model.DragAndDropRawAnswer
+import org.oppia.android.app.model.GroupSubtitledHtml
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
@@ -23,8 +25,6 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
-import org.oppia.android.app.model.DragAndDropRawAnswer
-import org.oppia.android.app.model.GroupSubtitledHtml
 
 /** [StateItemViewModel] for drag drop & sort choice list. */
 class DragAndDropSortInteractionViewModel private constructor(
@@ -335,9 +335,9 @@ class DragAndDropSortInteractionViewModel private constructor(
 
           listOfDragAndDropInteractionContentViewModel.removeAt(itemIndex)
 
-          listOfDragAndDropInteractionContentViewModel.forEachIndexed { index, dragDropInteractionContentViewModel ->
-            dragDropInteractionContentViewModel.itemIndex = index
-            dragDropInteractionContentViewModel.listSize =
+          listOfDragAndDropInteractionContentViewModel.forEachIndexed { index, viewModel ->
+            viewModel.itemIndex = index
+            viewModel.listSize =
               listOfDragAndDropInteractionContentViewModel.size
           }
         }
@@ -346,4 +346,3 @@ class DragAndDropSortInteractionViewModel private constructor(
     }
   }
 }
-
