@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -151,10 +152,8 @@ class UrlImageParser private constructor(
 
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = retrieveDrawable(resource)
-      // This statement is logged correctly
-      htmlContentTextView.viewTreeObserver.addOnPreDrawListener(object :
-        ViewTreeObserver.OnPreDrawListener {
-        override fun onPreDraw(): Boolean {
+      htmlContentTextView.post {
+        htmlContentTextView.afterLayout {
           val padding =
             Rect(
               htmlContentTextView.paddingLeft,
@@ -168,10 +167,8 @@ class UrlImageParser private constructor(
           )
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
-          htmlContentTextView.viewTreeObserver.removeOnPreDrawListener(this)
-          return true
         }
-      })
+      }
     }
 
     /** Returns the drawable corresponding to the specified loaded resource. */
@@ -467,17 +464,17 @@ private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float
   return margin.coerceAtLeast(0f)
 }
 
-// Reference: https://stackoverflow.com/a/51865494
-private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
-  if (width == 0) {
+// Reference: https://stackoverflow.com/a/60875668/12314934
+private fun View.afterLayout(what: () -> Unit) {
+  if (isLaidOut) {
+    what.invoke()
+  } else {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
         viewTreeObserver.removeOnGlobalLayoutListener(this)
-        computeWidthOnGlobalLayout(width)
+        what.invoke()
       }
     })
-  } else {
-    computeWidthOnGlobalLayout(width)
   }
 }
 
