@@ -23,6 +23,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.onboarding.SpotlightNavigationListener
+import org.oppia.android.databinding.OverlayBinding
 import org.oppia.android.databinding.OverlayOverLeftBinding
 import org.oppia.android.databinding.OverlayOverRightBinding
 import org.oppia.android.databinding.OverlayUnderLeftBinding
