@@ -39,7 +39,6 @@ class TopicFragment : InjectableFragment() {
       isConfigChanged = savedInstanceState != null
     )
   }
-
-
-  }
 }
+
+
