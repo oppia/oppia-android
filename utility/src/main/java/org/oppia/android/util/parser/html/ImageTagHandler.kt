@@ -26,6 +26,7 @@ class ImageTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
+    val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
     if (source != null) {
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
@@ -47,15 +48,6 @@ class ImageTagHandler(
         )
       }
     } else consoleLogger.e("ImageTagHandler", "Failed to parse image tag")
-  }
-
-  override fun handleContentDescription(
-    attributes: Attributes,
-    openIndex: Int,
-    closeIndex: Int,
-    output: Editable
-  ) {
-    val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
     if (contentDescription != null) {
       val spannableBuilder = SpannableStringBuilder(contentDescription)
       spannableBuilder.setSpan(
@@ -64,7 +56,7 @@ class ImageTagHandler(
         /* end= */ contentDescription.length,
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
-      output.replace(openIndex, closeIndex, spannableBuilder)
-    } else consoleLogger.e("ImageTagHandler", "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
+      output.replace(openIndex, output.length, spannableBuilder)
+    } else consoleLogger.w("ImageTagHandler", "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
   }
 }

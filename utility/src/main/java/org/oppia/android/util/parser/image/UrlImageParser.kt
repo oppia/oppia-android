@@ -152,7 +152,7 @@ class UrlImageParser private constructor(
     override fun onResourceReady(resource: T, transition: Transition<in T>?) {
       val drawable = retrieveDrawable(resource)
       htmlContentTextView.post {
-        htmlContentTextView.afterLayout {
+        htmlContentTextView.width { viewWidth ->
           val padding =
             Rect(
               htmlContentTextView.paddingLeft,
@@ -162,7 +162,7 @@ class UrlImageParser private constructor(
             )
           proxyDrawable.initialize(
             drawable,
-            computeBounds(context, drawable, htmlContentTextView.width, padding)
+            computeBounds(context, drawable, viewWidth, padding)
           )
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
@@ -464,14 +464,14 @@ private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float
 }
 
 // Reference: https://stackoverflow.com/a/57495622/12314934
-private fun View.afterLayout(what: () -> Unit) {
+private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
   if (isLaidOut) {
-    what.invoke()
+    computeWidthOnGlobalLayout(width)
   } else {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
         viewTreeObserver.removeOnGlobalLayoutListener(this)
-        what.invoke()
+        computeWidthOnGlobalLayout(width)
       }
     })
   }
