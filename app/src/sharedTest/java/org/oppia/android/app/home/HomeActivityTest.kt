@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -29,11 +31,16 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.material.card.MaterialCardView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.IsNot.not
 import org.junit.After
@@ -52,6 +59,7 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
@@ -142,9 +150,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -890,6 +895,39 @@ class HomeActivityTest {
       intended(hasExtra(TopicActivity.getProfileIdKey(), internalProfileId1))
       intended(hasExtra(TopicActivity.getTopicIdKey(), FRACTIONS_TOPIC_ID))
       intended(hasExtra(TopicActivity.getStoryIdKey(), FRACTIONS_STORY_ID_0))
+    }
+  }
+
+  @Test
+  fun testHomeActivity_promotedStoryHasScalableWidth() {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false
+    )
+    logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      it.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        scrollToPosition(position = 1)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.home_recycler_view,
+            position = 0,
+            targetViewId = R.id.promoted_story_list_recycler_view
+          )
+        ).check { _, _ ->
+          val promotedStoryCard =
+            activity.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
+          val pixels = promotedStoryCard?.width?.toFloat()
+          val expectedSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            280F,
+            context.resources.displayMetrics
+          )
+          assertThat(pixels).isEqualTo(expectedSize)
+        }
+      }
     }
   }
 
