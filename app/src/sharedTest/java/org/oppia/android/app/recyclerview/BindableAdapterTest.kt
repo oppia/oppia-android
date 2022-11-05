@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -33,6 +32,7 @@ import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactoriesModule
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -60,7 +60,6 @@ import org.oppia.android.app.testing.BindableAdapterTestDataModel.StringModel
 import org.oppia.android.app.testing.BindableAdapterTestFragment
 import org.oppia.android.app.testing.BindableAdapterTestFragmentPresenter
 import org.oppia.android.app.testing.BindableAdapterTestViewModel
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.view.ViewComponentBuilderModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -89,6 +88,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -98,7 +98,6 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -166,7 +165,8 @@ class BindableAdapterTest {
   @Test
   fun testSingleTypeAdapter_withOneViewType_noData_bindsNoViews() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeNoDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory =
+      { singleFactory, _ -> createSingleViewTypeNoDataBindingBindableAdapter(singleFactory) }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -181,7 +181,9 @@ class BindableAdapterTest {
   @Test
   fun testSingleTypeAdapter_withOneViewType_setItem_automaticallyBindsView() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeNoDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeNoDataBindingBindableAdapter(singleTypeFactory)
+    }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -204,7 +206,9 @@ class BindableAdapterTest {
   @Test
   fun testSingleTypeAdapter_withOneViewType_nullData_bindsNoViews() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeNoDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeNoDataBindingBindableAdapter(singleTypeFactory)
+    }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -218,7 +222,9 @@ class BindableAdapterTest {
   @Test
   fun testSingleTypeAdapter_withOneViewType_setMultipleItems_automaticallyBinds() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeNoDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeNoDataBindingBindableAdapter(singleTypeFactory)
+    }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -244,7 +250,8 @@ class BindableAdapterTest {
   @Test
   fun testMultiTypeAdapter_withTwoViewTypes_setItems_autoBindsCorrectItemsPerTypes() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createMultiViewTypeNoDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory =
+      { _, multiTypeFactory -> createMultiViewTypeNoDataBindingBindableAdapter(multiTypeFactory) }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -280,7 +287,9 @@ class BindableAdapterTest {
   @Test
   fun testSingleTypeAdapter_withOneDataBoundViewType_setItem_automaticallyBindsView() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeWithDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeWithDataBindingBindableAdapter(singleTypeFactory)
+    }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -303,7 +312,10 @@ class BindableAdapterTest {
   @Test
   fun testSingleTypeAdapter_withTwoDataBoundViewTypes_setItems_autoBindsCorrectItemsPerTypes() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeWithDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory =
+      { singleTypeFactory, _ ->
+        createSingleViewTypeWithDataBindingBindableAdapter(singleTypeFactory)
+      }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -330,7 +342,8 @@ class BindableAdapterTest {
   @Test
   fun testMultiTypeAdapter_partiallyDataBoundViewTypes_setItems_autoBindsCorrectItemsPerTypes() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createMultiViewTypeWithDataBindingBindableAdapter() }
+    TestModule.testAdapterFactory =
+      { _, multiTypeFactory -> createMultiViewTypeWithDataBindingBindableAdapter(multiTypeFactory) }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -364,67 +377,14 @@ class BindableAdapterTest {
   }
 
   @Test
-  fun testSingleTypeAdapter_setLifecycleOwnerTwice_throwsException() {
-    val testFragment = Fragment()
-
-    val exception = assertThrows(IllegalStateException::class) {
-      SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .setLifecycleOwner(testFragment)
-        .setLifecycleOwner(testFragment)
-        .build()
-    }
-    assertThat(exception).hasMessageThat().contains("lifecycle owner has already been bound")
-  }
-
-  @Test
-  fun testMultiTypeAdapter_setLifecycleOwnerTwice_throwsException() {
-    val testFragment = Fragment()
-
-    val exception = assertThrows(IllegalStateException::class) {
-      MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .setLifecycleOwner(testFragment)
-        .setLifecycleOwner(testFragment)
-        .build()
-    }
-    assertThat(exception).hasMessageThat().contains("lifecycle owner has already been bound")
-  }
-
-  @Test
-  fun testSingleTypeAdapter_withLiveData_noLifecycleOwner_doesNotRebindLiveDataValues() {
-    // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createSingleViewTypeWithDataBindingAndLiveDataAdapter() }
-
-    launch(BindableAdapterTestActivity::class.java).use { scenario ->
-      val itemLiveData = MutableLiveData<String>("initial")
-      scenario.onActivity { activity ->
-        val liveData = getRecyclerViewListLiveData(activity)
-        liveData.value = listOf(LiveDataModel(itemLiveData))
-      }
-      testCoroutineDispatchers.runCurrent()
-
-      itemLiveData.postValue("new value")
-      testCoroutineDispatchers.runCurrent()
-
-      // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
-        matches(
-          withText("initial")
-        )
-      )
-    }
-  }
-
-  @Test
   fun testSingleTypeAdapter_withLiveData_withLifecycleOwner_rebindsLiveDataValues() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { fragment ->
-      createSingleViewTypeWithDataBindingAndLiveDataAdapter(lifecycleOwner = fragment)
+    TestModule.testAdapterFactory = { singleTypeFactory, _ ->
+      createSingleViewTypeWithDataBindingAndLiveDataAdapter(singleTypeFactory)
     }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
-      val itemLiveData = MutableLiveData<String>("initial")
+      val itemLiveData = MutableLiveData("initial")
       scenario.onActivity { activity ->
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(LiveDataModel(itemLiveData))
@@ -445,39 +405,14 @@ class BindableAdapterTest {
   }
 
   @Test
-  fun testMultiTypeAdapter_withLiveData_noLifecycleOwner_doesNotRebindLiveDataValues() {
-    // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { createMultiViewTypeWithDataBindingBindableAdapter() }
-
-    launch(BindableAdapterTestActivity::class.java).use { scenario ->
-      val itemLiveData = MutableLiveData<String>("initial")
-      scenario.onActivity { activity ->
-        val liveData = getRecyclerViewListLiveData(activity)
-        liveData.value = listOf(LiveDataModel(itemLiveData))
-      }
-      testCoroutineDispatchers.runCurrent()
-
-      itemLiveData.postValue("new value")
-      testCoroutineDispatchers.runCurrent()
-
-      // Verify that the bound data did not change despite the underlying live data changing.
-      onView(atPosition(recyclerViewId = R.id.test_recycler_view, position = 0)).check(
-        matches(
-          withText("initial")
-        )
-      )
-    }
-  }
-
-  @Test
   fun testMultiTypeAdapter_withLiveData_withLifecycleOwner_rebindsLiveDataValues() {
     // Set up the adapter to be used for this test.
-    TestModule.testAdapterFactory = { fragment ->
-      createMultiViewTypeWithDataBindingBindableAdapter(lifecycleOwner = fragment)
+    TestModule.testAdapterFactory = { _, multiTypeFactory ->
+      createMultiViewTypeWithDataBindingBindableAdapter(multiTypeFactory)
     }
 
     launch(BindableAdapterTestActivity::class.java).use { scenario ->
-      val itemLiveData = MutableLiveData<String>("initial")
+      val itemLiveData = MutableLiveData("initial")
       scenario.onActivity { activity ->
         val liveData = getRecyclerViewListLiveData(activity)
         liveData.value = listOf(LiveDataModel(itemLiveData))
@@ -501,21 +436,22 @@ class BindableAdapterTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createSingleViewTypeNoDataBindingBindableAdapter():
-    BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewBinder(
-          inflateView = this::inflateTextViewForStringWithoutDataBinding,
-          bindView = this::bindTextViewForStringWithoutDataBinding
-        )
-        .build()
-    }
+  private fun createSingleViewTypeNoDataBindingBindableAdapter(
+    singleTypeBuilderFactory: SingleTypeBuilder.Factory
+  ): BindableAdapter<BindableAdapterTestDataModel> {
+    return singleTypeBuilderFactory.create<BindableAdapterTestDataModel>()
+      .registerViewBinder(
+        inflateView = this::inflateTextViewForStringWithoutDataBinding,
+        bindView = this::bindTextViewForStringWithoutDataBinding
+      )
+      .build()
+  }
 
-  private fun createSingleViewTypeWithDataBindingBindableAdapter():
+  private fun createSingleViewTypeWithDataBindingBindableAdapter(
+    singleTypeBuilder: SingleTypeBuilder.Factory
+  ):
     BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
+      return singleTypeBuilder.create<BindableAdapterTestDataModel>()
         .registerViewDataBinderWithSameModelType(
           inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
           setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
@@ -523,23 +459,10 @@ class BindableAdapterTest {
         .build()
     }
 
-  private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter():
-    BindableAdapter<BindableAdapterTestDataModel> {
-      return SingleTypeBuilder
-        .newBuilder<BindableAdapterTestDataModel>()
-        .registerViewDataBinderWithSameModelType(
-          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
-
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter(
-    lifecycleOwner: Fragment
+    singleTypeBuilder: SingleTypeBuilder.Factory
   ): BindableAdapter<BindableAdapterTestDataModel> {
-    return SingleTypeBuilder
-      .newBuilder<BindableAdapterTestDataModel>()
-      .setLifecycleOwner(lifecycleOwner)
+    return singleTypeBuilder.create<BindableAdapterTestDataModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
         setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
@@ -547,10 +470,16 @@ class BindableAdapterTest {
       .build()
   }
 
-  private fun createMultiViewTypeNoDataBindingBindableAdapter():
+  private fun createSingleAdapterWithoutView(singleTypeBuilder: SingleTypeBuilder.Factory):
     BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
+      return singleTypeBuilder.create<BindableAdapterTestDataModel>().build()
+    }
+
+  private fun createMultiViewTypeNoDataBindingBindableAdapter(
+    multiTypeBuilderFactory: MultiTypeBuilder.Factory
+  ):
+    BindableAdapter<BindableAdapterTestDataModel> {
+      return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
         .registerViewBinder(
           viewType = ViewModelType.STRING,
           inflateView = this::inflateTextViewForStringWithoutDataBinding,
@@ -564,34 +493,10 @@ class BindableAdapterTest {
         .build()
     }
 
-  private fun createMultiViewTypeWithDataBindingBindableAdapter():
-    BindableAdapter<BindableAdapterTestDataModel> {
-      return MultiTypeBuilder
-        .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.STRING,
-          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-        )
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.INT,
-          inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
-        )
-        .registerViewDataBinderWithSameModelType(
-          viewType = ViewModelType.LIVE_DATA,
-          inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
-
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
-    lifecycleOwner: Fragment
+    multiTypeBuilderFactory: MultiTypeBuilder.Factory
   ): BindableAdapter<BindableAdapterTestDataModel> {
-    return MultiTypeBuilder
-      .newBuilder(ViewModelType.Companion::deriveTypeFrom)
-      .setLifecycleOwner(lifecycleOwner)
+    return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
       .registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.STRING,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
@@ -682,7 +587,10 @@ class BindableAdapterTest {
   class TestModule {
     companion object {
       // TODO(#1720): Move this to a test-level binding to avoid the need for static state.
-      var testAdapterFactory: ((Fragment) -> BindableAdapter<BindableAdapterTestDataModel>)? = null
+      var testAdapterFactory: (
+        (SingleTypeBuilder.Factory, MultiTypeBuilder.Factory) ->
+        BindableAdapter<BindableAdapterTestDataModel>
+      )? = null
     }
 
     @Provides
@@ -691,8 +599,11 @@ class BindableAdapterTest {
         "The test adapter factory hasn't been initialized in the test"
       }
       return object : BindableAdapterTestFragmentPresenter.BindableAdapterFactory {
-        override fun create(fragment: Fragment): BindableAdapter<BindableAdapterTestDataModel> {
-          return createFunction(fragment)
+        override fun create(
+          singleTypeBuilder: SingleTypeBuilder.Factory,
+          multiTypeBuilderFactory: MultiTypeBuilder.Factory
+        ): BindableAdapter<BindableAdapterTestDataModel> {
+          return createFunction(singleTypeBuilder, multiTypeBuilderFactory)
         }
       }
     }
@@ -760,7 +671,7 @@ class BindableAdapterTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -770,7 +681,8 @@ class BindableAdapterTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

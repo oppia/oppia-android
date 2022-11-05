@@ -1,6 +1,7 @@
 package org.oppia.android.instrumentation.application
 
 import dagger.Component
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
@@ -10,7 +11,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -34,7 +34,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
@@ -87,7 +87,7 @@ import javax.inject.Singleton
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
     HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-    FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
+    FirebaseLogUploaderModule::class, NetworkModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
@@ -97,9 +97,10 @@ import javax.inject.Singleton
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     SyncStatusModule::class, NetworkConnectionDebugUtilModule::class,
-    MetricLogSchedulerModule::class, PerformanceMetricsLoggerModule::class,
+    MetricLogSchedulerModule::class, ActivityRouterModule::class,
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-    TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class
+    TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
+    CpuPerformanceSnapshotterModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

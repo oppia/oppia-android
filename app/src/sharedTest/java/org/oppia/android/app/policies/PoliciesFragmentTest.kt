@@ -1,14 +1,13 @@
 package org.oppia.android.app.policies
 
-import android.app.Activity
 import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
+import android.text.Spannable
+import android.text.style.ClickableSpan
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -16,7 +15,10 @@ import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -33,11 +35,15 @@ import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.mock
+import org.mockito.Captor
+import org.mockito.Mock
 import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -50,7 +56,8 @@ import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.PoliciesFragmentTestActivity
-import org.oppia.android.app.topic.PracticeTabModule
+import org.oppia.android.app.testing.PoliciesFragmentTestActivity.Companion.createPoliciesFragmentTestActivity
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -75,6 +82,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -103,11 +111,13 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
 
 /** Tests for [PoliciesFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -126,12 +136,24 @@ class PoliciesFragmentTest {
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
 
+  @Mock
+  lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
+
+  @field:[Rule JvmField]
+  val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Captor
+  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
+
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @get:Rule
   var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> =
@@ -158,27 +180,22 @@ class PoliciesFragmentTest {
   @After
   fun tearDown() {
     Intents.release()
-
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
-    return PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
-      context,
-      policyPage
-    )
+    return createPoliciesFragmentTestActivity(context, policyPage)
   }
 
   @Test
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
-      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+      createPoliciesFragmentTestActivity(
         getApplicationContext(),
         PolicyPage.PRIVACY_POLICY
       )
     ).use {
-      onView(withId(R.id.policy_description_text_view))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
@@ -221,14 +238,10 @@ class PoliciesFragmentTest {
             "Please visit this page for the latest version of this privacy policy."
           )
         val link = "https://www.oppia.org/privacy-policy"
-        val expectingIntent = allOf(
-          IntentMatchers.hasAction(Intent.ACTION_VIEW),
-          IntentMatchers.hasData(link)
-        )
-        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
-        onView(withId(R.id.policy_web_link_text_view))
-          .perform(openLinkWithText("this page"))
-        Intents.intended(expectingIntent)
+        val expectingIntent = allOf(hasAction(Intent.ACTION_VIEW), hasData(link))
+        intending(expectingIntent).respondWith(ActivityResult(0, null))
+        onView(withId(R.id.policy_web_link_text_view)).perform(openLinkWithText("this page"))
+        intended(expectingIntent)
       }
     }
   }
@@ -236,13 +249,35 @@ class PoliciesFragmentTest {
   @Test
   fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
-      PoliciesFragmentTestActivity.createPoliciesFragmentTestActivity(
+      createPoliciesFragmentTestActivity(
         getApplicationContext(),
         PolicyPage.TERMS_OF_SERVICE
       )
     ).use {
-      onView(withId(R.id.policy_description_text_view))
-        .check(matches(isDisplayed()))
+      onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
+    launch<PoliciesFragmentTestActivity>(
+      createPoliciesFragmentTestActivity(
+        getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+    ).use { scenario ->
+      scenario.onActivity {
+        it.mockCallbackListener = mockRouteToPoliciesListener
+        onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
+        // Verify the displayed text is correct & has a clickable span.
+        val textView = it.findViewById<TextView>(R.id.policy_description_text_view)
+        val spannableString = textView.text as Spannable
+        val clickableSpans = spannableString.getSpansFromWholeString(ClickableSpan::class)
+        clickableSpans.first().onClick(textView)
+        testCoroutineDispatchers.runCurrent()
+
+        verify(mockRouteToPoliciesListener).onRouteToPolicies(PolicyPage.PRIVACY_POLICY)
+      }
     }
   }
 
@@ -281,37 +316,20 @@ class PoliciesFragmentTest {
         assertThat(textView.text.toString())
           .isEqualTo("Please visit this page for the latest version of these terms.")
         val link = "https://www.oppia.org/terms"
-        val expectingIntent = allOf(
-          IntentMatchers.hasAction(Intent.ACTION_VIEW),
-          IntentMatchers.hasData(link)
-        )
-        Intents.intending(expectingIntent).respondWith(ActivityResult(0, null))
-        onView(withId(R.id.policy_web_link_text_view))
-          .perform(openLinkWithText("this page"))
-        Intents.intended(expectingIntent)
+        val expectingIntent = allOf(hasAction(Intent.ACTION_VIEW), hasData(link))
+        intending(expectingIntent).respondWith(ActivityResult(0, null))
+        onView(withId(R.id.policy_web_link_text_view)).perform(openLinkWithText("this page"))
+        intended(expectingIntent)
       }
     }
-  }
-
-  private fun getResources(): Resources {
-    return getApplicationContext<Context>().resources
   }
 
   private fun setUpTestApplicationComponent() {
     getApplicationContext<TestApplication>().inject(this)
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
-    // Use Mockito to ensure the routine is actually executed before returning the result.
-    @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
-    val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
-    val valueCaptor = ArgumentCaptor.forClass(V::class.java)
-    onActivity { fakeMock.consume(action(it)) }
-    verify(fakeMock).consume(valueCaptor.capture())
-    return valueCaptor.value
-  }
+  private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
+    getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -331,7 +349,7 @@ class PoliciesFragmentTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -340,7 +358,8 @@ class PoliciesFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
@@ -366,10 +385,5 @@ class PoliciesFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
-  }
-
-  private interface Consumer<T> {
-    /** Represents an operation that accepts a single input argument and returns no result. */
-    fun consume(value: T)
   }
 }

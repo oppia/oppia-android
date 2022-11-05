@@ -2,7 +2,6 @@ package org.oppia.android.app.topic.revisioncard
 
 import android.app.Application
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,12 +12,15 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,6 +29,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -37,10 +40,10 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -65,6 +68,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -90,6 +94,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -103,6 +108,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 
 /** Tests for [RevisionCardActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -144,6 +151,15 @@ class RevisionCardActivityTest {
   }
 
   @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
+      context, 1, FRACTIONS_TOPIC_ID, 1, FRACTIONS_SUBTOPIC_LIST_SIZE
+    ).extractCurrentAppScreenName()
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
+  }
+
+  @Test
   fun testRevisionCardActivity_hasCorrectActivityLabel() {
     launchRevisionCardActivity(
       profileId = profileId,
@@ -170,11 +186,13 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
+        val revisionCardMarqueeView: MarqueeView =
+          activity.findViewById(R.id.revision_card_marquee_view)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(ViewActions.click())
-        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(revisionCardMarqueeView, instanceOf(MarqueeView::class.java))
       }
     }
   }
@@ -190,11 +208,13 @@ class RevisionCardActivityTest {
 
         val revisionCardToolbarTitle: TextView =
           activity.findViewById(R.id.revision_card_toolbar_title)
+        val revisionCardMarqueeView: MarqueeView =
+          activity.findViewById(R.id.revision_card_marquee_view)
         ViewCompat.setLayoutDirection(revisionCardToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
         onView(withId(R.id.revision_card_toolbar_title)).perform(click())
-        assertThat(revisionCardToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
         assertThat(revisionCardToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        assertThat(revisionCardMarqueeView, instanceOf(MarqueeView::class.java))
       }
     }
   }
@@ -247,9 +267,9 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     internalProfileId: Int,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
-    context, internalProfileId, topicId, subtopicId
+    context, internalProfileId, topicId, subtopicId, FRACTIONS_SUBTOPIC_LIST_SIZE
   )
 
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
@@ -279,7 +299,7 @@ class RevisionCardActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -289,7 +309,8 @@ class RevisionCardActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

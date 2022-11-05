@@ -3,9 +3,6 @@ package org.oppia.android.app.player.exploration
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionDialogFragment
@@ -16,6 +13,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
@@ -25,6 +23,7 @@ import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSaved
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
@@ -41,7 +40,8 @@ class ExplorationActivity :
   RevealSolutionInterface,
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
-  ConceptCardListener {
+  ConceptCardListener,
+  BottomSheetOptionsMenuItemClickListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
 
@@ -99,6 +99,7 @@ class ExplorationActivity :
     ): Intent {
       return Intent(context, ExplorationActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
+        decorateWithScreenName(EXPLORATION_ACTIVITY)
       }
     }
   }
@@ -115,13 +116,8 @@ class ExplorationActivity :
     explorationActivityPresenter.deleteOldestSavedProgressAndStopExploration()
   }
 
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    menuInflater.inflate(R.menu.menu_reading_options, menu)
-    return super.onCreateOptionsMenu(menu)
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    return explorationActivityPresenter.handleOnOptionsItemSelected(item)
+  override fun handleOnOptionsItemSelected(itemId: Int) {
+    explorationActivityPresenter.handleOnOptionsItemSelected(itemId)
   }
 
   override fun showAudioButton() = explorationActivityPresenter.showAudioButton()

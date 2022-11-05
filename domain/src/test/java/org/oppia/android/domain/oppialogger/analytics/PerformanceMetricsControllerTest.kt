@@ -13,7 +13,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.CPU_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
@@ -23,6 +22,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.LOW_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
+import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -47,6 +47,8 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
+import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -55,7 +57,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
-private const val TEST_CPU_USAGE = Long.MAX_VALUE
+private const val TEST_CPU_USAGE = Double.MAX_VALUE
 private const val TEST_APK_SIZE = Long.MAX_VALUE
 private const val TEST_STORAGE_USAGE = Long.MAX_VALUE
 private const val TEST_STARTUP_LATENCY = Long.MAX_VALUE
@@ -145,7 +147,7 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_withApkSizeLoggableMetric_checkLogsMetric() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -154,7 +156,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       APK_SIZE_METRIC
@@ -165,7 +167,7 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_withStorageUsageLoggableMetric_checkLogsMetric() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       storageUsageTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -174,7 +176,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       STORAGE_USAGE_METRIC
@@ -185,7 +187,7 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_withStartupLatencyLoggableMetric_checkLogsMetric() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       startupLatencyTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -194,7 +196,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       STARTUP_LATENCY_METRIC
@@ -205,7 +207,7 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_withMemoryUsageLoggableMetric_checkLogsMetric() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       memoryUsageTestLoggableMetric,
       MEDIUM_PRIORITY
     )
@@ -214,7 +216,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(MEDIUM_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       MEMORY_USAGE_METRIC
@@ -225,7 +227,7 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_withNetworkUsageLoggableMetric_checkLogsMetric() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       networkUsageTestLoggableMetric,
       HIGH_PRIORITY
     )
@@ -234,7 +236,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(HIGH_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       NETWORK_USAGE_METRIC
@@ -245,7 +247,7 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_withCpuUsageLoggableMetric_checkLogsMetric() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       cpuUsageTestLoggableMetric,
       HIGH_PRIORITY
     )
@@ -254,7 +256,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(HIGH_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       CPU_USAGE_METRIC
@@ -266,7 +268,7 @@ class PerformanceMetricsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -298,13 +300,13 @@ class PerformanceMetricsControllerTest {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       cpuUsageTestLoggableMetric,
       HIGH_PRIORITY
     )
@@ -323,14 +325,14 @@ class PerformanceMetricsControllerTest {
   fun testController_logPerformanceMetric_switchToNoNetwork_logPerformanceMetric_checkManagement() {
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       cpuUsageTestLoggableMetric,
       HIGH_PRIORITY
     )
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -379,6 +381,53 @@ class PerformanceMetricsControllerTest {
   }
 
   @Test
+  fun testController_logPerformanceMetrics_withNoNetwork_logsEventWithNoneNetworkType() {
+    networkConnectionUtil.setCurrentConnectionStatus(NONE)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val metricLogsProvider = performanceMetricsController.getMetricLogStore()
+    val metricLogs = monitorFactory.waitForNextSuccessfulResult(metricLogsProvider)
+    val loggedEvent = metricLogs.getOppiaMetricLog(0)
+
+    assertThat(loggedEvent.networkType).isEqualTo(OppiaMetricLog.NetworkType.NONE)
+  }
+
+  @Test
+  fun testController_logPerformanceMetrics_withCellularNetwork_logsEventWithCellularNetworkType() {
+    networkConnectionUtil.setCurrentConnectionStatus(CELLULAR)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(loggedEvent.networkType).isEqualTo(OppiaMetricLog.NetworkType.CELLULAR)
+  }
+
+  @Test
+  fun testController_logPerformanceMetrics_withLocalNetwork_logsEventWithWifiNetworkType() {
+    networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
+    performanceMetricsController.logPerformanceMetricsEvent(
+      TEST_TIMESTAMP,
+      SCREEN_NAME_UNSPECIFIED,
+      apkSizeTestLoggableMetric,
+      LOW_PRIORITY
+    )
+
+    val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+
+    assertThat(loggedEvent.networkType).isEqualTo(OppiaMetricLog.NetworkType.WIFI)
+  }
+
+  @Test
   fun testController_setAppInForeground_getIsAppInForeground_returnsCorrectValue() {
     performanceMetricsController.setAppInForeground()
 
@@ -392,7 +441,7 @@ class PerformanceMetricsControllerTest {
     performanceMetricsController.setAppInForeground()
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -401,7 +450,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       APK_SIZE_METRIC
@@ -423,7 +472,7 @@ class PerformanceMetricsControllerTest {
     performanceMetricsController.setAppInBackground()
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
@@ -432,7 +481,7 @@ class PerformanceMetricsControllerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
-    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_UNSPECIFIED)
+    assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
       APK_SIZE_METRIC
@@ -443,35 +492,35 @@ class PerformanceMetricsControllerTest {
   private fun logMultiplePerformanceMetrics() {
     performanceMetricsController.logPerformanceMetricsEvent(
       1556094120000,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       LOW_PRIORITY
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556090110000,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       HIGH_PRIORITY
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556092100000,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       MEDIUM_PRIORITY
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556093110000,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       HIGH_PRIORITY
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556094110000,
-      SCREEN_UNSPECIFIED,
+      SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
       HIGH_PRIORITY
     )

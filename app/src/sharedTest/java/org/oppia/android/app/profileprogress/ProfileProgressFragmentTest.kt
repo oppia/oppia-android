@@ -35,12 +35,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
 import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.MessageLite
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -49,6 +52,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -59,12 +63,14 @@ import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity.Companion.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.RecentlyPlayedActivityParams
+import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -91,6 +97,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -113,6 +120,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -651,7 +659,7 @@ class ProfileProgressFragmentTest {
   }
 
   @Test
-  fun testProfileProgressFragment_clickViewAll_opensRecentlyPlayedActivity() {
+  fun testClickViewAll_withLessThanTwoStories_opensRecentlyPlayedActivityWithStoriesForYouTitle() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       timestampOlderThanOneWeek = false
@@ -663,12 +671,52 @@ class ProfileProgressFragmentTest {
         targetViewId = R.id.view_all_text_view,
         stringToMatch = "View All"
       )
+      val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(RecentlyPlayedActivityTitle.STORIES_FOR_YOU)
+        .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
-      intended(hasComponent(RecentlyPlayedActivity::class.java.name))
       intended(
-        hasExtra(
-          RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTERNAL_PROFILE_ID_KEY,
-          internalProfileId
+        allOf(
+          hasProtoExtra(RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY, recentlyPlayedActivityParams),
+          hasComponent(RecentlyPlayedActivity::class.java.name)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testClickViewAll_threeStoriesStarted_opensRecentlyPlayedActivityWithRecentlyPlayedTitle() {
+    storyProgressTestHelper.markCompletedFractionsStory0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markCompletedRatiosStory0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
+    storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0(
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+      timestampOlderThanOneWeek = false
+    )
+    launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnProfileProgressListItem(
+        itemPosition = 0,
+        targetViewId = R.id.view_all_text_view,
+        stringToMatch = "View All"
+      )
+      val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
+        .newBuilder()
+        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
+        .build()
+      clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
+      intended(
+        allOf(
+          hasProtoExtra(RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY, recentlyPlayedActivityParams),
+          hasComponent(RecentlyPlayedActivity::class.java.name)
         )
       )
     }
@@ -815,6 +863,20 @@ class ProfileProgressFragmentTest {
       .check(matches(isDisplayed()))
   }
 
+  private fun <T : MessageLite> hasProtoExtra(keyName: String, expectedProto: T): Matcher<Intent> {
+    val defaultProto = expectedProto.newBuilderForType().build()
+    return object : TypeSafeMatcher<Intent>() {
+      override fun describeTo(description: Description) {
+        description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
+      }
+
+      override fun matchesSafely(intent: Intent): Boolean {
+        return intent.hasExtra(keyName) &&
+          intent.getProtoExtra(keyName, defaultProto) == expectedProto
+      }
+    }
+  }
+
   @Module
   class TestModule {
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
@@ -850,7 +912,7 @@ class ProfileProgressFragmentTest {
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -859,7 +921,8 @@ class ProfileProgressFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -22,7 +22,8 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val viewModel: MarkChaptersCompletedViewModel,
-  private val modifyLessonProgressController: ModifyLessonProgressController
+  private val modifyLessonProgressController: ModifyLessonProgressController,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) : ChapterSelector {
   private lateinit var binding: MarkChaptersCompletedFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
@@ -77,6 +78,15 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
               )
           }
         }
+      } else if (binding.isAllChecked == true) {
+        binding.isAllChecked = false
+        viewModel.getItemList().forEach { viewModel ->
+          if (viewModel is ChapterSummaryViewModel) {
+            if (!viewModel.checkIfChapterIsCompleted()) {
+              chapterUnselected(viewModel.chapterIndex, viewModel.nextStoryIndex)
+            }
+          }
+        }
       }
     }
 
@@ -92,14 +102,14 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<MarkChaptersCompletedItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<MarkChaptersCompletedItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY
-          is ChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<MarkChaptersCompletedItemViewModel,
+      ViewType> { viewModel ->
+      when (viewModel) {
+        is StorySummaryViewModel -> ViewType.VIEW_TYPE_STORY
+        is ChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_STORY,
         inflateDataBinding = MarkChaptersCompletedStorySummaryViewBinding::inflate,

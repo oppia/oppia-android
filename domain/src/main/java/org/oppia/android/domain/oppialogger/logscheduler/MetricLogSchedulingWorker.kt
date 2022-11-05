@@ -8,6 +8,9 @@ import com.google.common.util.concurrent.SettableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import org.oppia.android.app.model.ScreenName.BACKGROUND_SCREEN
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleObserver
+import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLogger
 import org.oppia.android.domain.util.getStringFromData
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -21,6 +24,8 @@ class MetricLogSchedulingWorker private constructor(
   context: Context,
   params: WorkerParameters,
   private val consoleLogger: ConsoleLogger,
+  private val performanceMetricsLogger: PerformanceMetricsLogger,
+  private val applicationLifecycleObserver: ApplicationLifecycleObserver,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
 ) : ListenableWorker(context, params) {
 
@@ -74,7 +79,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicBackgroundMetricLogging(): Result {
     return try {
-      // TODO(#4340): Add functionality to log cpu and network usage performance metrics.
+      performanceMetricsLogger.logNetworkUsage(BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -84,7 +89,7 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun scheduleStorageUsageMetricLogging(): Result {
     return try {
-      // TODO(#4340): Add functionality to log storage usage performance metrics.
+      performanceMetricsLogger.logStorageUsage(BACKGROUND_SCREEN)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -94,7 +99,8 @@ class MetricLogSchedulingWorker private constructor(
 
   private fun schedulePeriodicUiMetricLogging(): Result {
     return try {
-      // TODO(#4340): Add functionality to log memory usage performance metrics.
+      val currentScreen = applicationLifecycleObserver.getCurrentScreen()
+      performanceMetricsLogger.logMemoryUsage(currentScreen)
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
@@ -105,6 +111,8 @@ class MetricLogSchedulingWorker private constructor(
   /** Creates an instance of [MetricLogSchedulingWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val consoleLogger: ConsoleLogger,
+    private val performanceMetricsLogger: PerformanceMetricsLogger,
+    private val applicationLifecycleObserver: ApplicationLifecycleObserver,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
   ) {
     /**
@@ -118,6 +126,8 @@ class MetricLogSchedulingWorker private constructor(
         context,
         params,
         consoleLogger,
+        performanceMetricsLogger,
+        applicationLifecycleObserver,
         backgroundDispatcher
       )
     }

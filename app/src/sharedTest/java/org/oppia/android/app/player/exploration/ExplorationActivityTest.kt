@@ -3,7 +3,6 @@ package org.oppia.android.app.player.exploration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
@@ -30,7 +28,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -41,6 +41,7 @@ import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -50,6 +51,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -60,6 +62,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -72,6 +75,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -79,7 +83,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.ExplorationInjectionActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -107,6 +110,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -143,10 +147,12 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -206,6 +212,9 @@ class ExplorationActivityTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   private val internalProfileId: Int = 0
 
   @Before
@@ -250,6 +259,19 @@ class ExplorationActivityTest {
   var explorationActivityTestRule: ActivityTestRule<ExplorationActivity> = ActivityTestRule(
     ExplorationActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createExplorationActivityIntent(
+      internalProfileId,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ).extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.EXPLORATION_ACTIVITY)
+  }
 
   @Test
   fun testExplorationActivity_hasCorrectActivityLabel() {
@@ -307,10 +329,12 @@ class ExplorationActivityTest {
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
+    val explorationMarqueeView: MarqueeView =
+      explorationActivityTestRule.activity.findViewById(R.id.exploration_marquee_view)
 
-    onView(withId(R.id.exploration_toolbar_title)).perform(click())
-    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    onView(withId(R.id.exploration_marquee_view)).perform(click())
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    assertThat(explorationMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test
@@ -326,11 +350,13 @@ class ExplorationActivityTest {
     )
     val explorationToolbarTitle: TextView =
       explorationActivityTestRule.activity.findViewById(R.id.exploration_toolbar_title)
+    val explorationMarqueeView: MarqueeView =
+      explorationActivityTestRule.activity.findViewById(R.id.exploration_marquee_view)
     ViewCompat.setLayoutDirection(explorationToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    onView(withId(R.id.exploration_toolbar_title)).perform(click())
-    assertThat(explorationToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+    onView(withId(R.id.exploration_marquee_view)).perform(click())
     assertThat(explorationToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    assertThat(explorationMarqueeView, instanceOf(MarqueeView::class.java))
   }
 
   @Test
@@ -435,85 +461,6 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.action_audio_player))
         .check(matches(withContentDescription(context.getString(R.string.audio_player_off))))
-    }
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-  }
-
-  @Test
-  fun testExploration_overflowMenu_isDisplayedSuccessfully() {
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_options))).check(matches(isDisplayed()))
-      onView(withText(context.getString(R.string.menu_help))).check(matches(isDisplayed()))
-    }
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-  }
-
-  @Test
-  fun testExploration_openOverflowMenu_selectHelpInOverflowMenu_opensHelpActivity() {
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_help))).perform(click())
-      intended(hasComponent(HelpActivity::class.java.name))
-      intended(hasExtra(HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY, /* value= */ false))
-    }
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-  }
-
-  @Test
-  fun testExploration_openOverflowMenu_selectOptionsInOverflowMenu_opensOptionsActivity() {
-    launch<ExplorationActivity>(
-      createExplorationActivityIntent(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2,
-        shouldSavePartialProgress = false
-      )
-    ).use {
-      explorationDataController.startPlayingNewExploration(
-        internalProfileId,
-        TEST_TOPIC_ID_0,
-        TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
-      openActionBarOverflowOrOptionsMenu(context)
-      onView(withText(context.getString(R.string.menu_options))).perform(click())
-      intended(hasComponent(OptionsActivity::class.java.name))
-      intended(
-        hasExtra(
-          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
-          /* value= */ false
-        )
-      )
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
@@ -1676,6 +1623,118 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_showHint_hasCorrectContentDescription() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Ensure the hint description is correct and doesn't contain any HTML.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(
+          matches(
+            withContentDescription(
+              "Remember that two halves, when added together," +
+                " make one whole.\n\n"
+            )
+          )
+        )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(isClickable()))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+      clickContinueButton()
+      // Disable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(not(isClickable())))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
@@ -1715,6 +1774,125 @@ class ExplorationActivityTest {
         .check(matches(withText(containsString("واحدة كاملة"))))
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testExplorationActivity_initialise_openBottomSheet_showsBottomSheet() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_openBottomsheet_selectHelpInBottomsheet_opensHelpActivity() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HelpActivity::class.java.name))
+      intended(
+        hasExtra(
+          HelpActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testExplorationActivity_openBottomsheet_selectOptionsInBottomsheet_opensOptionsActivity() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(OptionsActivity::class.java.name))
+      intended(
+        hasExtra(
+          OptionsActivity.BOOL_IS_FROM_NAVIGATION_DRAWER_EXTRA_KEY,
+          /* value= */ false
+        )
+      )
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testExplorationActivity_openBottomsheet_selectCloseOption_bottomSheetCloses() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.bottom_sheet_options_menu_close)))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
+    }
   }
 
   private fun createExplorationActivityIntent(
@@ -1953,7 +2131,7 @@ class ExplorationActivityTest {
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       TestExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -1962,7 +2140,8 @@ class ExplorationActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
 

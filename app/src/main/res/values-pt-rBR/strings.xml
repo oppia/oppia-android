@@ -15,6 +15,7 @@
   <string name="menu_help">Ajuda</string>
   <string name="exploration_activity_title">Reprodutor de Exploração</string>
   <string name="help_activity_title">Ajuda</string>
+  <string name="bottom_sheet_options_menu_close">Fechar</string>
   <string name="menu_switch_profile">Trocar Perfil</string>
   <string name="developer_options">Opções de Desenvolvedor</string>
   <string name="administrator_controls">Controles de Administrador</string>
@@ -226,9 +227,9 @@
   <string name="admin_pin_activity_title">Autorize para adicionar perfis</string>
   <string name="add_profile_activity_label">Adicionar Perfil</string>
   <string name="add_profile_title">Adicionar Perfil</string>
-  <string name="add_profile_input_name">Nome*</string>
-  <string name="add_profile_input_pin">PIN de 3 Dígitos*</string>
-  <string name="add_profile_input_confirm_pin">Confirmar PIN de 3 Dígitos*</string>
+  <string name="add_profile_input_name">Nome</string>
+  <string name="add_profile_input_pin">PIN de 3 Dígitos</string>
+  <string name="add_profile_input_confirm_pin">Confirmar PIN de 3 Dígitos</string>
   <string name="add_profile_allow_download_heading">Permitir Acesso a Download</string>
   <string name="add_profile_allow_download_sub">O usuário pode baixar e excluir conteúdo sem o PIN do administrador.</string>
   <string name="add_profile_create_btn">Criar</string>
@@ -236,12 +237,11 @@
   <string name="add_profile_pin_info">Com um PIN, ninguém mais pode acessar um perfil além deste usuário atribuído.</string>
   <string name="add_profile_error_image_failed_store">Falha ao armazenar sua imagem de avatar. Por favor, tente novamente.</string>
   <string name="add_profile_error_name_not_unique">Este nome já está em uso por outro perfil.</string>
-  <string name="add_profile_error_name_empty">Por favor, insira um nome válido para este perfil.</string>
-  <string name="add_profile_error_name_only_letters">Por favor, escolha um nome de perfil que não inclua números ou símbolos.</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">Por favor, insira um nome válido para este perfil.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">Por favor, escolha um nome de perfil que não inclua números ou símbolos.</string>
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
-  <string name="required_fields_content_description">Os campos marcados com * são obrigatórios.</string>
   <string name="current_profile_picture_content_description">Foto de perfil atual</string>
   <string name="edit_profile_picture_content_description">Editar foto de perfil</string>
   <string name="onboarding_slide_0_title">Bem-vindo à %s!</string>
@@ -382,11 +382,9 @@
   <string name="show_hints_and_solution">Mostrar dicas e solução</string>
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
-  <string name="show_solution">Exibir</string>
+  <string name="show_solution" fuzzy="true">Exibir</string>
   <string name="reveal_solution">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
-  <string name="show_hide_hint_list">Mostrar/Esconder lista de dicas de %s</string>
-  <string name="show_hide_solution_list">Mostrar/Esconder solução</string>
   <string name="the_only_solution_is">A única solução é :</string>
   <string name="this_will_reveal_the_solution">Isso revelará a solução. Tem certeza?</string>
   <string name="reveal">Revelar</string>

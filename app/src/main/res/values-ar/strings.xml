@@ -208,8 +208,8 @@
   <string name="admin_pin_activity_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="add_profile_activity_label">إضافة ملف شخصي</string>
   <string name="add_profile_title">إضافة ملف شخصي</string>
-  <string name="add_profile_input_name">الاسم*</string>
-  <string name="add_profile_input_pin">رقم تعريف شخصي مكون من 3 أرقام*</string>
+  <string name="add_profile_input_name">الاسم</string>
+  <string name="add_profile_input_pin">رقم تعريف شخصي مكون من 3 أرقام</string>
   <string name="add_profile_input_confirm_pin">تأكيد رقم التعريف الشخصي المكون من 3 أرقام</string>
   <string name="add_profile_allow_download_heading">السماح بالوصول للتنزيل</string>
   <string name="add_profile_allow_download_sub">المستخدم قادر على تنزيل ومسح المحتوى بدون رقم التعريف الشخصي الخاص بالمشرف.</string>
@@ -218,12 +218,11 @@
   <string name="add_profile_pin_info">مع وجود رقم التعريف الشخصي، لا يمكن لأي شخص آخر الوصول إلى الملف الشخصي بخلاف هذا المستخدم.</string>
   <string name="add_profile_error_image_failed_store">فشلنا في حفظ الصورة. برجاء المحاولة مجددًا.</string>
   <string name="add_profile_error_name_not_unique">هذا الاسم مستخدَم بالفعل من قبل ملف شخصي آخر.</string>
-  <string name="add_profile_error_name_empty">من فضلك أدخل اسمًا لهذا الملف الشخصي.</string>
-  <string name="add_profile_error_name_only_letters">يمكن أن يحتوي الاسم على أحرفٍ فقط، جرّب اسمًا آخر؟</string>
+  <string name="add_profile_error_name_empty" fuzzy="true">من فضلك أدخل اسمًا لهذا الملف الشخصي.</string>
+  <string name="add_profile_error_name_only_letters" fuzzy="true">يمكن أن يحتوي الاسم على أحرفٍ فقط، جرّب اسمًا آخر؟</string>
   <string name="add_profile_error_pin_length">رقم التعريف الشخصي يجب أن يتكون من 3 أرقام.</string>
   <string name="add_profile_error_pin_confirm_wrong">برجاء التأكد من تطابق رقمي التعريف الشخصي.</string>
   <string name="add_profile_info_content_description">المزيد من المعلومات عن رقم التعريف الشخصي المكون من 3 أرقام.</string>
-  <string name="required_fields_content_description">الحقول المعلمة بـ* مطلوبة.</string>
   <string name="current_profile_picture_content_description">صورة الملف الشخصي الحالية.</string>
   <string name="edit_profile_picture_content_description">تعديل صورة الملف الشخصي</string>
   <string name="onboarding_slide_0_title">مرحبًا بكم في %s</string>
@@ -355,8 +354,6 @@
   <string name="hints_toolbar_title">الملاحظات</string>
   <string name="reveal_solution">عرض الحل</string>
   <string name="reveal_hint" fuzzy="true">عرض الملاحظة</string>
-  <string name="show_hide_hint_list">عرض/إخفاء قائمة الملاحظات الخاصة ب%s</string>
-  <string name="show_hide_solution_list">عرض/إخفاء الحل</string>
   <string name="the_only_solution_is">الحل الوحيد هو :</string>
   <string name="this_will_reveal_the_solution">سوف يتم إظهار الحل. هل أنت متأكد؟</string>
   <string name="reveal">إظهار</string>

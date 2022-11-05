@@ -21,7 +21,7 @@
 
   <style name="FullScreenDialogStyle" parent="Theme.MaterialComponents.Dialog.Bridge">
     <item name="android:windowNoTitle">true</item>
-    <item name="colorPrimaryDark">@color/concept_toolbar_heading</item>
+    <item name="colorPrimaryDark">@color/component_color_concept_card_fragment_status_bar_color</item>
     <!-- Set this to true if you want Full Screen without status bar -->
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowIsFloating">false</item>
@@ -64,6 +64,7 @@
     <item name="android:layout_marginBottom">4dp</item>
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
@@ -449,19 +450,13 @@
   <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
 
   <style name="MarqueeToolbarTitleTextView" parent="TextView.Common1">
-    <item name="android:ellipsize">marquee</item>
-    <item name="android:fadingEdge">horizontal</item>
-    <item name="android:fadingEdgeLength">20dp</item>
     <item name="android:focusable">false</item>
     <item name="android:focusableInTouchMode">true</item>
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:marqueeRepeatLimit">1</item>
     <item name="android:minHeight">48dp</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textColor">@color/color_def_white</item>
     <item name="android:textSize">20sp</item>
-    <item name="android:requiresFadingEdge">horizontal</item>
-    <item name="android:scrollHorizontally">true</item>
     <item name="android:singleLine">true</item>
     <item name="fontFamily">sans-serif</item>
     <item name="textAllCaps">false</item>

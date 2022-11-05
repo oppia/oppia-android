@@ -3,6 +3,7 @@ package org.oppia.android.domain.oppialogger.analytics
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.Priority
 import org.oppia.android.app.model.OppiaMetricLogs
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.util.data.DataProvider
@@ -10,6 +11,7 @@ import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.networking.ConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -46,7 +48,7 @@ class PerformanceMetricsController @Inject constructor(
    */
   fun logPerformanceMetricsEvent(
     timestamp: Long,
-    currentScreen: OppiaMetricLog.CurrentScreen,
+    currentScreen: ScreenName,
     loggableMetric: OppiaMetricLog.LoggableMetric,
     priority: Priority
   ) {
@@ -102,7 +104,7 @@ class PerformanceMetricsController @Inject constructor(
   private fun createMetricLog(
     timestamp: Long,
     priority: Priority,
-    currentScreen: OppiaMetricLog.CurrentScreen,
+    currentScreen: ScreenName,
     loggableMetric: OppiaMetricLog.LoggableMetric
   ): OppiaMetricLog {
     return OppiaMetricLog.newBuilder().apply {
@@ -113,6 +115,7 @@ class PerformanceMetricsController @Inject constructor(
       this.isAppInForeground = this@PerformanceMetricsController.isAppInForeground
       this.storageTier = performanceMetricsAssessor.getDeviceStorageTier()
       this.memoryTier = performanceMetricsAssessor.getDeviceMemoryTier()
+      this.networkType = networkConnectionUtil.getCurrentConnectionStatus().toNetworkType()
     }.build()
   }
 
@@ -190,4 +193,13 @@ class PerformanceMetricsController @Inject constructor(
 
   /** Returns a boolean value indicating whether the application is currently in foreground or not. */
   fun getIsAppInForeground() = this.isAppInForeground
+
+  private fun ConnectionStatus.toNetworkType(): OppiaMetricLog.NetworkType {
+    return when (this) {
+      NetworkConnectionUtil.ProdConnectionStatus.NONE -> OppiaMetricLog.NetworkType.NONE
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL -> OppiaMetricLog.NetworkType.WIFI
+      NetworkConnectionUtil.ProdConnectionStatus.CELLULAR -> OppiaMetricLog.NetworkType.CELLULAR
+      else -> OppiaMetricLog.NetworkType.UNRECOGNIZED
+    }
+  }
 }

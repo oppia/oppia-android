@@ -66,6 +66,42 @@ message InputInteractionViewTestActivityParams {
   }
 }
 
+// Corresponds to intent extras of destination activity.
+message DestinationScreen {
+  // Indicates destination screen which we send in intent extras with RecentlyPlayedActivityParams.
+  oneof destination_screen {
+    // Indicates information about the RecentlyPlayedActivity.
+    RecentlyPlayedActivityParams recently_played_activity_params = 1;
+  }
+}
+
+// Intent extras for RecentlyPlayedActivity.
+message RecentlyPlayedActivityParams {
+  // The ID of current profile.
+  ProfileId profile_id = 1;
+
+  // The title which should be displayed for the activity.
+  RecentlyPlayedActivityTitle activity_title = 2;
+}
+
+// Corresponds to activity title of RecentlyPlayedActivity.
+enum RecentlyPlayedActivityTitle {
+  // Activity title is not specified.
+  TITLE_UNSPECIFIED = 0;
+
+  // Corresponds to activity title as "Recently played stories".
+  RECENTLY_PLAYED_STORIES = 1;
+
+  // Corresponds to activity title as "Stories for you".
+  STORIES_FOR_YOU = 2;
+
+  // Corresponds to activity title as "Recommended Stories".
+  RECOMMENDED_STORIES = 3;
+
+  // Corresponds to activity title as "Last-Played Stories".
+  LAST_PLAYED_STORIES = 4;
+}
+
 // Params required when creating a new ExplorationActivity.
 message ExplorationActivityParams {
   // The ID of the profile that wants to start an exploration play session.

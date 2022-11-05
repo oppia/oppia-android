@@ -124,6 +124,14 @@ class RegexPatternValidationCheckTest {
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
       " cost, and can cause breakages on KitKat devices. See #3939 for more context."
+  private val screenNameNotPresentErrorMessage =
+    "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum " +
+      "of screens.proto and add that name to your activity using " +
+      "Intent.decorateWithScreenName(value) on the activity creation intent."
+  private val screenNameTestNotPresentErrorMessage = "You've not added a test for verifying the " +
+    "presence of a screen name for this activity. To do this, add a test named " +
+    "testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen " +
+    "name has been added to the activity's intent."
   private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
   private val parameterizedTestRunnerRequiresException =
     "To use OppiaParameterizedTestRunner, please add an exemption to" +
@@ -175,8 +183,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInAppModule_fileNamePatternIsCorrect() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     tempFolder.newFolder("testfiles", "app", "src", "main")
-    tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
+    val tempFile = tempFolder.newFile("testfiles/app/src/main/TestActivity.kt")
+    tempFile.writeText(requiredContent)
 
     runScript()
 
@@ -195,8 +205,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileNamePattern_activityInDataModule_fileNamePatternIsNotCorrect() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     tempFolder.newFolder("testfiles", "data", "src", "main")
-    tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
+    val tempFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
+    tempFile.writeText(requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -1358,10 +1370,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_subclassedActivity_fileContentIsNotCorrect() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "class SomeActivity: Activity() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/SomeActivity.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -1379,10 +1392,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_subclassedAppCompatActivity_fileContentIsNotCorrect() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
     val prohibitedContent = "class SomeActivity: AppCompatActivity() {}"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/SomeActivity.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -1710,10 +1724,11 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFilenameAndContent_useProhibitedFileName_useProhibitedFileContent_multipleFailures() {
+    val requiredContent = "decorateWithScreenName(TEST_ACTIVITY)"
+    val prohibitedContent = "import android.support.v7.app"
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
-    val prohibitedContent = "import android.support.v7.app"
-    prohibitedFile.writeText(prohibitedContent)
+    prohibitedFile.writeText(prohibitedContent + requiredContent)
 
     val exception = assertThrows(Exception::class) {
       runScript()
@@ -2157,6 +2172,70 @@ class RegexPatternValidationCheckTest {
         $wikiReferenceNote
         """.trimIndent()
       )
+  }
+
+  @Test
+  fun testScreenNamePresence_emptyActivityFile_screenNameIsNotPresent() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
+    val stringFilePath = "app/src/main/activity/HomeActivity.kt"
+    tempFolder.newFile("testfiles/$stringFilePath")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $screenNameNotPresentErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testScreenNamePresence_activityFileWithScreenName_screenNameIsPresent() {
+    val requiredContent = "decorateWithScreenName(HOME_ACTIVITY)"
+    tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
+    val stringFilePath = "app/src/main/activity/HomeActivity.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testScreenNameTestPresence_activityTestWithoutScreenNameTest_screenNameTestIsNotPresent() {
+    tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
+    val stringFilePath = "app/src/main/activity/HomeActivityTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath")
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $screenNameTestNotPresentErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent() {
+    val requiredContent = "testActivity_createIntent_verifyScreenNameInIntent()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/HomeActivityTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 
   /** Runs the regex_pattern_validation_check. */

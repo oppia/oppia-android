@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "screens.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -29,7 +31,7 @@ message OppiaMetricLog {
   LoggableMetric loggable_metric = 7;
 
   // The current screen where the event is getting logged.
-  CurrentScreen current_screen = 8;
+  ScreenName current_screen = 8;
 
   // Structure of a loggable metric.
   message LoggableMetric {
@@ -49,7 +51,7 @@ message OppiaMetricLog {
       // The metric being logged is related to the network usage of the application.
       NetworkUsageMetric network_usage_metric = 5;
 
-      // The metric being logged is related to the cpu usage of the application.
+      // The metric being logged is related to the CPU usage of the application.
       CpuUsageMetric cpu_usage_metric = 6;
     }
   }
@@ -96,11 +98,11 @@ message OppiaMetricLog {
     int64 bytes_sent = 2;
   }
 
-  // Structure of the cpu usage metric.
+  // Structure of the CPU usage metric.
   message CpuUsageMetric {
-    // Amount of cpu used by the application.
-    // TODO(#4466): Add correct proto definitions and comments for cpu usage metric logging.
-    int64 cpu_usage_metric = 1;
+    // Average ratio of app-specific CPU usage relative to available resources in the system, within
+    // a monitored time window. This is expected to always be between [0, 1].
+    double cpu_usage_metric = 1;
   }
 
   // Supported priority of events for performance metric logging.
@@ -119,16 +121,6 @@ message OppiaMetricLog {
     // The priority of events whose logs should not be removed from the storage on most occasions
     // but can be removed if they're the only ones there and size limit exceeds.
     HIGH_PRIORITY = 3;
-  }
-
-  // Supported screens for indicating the current screen where the event logging is occurring.
-  enum CurrentScreen {
-    // The undefined current screen of an event.
-    SCREEN_UNSPECIFIED = 0;
-
-    // The metric log was taken when home screen was opened.
-    HOME_SCREEN = 1;
-    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
   }
 
   // Supported memory tiers for indicating the total memory of user's device.

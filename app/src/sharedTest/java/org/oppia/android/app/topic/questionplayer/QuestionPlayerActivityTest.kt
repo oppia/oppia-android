@@ -20,9 +20,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -30,6 +32,7 @@ import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
+import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -38,6 +41,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -49,6 +53,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -59,6 +64,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -71,7 +77,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -97,6 +102,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -131,10 +137,12 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
+import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -147,6 +155,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -195,6 +204,9 @@ class QuestionPlayerActivityTest {
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
   @Before
@@ -219,6 +231,15 @@ class QuestionPlayerActivityTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val currentScreenName = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+      context, ArrayList(SKILL_ID_LIST), profileId
+    ).extractCurrentAppScreenName()
+
+    assertThat(currentScreenName).isEqualTo(ScreenName.QUESTION_PLAYER_ACTIVITY)
   }
 
   @Test
@@ -413,6 +434,66 @@ class QuestionPlayerActivityTest {
       // The hint explanation should be in English.
       onView(withId(R.id.hints_and_solution_summary))
         .check(matches(withText(containsString("number of pieces in the whole"))))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_hasCorrectContentDescription() {
+    updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      // Ensure the hint description is correct and doesn't contain any HTML.
+      onView(withId(R.id.hints_and_solution_summary))
+        .check(
+          matches(
+            withContentDescription(
+              "To write a fraction, you need to know its denominator, which is the total " +
+                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
+            )
+          )
+        )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Enable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(true)
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(isClickable()))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testQuestionPlayer_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Disable screen reader.
+      fakeAccessibilityService.setScreenReaderEnabled(false)
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+      // Check whether expand list icon is clickable or not.
+      onView(withId(R.id.expand_hint_list_icon)).check(matches(not(isClickable())))
     }
   }
 
@@ -718,7 +799,7 @@ class QuestionPlayerActivityTest {
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
-      LogReportWorkerModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      LogReportWorkerModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -728,7 +809,8 @@ class QuestionPlayerActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -6,6 +6,7 @@
   <color name="color_def_oppia_light_green">#F0FFFF</color>
   <color name="color_def_oppia_light_yellow">#FFFFF0</color>
   <color name="color_def_oppia_brown_dark">#BE563C</color>
+  <color name="color_def_oppia_reddish_brown">#882814</color>
   <color name="color_def_oppia_brown">#C55F45</color>
   <color name="color_def_oppia_light_brown">#E76F51</color>
   <color name="color_def_oppia_stroke_blue">#4D395FD0</color>
@@ -14,6 +15,7 @@
   <color name="color_def_oppia_red">#B92D00</color>
   <color name="color_def_white">#FFFFFF</color>
   <color name="color_def_white_80">#CCFFFFFF</color>
+  <color name="color_def_oppia_white">#F2F2F2</color>
   <color name="color_def_black">#000000</color>
   <color name="color_def_transparent">#00000000</color>
   <color name="color_def_black_12">#1F000000</color>
@@ -74,9 +76,21 @@
   <color name="color_def_stroke_silver">#777777</color>
   <color name="color_def_drag_drop_single_item_gradient_center">#F7F7F7</color>
   <color name="color_def_drag_drop_single_item_gradient_end">#DCDCDC</color>
+  <color name="color_def_dark_turquoise">#009C8A</color>
   <color name="color_def_confetti_ruby_red">#FF1414</color>
   <color name="color_def_confetti_light_gold">#FFE558</color>
   <color name="color_def_confetti_rosy_pink">#EA6390</color>
   <color name="color_def_confetti_bright_gold">#EFCF24</color>
   <color name="color_def_confetti_crystal_blue">#49A9E5</color>
+  <color name="color_def_white_0">#00FFFFFF</color>
+  <color name="color_def_maastricht_blue">#0e162f</color>
+  <color name="color_def_ocean_blue">#081661</color>
+  <color name="color_def_persian_blue">#00609C</color>
+  <color name="color_def_bright_green">#009C8A</color>
+  <color name="color_def_grape_violet">#674172</color>
+  <color name="color_def_bright_violet">#7659B6</color>
+  <color name="color_def_teal_blue">#2F6687</color>
+  <color name="color_def_dark_red">#A6503A</color>
+  <color name="color_def_dark_purple">#441530</color>
+  <color name="color_def_oppia_white_2">#F2F2F2</color>
 </resources>

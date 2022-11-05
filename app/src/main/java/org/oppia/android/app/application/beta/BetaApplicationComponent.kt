@@ -1,6 +1,7 @@
 package org.oppia.android.app.application.beta
 
 import dagger.Component
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
@@ -8,7 +9,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -33,7 +33,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsLoggerModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
@@ -84,7 +84,7 @@ import javax.inject.Singleton
     RatioInputModule::class, UncaughtExceptionLoggerModule::class,
     ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-    FirebaseLogUploaderModule::class, NetworkModule::class, PracticeTabModule::class,
+    FirebaseLogUploaderModule::class, NetworkModule::class,
     PlatformParameterModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
@@ -95,9 +95,10 @@ import javax.inject.Singleton
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
     SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
-    PerformanceMetricsLoggerModule::class, PerformanceMetricsAssessorModule::class,
     PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
-    EventLoggingConfigurationModule::class
+    EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+    CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
+
   ]
 )
 interface BetaApplicationComponent : ApplicationComponent {

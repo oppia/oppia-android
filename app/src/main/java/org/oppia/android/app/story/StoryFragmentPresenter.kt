@@ -35,6 +35,7 @@ import org.oppia.android.databinding.StoryFragmentBinding
 import org.oppia.android.databinding.StoryHeaderViewBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
@@ -51,7 +52,8 @@ class StoryFragmentPresenter @Inject constructor(
   private val explorationDataController: ExplorationDataController,
   @DefaultResourceBucketName private val resourceBucketName: String,
   @TopicHtmlParserEntityType private val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
 ) {
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -62,6 +64,9 @@ class StoryFragmentPresenter @Inject constructor(
 
   @Inject
   lateinit var storyViewModel: StoryViewModel
+
+  @Inject
+  lateinit var accessibilityService: AccessibilityService
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -85,7 +90,7 @@ class StoryFragmentPresenter @Inject constructor(
     }
 
     binding.storyToolbarTitle.setOnClickListener {
-      binding.storyToolbarTitle.isSelected = true
+      binding.storyMarqueeView?.startMarquee()
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -137,14 +142,13 @@ class StoryFragmentPresenter @Inject constructor(
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<StoryItemViewModel> {
-    return BindableAdapter.MultiTypeBuilder
-      .newBuilder<StoryItemViewModel, ViewType> { viewModel ->
-        when (viewModel) {
-          is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
-          is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
-          else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-        }
+    return multiTypeBuilderFactory.create<StoryItemViewModel, ViewType> { viewModel ->
+      when (viewModel) {
+        is StoryHeaderViewModel -> ViewType.VIEW_TYPE_HEADER
+        is StoryChapterSummaryViewModel -> ViewType.VIEW_TYPE_CHAPTER
+        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
+    }
       .registerViewDataBinder(
         viewType = ViewType.VIEW_TYPE_HEADER,
         inflateDataBinding = StoryHeaderViewBinding::inflate,
@@ -181,28 +185,30 @@ class StoryFragmentPresenter @Inject constructor(
               storyItemViewModel.missingPrerequisiteChapterTitle
             )
             val chapterLockedSpannable = SpannableString(missingPrerequisiteSummary)
-            val clickableSpan = object : ClickableSpan() {
-              override fun onClick(widget: View) {
-                smoothScrollToPosition(storyItemViewModel.index - 1)
-              }
+            if (!accessibilityService.isScreenReaderEnabled()) {
+              val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                  smoothScrollToPosition(storyItemViewModel.index - 1)
+                }
 
-              override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
+                override fun updateDrawState(ds: TextPaint) {
+                  super.updateDrawState(ds)
+                  ds.isUnderlineText = false
+                }
               }
+              chapterLockedSpannable.setSpan(
+                clickableSpan,
+                /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+                /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+              )
+              chapterLockedSpannable.setSpan(
+                TypefaceSpan("sans-serif-medium"),
+                /* start= */ LOCKED_CARD_PREFIX_LENGTH,
+                /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+              )
             }
-            chapterLockedSpannable.setSpan(
-              clickableSpan,
-              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
-              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
-              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            chapterLockedSpannable.setSpan(
-              TypefaceSpan("sans-serif-medium"),
-              /* start= */ LOCKED_CARD_PREFIX_LENGTH,
-              /* end= */ chapterLockedSpannable.length - LOCKED_CARD_SUFFIX_LENGTH,
-              Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
             binding.htmlContent = chapterLockedSpannable
             binding.chapterSummary.movementMethod = LinkMovementMethod.getInstance()
           }

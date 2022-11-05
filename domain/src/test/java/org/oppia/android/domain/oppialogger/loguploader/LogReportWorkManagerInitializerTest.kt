@@ -27,6 +27,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
@@ -301,7 +302,8 @@ class LogReportWorkManagerInitializerTest {
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class
+      SyncStatusModule::class, ApplicationLifecycleModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent {

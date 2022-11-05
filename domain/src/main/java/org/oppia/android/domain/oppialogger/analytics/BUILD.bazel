@@ -78,22 +78,20 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "performance_metrics_logger_module",
+    name = "learner_analytics_inactivity_limit_millis",
     srcs = [
-        "PerformanceMetricsLoggerModule.kt",
+        "LearnerAnalyticsInactivityLimitMillis.kt",
     ],
-    visibility = ["//:oppia_prod_module_visibility"],
+    visibility = ["//:oppia_api_visibility"],
     deps = [
-        ":dagger",
-        ":performance_metrics_logger",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//third_party:javax_inject_javax_inject",
     ],
 )
 
 kt_android_library(
-    name = "learner_analytics_inactivity_limit_millis",
+    name = "cpu_performance_logging_time_period_millis",
     srcs = [
-        "LearnerAnalyticsInactivityLimitMillis.kt",
+        "CpuPerformanceLoggingTimePeriodMillis.kt",
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
@@ -108,13 +106,17 @@ kt_android_library(
     ],
     visibility = ["//:oppia_api_visibility"],
     deps = [
+        ":cpu_performance_snapshotter",
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
         ":performance_metrics_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:screens_java_proto_lite",
         "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
     ],
 )
@@ -127,6 +129,42 @@ kt_android_library(
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":application_lifecycle_observer",
+        ":dagger",
+        ":learner_analytics_inactivity_limit_millis",
+    ],
+)
+
+kt_android_library(
+    name = "cpu_performance_snapshotter",
+    srcs = [
+        "CpuPerformanceSnapshotter.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":cpu_performance_logging_time_period_millis",
+        ":dagger",
+        ":learner_analytics_inactivity_limit_millis",
+        ":performance_metrics_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:logging_identifier_controller",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger",
+        "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
+        "//model/src/main/proto:screens_java_proto_lite",
+        "//third_party:androidx_lifecycle_lifecycle-extensions",
+        "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
+        "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
+    ],
+)
+
+kt_android_library(
+    name = "cpu_module",
+    srcs = [
+        "CpuPerformanceSnapshotterModule.kt",
+    ],
+    visibility = ["//:oppia_prod_module_visibility"],
+    deps = [
+        ":cpu_performance_snapshotter",
         ":dagger",
         ":learner_analytics_inactivity_limit_millis",
     ],

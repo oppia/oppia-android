@@ -37,6 +37,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -50,7 +51,6 @@ import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositi
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.activity.TestActivity
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -76,6 +76,8 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
@@ -620,7 +622,7 @@ class ProfileAndDeviceIdFragmentTest {
       RatioInputModule::class, WorkManagerConfigurationModule::class,
       ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
@@ -628,7 +630,9 @@ class ProfileAndDeviceIdFragmentTest {
       SyncStatusModule::class, SplitScreenInteractionModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, MetricLogSchedulerModule::class,
-      TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class
+      TestingBuildFlavorModule::class, EventLoggingConfigurationModule::class,
+      ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
+      ApplicationLifecycleModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

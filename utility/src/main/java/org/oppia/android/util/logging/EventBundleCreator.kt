@@ -41,6 +41,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.CardContext
@@ -127,6 +128,9 @@ class EventBundleCreator @Inject constructor(
    * [OppiaMetricLog.LoggableMetric.getLoggableMetricTypeCase]).
    */
   fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
+    bundle.putInt("android_sdk", androidSdkVersion)
+    bundle.putString("app_version_name", appVersionName)
+    bundle.putInt("app_version_code", appVersionCode)
     bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
     bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
     bundle.putString("is_app_in_foreground", oppiaMetricLog.isAppInForeground.toString())
@@ -236,6 +240,7 @@ class EventBundleCreator @Inject constructor(
       if (!isSensitive || allowUserIds) {
         val propertyName = computePropertyName(valueName)
         when (value) {
+          is Double -> bundle.putDouble(propertyName, value)
           is Long -> bundle.putLong(propertyName, value)
           is Iterable<*> -> bundle.putString(propertyName, value.joinToString(separator = ","))
           else -> bundle.putString(propertyName, value.toString())
@@ -559,10 +564,56 @@ class EventBundleCreator @Inject constructor(
     OppiaMetricLog.NetworkType.UNRECOGNIZED -> "unknown_network_type"
   }
 
-  private fun OppiaMetricLog.CurrentScreen.toAnalyticsName() = when (this) {
-    OppiaMetricLog.CurrentScreen.SCREEN_UNSPECIFIED -> "unspecified_current_screen"
-    OppiaMetricLog.CurrentScreen.HOME_SCREEN -> "home_screen"
-    OppiaMetricLog.CurrentScreen.UNRECOGNIZED -> "unknown_screen_name"
-    // TODO(#4340): Add support for all screens which are going to be used for metric logging.
+  private fun ScreenName.toAnalyticsName() = when (this) {
+    ScreenName.SCREEN_NAME_UNSPECIFIED -> "screen_name_unspecified"
+    ScreenName.SPLASH_ACTIVITY -> "splash_activity"
+    ScreenName.PROFILE_CHOOSER_ACTIVITY -> "profile_chooser_activity"
+    ScreenName.ADD_PROFILE_ACTIVITY -> "add_profile_activity"
+    ScreenName.HOME_ACTIVITY -> "home_activity"
+    ScreenName.BACKGROUND_SCREEN -> "background_screen"
+    ScreenName.APP_VERSION_ACTIVITY -> "app_version_activity"
+    ScreenName.ADMINISTRATOR_CONTROLS_ACTIVITY -> "administrator_controls_activity"
+    ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY -> "profile_and_device_id_activity"
+    ScreenName.COMPLETED_STORY_LIST_ACTIVITY -> "completed_story_list_activity"
+    ScreenName.FAQ_SINGLE_ACTIVITY -> "faq_single_activity"
+    ScreenName.FAQ_LIST_ACTIVITY -> "faq_list_activity"
+    ScreenName.LICENSE_LIST_ACTIVITY -> "license_list_activity"
+    ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY -> "license_text_viewer_activity"
+    ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY -> "third_party_dependency_list_activity"
+    ScreenName.HELP_ACTIVITY -> "help_activity"
+    ScreenName.RECENTLY_PLAYED_ACTIVITY -> "recently_played_activity"
+    ScreenName.MY_DOWNLOADS_ACTIVITY -> "my_downloads_activity"
+    ScreenName.ONBOARDING_ACTIVITY -> "onboarding_activity"
+    ScreenName.ONGOING_TOPIC_LIST_ACTIVITY -> "ongoing_topic_list_activity"
+    ScreenName.AUDIO_LANGUAGE_ACTIVITY -> "audio_language_activity"
+    ScreenName.APP_LANGUAGE_ACTIVITY -> "app_language_activity"
+    ScreenName.OPTIONS_ACTIVITY -> "options_activity"
+    ScreenName.READING_TEXT_SIZE_ACTIVITY -> "reading_text_size_activity"
+    ScreenName.EXPLORATION_ACTIVITY -> "exploration_activity"
+    ScreenName.ADMIN_AUTH_ACTIVITY -> "admin_auth_activity"
+    ScreenName.PIN_PASSWORD_ACTIVITY -> "pin_password_activity"
+    ScreenName.PROFILE_PICTURE_ACTIVITY -> "profile_picture_activity"
+    ScreenName.PROFILE_PROGRESS_ACTIVITY -> "profile_progress_activity"
+    ScreenName.RESUME_LESSON_ACTIVITY -> "resume_lesson_activity"
+    ScreenName.PROFILE_EDIT_ACTIVITY -> "profile_edit_activity"
+    ScreenName.PROFILE_RESET_PIN_ACTIVITY -> "profile_reset_pin_activity"
+    ScreenName.PROFILE_RENAME_ACTIVITY -> "profile_rename_activity"
+    ScreenName.PROFILE_LIST_ACTIVITY -> "profile_list_activity"
+    ScreenName.STORY_ACTIVITY -> "story_activity"
+    ScreenName.TOPIC_ACTIVITY -> "topic_activity"
+    ScreenName.REVISION_CARD_ACTIVITY -> "revision_card_activity"
+    ScreenName.QUESTION_PLAYER_ACTIVITY -> "question_player_activity"
+    ScreenName.WALKTHROUGH_ACTIVITY -> "walkthrough_activity"
+    ScreenName.DEVELOPER_OPTIONS_ACTIVITY -> "developer_options_activity"
+    ScreenName.VIEW_EVENT_LOGS_ACTIVITY -> "view_event_logs_activity"
+    ScreenName.MARK_TOPICS_COMPLETED_ACTIVITY -> "mark_topics_completed_activity"
+    ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY -> "math_expression_parser_activity"
+    ScreenName.MARK_CHAPTERS_COMPLETED_ACTIVITY -> "mark_chapters_completed_activity"
+    ScreenName.MARK_STORIES_COMPLETED_ACTIVITY -> "mark_stories_completed_activity"
+    ScreenName.FORCE_NETWORK_TYPE_ACTIVITY -> "force_network_type_activity"
+    ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
+    ScreenName.POLICIES_ACTIVITY -> "policies_activity"
+    ScreenName.UNRECOGNIZED -> "unrecognized"
+    ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
   }
 }

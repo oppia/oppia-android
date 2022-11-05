@@ -28,6 +28,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
@@ -39,7 +40,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.notice.testing.GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.topic.PracticeTabModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -64,6 +64,7 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -244,7 +245,7 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
       RatioInputModule::class, ApplicationStartupListenerModule::class,
       HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
       WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class, PracticeTabModule::class,
+      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
       NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
@@ -254,7 +255,8 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
       SplitScreenInteractionModule::class, LoggingIdentifierModule::class,
       ApplicationLifecycleModule::class, SyncStatusModule::class, TestingBuildFlavorModule::class,
       CachingTestModule::class, MetricLogSchedulerModule::class,
-      EventLoggingConfigurationModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
