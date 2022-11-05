@@ -227,9 +227,9 @@
   <string name="admin_pin_activity_title">Autorize para adicionar perfis</string>
   <string name="add_profile_activity_label">Adicionar Perfil</string>
   <string name="add_profile_title">Adicionar Perfil</string>
-  <string name="add_profile_input_name">Nome*</string>
-  <string name="add_profile_input_pin">PIN de 3 Dígitos*</string>
-  <string name="add_profile_input_confirm_pin">Confirmar PIN de 3 Dígitos*</string>
+  <string name="add_profile_input_name">Nome</string>
+  <string name="add_profile_input_pin" fuzzy="true">PIN de 3 Dígitos</string>
+  <string name="add_profile_input_confirm_pin" fuzzy="true">Confirmar PIN de 3 Dígitos</string>
   <string name="add_profile_allow_download_heading">Permitir Acesso a Download</string>
   <string name="add_profile_allow_download_sub">O usuário pode baixar e excluir conteúdo sem o PIN do administrador.</string>
   <string name="add_profile_create_btn">Criar</string>
@@ -242,7 +242,6 @@
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
-  <string name="required_fields_content_description">Os campos marcados com * são obrigatórios.</string>
   <string name="current_profile_picture_content_description">Foto de perfil atual</string>
   <string name="edit_profile_picture_content_description">Editar foto de perfil</string>
   <string name="onboarding_slide_0_title">Bem-vindo à %s!</string>
@@ -383,6 +382,7 @@
   <string name="show_hints_and_solution">Mostrar dicas e solução</string>
   <string name="hints_andSolution_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
+  <string name="show_solution" fuzzy="true">Exibir</string>
   <string name="reveal_solution">Revelar Solução</string>
   <string name="reveal_hint">Revelar Dica</string>
   <string name="the_only_solution_is">A única solução é :</string>

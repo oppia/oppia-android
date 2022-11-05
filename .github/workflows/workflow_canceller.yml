@@ -14,7 +14,7 @@ on:
 jobs:
   cancel:
     name: Cancel Previous Runs
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       # See https://github.com/styfle/cancel-workflow-action for details on this workflow.
       - uses: styfle/cancel-workflow-action@0.6.0
