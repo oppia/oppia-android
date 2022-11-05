@@ -27,9 +27,9 @@
       android:background="@color/color_def_white_light"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
+      android:elevation="4dp"
       android:focusable="true"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
-      android:elevation="4dp"
       app:add_shadow="true"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -42,10 +42,10 @@
       android:layout_width="48dp"
       android:layout_height="48dp"
       android:contentDescription="@string/edit_profile_picture_content_description"
+      android:elevation="4dp"
       android:onClick="@{() -> viewModel.clickOnProfilePicture()}"
       android:paddingStart="8dp"
       android:paddingTop="8dp"
-      android:elevation="4dp"
       app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
       app:layout_constraintEnd_toEndOf="@+id/profile_edit_image"
       app:srcCompat="@drawable/rounded_white_background_with_shadow" />
@@ -105,9 +105,10 @@
         <TextView
           android:id="@+id/ongoing_topics_description_text_view"
           style="@style/TextViewCenter"
-          android:layout_width="60dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
+          android:minWidth="60dp"
           android:text="@{viewModel.ongoingTopicCount != 1 ? @string/topics_in_progress : @string/topic_in_progress}"
           android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
           android:textSize="12sp" />
@@ -153,9 +154,10 @@
         <TextView
           android:id="@+id/completed_stories_description_text_view"
           style="@style/TextViewCenter"
-          android:layout_width="60dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
+          android:minWidth="60dp"
           android:text="@{viewModel.completedStoryCount != 1 ? @string/stories_completed : @string/story_completed}"
           android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
           android:textSize="12sp" />
