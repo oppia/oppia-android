@@ -23,7 +23,7 @@ class PinPasswordViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
-  val showError = ObservableField(false)
+  val errorMessage = ObservableField<String>("")
   val showPassword = ObservableField(false)
   val correctPin = ObservableField<String>("")
   val isAdmin = ObservableField<Boolean>(false)
