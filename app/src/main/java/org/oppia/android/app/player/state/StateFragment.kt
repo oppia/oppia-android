@@ -26,6 +26,8 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 private const val STATE_FRAGMENT_RAW_USER_ANSWER_KEY = "StateFragment.raw_user_answer"
+private const val STATE_FRAGMENT_HAS_PREVIOUS_HEADER_COLLAPSED =
+  "StateFragment.has_response_header_collapsed"
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -87,6 +89,8 @@ class StateFragment :
     val rawUserAnswer = savedInstanceState?.getProto(
       STATE_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
     ) ?: RawUserAnswer.getDefaultInstance()
+    val hasPreviousResponsesExpanded =
+      savedInstanceState?.getBoolean(STATE_FRAGMENT_HAS_PREVIOUS_HEADER_COLLAPSED) ?: false
     return stateFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -94,6 +98,7 @@ class StateFragment :
       topicId,
       storyId,
       rawUserAnswer,
+      hasPreviousResponsesExpanded,
       explorationId
     )
   }
@@ -143,6 +148,10 @@ class StateFragment :
     outState.putProto(
       STATE_FRAGMENT_RAW_USER_ANSWER_KEY,
       stateFragmentPresenter.getRawUserAnswer()
+    )
+    outState.putBoolean(
+      STATE_FRAGMENT_HAS_PREVIOUS_HEADER_COLLAPSED,
+      stateFragmentPresenter.getHasPreviousResponsesExpanded()
     )
   }
 

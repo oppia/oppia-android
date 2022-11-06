@@ -331,35 +331,15 @@ message ItemSelectionRawAnswer {
 // retain state on configuration changes.
 message RawUserAnswer {
   oneof answer_input_type {
-    // A raw answer entered by user in text input interaction.
-    string text = 1;
-    // A raw answer entered by user in fraction input interaction.
-    string fraction = 2;
-    // A raw answer entered by user in numeric input interaction.
-    string numeric = 3;
-    // A raw answer entered by user in ratio input interaction.
-    string ratio_input = 4;
-    // A raw answer entered by user in ratio input interaction.
-    string math_expression = 5;
+    // A raw answer entered by user in a text-based interactions.
+    string textual_answer = 1;
     // A user's selection for item selection and multiple choice interactions.
-    ItemSelectionRawAnswer item_selection = 6;
-    // A user's selection for drag and drop interactions.
-    DragAndDropRawAnswer drag_and_drop = 7;
+    ItemSelectionRawAnswer item_selection = 2;
     // A user's selection for image region selection interaction.
-    ImageWithRegions.LabeledRegion image_region_selection = 8;
+    ImageWithRegions.LabeledRegion image_region_selection = 3;
+    // A user's selected list of set of html content ids in drag and drop interaction.
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
   }
-}
-
-// Corresponds to a current drag and drop answer
-message DragAndDropRawAnswer {
-  // list of group subtitled html
-  repeated GroupSubtitledHtml list_of_group_subtitled_html = 1;
-}
-
-// A list of subtitled html
-message GroupSubtitledHtml {
-  // list of subtitled html
-  repeated SubtitledHtml list_of_subtitled_htmls = 1;
 }
 
 message AnswerAndResponse {

@@ -74,7 +74,7 @@ class MathExpressionInteractionsViewModel private constructor(
    * Defines the current answer text being entered by the learner. This is expected to be directly
    * bound to the corresponding edit text.
    */
-  var answerText: CharSequence = rawUserAnswer.mathExpression ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -146,7 +146,7 @@ class MathExpressionInteractionsViewModel private constructor(
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
     if (answerText.isNotEmpty()) {
-      mathExpression = answerText.toString()
+      textualAnswer = answerText.toString()
     }
   }.build()
 
@@ -237,7 +237,6 @@ class MathExpressionInteractionsViewModel private constructor(
       hasConversationView: Boolean,
       rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
-      isSubmitAnswerEnabled: Boolean,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,

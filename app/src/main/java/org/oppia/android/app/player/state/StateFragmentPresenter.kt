@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,6 +114,7 @@ class StateFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     rawUserAnswer: RawUserAnswer,
+    hasPreviousResponsesExpanded: Boolean,
     explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -133,6 +133,8 @@ class StateFragmentPresenter @Inject constructor(
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
     )
+
+    recyclerViewAssembler.hasPreviousResponsesExpanded = hasPreviousResponsesExpanded
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
     val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
@@ -205,6 +207,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onSubmitButtonClicked() {
+    recyclerViewAssembler.resetRawUserAnswer()
     hideKeyboard()
     handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
   }
@@ -269,6 +272,10 @@ class StateFragmentPresenter @Inject constructor(
 
   fun revealSolution() {
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
+  }
+
+  fun getHasPreviousResponsesExpanded(): Boolean {
+    return recyclerViewAssembler.hasPreviousResponsesExpanded
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -462,7 +469,6 @@ class StateFragmentPresenter @Inject constructor(
   fun getExplorationCheckpointState() = explorationCheckpointState
 
   fun getRawUserAnswer(): RawUserAnswer {
-    Log.d("TAGG", "getRawUserAnswer: " + isConfigChangeStateRetentionEnabled.value)
     return if (isConfigChangeStateRetentionEnabled.value) {
       viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
     } else RawUserAnswer.getDefaultInstance()
@@ -511,25 +517,24 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
-    if (!isHintBulbAnimationEnabled.value)
-      return if (isHintUnrevealed) {
-        val hintBulbAnimation = AnimationUtils.loadAnimation(
-          context,
-          R.anim.hint_bulb_animation
-        ).also { it.interpolator = BounceUpAndDownInterpolator() }
+    if (!isHintBulbAnimationEnabled.value) return if (isHintUnrevealed) {
+      val hintBulbAnimation = AnimationUtils.loadAnimation(
+        context,
+        R.anim.hint_bulb_animation
+      ).also { it.interpolator = BounceUpAndDownInterpolator() }
 
-        // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
-        // cases like configuration changes, or returning from a saved checkpoint.
-        lifecycleSafeTimerFactory.run {
-          activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
-            return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
-              if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
-            }
+      // The bulb should start bouncing every 30 seconds. Note that an initial delay is used for
+      // cases like configuration changes, or returning from a saved checkpoint.
+      lifecycleSafeTimerFactory.run {
+        activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
+          return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
+            if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
           }
         }
-      } else {
-        binding.hintBulb.clearAnimation()
       }
+    } else {
+      binding.hintBulb.clearAnimation()
+    }
   }
 
   /**

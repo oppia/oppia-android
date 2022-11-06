@@ -31,7 +31,6 @@ class SelectionInteractionViewModel private constructor(
   val hasConversationView: Boolean,
   rawUserAnswer: RawUserAnswer,
   interaction: Interaction,
-  isSubmitAnswerEnabled: Boolean,
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
@@ -75,7 +74,7 @@ class SelectionInteractionViewModel private constructor(
           )
         }
       }
-    if (selectedAnswer.size > 0 && isSubmitAnswerEnabled) {
+    if (selectedAnswer.size > 0) {
       selectedAnswer.forEach { index ->
         selectedItems += index
         updateIsAnswerAvailable()
@@ -189,7 +188,6 @@ class SelectionInteractionViewModel private constructor(
       hasConversationView: Boolean,
       rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
-      isSubmitAnswerEnabled: Boolean,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
@@ -201,7 +199,6 @@ class SelectionInteractionViewModel private constructor(
         hasConversationView,
         rawUserAnswer,
         interaction,
-        isSubmitAnswerEnabled,
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,

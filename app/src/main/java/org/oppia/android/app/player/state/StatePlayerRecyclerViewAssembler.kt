@@ -146,7 +146,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val rawUserAnswer: RawUserAnswer,
+  private var rawUserAnswer: RawUserAnswer,
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -160,7 +160,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally
    * not retained upon configuration changes since the user can just re-expand the list.
    */
-  private var hasPreviousResponsesExpanded: Boolean = false
+  var hasPreviousResponsesExpanded: Boolean = false
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
@@ -302,6 +302,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
+  /**
+   * Resets rawUserAnswer to it's default instance.
+   */
+  fun resetRawUserAnswer() {
+    rawUserAnswer = RawUserAnswer.getDefaultInstance()
+  }
+
   private fun addInteractionForPendingState(
     pendingItemList: MutableList<StateItemViewModel>,
     interaction: Interaction,
@@ -315,7 +322,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasConversationView,
       rawUserAnswer,
       interaction,
-      canSubmitAnswer?.get() ?: false,
       fragment as InteractionAnswerReceiver,
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton,

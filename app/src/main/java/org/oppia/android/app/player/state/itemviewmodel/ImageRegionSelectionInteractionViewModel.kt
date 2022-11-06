@@ -4,7 +4,7 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
 import org.oppia.android.app.model.ClickOnImage
-import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.RawUserAnswer
@@ -34,7 +34,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
   var answerText: CharSequence = ""
-  val selectableRegions: List<ImageWithRegions.LabeledRegion> by lazy {
+  val selectableRegions: List<LabeledRegion> by lazy {
     val schemaObject = interaction.customizationArgsMap["imageAndRegions"]
     schemaObject?.customSchemaValue?.imageWithRegions?.labelRegionsList ?: listOf()
   }
@@ -44,8 +44,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     schemaObject?.customSchemaValue?.imageWithRegions?.imagePath ?: ""
   }
   val isAnswerAvailable = ObservableField<Boolean>(false)
-  val lastSelectedRegion =
-    ObservableField<ImageWithRegions.LabeledRegion>(rawUserAnswer.imageRegionSelection)
+  val lastSelectedRegion = ObservableField<LabeledRegion>(rawUserAnswer.imageRegionSelection)
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -87,7 +86,9 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   }.build()
 
   override fun getRawUserAnswer(): RawUserAnswer = RawUserAnswer.newBuilder().apply {
-    imageRegionSelection = selectableRegions.find { it.label == answerText.toString() }
+    if (answerText.isNotEmpty()) {
+      imageRegionSelection = selectableRegions.find { it.label == answerText.toString() }
+    }
   }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
@@ -108,7 +109,6 @@ class ImageRegionSelectionInteractionViewModel private constructor(
       hasConversationView: Boolean,
       rawUserAnswer: RawUserAnswer,
       interaction: Interaction,
-      isSubmitAnswerEnabled: Boolean,
       interactionAnswerReceiver: InteractionAnswerReceiver,
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
