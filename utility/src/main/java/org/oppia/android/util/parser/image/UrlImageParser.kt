@@ -160,10 +160,7 @@ class UrlImageParser private constructor(
               htmlContentTextView.paddingRight,
               htmlContentTextView.paddingBottom
             )
-          proxyDrawable.initialize(
-            drawable,
-            computeBounds(context, drawable, viewWidth, padding)
-          )
+          proxyDrawable.initialize(drawable, computeBounds(context, drawable, viewWidth, padding))
           htmlContentTextView.text = htmlContentTextView.text
           htmlContentTextView.invalidate()
         }
@@ -463,17 +460,19 @@ private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float
   return margin.coerceAtLeast(0f)
 }
 
-// Reference: https://stackoverflow.com/a/57495622/12314934
+// Reference: https://stackoverflow.com/a/51865494 and
+// https://stackoverflow.com/a/35444014/12314934.
 private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
-  if (isLaidOut) {
-    computeWidthOnGlobalLayout(width)
-  } else {
+  if (width == 0) {
+    requestLayout()
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
         viewTreeObserver.removeOnGlobalLayoutListener(this)
         computeWidthOnGlobalLayout(width)
       }
     })
+  } else {
+    computeWidthOnGlobalLayout(width)
   }
 }
 
