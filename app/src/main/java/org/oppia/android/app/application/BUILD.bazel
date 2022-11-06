@@ -115,7 +115,7 @@ android_library(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:performance_metrics_logger_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",

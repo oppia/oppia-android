@@ -60,5 +60,31 @@ class TextInputAction {
         description.appendText("There is no error text.")
       }
     }
+
+    /**
+     * Checks that the TextInputLayout view has the [expectedHelperText] helper text.
+     *
+     * @return a [BoundedMatcher] that matches the [expectedHelperText] with the TextInputLayout's
+     *     helper text
+     */
+    fun hasHelperText(expectedHelperText: String): BoundedMatcher<View, TextInputLayout> {
+      return HelperTextExistsMatcher(expectedHelperText)
+    }
+
+    /**
+     * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to match the
+     * [expectedHelperText] with the TextInputLayout's helper text.
+     */
+    private class HelperTextExistsMatcher(
+      private val expectedHelperText: String
+    ) : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
+        return textInputLayout.helperText == expectedHelperText
+      }
+
+      override fun describeTo(description: Description) {
+        description.appendText("The expected helper text is '$expectedHelperText'")
+      }
+    }
   }
 }
