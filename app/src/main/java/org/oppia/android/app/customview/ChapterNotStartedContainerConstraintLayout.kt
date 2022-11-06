@@ -10,6 +10,7 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.spotlight.SpotlightTargetStore
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 
@@ -27,6 +28,9 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
 
   @Inject
   lateinit var fragment: Fragment
+
+  @Inject
+  lateinit var spotlightTargetStore: SpotlightTargetStore
 
   fun setStoryIndex(index: Int) {
     // Only spotlight the first chapter of the "first" story. We know for sure that for a new user,
@@ -46,15 +50,23 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     this.post {
         if (!isSpotlit) {
           if (index == 0) {
-            val targetList = arrayListOf(
-              SpotlightTarget(
+//            val targetList = arrayListOf(
+//              SpotlightTarget(
+//                this,
+//                "Tap to start a chapter",
+//                SpotlightShape.RoundedRectangle,
+//                Spotlight.FeatureCase.FIRST_CHAPTER
+//              )
+//            )
+
+            val target = SpotlightTarget(
                 this,
                 "Tap to start a chapter",
                 SpotlightShape.RoundedRectangle,
                 Spotlight.FeatureCase.FIRST_CHAPTER
               )
-            )
-            spotlightFragment.initialiseTargetList(targetList, 123)
+            spotlightTargetStore.addSpotlightTarget(target)
+            spotlightFragment.initialiseTargetList(123)
             // this view is attached multiple times which can lead to crashes due [SpotlightFragment]
             // being added multiple times. [isSpotlit] is a flag to prevent the same.
             isSpotlit = true

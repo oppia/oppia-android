@@ -1,12 +1,10 @@
 package org.oppia.android.app.topic
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -18,6 +16,7 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.spotlight.SpotlightTargetStore
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -33,7 +32,8 @@ class TopicFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val spotlightFragment: SpotlightFragment
+  private val spotlightFragment: SpotlightFragment,
+  private val spotlightTargetStore: SpotlightTargetStore
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -82,7 +82,7 @@ class TopicFragmentPresenter @Inject constructor(
       if (numberOfChaptersCompleted != -1) {
         val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LESSONS))?.view
         lessonsTabView?.let { lessonsTabView ->
-          lessonsTabView.doOnPreDraw {
+//          lessonsTabView.doOnPreDraw {
             val lessonsTabSpotlightTarget = SpotlightTarget(
               lessonsTabView,
               "Find all your lessons here",
@@ -98,19 +98,21 @@ class TopicFragmentPresenter @Inject constructor(
                 SpotlightShape.RoundedRectangle,
                 Spotlight.FeatureCase.TOPIC_REVISION_TAB
               )
-              val targetList = arrayListOf(lessonsTabSpotlightTarget, revisionTabSpotlightTarget)
-              spotlightFragment.initialiseTargetList(targetList, internalProfileId)
-              activity.supportFragmentManager.beginTransaction()
-                .add(spotlightFragment, "")
-                .commitNow()
+//              val targetList = arrayListOf(lessonsTabSpotlightTarget, revisionTabSpotlightTarget)
+              spotlightFragment.setInternalId(internalProfileId)
+              spotlightTargetStore.addSpotlightTarget(lessonsTabSpotlightTarget)
+              spotlightTargetStore.addSpotlightTarget(revisionTabSpotlightTarget)
+//              activity.supportFragmentManager.beginTransaction()
+//                .add(spotlightFragment, "")
+//                .commitNow()
             } else {
               val targetList = arrayListOf(lessonsTabSpotlightTarget)
-              spotlightFragment.initialiseTargetList(targetList, internalProfileId)
-              activity.supportFragmentManager.beginTransaction()
-                .add(spotlightFragment, "")
-                .commitNow()
+              spotlightTargetStore.addSpotlightTarget(lessonsTabSpotlightTarget)
+//              activity.supportFragmentManager.beginTransaction()
+//                .add(spotlightFragment, "")
+//                .commitNow()
             }
-          }
+//          }
         }
       }
     }

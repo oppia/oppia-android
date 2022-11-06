@@ -19,6 +19,7 @@ import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
@@ -36,7 +37,8 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 class SpotlightFragment @Inject constructor(
   private val activity: AppCompatActivity,
   private val spotlightStateController: SpotlightStateController,
-  private val accessibilityServiceImpl: AccessibilityServiceImpl
+  private val accessibilityServiceImpl: AccessibilityServiceImpl,
+  private val spotlightTargetStore: SpotlightTargetStore
 ) : Fragment(), SpotlightNavigationListener {
   private var targetList = ArrayList<Target>()
   private var spotlightTargetList = ArrayList<SpotlightTarget>()
@@ -66,6 +68,15 @@ class SpotlightFragment @Inject constructor(
     internalProfileId = profileId
   }
 
+  fun setInternalId(profileId: Int) {
+    internalProfileId = profileId
+  }
+
+  fun initialiseTargetList(profileId: Int) {
+    spotlightTargetList = spotlightTargetStore.getSpotlightTargetList()
+    internalProfileId = profileId
+  }
+
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -73,7 +84,8 @@ class SpotlightFragment @Inject constructor(
     if (accessibilityServiceImpl.isScreenReaderEnabled()) {
       activity.supportFragmentManager.beginTransaction().remove(this)
     }else {
-      spotlightTargetList.forEachIndexed { _, spotlightTarget ->
+      spotlightTargetList.forEachIndexed { index, spotlightTarget ->
+        Log.d("overlay", "spotlight fragment target $index: $spotlightTarget ")
         checkSpotlightViewState(spotlightTarget)
       }
     }
@@ -125,7 +137,7 @@ class SpotlightFragment @Inject constructor(
     spotlightTarget.logParams()
 
     val target = Target.Builder()
-      .setAnchor(spotlightTarget.anchor)
+//      .setAnchor(spotlightTarget.anchor)
       .setShape(getShape(spotlightTarget))
       .setOverlay(requestOverlayResource(spotlightTarget))
       .setOnTargetListener(object : OnTargetListener {
@@ -143,7 +155,7 @@ class SpotlightFragment @Inject constructor(
 //          )
         }
       })
-      .build()
+      .build(spotlightTarget.anchor)
 
     targetList.add(target)
   }
