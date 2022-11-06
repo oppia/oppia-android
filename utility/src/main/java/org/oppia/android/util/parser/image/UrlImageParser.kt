@@ -464,6 +464,8 @@ private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float
 // https://stackoverflow.com/a/35444014/12314934.
 private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
   if (width == 0) {
+    // requestLayout() will request onGlobalLayoutListener when we have images inside an recyclerview with
+    // a content description.
     requestLayout()
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
