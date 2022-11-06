@@ -905,23 +905,23 @@ class HomeActivityTest {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-        scrollToPosition(position = 1)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.home_recycler_view,
-            position = 1,
-            targetViewId = R.id.promoted_story_list_recycler_view
-          )
-        ).check { view, _ ->
-          val promotedStoryCard =
-            view.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
-          val promotedStoryCardWidth = promotedStoryCard?.width?.toFloat()
-          val expectedWidthInSP = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP,
-            280F,
-            context.resources.displayMetrics
-          )
-          assertThat(promotedStoryCardWidth).isWithin(1e-5f).of(expectedWidthInSP)
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.home_recycler_view,
+          position = 1,
+          targetViewId = R.id.promoted_story_list_recycler_view
+        )
+      ).check { view, _ ->
+        val promotedStoryCard =
+          view.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
+        val promotedStoryCardWidth = promotedStoryCard?.width?.toFloat()
+        val expectedWidthInSP = TypedValue.applyDimension(
+          TypedValue.COMPLEX_UNIT_SP,
+          280F,
+          context.resources.displayMetrics
+        )
+        assertThat(promotedStoryCardWidth).isWithin(1e-5f).of(expectedWidthInSP)
       }
     }
   }
