@@ -98,6 +98,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
+          android:minWidth="60dp"
           android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
           android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
           android:textSize="24sp" />

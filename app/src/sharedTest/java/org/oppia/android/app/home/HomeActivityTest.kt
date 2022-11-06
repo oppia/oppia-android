@@ -904,26 +904,24 @@ class HomeActivityTest {
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      it.onActivity { activity ->
-        testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.runCurrent()
         scrollToPosition(position = 1)
         onView(
           atPositionOnView(
             recyclerViewId = R.id.home_recycler_view,
-            position = 0,
+            position = 1,
             targetViewId = R.id.promoted_story_list_recycler_view
           )
-        ).check { _, _ ->
+        ).check { view, _ ->
           val promotedStoryCard =
-            activity.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
-          val pixels = promotedStoryCard?.width?.toFloat()
-          val expectedSize = TypedValue.applyDimension(
+            view.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
+          val promotedStoryCardWidth = promotedStoryCard?.width?.toFloat()
+          val expectedWidthInSP = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP,
             280F,
             context.resources.displayMetrics
           )
-          assertThat(pixels).isEqualTo(expectedSize)
-        }
+          assertThat(promotedStoryCardWidth).isWithin(1e-5f).of(expectedWidthInSP)
       }
     }
   }
