@@ -32,7 +32,6 @@ class TopicFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val spotlightFragment: SpotlightFragment,
   private val spotlightTargetStore: SpotlightTargetStore
 ) {
   private lateinit var tabLayout: TabLayout
@@ -90,7 +89,7 @@ class TopicFragmentPresenter @Inject constructor(
               Spotlight.FeatureCase.TOPIC_LESSON_TAB
             )
 
-            if (numberOfChaptersCompleted > 2) {
+//            if (numberOfChaptersCompleted > 2) {
               val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
               val revisionTabSpotlightTarget = SpotlightTarget(
                 revisionTabView!!,
@@ -98,24 +97,23 @@ class TopicFragmentPresenter @Inject constructor(
                 SpotlightShape.RoundedRectangle,
                 Spotlight.FeatureCase.TOPIC_REVISION_TAB
               )
-//              val targetList = arrayListOf(lessonsTabSpotlightTarget, revisionTabSpotlightTarget)
-              spotlightFragment.setInternalId(internalProfileId)
-              spotlightTargetStore.addSpotlightTarget(lessonsTabSpotlightTarget)
-              spotlightTargetStore.addSpotlightTarget(revisionTabSpotlightTarget)
-//              activity.supportFragmentManager.beginTransaction()
-//                .add(spotlightFragment, "")
-//                .commitNow()
-            } else {
-              val targetList = arrayListOf(lessonsTabSpotlightTarget)
-              spotlightTargetStore.addSpotlightTarget(lessonsTabSpotlightTarget)
-//              activity.supportFragmentManager.beginTransaction()
-//                .add(spotlightFragment, "")
-//                .commitNow()
+              getSpotlightFragment().setInternalId(internalProfileId)
+              getSpotlightFragment().checkSpotlightViewState(lessonsTabSpotlightTarget)
+              getSpotlightFragment().checkSpotlightViewState(revisionTabSpotlightTarget)
+
+//            } else {
+
+//              getSpotlightFragment().checkSpotlightViewState(lessonsTabSpotlightTarget)
+
             }
 //          }
-        }
+//        }
       }
     }
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment {
+    return activity.supportFragmentManager.findFragmentByTag(SPOTLIGHT_FRAGMENT_TAG) as SpotlightFragment
   }
 
   private fun setCurrentTab(tab: TopicTab) {

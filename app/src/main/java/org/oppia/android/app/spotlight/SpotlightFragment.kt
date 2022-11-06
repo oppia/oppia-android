@@ -19,12 +19,10 @@ import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.onboarding.SpotlightNavigationListener
-import org.oppia.android.databinding.OverlayBinding
 import org.oppia.android.databinding.OverlayOverLeftBinding
 import org.oppia.android.databinding.OverlayOverRightBinding
 import org.oppia.android.databinding.OverlayUnderLeftBinding
@@ -40,18 +38,18 @@ class SpotlightFragment @Inject constructor(
   private val accessibilityServiceImpl: AccessibilityServiceImpl,
   private val spotlightTargetStore: SpotlightTargetStore
 ) : Fragment(), SpotlightNavigationListener {
-  private var targetList = ArrayList<Target>()
+  private var targetList = LinkedList<Target>()
   private var spotlightTargetList = ArrayList<SpotlightTarget>()
   private lateinit var spotlight: Spotlight
   private val overlay = "overlay"
-  private var counter = 0
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
-
+  private var isSpotlightActive = false
   private var isRTL = false
+  private var indexToRemove = -1
 
   init {
     val displayMetrics = DisplayMetrics()
@@ -91,7 +89,7 @@ class SpotlightFragment @Inject constructor(
     }
   }
 
-  private fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
+   fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
 
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
@@ -118,10 +116,7 @@ class SpotlightFragment @Inject constructor(
               Log.d("overlay", viewState.toString())
               Log.d("overlay", "adding target ")
               createTarget(spotlightTarget)
-              counter++
-              if (counter == spotlightTargetList.size) {
-                startSpotlight()
-              }
+
               featureViewStateLiveData.removeObserver(this)
             }
           }
@@ -143,9 +138,15 @@ class SpotlightFragment @Inject constructor(
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
 
+          Log.d("overlay", "target  start")
         }
 
         override fun onEnded() {
+          Log.d("overlay", "target  end")
+
+          targetList.pop()
+
+//          targetList.remove(currentTarget)
 //          val profileId = ProfileId.newBuilder()
 //            .setInternalId(internalProfileId)
 //            .build()
@@ -157,10 +158,15 @@ class SpotlightFragment @Inject constructor(
       })
       .build(spotlightTarget.anchor)
 
+
     targetList.add(target)
+    if (!isSpotlightActive) {
+      startSpotlight()
+    }
   }
 
   private fun startSpotlight() {
+    if (targetList.isNullOrEmpty()) return
     spotlight = Spotlight.Builder(activity)
       .setTargets(targetList)
       .setBackgroundColorRes(R.color.spotlightBackground)
@@ -168,10 +174,16 @@ class SpotlightFragment @Inject constructor(
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
+          Log.d("overlay", "spotlight  start")
+
+          isSpotlightActive = true
         }
 
         override fun onEnded() {
-          this@SpotlightFragment.childFragmentManager.popBackStack()
+          Log.d("overlay", "spotlight  end")
+
+          isSpotlightActive = false
+          startSpotlight()
         }
       })
       .build()
