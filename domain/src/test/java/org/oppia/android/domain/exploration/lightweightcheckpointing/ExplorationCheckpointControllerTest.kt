@@ -15,6 +15,20 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.OutdatedExplorationCheckpointException
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -314,6 +328,27 @@ class ExplorationCheckpointControllerTest {
     monitorFactory.waitForNextSuccessfulResult(checkpointProvider)
   }
 
+  // TODO: Update the test below & also add the following tests (requires adding new test-only\
+  //  explorations):
+  //  - testRetrieve_newerExp_noRelatedChanges_returnsCheckpointWithNewVersion
+  //  - testRetrieve_newerExp_updatedTitle_returnsCheckpointWithNewTitle
+  //  - testRetrieve_newerExp_completedStateNoLongerExists_returnsFailure
+  //  - testRetrieve_newerExp_completedStateChangedFeedbackHtml_returnsAdjustedCheckpoint
+  //  - testRetrieve_newerExp_completedStateChangedFeedbackContentId_returnsFailure
+  //  - testRetrieve_newerExp_completedStateRemovesRuleSpec_returnsFailure
+  //  - testRetrieve_newerExp_completedStateChangesDestState_returnsFailure
+  //  - testRetrieve_newerExp_completedStateChangesAnswerCorrectness_returnsFailure
+  //  - testRetrieve_newerExp_pendingStateNoLongerExists_returnsFailure
+  //  - testRetrieve_newerExp_pendingStateChangedFeedbackHtml_returnsAdjustedCheckpoint
+  //  - testRetrieve_newerExp_pendingStateChangedFeedbackContentId_returnsFailure
+  //  - testRetrieve_newerExp_pendingStateRemovesRuleSpec_returnsFailure
+  //  - testRetrieve_newerExp_pendingStateChangesDestState_returnsFailure
+  //  - testRetrieve_newerExp_pendingStateChangesAnswerCorrectness_returnsFailure
+  //  - testRetrieve_newerExp_hintsChanged_returnsAdjustedCheckpointWithHintsReset
+  //  - testRetrieve_newerExp_hintsUnchanged_returnsAdjustedCheckpointWithHintsReset
+  //  - testRetrieve_newerExp_manyCompatibleChanges_returnsAdjustedCheckpoint
+  //  - testRetrieve_newerExp_manyCompatibleChanges_oneIncompatibleChange_returnsFailure
+
   @Test
   fun testController_saveInCompatibleCheckpoint_retrieveCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
@@ -451,7 +486,12 @@ class ExplorationCheckpointControllerTest {
       LocaleProdModule::class, FakeOppiaClockModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, NumericExpressionInputModule::class,
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
