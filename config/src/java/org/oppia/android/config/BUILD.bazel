@@ -52,6 +52,7 @@ _SUPPORTED_REGIONS_CONFIG_ASSETS = {
         manifest = "AndroidManifest.xml",
         visibility = [
             "//:oppia_binary_visibility",
+            "//:oppia_testing_visibility",
         ],
     )
     for support_level in _LANGUAGE_SUPPORT_LEVELS

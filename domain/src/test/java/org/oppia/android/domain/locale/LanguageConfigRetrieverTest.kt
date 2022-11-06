@@ -45,6 +45,8 @@ class LanguageConfigRetrieverTest {
     setUpTestApplicationComponent()
   }
 
+  // TODO: Add tests for both all & production languages.
+
   @Test
   fun testOppiaLanguage_hasSupportForSevenLanguages() {
     // While it's a bit strange to test a proto, and particularly in this file, this suite is

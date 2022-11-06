@@ -159,6 +159,7 @@ TEST_DEPS = [
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
+    "//config/src/java/org/oppia/android/config:all_languages_config",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
     "//data/src/main/java/org/oppia/android/data/persistence:cache_store",
