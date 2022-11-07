@@ -17,7 +17,6 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
-import java.util.*
 import org.oppia.android.R
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
@@ -30,6 +29,7 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -66,7 +66,6 @@ class SpotlightFragment @Inject constructor(
     internalProfileId = profileId
   }
 
-
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -83,7 +82,7 @@ class SpotlightFragment @Inject constructor(
     }
   }
 
-   fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
+  fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
 
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
@@ -144,7 +143,6 @@ class SpotlightFragment @Inject constructor(
         }
       })
       .build(spotlightTarget.anchor)
-
 
     targetList.add(target)
     if (!isSpotlightActive) {
@@ -255,7 +253,6 @@ class SpotlightFragment @Inject constructor(
       AnchorPosition.BottomRight -> {
         if (isRTL) {
           configureBottomLeftOverlay(spotlightTarget)
-
         } else {
           configureBottomRightOverlay(spotlightTarget)
         }
