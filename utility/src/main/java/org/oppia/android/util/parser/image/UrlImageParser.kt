@@ -466,7 +466,7 @@ private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
   if (width == 0) {
     // In a recyclerview, where there are images with content descriptions, onGlobalLayoutListener
     // will not be called because the view is created before the request to load images is
-    // processed, so calling requestLayout() will call onGlobalLayoutListener.
+    // processed, so calling requestLayout() will ensure that onGlobalLayoutListener is called.
     requestLayout()
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
