@@ -27,9 +27,10 @@ class ContinueInteractionViewModel private constructor(
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val isSplitView: Boolean,
-  private val writtenTranslationContext: WrittenTranslationContext
+  private val writtenTranslationContext: WrittenTranslationContext,
+  val shouldAnimateContinueButton: Boolean,
+  val continueButtonAnimationTimestampMs: Long
 ) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
-
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun isAutoNavigating(): Boolean = true
@@ -55,7 +56,8 @@ class ContinueInteractionViewModel private constructor(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel {
       return ContinueInteractionViewModel(
         interactionAnswerReceiver,
@@ -63,7 +65,9 @@ class ContinueInteractionViewModel private constructor(
         hasPreviousButton,
         fragment as PreviousNavigationButtonListener,
         isSplitView,
-        writtenTranslationContext
+        writtenTranslationContext,
+        shouldAnimateContinueButton = timeToStartNoticeAnimationMs != null,
+        continueButtonAnimationTimestampMs = timeToStartNoticeAnimationMs ?: 0L
       )
     }
   }

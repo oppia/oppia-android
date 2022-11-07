@@ -7,14 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import org.oppia.android.R
-import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
-import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
@@ -28,69 +24,28 @@ class ContinueButtonView @JvmOverloads constructor(
 
   @field:[Inject EnableContinueButtonAnimation]
   lateinit var enableContinueButtonAnimation: PlatformParameterValue<Boolean>
+  @Inject lateinit var fragment: Fragment
+  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+  @Inject lateinit var oppiaLogger: OppiaLogger
 
-  @Inject
-  lateinit var fragment: Fragment
-
-  @Inject
-  lateinit var oppiaClock: OppiaClock
-
-  @Inject
-  lateinit var explorationProgressController: ExplorationProgressController
-
-  @Inject
-  lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-
-  private var isAtAnimationEnd = false
-
-  private val ephemeralStateLiveData: LiveData<AsyncResult<EphemeralState>> by lazy {
-    explorationProgressController.getCurrentState().toLiveData()
-  }
-
-  private fun subscribeToCurrentState() {
-    ephemeralStateLiveData.observe(fragment) { result ->
-      processEphemeralStateResult(result)
+  private var shouldAnimateContinueButtonLateinit: Boolean? = null
+  private val shouldAnimateContinueButton: Boolean
+    get() = checkNotNull(shouldAnimateContinueButtonLateinit) {
+      "Expected shouldAnimateContinueButtonLateinit to be initialized by this point."
     }
-  }
 
-  private fun processEphemeralStateResult(result: AsyncResult<EphemeralState>) {
-    when (result) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("StateFragment", "Failed to retrieve ephemeral state", result.error)
-      }
-      is AsyncResult.Pending -> {} // Display nothing until a valid result is available.
-      is AsyncResult.Success -> processEphemeralState(result.value)
+  private var continueButtonAnimationTimestampMsLateinit: Long? = null
+  private val continueButtonAnimationTimestampMs: Long
+    get() = checkNotNull(continueButtonAnimationTimestampMsLateinit) {
+      "Expected continueButtonAnimationTimestampMsLateinit to be initialized by this point."
     }
-  }
 
-  private fun processEphemeralState(ephemeralState: EphemeralState) {
-    if (!ephemeralState.showContinueButtonAnimation) {
-      this.clearAnimation()
-      isAtAnimationEnd = false
-    } else {
-      val timeLeftToAnimate =
-        ephemeralState.continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
-      if (timeLeftToAnimate < 0) {
-        startAnimating()
-        isAtAnimationEnd = true
-      } else {
-        lifecycleSafeTimerFactory.createTimer(timeLeftToAnimate).observe(fragment) {
-          startAnimating()
-          isAtAnimationEnd = true
-        }
-      }
-    }
-  }
+  private val hasAnimationTimerFinished: Boolean
+    get() = continueButtonAnimationTimestampMs < oppiaClock.getCurrentTimeMs()
 
-  private fun startAnimating() {
-    val animation = AnimationUtils.loadAnimation(context, R.anim.scale_button_size)
-    if (enableContinueButtonAnimation.value) {
-      this.startAnimation(animation)
-    }
-  }
+  private var animationStartTimer: LiveData<Any>? = null
+  private var currentAnimationReuseCount = 0
 
   override fun onVisibilityAggregated(isVisible: Boolean) {
     super.onVisibilityAggregated(isVisible)
@@ -98,7 +53,7 @@ class ContinueButtonView @JvmOverloads constructor(
     // timer goes off. To make sure that the animation is shown when the user finally scrolls down
     // enough that the button is visible, animate the button based on whether the timer has finished
     // or not.
-    if (isVisible && isAtAnimationEnd) {
+    if (isVisible && hasAnimationTimerFinished) {
       startAnimating()
     }
   }
@@ -109,7 +64,68 @@ class ContinueButtonView @JvmOverloads constructor(
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
+    maybeInitializeAnimation()
+  }
 
-    subscribeToCurrentState()
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+
+    // Make sure state can't leak across rebinding boundaries (since this view may be reused).
+    shouldAnimateContinueButtonLateinit = null
+    continueButtonAnimationTimestampMsLateinit = null
+    cancelOngoingTimer()
+  }
+
+  fun setShouldAnimateContinueButton(shouldAnimateContinueButton: Boolean) {
+    shouldAnimateContinueButtonLateinit = shouldAnimateContinueButton
+    maybeInitializeAnimation()
+  }
+
+  fun setContinueButtonAnimationTimestampMs(continueButtonAnimationTimestampMs: Long) {
+    continueButtonAnimationTimestampMsLateinit = continueButtonAnimationTimestampMs
+    maybeInitializeAnimation()
+  }
+
+  private fun maybeInitializeAnimation() {
+    if (::oppiaClock.isInitialized &&
+      shouldAnimateContinueButtonLateinit != null &&
+      continueButtonAnimationTimestampMsLateinit != null
+    ) {
+      when {
+        !shouldAnimateContinueButton -> clearAnimation()
+        hasAnimationTimerFinished -> startAnimating()
+        else -> {
+          val timeLeftToAnimate = continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
+          startAnimatingWithDelay(delayMs = timeLeftToAnimate)
+        }
+      }
+    }
+  }
+
+  private fun startAnimatingWithDelay(delayMs: Long) {
+    cancelOngoingTimer()
+    val sequenceNumber = currentAnimationReuseCount
+    lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment) {
+      // Only play the animation if it's still valid to do so (since the view may have been recycled
+      // for a new context that may not want the animation to play).
+      if (sequenceNumber == currentAnimationReuseCount) {
+        startAnimating()
+      }
+    }
+  }
+
+  private fun cancelOngoingTimer() {
+    currentAnimationReuseCount++
+    animationStartTimer?.let {
+      it.removeObservers(fragment)
+      animationStartTimer = null
+    }
+  }
+
+  private fun startAnimating() {
+    val animation = AnimationUtils.loadAnimation(context, R.anim.scale_button_size)
+    if (enableContinueButtonAnimation.value) {
+      startAnimation(animation)
+    }
   }
 }
