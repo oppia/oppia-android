@@ -81,7 +81,7 @@ def generate_assets_list_from_text_protos(
         asset_dir = "src/main/assets",
         proto_dep_bazel_target_prefix = "//model/src/main/proto",
         proto_package = "model",
-    )+ generate_proto_binary_assets(
+    ) + generate_proto_binary_assets(
         name = name,
         names = large_strings_file_names,
         proto_dep_name = "maven_dependencies",
