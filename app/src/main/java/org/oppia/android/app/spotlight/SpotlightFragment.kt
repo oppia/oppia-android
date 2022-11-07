@@ -49,7 +49,6 @@ class SpotlightFragment @Inject constructor(
   private var internalProfileId: Int = -1
   private var isSpotlightActive = false
   private var isRTL = false
-  private var indexToRemove = -1
 
   init {
     val displayMetrics = DisplayMetrics()

@@ -3,6 +3,7 @@ package org.oppia.android.app.customview
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import javax.inject.Inject
@@ -49,7 +50,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
 
-    this.post {
+    this.doOnPreDraw {
         if (!isSpotlit) {
           if (index == 0) {
 //            val targetList = arrayListOf(
@@ -62,7 +63,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
 //            )
 
             val target = SpotlightTarget(
-                this,
+                it,
                 "Tap to start a chapter",
                 SpotlightShape.RoundedRectangle,
                 Spotlight.FeatureCase.FIRST_CHAPTER
