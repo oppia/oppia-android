@@ -70,7 +70,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
@@ -81,6 +80,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -241,6 +241,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_clickAllowDownloadContainer_checkChanged() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -304,8 +305,12 @@ class ProfileEditFragmentTest {
     }
   }
 
+  // TODO: Update this & other tests to explicitly indicate they're enabling the feature, and also
+  //  add versions of the tests which verify the same situations when the feature is off.
+
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -342,7 +347,7 @@ class ProfileEditFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

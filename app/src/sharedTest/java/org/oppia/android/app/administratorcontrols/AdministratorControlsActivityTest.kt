@@ -271,7 +271,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
@@ -287,7 +287,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 2)
       onView(withId(R.id.app_version_text_view)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
     }
@@ -316,7 +316,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
@@ -332,9 +332,9 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
@@ -350,7 +350,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
@@ -367,7 +367,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
@@ -538,9 +538,12 @@ class AdministratorControlsActivityTest {
     }
   }
 
+  // TODO: Also add tests for when the feature is off? Also, test name should indicate it's on.
+
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_selectProfileUser_tabletConfigChange_displaysProfileEdit() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = internalProfileId
@@ -809,11 +812,8 @@ class AdministratorControlsActivityTest {
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.administrator_controls_list)).perform(
-      scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
-    )
+    onView(withId(R.id.administrator_controls_list))
+      .perform(scrollToPosition<RecyclerView.ViewHolder>(position))
   }
 
   private fun verifyTextInDialog(@StringRes textInDialogId: Int) {

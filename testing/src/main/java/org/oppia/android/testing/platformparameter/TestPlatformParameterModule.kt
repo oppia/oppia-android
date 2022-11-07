@@ -45,7 +45,7 @@ class TestPlatformParameterModule {
   @Provides
   @EnableDownloadsSupport
   fun provideEnableDownloadsSupport(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(enableLanguageSelectionUi)
+    PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
 
   @TestStringParam
   @Provides
@@ -229,12 +229,13 @@ class TestPlatformParameterModule {
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun reset() {
-      enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+      enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
       enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
       enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
       enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
       enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
-      enableInteractionConfigChangeStateRetention = ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+      enableInteractionConfigChangeStateRetention =
+        ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
       enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     }
   }
