@@ -62,8 +62,9 @@ class QuestionPlayerFragment :
       QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
     ) ?: RawUserAnswer.getDefaultInstance()
     val isPreviousResponsesExpanded =
-      savedInstanceState?.getBoolean(QUESTION_PLAYER_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
-        ?: false
+      savedInstanceState?.getBoolean(
+        QUESTION_PLAYER_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY
+      ) ?: false
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     return questionPlayerFragmentPresenter.handleCreateView(
       inflater, container, rawUserAnswer, isPreviousResponsesExpanded, profileId
