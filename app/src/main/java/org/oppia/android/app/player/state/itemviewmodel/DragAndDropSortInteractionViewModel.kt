@@ -244,8 +244,8 @@ class DragAndDropSortInteractionViewModel private constructor(
       resourceHandler: AppLanguageResourceHandler,
       listOfSetsOfTranslatableHtmlContentIds: ListOfSetsOfTranslatableHtmlContentIds
     ): MutableList<DragDropInteractionContentViewModel> {
-      if (listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount > 0) {
-        return listOfSetsOfTranslatableHtmlContentIds
+      return if (listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount > 0) {
+        listOfSetsOfTranslatableHtmlContentIds
           .contentIdListsList.mapIndexed { itemIndex, setOfTranslatableHtmlContentIds ->
             DragDropInteractionContentViewModel(
               contentIdHtmlMap = contentIdHtmlMap,
@@ -259,7 +259,7 @@ class DragAndDropSortInteractionViewModel private constructor(
             )
           }.toMutableList()
       } else {
-        return choiceStrings.mapIndexed { index, subtitledHtml ->
+        choiceStrings.mapIndexed { index, subtitledHtml ->
           DragDropInteractionContentViewModel(
             contentIdHtmlMap = contentIdHtmlMap,
             htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
