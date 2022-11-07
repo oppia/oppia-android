@@ -27,6 +27,7 @@ import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
@@ -52,8 +53,7 @@ class AudioFragmentPresenter @Inject constructor(
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val spotlightFragment: SpotlightFragment
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -123,20 +123,21 @@ class AudioFragmentPresenter @Inject constructor(
   private fun startSpotlights() {
     val audioLanguageIconView = binding.audioLanguageIcon
     audioLanguageIconView.doOnPreDraw {
-      val targetList = arrayListOf(
+      getSpotlightFragment().checkSpotlightViewState(
         SpotlightTarget(
-          audioLanguageIconView,
+          it,
           "Tap to change",
           SpotlightShape.Circle,
           Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
         )
       )
-
-      spotlightFragment.initialiseTargetList(targetList, 1234)
-      activity.supportFragmentManager.beginTransaction()
-        .add(spotlightFragment, "")
-        .commitNow()
     }
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SPOTLIGHT_FRAGMENT_TAG
+    ) as SpotlightFragment
   }
 
   private fun getProfileData(): LiveData<String> {

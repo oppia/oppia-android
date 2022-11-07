@@ -12,86 +12,95 @@
       type="org.oppia.android.app.player.exploration.ExplorationViewModel" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".player.exploration.ExplorationActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/exploration_app_bar_layout"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/exploration_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/component_color_exploration_activity_toolbar_color"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/Widget.AppCompat.ActionBar"
-        app:navigationIcon="@drawable/ic_close_white_24dp">
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-
-          <asia.ivity.android.marqueeview.MarqueeView
-            android:id="@+id/exploration_marquee_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_weight="1"
-            app:animationDelay="500"
-            app:animationSpeed="10">
-
-            <TextView
-              android:id="@+id/exploration_toolbar_title"
-              style="@style/MarqueeToolbarTitleTextView"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
-          </asia.ivity.android.marqueeview.MarqueeView>
-
-          <ImageView
-            android:id="@+id/action_audio_player"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="end"
-            android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
-            android:scaleType="center"
-            android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
-            app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}" />
-
-          <ImageButton
-            android:id="@+id/action_bottom_sheet_options_menu"
-            style="?android:actionOverflowButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:scaleType="center" />
-
-        </LinearLayout>
-      </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+    android:layout_height="match_parent">
 
     <FrameLayout
+      android:id="@+id/exploration_spotlight_fragment_placeholder"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      tools:context=".player.exploration.ExplorationActivity">
+
+      <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/exploration_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+          android:id="@+id/exploration_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/component_color_exploration_activity_toolbar_color"
+          android:minHeight="?attr/actionBarSize"
+          android:theme="@style/Widget.AppCompat.ActionBar"
+          app:navigationIcon="@drawable/ic_close_white_24dp">
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <asia.ivity.android.marqueeview.MarqueeView
+              android:id="@+id/exploration_marquee_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="20dp"
+              android:layout_weight="1"
+              app:animationDelay="500"
+              app:animationSpeed="10">
+
+              <TextView
+                android:id="@+id/exploration_toolbar_title"
+                style="@style/MarqueeToolbarTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            </asia.ivity.android.marqueeview.MarqueeView>
+
+            <ImageView
+              android:id="@+id/action_audio_player"
+              android:layout_width="48dp"
+              android:layout_height="48dp"
+              android:layout_gravity="end"
+              android:contentDescription="@{viewModel.isAudioStreamingOn ? @string/audio_player_on : @string/audio_player_off}"
+              android:scaleType="center"
+              android:visibility="@{viewModel.showAudioButton ? View.VISIBLE : View.GONE}"
+              app:srcCompat="@{viewModel.isAudioStreamingOn ? @drawable/ic_baseline_headset_24 : @drawable/ic_baseline_headset_off_24}" />
+
+            <ImageButton
+              android:id="@+id/action_bottom_sheet_options_menu"
+              style="?android:actionOverflowButtonStyle"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="end"
+              android:minWidth="48dp"
+              android:minHeight="48dp"
+              android:scaleType="center" />
+          </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+      </com.google.android.material.appbar.AppBarLayout>
 
       <FrameLayout
-        android:id="@+id/exploration_fragment_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-      <View
-        android:id="@+id/exploration_shadow_view"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
-  </LinearLayout>
+        <FrameLayout
+          android:id="@+id/exploration_fragment_placeholder"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+
+        <View
+          android:id="@+id/exploration_shadow_view"
+          android:layout_width="match_parent"
+          android:layout_height="6dp"
+          android:background="@drawable/toolbar_drop_shadow" />
+      </FrameLayout>
+    </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

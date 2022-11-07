@@ -16,7 +16,6 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.spotlight.SpotlightTargetStore
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -32,7 +31,6 @@ class TopicFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val spotlightTargetStore: SpotlightTargetStore
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -77,43 +75,37 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   fun startSpotlight() {
-    viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted->
+    viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
       if (numberOfChaptersCompleted != -1) {
         val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LESSONS))?.view
         lessonsTabView?.let { lessonsTabView ->
-//          lessonsTabView.doOnPreDraw {
-            val lessonsTabSpotlightTarget = SpotlightTarget(
-              lessonsTabView,
-              "Find all your lessons here",
+          val lessonsTabSpotlightTarget = SpotlightTarget(
+            lessonsTabView,
+            "Find all your lessons here",
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.TOPIC_LESSON_TAB
+          )
+          getSpotlightFragment().checkSpotlightViewState(lessonsTabSpotlightTarget)
+
+          if (numberOfChaptersCompleted > 2) {
+            val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
+            val revisionTabSpotlightTarget = SpotlightTarget(
+              revisionTabView!!,
+              "Revise your lessons here",
               SpotlightShape.RoundedRectangle,
-              Spotlight.FeatureCase.TOPIC_LESSON_TAB
+              Spotlight.FeatureCase.TOPIC_REVISION_TAB
             )
-
-//            if (numberOfChaptersCompleted > 2) {
-              val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
-              val revisionTabSpotlightTarget = SpotlightTarget(
-                revisionTabView!!,
-                "Revise your lessons here",
-                SpotlightShape.RoundedRectangle,
-                Spotlight.FeatureCase.TOPIC_REVISION_TAB
-              )
-              getSpotlightFragment().setInternalId(internalProfileId)
-              getSpotlightFragment().checkSpotlightViewState(lessonsTabSpotlightTarget)
-              getSpotlightFragment().checkSpotlightViewState(revisionTabSpotlightTarget)
-
-//            } else {
-
-//              getSpotlightFragment().checkSpotlightViewState(lessonsTabSpotlightTarget)
-
-            }
-//          }
-//        }
+            getSpotlightFragment().checkSpotlightViewState(revisionTabSpotlightTarget)
+          }
+        }
       }
     }
   }
 
   private fun getSpotlightFragment(): SpotlightFragment {
-    return activity.supportFragmentManager.findFragmentByTag(SPOTLIGHT_FRAGMENT_TAG) as SpotlightFragment
+    return activity.supportFragmentManager.findFragmentByTag(
+      SPOTLIGHT_FRAGMENT_TAG
+    ) as SpotlightFragment
   }
 
   private fun setCurrentTab(tab: TopicTab) {

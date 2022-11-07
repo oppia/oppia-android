@@ -2,10 +2,10 @@ package org.oppia.android.app.topic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
-import javax.inject.Inject
 import org.oppia.android.app.spotlight.SpotlightFragment
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
@@ -16,10 +16,7 @@ const val STORY_ID_ARGUMENT_KEY = "story_id"
 
 /** The presenter for [TopicActivity]. */
 @ActivityScope
-class TopicActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val spotlightFragment: SpotlightFragment
-) {
+class TopicActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
   private lateinit var topicId: String
 
   private lateinit var profileId: ProfileId
@@ -43,11 +40,14 @@ class TopicActivityPresenter @Inject constructor(
       ).commitNow()
     }
 
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.topic_fragment_placeholder,
-        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
-      ).commitNow()
-
+    val spotlightFragment = SpotlightFragment()
+    val args = Bundle()
+    args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+    spotlightFragment.arguments = args
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.topic_fragment_placeholder,
+      spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+    ).commitNow()
   }
 
   private fun getTopicFragment(): TopicFragment? {

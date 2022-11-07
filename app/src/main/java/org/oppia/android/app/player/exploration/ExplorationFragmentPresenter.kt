@@ -24,6 +24,7 @@ import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -41,7 +42,6 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val profileManagementController: ProfileManagementController,
-  private val spotlightFragment: SpotlightFragment,
   private val topicListController: TopicListController
 ) {
 
@@ -87,24 +87,6 @@ class ExplorationFragmentPresenter @Inject constructor(
         fragment.requireActivity().recreate()
       } else {
         showSpotlights()
-//        val toolbar = (fragment.requireActivity() as AppCompatActivity).action_audio_player
-//        toolbar.post {
-//          if (toolbar.visibility == View.GONE) return@post
-//              val targetList = arrayListOf(
-//                SpotlightTarget(
-//                  toolbar,
-//                  "Would you like Oppia to read for you? Tap on this button to try!",
-//                  SpotlightShape.Circle,
-//                  Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-//                )
-//              )
-//
-//              spotlightFragment.initialiseTargetList(targetList, 124)
-//              fragment.requireActivity().supportFragmentManager.beginTransaction()
-//                .add(spotlightFragment, "")
-//                .commitNow()
-//        }
-
       }
     }
 
@@ -115,42 +97,40 @@ class ExplorationFragmentPresenter @Inject constructor(
       if (numberOfChaptersCompleted != -1) {
         val explorationToolbar =
           (fragment.requireActivity() as AppCompatActivity).exploration_toolbar
-        explorationToolbar.post {
-          explorationToolbar.forEach {
-            if (it is ImageButton) {
-              // this toolbar contains only one image button, which is the back navigation icon
-              val targetList = arrayListOf(
-                SpotlightTarget(
-                  it,
-                  "Exit anytime using this button. We will save your progress.",
-                  SpotlightShape.Circle,
-                  Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-                )
+        explorationToolbar.forEach {
+          if (it is ImageButton) {
+            // this toolbar contains only one image button, which is the back navigation icon
+
+            val backButtonSpotlightTarget = SpotlightTarget(
+              it,
+              "Exit anytime using this button. We will save your progress.",
+              SpotlightShape.Circle,
+              Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+            )
+            getSpotlightFragment().checkSpotlightViewState(backButtonSpotlightTarget)
+
+            if (
+              numberOfChaptersCompleted >= 1 &&
+              explorationToolbar.action_audio_player.visibility == View.VISIBLE
+            ) {
+              val audioPlayerSpotlightTarget = SpotlightTarget(
+                explorationToolbar.action_audio_player,
+                "Would you like Oppia to read for you? Tap on this button to try!",
+                SpotlightShape.Circle,
+                Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
               )
-
-              if (
-                numberOfChaptersCompleted >= 1 &&
-                explorationToolbar.action_audio_player.visibility == View.VISIBLE
-              ) {
-                targetList.add(
-                  SpotlightTarget(
-                    explorationToolbar.action_audio_player,
-                    "Would you like Oppia to read for you? Tap on this button to try!",
-                    SpotlightShape.Circle,
-                    Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-                  )
-                )
-              }
-
-              spotlightFragment.initialiseTargetList(targetList, internalProfileId)
-              fragment.requireActivity().supportFragmentManager.beginTransaction()
-                .add(spotlightFragment, "")
-                .commitNow()
+              getSpotlightFragment().checkSpotlightViewState(audioPlayerSpotlightTarget)
             }
           }
         }
       }
     }
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+      SPOTLIGHT_FRAGMENT_TAG
+    ) as SpotlightFragment
   }
 
   private val topicListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
@@ -159,7 +139,7 @@ class ExplorationFragmentPresenter @Inject constructor(
     ).toLiveData()
   }
 
-  val numberOfChaptersCompletedLiveData: LiveData<Int> by lazy {
+  private val numberOfChaptersCompletedLiveData: LiveData<Int> by lazy {
     Transformations.map(topicListResultLiveData, ::computeNumberOfChaptersCompleted)
   }
 

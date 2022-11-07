@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
+import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.help.HelpActivity
@@ -20,6 +22,9 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -29,7 +34,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -122,6 +126,15 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_fragment_placeholder,
         ExplorationManagerFragment.createNewInstance(profileId),
         TAG_EXPLORATION_MANAGER_FRAGMENT
+      ).commitNow()
+
+      val spotlightFragment = SpotlightFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, profileId.internalId)
+      spotlightFragment.arguments = args
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_spotlight_fragment_placeholder,
+        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }
@@ -419,7 +432,8 @@ class ExplorationActivityPresenter @Inject constructor(
               "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
             )
           }
-          is AsyncResult.Pending -> {} // Wait for an actual result.
+          is AsyncResult.Pending -> {
+          } // Wait for an actual result.
         }
       }
     )

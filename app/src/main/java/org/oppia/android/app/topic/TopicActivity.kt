@@ -43,9 +43,6 @@ class TopicActivity :
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
-  @Inject
-  lateinit var spotlightFragment: SpotlightFragment
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -76,10 +73,6 @@ class TopicActivity :
         storyId
       )
     )
-  }
-
-  fun getSpotlightFragment() {
-
   }
 
   override fun routeToRevisionCard(
