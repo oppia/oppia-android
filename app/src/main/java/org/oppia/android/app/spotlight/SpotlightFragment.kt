@@ -16,8 +16,6 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
-import java.util.*
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
@@ -33,8 +31,11 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.Locale
+import java.util.LinkedList
+import javax.inject.Inject
 
-class SpotlightFragment: InjectableFragment(), SpotlightNavigationListener {
+class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
   @Inject
   lateinit var activity: AppCompatActivity
 
