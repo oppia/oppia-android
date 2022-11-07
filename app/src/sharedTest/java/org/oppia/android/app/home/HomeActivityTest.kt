@@ -64,6 +64,7 @@ import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -77,6 +78,7 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.translation.testing.TestActivityRecreator
+import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -199,6 +201,9 @@ class HomeActivityTest {
 
   @Inject
   lateinit var dataProviderTestMonitor: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var fontScaleConfigurationUtil: FontScaleConfigurationUtil
 
   private val internalProfileId: Int = 0
   private val internalProfileId1: Int = 1
@@ -896,7 +901,9 @@ class HomeActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
   fun testHomeActivity_promotedStoryHasScalableWidth() {
+    fontScaleConfigurationUtil.adjustFontScale(context, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,

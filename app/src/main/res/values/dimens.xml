@@ -541,9 +541,9 @@
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
   <!-- The width is set to sp so that it will scale according to the device screen -->
-  <dimen name="promoted_story_card_layout_width">280dp</dimen>
+  <dimen name="promoted_story_card_layout_width">280sp</dimen>
   <!-- The width is set to sp so that it will scale according to the device screen -->
-  <dimen name="promoted_story_card_width">280dp</dimen>
+  <dimen name="promoted_story_card_width">280sp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
 
