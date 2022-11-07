@@ -26,6 +26,8 @@ import javax.inject.Inject
 
 private const val QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY =
   "QuestionPlayerFragment.raw_user_answer"
+private const val STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY =
+  "StateFragment.is_previous_responses_expanded_collapsed"
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -59,9 +61,12 @@ class QuestionPlayerFragment :
     val rawUserAnswer = savedInstanceState?.getProto(
       QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
     ) ?: RawUserAnswer.getDefaultInstance()
+    val isPreviousResponsesExpanded =
+      savedInstanceState?.getBoolean(STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
+        ?: false
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     return questionPlayerFragmentPresenter.handleCreateView(
-      inflater, container, rawUserAnswer, profileId
+      inflater, container, rawUserAnswer, isPreviousResponsesExpanded, profileId
     )
   }
 
@@ -97,6 +102,10 @@ class QuestionPlayerFragment :
     outState.putProto(
       QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY,
       questionPlayerFragmentPresenter.getRawUserAnswer()
+    )
+    outState.putBoolean(
+      STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY,
+      questionPlayerFragmentPresenter.getIsPreviousResponsesExpanded()
     )
   }
 

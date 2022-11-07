@@ -114,7 +114,7 @@ class StateFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     rawUserAnswer: RawUserAnswer,
-    hasPreviousResponsesExpanded: Boolean,
+    isPreviousResponsesExpanded: Boolean,
     explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -134,7 +134,7 @@ class StateFragmentPresenter @Inject constructor(
       binding.fullScreenConfettiView
     )
 
-    recyclerViewAssembler.hasPreviousResponsesExpanded = hasPreviousResponsesExpanded
+    recyclerViewAssembler.hasPreviousResponsesExpanded = isPreviousResponsesExpanded
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
     val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
@@ -274,7 +274,7 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
   }
 
-  fun getHasPreviousResponsesExpanded(): Boolean {
+  fun getIsPreviousResponsesExpanded(): Boolean {
     return recyclerViewAssembler.hasPreviousResponsesExpanded
   }
 

@@ -126,7 +126,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         clickableAreas
       )
       areasImage.addRegionViews()
-      if (lastSelectedRegion.hasRegion()) {
+      if (::lastSelectedRegion.isInitialized && lastSelectedRegion.hasRegion()) {
         areasImage.showOrHideRegion(lastSelectedRegion)
       }
       performAttachment(areasImage)

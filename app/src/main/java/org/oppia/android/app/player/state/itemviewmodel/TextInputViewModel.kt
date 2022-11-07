@@ -43,7 +43,6 @@ class TextInputViewModel private constructor(
           )
         }
       }
-
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 

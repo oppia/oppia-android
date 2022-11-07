@@ -74,6 +74,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     rawUserAnswer: RawUserAnswer,
+    isPreviousResponsesExpanded: Boolean,
     profileId: ProfileId
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -87,6 +88,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
     )
+
+    recyclerViewAssembler.hasPreviousResponsesExpanded = isPreviousResponsesExpanded
 
     binding.apply {
       lifecycleOwner = fragment
@@ -115,6 +118,10 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun revealSolution() {
     subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
+  }
+
+  fun getIsPreviousResponsesExpanded(): Boolean {
+    return recyclerViewAssembler.hasPreviousResponsesExpanded
   }
 
   fun dismissConceptCard() {
@@ -149,6 +156,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun onSubmitButtonClicked() {
+    recyclerViewAssembler.resetRawUserAnswer()
     hideKeyboard()
     handleSubmitAnswer(
       questionViewModel.getPendingAnswer(
