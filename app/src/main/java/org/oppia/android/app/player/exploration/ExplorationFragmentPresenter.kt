@@ -107,7 +107,7 @@ class ExplorationFragmentPresenter @Inject constructor(
               SpotlightShape.Circle,
               Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
             )
-            getSpotlightFragment().checkSpotlightViewState(backButtonSpotlightTarget)
+            getSpotlightFragment().requestSpotlight(backButtonSpotlightTarget)
 
             if (
               numberOfChaptersCompleted >= 1 &&
@@ -119,7 +119,7 @@ class ExplorationFragmentPresenter @Inject constructor(
                 SpotlightShape.Circle,
                 Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
               )
-              getSpotlightFragment().checkSpotlightViewState(audioPlayerSpotlightTarget)
+              getSpotlightFragment().requestSpotlight(audioPlayerSpotlightTarget)
             }
           }
         }

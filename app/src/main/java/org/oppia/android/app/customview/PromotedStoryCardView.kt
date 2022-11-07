@@ -2,8 +2,6 @@ package org.oppia.android.app.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.core.view.doOnLayout
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.card.MaterialCardView
@@ -56,7 +54,7 @@ class PromotedStoryCardView @JvmOverloads constructor(
             Spotlight.FeatureCase.PROMOTED_STORIES
           )
           isSpotlit = true
-          getSpotlightFragment().checkSpotlightViewState(promotesStorySpotlightTarget)
+          getSpotlightFragment().requestSpotlight(promotesStorySpotlightTarget)
         }
       }
     }

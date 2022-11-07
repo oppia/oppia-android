@@ -57,7 +57,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
                 SpotlightShape.RoundedRectangle,
                 Spotlight.FeatureCase.FIRST_CHAPTER
               )
-            getSpotlightFragment().checkSpotlightViewState(target)
+            getSpotlightFragment().requestSpotlight(target)
             // this view is attached multiple times which can lead to crashes due spotlight request
             // being added multiple times. [isSpotlit] is a flag to prevent the same.
             isSpotlit = true

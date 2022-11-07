@@ -85,7 +85,7 @@ class TopicFragmentPresenter @Inject constructor(
             SpotlightShape.RoundedRectangle,
             Spotlight.FeatureCase.TOPIC_LESSON_TAB
           )
-          getSpotlightFragment().checkSpotlightViewState(lessonsTabSpotlightTarget)
+          getSpotlightFragment().requestSpotlight(lessonsTabSpotlightTarget)
 
           if (numberOfChaptersCompleted > 2) {
             val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
@@ -95,7 +95,7 @@ class TopicFragmentPresenter @Inject constructor(
               SpotlightShape.RoundedRectangle,
               Spotlight.FeatureCase.TOPIC_REVISION_TAB
             )
-            getSpotlightFragment().checkSpotlightViewState(revisionTabSpotlightTarget)
+            getSpotlightFragment().requestSpotlight(revisionTabSpotlightTarget)
           }
         }
       }

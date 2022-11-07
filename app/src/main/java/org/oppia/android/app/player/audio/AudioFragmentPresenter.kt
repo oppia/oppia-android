@@ -123,7 +123,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun startSpotlights() {
     val audioLanguageIconView = binding.audioLanguageIcon
     audioLanguageIconView.doOnPreDraw {
-      getSpotlightFragment().checkSpotlightViewState(
+      getSpotlightFragment().requestSpotlight(
         SpotlightTarget(
           it,
           "Tap to change",
