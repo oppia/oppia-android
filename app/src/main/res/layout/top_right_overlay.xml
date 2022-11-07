@@ -16,8 +16,8 @@
     android:id="@+id/overlayConstraintLayout"
     android:layout_width="match_parent"
     android:focusable="true"
+    android:background="@drawable/transparent_background"
     android:clickable="true"
-    android:background="@color/spotlightBackground"
     android:layout_height="match_parent">
 
     <ImageView
@@ -35,11 +35,12 @@
       android:layout_height="wrap_content"
       android:gravity="center"
       android:text="this is a custom text"
-      android:textAlignment="center"
+      android:textAlignment="viewEnd"
       android:textColor="@android:color/white"
       style="@style/TextViewStart"
       android:textSize="24dp"
       android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="@+id/arrow"
       app:layout_constraintTop_toBottomOf="@id/arrow" />
 

@@ -9,31 +9,36 @@ enum class TopicTab(
   val positionWithTwoTabs: Int,
   val positionWithFourTabs: Int,
   @StringRes val tabLabelResId: Int,
-  @DrawableRes val tabIconResId: Int
+  @DrawableRes val tabIconResId: Int,
+  @StringRes val contentDescription: Int
 ) {
   INFO(
     positionWithTwoTabs = -1,
     positionWithFourTabs = 0,
     tabLabelResId = R.string.info,
-    tabIconResId = R.drawable.ic_info_icon_24dp
+    tabIconResId = R.drawable.ic_info_icon_24dp,
+    contentDescription = R.string.info_tab_content_description
   ),
   LESSONS(
     positionWithTwoTabs = 0,
     positionWithFourTabs = 1,
     tabLabelResId = R.string.lessons,
-    tabIconResId = R.drawable.ic_lessons_icon_24dp
+    tabIconResId = R.drawable.ic_lessons_icon_24dp,
+    contentDescription = R.string.lessons_tab_content_description
   ),
   PRACTICE(
     positionWithTwoTabs = -1,
     positionWithFourTabs = 2,
     tabLabelResId = R.string.practice,
-    tabIconResId = R.drawable.ic_practice_icon_24dp
+    tabIconResId = R.drawable.ic_practice_icon_24dp,
+    contentDescription = R.string.practice_tab_content_description
   ),
   REVISION(
     positionWithTwoTabs = 1,
     positionWithFourTabs = 3,
     tabLabelResId = R.string.revision,
-    tabIconResId = R.drawable.ic_revision_icon_24dp
+    tabIconResId = R.drawable.ic_revision_icon_24dp,
+    contentDescription = R.string.revision_tab_content_description
   );
 
   companion object {

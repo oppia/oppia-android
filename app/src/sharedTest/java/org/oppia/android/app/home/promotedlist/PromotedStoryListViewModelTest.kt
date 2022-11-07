@@ -321,14 +321,15 @@ class PromotedStoryListViewModelTest {
     activity: AppCompatActivity,
     promotedStoryList: List<PromotedStory>
   ): List<PromotedStoryViewModel> {
-    return promotedStoryList.map { promotedStory ->
+    return promotedStoryList.mapIndexed { index, promotedStory ->
       PromotedStoryViewModel(
         activity = activity,
         internalProfileId = 1,
         totalStoryCount = promotedStoryList.size,
         entityType = "entity",
         promotedStory = promotedStory,
-        translationController
+        translationController,
+        index
       )
     }
   }

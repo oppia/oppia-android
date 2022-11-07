@@ -179,7 +179,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1',
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1',
       'org.mockito:mockito-core:2.7.22',
-      'com.github.takusemba:spotlight:2.0.5'
+      'com.github.oppia:android-spotlight:1ba764bb9e'
   )
   compileOnly(
       'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2',

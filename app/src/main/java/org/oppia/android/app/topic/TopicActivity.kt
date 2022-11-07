@@ -3,6 +3,8 @@ package org.oppia.android.app.topic
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.ActivityIntentFactories
@@ -20,6 +22,7 @@ import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.revisioncard.RevisionCardActivity
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.spotlight.SpotlightFragment
 
 private const val TOPIC_ACTIVITY_TOPIC_ID_ARGUMENT_KEY = "TopicActivity.topic_id"
 private const val TOPIC_ACTIVITY_STORY_ID_ARGUMENT_KEY = "TopicActivity.story_id"
@@ -39,6 +42,9 @@ class TopicActivity :
 
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
+
+  @Inject
+  lateinit var spotlightFragment: SpotlightFragment
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -70,6 +76,10 @@ class TopicActivity :
         storyId
       )
     )
+  }
+
+  fun getSpotlightFragment() {
+
   }
 
   override fun routeToRevisionCard(

@@ -170,6 +170,39 @@ class TopicFragmentTest {
   }
 
   @Test
+  fun testTopicLessonTabSpotlight_spotlightNotSeenBefore_checkSpotlightIsShown() {
+    initializeApplicationComponent(false)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.custom_text)).check(matches(withText("Find all your lessons here")))
+  }
+
+  @Test
+  fun testTopicLessonTabSpotlight_spotlightSeen_checkSpotlightIsNotShown() {
+    initializeApplicationComponent(false)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+    onView(withId(R.id.custom_text)).check(doesNotExist())
+  }
+
+  @Test
   fun testTopicFragment_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent(false)
     activityTestRule.launchActivity(
