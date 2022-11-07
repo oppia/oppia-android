@@ -26,8 +26,8 @@ import javax.inject.Inject
 
 private const val QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY =
   "QuestionPlayerFragment.raw_user_answer"
-private const val STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY =
-  "StateFragment.is_previous_responses_expanded_collapsed"
+private const val QUESTION_PLAYER_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY =
+  "QuestionPlayerFragment.is_previous_responses_header_expanded"
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -62,7 +62,7 @@ class QuestionPlayerFragment :
       QUESTION_PLAYER_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
     ) ?: RawUserAnswer.getDefaultInstance()
     val isPreviousResponsesExpanded =
-      savedInstanceState?.getBoolean(STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
+      savedInstanceState?.getBoolean(QUESTION_PLAYER_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
         ?: false
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     return questionPlayerFragmentPresenter.handleCreateView(
@@ -104,7 +104,7 @@ class QuestionPlayerFragment :
       questionPlayerFragmentPresenter.getRawUserAnswer()
     )
     outState.putBoolean(
-      STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY,
+      QUESTION_PLAYER_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY,
       questionPlayerFragmentPresenter.getIsPreviousResponsesExpanded()
     )
   }

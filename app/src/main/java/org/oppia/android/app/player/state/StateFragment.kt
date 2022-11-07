@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 private const val STATE_FRAGMENT_RAW_USER_ANSWER_KEY = "StateFragment.raw_user_answer"
 private const val STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY =
-  "StateFragment.is_previous_responses_expanded_collapsed"
+  "StateFragment.is_previous_responses_header_expanded"
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :

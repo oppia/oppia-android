@@ -134,7 +134,7 @@ class StateFragmentPresenter @Inject constructor(
       binding.fullScreenConfettiView
     )
 
-    recyclerViewAssembler.hasPreviousResponsesExpanded = isPreviousResponsesExpanded
+    recyclerViewAssembler.isPreviousResponsesExpanded = isPreviousResponsesExpanded
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
     val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
@@ -275,7 +275,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun getIsPreviousResponsesExpanded(): Boolean {
-    return recyclerViewAssembler.hasPreviousResponsesExpanded
+    return recyclerViewAssembler.isPreviousResponsesExpanded
   }
 
   private fun getStateViewModel(): StateViewModel {

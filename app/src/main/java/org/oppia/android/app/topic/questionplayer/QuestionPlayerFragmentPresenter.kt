@@ -89,7 +89,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
       binding.congratulationsTextConfettiView,
     )
 
-    recyclerViewAssembler.hasPreviousResponsesExpanded = isPreviousResponsesExpanded
+    recyclerViewAssembler.isPreviousResponsesExpanded = isPreviousResponsesExpanded
 
     binding.apply {
       lifecycleOwner = fragment
@@ -121,7 +121,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun getIsPreviousResponsesExpanded(): Boolean {
-    return recyclerViewAssembler.hasPreviousResponsesExpanded
+    return recyclerViewAssembler.isPreviousResponsesExpanded
   }
 
   fun dismissConceptCard() {

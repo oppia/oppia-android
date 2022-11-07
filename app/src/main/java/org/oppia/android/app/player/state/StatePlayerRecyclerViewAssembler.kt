@@ -160,7 +160,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
    * Whether the previously submitted wrong answers should be expanded. This value is intentionally
    * not retained upon configuration changes since the user can just re-expand the list.
    */
-  var hasPreviousResponsesExpanded: Boolean = false
+  var isPreviousResponsesExpanded: Boolean = false
 
   private val lifecycleSafeTimerFactory = LifecycleSafeTimerFactory(backgroundCoroutineDispatcher)
 
@@ -363,7 +363,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         PreviousResponsesHeaderViewModel(
           answersAndResponses.size - 1,
           hasConversationView,
-          ObservableBoolean(hasPreviousResponsesExpanded),
+          ObservableBoolean(isPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
           isSplitView.get()!!,
           resourceHandler
@@ -374,7 +374,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
       // Only add previous answers if current responses are expanded, or if collapsing is disabled.
       val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing ||
-        hasPreviousResponsesExpanded
+        isPreviousResponsesExpanded
       for (answerAndResponse in answersAndResponses.take(answersAndResponses.size - 1)) {
         if (playerFeatureSet.pastAnswerSupport) {
           // Earlier answers can't be correct (since otherwise new answers wouldn't be able to be
@@ -452,7 +452,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     // Ensure the header matches the updated state.
     headerModel.isExpanded.set(expandPreviousAnswers)
-    hasPreviousResponsesExpanded = expandPreviousAnswers
+    isPreviousResponsesExpanded = expandPreviousAnswers
   }
 
   /**
@@ -464,7 +464,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     check(playerFeatureSet.wrongAnswerCollapsing) {
       "Cannot collapse previous answers for assembler that doesn't support wrong answer collapsing"
     }
-    hasPreviousResponsesExpanded = false
+    isPreviousResponsesExpanded = false
   }
 
   /**
