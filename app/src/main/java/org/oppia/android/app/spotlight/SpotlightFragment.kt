@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
@@ -17,10 +16,15 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
+import java.util.*
+import javax.inject.Inject
 import org.oppia.android.R
+import org.oppia.android.app.fragment.FragmentComponentImpl
+import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.onboarding.SpotlightNavigationListener
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
 import org.oppia.android.databinding.TopLeftOverlayBinding
@@ -29,18 +33,18 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.Locale
-import java.util.LinkedList
-import javax.inject.Inject
-import kotlin.collections.ArrayList
 
-class SpotlightFragment @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val spotlightStateController: SpotlightStateController,
-  private val accessibilityServiceImpl: AccessibilityServiceImpl
-) : Fragment(), SpotlightNavigationListener {
+class SpotlightFragment: InjectableFragment(), SpotlightNavigationListener {
+  @Inject
+  lateinit var activity: AppCompatActivity
+
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
+  @Inject
+  lateinit var accessibilityServiceImpl: AccessibilityServiceImpl
+
   private var targetList = LinkedList<Target>()
-  private var spotlightTargetList = ArrayList<SpotlightTarget>()
   private lateinit var spotlight: Spotlight
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
@@ -58,32 +62,25 @@ class SpotlightFragment @Inject constructor(
     screenWidth = displayMetrics.widthPixels
   }
 
-  fun initialiseTargetList(spotlightTargets: ArrayList<SpotlightTarget>, profileId: Int) {
-    spotlightTargetList = spotlightTargets
-    internalProfileId = profileId
-  }
-
-  fun setInternalId(profileId: Int) {
-    internalProfileId = profileId
-  }
-
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
+    (fragmentComponent as FragmentComponentImpl).inject(this)
 
-    if (accessibilityServiceImpl.isScreenReaderEnabled()) {
-      activity.supportFragmentManager.beginTransaction().remove(this)
-    } else {
-      calculateScreenSize()
-      checkIsRTL()
-      spotlightTargetList.forEachIndexed { index, spotlightTarget ->
-        Log.d("overlay", "spotlight fragment target $index: $spotlightTarget ")
-        checkSpotlightViewState(spotlightTarget)
-      }
-    }
+    internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
+    calculateScreenSize()
+    checkIsRTL()
   }
 
-  fun checkSpotlightViewState(spotlightTarget: SpotlightTarget) {
+  /**
+   * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
+   * hasn't been shown before in a FIFO buffer.
+   *
+   * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
+   */
+  fun requestSpotlight(spotlightTarget: SpotlightTarget) {
+
+    if (accessibilityServiceImpl.isScreenReaderEnabled()) return
 
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
@@ -106,7 +103,6 @@ class SpotlightFragment @Inject constructor(
               return
             } else if (viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
               createTarget(spotlightTarget)
-
               featureViewStateLiveData.removeObserver(this)
             }
           }
@@ -130,17 +126,11 @@ class SpotlightFragment @Inject constructor(
 
         override fun onEnded() {
           Log.d("overlay", "target  end")
-
           targetList.pop()
-
-//          targetList.remove(currentTarget)
-//          val profileId = ProfileId.newBuilder()
-//            .setInternalId(internalProfileId)
-//            .build()
-//          spotlightStateController.markSpotlightViewed(
-//            profileId,
-//            spotlightTarget.feature
-//          )
+          val profileId = ProfileId.newBuilder()
+            .setInternalId(internalProfileId)
+            .build()
+          spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
         }
       })
       .build(spotlightTarget.anchor)
