@@ -460,7 +460,7 @@ private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float
   return margin.coerceAtLeast(0f)
 }
 
-// Reference: https://stackoverflow.com/a/51865494 and
+// References: https://stackoverflow.com/a/51865494 and
 // https://stackoverflow.com/a/35444014/12314934.
 private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
   if (width == 0) {
