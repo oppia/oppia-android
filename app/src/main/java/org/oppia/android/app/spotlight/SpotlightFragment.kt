@@ -31,8 +31,8 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.Locale
 import java.util.LinkedList
+import java.util.Locale
 import javax.inject.Inject
 
 class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
