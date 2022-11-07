@@ -7,8 +7,10 @@ import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
@@ -17,6 +19,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
@@ -96,6 +99,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
@@ -1865,6 +1869,53 @@ class StateFragmentTest {
           it.findViewById<NumericInputInteractionView>(R.id.numeric_input_interaction_view)
         assertThat(numericInputInteractionView.text.toString().isEmpty()).isTrue()
       }
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_checkPreviousHeader_retainStateOnConfigChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      // Expand previous response header.
+      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.previous_response_header)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // rotate screen
+      rotateToLandscape()
+
+      // Both failed answers should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+        )
+
+      // rotate screen
+      rotateToLandscape()
+
+      // Collapse previous response header.
+      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.previous_response_header)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Only the latest failed answer should be showing.
+      onView(withId(R.id.state_recycler_view))
+        .check(
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+        )
     }
   }
 
@@ -4552,6 +4603,36 @@ class StateFragmentTest {
     text: String
   ): ClickableSpan? {
     return find { text in it.first }?.second
+  }
+
+  private fun matchesChildren(matcher: Matcher<View>, times: Int): ViewAssertion {
+    return matches(
+      object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description?) {
+          description
+            ?.appendDescriptionOf(matcher)
+            ?.appendText(" occurs times: $times in child views")
+        }
+
+        override fun matchesSafely(view: View?): Boolean {
+          if (view !is ViewGroup) {
+            throw PerformException.Builder()
+              .withCause(IllegalStateException("Expected to match against view group, not: $view"))
+              .build()
+          }
+          val matchingCount = view.children.filter(matcher::matches).count()
+          if (matchingCount != times) {
+            throw PerformException.Builder()
+              .withActionDescription("Expected to match $matcher against $times children")
+              .withViewDescription("$view")
+              .withCause(
+                IllegalStateException("Matched $matchingCount times in $view (expected $times)")
+              )
+              .build()
+          }
+          return true
+        }
+      })
   }
 
   @Module
