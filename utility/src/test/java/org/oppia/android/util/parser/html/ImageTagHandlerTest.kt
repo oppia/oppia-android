@@ -51,6 +51,10 @@ private const val IMAGE_TAG_WITHOUT_FILEPATH_MARKUP =
   "<oppia-noninteractive-image alt-with-value=\"&amp;quot;alt text 2&amp;quot;\" " +
     "caption-with-value=\"&amp;quot;&amp;quot;\"></oppia-noninteractive-image>"
 
+private const val IMAGE_TAG_WITHOUT_ALT_VALUE_MARKUP =
+  "<oppia-noninteractive-image caption-with-value=\"&amp;quot;&amp;quot;\" " +
+    "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
+
 /** Tests for [ImageTagHandler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -110,7 +114,7 @@ class ImageTagHandlerTest {
   fun testParseHtml_withImageCardMarkup_hasNoReadableText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = IMAGE_TAG_MARKUP_1,
+        html = IMAGE_TAG_WITHOUT_ALT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
       )
@@ -119,6 +123,19 @@ class ImageTagHandlerTest {
     val parsedHtmlStr = parsedHtml.toString()
     assertThat(parsedHtmlStr).hasLength(1)
     assertThat(parsedHtmlStr.first().isObjectReplacementCharacter()).isTrue()
+  }
+
+  @Test
+  fun testParseHtml_withImageCardMarkup_hasReadableText() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = IMAGE_TAG_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+    // Check whether parsed html has correct alt-with-value text or not.
+    assertThat(parsedHtml.toString()).isEqualTo("alt text 1")
+    assertThat(parsedHtml.first().isObjectReplacementCharacter()).isFalse()
   }
 
   @Test
