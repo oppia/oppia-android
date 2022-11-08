@@ -56,6 +56,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 
 /** Tests for [ExplorationStorageModule]. */
 @RunWith(AndroidJUnit4::class)
