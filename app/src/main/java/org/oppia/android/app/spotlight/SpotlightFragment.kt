@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
@@ -52,7 +53,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
   private lateinit var anchorPosition: AnchorPosition
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
-  private var isSpotlightActive = false
+  private val isSpotlightActive = MutableLiveData(false)
   private var isRTL = false
 
   private fun calculateScreenSize() {
@@ -61,6 +62,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
 
     screenHeight = displayMetrics.heightPixels
     screenWidth = displayMetrics.widthPixels
+  }
+
+  fun getSpotlightStatusLiveData(): MutableLiveData<Boolean> {
+    return isSpotlightActive
   }
 
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
@@ -137,7 +142,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       .build(spotlightTarget.anchor)
 
     targetList.add(target)
-    if (!isSpotlightActive) {
+    if (!isSpotlightActive.value!!) {
       startSpotlight()
     }
   }
@@ -153,13 +158,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
         override fun onStarted() {
           Log.d("overlay", "spotlight  start")
 
-          isSpotlightActive = true
+          isSpotlightActive.value = true
         }
 
         override fun onEnded() {
           Log.d("overlay", "spotlight  end")
 
-          isSpotlightActive = false
+          isSpotlightActive.value = false
           startSpotlight()
         }
       })

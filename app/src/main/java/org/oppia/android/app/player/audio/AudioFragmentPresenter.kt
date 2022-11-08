@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
@@ -36,7 +37,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
-import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
@@ -118,6 +118,16 @@ class AudioFragmentPresenter @Inject constructor(
     }
     subscribeToAudioLanguageLiveData()
     return binding.root
+  }
+
+  private fun subscribeToSpotlightStatusLiveData() {
+    getSpotlightFragment().getSpotlightStatusLiveData().observe(fragment) { isSpotlightActive ->
+      if (isSpotlightActive) {
+        handleOnStop()
+      } else {
+        handleOnPlay()
+      }
+    }
   }
 
   private fun startSpotlights() {
@@ -208,6 +218,12 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun handleOnPlay() {
+    if (!activity.isChangingConfigurations && prepared) {
+      viewModel.togglePlayPause(UiAudioPlayStatus.PAUSED)
+    }
+  }
+
   /** Releases audio player resources */
   fun handleOnDestroy() {
     if (!activity.isChangingConfigurations) {
@@ -291,6 +307,7 @@ class AudioFragmentPresenter @Inject constructor(
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
     startSpotlights()
+    subscribeToSpotlightStatusLiveData()
   }
 
   private fun hideAudioFragment() {
