@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,6 +32,7 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import org.oppia.android.domain.exploration.ExplorationRetriever
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -48,8 +50,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.runBlocking
-import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 
 /** Tests for [HintHandlerDebugImpl]. */
 @Suppress("FunctionName")

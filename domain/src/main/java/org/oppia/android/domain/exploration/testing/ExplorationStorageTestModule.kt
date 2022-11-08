@@ -5,6 +5,7 @@ import dagger.Provides
 import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 
+/** Module to provide test-only dependencies corresponding to exploration storage utilities. */
 @Module
 class ExplorationStorageTestModule {
   @Provides

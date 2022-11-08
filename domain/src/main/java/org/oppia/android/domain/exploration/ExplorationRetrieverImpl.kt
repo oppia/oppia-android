@@ -14,7 +14,7 @@ import javax.inject.Inject
 // TODO(#59): Make this class inaccessible outside of the domain package except for tests. UI code should not be allowed
 //  to depend on this utility.
 
-/** Internal class for actually retrieving an exploration object for uses in domain controllers. */
+/** Implementation of [ExplorationRetriever] that loads explorations from the app's assets. */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class ExplorationRetrieverImpl @Inject constructor(
   private val jsonAssetRetriever: JsonAssetRetriever,

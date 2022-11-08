@@ -1,11 +1,11 @@
 package org.oppia.android.domain.exploration.lightweightcheckpointing
 
-import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -15,7 +15,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
+import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -30,8 +33,14 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationDataController
+import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.OutdatedExplorationCheckpointException
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
+import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -56,6 +65,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.CacheAssetsLocally
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.caching.TopicListToCache
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -69,16 +79,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.domain.exploration.ExplorationDataController
-import org.oppia.android.domain.exploration.ExplorationProgressController
-import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
-import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
-import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.util.data.DataProvider
 
 /**
  * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
@@ -910,7 +910,8 @@ class ExplorationCheckpointControllerTest {
   }
 
   private fun createCheckpointForTestExploration(
-    profileId: ProfileId, playRoutine: () -> Unit
+    profileId: ProfileId,
+    playRoutine: () -> Unit
   ) {
     fakeExplorationRetriever.setExplorationProxy(
       expIdToLoad = TEST_CHECKPOINTING_FAKE_EXP_ID,

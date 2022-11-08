@@ -14,8 +14,22 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -49,20 +63,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.classify.InteractionsModule
-import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
-import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
-import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
-import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
-import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
-import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
-import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
-import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
-import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
-import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
-import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
-import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
-import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
 // FunctionName: test names are conventionally named with underscores.
