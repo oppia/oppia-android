@@ -148,8 +148,8 @@
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
         android:contentDescription="@string/new_hint_available"
-        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}"
-        app:srcCompat="@drawable/ic_dot_yellow_24dp" />
+        app:srcCompat="@drawable/ic_dot_yellow_24dp"
+        android:visibility="@{viewModel.isHintOpenedAndUnRevealed() ? View.VISIBLE : View.GONE}" />
 
       <ImageView
         android:id="@+id/hint_bulb"
@@ -170,6 +170,7 @@
         android:id="@+id/congratulations_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="54dp"
         android:layout_gravity="bottom"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
@@ -178,7 +179,6 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:lineSpacingExtra="1dp"
-        android:minHeight="54dp"
         android:text="@string/correct"
         android:textAllCaps="true"
         android:textColor="@color/component_color_shared_progress_bar_stroke_color"

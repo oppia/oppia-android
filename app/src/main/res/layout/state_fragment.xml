@@ -102,18 +102,17 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:paddingTop="24dp"
       android:layout_gravity="bottom|start"
       android:clipChildren="false"
-      android:clipToPadding="false"
-      android:paddingTop="24dp">
-
+      android:clipToPadding="false">
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/hints_and_solution_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/audio_component_background"
-        android:clipChildren="false"
-        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}">
+        android:visibility="@{viewModel.isHintBulbVisible() ? View.VISIBLE : View.GONE}"
+        android:clipChildren="false">
 
         <ImageView
           android:id="@+id/hint_bulb"
@@ -121,10 +120,10 @@
           android:layout_height="wrap_content"
           android:layout_margin="8dp"
           android:contentDescription="@{viewModel.isHintOpenedAndUnRevealed() ? @string/new_hint_available : @string/no_new_hint_available}"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
+          app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_hint_bulb_filled_yellow_48dp : @drawable/ic_hint_bulb_white_48dp}"
           app:layout_constraintTop_toTopOf="parent"
-          app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_hint_bulb_filled_yellow_48dp : @drawable/ic_hint_bulb_white_48dp}" />
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
           android:id="@+id/hint_bar_title"
@@ -132,11 +131,11 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
           android:text="@string/hints_toolbar_title"
-          android:textColor="@color/color_def_white"
           android:textSize="24sp"
+          android:textColor="@color/color_def_white"
+          app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toEndOf="@+id/hint_bulb"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintStart_toEndOf="@+id/hint_bulb" />
 
         <ImageView
           android:id="@+id/open_hint_dialog_arrow"
@@ -144,10 +143,11 @@
           android:layout_height="wrap_content"
           android:layout_margin="8dp"
           android:contentDescription="@string/show_hints_and_solution"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
+          app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_keyboard_arrow_down_white_48dp : @drawable/ic_keyboard_arrow_right_white_48}"
           app:layout_constraintTop_toTopOf="parent"
-          app:srcCompat="@{viewModel.isHintOpenedAndUnRevealed() ? @drawable/ic_keyboard_arrow_down_white_48dp : @drawable/ic_keyboard_arrow_right_white_48}" />
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent" />
+
       </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
@@ -161,6 +161,7 @@
         style="@style/TextViewCenter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="54dp"
         android:layout_gravity="bottom"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
@@ -168,7 +169,6 @@
         android:background="@drawable/congratulations_text_background_shadow"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="1dp"
-        android:minHeight="54dp"
         android:text="@string/correct"
         android:textAllCaps="true"
         android:textColor="@color/component_color_shared_progress_bar_stroke_color"
