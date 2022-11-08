@@ -901,7 +901,7 @@ class HomeActivityTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso.
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#4700): Make this test work on Espresso.
   fun testHomeActivity_promotedStoryHasScalableWidth() {
     fontScaleConfigurationUtil.adjustFontScale(context, ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -923,12 +923,12 @@ class HomeActivityTest {
         val promotedStoryCard =
           view.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
         val promotedStoryCardWidth = promotedStoryCard?.width?.toFloat()
-        val expectedWidthInSP = TypedValue.applyDimension(
+        val expectedWidthInPixels = TypedValue.applyDimension(
           TypedValue.COMPLEX_UNIT_SP,
           280F,
           context.resources.displayMetrics
         )
-        assertThat(promotedStoryCardWidth).isWithin(1e-5f).of(expectedWidthInSP)
+        assertThat(promotedStoryCardWidth).isWithin(1e-5f).of(expectedWidthInPixels)
       }
     }
   }
