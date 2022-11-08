@@ -13,7 +13,7 @@ import javax.inject.Singleton
  * events for later retrieval (e.g. via [getEventList]).
  */
 @Singleton
-class DebugEventLogger @Inject constructor(
+class DebugAnalyticsEventLogger @Inject constructor(
   factory: FirebaseEventLogger.Factory
 ) : AnalyticsEventLogger {
   private val realEventLogger by lazy { factory.create() }

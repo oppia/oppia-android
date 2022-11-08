@@ -792,7 +792,7 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/Logger
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/LoggingAnnotations.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/SyncStatusManager.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/SyncStatusModule.kt"
-exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/DebugEventLogger.kt"
+exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/DebugAnalyticsEventLogger.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/DebugLogReportingModule.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseEventLogger.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseExceptionLogger.kt"
