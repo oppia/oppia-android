@@ -21,8 +21,8 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-  private var index: Int = -1
-  private var isSpotlit = false
+//  private var index: Int = -1
+//  private var isSpotlit = false
 
   @Inject
   lateinit var fragment: Fragment
@@ -31,7 +31,16 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     // Only spotlight the first chapter of the "first" story. We know for sure that for a new user,
     // the first chapter shall be a type of not started chapter view. The index tells which story
     // are we on.
-    this.index = index
+    if (index == 0) {
+      val target = SpotlightTarget(
+        this,
+        "Tap to start a chapter",
+        SpotlightShape.RoundedRectangle,
+        Spotlight.FeatureCase.FIRST_CHAPTER
+      )
+
+      getSpotlightFragment().requestSpotlight(target)
+    }
   }
 
   private fun getSpotlightFragment(): SpotlightFragment {
@@ -48,21 +57,22 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
 
-    this.doOnPreDraw {
-      if (!isSpotlit) {
-        if (index == 0) {
-          val target = SpotlightTarget(
-            it,
-            "Tap to start a chapter",
-            SpotlightShape.RoundedRectangle,
-            Spotlight.FeatureCase.FIRST_CHAPTER
-          )
-          getSpotlightFragment().requestSpotlight(target)
-          // this view is attached multiple times which can lead to crashes due spotlight request
-          // being added multiple times. [isSpotlit] is a flag to prevent the same.
-          isSpotlit = true
-        }
-      }
-    }
+
+//    this.doOnPreDraw {
+//      if (!isSpotlit) {
+//        if (index == 0) {
+//          val target = SpotlightTarget(
+//            it,
+//            "Tap to start a chapter",
+//            SpotlightShape.RoundedRectangle,
+//            Spotlight.FeatureCase.FIRST_CHAPTER
+//          )
+//          getSpotlightFragment().requestSpotlight(target)
+//          // this view is attached multiple times which can lead to crashes due spotlight request
+//          // being added multiple times. [isSpotlit] is a flag to prevent the same.
+//          isSpotlit = true
+//        }
+//      }
+//    }
   }
 }

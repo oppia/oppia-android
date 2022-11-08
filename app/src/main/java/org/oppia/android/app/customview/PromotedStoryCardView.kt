@@ -20,14 +20,19 @@ class PromotedStoryCardView @JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
-  private var promotedStoryIndex = -1
-  private var isSpotlit = false
-
   @Inject
   lateinit var fragment: Fragment
 
   fun setIndex(index: Int) {
-    this.promotedStoryIndex = index
+    if (index == 0) {
+      val promotesStorySpotlightTarget = SpotlightTarget(
+        this,
+        "From now, here you can view stories you might be interested in",
+        SpotlightShape.RoundedRectangle,
+        Spotlight.FeatureCase.PROMOTED_STORIES
+      )
+      getSpotlightFragment().requestSpotlight(promotesStorySpotlightTarget)
+    }
   }
 
   private fun getSpotlightFragment(): SpotlightFragment {
@@ -43,20 +48,5 @@ class PromotedStoryCardView @JvmOverloads constructor(
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
-
-    this.post {
-      if (!isSpotlit) {
-        if (promotedStoryIndex == 0) {
-          val promotesStorySpotlightTarget = SpotlightTarget(
-            this,
-            "From now, here you can view stories you might be interested in",
-            SpotlightShape.RoundedRectangle,
-            Spotlight.FeatureCase.PROMOTED_STORIES
-          )
-          isSpotlit = true
-          getSpotlightFragment().requestSpotlight(promotesStorySpotlightTarget)
-        }
-      }
-    }
   }
 }
