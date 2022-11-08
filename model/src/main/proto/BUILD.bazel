@@ -315,6 +315,17 @@ java_lite_proto_library(
     deps = [":platform_parameter_proto"],
 )
 
+oppia_proto_library(
+    name = "large_license_maven_dependencies_proto",
+    srcs = ["large_license_maven_dependencies.proto"],
+)
+
+java_lite_proto_library(
+    name = "large_license_maven_dependencies_java_proto_lite",
+    visibility = ["//:oppia_api_visibility"],
+    deps = [":large_license_maven_dependencies_proto"],
+)
+
 android_library(
     name = "test_models",
     testonly = True,

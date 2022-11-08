@@ -1,0 +1,23 @@
+"""
+Domain definitions for managing large license texts.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "help_controller",
+    srcs = [
+        "HelpController.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":dagger",
+        "//config/src/java/org/oppia/android/config:languages_config",
+        "//model/src/main/proto:large_license_maven_dependencies_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+    ],
+)
+
+dagger_rules()

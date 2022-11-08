@@ -2,6 +2,7 @@ package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
+import org.oppia.android.domain.help.HelpController
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
@@ -10,6 +11,7 @@ class LicenseTextViewModel(
   val activity: AppCompatActivity,
   val dependencyIndex: Int,
   val licenseIndex: Int,
+  private val helpController: HelpController,
   resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   private val dependenciesWithLicenseTexts = activity.resources.obtainTypedArray(
@@ -23,4 +25,7 @@ class LicenseTextViewModel(
     resourceHandler.getStringArrayInLocale(licenseTextsArrayId)
   /** Text of the license to be displayed in [LicenseTextViewerFragment]. */
   val licenseText = licenseTextsArray[licenseIndex]
+  fun testfunction(){
+    helpController.getLargeProtoAssetFileData()
+  }
 }

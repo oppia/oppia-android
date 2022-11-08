@@ -84,10 +84,10 @@ def generate_assets_list_from_text_protos(
     ) + generate_proto_binary_assets(
         name = name,
         names = large_strings_file_names,
-        proto_dep_name = "maven_dependencies",
+        proto_dep_name = "large_license_maven_dependencies",
         proto_type_name = "LargeLicenseHashMap",
         name_prefix = "large_license_hash_map",
         asset_dir = "src/main/assets",
-        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
-        proto_package = "proto",
+        proto_dep_bazel_target_prefix = "//model/src/main/proto",
+        proto_package = "model",
     )
