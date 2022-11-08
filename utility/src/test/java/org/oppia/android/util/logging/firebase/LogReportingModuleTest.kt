@@ -59,12 +59,12 @@ class LogReportingModuleTest {
 
   @Test
   fun testModule_injectsProductionImplementationOfEventLogger() {
-    assertThat(analyticsEventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(analyticsEventLogger).isInstanceOf(FirebaseAnalyticsEventLogger::class.java)
   }
 
   @Test
   fun testModule_injectsProductionImplementationOfPerformanceMetricsEventLogger() {
-    assertThat(performanceMetricsEventLogger).isInstanceOf(FirebaseEventLogger::class.java)
+    assertThat(performanceMetricsEventLogger).isInstanceOf(FirebaseAnalyticsEventLogger::class.java)
   }
 
   private fun setUpTestApplicationComponent() {

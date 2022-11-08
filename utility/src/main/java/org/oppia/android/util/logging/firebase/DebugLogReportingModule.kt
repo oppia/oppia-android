@@ -24,7 +24,7 @@ class DebugLogReportingModule {
   @Provides
   @Singleton
   fun providePerformanceMetricsEventLogger(
-    factory: FirebaseEventLogger.Factory
+    factory: FirebaseAnalyticsEventLogger.Factory
   ): PerformanceMetricsEventLogger =
     factory.createPerformanceMetricEventLogger()
 }

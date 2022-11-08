@@ -14,7 +14,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class DebugAnalyticsEventLogger @Inject constructor(
-  factory: FirebaseEventLogger.Factory
+  factory: FirebaseAnalyticsEventLogger.Factory
 ) : AnalyticsEventLogger {
   private val realEventLogger by lazy { factory.create() }
   private val eventList = CopyOnWriteArrayList<EventLog>()

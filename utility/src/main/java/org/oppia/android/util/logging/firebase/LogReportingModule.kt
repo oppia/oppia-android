@@ -18,13 +18,13 @@ class LogReportingModule {
 
   @Provides
   @Singleton
-  fun provideAnalyticsEventLogger(factory: FirebaseEventLogger.Factory):
+  fun provideFirebaseAnalyticsEventLogger(factory: FirebaseAnalyticsEventLogger.Factory):
     AnalyticsEventLogger = factory.create()
 
   @Provides
   @Singleton
   fun providePerformanceMetricsEventLogger(
-    factory: FirebaseEventLogger.Factory
+    factory: FirebaseAnalyticsEventLogger.Factory
   ): PerformanceMetricsEventLogger =
     factory.createPerformanceMetricEventLogger()
 }
