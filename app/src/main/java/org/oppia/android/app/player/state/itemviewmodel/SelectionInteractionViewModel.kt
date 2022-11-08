@@ -4,7 +4,6 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -19,6 +18,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
+import javax.inject.Inject
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -159,12 +159,18 @@ class SelectionInteractionViewModel private constructor(
 
   private fun updateSelectionText() {
     if (selectedItems.size < maxAllowableSelectionCount) {
-      selectedItemText.set(resourceHandler
-        .getStringInLocale(R.string.you_may_select_more_choices))
+      selectedItemText.set(
+        resourceHandler.getStringInLocale(
+          R.string.you_may_select_more_choices
+        )
+      )
     }
     if (selectedItems.size == 0) {
-      selectedItemText.set(resourceHandler
-        .getStringInLocale(R.string.please_select_all_correct_choices))
+      selectedItemText.set(
+        resourceHandler.getStringInLocale(
+          R.string.please_select_all_correct_choices
+        )
+      )
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
       selectedItemText.set(
