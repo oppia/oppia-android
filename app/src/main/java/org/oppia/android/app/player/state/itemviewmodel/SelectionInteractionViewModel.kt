@@ -4,6 +4,8 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
@@ -14,11 +16,9 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
-import javax.inject.Inject
-import org.oppia.android.R
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -60,7 +60,8 @@ class SelectionInteractionViewModel private constructor(
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField(false)
-  val selectedItemText = ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
+  val selectedItemText =
+    ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
   val enabledItemsList by lazy { List(choiceItems.size) { ObservableBoolean() } }
 
   init {
@@ -158,13 +159,20 @@ class SelectionInteractionViewModel private constructor(
 
   private fun updateSelectionText() {
     if (selectedItems.size < maxAllowableSelectionCount) {
-      selectedItemText.set(resourceHandler.getStringInLocale(R.string.you_may_select_more_choices))
+      selectedItemText.set(resourceHandler
+        .getStringInLocale(R.string.you_may_select_more_choices))
     }
     if (selectedItems.size == 0) {
-      selectedItemText.set(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
+      selectedItemText.set(resourceHandler
+        .getStringInLocale(R.string.please_select_all_correct_choices))
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
-      selectedItemText.set(resourceHandler.getStringInLocaleWithWrapping(R.string.no_more_than_choices_may_be_selected,maxAllowableSelectionCount.toString()))
+      selectedItemText.set(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.no_more_than_choices_may_be_selected,
+          maxAllowableSelectionCount.toString()
+        )
+      )
     }
   }
 
