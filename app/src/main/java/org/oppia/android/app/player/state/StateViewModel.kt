@@ -57,12 +57,7 @@ class StateViewModel @Inject constructor() : ObservableViewModel() {
     ) ?: UserAnswer.getDefaultInstance()
   }
 
-  /**
-   * Retrieves rawUserAnswer from given Interaction Answer Handler.
-   *
-   * @param retrieveAnswerHandler list of [StateItemViewModel].
-   * @return a RawUserAnswer from given [retrieveAnswerHandler].
-   */
+  /** Retrieves the [RawUserAnswer] from the handler provided by [retrieveAnswerHandler]. */
   fun getRawUserAnswer(
     retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): RawUserAnswer {

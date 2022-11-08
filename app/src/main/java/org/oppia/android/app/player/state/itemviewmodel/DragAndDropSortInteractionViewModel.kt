@@ -244,38 +244,28 @@ class DragAndDropSortInteractionViewModel private constructor(
       resourceHandler: AppLanguageResourceHandler,
       listOfSetsOfTranslatableHtmlContentIds: ListOfSetsOfTranslatableHtmlContentIds
     ): MutableList<DragDropInteractionContentViewModel> {
-      return if (listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount > 0) {
-        listOfSetsOfTranslatableHtmlContentIds
-          .contentIdListsList.mapIndexed { itemIndex, setOfTranslatableHtmlContentIds ->
-            DragDropInteractionContentViewModel(
-              contentIdHtmlMap = contentIdHtmlMap,
-              htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-                addAllContentIds(setOfTranslatableHtmlContentIds.contentIdsList)
-              }.build(),
-              itemIndex = itemIndex,
-              listSize = listOfSetsOfTranslatableHtmlContentIds.contentIdListsCount,
-              dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-              resourceHandler = resourceHandler
-            )
-          }.toMutableList()
-      } else {
-        choiceStrings.mapIndexed { index, subtitledHtml ->
-          DragDropInteractionContentViewModel(
-            contentIdHtmlMap = contentIdHtmlMap,
-            htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+      val selectedChoices =
+        if (listOfSetsOfTranslatableHtmlContentIds.contentIdListsList.isEmpty()) {
+          choiceStrings.map { subtitledHtml ->
+            SetOfTranslatableHtmlContentIds.newBuilder().apply {
               addContentIds(
-                TranslatableHtmlContentId.newBuilder().apply {
-                  contentId = subtitledHtml.contentId
-                }
+                TranslatableHtmlContentId.newBuilder().setContentId(subtitledHtml.contentId)
               )
-            }.build(),
-            itemIndex = index,
-            listSize = choiceStrings.size,
-            dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
-            resourceHandler = resourceHandler
-          )
-        }.toMutableList()
-      }
+            }
+          }
+        } else listOfSetsOfTranslatableHtmlContentIds.contentIdListsList
+      return selectedChoices.mapIndexed { index, contentId ->
+        DragDropInteractionContentViewModel(
+          contentIdHtmlMap = contentIdHtmlMap,
+          htmlContent = SetOfTranslatableHtmlContentIds.newBuilder().apply {
+            addAllContentIds(contentId.contentIdsList)
+          }.build(),
+          itemIndex = index,
+          listSize = choiceStrings.size,
+          dragAndDropSortInteractionViewModel = dragAndDropSortInteractionViewModel,
+          resourceHandler = resourceHandler
+        )
+      }.toMutableList()
     }
   }
 }

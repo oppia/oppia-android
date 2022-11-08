@@ -26,8 +26,8 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 private const val STATE_FRAGMENT_RAW_USER_ANSWER_KEY = "StateFragment.raw_user_answer"
-private const val STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY =
-  "StateFragment.is_previous_responses_header_expanded"
+private const val STATE_FRAGMENT_ARE_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY =
+  "StateFragment.are_previous_responses_header_expanded"
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -90,7 +90,7 @@ class StateFragment :
       STATE_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
     ) ?: RawUserAnswer.getDefaultInstance()
     val isPreviousResponsesExpanded =
-      savedInstanceState?.getBoolean(STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
+      savedInstanceState?.getBoolean(STATE_FRAGMENT_ARE_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
         ?: false
     return stateFragmentPresenter.handleCreateView(
       inflater,
@@ -151,8 +151,8 @@ class StateFragment :
       stateFragmentPresenter.getRawUserAnswer()
     )
     outState.putBoolean(
-      STATE_FRAGMENT_IS_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY,
-      stateFragmentPresenter.getIsPreviousResponsesExpanded()
+      STATE_FRAGMENT_ARE_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY,
+      stateFragmentPresenter.getArePreviousResponsesExpanded()
     )
   }
 

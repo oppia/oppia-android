@@ -56,8 +56,6 @@ class SelectionInteractionViewModel private constructor(
   }
 
   private val selectedItems: MutableList<Int> = mutableListOf()
-  private val selectedAnswer: MutableList<Int> =
-    rawUserAnswer.itemSelection.selectedIndexesList ?: mutableListOf()
 
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
@@ -74,8 +72,8 @@ class SelectionInteractionViewModel private constructor(
           )
         }
       }
-    if (selectedAnswer.size > 0) {
-      selectedAnswer.forEach { index ->
+    if (rawUserAnswer.itemSelection.selectedIndexesList.isNotEmpty()) {
+      rawUserAnswer.itemSelection.selectedIndexesList.forEach { index ->
         selectedItems += index
         updateIsAnswerAvailable()
         choiceItems[index].isAnswerSelected.set(true)

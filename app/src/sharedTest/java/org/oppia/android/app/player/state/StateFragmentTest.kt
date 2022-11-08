@@ -59,6 +59,7 @@ import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -197,6 +198,8 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import junit.framework.Assert.assertTrue
+import kotlinx.android.synthetic.main.drag_drop_single_item.view.*
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -244,8 +247,8 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
-    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
+//    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+//    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1803,11 +1806,12 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_dragAndDropSort_retainStateOnConfigurationChange() {
+  fun testStateFragment_dragAndDrop_mergeFirstTwoItems_dragItem_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
       mergeDragAndDropItems(position = 0)
+      dragAndDropItem(fromPosition = 0, toPosition = 2)
 
       // Rotating device.
       rotateToLandscape()
@@ -1815,10 +1819,20 @@ class StateFragmentTest {
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
-          position = 0,
+          position = 2,
           targetViewId = R.id.drag_drop_item_recyclerview
         )
       ).check(matches(hasChildCount(2)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check{ view, _ ->
+        val textView = view.findViewById<TextView>(R.id.drag_drop_content_text_view)
+        assertThat(textView.text.toString(), containsString("a camera at the store"))
+      }
     }
   }
 
@@ -1874,7 +1888,7 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_checkPreviousHeader_retainStateOnConfigChange() {
+  fun testStateFragment_checkPreviousHeaderExpanded_retainStateOnConfigChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
@@ -1883,7 +1897,7 @@ class StateFragmentTest {
       typeFractionText("1/4")
       clickSubmitAnswerButton()
 
-      // Attempt to submit an wrong answer.
+      // Attempt to submit a second wrong answer.
       typeFractionText("1/4")
       clickSubmitAnswerButton()
 
@@ -1901,15 +1915,26 @@ class StateFragmentTest {
         .check(
           matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
         )
+    }
+  }
 
-      // rotate screen
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_checkPreviousHeaderCollapsed_retainStateOnConfigChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+
+      // Attempt to submit an wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      // Attempt to submit a second wrong answer.
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      // rotate screen (by default responses are collapsed)
       rotateToLandscape()
-
-      // Collapse previous response header.
-      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.previous_response_header)).perform(click())
-      testCoroutineDispatchers.runCurrent()
 
       // Only the latest failed answer should be showing.
       onView(withId(R.id.state_recycler_view))

@@ -84,12 +84,16 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     )
 
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, "skill", profileId, rawUserAnswer),
+      assemblerBuilderFactory.create(
+        resourceBucketName,
+        "skill",
+        profileId,
+        rawUserAnswer,
+        isPreviousResponsesExpanded
+      ),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
     )
-
-    recyclerViewAssembler.isPreviousResponsesExpanded = isPreviousResponsesExpanded
 
     binding.apply {
       lifecycleOwner = fragment
@@ -120,8 +124,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
+  /** Returns whether previously submitted wrong answers should be expanded or not. */
   fun getIsPreviousResponsesExpanded(): Boolean {
-    return recyclerViewAssembler.isPreviousResponsesExpanded
+    return recyclerViewAssembler.arePreviousResponsesExpanded
   }
 
   fun dismissConceptCard() {
@@ -404,6 +409,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
   }
 
+  /** Returns [RawUserAnswer] from stateViewModel's [getRawUserAnswer]. */
   fun getRawUserAnswer(): RawUserAnswer {
     return if (isConfigChangeStateRetentionEnabled.value) {
       questionViewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)

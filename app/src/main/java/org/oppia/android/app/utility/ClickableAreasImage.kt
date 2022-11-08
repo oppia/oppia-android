@@ -90,7 +90,7 @@ class ClickableAreasImage(
       val newView = createSelectableView(clickableArea)
       newView.setOnTouchListener { _, event ->
         if (event.action == MotionEvent.ACTION_DOWN) {
-          showOrHideRegion(clickableArea)
+          toggleRegion(clickableArea)
         }
         return@setOnTouchListener true
       }
@@ -98,7 +98,7 @@ class ClickableAreasImage(
         // Make default region visibility gone when talkback enabled to avoid any accidental touch.
         defaultRegionView.isVisible = false
         newView.setOnClickListener {
-          showOrHideRegion(clickableArea)
+          toggleRegion(clickableArea)
         }
       }
     }
@@ -119,11 +119,10 @@ class ClickableAreasImage(
   }
 
   /**
-   * Called to show or hide selected image region
-   *
-   * @param clickableArea a clickable image region which we want to show or hide
+   * Toggles whether the clickable region corresponding to the provided [clickableArea] is visible
+   * and available to be clicked.
    */
-  fun showOrHideRegion(clickableArea: ImageWithRegions.LabeledRegion) {
+  fun toggleRegion(clickableArea: ImageWithRegions.LabeledRegion) {
     resetRegionSelectionViews()
     listener.onClickableAreaTouched(
       NamedRegionClickedEvent(

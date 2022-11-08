@@ -103,6 +103,7 @@ class QuestionPlayerViewModel @Inject constructor(
     }
   }
 
+  /** Retrieves the [RawUserAnswer] from the handler provided by [retrieveAnswerHandler]. */
   fun getRawUserAnswer(
     retrieveAnswerHandler: (List<StateItemViewModel>) -> InteractionAnswerHandler?
   ): RawUserAnswer {

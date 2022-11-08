@@ -114,7 +114,7 @@ class StateFragmentPresenter @Inject constructor(
     topicId: String,
     storyId: String,
     rawUserAnswer: RawUserAnswer,
-    isPreviousResponsesExpanded: Boolean,
+    arePreviousResponsesExpanded: Boolean,
     explorationId: String
   ): View? {
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -128,13 +128,17 @@ class StateFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     recyclerViewAssembler = createRecyclerViewAssembler(
-      assemblerBuilderFactory.create(resourceBucketName, entityType, profileId, rawUserAnswer),
+      assemblerBuilderFactory.create(
+        resourceBucketName,
+        entityType,
+        profileId,
+        rawUserAnswer,
+        arePreviousResponsesExpanded
+      ),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
       binding.fullScreenConfettiView
     )
-
-    recyclerViewAssembler.isPreviousResponsesExpanded = isPreviousResponsesExpanded
 
     val stateRecyclerViewAdapter = recyclerViewAssembler.adapter
     val rhsStateRecyclerViewAdapter = recyclerViewAssembler.rhsAdapter
@@ -274,8 +278,9 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
   }
 
-  fun getIsPreviousResponsesExpanded(): Boolean {
-    return recyclerViewAssembler.isPreviousResponsesExpanded
+  /** Returns whether previously submitted wrong answers should be expanded or not. */
+  fun getArePreviousResponsesExpanded(): Boolean {
+    return recyclerViewAssembler.arePreviousResponsesExpanded
   }
 
   private fun getStateViewModel(): StateViewModel {
@@ -468,6 +473,7 @@ class StateFragmentPresenter @Inject constructor(
   /** Returns the checkpoint state for the current exploration. */
   fun getExplorationCheckpointState() = explorationCheckpointState
 
+  /** Returns [RawUserAnswer] from stateViewModel's [getRawUserAnswer]. */
   fun getRawUserAnswer(): RawUserAnswer {
     return if (isConfigChangeStateRetentionEnabled.value) {
       viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)
