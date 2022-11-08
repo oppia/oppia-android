@@ -13,7 +13,7 @@ class LicenseTextViewModel(
   val licenseIndex: Int,
   resourceHandler: AppLanguageResourceHandler,
   val helpController: HelpController,
-  ) : ObservableViewModel() {
+) : ObservableViewModel() {
   private val dependenciesWithLicenseTexts = activity.resources.obtainTypedArray(
     R.array.third_party_dependency_license_texts_array
   )
