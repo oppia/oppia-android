@@ -52,6 +52,12 @@ class LicenseTextViewerFragmentPresenter @Inject constructor(
     licenseIndex: Int,
     helpController: HelpController
   ): LicenseTextViewModel {
-    return LicenseTextViewModel(activity, dependencyIndex, licenseIndex, resourceHandler, helpController)
+    return LicenseTextViewModel(
+      activity,
+      dependencyIndex,
+      licenseIndex,
+      resourceHandler,
+      helpController
+    )
   }
 }
