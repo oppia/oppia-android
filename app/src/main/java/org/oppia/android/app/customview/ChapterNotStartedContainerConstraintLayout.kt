@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import javax.inject.Inject
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
@@ -14,6 +13,7 @@ import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
+import javax.inject.Inject
 
 class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   context: Context,
@@ -49,20 +49,20 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     viewComponent.inject(this)
 
     this.doOnPreDraw {
-        if (!isSpotlit) {
-          if (index == 0) {
-            val target = SpotlightTarget(
-                it,
-                "Tap to start a chapter",
-                SpotlightShape.RoundedRectangle,
-                Spotlight.FeatureCase.FIRST_CHAPTER
-              )
-            getSpotlightFragment().requestSpotlight(target)
-            // this view is attached multiple times which can lead to crashes due spotlight request
-            // being added multiple times. [isSpotlit] is a flag to prevent the same.
-            isSpotlit = true
-          }
+      if (!isSpotlit) {
+        if (index == 0) {
+          val target = SpotlightTarget(
+            it,
+            "Tap to start a chapter",
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.FIRST_CHAPTER
+          )
+          getSpotlightFragment().requestSpotlight(target)
+          // this view is attached multiple times which can lead to crashes due spotlight request
+          // being added multiple times. [isSpotlit] is a flag to prevent the same.
+          isSpotlit = true
         }
       }
+    }
   }
 }

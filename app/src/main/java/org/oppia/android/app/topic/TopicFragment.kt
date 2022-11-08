@@ -45,5 +45,3 @@ class TopicFragment : InjectableFragment() {
     topicFragmentPresenter.startSpotlight()
   }
 }
-
-

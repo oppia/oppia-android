@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AudioLanguage
@@ -37,6 +36,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"

@@ -2,11 +2,11 @@ package org.oppia.android.app.topic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.spotlight.SpotlightFragment
+import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
 const val SPOTLIGHT_FRAGMENT_TAG = "SpotlightFragment"

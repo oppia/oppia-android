@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.card.MaterialCardView
-import javax.inject.Inject
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightShape
@@ -13,12 +12,13 @@ import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
+import javax.inject.Inject
 
 class PromotedStoryCardView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
-): MaterialCardView(context, attrs, defStyleAttr) {
+) : MaterialCardView(context, attrs, defStyleAttr) {
 
   private var promotedStoryIndex = -1
   private var isSpotlit = false

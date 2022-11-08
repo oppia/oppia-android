@@ -8,10 +8,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
-import javax.inject.Inject
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
+import javax.inject.Inject
 
 const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
 
