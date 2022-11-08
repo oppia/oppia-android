@@ -17,6 +17,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -32,7 +34,8 @@ class SelectionInteractionViewModel private constructor(
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -57,7 +60,7 @@ class SelectionInteractionViewModel private constructor(
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
 
   private val isAnswerAvailable = ObservableField(false)
-  val selectedItemText = ObservableField("Please select all correct choices")
+  val selectedItemText = ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
   val enabledItemsList by lazy { List(choiceItems.size) { ObservableBoolean() } }
 
   init {
@@ -155,13 +158,13 @@ class SelectionInteractionViewModel private constructor(
 
   private fun updateSelectionText() {
     if (selectedItems.size < maxAllowableSelectionCount) {
-      selectedItemText.set("You may select more choices")
+      selectedItemText.set(resourceHandler.getStringInLocale(R.string.you_may_select_more_choices))
     }
     if (selectedItems.size == 0) {
-      selectedItemText.set("Please select all correct choices")
+      selectedItemText.set(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
-      selectedItemText.set("No more than $maxAllowableSelectionCount choices may be selected.")
+      selectedItemText.set(resourceHandler.getStringInLocaleWithWrapping(R.string.no_more_than_choices_may_be_selected,maxAllowableSelectionCount.toString()))
     }
   }
 
@@ -178,7 +181,8 @@ class SelectionInteractionViewModel private constructor(
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
-    private val translationController: TranslationController
+    private val translationController: TranslationController,
+    private val resourceHandler: AppLanguageResourceHandler
   ) : InteractionItemFactory {
     override fun create(
       entityId: String,
@@ -197,7 +201,8 @@ class SelectionInteractionViewModel private constructor(
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,
-        translationController
+        translationController,
+        resourceHandler
       )
     }
   }
