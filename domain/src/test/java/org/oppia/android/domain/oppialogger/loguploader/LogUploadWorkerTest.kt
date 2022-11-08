@@ -86,19 +86,32 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var analyticsController: AnalyticsController
-  @Inject lateinit var exceptionsController: ExceptionsController
-  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var dataProviders: DataProviders
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject
+  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var analyticsController: AnalyticsController
+  @Inject
+  lateinit var exceptionsController: ExceptionsController
+  @Inject
+  lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject
+  lateinit var dataProviders: DataProviders
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+  @field:[Inject MockEventLogger]
+  lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
 
   private lateinit var context: Context
 
@@ -344,7 +357,8 @@ class LogUploadWorkerTest {
       .inject(this)
   }
 
-  @Qualifier annotation class MockEventLogger
+  @Qualifier
+  annotation class MockEventLogger
 
   // TODO(#89): Move this to a common test application component.
   @Module
@@ -358,7 +372,9 @@ class LogUploadWorkerTest {
     fun bindMockEventLogger(fakeAnalyticsLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger {
       return mock(AnalyticsEventLogger::class.java).also {
         `when`(it.logEvent(anyOrNull())).then { answer ->
-          fakeAnalyticsLogger.logEvent(answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java))
+          fakeAnalyticsLogger.logEvent(
+            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+          )
           return@then null
         }
       }

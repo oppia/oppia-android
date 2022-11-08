@@ -68,7 +68,8 @@ class PerformanceMetricsAssessorModuleTest {
     fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
     @Binds
-    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger
+    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
+      AnalyticsEventLogger
 
     @Binds
     fun bindFakePerformanceMetricsEventLogger(
