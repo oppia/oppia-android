@@ -52,6 +52,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.android.synthetic.main.drag_drop_single_item.view.*
 import kotlinx.coroutines.CoroutineDispatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -198,8 +199,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import junit.framework.Assert.assertTrue
-import kotlinx.android.synthetic.main.drag_drop_single_item.view.*
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -247,8 +246,8 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
-//    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
-//    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1829,7 +1828,7 @@ class StateFragmentTest {
           position = 2,
           targetViewId = R.id.drag_drop_item_recyclerview
         )
-      ).check{ view, _ ->
+      ).check { view, _ ->
         val textView = view.findViewById<TextView>(R.id.drag_drop_content_text_view)
         assertThat(textView.text.toString(), containsString("a camera at the store"))
       }

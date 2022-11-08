@@ -23,12 +23,18 @@ interface InteractionAnswerHandler {
     return null
   }
 
-  /** Return the current answer that is ready for handling. */
+  /**
+   * Returns the current answer entered or selected by the user which is used in pending state to
+   * show list of previously selected answers.
+   */
   fun getPendingAnswer(): UserAnswer? {
     return null
   }
 
-  /** Return the last answer entered by user. */
+  /**
+   * Returns a raw representation of the current answer entered by the user which is used to retain
+   * state on configuration changes.
+   */
   fun getRawUserAnswer(): RawUserAnswer {
     return RawUserAnswer.getDefaultInstance()
   }
