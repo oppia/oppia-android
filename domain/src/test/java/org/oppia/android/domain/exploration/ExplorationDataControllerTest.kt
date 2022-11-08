@@ -75,6 +75,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 
 /** Tests for [ExplorationDataController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -386,23 +387,6 @@ class ExplorationDataControllerTest {
       testEnvironmentConfig.isUsingBazel()
   }
 
-  @Module
-  class TestExplorationStorageModule {
-
-    /**
-     * Provides the size allocated to exploration checkpoint database.
-     *
-     * For testing, the current [ExplorationStorageDatabaseSize] is set to be 150 Bytes.
-     *
-     * The size limit is set so that after the two fake checkpoints are saved with
-     * [ExplorationCheckpointTestHelper], the size of the exploration checkpoint database will
-     * exceed once the exploration with [TEST_EXPLORATION_ID_2] is saved after it has been loaded.
-     */
-    @Provides
-    @ExplorationStorageDatabaseSize
-    fun provideExplorationStorageDatabaseSize(): Int = 150
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -413,7 +397,7 @@ class ExplorationDataControllerTest {
       DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
       ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestExplorationStorageModule::class, HintsAndSolutionConfigModule::class,
+      ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,

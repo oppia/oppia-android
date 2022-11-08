@@ -15,7 +15,6 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode
 import org.oppia.android.domain.classify.AnswerClassificationController
-import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -23,6 +22,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.ExplorationRetriever
 
 private const val CACHE_NAME = "exploration_checkpoint_database"
 private const val RETRIEVE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
@@ -33,8 +33,6 @@ private const val RECORD_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "record_exploration_checkpoint_provider_id"
 private const val DELETE_EXPLORATION_CHECKPOINT_DATA_PROVIDER_ID =
   "delete_exploration_checkpoint_provider_id"
-private const val CHECK_IS_EXPLORATION_CHECKPOINT_COMPATIBLE_WITH_EXPLORATION_DATA_PROVIDER_ID =
-  "check_is_exploration_checkpoint_compatible_with_exploration_provider_id"
 
 /**
  * Controller for saving, retrieving, updating, and deleting exploration checkpoints.

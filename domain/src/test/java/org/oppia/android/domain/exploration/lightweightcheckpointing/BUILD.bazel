@@ -27,6 +27,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",

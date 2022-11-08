@@ -48,6 +48,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.runBlocking
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 
 /** Tests for [HintHandlerDebugImpl]. */
 @Suppress("FunctionName")
@@ -69,19 +71,25 @@ class HintHandlerDebugImplTest {
   private lateinit var blockingCoroutineScope: CoroutineScope
 
   private val expWithNoHintsOrSolution by lazy {
-    explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    runBlocking {
+      explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    }
   }
 
   private val expWithOneHintAndNoSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_one_hint_and_no_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution"
+      )
+    }
   }
 
   private val expWithHintsAndSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_hints_and_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_hints_and_solution"
+      )
+    }
   }
 
   @Before
@@ -421,7 +429,8 @@ class HintHandlerDebugImplTest {
     modules = [
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      ExplorationStorageTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -137,6 +137,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
+import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -146,26 +148,15 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var fakeAccessibilityService: FakeAccessibilityService
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
@@ -555,13 +546,17 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessPlayFrag_loadFractionsTopic_clickChap_outdatedCheckpointSaved_opensExplorationAct() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    fakeExplorationRetriever.setExplorationProxy(
+      expIdToLoad = FRACTIONS_EXPLORATION_ID_0,
+      expIdToLoadInstead = "test_checkpointing_exploration_multiple_updates_one_incompatible"
+    )
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
+      version = 1 // Old version, but it doesn't matter since the new version is incompatible.
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
       clickLessonTab()
@@ -1084,7 +1079,7 @@ class TopicLessonsFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageTestModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,

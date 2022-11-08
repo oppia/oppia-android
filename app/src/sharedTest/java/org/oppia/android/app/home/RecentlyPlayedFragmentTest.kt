@@ -138,6 +138,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
+import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -150,11 +152,8 @@ private const val TOLERANCE = 1e-5f
   qualifiers = "port-xxhdpi"
 )
 class RecentlyPlayedFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   private val testFragment by lazy { RecentlyPlayedFragment() }
 
@@ -165,23 +164,13 @@ class RecentlyPlayedFragmentTest {
     /* launchActivity= */ false
   )
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   private val internalProfileId = 0
 
@@ -877,15 +866,19 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  fun testRecentlyPlayedTestAct_clickStory_outdatedCheckpointSaved_opensExplorationLessonAct() {
+  fun testRecentlyPlayedTestAct_clickStory_incompatibleCheckpointSaved_opensExplorationLessonAct() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    fakeExplorationRetriever.setExplorationProxy(
+      expIdToLoad = FRACTIONS_EXPLORATION_ID_0,
+      expIdToLoadInstead = "test_checkpointing_exploration_multiple_updates_one_incompatible"
+    )
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
+      version = 1 // Old version, but it doesn't matter since the new version is incompatible.
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
@@ -1500,7 +1493,7 @@ class RecentlyPlayedFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageTestModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,

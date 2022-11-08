@@ -49,6 +49,20 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 
 /** Tests for [ExplorationCheckpointTestHelper]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -248,7 +262,12 @@ class ExplorationCheckpointTestHelperTest {
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterSingletonModule::class, ContinueModule::class, FractionInputModule::class,
+      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+      DragDropSortInputModule::class, NumericExpressionInputModule::class,
+      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
+      RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
