@@ -37,7 +37,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -225,8 +225,8 @@ class MetricLogSchedulingWorkerTest {
     fun provideContext(application: Application): Context = application
 
     @Provides
-    fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger):
-      AnalyticsEventLogger = fakeEventLogger
+    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
+      AnalyticsEventLogger = fakeAnalyticsEventLogger
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger

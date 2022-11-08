@@ -12,7 +12,7 @@ import dagger.Module
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -68,7 +68,7 @@ class PerformanceMetricsAssessorModuleTest {
     fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
     @Binds
-    fun bindFakeEventLogger(fakeEventLogger: FakeEventLogger): AnalyticsEventLogger
+    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger
 
     @Binds
     fun bindFakePerformanceMetricsEventLogger(

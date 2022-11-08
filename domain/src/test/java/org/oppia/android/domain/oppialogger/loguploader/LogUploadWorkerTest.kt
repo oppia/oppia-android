@@ -40,7 +40,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.FakeSyncStatusManager
@@ -87,7 +87,7 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   @Inject lateinit var oppiaLogger: OppiaLogger
@@ -160,7 +160,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
-    assertThat(fakeEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
+    assertThat(fakeAnalyticsEventLogger.getMostRecentEvent()).isEqualTo(eventLogTopicContext)
   }
 
   @Test
@@ -188,7 +188,7 @@ class LogUploadWorkerTest {
     val workInfo = workManager.getWorkInfoById(request.id)
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.FAILED)
-    assertThat(fakeEventLogger.noEventsPresent()).isTrue()
+    assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
   @Test
@@ -355,10 +355,10 @@ class LogUploadWorkerTest {
     @Provides
     @Singleton
     @MockEventLogger
-    fun bindMockEventLogger(fakeLogger: FakeEventLogger): AnalyticsEventLogger {
+    fun bindMockEventLogger(fakeAnalyticsLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger {
       return mock(AnalyticsEventLogger::class.java).also {
         `when`(it.logEvent(anyOrNull())).then { answer ->
-          fakeLogger.logEvent(answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java))
+          fakeAnalyticsLogger.logEvent(answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java))
           return@then null
         }
       }

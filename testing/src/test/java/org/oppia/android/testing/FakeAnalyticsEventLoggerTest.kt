@@ -24,15 +24,15 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FakeEventLogger]. */
+/** Tests for [FakeAnalyticsEventLogger]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class FakeEventLoggerTest {
+class FakeAnalyticsEventLoggerTest {
 
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var analyticsEventLogger: AnalyticsEventLogger
 
   private val eventLog1 = EventLog.newBuilder().setPriority(Priority.ESSENTIAL).build()
@@ -46,7 +46,7 @@ class FakeEventLoggerTest {
   @Test
   fun testFakeEventLogger_logEvent_returnsEvent() {
     analyticsEventLogger.logEvent(eventLog1)
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
     assertThat(event).isEqualTo(eventLog1)
     assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
@@ -56,7 +56,7 @@ class FakeEventLoggerTest {
   fun testFakeEventLogger_logEventTwice_returnsLatestEvent() {
     analyticsEventLogger.logEvent(eventLog1)
     analyticsEventLogger.logEvent(eventLog2)
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
     assertThat(event).isEqualTo(eventLog2)
     assertThat(event.priority).isEqualTo(Priority.OPTIONAL)
@@ -65,9 +65,9 @@ class FakeEventLoggerTest {
   @Test
   fun testFakeEventLogger_logEvent_clearAllEvents_logEventAgain_returnsLatestEvent() {
     analyticsEventLogger.logEvent(eventLog1)
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
     analyticsEventLogger.logEvent(eventLog2)
-    val event = fakeEventLogger.getMostRecentEvent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
     assertThat(event).isEqualTo(eventLog2)
     assertThat(event.priority).isEqualTo(Priority.OPTIONAL)
@@ -75,16 +75,16 @@ class FakeEventLoggerTest {
 
   @Test
   fun testFakeEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows(NoSuchElementException::class) { fakeEventLogger.getMostRecentEvent() }
+    assertThrows(NoSuchElementException::class) { fakeAnalyticsEventLogger.getMostRecentEvent() }
   }
 
   @Test
   fun testFakeEventLogger_logEvent_clearAllEvents_getMostRecent_returnsFailure() {
     analyticsEventLogger.logEvent(eventLog1)
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     val eventException = assertThrows(NoSuchElementException::class) {
-      fakeEventLogger.getMostRecentEvent()
+      fakeAnalyticsEventLogger.getMostRecentEvent()
     }
 
     assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
@@ -92,8 +92,8 @@ class FakeEventLoggerTest {
 
   @Test
   fun testFakeEventLogger_clearAllEvents_returnsEmptyList() {
-    fakeEventLogger.clearAllEvents()
-    val isListEmpty = fakeEventLogger.noEventsPresent()
+    fakeAnalyticsEventLogger.clearAllEvents()
+    val isListEmpty = fakeAnalyticsEventLogger.noEventsPresent()
 
     assertThat(isListEmpty).isTrue()
   }
@@ -101,8 +101,8 @@ class FakeEventLoggerTest {
   @Test
   fun testFakeEventLogger_logEvent_clearAllEvents_returnsEmptyList() {
     analyticsEventLogger.logEvent(eventLog1)
-    fakeEventLogger.clearAllEvents()
-    val isListEmpty = fakeEventLogger.noEventsPresent()
+    fakeAnalyticsEventLogger.clearAllEvents()
+    val isListEmpty = fakeAnalyticsEventLogger.noEventsPresent()
 
     assertThat(isListEmpty).isTrue()
   }
@@ -111,8 +111,8 @@ class FakeEventLoggerTest {
   fun testFakeEventLogger_logMultipleEvents_clearAllEvents_returnsEmptyList() {
     analyticsEventLogger.logEvent(eventLog1)
     analyticsEventLogger.logEvent(eventLog2)
-    fakeEventLogger.clearAllEvents()
-    val isListEmpty = fakeEventLogger.noEventsPresent()
+    fakeAnalyticsEventLogger.clearAllEvents()
+    val isListEmpty = fakeAnalyticsEventLogger.noEventsPresent()
 
     assertThat(isListEmpty).isTrue()
   }
@@ -120,7 +120,7 @@ class FakeEventLoggerTest {
   @Test
   fun testFakeEventLogger_logEvent_returnsNonEmptyList() {
     analyticsEventLogger.logEvent(eventLog1)
-    val isListEmpty = fakeEventLogger.noEventsPresent()
+    val isListEmpty = fakeAnalyticsEventLogger.noEventsPresent()
 
     assertThat(isListEmpty).isFalse()
   }
@@ -130,9 +130,9 @@ class FakeEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     analyticsEventLogger.logEvent(eventLog2)
 
-    val eventLogStatus1 = fakeEventLogger.hasEventLogged(eventLog1)
-    val eventLogStatus2 = fakeEventLogger.hasEventLogged(eventLog2)
-    val eventListStatus = fakeEventLogger.noEventsPresent()
+    val eventLogStatus1 = fakeAnalyticsEventLogger.hasEventLogged(eventLog1)
+    val eventLogStatus2 = fakeAnalyticsEventLogger.hasEventLogged(eventLog2)
+    val eventListStatus = fakeAnalyticsEventLogger.noEventsPresent()
 
     assertThat(eventListStatus).isFalse()
     assertThat(eventLogStatus1).isTrue()
@@ -141,14 +141,14 @@ class FakeEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows(NoSuchElementException::class) { fakeEventLogger.getOldestEvent() }
+    assertThrows(NoSuchElementException::class) { fakeAnalyticsEventLogger.getOldestEvent() }
   }
 
   @Test
   fun testGetOldestEvent_oneEventLogged_returnsLoggedEvent() {
     analyticsEventLogger.logEvent(eventLog1)
 
-    val oldestEvent = fakeEventLogger.getOldestEvent()
+    val oldestEvent = fakeAnalyticsEventLogger.getOldestEvent()
 
     assertThat(oldestEvent).isEqualTo(eventLog1)
   }
@@ -158,7 +158,7 @@ class FakeEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    val oldestEvent = fakeEventLogger.getOldestEvent()
+    val oldestEvent = fakeAnalyticsEventLogger.getOldestEvent()
 
     assertThat(oldestEvent).isEqualTo(eventLog2)
   }
@@ -167,25 +167,25 @@ class FakeEventLoggerTest {
   fun testGetOldestEvent_twoEventsLogged_clearEvents_throwsException() {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
-    assertThrows(NoSuchElementException::class) { fakeEventLogger.getOldestEvent() }
+    assertThrows(NoSuchElementException::class) { fakeAnalyticsEventLogger.getOldestEvent() }
   }
 
   @Test
   fun testGetOldestEvent_eventLogged_cleared_newEventLogged_returnsLatestEventLog() {
     analyticsEventLogger.logEvent(eventLog2)
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
     analyticsEventLogger.logEvent(eventLog1)
 
-    val oldestEvent = fakeEventLogger.getOldestEvent()
+    val oldestEvent = fakeAnalyticsEventLogger.getOldestEvent()
 
     assertThat(oldestEvent).isEqualTo(eventLog1)
   }
 
   @Test
   fun testGetMostRecentEvents_twoEvents_noEventsLogged_returnsEmptyList() {
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
 
     assertThat(mostRecentEvents).isEmpty()
   }
@@ -194,7 +194,7 @@ class FakeEventLoggerTest {
   fun testGetMostRecentEvents_twoEvents_oneEventLogged_returnsOneItemList() {
     analyticsEventLogger.logEvent(eventLog1)
 
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
 
     assertThat(mostRecentEvents).containsExactly(eventLog1)
   }
@@ -204,7 +204,7 @@ class FakeEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
 
     assertThat(mostRecentEvents).containsExactly(eventLog2, eventLog1).inOrder()
   }
@@ -214,7 +214,7 @@ class FakeEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 1)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 1)
 
     assertThat(mostRecentEvents).containsExactly(eventLog1)
   }
@@ -224,7 +224,7 @@ class FakeEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 0)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 0)
 
     assertThat(mostRecentEvents).isEmpty()
   }
@@ -235,7 +235,7 @@ class FakeEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
 
     assertThrows(IllegalArgumentException::class) {
-      fakeEventLogger.getMostRecentEvents(count = -1)
+      fakeAnalyticsEventLogger.getMostRecentEvents(count = -1)
     }
   }
 
@@ -243,9 +243,9 @@ class FakeEventLoggerTest {
   fun testGetMostRecentEvents_twoEventsLogged_eventsCleared_returnsEmptyList() {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
 
     assertThat(mostRecentEvents).isEmpty()
   }
@@ -253,16 +253,16 @@ class FakeEventLoggerTest {
   @Test
   fun testGetMostRecentEvents_eventLogged_cleared_newEventLogged_returnsNewestEvent() {
     analyticsEventLogger.logEvent(eventLog1)
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
     analyticsEventLogger.logEvent(eventLog2)
 
-    val mostRecentEvents = fakeEventLogger.getMostRecentEvents(count = 2)
+    val mostRecentEvents = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
 
     assertThat(mostRecentEvents).containsExactly(eventLog2)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakeEventLoggerTest_TestApplicationComponent.builder()
+    DaggerFakeAnalyticsEventLoggerTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -294,6 +294,6 @@ class FakeEventLoggerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(fakeEventLoggerTest: FakeEventLoggerTest)
+    fun inject(fakeEventLoggerTest: FakeAnalyticsEventLoggerTest)
   }
 }

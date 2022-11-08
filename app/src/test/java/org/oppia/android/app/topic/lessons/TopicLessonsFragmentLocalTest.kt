@@ -58,7 +58,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -97,7 +97,7 @@ class TopicLessonsFragmentLocalTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val internalProfileId = 0
 
@@ -109,7 +109,7 @@ class TopicLessonsFragmentLocalTest {
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(internalProfileId, TEST_TOPIC_ID, TEST_STORY_ID).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase)
         .isEqualTo(EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB)
