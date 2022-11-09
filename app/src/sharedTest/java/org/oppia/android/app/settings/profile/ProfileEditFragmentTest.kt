@@ -196,7 +196,44 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    profileManagementController.addProfile(
+      name = "James",
+      pin = "123",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    ).toLiveData()
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 4
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadDisabled_switchIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    launch<ProfileEditFragmentTestActivity>(
+      ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
+        context = context,
+        profileId = 0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -217,7 +254,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_configChange_startWithUserHasDownloadAccess_checkSwitchIsChecked() {
+  fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     val addProfileProvider = profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -240,7 +278,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_clickAllowDownloadContainer_checkChanged() {
+  fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
@@ -264,7 +302,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchIsNotClickable() {
+  fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -285,7 +324,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsFocusable() {
+  fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -305,11 +345,8 @@ class ProfileEditFragmentTest {
     }
   }
 
-  // TODO: Update this & other tests to explicitly indicate they're enabling the feature, and also
-  //  add versions of the tests which verify the same situations when the feature is off.
-
   @Test
-  fun testProfileEdit_startWithUserHasDownloadAccess_switchContainerIsDisplayed() {
+  fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
@@ -331,7 +368,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserDoesNotHaveDownloadAccess_switchContainerIsNotDisplayed() {
+  fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotDisplayed() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launch<ProfileEditFragmentTestActivity>(
       ProfileEditFragmentTestActivity.createProfileEditFragmentTestActivity(
         context = context,

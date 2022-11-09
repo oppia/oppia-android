@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @Config(manifest = Config.NONE)
 class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
 
-  // TODO: Add tests for negative cases?
   private val FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
@@ -110,6 +109,8 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   private val WHOLE_NUMBER_VALUE_TEST_1 = InteractionObjectTestBuilder.createSignedInt(value = 1)
   private val WHOLE_NUMBER_VALUE_TEST_2 = InteractionObjectTestBuilder.createSignedInt(value = 2)
   private val WHOLE_NUMBER_VALUE_TEST_3 = InteractionObjectTestBuilder.createSignedInt(value = 3)
+  private val WHOLE_NUMBER_VALUE_TEST_MINUS_1 =
+    InteractionObjectTestBuilder.createSignedInt(value = -1)
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createSignedInt(value = 123)
 
@@ -345,6 +346,31 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     )
 
     assertThat(matches).isFalse()
+  }
+
+  fun testAnswerNegative1_2Over3_input1_hasNotIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_1)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // Sign matters for integer part comparison.
+    assertThat(matches).isFalse()
+  }
+
+  fun testAnswerNegative1_2Over3_inputNegative1_hasIntegerPartEqual() {
+    val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_MINUS_1)
+
+    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
+      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    assertThat(matches).isTrue()
   }
 
   fun testAnswerNegative1_2Over3_input2_hasNotIntegerPartEqual() {
