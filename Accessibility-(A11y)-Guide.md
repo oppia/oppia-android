@@ -107,3 +107,6 @@ This entire sheet should be filled with each release as a part of audit process.
 * Texts should have a minimum `12sp` text size.
 * Images/icons should have a meaningful content description.
 
+## Exceptional Cases
+* Generally we use `sp` only for text-size/font-size of text and at all attributes related to width/height we use `dp`. But we can use width in `sp` if we have text inside a fixed width container. This will increase the size of container whenever we increase the font size, so the scaled text get enough size to fit inside a container. If this case is applied anywhere in UI, please get confirmation from @BenHenning or @rt4914 .
+
