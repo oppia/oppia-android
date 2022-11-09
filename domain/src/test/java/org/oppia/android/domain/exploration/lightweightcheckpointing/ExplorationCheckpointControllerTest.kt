@@ -263,14 +263,14 @@ class ExplorationCheckpointControllerTest {
   }
 
   @Test
-  fun testCheckpointController_databaseEmpty_retrieveOldestCheckpointDetails_isFailure() {
+  fun testCheckpointController_databaseEmpty_retrieveOldestCheckpointDetails_isDefaultDetails() {
     val checkpointProvider =
       explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(
         firstTestProfile
       )
 
-    val error = monitorFactory.waitForNextFailureResult(checkpointProvider)
-    assertThat(error).isInstanceOf(ExplorationCheckpointNotFoundException::class.java)
+    val checkpointDetails = monitorFactory.waitForNextSuccessfulResult(checkpointProvider)
+    assertThat(checkpointDetails).isEqualToDefaultInstance()
   }
 
   @Test

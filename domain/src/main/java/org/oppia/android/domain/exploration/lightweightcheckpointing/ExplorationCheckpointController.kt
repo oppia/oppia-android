@@ -20,6 +20,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -195,30 +196,19 @@ class ExplorationCheckpointController @Inject constructor(
     profileId: ProfileId
   ): DataProvider<ExplorationCheckpointDetails> {
     return retrieveCacheStore(profileId)
-      .transformAsync(
+      .transform(
         RETRIEVE_OLDEST_CHECKPOINT_DETAILS_DATA_PROVIDER_ID
       ) { explorationCheckpointDatabase ->
-
         // Find the oldest checkpoint by timestamp or null if no checkpoints is saved.
-        val oldestCheckpoint =
-          explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
-            it.value.timestampOfFirstCheckpoint
-          }
-
-        if (oldestCheckpoint != null) {
-          val explorationCheckpointDetails = ExplorationCheckpointDetails.newBuilder()
-            .setExplorationId(oldestCheckpoint.key)
-            .setExplorationTitle(oldestCheckpoint.value.explorationTitle)
-            .setExplorationVersion(oldestCheckpoint.value.explorationVersion)
-            .build()
-          AsyncResult.Success(explorationCheckpointDetails)
-        } else {
-          AsyncResult.Failure(
-            ExplorationCheckpointNotFoundException(
-              "No saved checkpoints in $CACHE_NAME for profileId ${profileId.internalId}."
-            )
-          )
-        }
+        explorationCheckpointDatabase.explorationCheckpointMap.minByOrNull {
+          it.value.timestampOfFirstCheckpoint
+        }?.let { (expId, exp) ->
+          ExplorationCheckpointDetails.newBuilder().apply {
+            explorationId = expId
+            explorationTitle = exp.explorationTitle
+            explorationVersion = exp.explorationVersion
+          }.build()
+        } ?: ExplorationCheckpointDetails.getDefaultInstance()
       }
   }
 
