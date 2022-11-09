@@ -86,32 +86,20 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject
-  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-  @Inject
-  lateinit var analyticsController: AnalyticsController
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-  @Inject
-  lateinit var performanceMetricsController: PerformanceMetricsController
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject
-  lateinit var dataProviders: DataProviders
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var fakeSyncStatusManager: FakeSyncStatusManager
-  @field:[Inject MockEventLogger]
-  lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeSyncStatusManager: FakeSyncStatusManager
+  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger:
+    AnalyticsEventLogger
 
   private lateinit var context: Context
 
