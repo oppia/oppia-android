@@ -209,7 +209,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/home/promotedlist/C
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/promotedlist/PromotedStoryListView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingListAdapter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryClickListener.kt"
-exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt"

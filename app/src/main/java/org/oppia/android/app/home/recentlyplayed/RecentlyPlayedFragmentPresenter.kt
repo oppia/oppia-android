@@ -126,7 +126,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     promotedStory: PromotedStory,
     index: Int
   ): RecentlyPlayedItemViewModel {
-    return OngoingStoryViewModel(
+    return PromotedStoryViewModel(
       activity,
       promotedStory,
       entityType,

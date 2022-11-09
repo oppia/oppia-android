@@ -57,7 +57,7 @@ class OngoingListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as OngoingStoryViewHolder).bind(itemList[position] as OngoingStoryViewModel)
+        (holder as OngoingStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
@@ -67,7 +67,7 @@ class OngoingListAdapter(
       is SectionTitleViewModel -> {
         VIEW_TYPE_SECTION_TITLE_TEXT
       }
-      is OngoingStoryViewModel -> {
+      is PromotedStoryViewModel -> {
         VIEW_TYPE_SECTION_STORY_ITEM
       }
       else -> throw IllegalArgumentException(
@@ -95,8 +95,8 @@ class OngoingListAdapter(
   private class OngoingStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(ongoingStoryViewModel: OngoingStoryViewModel) {
-      binding.viewModel = ongoingStoryViewModel
+    internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
+      binding.viewModel = promotedStoryViewModel
     }
   }
 }
