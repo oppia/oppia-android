@@ -110,3 +110,35 @@ This entire sheet should be filled with each release as a part of audit process.
 ## Exceptional Cases
 * Generally we use `sp` only for text-size/font-size of text and at all attributes related to width/height we use `dp`. But we can use width in `sp` if we have text inside a fixed width container. This will increase the size of container whenever we increase the font size, so the scaled text get enough size to fit inside a container. If this case is applied anywhere in UI, please get confirmation from @BenHenning or @rt4914 .
 
+## Android 12 Warnings around TextViews in Fixed Layouts
+
+### Problem with fixed layout
+
+If we have scalable text inside a fixed width container then accessibility scanner is suggesting to improve text scaling, as if the text scales it won’t get enough space to expand inside a fixed width container. 
+
+<img width="250" src="https://user-images.githubusercontent.com/9396084/200759127-f8f9b4e5-1017-4e24-b0c2-28179a520aa7.png"/>
+
+### Possible solution to fix it
+
+1. Change the fixed width to wrap_content and set minWidth. In this case, we can’t directly change the width into a wrap_content as all thumbnail images won’t have consistent width which leads to a problem as mentioned in issue [#4684](https://github.com/oppia/oppia-android/issues/4684). You can see the below screenshot for reference.
+
+<img width="250" src="https://user-images.githubusercontent.com/9396084/200760708-ba6d2659-9cc1-4701-a93d-8647d7db1335.png" />
+
+2. As directly we can’t use wrap_content for width, another possible solution is to use scalable width i.e. instead of setting fixed width in dp we can set the width in sp. This will increase the container size every time we increase the font size, so the scaled text can fit inside the container. In this approach, accessibility scanner will still show suggestion to improve text scaling but from a UI perspective this approach works. For reference you can look at PR [#4695](https://github.com/oppia/oppia-android/pull/4695)
+
+3. Another approach would be to design such that we don’t have to fit a text inside a fixed width container as shown below in the reference image.
+
+<img width="250" src="https://user-images.githubusercontent.com/9396084/200761059-27e0e9be-0fed-4f01-beac-9dff61ab7563.png" />
+
+We can set the full width to the cards i.e. match_parent (with appropriate margins) which will remove the issue of accessibility. We can also show the dots at bottom which represent the number + position of items. 
+
+<img width="250" src="https://user-images.githubusercontent.com/9396084/200761183-0562e48a-259f-4488-8020-11bfb5065f08.png" />
+
+For sighted users
+- The banners will be cyclic i.e. item-0, item1, item2, item0 and repeat.
+
+For talkback users
+- The cyclic nature will stop.
+- The screen reader will start from item-0, item-1, item-2, and next it will go out of list.  
+
+
