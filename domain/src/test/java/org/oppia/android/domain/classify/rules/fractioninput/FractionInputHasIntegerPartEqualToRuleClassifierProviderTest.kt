@@ -258,7 +258,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswerNegative123_1Over2_input123_hasIntegerPartEqual() {
+  fun testAnswerNegative123_1Over2_input123_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
 
     val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
@@ -267,7 +267,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
       classificationContext = ClassificationContext()
     )
 
-    assertThat(matches).isTrue()
+    assertThat(matches).isFalse()
   }
 
   @Test
@@ -348,6 +348,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
+  @Test
   fun testAnswerNegative1_2Over3_input1_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_1)
 
@@ -361,6 +362,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     assertThat(matches).isFalse()
   }
 
+  @Test
   fun testAnswerNegative1_2Over3_inputNegative1_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_MINUS_1)
 
@@ -373,6 +375,7 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
     assertThat(matches).isTrue()
   }
 
+  @Test
   fun testAnswerNegative1_2Over3_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 

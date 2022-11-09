@@ -6,11 +6,12 @@ import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.GenericRuleClassifier
 import org.oppia.android.domain.classify.rules.RuleClassifierProvider
+import org.oppia.android.util.math.toWholeNumber
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether a fraction has an integer part equal to the specified value per the
- * fraction input interaction.
+ * Provider for a classifier that determines whether a fraction has an integer part equal to the
+ * specified value per the fraction input interaction.
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L48
  */
@@ -32,7 +33,5 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProvider @Inject construct
     answer: Fraction,
     input: Int,
     classificationContext: ClassificationContext
-  ): Boolean {
-    return answer.wholeNumber == input
-  }
+  ): Boolean = answer.toWholeNumber() == input
 }
