@@ -108,32 +108,15 @@ private const val TEST_CHECKPOINTING_FAKE_EXP_ID = "test_checkpointing_fake_expl
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationCheckpointControllerTest.TestApplication::class)
 class ExplorationCheckpointControllerTest {
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var explorationCheckpointController: ExplorationCheckpointController
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-
-  @Inject
-  lateinit var explorationDataController: ExplorationDataController
-
-  @Inject
-  lateinit var explorationProgressController: ExplorationProgressController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var fakeExplorationRetriever: FakeExplorationRetriever
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var explorationDataController: ExplorationDataController
+  @Inject lateinit var explorationProgressController: ExplorationProgressController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
