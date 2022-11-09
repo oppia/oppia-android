@@ -25,10 +25,6 @@
       android:layout_width="@{viewModel.computeLayoutWidth(), default=match_parent}"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
       app:roundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
