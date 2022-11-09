@@ -1600,6 +1600,31 @@ class MathExpressionInteractionsViewTest {
     }
   }
 
+  @Test
+  @RunParameterized(
+    Iteration("numeric_expression_valid", "type=NUMERIC_EXPRESSION", "text=0/1"),
+    Iteration("numeric_expression_invalid", "type=NUMERIC_EXPRESSION", "text=1/0"),
+    Iteration("algebraic_expression_valid", "type=ALGEBRAIC_EXPRESSION", "text=x^2"),
+    Iteration("algebraic_expression_invalid", "type=ALGEBRAIC_EXPRESSION", "text=2^x"),
+    Iteration("math_equation_valid", "type=MATH_EQUATION", "text=z=x^2"),
+    Iteration("math_equation_invalid", "type=MATH_EQUATION", "text=z=2^x")
+  )
+  fun testView_allInteractions_validAndInvalidExpressions_produceRealTimeError() {
+    val interactionType = MathInteractionType.valueOf(type)
+    val interaction = createInteraction()
+    launch(interactionType, interaction).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      typeExpressionInput(text)
+
+      // Using not-allowed-listed variables should result in a failure.
+      scenario.onActivity { activity ->
+        val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(REAL_TIME)
+        assertThat(answerError.toString()).isNotNull()
+      }
+    }
+  }
+
   private fun launchForNumericExpressions(
     interaction: Interaction = Interaction.getDefaultInstance(),
     translationContext: WrittenTranslationContext = WrittenTranslationContext.getDefaultInstance()
