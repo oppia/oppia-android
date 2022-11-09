@@ -53,7 +53,7 @@
   <color name="color_palette_progress_bar_solid_color">@color/color_def_oppia_green</color>
   <color name="color_palette_correct_text_stroke_color">@color/color_def_green_shade_80</color>
   <color name="color_palette_correct_text_solid_color">@color/color_def_light_green</color>
-  <color name="color_palette_correct_text_color">@color/color_def_green_shade</color>
+  <color name="color_palette_correct_text_color">@color/color_def_oppia_green</color>
   <color name="color_palette_submit_button_inactive_solid_color">@color/color_def_submit_button_inactive</color>
   <color name="color_palette_submit_button_inactive_stroke_color">@color/color_def_submit_button_inactive</color>
   <color name="color_palette_submit_text_inactive_color">@color/color_def_white</color>
