@@ -105,7 +105,6 @@ class MathExpressionInteractionsViewModel private constructor(
           )
         }
       }
-
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
