@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
@@ -15,48 +14,50 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/overlayConstraintLayout"
     android:layout_width="match_parent"
-    android:focusable="true"
+    android:layout_height="match_parent"
     android:background="@drawable/transparent_background"
     android:clickable="true"
-    android:layout_height="match_parent">
+    android:focusable="true">
 
     <ImageView
       android:id="@+id/arrow"
+      android:layout_width="@dimen/arrow_width"
       android:layout_height="@dimen/arrow_height"
       android:rotationY="180"
-      android:layout_width="@dimen/arrow_width"
       android:src="@drawable/ic_rounded_arrow_up_right"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
       android:id="@+id/custom_text"
+      style="@style/TextViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="center"
       android:text="this is a custom text"
       android:textAlignment="viewEnd"
       android:textColor="@android:color/white"
-      style="@style/TextViewStart"
       android:textSize="24dp"
       android:textStyle="bold"
-      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="@+id/arrow"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/arrow" />
 
     <TextView
       android:id="@+id/close_target"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="50dp"
+      style="@style/StateButtonActive"
+      android:layout_width="160dp"
+      android:layout_height="36dp"
+      android:textSize="14dp"
+      android:gravity="center"
+      android:layout_marginBottom="50dp"
       android:layout_marginEnd="10dp"
+      android:background="@color/color_def_dark_blue"
       android:onClick="@{(v) -> presenter.clickOnNextTip()}"
-      android:text="next tip"
+      android:text="Done"
       android:textColor="#FFFFFF"
-      android:textSize="20sp"
-      android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
       android:id="@+id/close_spotlight"
@@ -68,6 +69,7 @@
       android:textColor="#FFFFFF"
       android:textSize="20sp"
       android:textStyle="bold"
+      android:visibility="invisible"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
