@@ -90,7 +90,7 @@ class ClickableAreasImage(
       val newView = createSelectableView(clickableArea)
       newView.setOnTouchListener { _, event ->
         if (event.action == MotionEvent.ACTION_DOWN) {
-          toggleRegion(clickableArea)
+          toggleRegion(clickableArea, newView)
         }
         return@setOnTouchListener true
       }
@@ -98,7 +98,7 @@ class ClickableAreasImage(
         // Make default region visibility gone when talkback enabled to avoid any accidental touch.
         defaultRegionView.isVisible = false
         newView.setOnClickListener {
-          toggleRegion(clickableArea)
+          toggleRegion(clickableArea, newView)
         }
       }
     }
@@ -122,7 +122,7 @@ class ClickableAreasImage(
    * Toggles whether the clickable region corresponding to the provided [clickableArea] is visible
    * and available to be clicked.
    */
-  fun toggleRegion(clickableArea: ImageWithRegions.LabeledRegion) {
+  fun toggleRegion(clickableArea: ImageWithRegions.LabeledRegion, view: View?) {
     resetRegionSelectionViews()
     listener.onClickableAreaTouched(
       NamedRegionClickedEvent(
@@ -130,8 +130,10 @@ class ClickableAreasImage(
         clickableArea.contentDescription
       )
     )
-    val newView = createSelectableView(clickableArea)
-    newView.setBackgroundResource(R.drawable.selected_region_background)
+
+    view?.setBackgroundResource(R.drawable.selected_region_background) ?: createSelectableView(
+      clickableArea
+    ).setBackgroundResource(R.drawable.selected_region_background)
   }
 
   private fun createSelectableView(clickableArea: ImageWithRegions.LabeledRegion): View {

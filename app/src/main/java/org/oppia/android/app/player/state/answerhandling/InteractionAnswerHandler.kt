@@ -23,10 +23,7 @@ interface InteractionAnswerHandler {
     return null
   }
 
-  /**
-   * Returns the current answer entered or selected by the user which is used in pending state to
-   * show list of previously selected answers.
-   */
+  /** Returns the pending answer awaiting submission by the user. */
   fun getPendingAnswer(): UserAnswer? {
     return null
   }

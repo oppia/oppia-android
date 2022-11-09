@@ -89,7 +89,7 @@ class StateFragment :
     val rawUserAnswer = savedInstanceState?.getProto(
       STATE_FRAGMENT_RAW_USER_ANSWER_KEY, RawUserAnswer.getDefaultInstance()
     ) ?: RawUserAnswer.getDefaultInstance()
-    val isPreviousResponsesExpanded =
+    val arePreviousResponsesExpanded =
       savedInstanceState?.getBoolean(STATE_FRAGMENT_ARE_PREVIOUS_RESPONSES_HEADER_EXPANDED_KEY)
         ?: false
     return stateFragmentPresenter.handleCreateView(
@@ -99,7 +99,7 @@ class StateFragment :
       topicId,
       storyId,
       rawUserAnswer,
-      isPreviousResponsesExpanded,
+      arePreviousResponsesExpanded,
       explorationId
     )
   }

@@ -108,7 +108,7 @@ class MathExpressionInteractionsViewModel private constructor(
 
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
+    checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -181,7 +181,7 @@ class MathExpressionInteractionsViewModel private constructor(
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
-        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
+        checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {

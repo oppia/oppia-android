@@ -74,7 +74,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     rawUserAnswer: RawUserAnswer,
-    isPreviousResponsesExpanded: Boolean,
+    arePreviousResponsesExpanded: Boolean,
     profileId: ProfileId
   ): View? {
     binding = QuestionPlayerFragmentBinding.inflate(
@@ -89,7 +89,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
         "skill",
         profileId,
         rawUserAnswer,
-        isPreviousResponsesExpanded
+        arePreviousResponsesExpanded
       ),
       binding.congratulationsTextView,
       binding.congratulationsTextConfettiView,
@@ -124,8 +124,8 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     subscribeToHintSolution(questionAssessmentProgressController.submitSolutionIsRevealed())
   }
 
-  /** Returns whether previously submitted wrong answers should be expanded or not. */
-  fun getIsPreviousResponsesExpanded(): Boolean {
+  /** Returns whether previously submitted wrong answers are currently expanded. */
+  fun getArePreviousResponsesExpanded(): Boolean {
     return recyclerViewAssembler.arePreviousResponsesExpanded
   }
 
@@ -409,7 +409,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     }
   }
 
-  /** Returns [RawUserAnswer] from stateViewModel's [getRawUserAnswer]. */
+  /** Returns the [RawUserAnswer] representing the user's current pending answer. */
   fun getRawUserAnswer(): RawUserAnswer {
     return if (isConfigChangeStateRetentionEnabled.value) {
       questionViewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)

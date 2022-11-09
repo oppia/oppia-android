@@ -211,7 +211,6 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onSubmitButtonClicked() {
-    recyclerViewAssembler.resetRawUserAnswer()
     hideKeyboard()
     handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
   }
@@ -278,7 +277,7 @@ class StateFragmentPresenter @Inject constructor(
     subscribeToHintSolution(explorationProgressController.submitSolutionIsRevealed())
   }
 
-  /** Returns whether previously submitted wrong answers should be expanded or not. */
+  /** Returns whether previously submitted wrong answers are currently expanded. */
   fun getArePreviousResponsesExpanded(): Boolean {
     return recyclerViewAssembler.arePreviousResponsesExpanded
   }
@@ -392,6 +391,7 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
           } else {
+            recyclerViewAssembler.resetRawUserAnswer()
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
           recyclerViewAssembler.readOutAnswerFeedback(result.feedback)
@@ -473,7 +473,7 @@ class StateFragmentPresenter @Inject constructor(
   /** Returns the checkpoint state for the current exploration. */
   fun getExplorationCheckpointState() = explorationCheckpointState
 
-  /** Returns [RawUserAnswer] from stateViewModel's [getRawUserAnswer]. */
+  /** Returns the [RawUserAnswer] representing the user's current pending answer. */
   fun getRawUserAnswer(): RawUserAnswer {
     return if (isConfigChangeStateRetentionEnabled.value) {
       viewModel.getRawUserAnswer(recyclerViewAssembler::getPendingAnswerHandler)

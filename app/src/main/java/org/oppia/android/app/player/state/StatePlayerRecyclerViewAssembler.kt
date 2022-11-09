@@ -1369,10 +1369,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val playerFeatureSet = featureSets.reduce(PlayerFeatureSet::union)
       val assembler = StatePlayerRecyclerViewAssembler(
         accessibilityService,
-        /* adapter= */
-        adapterBuilder.build(),
-        /* rhsAdapter= */
-        adapterBuilder.build(),
+        /* adapter= */ adapterBuilder.build(),
+        /* rhsAdapter= */ adapterBuilder.build(),
         playerFeatureSet,
         fragment,
         profileId,
@@ -1424,7 +1422,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         entityType: String,
         profileId: ProfileId,
         rawUserAnswer: RawUserAnswer,
-        isPreviousResponsesExpanded: Boolean
+        arePreviousResponsesExpanded: Boolean
       ): Builder {
         return Builder(
           accessibilityService,
@@ -1441,7 +1439,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           multiAdapterBuilderFactory,
           singleAdapterFactory,
           rawUserAnswer,
-          isPreviousResponsesExpanded
+          arePreviousResponsesExpanded
         )
       }
     }
