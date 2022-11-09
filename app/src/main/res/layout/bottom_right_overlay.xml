@@ -34,12 +34,12 @@
       style="@style/TextViewStart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center"
       android:text="this is a custom text"
-      android:textAlignment="center"
+      android:textAlignment="viewEnd"
       android:textColor="@android:color/white"
       android:textSize="24dp"
       android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toTopOf="@id/arrow"
       app:layout_constraintEnd_toEndOf="@+id/arrow" />
 

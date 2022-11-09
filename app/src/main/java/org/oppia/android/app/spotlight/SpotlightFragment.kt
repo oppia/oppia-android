@@ -324,7 +324,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     if (isRTL) {
       arrowParams.setMargins(
         10.dp,
-        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
         screenWidth -
           (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         10.dp
@@ -332,7 +332,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     } else {
       arrowParams.setMargins(
         (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
-        (spotlightTarget.anchorTop.toInt() - spotlightTarget.anchorHeight - 5.dp).toInt(),
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
         10.dp,
         10.dp
       )
@@ -363,7 +363,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       )
     } else {
       arrowParams.setMargins(
-        (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth() + 5.dp).toInt(),
+        (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
         10.dp,
         10.dp

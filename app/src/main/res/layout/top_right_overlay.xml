@@ -31,14 +31,14 @@
     <TextView
       android:id="@+id/custom_text"
       style="@style/TextViewStart"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:gravity="center"
       android:text="this is a custom text"
-      android:textAlignment="viewEnd"
+      android:gravity="end"
       android:textColor="@android:color/white"
       android:textSize="24dp"
       android:textStyle="bold"
+      android:textAlignment="viewEnd"
       app:layout_constraintEnd_toEndOf="@+id/arrow"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/arrow" />
