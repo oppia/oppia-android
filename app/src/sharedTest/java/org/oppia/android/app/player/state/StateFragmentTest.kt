@@ -1611,9 +1611,9 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
-      // Entering text in Fraction Input Interaction
+      // Entering text in Fraction Input Interaction.
       typeFractionText("34k")
-      // Rotating device
+      // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val fractionInputInteraction =
@@ -1634,9 +1634,9 @@ class StateFragmentTest {
       playThroughPrototypeState3()
       playThroughPrototypeState4()
       playThroughPrototypeState5()
-      // Entering text in Numeric Input
+      // Entering text in Numeric Input.
       typeNumericInput("121")
-      // Rotating device
+      // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val numericInputInteractionView =
@@ -1657,9 +1657,9 @@ class StateFragmentTest {
       playThroughPrototypeState4()
       playThroughPrototypeState5()
       playThroughPrototypeState6()
-      // Entering text in Ratio Input Interaction
+      // Entering text in Ratio Input Interaction.
       typeRatioExpression("3a:5")
-      // Rotating device
+      // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val ratioInputInteraction =
@@ -1682,9 +1682,9 @@ class StateFragmentTest {
       playThroughPrototypeState5()
       playThroughPrototypeState6()
       playThroughPrototypeState7()
-      // Enter text in Text Input Interaction
+      // Enter text in Text Input Interaction.
       typeTextInput("finnish")
-      // Rotating device
+      // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val textInputInteraction =
@@ -1699,9 +1699,9 @@ class StateFragmentTest {
   fun testStateFragment_mathInteractions_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-      // Enter text in Math Input Interaction
+      // Enter text in Math Input Interaction.
       typeNumericExpression("1+2")
-      // Rotating device
+      // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val mathExpressionInteractionView =
@@ -1862,9 +1862,9 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
-      // Entering text in Fraction Input Interaction
+      // Entering text in Fraction Input Interaction.
       typeFractionText("1/2")
-      // Rotating device
+      // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val fractionInputInteraction =
@@ -1906,7 +1906,7 @@ class StateFragmentTest {
       onView(withId(R.id.previous_response_header)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // rotate screen
+      // Rotating device.
       rotateToLandscape()
 
       // Both failed answers should be showing.
@@ -1932,7 +1932,7 @@ class StateFragmentTest {
       typeFractionText("1/4")
       clickSubmitAnswerButton()
 
-      // rotate screen (by default responses are collapsed)
+      // Rotate screen (by default responses are collapsed).
       rotateToLandscape()
 
       // Only the latest failed answer should be showing.
