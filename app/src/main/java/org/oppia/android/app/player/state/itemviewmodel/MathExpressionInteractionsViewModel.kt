@@ -107,7 +107,7 @@ class MathExpressionInteractionsViewModel private constructor(
       }
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
@@ -153,7 +153,11 @@ class MathExpressionInteractionsViewModel private constructor(
     if (answerText.isNotEmpty()) {
       pendingAnswerError = when (category) {
         // There's no support for real-time errors.
-        AnswerErrorCategory.REAL_TIME -> null
+        AnswerErrorCategory.REAL_TIME -> {
+          interactionType.computeSubmitTimeError(
+            answerText.toString(), allowedVariables, resourceHandler
+          )
+        }
         AnswerErrorCategory.SUBMIT_TIME -> {
           interactionType.computeSubmitTimeError(
             answerText.toString(), allowedVariables, resourceHandler
@@ -180,7 +184,7 @@ class MathExpressionInteractionsViewModel private constructor(
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
           isAnswerAvailable.set(isAnswerTextAvailable)
         }
-        checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+        checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
       }
 
       override fun afterTextChanged(s: Editable) {
