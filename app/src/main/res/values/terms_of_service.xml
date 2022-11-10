@@ -14,9 +14,8 @@
     <p>
       PLEASE READ THE FOLLOWING TERMS OF USE CAREFULLY. BY REGISTERING FOR OR
       ACCESSING THE WEBSITE, YOU ACKNOWLEDGE, AGREE, AND ACCEPT TO BE BOUND BY
-      THE TERMS. IF YOU DO NOT AGREE TO THE TERMS, OR IF YOU ARE UNDER THE AGE
-      OF 13 YEARS OLD AND DO NOT HAVE THE APPROVAL OF A LEGAL PARENT OR
-      GUARDIAN, YOU MUST NOT REGISTER FOR OR ACCESS THIS WEBSITE.
+      THE TERMS. IF YOU DO NOT AGREE TO THE TERMS, YOU MUST NOT REGISTER FOR
+      OR ACCESS THIS WEBSITE.
     </p>
 
     <h2>Our Services</h2>
@@ -231,6 +230,7 @@
 
     <h2>Changelog</h2>
     <ul>
+      <li>31 Oct 2022: Android-only clarification of age requirements.</li>
       <li>19 Oct 2020: Clarified use of CC-BY-SA.</li>
       <li>13 Oct 2015: Minor updates for clarity.</li>
       <li>26 Sep 2015: Revised terms added.</li>

@@ -26,11 +26,12 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AddProfileActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 const val GALLERY_INTENT_RESULT_CODE = 1
@@ -40,13 +41,11 @@ const val GALLERY_INTENT_RESULT_CODE = 1
 class AddProfileActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  private val viewModelProvider: ViewModelProvider<AddProfileViewModel>,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val profileViewModel: AddProfileViewModel,
+  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private lateinit var uploadImageView: ImageView
-  private val profileViewModel by lazy {
-    getAddProfileViewModel()
-  }
   private var selectedImage: Uri? = null
   private var allowDownloadAccess = false
   private var inputtedPin = false
@@ -55,7 +54,6 @@ class AddProfileActivityPresenter @Inject constructor(
   private lateinit var alertDialog: AlertDialog
 
   fun handleOnCreate() {
-
     val binding = DataBindingUtil.setContentView<AddProfileActivityBinding>(
       activity,
       R.layout.add_profile_activity
@@ -65,9 +63,11 @@ class AddProfileActivityPresenter @Inject constructor(
       lifecycleOwner = activity
       viewModel = profileViewModel
     }
-    binding.addProfileActivityAllowDownloadConstraintLayout.setOnClickListener {
-      allowDownloadAccess = !allowDownloadAccess
-      binding.addProfileActivityAllowDownloadSwitch.isChecked = allowDownloadAccess
+    if (!enableDownloadsSupport.value) {
+      binding.addProfileActivityAllowDownloadConstraintLayout.setOnClickListener {
+        allowDownloadAccess = !allowDownloadAccess
+        binding.addProfileActivityAllowDownloadSwitch.isChecked = allowDownloadAccess
+      }
     }
     binding.addProfileActivityPinCheckBox.setOnCheckedChangeListener { _, isChecked ->
       profileViewModel.createPin.set(isChecked)
@@ -318,9 +318,5 @@ class AddProfileActivityPresenter @Inject constructor(
     if (::alertDialog.isInitialized && alertDialog.isShowing) {
       alertDialog.dismiss()
     }
-  }
-
-  private fun getAddProfileViewModel(): AddProfileViewModel {
-    return viewModelProvider.getForActivity(activity, AddProfileViewModel::class.java)
   }
 }
