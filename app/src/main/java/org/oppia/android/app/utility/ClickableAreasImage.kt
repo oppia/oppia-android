@@ -131,9 +131,8 @@ class ClickableAreasImage(
       )
     )
 
-    view?.setBackgroundResource(R.drawable.selected_region_background) ?: createSelectableView(
-      clickableArea
-    ).setBackgroundResource(R.drawable.selected_region_background)
+    val affectedView = view ?: createSelectableView(clickableArea)
+    affectedView.setBackgroundResource(R.drawable.selected_region_background)
   }
 
   private fun createSelectableView(clickableArea: ImageWithRegions.LabeledRegion): View {
