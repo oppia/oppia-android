@@ -379,6 +379,9 @@ class StateFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnswerOutcome>>
   ) {
+    if (viewModel.getCanSubmitAnswer().get() == true) {
+      recyclerViewAssembler.resetRawUserAnswer()
+    }
     val answerOutcomeLiveData = getAnswerOutcome(answerOutcomeResultLiveData)
     answerOutcomeLiveData.observe(
       fragment,
@@ -391,7 +394,6 @@ class StateFragmentPresenter @Inject constructor(
           if (result.labelledAsCorrectAnswer) {
             recyclerViewAssembler.showCelebrationOnCorrectAnswer(result.feedback)
           } else {
-            recyclerViewAssembler.resetRawUserAnswer()
             viewModel.setCanSubmitAnswer(canSubmitAnswer = false)
           }
           recyclerViewAssembler.readOutAnswerFeedback(result.feedback)

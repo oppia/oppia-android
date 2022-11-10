@@ -161,7 +161,6 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   }
 
   fun onSubmitButtonClicked() {
-    recyclerViewAssembler.resetRawUserAnswer()
     hideKeyboard()
     handleSubmitAnswer(
       questionViewModel.getPendingAnswer(
@@ -278,6 +277,9 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
   private fun subscribeToAnswerOutcome(
     answerOutcomeResultLiveData: LiveData<AsyncResult<AnsweredQuestionOutcome>>
   ) {
+    if (questionViewModel.getCanSubmitAnswer().get() == true) {
+      recyclerViewAssembler.resetRawUserAnswer()
+    }
     val answerOutcomeLiveData =
       Transformations.map(answerOutcomeResultLiveData, ::processAnsweredQuestionOutcome)
     answerOutcomeLiveData.observe(
