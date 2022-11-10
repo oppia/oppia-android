@@ -68,7 +68,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     }
     binding.lifecycleOwner = fragment
 
-    subscribeToOngoingStoryList()
+    subscribeToPromotedStoryList()
     return binding.root
   }
 
@@ -80,7 +80,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       ).toLiveData()
     }
 
-  private fun subscribeToOngoingStoryList() {
+  private fun subscribeToPromotedStoryList() {
     getAssumedSuccessfulPromotedActivityList().observe(
       fragment,
       {
