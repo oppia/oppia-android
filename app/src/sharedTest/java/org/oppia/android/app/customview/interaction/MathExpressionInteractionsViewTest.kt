@@ -1609,7 +1609,7 @@ class MathExpressionInteractionsViewTest {
     Iteration("math_equation_valid", "type=MATH_EQUATION", "text=z=x^2"),
     Iteration("math_equation_invalid", "type=MATH_EQUATION", "text=z=2^x")
   )
-  fun testView_allInteractions_validAndInvalidExpressions_produceRealTimeError() {
+  fun testView_allInteractions_validAndInvalidExpressions_doNotProduceRealTimeError() {
     val interactionType = MathInteractionType.valueOf(type)
     val interaction = createInteraction()
     launch(interactionType, interaction).use { scenario ->
@@ -1620,7 +1620,7 @@ class MathExpressionInteractionsViewTest {
       // Using not-allowed-listed variables should result in a failure.
       scenario.onActivity { activity ->
         val answerError = activity.mathExpressionViewModel.checkPendingAnswerError(REAL_TIME)
-        assertThat(answerError.toString()).isNotNull()
+        assertThat(answerError).isNull()
       }
     }
   }
