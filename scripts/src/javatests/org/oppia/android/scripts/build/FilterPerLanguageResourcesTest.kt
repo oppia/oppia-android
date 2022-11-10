@@ -96,7 +96,7 @@ class FilterPerLanguageResourcesTest {
   }
 
   @Test
-  fun testUtility_threeArg_failsWithUsageString() {
+  fun testUtility_threeArgs_failsWithUsageString() {
     val error = assertThrows(IllegalArgumentException::class) {
       runScript(
         tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"), "extra_param"
