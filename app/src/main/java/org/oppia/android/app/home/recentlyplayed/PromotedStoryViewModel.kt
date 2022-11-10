@@ -13,7 +13,7 @@ import org.oppia.android.domain.translation.TranslationController
 /** [ViewModel] for displaying a promoted story. */
 class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
-  val ongoingStory: PromotedStory,
+  val promotedStory: PromotedStory,
   val entityType: String,
   private val ongoingStoryClickListener: OngoingStoryClickListener,
   private val position: Int,
@@ -22,22 +22,22 @@ class PromotedStoryViewModel(
 ) : RecentlyPlayedItemViewModel() {
   val storyTitle by lazy {
     translationController.extractString(
-      ongoingStory.storyTitle, ongoingStory.storyWrittenTranslationContext
+      promotedStory.storyTitle, promotedStory.storyWrittenTranslationContext
     )
   }
   val topicTitle by lazy {
     translationController.extractString(
-      ongoingStory.topicTitle, ongoingStory.topicWrittenTranslationContext
+      promotedStory.topicTitle, promotedStory.topicWrittenTranslationContext
     )
   }
   val nextChapterTitle by lazy {
     translationController.extractString(
-      ongoingStory.nextChapterTitle, ongoingStory.nextChapterWrittenTranslationContext
+      promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
     )
   }
 
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
+    ongoingStoryClickListener.onOngoingStoryClicked(promotedStory)
   }
 
   private val outerMargin by lazy {
