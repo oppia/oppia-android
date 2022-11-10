@@ -1,9 +1,7 @@
 package org.oppia.android.app.home.recentlyplayed
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.databinding.OngoingStoryCardBinding
 import org.oppia.android.databinding.SectionTitleBinding
@@ -13,11 +11,9 @@ private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
 /** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
 class PromotedStoryListAdapter(
-  private val activity: AppCompatActivity,
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-  private val orientation = Resources.getSystem().configuration.orientation
   private var titleIndex: Int = 0
   private var storyGridPosition: Int = 0
   private var spanCount = 0
@@ -87,7 +83,7 @@ class PromotedStoryListAdapter(
   private class SectionTitleViewHolder(
     val binding: SectionTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(sectionTitleViewModel: SectionTitleViewModel) {
+    fun bind(sectionTitleViewModel: SectionTitleViewModel) {
       binding.viewModel = sectionTitleViewModel
     }
   }
@@ -95,7 +91,7 @@ class PromotedStoryListAdapter(
   private class OngoingStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    internal fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
+    fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
     }
   }

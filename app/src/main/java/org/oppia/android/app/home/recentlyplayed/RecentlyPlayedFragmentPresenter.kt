@@ -62,7 +62,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
     this.internalProfileId = internalProfileId
 
-    promotedStoryListAdapter = PromotedStoryListAdapter(activity, itemList)
+    promotedStoryListAdapter = PromotedStoryListAdapter(itemList)
     binding.ongoingStoryRecyclerView.apply {
       adapter = promotedStoryListAdapter
     }
