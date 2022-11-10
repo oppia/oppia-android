@@ -27,8 +27,9 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/view_event_logs_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/oppia_primary"
+        android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"
