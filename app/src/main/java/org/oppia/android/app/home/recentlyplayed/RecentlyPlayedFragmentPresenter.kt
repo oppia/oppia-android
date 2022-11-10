@@ -50,7 +50,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   private val routeToExplorationListener = activity as RouteToExplorationListener
   private var internalProfileId: Int = -1
   private lateinit var binding: RecentlyPlayedFragmentBinding
-  private lateinit var ongoingListAdapter: OngoingListAdapter
+  private lateinit var promotedStoryListAdapter: PromotedStoryListAdapter
   private val itemList: MutableList<RecentlyPlayedItemViewModel> = ArrayList()
 
   fun handleCreateView(
@@ -62,9 +62,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
 
     this.internalProfileId = internalProfileId
 
-    ongoingListAdapter = OngoingListAdapter(activity, itemList)
+    promotedStoryListAdapter = PromotedStoryListAdapter(activity, itemList)
     binding.ongoingStoryRecyclerView.apply {
-      adapter = ongoingListAdapter
+      adapter = promotedStoryListAdapter
     }
     binding.lifecycleOwner = fragment
 
@@ -102,7 +102,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             it.promotedStoryList.olderPlayedStoryCount,
             it.promotedStoryList.suggestedStoryCount
           )
-        ongoingListAdapter.notifyDataSetChanged()
+        promotedStoryListAdapter.notifyDataSetChanged()
       }
     )
   }
@@ -210,7 +210,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     }
 
     val spanCount = activity.resources.getInteger(R.integer.recently_played_span_count)
-    ongoingListAdapter.setSpanCount(spanCount)
+    promotedStoryListAdapter.setSpanCount(spanCount)
 
     val layoutManager = GridLayoutManager(activity.applicationContext, spanCount)
     layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
