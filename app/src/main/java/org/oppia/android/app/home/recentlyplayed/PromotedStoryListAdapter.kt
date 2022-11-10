@@ -39,7 +39,7 @@ class PromotedStoryListAdapter(
             parent,
             /* attachToParent= */ false
           )
-        OngoingStoryViewHolder(binding)
+        PromotedStoryViewHolder(binding)
       }
       else -> throw IllegalArgumentException("Invalid view type: $viewType")
     }
@@ -53,7 +53,7 @@ class PromotedStoryListAdapter(
       }
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         storyGridPosition = position - titleIndex
-        (holder as OngoingStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
+        (holder as PromotedStoryViewHolder).bind(itemList[position] as PromotedStoryViewModel)
       }
       else -> throw IllegalArgumentException("Invalid item view type: ${holder.itemViewType}")
     }
@@ -88,7 +88,7 @@ class PromotedStoryListAdapter(
     }
   }
 
-  private class OngoingStoryViewHolder(
+  private class PromotedStoryViewHolder(
     val binding: OngoingStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
