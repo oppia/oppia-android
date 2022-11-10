@@ -96,6 +96,17 @@ class FilterPerLanguageResourcesTest {
   }
 
   @Test
+  fun testUtility_threeArg_failsWithUsageString() {
+    val error = assertThrows(IllegalArgumentException::class) {
+      runScript(
+        tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"), "extra_param"
+      )
+    }
+
+    assertThat(error).hasMessageThat().contains(USAGE_STRING)
+  }
+
+  @Test
   fun testUtility_resourceTableProtoMissingInZip_throwsFailure() {
     // Create an empty zip file.
     ZipOutputStream(File(tempFolder.root, "input.zip").outputStream()).close()

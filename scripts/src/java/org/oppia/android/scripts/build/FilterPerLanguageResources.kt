@@ -32,12 +32,14 @@ import java.util.zip.ZipOutputStream
  *     $(pwd)/bazel-bin/oppia_dev_raw_module.zip $(pwd)/oppia_dev_updated_module.zip
  */
 fun main(vararg args: String) {
-  require(args.size >= 2) {
+  require(args.size == 2) {
     "Usage: bazel run //scripts:filter_per_language_resources --" +
       " </absolute/path/to/input_module.zip:Path>" +
       " </absolute/path/to/output_module.zip:Path>"
   }
-  FilterPerLanguageResources().filterPerLanguageResources(File(args[0]), File(args[1]))
+  FilterPerLanguageResources().filterPerLanguageResources(
+    inputModuleZip = File(args[0]), outputModuleZip = File(args[1])
+  )
 }
 
 private class FilterPerLanguageResources {
