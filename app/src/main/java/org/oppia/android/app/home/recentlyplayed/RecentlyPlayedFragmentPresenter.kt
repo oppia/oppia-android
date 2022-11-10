@@ -72,7 +72,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private val ongoingStoryListSummaryResultLiveData:
+  private val promotedStoryListSummaryResultLiveData:
     LiveData<AsyncResult<PromotedActivityList>>
     by lazy {
       topicListController.getPromotedActivityList(
@@ -166,7 +166,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   }
 
   private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
-    return Transformations.map(ongoingStoryListSummaryResultLiveData) {
+    return Transformations.map(promotedStoryListSummaryResultLiveData) {
       when (it) {
         // If there's an error loading the data, assume the default.
         is AsyncResult.Failure, is AsyncResult.Pending -> PromotedActivityList.getDefaultInstance()
