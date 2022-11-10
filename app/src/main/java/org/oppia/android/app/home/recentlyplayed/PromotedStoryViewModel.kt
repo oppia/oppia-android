@@ -15,7 +15,7 @@ class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
   val promotedStory: PromotedStory,
   val entityType: String,
-  private val ongoingStoryClickListener: OngoingStoryClickListener,
+  private val promotedStoryClickListener: PromotedStoryClickListener,
   private val position: Int,
   private val resourceHandler: AppLanguageResourceHandler,
   translationController: TranslationController
@@ -37,7 +37,7 @@ class PromotedStoryViewModel(
   }
 
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    ongoingStoryClickListener.onOngoingStoryClicked(promotedStory)
+    promotedStoryClickListener.promotedStoryClicked(promotedStory)
   }
 
   private val outerMargin by lazy {

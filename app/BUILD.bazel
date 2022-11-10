@@ -120,7 +120,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/home/RouteToRecentlyPlayedListener.kt",
     "src/main/java/org/oppia/android/app/home/RouteToTopicListener.kt",
     "src/main/java/org/oppia/android/app/home/RouteToTopicPlayStoryListener.kt",
-    "src/main/java/org/oppia/android/app/home/recentlyplayed/OngoingStoryClickListener.kt",
+    "src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryClickListener.kt",
     "src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryClickListener.kt",
     "src/main/java/org/oppia/android/app/onboarding/OnboardingNavigationListener.kt",
     "src/main/java/org/oppia/android/app/onboarding/RouteToProfileListListener.kt",

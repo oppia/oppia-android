@@ -130,7 +130,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
       activity,
       promotedStory,
       entityType,
-      fragment as OngoingStoryClickListener,
+      fragment as PromotedStoryClickListener,
       index,
       resourceHandler,
       translationController
@@ -228,7 +228,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
     return layoutManager
   }
 
-  fun onOngoingStoryClicked(promotedStory: PromotedStory) {
+  fun promotedStoryClicked(promotedStory: PromotedStory) {
     val profileId = ProfileId.newBuilder().apply {
       internalId = internalProfileId
     }.build()
