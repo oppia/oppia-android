@@ -8,7 +8,6 @@
     <item>@string/faq_question_5</item>
     <item>@string/faq_question_6</item>
     <item>@string/faq_question_7</item>
-    <item>@string/faq_question_8</item>
     <item>@string/faq_question_9</item>
   </string-array>
 
@@ -20,7 +19,6 @@
     <item>@string/faq_answer_5</item>
     <item>@string/faq_answer_6</item>
     <item>@string/faq_answer_7</item>
-    <item>@string/faq_answer_8</item>
     <item>@string/faq_answer_9</item>
   </string-array>
 </resources>
