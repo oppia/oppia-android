@@ -11,11 +11,13 @@ import javax.inject.Qualifier
  */
 
 /**
- * Qualifier for the platform parameter that automatically updates topics when a user toggles the
- * switch in the [AdministratorControlsFragmentPresenter].
+ * Qualifier for the platform parameter that controls whether the user has support for manually
+ * downloading topics.
  */
-@Qualifier
-annotation class AutomaticUpdateTopicSetting
+@Qualifier annotation class EnableDownloadsSupport
+
+/** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
+const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 
 /**
  * Name of the platform parameter that automatically updates topics when a user toggles the
@@ -214,8 +216,10 @@ const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
 @Qualifier
 annotation class EnableInteractionConfigChangeStateRetention
 
-/** Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention]. */
-const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION = true
+/**
+ * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
+ */
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls the animation for hint bulb animation

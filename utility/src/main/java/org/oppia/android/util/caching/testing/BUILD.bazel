@@ -33,6 +33,21 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "fake_asset_repository",
+    testonly = True,
+    srcs = [
+        "FakeAssetRepository.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        "//third_party:com_google_protobuf_protobuf-javalite",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
+        "//utility/src/main/java/org/oppia/android/util/caching:impl",
+    ],
+)
+
+kt_android_library(
     name = "test_asset_repository",
     testonly = True,
     srcs = [
