@@ -16,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,6 +31,7 @@ import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.exploration.ExplorationRetriever
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -71,30 +73,42 @@ class HintHandlerProdImplTest {
   private lateinit var hintHandler: HintHandler
 
   private val expWithNoHintsOrSolution by lazy {
-    explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    runBlocking {
+      explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    }
   }
   private val expWithOneHintAndNoSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_one_hint_and_no_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution"
+      )
+    }
   }
   private val expWithOneHintAndSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_one_hint_and_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_one_hint_and_solution"
+      )
+    }
   }
   private val expWithNoHintsAndOneSolution by lazy {
-    explorationRetriever.loadExploration("test_single_interactive_state_exp_with_only_solution")
+    runBlocking {
+      explorationRetriever.loadExploration("test_single_interactive_state_exp_with_only_solution")
+    }
   }
   private val expWithHintsAndSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_hints_and_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_hints_and_solution"
+      )
+    }
   }
   private val expWithSolutionMissingCorrectAnswer by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_solution_missing_answer"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_solution_missing_answer"
+      )
+    }
   }
 
   @Before
@@ -2110,7 +2124,8 @@ class HintHandlerProdImplTest {
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      ExplorationStorageTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

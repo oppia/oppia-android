@@ -1,0 +1,203 @@
+{
+  "exploration_id": "test_checkpointing_exploration_multiple_compatible_updates",
+  "preferred_audio_language_code": "<unknown>",
+  "correctness_feedback_enabled": false,
+  "version": 6,
+  "record_playthrough_probability": 0.0,
+  "exploration": {
+    "init_state_name": "first_state",
+    "param_changes": [],
+    "param_specs": {},
+    "states": {
+      "first_state": {
+        "content": {
+          "content_id": "content",
+          "html": "What is the value of PI to 3 significant digits?"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "NumericInput",
+          "customization_args": {},
+          "answer_groups": [{
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3.14
+              }
+            }],
+            "outcome": {
+              "dest": "second_state",
+              "feedback": {
+                "content_id": "feedback_1",
+                "html": "Correct answer, well done!"
+              },
+              "labelled_as_correct": true,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }, {
+            "rule_specs": [{
+              "rule_type": "Equals",
+              "inputs": {
+                "x": 3.14159
+              }
+            }],
+            "outcome": {
+              "dest": "first_state",
+              "feedback": {
+                "content_id": "feedback_2",
+                "html": "Answer is too precise"
+              },
+              "labelled_as_correct": false,
+              "param_changes": [],
+              "refresher_exploration_id": "",
+              "missing_prerequisite_skill_id": ""
+            },
+            "tagged_skill_misconception_id": ""
+          }],
+          "default_outcome": {
+            "dest": "first_state",
+            "feedback": {
+              "content_id": "feedback_0",
+              "html": "Wrong answer"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [{
+            "hint_content": {
+              "content_id": "hint_0",
+              "html": "PI can be approximated to 3 correct digits by computing 22/7."
+            }
+          }, {
+            "hint_content": {
+              "content_id": "hint_1",
+              "html": "PI can be approximated to 6 correct digits by computing 355/113."
+            }
+          }],
+          "solution": {
+            "answer_is_exclusive": false,
+            "correct_answer": "",
+            "explanation": {
+              "content_id": "",
+              "html": ""
+            }
+          }
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {}
+        },
+        "written_translations": {
+          "translations_mapping": {}
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1,
+        "linked_skill_id": null
+      },
+      "second_state": {
+        "content": {
+          "content_id": "content",
+          "html": "Click on the continue button"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "Continue",
+          "customization_args": {},
+          "answer_groups": [],
+          "default_outcome": {
+            "dest": "third_state",
+            "feedback": {
+              "content_id": "feedback_0",
+              "html": "Feedback for continue button"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {}
+        },
+        "written_translations": {
+          "translations_mapping": {}
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1,
+        "linked_skill_id": null
+      },
+      "end": {
+        "content": {
+          "content_id": "",
+          "html": ""
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "EndExploration",
+          "customization_args": {},
+          "answer_groups": [],
+          "default_outcome": null,
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {}
+        },
+        "written_translations": {
+          "translations_mapping": {}
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1,
+        "linked_skill_id": null
+      },
+      "third_state": {
+        "content": {
+          "content_id": "content",
+          "html": "Click on the continue button (again)"
+        },
+        "param_changes": [],
+        "interaction": {
+          "id": "Continue",
+          "customization_args": {},
+          "answer_groups": [],
+          "default_outcome": {
+            "dest": "end",
+            "feedback": {
+              "content_id": "feedback_0",
+              "html": "Feedback for continue button"
+            },
+            "labelled_as_correct": false,
+            "param_changes": [],
+            "refresher_exploration_id": "",
+            "missing_prerequisite_skill_id": ""
+          },
+          "hints": [],
+          "solution": null
+        },
+        "classifier_model_id": "",
+        "recorded_voiceovers": {
+          "voiceovers_mapping": {}
+        },
+        "written_translations": {
+          "translations_mapping": {}
+        },
+        "solicit_answer_details": false,
+        "next_content_id_index": -1,
+        "linked_skill_id": null
+      }
+    },
+    "objective": "",
+    "language_code": "",
+    "correctness_feedback_enabled": false,
+    "title": "Exploration for checkpointing tests (but with a clearer title)"
+  }
+}

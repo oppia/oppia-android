@@ -854,6 +854,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
     "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+    "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
     "//testing",
