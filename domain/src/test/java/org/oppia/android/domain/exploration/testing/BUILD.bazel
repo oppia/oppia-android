@@ -1,0 +1,62 @@
+"""
+Tests for test-only exploration domain utilities.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "ExplorationStorageTestModuleTest",
+    srcs = ["ExplorationStorageTestModuleTest.kt"],
+    custom_package = "org.oppia.android.domain.exploration.testing",
+    test_class = "org.oppia.android.domain.exploration.testing.ExplorationStorageTestModuleTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        ":dagger",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:fake_exploration_retriever",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+    ],
+)
+
+oppia_android_test(
+    name = "FakeExplorationRetrieverTest",
+    srcs = ["FakeExplorationRetrieverTest.kt"],
+    custom_package = "org.oppia.android.domain.exploration.testing",
+    test_class = "org.oppia.android.domain.exploration.testing.FakeExplorationRetrieverTest",
+    test_manifest = "//domain:test_manifest",
+    deps = [
+        ":dagger",
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:fake_exploration_retriever",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/caching:annotations",
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    ],
+)
+
+dagger_rules()

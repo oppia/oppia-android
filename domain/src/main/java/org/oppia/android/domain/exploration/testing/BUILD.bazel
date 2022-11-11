@@ -1,0 +1,33 @@
+"""
+Test-only utilities for exploration management & loading domain components.
+"""
+
+load("@dagger//:workspace_defs.bzl", "dagger_rules")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "fake_exploration_retriever",
+    testonly = True,
+    srcs = [
+        "FakeExplorationRetriever.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//domain",
+    ],
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "ExplorationStorageTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":dagger",
+        ":fake_exploration_retriever",
+    ],
+)
+
+dagger_rules()

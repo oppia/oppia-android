@@ -69,6 +69,26 @@ def _convert_module_aab_to_structured_zip_impl(ctx):
         runfiles = ctx.runfiles(files = [output_file]),
     )
 
+def _restrict_languages_in_raw_module_zip_impl(ctx):
+    input_file = ctx.file.input_file
+    output_file = ctx.outputs.output_file
+
+    arguments = ctx.actions.args()
+    arguments.add(input_file)
+    arguments.add(output_file)
+    ctx.actions.run(
+        outputs = [output_file],
+        inputs = [input_file],
+        tools = [ctx.executable._filter_per_language_resources_tool],
+        executable = ctx.executable._filter_per_language_resources_tool.path,
+        arguments = [arguments],
+    )
+
+    return DefaultInfo(
+        files = depset([output_file]),
+        runfiles = ctx.runfiles(files = [output_file]),
+    )
+
 def _bundle_module_zip_into_deployable_aab_impl(ctx):
     output_file = ctx.outputs.output_file
     input_file = ctx.attr.input_file.files.to_list()[0]
@@ -226,6 +246,24 @@ _convert_module_aab_to_structured_zip = rule(
     implementation = _convert_module_aab_to_structured_zip_impl,
 )
 
+_restrict_languages_in_raw_module_zip = rule(
+    attrs = {
+        "input_file": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "output_file": attr.output(
+            mandatory = True,
+        ),
+        "_filter_per_language_resources_tool": attr.label(
+            executable = True,
+            cfg = "host",
+            default = "//scripts:filter_per_language_resources",
+        ),
+    },
+    implementation = _restrict_languages_in_raw_module_zip_impl,
+)
+
 _bundle_module_zip_into_deployable_aab = rule(
     attrs = {
         "input_file": attr.label(
@@ -300,7 +338,8 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
     """
     binary_name = "%s_binary" % name
     module_aab_name = "%s_module_aab" % name
-    module_zip_name = "%s_module_zip" % name
+    raw_module_zip_name = "%s_raw_module_zip" % name
+    language_restricted_module_zip_name = "%s_lang_restricted_module_zip" % name
     deployable_aab_name = "%s_deployable" % name
     native.android_binary(
         name = binary_name,
@@ -315,15 +354,21 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
         tags = ["manual"],
     )
     _convert_module_aab_to_structured_zip(
-        name = module_zip_name,
+        name = raw_module_zip_name,
         input_file = ":%s.aab" % module_aab_name,
-        output_file = "%s.zip" % module_zip_name,
+        output_file = "%s.zip" % raw_module_zip_name,
+        tags = ["manual"],
+    )
+    _restrict_languages_in_raw_module_zip(
+        name = language_restricted_module_zip_name,
+        input_file = "%s.zip" % raw_module_zip_name,
+        output_file = "%s.zip" % language_restricted_module_zip_name,
         tags = ["manual"],
     )
     if proguard_generate_mapping:
         _bundle_module_zip_into_deployable_aab(
             name = deployable_aab_name,
-            input_file = ":%s.zip" % module_zip_name,
+            input_file = ":%s.zip" % language_restricted_module_zip_name,
             config_file = config_file,
             output_file = "%s.aab" % deployable_aab_name,
             tags = ["manual"],
@@ -339,7 +384,7 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
         # No extra package step is needed if there's no Proguard map file.
         _bundle_module_zip_into_deployable_aab(
             name = name,
-            input_file = ":%s.zip" % module_zip_name,
+            input_file = ":%s.zip" % language_restricted_module_zip_name,
             config_file = config_file,
             output_file = "%s.aab" % name,
             tags = ["manual"],
