@@ -99,7 +99,7 @@ dependencies {
       'com.squareup.retrofit2:retrofit-mock:2.7.2',
   )
   androidTestImplementation('androidx.test:runner:1.2.0',
-      'androidx.test.espresso:espresso-core:3.2.0')
+      'androidx.test.espresso:espresso-core:3.5.0-alpha03')
   kapt(
       'com.google.dagger:dagger-compiler:2.24',
       'com.squareup.moshi:moshi-kotlin-codegen:1.11.0'
