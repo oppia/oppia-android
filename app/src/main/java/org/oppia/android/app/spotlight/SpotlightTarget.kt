@@ -26,14 +26,14 @@ data class SpotlightTarget(
 
   private fun calculateAnchorLeft(): Float {
     val location = IntArray(2)
-    anchor.getLocationOnScreen(location)
+    anchor.getLocationInWindow(location)
     val x = location[0]
     return x.toFloat()
   }
 
   private fun calculateAnchorTop(): Float {
     val location = IntArray(2)
-    anchor.getLocationOnScreen(location)
+    anchor.getLocationInWindow(location)
     val y = location[1]
     return y.toFloat()
   }

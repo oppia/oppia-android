@@ -24,7 +24,6 @@
       android:layout_width="@dimen/arrow_width"
       android:layout_height="@dimen/arrow_height"
       android:rotationX="180"
-      android:rotationY="180"
       android:src="@drawable/ic_rounded_arrow_up_right"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +31,7 @@
     <TextView
       android:id="@+id/custom_text"
       style="@style/TextViewStart"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="this is a custom text"
       android:textAlignment="viewEnd"
