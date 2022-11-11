@@ -13,9 +13,11 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/overlayConstraintLayout"
-    android:background="@drawable/transparent_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/transparent_background">
 
     <ImageView
       android:id="@+id/arrow"
@@ -32,7 +34,6 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="10dp"
-      android:gravity="center"
       android:text="this is a custom text"
       android:textColor="@android:color/white"
       android:textSize="24dp"
@@ -43,15 +44,19 @@
 
     <TextView
       android:id="@+id/close_target"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      style="@style/StateButtonActive"
+      android:layout_width="160dp"
+      android:layout_height="36dp"
+      android:textSize="14dp"
+      android:gravity="center"
+      android:focusable="true"
+      android:clickable="true"
+      android:background="@color/color_def_dark_blue"
       android:layout_marginTop="50dp"
       android:layout_marginEnd="10dp"
       android:onClick="@{(v) -> presenter.clickOnNextTip()}"
-      android:text="next tip"
+      android:text="Done"
       android:textColor="#FFFFFF"
-      android:textSize="20sp"
-      android:textStyle="bold"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,6 +67,7 @@
       android:layout_marginStart="10dp"
       android:layout_marginTop="50dp"
       android:text="dismiss"
+      android:visibility="invisible"
       android:textColor="#FFFFFF"
       android:textSize="20sp"
       android:textStyle="bold"
