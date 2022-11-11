@@ -50,7 +50,6 @@ kt_android_library(
     ],
     deps = [
         ":dagger",
-        "//config/src/java/org/oppia/android/config:languages_config",
         "//model/src/main/proto:languages_java_proto_lite",
         "//utility/src/main/java/org/oppia/android/util/caching:annotations",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
