@@ -22,6 +22,11 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -53,6 +58,32 @@ class OnboardingFragmentPresenter @Inject constructor(
     setUpViewPager()
     addDots()
     return binding.root
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SPOTLIGHT_FRAGMENT_TAG
+    ) as SpotlightFragment
+  }
+
+
+  fun startSpotlights() {
+    val skipSpotlightTarget = SpotlightTarget(
+      binding.skipTextView,
+      "Skip",
+      SpotlightShape.Circle,
+      Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
+    )
+
+    val nextSpotlightTarget = SpotlightTarget(
+      binding.onboardingFragmentNextImageView,
+      "next",
+      SpotlightShape.Circle,
+      Spotlight.FeatureCase.PROMOTED_STORIES
+    )
+
+    getSpotlightFragment().requestSpotlightViewWithDelayedLayout(skipSpotlightTarget)
+    getSpotlightFragment().requestSpotlightViewWithDelayedLayout(nextSpotlightTarget)
   }
 
   private fun setUpViewPager() {

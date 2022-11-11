@@ -276,7 +276,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
           configureTopLeftOverlay(spotlightTarget)
         } else {
           configureTopRightOverlay(spotlightTarget)
-        }      }
+        }
+      }
       AnchorPosition.BottomRight -> {
         if (isRTL) {
           configureBottomLeftOverlay(spotlightTarget)
@@ -285,7 +286,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
         }
       }
       AnchorPosition.BottomLeft -> {
-        if (false) {
+        if (isRTL) {
           configureBottomRightOverlay(spotlightTarget)
         } else {
           configureBottomLeftOverlay(spotlightTarget)
@@ -357,10 +358,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
-        screenWidth -
-          (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
         10.dp,
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
+        screenWidth -
+          (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
         10.dp
       )
     } else {

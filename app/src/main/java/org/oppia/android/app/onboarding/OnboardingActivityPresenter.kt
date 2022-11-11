@@ -1,9 +1,13 @@
 package org.oppia.android.app.onboarding
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 
 /** The presenter for [OnboardingActivity]. */
 @ActivityScope
@@ -16,6 +20,15 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
         OnboardingFragment()
       ).commitNow()
     }
+
+    val spotlightFragment = SpotlightFragment()
+    val args = Bundle()
+    args.putInt(PROFILE_ID_ARGUMENT_KEY, 0)
+    spotlightFragment.arguments = args
+    activity.supportFragmentManager.beginTransaction().add(
+      R.id.onboarding_spotlight_fragment_placeholder,
+      spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+    ).commitNow()
   }
 
   private fun getOnboardingFragment(): OnboardingFragment? {
