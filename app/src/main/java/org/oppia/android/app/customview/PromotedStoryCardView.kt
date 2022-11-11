@@ -5,14 +5,13 @@ import android.util.AttributeSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.card.MaterialCardView
-import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
-import org.oppia.android.app.spotlight.SpotlightShape
-import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.spotlight.SpotlightTarget
 
 class PromotedStoryCardView @JvmOverloads constructor(
   context: Context,
@@ -23,16 +22,31 @@ class PromotedStoryCardView @JvmOverloads constructor(
   @Inject
   lateinit var fragment: Fragment
 
+
+  private var index: Int = -1
+  private var isSpotlit = false
+
   fun setIndex(index: Int) {
-    if (index == 0) {
-      val promotesStorySpotlightTarget = SpotlightTarget(
+//    if (index == 0) {
+//      val promotesStorySpotlightTarget = SpotlightTarget(
+//        this,
+//        "From now, here you can view stories you might be interested in",
+//        SpotlightShape.RoundedRectangle,
+//        Spotlight.FeatureCase.PROMOTED_STORIES
+//      )
+//      getSpotlightFragment().requestSpotlight(promotesStorySpotlightTarget)
+//    }
+
+    if (!isSpotlit) {
+      isSpotlit = true
+      val spotlightTarget = SpotlightTarget(
         this,
-        "From now, here you can view stories you might be interested in",
-        SpotlightShape.RoundedRectangle,
-        Spotlight.FeatureCase.PROMOTED_STORIES
+        "From now, you can see stories recommended for you here",
+        feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
-      getSpotlightFragment().requestSpotlight(promotesStorySpotlightTarget)
+      getSpotlightFragment().requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
     }
+
   }
 
   private fun getSpotlightFragment(): SpotlightFragment {
@@ -48,5 +62,6 @@ class PromotedStoryCardView @JvmOverloads constructor(
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
+
   }
 }

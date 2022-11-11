@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
@@ -76,6 +77,32 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     calculateScreenSize()
     checkIsRTL()
+  }
+
+  fun requestSpotlightViewWithDelayedLayout(spotlightTarget: SpotlightTarget) {
+    spotlightTarget.anchor.doOnPreDraw {
+      val targetAfterViewFullyDrawn = SpotlightTarget(
+        it,
+        spotlightTarget.hint,
+        spotlightTarget.shape,
+        spotlightTarget.feature
+      )
+      requestSpotlight(targetAfterViewFullyDrawn)
+    }
+  }
+
+  fun requestSpotlightOnFirstRecyclerItem(customView: View, index: Int, spotlightTarget: SpotlightTarget) {
+    customView.doOnPreDraw {
+      if (index == 0) {
+        val targetAfterViewFullyDrawn = SpotlightTarget(
+          it,
+          spotlightTarget.hint,
+          spotlightTarget.shape,
+          spotlightTarget.feature
+        )
+        requestSpotlight(targetAfterViewFullyDrawn)
+      }
+    }
   }
 
   /**
