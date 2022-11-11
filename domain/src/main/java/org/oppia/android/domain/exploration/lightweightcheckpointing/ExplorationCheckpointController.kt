@@ -298,7 +298,7 @@ class ExplorationCheckpointController @Inject constructor(
   }
 
   /**
-   * Attempts to "reply" the specified checkpoint for the corresponding specified exploration,
+   * Attempts to "replay" the specified checkpoint for the corresponding specified exploration,
    * returning the adjusted checkpoint or ``null`` if the checkpoint is incompatible with the
    * provided exploration.
    *
