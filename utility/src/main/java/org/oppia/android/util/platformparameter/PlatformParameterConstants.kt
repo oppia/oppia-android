@@ -219,7 +219,7 @@ annotation class EnableInteractionConfigChangeStateRetention
 /**
  * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
  */
-const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = true
 
 /**
  * Qualifier for the platform parameter that controls the animation for hint bulb animation

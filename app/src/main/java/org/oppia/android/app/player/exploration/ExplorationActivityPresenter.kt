@@ -128,7 +128,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {
     if (getExplorationFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
+      activity.supportFragmentManager.beginTransaction().replace(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
           profileId, topicId, storyId, explorationId, readingTextSize
