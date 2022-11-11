@@ -57,6 +57,7 @@ app_test(
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//config/src/java/org/oppia/android/config:all_languages_config",
         "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",

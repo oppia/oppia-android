@@ -17,6 +17,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -144,7 +145,7 @@ class AdministratorControlsFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
@@ -217,24 +218,19 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(false)
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_label
-      )
-      verifyItemDisplayedOnAdministratorControlListItem(
-        itemPosition = 2,
-        targetView = R.id.topic_update_on_wifi_constraint_layout
-      )
       scrollToPosition(position = 2)
-      verifyItemNotDisplayedOnAdministratorControlListItem(
+      verifyItemDoesNotExistInAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.download_permissions_text_view
+      )
+      verifyItemDoesNotExistInAdministratorControlListItem(
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -590,7 +586,7 @@ class AdministratorControlsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
+  private fun verifyItemDoesNotExistInAdministratorControlListItem(
     itemPosition: Int,
     targetView: Int
   ) {
@@ -600,7 +596,7 @@ class AdministratorControlsFragmentTest {
         position = itemPosition,
         targetViewId = targetView
       )
-    ).check(matches(not(isDisplayed())))
+    ).check(doesNotExist())
   }
 
   private fun verifyTextOnAdministratorListItemAtPosition(

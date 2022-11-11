@@ -771,6 +771,7 @@ exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/LoadIm
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/LoadLessonProtosFromAssets.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/TopicListToCache.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/testing/CachingTestModule.kt"
+exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/testing/FakeAssetRepository.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/AsyncDataSubscriptionManager.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/DataProvider.kt"
 exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/DataProvidersInjector.kt"

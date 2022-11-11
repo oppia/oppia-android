@@ -31,8 +31,9 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/mark_stories_completed_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_mark_stories_completed_primary_toolbar_color"
+        android:minHeight="?attr/actionBarSize"
         android:textSize="20sp"
         app:navigationContentDescription="@string/navigate_up"
         app:navigationIcon="?attr/homeAsUpIndicator"

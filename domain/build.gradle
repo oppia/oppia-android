@@ -72,6 +72,7 @@ android {
 // exclusion in order to properly work.
 def filesToExclude = [
     '**/*LanguageConfigRetrieverTest*.kt',
+    '**/*LanguageConfigRetrieverProductionTest*.kt',
     '**/*LocaleControllerTest*.kt',
     '**/*TranslationControllerTest*.kt'
 ]
