@@ -617,14 +617,12 @@ class StateRetriever @Inject constructor() {
     customizationArgsJson: JSONObject
   ): Map<String, SchemaObject> {
     val customizationArgsMap = mutableMapOf<String, SchemaObject>()
-    customizationArgsMap["placeholder"] =
-      parseSubtitledUnicode(
-        customizationArgsJson.getJSONObject("placeholder").getJSONObject("value")
-      )
-    customizationArgsMap["rows"] =
-      parseIntegerSchemaObject(
-        customizationArgsJson.getJSONObject("rows").getInt("value")
-      )
+    customizationArgsJson.optJSONObject("placeholder")?.optJSONObject("value")?.let { placeholder ->
+      customizationArgsMap["placeholder"] = parseSubtitledUnicode(placeholder)
+    }
+    customizationArgsJson.optJSONObject("rows")?.optInt("value")?.let { rows ->
+      customizationArgsMap["rows"] = parseIntegerSchemaObject(rows)
+    }
     return customizationArgsMap
   }
 

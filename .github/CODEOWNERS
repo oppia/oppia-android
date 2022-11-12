@@ -95,7 +95,8 @@ LICENSE @BenHenning
 NOTICE @BenHenning
 
 # Language configuration files.
-config/**/languages/*.textproto @BenHenning
+config/**/alllanguages/*.textproto @BenHenning
+config/**/productionlanguages/*.textproto @BenHenning
 
 # Configuration for KitKat-specific curated builds.
 config/kitkat_main_dex_class_list.txt @BenHenning
