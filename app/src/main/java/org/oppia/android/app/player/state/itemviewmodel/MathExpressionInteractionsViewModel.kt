@@ -74,7 +74,7 @@ class MathExpressionInteractionsViewModel private constructor(
    * Defines the current answer text being entered by the learner. This is expected to be directly
    * bound to the corresponding edit text.
    */
-  var answerText: CharSequence = "" //TODO(#4708): Need to retain state for submit time error.
+  var answerText: CharSequence = "" // TODO(#4708): Need to retain state for submit time error.
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
