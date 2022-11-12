@@ -131,6 +131,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_0 = 1
 private const val FRACTIONS_SUBTOPIC_TOPIC_ID_1 = 2
@@ -199,6 +200,40 @@ class RevisionCardFragmentTest {
 
       onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_openSubtopicWithOnlyOneSubtopicInList_checkContinueStudyingTextNotShown() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        SUBTOPIC_TOPIC_ID,
+        1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.continue_studying_text_view)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_openSubtopicWithMultipleSubtopicsInList_checkContinueStudyingTextIsShown() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.continue_studying_text_view)).check(matches(isDisplayed()))
     }
   }
 
