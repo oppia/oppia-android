@@ -312,7 +312,13 @@ class PinPasswordActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin)).check(
         matches(
-          not(hasErrorText(context.resources.getString(R.string.pin_password_incorrect_pin)))
+          not(
+            hasErrorText(
+              context.resources.getString(
+                R.string.pin_password_activity_pin_password_incorrect_pin
+              )
+            )
+          )
         )
       )
     }
