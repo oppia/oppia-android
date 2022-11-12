@@ -30,15 +30,18 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [LanguageConfigRetriever]. */
+/**
+ * Tests for [LanguageConfigRetriever] using all languages & regions supported by the app.
+ *
+ * See [LanguageConfigRetrieverProductionTest] for production-specific tests.
+ */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class LanguageConfigRetrieverTest {
-  @Inject
-  lateinit var languageConfigRetriever: LanguageConfigRetriever
+  @Inject lateinit var languageConfigRetriever: LanguageConfigRetriever
 
   @Before
   fun setUp() {
@@ -169,6 +172,22 @@ class LanguageConfigRetrieverTest {
   }
 
   @Test
+  fun testLoadSupportedLangs_swahili_isSupportedForAppContentAudioTranslations() {
+    val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
+
+    val definition = supportedLanguages.lookUpLanguage(OppiaLanguage.SWAHILI)
+    assertThat(definition.hasAppStringId()).isTrue()
+    assertThat(definition.hasContentStringId()).isTrue()
+    assertThat(definition.hasAudioTranslationId()).isTrue()
+    assertThat(definition.fallbackMacroLanguage).isEqualTo(OppiaLanguage.LANGUAGE_UNSPECIFIED)
+    assertThat(definition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("sw")
+    assertThat(definition.appStringId.androidResourcesLanguageId.languageCode).isEqualTo("sw")
+    assertThat(definition.appStringId.androidResourcesLanguageId.regionCode).isEmpty()
+    assertThat(definition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("sw")
+    assertThat(definition.audioTranslationId.ietfBcp47Id.ietfLanguageTag).isEqualTo("sw")
+  }
+
+  @Test
   fun testLoadSupportedRegions_loadsNonDefaultProtoFromAssets() {
     val supportedRegions = languageConfigRetriever.loadSupportedRegions()
 
@@ -212,6 +231,16 @@ class LanguageConfigRetrieverTest {
     val definition = supportedRegions.lookUpRegion(OppiaRegion.UNITED_STATES)
     assertThat(definition.regionId.ietfRegionTag).isEqualTo("US")
     assertThat(definition.languagesList).containsExactly(OppiaLanguage.ENGLISH)
+  }
+
+  @Test
+  fun testLoadSupportedRegions_kenya_hasCorrectRegionIdAndSupportedLanguages() {
+    val supportedRegions = languageConfigRetriever.loadSupportedRegions()
+
+    val definition = supportedRegions.lookUpRegion(OppiaRegion.KENYA)
+    assertThat(definition.regionId.ietfRegionTag).isEqualTo("KE")
+    assertThat(definition.languagesList)
+      .containsExactly(OppiaLanguage.ENGLISH, OppiaLanguage.SWAHILI)
   }
 
   private fun SupportedLanguages.lookUpLanguage(

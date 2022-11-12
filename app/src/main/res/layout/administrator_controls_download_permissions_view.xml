@@ -103,7 +103,6 @@
       android:background="@color/component_color_admin_controls_options_background_color"
       android:clickable="true"
       android:focusable="true"
-      android:visibility="@{viewModel.isVisible ? View.VISIBLE: View.GONE}"
       android:importantForAccessibility="yes"
       android:onClick="@{(view) -> viewModel.onTopicAutoUpdatePermissionChanged()}"
       android:paddingStart="@dimen/administrator_controls_download_permissions_view_auto_update_topic_constraint_layout_padding_start"

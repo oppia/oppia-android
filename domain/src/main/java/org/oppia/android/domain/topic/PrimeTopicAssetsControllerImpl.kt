@@ -281,9 +281,8 @@ class PrimeTopicAssetsControllerImpl @Inject constructor(
     return topicIds.mapNotNull(topicController::retrieveTopic)
   }
 
-  private fun loadExplorations(explorationIds: Collection<String>): Collection<Exploration> {
-    return explorationIds.map(explorationRetriever::loadExploration)
-  }
+  private suspend fun loadExplorations(explorationIds: Collection<String>) =
+    explorationIds.map { explorationRetriever.loadExploration(it) }
 
   private fun loadQuestions(skillIds: Collection<String>): Collection<Question> {
     return questionRetriever.loadQuestions(skillIds.toList())
