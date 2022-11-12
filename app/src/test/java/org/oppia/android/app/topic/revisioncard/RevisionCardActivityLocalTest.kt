@@ -43,7 +43,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
@@ -60,7 +60,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -99,7 +99,7 @@ class RevisionCardActivityLocalTest {
   private val fractionsSubtopicListSize: Int = 4
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -117,7 +117,7 @@ class RevisionCardActivityLocalTest {
         fractionsSubtopicListSize
       )
     ).use {
-      val event = fakeEventLogger.getMostRecentEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
