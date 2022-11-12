@@ -22,7 +22,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
@@ -76,7 +76,7 @@ class ApplicationLifecycleObserverTest {
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @Inject
   lateinit var profileManagementController: ProfileManagementController
@@ -154,7 +154,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInForegroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -169,7 +169,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInForegroundContextThat {
       hasLearnerIdThat().isEmpty()
@@ -185,7 +185,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isNotEmpty()
@@ -200,7 +200,7 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
     assertThat(eventLog).hasAppInBackgroundContextThat {
       hasLearnerIdThat().isEmpty()
