@@ -274,7 +274,7 @@ file_content_checks {
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedMethod.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
-  exempted_file_name: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseEventLogger.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseAnalyticsEventLogger.kt"
   exempted_file_patterns: "app/src/(?:((main)|(test)))/java/org/oppia/android/app/translation/.+?\\.kt"
   exempted_file_patterns: "domain/src/main/java/org/oppia/android/domain/locale/.+?\\.kt"
   exempted_file_patterns: "domain/src/test/java/org/oppia/android/domain/.+?\\.kt"
