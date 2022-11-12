@@ -289,6 +289,8 @@
   <color name="component_color_audio_fragment_seekbar_color">@color/color_palette_seekbar_progress_background_color</color>
   <!-- Topic Revision Fragment -->
   <color name="component_color_topic_revision_fragment_background_color">@color/color_palette_topic_revision_background_color</color>
+   <!-- Topic Lesson Fragment -->
+  <color name="component_color_topic_lesson_fragment_background_color">@color/color_palette_topic_revision_background_color</color>
   <!-- Profile Progress Activity -->
   <color name="component_color_profile_progress_activity_background_color">@color/color_palette_profile_progress_activity_background_color</color>
   <color name="component_color_profile_progress_activity_profile_name_text_color">@color/color_palette_profile_progress_activity_profile_name_text_color</color>
