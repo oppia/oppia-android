@@ -79,7 +79,6 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
-import org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.RatioInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
