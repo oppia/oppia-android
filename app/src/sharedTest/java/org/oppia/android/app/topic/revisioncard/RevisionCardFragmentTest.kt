@@ -215,7 +215,6 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
       onView(withId(R.id.continue_studying_text_view)).check(matches(not(isDisplayed())))
     }
   }
@@ -232,7 +231,7 @@ class RevisionCardFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-
+      onView(withId(R.id.continue_studying_text_view)).perform(scrollTo())
       onView(withId(R.id.continue_studying_text_view)).check(matches(isDisplayed()))
     }
   }
