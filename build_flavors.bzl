@@ -52,6 +52,7 @@ _FLAVOR_METADATA = {
         "production_release": False,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_DEV_VERSION_CODE,
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
@@ -66,6 +67,7 @@ _FLAVOR_METADATA = {
         "production_release": False,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
@@ -79,6 +81,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
@@ -93,6 +96,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
@@ -106,6 +110,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alphakenya:alpha_kenya_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
         "application_class": ".app.application.alphakenya.AlphaKenyaOppiaApplication",
@@ -119,6 +124,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+            "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_BETA_VERSION_CODE,
         "application_class": ".app.application.beta.BetaOppiaApplication",
@@ -132,6 +138,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+            "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_GA_VERSION_CODE,
         "application_class": ".app.application.ga.GaOppiaApplication",

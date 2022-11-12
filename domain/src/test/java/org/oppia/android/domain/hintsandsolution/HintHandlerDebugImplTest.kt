@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,6 +32,7 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import org.oppia.android.domain.exploration.ExplorationRetriever
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -69,19 +71,25 @@ class HintHandlerDebugImplTest {
   private lateinit var blockingCoroutineScope: CoroutineScope
 
   private val expWithNoHintsOrSolution by lazy {
-    explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    runBlocking {
+      explorationRetriever.loadExploration("test_single_interactive_state_exp_no_hints_no_solution")
+    }
   }
 
   private val expWithOneHintAndNoSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_one_hint_and_no_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution"
+      )
+    }
   }
 
   private val expWithHintsAndSolution by lazy {
-    explorationRetriever.loadExploration(
-      "test_single_interactive_state_exp_with_hints_and_solution"
-    )
+    runBlocking {
+      explorationRetriever.loadExploration(
+        "test_single_interactive_state_exp_with_hints_and_solution"
+      )
+    }
   }
 
   @Before
@@ -421,7 +429,8 @@ class HintHandlerDebugImplTest {
     modules = [
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      ExplorationStorageTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
