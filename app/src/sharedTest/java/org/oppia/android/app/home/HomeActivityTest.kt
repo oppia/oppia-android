@@ -144,6 +144,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableAccessibilityChecks
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -336,18 +337,20 @@ class HomeActivityTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightAlreadySeenBefore_checkSpotlightIsNotShown() {
-    logIntoUserTwice()
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      testCoroutineDispatchers.runCurrent()
-    }
-
+    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.custom_text)).check(doesNotExist())
+      it.recreate().use {
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.custom_text)).check(doesNotExist())
+      }
     }
   }
 

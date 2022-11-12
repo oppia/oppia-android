@@ -579,4 +579,6 @@
   <string name="revision_tab_content_description">After completing a lesson, revise your concepts in the revision tab.</string>
   <string name="practice_tab_content_description">Practice tab</string>
   <string name="lessons_tab_content_description">Start learning here in the lessons tab.</string>
+  <string name="topic_lessons_tab_spotlight_hint">Find all your lessons here</string>
+  <string name="topic_revision_tab_spotlight_hint">Revise your lessons here</string>
 </resources>

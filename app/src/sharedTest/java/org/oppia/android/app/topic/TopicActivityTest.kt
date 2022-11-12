@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -20,6 +21,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -101,8 +104,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [TopicActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -166,6 +167,58 @@ class TopicActivityTest {
       // correct string when it's read out.
       assertThat(title).isEqualTo(context.getString(R.string.topic_page))
     }
+  }
+
+  @Test
+  fun testLessonsTabSpotlight_setToShowOnFirstLogin_spotlightNeverSeenBefore_checkSpotlightShown() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withId(R.id.custom_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.custom_text)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_lessons_tab_spotlight_hint)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+
+    }
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      onView(withText(context.getString(R.string.topic_lessons_tab_spotlight_hint))).check(
+        doesNotExist()
+      )
+    }
+  }
+
+  @Test
+  fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // finish lessons tab spotlight first
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.custom_text)).check(
+        matches(
+          withText(
+            context.getString(R.string.topic_lessons_tab_spotlight_hint)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFirstChapterSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
+
   }
 
   @Test
