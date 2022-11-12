@@ -1696,25 +1696,6 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_mathInteractions_retainStateOnConfigurationChange() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-      // Enter text in Math Input Interaction.
-      typeNumericExpression("1+2")
-      // Rotating device.
-      rotateToLandscape()
-      it.onActivity {
-        val mathExpressionInteractionView =
-          it.findViewById<MathExpressionInteractionsView>(
-            R.id.math_expression_input_interaction_view
-          )
-        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("1+2")
-      }
-    }
-  }
-
-  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
-  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_selectionInteraction_ratioButton_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1837,28 +1818,7 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_sameTextBasedInteractions_doesNotShareInitialState() {
-    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-
-      typeNumericExpression("1+2")
-      rotateToLandscape()
-      clickSubmitAnswerButton()
-      clickContinueNavigationButton()
-
-      it.onActivity {
-        val mathExpressionInteractionView =
-          it.findViewById<MathExpressionInteractionsView>(
-            R.id.math_expression_input_interaction_view
-          )
-        assertThat(mathExpressionInteractionView.text.toString().isEmpty()).isTrue()
-      }
-    }
-  }
-
-  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
-  @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_differentTextBaseInteractions_doesNotShareInitialState() {
+  fun testStateFragment_differentTextBasedInteractions_doesNotShareInitialState() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       clickContinueInteractionButton()
