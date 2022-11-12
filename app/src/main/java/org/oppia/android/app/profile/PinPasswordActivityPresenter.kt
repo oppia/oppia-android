@@ -95,7 +95,9 @@ class PinPasswordActivityPresenter @Inject constructor(
               )
           } else {
             pinViewModel.errorMessage.set(
-              resourceHandler.getStringInLocale(R.string.pin_password_activity_pin_password_incorrect_pin)
+              resourceHandler.getStringInLocale(
+                R.string.pin_password_activity_pin_password_incorrect_pin
+              )
             )
             binding.pinPasswordInputPinEditText.startAnimation(
               AnimationUtils.loadAnimation(
