@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Interaction
@@ -89,6 +90,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     if (answerText.isNotEmpty()) {
       imageRegionSelection = selectableRegions.find { it.label == answerText.toString() }
     }
+    lastErrorCategory = AnswerErrorCategory.NO_ERROR
   }.build()
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {

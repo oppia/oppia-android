@@ -139,7 +139,7 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
-    handleSubmitAnswer(answer)
+    handleSubmitAnswer(answer, canSubmitAnswer = true)
   }
 
   fun onContinueButtonClicked() {
@@ -269,8 +269,17 @@ class QuestionPlayerFragmentPresenter @Inject constructor(
     binding.endSessionBodyTextView.visibility = endSessionViewsVisibility
   }
 
-  private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(questionAssessmentProgressController.submitAnswer(answer).toLiveData())
+  private fun handleSubmitAnswer(
+    answer: UserAnswer,
+    canSubmitAnswer: Boolean = questionViewModel.getCanSubmitAnswer().get() ?: false
+  ) {
+    // This check seems to avoid a crash on configuration change when attempting to resubmit answers
+    // after encountering a submit-time error, but it's also more correct to keep it.
+    if (canSubmitAnswer) {
+      subscribeToAnswerOutcome(
+        questionAssessmentProgressController.submitAnswer(answer).toLiveData()
+      )
+    }
   }
 
   /** This function listens to and processes the result of submitAnswer from QuestionAssessmentProgressController. */

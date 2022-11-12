@@ -5,13 +5,13 @@ import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToRatioParser
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -33,9 +33,10 @@ class RatioExpressionInputInteractionViewModel private constructor(
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer
   var isAnswerAvailable = ObservableField<Boolean>(false)
   var errorMessage = ObservableField<String>("")
+  private var currentErrorCategory = AnswerErrorCategory.NO_ERROR
 
   val hintText: CharSequence = deriveHintText(interaction)
   private val stringToRatioParser: StringToRatioParser = StringToRatioParser()
@@ -75,23 +76,29 @@ class RatioExpressionInputInteractionViewModel private constructor(
     if (answerText.isNotEmpty()) {
       textualAnswer = answerText.toString()
     }
+    lastErrorCategory = currentErrorCategory
   }.build()
 
   /** It checks the pending error for the current ratio input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     if (answerText.isNotEmpty()) {
-      when (category) {
-        AnswerErrorCategory.REAL_TIME ->
-          pendingAnswerError =
-            stringToRatioParser.getRealTimeAnswerError(answerText.toString())
-              .getErrorMessageFromStringRes(resourceHandler)
-        AnswerErrorCategory.SUBMIT_TIME ->
-          pendingAnswerError =
-            stringToRatioParser.getSubmitTimeError(
-              answerText.toString(),
-              numberOfTerms = numberOfTerms
-            ).getErrorMessageFromStringRes(resourceHandler)
+      pendingAnswerError = when (category) {
+        AnswerErrorCategory.REAL_TIME -> {
+          stringToRatioParser.getRealTimeAnswerError(answerText.toString())
+            .getErrorMessageFromStringRes(resourceHandler)
+        }
+        AnswerErrorCategory.SUBMIT_TIME -> {
+          stringToRatioParser.getSubmitTimeError(
+            answerText.toString(),
+            numberOfTerms = numberOfTerms
+          ).getErrorMessageFromStringRes(resourceHandler)
+        }
+        AnswerErrorCategory.ANSWER_ERROR_CATEGORY_UNSPECIFIED, AnswerErrorCategory.UNRECOGNIZED,
+        AnswerErrorCategory.NO_ERROR -> null
       }
+      currentErrorCategory = if (pendingAnswerError == null) {
+        AnswerErrorCategory.NO_ERROR
+      } else category
       errorMessage.set(pendingAnswerError)
     }
     return pendingAnswerError

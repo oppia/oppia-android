@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.MathEquation
@@ -14,7 +15,6 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -74,7 +74,7 @@ class MathExpressionInteractionsViewModel private constructor(
    * Defines the current answer text being entered by the learner. This is expected to be directly
    * bound to the corresponding edit text.
    */
-  var answerText: CharSequence = "" // TODO(#4708): Need to retain state for submit time error.
+  var answerText: CharSequence = rawUserAnswer.textualAnswer
 
   /**
    * Defines whether an answer is currently available to parse. This is expected to be directly
@@ -90,6 +90,8 @@ class MathExpressionInteractionsViewModel private constructor(
 
   /** Specifies the text to show in the answer box when no text is entered. */
   val hintText: CharSequence = deriveHintText(interaction)
+
+  private var currentErrorCategory = AnswerErrorCategory.NO_ERROR
 
   private val allowedVariables = retrieveAllowedVariables(interaction)
   private val useFractionsForDivision =
@@ -146,6 +148,7 @@ class MathExpressionInteractionsViewModel private constructor(
     if (answerText.isNotEmpty()) {
       textualAnswer = answerText.toString()
     }
+    lastErrorCategory = currentErrorCategory
   }.build()
 
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
@@ -158,7 +161,12 @@ class MathExpressionInteractionsViewModel private constructor(
             answerText.toString(), allowedVariables, resourceHandler
           )
         }
+        AnswerErrorCategory.ANSWER_ERROR_CATEGORY_UNSPECIFIED, AnswerErrorCategory.UNRECOGNIZED,
+        AnswerErrorCategory.NO_ERROR -> null
       }
+      currentErrorCategory = if (pendingAnswerError == null) {
+        AnswerErrorCategory.NO_ERROR
+      } else category
       errorMessage.set(pendingAnswerError)
     }
     return pendingAnswerError

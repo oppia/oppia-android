@@ -328,18 +328,37 @@ message ItemSelectionRawAnswer {
 }
 
 // Corresponds to a raw representation of the current answer entered by the user which is used to
-// retain state on configuration changes.
+// retain state on configuration changes. Note that this structure is semi-ephemeral in that it will
+// only ever be stored on-disk by Android and never by the app.
 message RawUserAnswer {
+  // Represents the last error state the user's pending answer was in (to help with reconstituting
+  // the answer's state).
+  AnswerErrorCategory last_error_category = 1;
   oneof answer_input_type {
     // A raw answer entered by user in a text-based interactions.
-    string textual_answer = 1;
+    string textual_answer = 2;
     // A user's selection for item selection and multiple choice interactions.
-    ItemSelectionRawAnswer item_selection = 2;
+    ItemSelectionRawAnswer item_selection = 3;
     // A user's selection for image region selection interaction.
-    ImageWithRegions.LabeledRegion image_region_selection = 3;
+    ImageWithRegions.LabeledRegion image_region_selection = 4;
     // A user's selected list of set of html content ids in drag and drop interaction.
-    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 4;
+    ListOfSetsOfTranslatableHtmlContentIds list_of_sets_of_translatable_html_content_ids = 5;
   }
+}
+
+// Represents categories of errors that can be inferred from a pending answer.
+enum AnswerErrorCategory {
+  // Corresponds to an unknown or unsupported error category.
+  ANSWER_ERROR_CATEGORY_UNSPECIFIED = 0;
+
+  // Corresponds to the pending answer having zero errors.
+  NO_ERROR = 1;
+
+  // Corresponds to errors that may be found while the user is trying to input an answer.
+  REAL_TIME = 2;
+
+  // Corresponds to errors that may be found only when a user tries to submit an answer.
+  SUBMIT_TIME = 3;
 }
 
 message AnswerAndResponse {

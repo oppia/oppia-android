@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import org.oppia.android.R
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.RawUserAnswer
@@ -28,7 +29,7 @@ class TextInputViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) : StateItemViewModel(ViewType.TEXT_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer
   val hintText: CharSequence = deriveHintText(interaction)
 
   var isAnswerAvailable = ObservableField<Boolean>(false)
@@ -79,6 +80,7 @@ class TextInputViewModel private constructor(
     if (answerText.isNotEmpty()) {
       textualAnswer = answerText.toString()
     }
+    lastErrorCategory = AnswerErrorCategory.NO_ERROR
   }.build()
 
   private fun deriveHintText(interaction: Interaction): CharSequence {

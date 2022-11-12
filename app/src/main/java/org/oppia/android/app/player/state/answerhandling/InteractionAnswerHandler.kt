@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state.answerhandling
 
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 
@@ -43,12 +44,4 @@ interface InteractionAnswerHandler {
  */
 interface InteractionAnswerReceiver {
   fun onAnswerReadyForSubmission(answer: UserAnswer)
-}
-
-/** Categories of errors that can be inferred from a pending answer.  */
-enum class AnswerErrorCategory {
-  /** Corresponds to errors that may be found while the user is trying to input an answer.  */
-  REAL_TIME,
-  /** Corresponds to errors that may be found only when a user tries to submit an answer.  */
-  SUBMIT_TIME
 }

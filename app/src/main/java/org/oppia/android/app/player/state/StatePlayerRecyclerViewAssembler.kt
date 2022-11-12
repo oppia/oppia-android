@@ -329,7 +329,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPreviousButton,
       isSplitView.get()!!,
       writtenTranslationContext
-    )
+    ).also {
+      // Ensure that potential errors are re-detected in cases of configuration changes.
+      (it as? InteractionAnswerHandler)?.checkPendingAnswerError(rawUserAnswer.lastErrorCategory)
+    }
   }
 
   private fun addContentItem(

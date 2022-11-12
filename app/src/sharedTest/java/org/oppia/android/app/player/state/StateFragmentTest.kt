@@ -25,6 +25,7 @@ import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -78,6 +79,7 @@ import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.customview.interaction.FractionInputInteractionView
+import org.oppia.android.app.customview.interaction.MathExpressionInteractionsView
 import org.oppia.android.app.customview.interaction.NumericInputInteractionView
 import org.oppia.android.app.customview.interaction.RatioInputInteractionView
 import org.oppia.android.app.customview.interaction.TextInputInteractionView
@@ -244,8 +246,8 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
-    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
+//    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+//    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1845,6 +1847,27 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_sameTextBasedInteractions_doesNotShareInitialState() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("1+2")
+      rotateToLandscape()
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString().isEmpty()).isTrue()
+      }
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_checkPreviousHeaderExpanded_retainStateOnConfigChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1872,6 +1895,57 @@ class StateFragmentTest {
         .check(
           matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
         )
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_onSubmitTimeError_retainStateOnConfigChange() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      typeNumericExpression("a")
+      onView(withId(R.id.submit_answer_button)).perform(click())
+
+      // Rotating device.
+      rotateToLandscape()
+
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("a")
+      }
+      onView(withId(R.id.math_expression_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_onSubmitTimeError_submitIncorrectAnswer_doesNotShareInitialState() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      typeNumericExpression("12a")
+      onView(withId(R.id.submit_answer_button)).perform(click())
+
+      // Rotating device.
+      rotateToLandscape()
+
+      scrollToViewType(NUMERIC_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.math_expression_input_interaction_view)).perform(replaceText("12"))
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString()).isEmpty()
+      }
     }
   }
 

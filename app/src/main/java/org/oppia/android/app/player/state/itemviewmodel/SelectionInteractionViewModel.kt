@@ -3,6 +3,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ItemSelectionRawAnswer
@@ -114,6 +115,7 @@ class SelectionInteractionViewModel private constructor(
     itemSelection = ItemSelectionRawAnswer.newBuilder().apply {
       addAllSelectedIndexes(selectedItems)
     }.build()
+    lastErrorCategory = AnswerErrorCategory.NO_ERROR
   }.build()
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */

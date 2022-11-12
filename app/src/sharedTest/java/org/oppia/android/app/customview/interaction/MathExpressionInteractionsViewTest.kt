@@ -30,6 +30,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AnswerErrorCategory.REAL_TIME
+import org.oppia.android.app.model.AnswerErrorCategory.SUBMIT_TIME
 import org.oppia.android.app.model.CustomSchemaValue
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams
 import org.oppia.android.app.model.InputInteractionViewTestActivityParams.MathInteractionType
@@ -40,8 +42,6 @@ import org.oppia.android.app.model.SchemaObjectList
 import org.oppia.android.app.model.SubtitledUnicode
 import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.REAL_TIME
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory.SUBMIT_TIME
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.testing.InputInteractionViewTestActivity

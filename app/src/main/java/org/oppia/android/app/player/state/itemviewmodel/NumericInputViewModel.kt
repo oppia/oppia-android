@@ -4,13 +4,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
+import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.parser.StringToNumberParser
-import org.oppia.android.app.player.state.answerhandling.AnswerErrorCategory
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
@@ -26,11 +26,12 @@ class NumericInputViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
-  var answerText: CharSequence = rawUserAnswer.textualAnswer ?: ""
+  var answerText: CharSequence = rawUserAnswer.textualAnswer
   private var pendingAnswerError: String? = null
   val errorMessage = ObservableField<String>("")
   var isAnswerAvailable = ObservableField<Boolean>(false)
   private val stringToNumberParser: StringToNumberParser = StringToNumberParser()
+  private var currentErrorCategory = AnswerErrorCategory.NO_ERROR
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -45,7 +46,6 @@ class NumericInputViewModel private constructor(
 
     errorMessage.addOnPropertyChangedCallback(callback)
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
-    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   /** It checks the pending error for the current numeric input, and correspondingly updates the error string based on the specified error category. */
@@ -58,8 +58,13 @@ class NumericInputViewModel private constructor(
         AnswerErrorCategory.SUBMIT_TIME ->
           stringToNumberParser.getSubmitTimeError(answerText.toString())
             .getErrorMessageFromStringRes(resourceHandler)
+        AnswerErrorCategory.ANSWER_ERROR_CATEGORY_UNSPECIFIED, AnswerErrorCategory.UNRECOGNIZED,
+        AnswerErrorCategory.NO_ERROR -> null
       }
     }
+    currentErrorCategory = if (pendingAnswerError == null) {
+      AnswerErrorCategory.NO_ERROR
+    } else category
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
@@ -98,6 +103,7 @@ class NumericInputViewModel private constructor(
     if (answerText.isNotEmpty()) {
       textualAnswer = answerText.toString()
     }
+    lastErrorCategory = currentErrorCategory
   }.build()
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */

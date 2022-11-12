@@ -180,7 +180,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleAnswerReadyForSubmission(answer: UserAnswer) {
     // An interaction has indicated that an answer is ready for submission.
-    handleSubmitAnswer(answer)
+    handleSubmitAnswer(answer, canSubmitAnswer = true)
   }
 
   fun onContinueButtonClicked() {
@@ -224,9 +224,7 @@ class StateFragmentPresenter @Inject constructor(
 
   fun handleKeyboardAction() {
     hideKeyboard()
-    if (viewModel.getCanSubmitAnswer().get() == true) {
-      handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
-    }
+    handleSubmitAnswer(viewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler))
   }
 
   fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
@@ -425,8 +423,15 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun handleSubmitAnswer(answer: UserAnswer) {
-    subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
+  private fun handleSubmitAnswer(
+    answer: UserAnswer,
+    canSubmitAnswer: Boolean = viewModel.getCanSubmitAnswer().get() ?: false
+  ) {
+    // This check seems to avoid a crash on configuration change when attempting to resubmit answers
+    // after encountering a submit-time error, but it's also more correct to keep it.
+    if (canSubmitAnswer) {
+      subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
+    }
   }
 
   fun dismissConceptCard() {
