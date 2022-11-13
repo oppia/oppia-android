@@ -170,53 +170,6 @@ class TopicActivityTest {
   }
 
   @Test
-  fun testLessonsTabSpotlight_setToShowOnFirstLogin_spotlightNeverSeenBefore_checkSpotlightShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withId(R.id.custom_text)).check(matches(isDisplayed()))
-      onView(withId(R.id.custom_text)).check(
-        matches(
-          withText(
-            context.getString(R.string.topic_lessons_tab_spotlight_hint)
-          )
-        )
-      )
-    }
-  }
-
-//  @Test
-//  fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
-//    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-//    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
-//
-//    }
-//    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
-//      onView(withText(context.getString(R.string.topic_lessons_tab_spotlight_hint))).check(
-//        doesNotExist()
-//      )
-//    }
-//  }
-
-  @Test
-  fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      testCoroutineDispatchers.runCurrent()
-
-      // finish lessons tab spotlight first
-      onView(withId(R.id.close_target)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.custom_text)).check(
-        matches(
-          withText(
-            context.getString(R.string.first_chapter_spotlight_hint)
-          )
-        )
-      )
-    }
-  }
-
-  @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
@@ -250,6 +203,7 @@ class TopicActivityTest {
     )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
+    testCoroutineDispatchers.runCurrent()
     return scenario
   }
 

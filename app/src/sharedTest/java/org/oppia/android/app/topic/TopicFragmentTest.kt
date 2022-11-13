@@ -16,6 +16,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -27,6 +28,9 @@ import androidx.test.rule.ActivityTestRule
 import asia.ivity.android.marqueeview.MarqueeView
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlinx.coroutines.delay
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.Matchers.allOf
@@ -84,6 +88,7 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -110,8 +115,6 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -169,6 +172,38 @@ class TopicFragmentTest {
     }
   }
 
+//  @Test
+//  fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
+//    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+//    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+//
+//    }
+//    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+//      onView(withText(context.getString(R.string.topic_lessons_tab_spotlight_hint))).check(
+//        doesNotExist()
+//      )
+//    }
+//  }
+
+  @Test
+  fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
+    initializeApplicationComponent(false)
+    activityTestRule.launchActivity(
+      createTopicActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID
+      )
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    // finish lessons tab spotlight first
+    onView(withText("Done")).perform(click())
+    testCoroutineDispatchers.runCurrent()
+    testCoroutineDispatchers.advanceUntilIdle()
+    onView(withId(R.id.custom_text)).check(matches(withText(R.string.first_chapter_spotlight_hint))
+    )
+  }
+
   @Test
   fun testTopicLessonTabSpotlight_spotlightNotSeenBefore_checkSpotlightIsShown() {
     initializeApplicationComponent(false)
@@ -179,27 +214,7 @@ class TopicFragmentTest {
       )
     )
     testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.custom_text)).check(matches(withText("Find all your lessons here")))
-  }
-
-  @Test
-  fun testTopicLessonTabSpotlight_spotlightSeen_checkSpotlightIsNotShown() {
-    initializeApplicationComponent(false)
-    activityTestRule.launchActivity(
-      createTopicActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID
-      )
-    )
-    testCoroutineDispatchers.runCurrent()
-    activityTestRule.launchActivity(
-      createTopicActivityIntent(
-        internalProfileId,
-        FRACTIONS_TOPIC_ID
-      )
-    )
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.custom_text)).check(doesNotExist())
+    onView(withId(R.id.custom_text)).check(matches(withText(R.string.topic_lessons_tab_spotlight_hint)))
   }
 
   @Test
