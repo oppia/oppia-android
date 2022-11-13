@@ -2014,7 +2014,9 @@ class StateFragmentTest {
 
       it.onActivity {
         val mathExpressionInteractionsView =
-          it.findViewById<MathExpressionInteractionsView>(R.id.math_expression_input_interaction_view)
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
         assertThat(mathExpressionInteractionsView.text.toString()).isEmpty()
       }
     }
