@@ -33,10 +33,10 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     this.index = index
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment {
+  private fun getSpotlightFragment(): SpotlightFragment? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment
+    ) as SpotlightFragment?
   }
 
   override fun onAttachedToWindow() {
@@ -54,7 +54,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
         context.getString(R.string.first_chapter_spotlight_hint),
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
-      getSpotlightFragment().requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
+      checkNotNull(getSpotlightFragment()).requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
     }
   }
 }

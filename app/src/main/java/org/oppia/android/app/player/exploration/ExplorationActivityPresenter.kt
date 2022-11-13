@@ -127,7 +127,9 @@ class ExplorationActivityPresenter @Inject constructor(
         ExplorationManagerFragment.createNewInstance(profileId),
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
+    }
 
+    if (getSpotlightFragment() == null) {
       val spotlightFragment = SpotlightFragment()
       val args = Bundle()
       args.putInt(PROFILE_ID_ARGUMENT_KEY, profileId.internalId)
@@ -137,6 +139,12 @@ class ExplorationActivityPresenter @Inject constructor(
         spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SPOTLIGHT_FRAGMENT_TAG
+    ) as SpotlightFragment?
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {

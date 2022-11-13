@@ -45,15 +45,15 @@ class PromotedStoryCardView @JvmOverloads constructor(
         context.getString(R.string.promoted_story_spotlight_hint),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
-      getSpotlightFragment().requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
+      checkNotNull(getSpotlightFragment()).requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
     }
 
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment {
+  private fun getSpotlightFragment(): SpotlightFragment? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment
+    ) as SpotlightFragment?
   }
 
   override fun onAttachedToWindow() {

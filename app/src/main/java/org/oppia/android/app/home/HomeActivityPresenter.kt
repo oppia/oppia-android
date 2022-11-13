@@ -31,14 +31,16 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       ).commitNow()
     }
 
-    val spotlightFragment = SpotlightFragment()
-    val args = Bundle()
-    args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-    spotlightFragment.arguments = args
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.home_spotlight_fragment_placeholder,
-      spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
-    ).commitNow()
+    if (getSpotlightFragment() == null) {
+      val spotlightFragment = SpotlightFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      spotlightFragment.arguments = args
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.home_spotlight_fragment_placeholder,
+        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
   }
 
   fun handleOnRestart() {
@@ -62,5 +64,11 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     return activity.supportFragmentManager.findFragmentById(
       R.id.home_fragment_placeholder
     ) as HomeFragment?
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment? {
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.home_spotlight_fragment_placeholder
+    ) as SpotlightFragment?
   }
 }

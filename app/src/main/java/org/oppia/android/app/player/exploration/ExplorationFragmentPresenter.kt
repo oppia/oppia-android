@@ -101,7 +101,7 @@ class ExplorationFragmentPresenter @Inject constructor(
           SpotlightShape.Circle,
           Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
         )
-        getSpotlightFragment().requestSpotlight(backButtonSpotlightTarget)
+        checkNotNull(getSpotlightFragment()).requestSpotlight(backButtonSpotlightTarget)
 
         // spotlight voice-over icon after 3 logins
         if (numberOfLogins >= 3) {
@@ -111,16 +111,16 @@ class ExplorationFragmentPresenter @Inject constructor(
             SpotlightShape.Circle,
             Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
           )
-          getSpotlightFragment().requestSpotlight(audioPlayerSpotlightTarget)
+          checkNotNull(getSpotlightFragment()).requestSpotlight(audioPlayerSpotlightTarget)
         }
       }
     }
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment {
+  private fun getSpotlightFragment(): SpotlightFragment? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment
+    ) as SpotlightFragment?
   }
 
   fun handlePlayAudio() {

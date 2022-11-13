@@ -21,14 +21,16 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
       ).commitNow()
     }
 
-    val spotlightFragment = SpotlightFragment()
-    val args = Bundle()
-    args.putInt(PROFILE_ID_ARGUMENT_KEY, 0)
-    spotlightFragment.arguments = args
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.onboarding_spotlight_fragment_placeholder,
-      spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
-    ).commitNow()
+    if (getSpotlightFragment() == null) {
+      val spotlightFragment = SpotlightFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, 0)
+      spotlightFragment.arguments = args
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.onboarding_spotlight_fragment_placeholder,
+        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
   }
 
   private fun getOnboardingFragment(): OnboardingFragment? {
@@ -37,5 +39,13 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
       .findFragmentById(
         R.id.onboarding_fragment_placeholder
       ) as OnboardingFragment?
+  }
+
+  private fun getSpotlightFragment(): SpotlightFragment? {
+    return activity
+      .supportFragmentManager
+      .findFragmentById(
+        R.id.onboarding_spotlight_fragment_placeholder
+      ) as SpotlightFragment?
   }
 }
