@@ -2012,17 +2012,10 @@ class StateFragmentTest {
       // Rotating device.
       rotateToLandscape()
 
-      scrollToViewType(FRACTION_INPUT_INTERACTION)
-      onView(withId(R.id.fraction_input_interaction_view)).perform(replaceText("12"))
-      testCoroutineDispatchers.runCurrent()
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
       it.onActivity {
-        val fractionInputInteraction =
-          it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
-        assertThat(fractionInputInteraction.text.toString()).isEmpty()
+        val mathExpressionInteractionsView =
+          it.findViewById<MathExpressionInteractionsView>(R.id.math_expression_input_interaction_view)
+        assertThat(mathExpressionInteractionsView.text.toString()).isEmpty()
       }
     }
   }
