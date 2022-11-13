@@ -2017,8 +2017,9 @@ class StateFragmentTest {
           it.findViewById<MathExpressionInteractionsView>(
             R.id.math_expression_input_interaction_view
           )
-        assertThat(mathExpressionInteractionsView.text.toString()).isEmpty()
+        assertThat(mathExpressionInteractionsView.text.toString()).isEqualTo("a")
       }
+      onView(withId(R.id.math_expression_input_error)).check(matches(isDisplayed()))
     }
   }
 
