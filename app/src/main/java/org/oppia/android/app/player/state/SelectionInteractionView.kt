@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
@@ -18,6 +19,8 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.item_selection_interaction_items.view.*
+import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 
 /**
  * A custom [RecyclerView] for displaying a variable list of items that may be selected by a user as
@@ -28,12 +31,17 @@ class SelectionInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  @field:[Inject ExplorationHtmlParserEntityType] lateinit var entityType: String
-  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
+  @field:[Inject ExplorationHtmlParserEntityType]
+  lateinit var entityType: String
+  @field:[Inject DefaultResourceBucketName]
+  lateinit var resourceBucketName: String
 
-  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject lateinit var bindingInterface: ViewBindingShim
-  @Inject lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  @Inject
+  lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject
+  lateinit var bindingInterface: ViewBindingShim
+  @Inject
+  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var selectionItemInputType: SelectionItemInputType
   private lateinit var entityId: String
@@ -99,11 +107,17 @@ class SelectionInteractionView @JvmOverloads constructor(
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
-              bindingInterface.provideSelectionInteractionViewInflatedView(
+              val checkBox = bindingInterface.provideSelectionInteractionViewInflatedView(
                 LayoutInflater.from(parent.context),
                 parent,
                 /* attachToParent= */ false
               )
+              if (dataList.map { it.disableAnimation }.any { it }) {
+                checkBox.multiple_choice_radio_button.setOnCheckedChangeListener { buttonView, _ ->
+                  buttonView.jumpDrawablesToCurrentState()
+                }
+              }
+              checkBox
             },
             bindView = { view, viewModel ->
               bindingInterface.provideSelectionInteractionViewModel(
@@ -122,11 +136,17 @@ class SelectionInteractionView @JvmOverloads constructor(
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
-              bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
+              val radioButton = bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
                 LayoutInflater.from(parent.context),
                 parent,
                 /* attachToParent= */ false
               )
+              if (dataList.map { it.disableAnimation }.any { it }) {
+                radioButton.multiple_choice_radio_button.setOnCheckedChangeListener { buttonView, _ ->
+                  buttonView.jumpDrawablesToCurrentState()
+                }
+              }
+              radioButton
             },
             bindView = { view, viewModel ->
               bindingInterface.provideMultipleChoiceInteractionItemsViewModel(
