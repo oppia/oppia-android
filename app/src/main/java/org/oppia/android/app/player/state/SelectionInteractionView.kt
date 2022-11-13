@@ -2,12 +2,13 @@ package org.oppia.android.app.player.state
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.item_selection_interaction_items.view.*
+import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
@@ -19,8 +20,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.item_selection_interaction_items.view.*
-import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 
 /**
  * A custom [RecyclerView] for displaying a variable list of items that may be selected by a user as
@@ -113,8 +112,8 @@ class SelectionInteractionView @JvmOverloads constructor(
                 /* attachToParent= */ false
               )
               if (dataList.map { it.disableAnimation }.any { it }) {
-                checkBox.multiple_choice_radio_button.setOnCheckedChangeListener { buttonView, _ ->
-                  buttonView.jumpDrawablesToCurrentState()
+                checkBox.multiple_choice_radio_button.setOnCheckedChangeListener { view, _ ->
+                  view.jumpDrawablesToCurrentState()
                 }
               }
               checkBox
@@ -142,8 +141,8 @@ class SelectionInteractionView @JvmOverloads constructor(
                 /* attachToParent= */ false
               )
               if (dataList.map { it.disableAnimation }.any { it }) {
-                radioButton.multiple_choice_radio_button.setOnCheckedChangeListener { buttonView, _ ->
-                  buttonView.jumpDrawablesToCurrentState()
+                radioButton.multiple_choice_radio_button.setOnCheckedChangeListener { view, _ ->
+                  view.jumpDrawablesToCurrentState()
                 }
               }
               radioButton
