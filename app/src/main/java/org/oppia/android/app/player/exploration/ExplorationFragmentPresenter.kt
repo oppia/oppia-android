@@ -9,8 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.exploration_activity.*
-import kotlinx.android.synthetic.main.exploration_activity.view.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
@@ -91,7 +90,7 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   private fun showSpotlights(numberOfLogins: Int) {
     val explorationToolbar =
-      (fragment.requireActivity() as AppCompatActivity).exploration_toolbar
+      fragment.requireActivity().toolbar
     explorationToolbar.forEach {
       if (it is ImageButton) {
         // this toolbar contains only one image button, which is the back navigation icon
@@ -102,11 +101,11 @@ class ExplorationFragmentPresenter @Inject constructor(
           Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
         )
         checkNotNull(getSpotlightFragment()).requestSpotlight(backButtonSpotlightTarget)
-
-        // spotlight voice-over icon after 3 logins
-        if (numberOfLogins >= 3) {
+      }
+      if (it.id == R.id.action_audio_player){
+        if (numberOfLogins >= 3) {  // spotlight voice-over icon after 3 logins
           val audioPlayerSpotlightTarget = SpotlightTarget(
-            explorationToolbar.action_audio_player,
+            it,
             fragment.requireContext().getString(R.string.voiceover_icon_spotlight_hint),
             SpotlightShape.Circle,
             Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
