@@ -246,8 +246,8 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
-//    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
-//    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
+    TestPlatformParameterModule.forceEnableInteractionConfigChangeStateRetention(true)
+    TestPlatformParameterModule.forceEnableHintBulbAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1612,15 +1612,14 @@ class StateFragmentTest {
       startPlayingExploration()
       clickContinueInteractionButton()
       // Entering text in Fraction Input Interaction.
-      typeFractionText("34k")
+      typeFractionText("34")
       // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val fractionInputInteraction =
           it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
-        assertThat(fractionInputInteraction.text.toString()).isEqualTo("34k")
+        assertThat(fractionInputInteraction.text.toString()).isEqualTo("34")
       }
-      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
     }
   }
 
@@ -1658,15 +1657,14 @@ class StateFragmentTest {
       playThroughPrototypeState5()
       playThroughPrototypeState6()
       // Entering text in Ratio Input Interaction.
-      typeRatioExpression("3a:5")
+      typeRatioExpression("3:5")
       // Rotating device.
       rotateToLandscape()
       it.onActivity {
         val ratioInputInteraction =
           it.findViewById<RatioInputInteractionView>(R.id.ratio_input_interaction_view)
-        assertThat(ratioInputInteraction.text.toString()).isEqualTo("3a:5")
+        assertThat(ratioInputInteraction.text.toString()).isEqualTo("3:5")
       }
-      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
     }
   }
 
@@ -1696,7 +1694,7 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_selectionInteraction_ratioButton_retainStateOnConfigurationChange() {
+  fun testStateFragment_selectMultipleChoiceOption_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1718,7 +1716,7 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
-  fun testStateFragment_selectionInteraction_multipleSelection_retainStateOnConfigurationChange() {
+  fun testStateFragment_selectItemSelectionCheckbox_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -1818,6 +1816,65 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_mathInteractions_numericExp_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      // Enter text in numeric math input interaction.
+      typeNumericExpression("1+2")
+      // Rotating device.
+      rotateToLandscape()
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("1+2")
+      }
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_mathInteractions_algExp_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState3()
+      // Enter text in numeric math input interaction.
+      typeAlgebraicExpression("x^2-x-2")
+      // Rotating device.
+      rotateToLandscape()
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("x^2-x-2")
+      }
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_mathInteractions_mathEq_retainStateOnConfigurationChange() {
+    launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playUpThroughMathInteractionExplorationState6()
+
+      typeMathEquation("x^2-x-2=2y")
+      // Rotating device.
+      rotateToLandscape()
+      it.onActivity {
+        val mathExpressionInteractionView =
+          it.findViewById<MathExpressionInteractionsView>(
+            R.id.math_expression_input_interaction_view
+          )
+        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("x^2-x-2=2y")
+      }
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_differentTextBasedInteractions_doesNotShareInitialState() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1840,7 +1897,7 @@ class StateFragmentTest {
       it.onActivity {
         val numericInputInteractionView =
           it.findViewById<NumericInputInteractionView>(R.id.numeric_input_interaction_view)
-        assertThat(numericInputInteractionView.text.toString().isEmpty()).isTrue()
+        assertThat(numericInputInteractionView.text.toString()).isEmpty()
       }
     }
   }
@@ -1861,7 +1918,7 @@ class StateFragmentTest {
           it.findViewById<MathExpressionInteractionsView>(
             R.id.math_expression_input_interaction_view
           )
-        assertThat(mathExpressionInteractionView.text.toString().isEmpty()).isTrue()
+        assertThat(mathExpressionInteractionView.text.toString()).isEmpty()
       }
     }
   }
@@ -1900,6 +1957,51 @@ class StateFragmentTest {
 
   @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
   @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_onRealTimeError_retainStateOnConfigChange() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      // Entering text in Fraction Input Interaction.
+      typeFractionText("k")
+      // Rotating device.
+      rotateToLandscape()
+      it.onActivity {
+        val fractionInputInteraction =
+          it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
+        assertThat(fractionInputInteraction.text.toString()).isEqualTo("k")
+      }
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_onRealTimeError_submitIncorrectAnswer_doesNotShareInitialState() {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      // Entering text in Fraction Input Interaction.
+      typeFractionText("k")
+      // Rotating device.
+      rotateToLandscape()
+
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      onView(withId(R.id.fraction_input_interaction_view)).perform(replaceText("12"))
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        val fractionInputInteraction =
+          it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
+        assertThat(fractionInputInteraction.text.toString()).isEmpty()
+      }
+    }
+  }
+
+  @Test // TODO(#4692): Robolectric tests not working on screen rotation for input interactions
+  @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_onSubmitTimeError_retainStateOnConfigChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1910,14 +2012,18 @@ class StateFragmentTest {
       // Rotating device.
       rotateToLandscape()
 
+      scrollToViewType(FRACTION_INPUT_INTERACTION)
+      onView(withId(R.id.fraction_input_interaction_view)).perform(replaceText("12"))
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
       it.onActivity {
-        val mathExpressionInteractionView =
-          it.findViewById<MathExpressionInteractionsView>(
-            R.id.math_expression_input_interaction_view
-          )
-        assertThat(mathExpressionInteractionView.text.toString()).isEqualTo("a")
+        val fractionInputInteraction =
+          it.findViewById<FractionInputInteractionView>(R.id.fraction_input_interaction_view)
+        assertThat(fractionInputInteraction.text.toString()).isEmpty()
       }
-      onView(withId(R.id.math_expression_input_error)).check(matches(isDisplayed()))
     }
   }
 

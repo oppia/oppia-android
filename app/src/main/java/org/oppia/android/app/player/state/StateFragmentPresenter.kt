@@ -456,7 +456,7 @@ class StateFragmentPresenter @Inject constructor(
     val inputManager: InputMethodManager =
       activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(
-      fragment.view?.windowToken,
+      fragment.view!!.windowToken,
       InputMethodManager.SHOW_FORCED
     )
   }
