@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
-import org.oppia.android.app.spotlight.SpotlightTarget
 
 /** Fragment that contains an onboarding flow of the app. */
 class OnboardingFragment : InjectableFragment() {
@@ -30,6 +29,6 @@ class OnboardingFragment : InjectableFragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    onboardingFragmentPresenter.startSpotlights()
+    onboardingFragmentPresenter.startSpotlight()
   }
 }

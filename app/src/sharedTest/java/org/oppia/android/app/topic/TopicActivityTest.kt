@@ -184,18 +184,18 @@ class TopicActivityTest {
     }
   }
 
-  @Test
-  fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
-
-    }
-    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
-      onView(withText(context.getString(R.string.topic_lessons_tab_spotlight_hint))).check(
-        doesNotExist()
-      )
-    }
-  }
+//  @Test
+//  fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
+//    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+//    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+//
+//    }
+//    launchTopicActivity(internalProfileId, FRACTIONS_TOPIC_ID).use {
+//      onView(withText(context.getString(R.string.topic_lessons_tab_spotlight_hint))).check(
+//        doesNotExist()
+//      )
+//    }
+//  }
 
   @Test
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
@@ -209,16 +209,11 @@ class TopicActivityTest {
       onView(withId(R.id.custom_text)).check(
         matches(
           withText(
-            context.getString(R.string.topic_lessons_tab_spotlight_hint)
+            context.getString(R.string.first_chapter_spotlight_hint)
           )
         )
       )
     }
-  }
-
-  @Test
-  fun testFirstChapterSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
-
   }
 
   @Test

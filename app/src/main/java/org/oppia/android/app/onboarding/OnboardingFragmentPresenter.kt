@@ -67,22 +67,13 @@ class OnboardingFragmentPresenter @Inject constructor(
   }
 
 
-  fun startSpotlights() {
-    val skipSpotlightTarget = SpotlightTarget(
-      binding.skipTextView,
-      "Skip",
+  fun startSpotlight() {
+    val nextSpotlightTarget = SpotlightTarget(
+      binding.onboardingFragmentNextImageView,
+      fragment.requireContext().getString(R.string.onboarding_next_button_spotlight_hint),
       SpotlightShape.Circle,
       Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
     )
-
-    val nextSpotlightTarget = SpotlightTarget(
-      binding.onboardingFragmentNextImageView,
-      "next",
-      SpotlightShape.Circle,
-      Spotlight.FeatureCase.PROMOTED_STORIES
-    )
-
-    getSpotlightFragment().requestSpotlightViewWithDelayedLayout(skipSpotlightTarget)
     getSpotlightFragment().requestSpotlightViewWithDelayedLayout(nextSpotlightTarget)
   }
 

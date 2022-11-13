@@ -10,6 +10,7 @@ import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightTarget
 
@@ -41,7 +42,7 @@ class PromotedStoryCardView @JvmOverloads constructor(
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
-        "From now, you can see stories recommended for you here",
+        context.getString(R.string.promoted_story_spotlight_hint),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
       getSpotlightFragment().requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)

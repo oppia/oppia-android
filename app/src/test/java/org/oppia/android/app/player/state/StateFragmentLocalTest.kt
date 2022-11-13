@@ -167,6 +167,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.story.StoryProgressTestHelper
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -213,6 +214,9 @@ class StateFragmentLocalTest {
 
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4
@@ -280,6 +284,40 @@ class StateFragmentLocalTest {
       playThroughFractionsState1()
 
       onView(withId(R.id.hint_bulb)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testBackButtonSpotlight_setToShowOnFirstLogin_neverSeenBefore_checkSpotlightIsShown() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+
+      onView(withText(R.string.exploration_exit_button_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_neverSeenBefore_checkSpotlightIsShown() {
+    logIntoUserThrice()
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      // mark exit button spotlight seen
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_1stLogin_checkSpotlightIsNotShown() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      // mark exit button spotlight seen
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -2311,6 +2349,12 @@ class StateFragmentLocalTest {
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)
+  }
+
+  private fun logIntoUserThrice() {
+    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
   }
 
   /**

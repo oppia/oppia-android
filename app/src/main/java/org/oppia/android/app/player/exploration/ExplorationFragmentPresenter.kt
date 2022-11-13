@@ -107,7 +107,7 @@ class ExplorationFragmentPresenter @Inject constructor(
         if (numberOfLogins >= 3) {
           val audioPlayerSpotlightTarget = SpotlightTarget(
             explorationToolbar.action_audio_player,
-            "Would you like Oppia to read for you? Tap on this button to try!",
+            fragment.requireContext().getString(R.string.voiceover_icon_spotlight_hint),
             SpotlightShape.Circle,
             Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
           )

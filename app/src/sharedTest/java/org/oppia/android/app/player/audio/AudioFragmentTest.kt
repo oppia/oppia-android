@@ -198,6 +198,19 @@ class AudioFragmentTest {
   }
 
   @Test
+  fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_neverSeenBefore_checkSpotlightIsShown() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testAudioFragment_languageIcon_hasContentDescription() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(

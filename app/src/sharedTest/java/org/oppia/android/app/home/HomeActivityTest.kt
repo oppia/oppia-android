@@ -330,29 +330,29 @@ class HomeActivityTest {
       onView(withId(R.id.custom_text)).check(
         matches(
           withText(
-            "From now, here you can view stories you might be interested in"
+            R.string.promoted_story_spotlight_hint
           )
         )
       )
     }
   }
 
-  @DisableAccessibilityChecks
-  @Test
-  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightAlreadySeenBefore_checkSpotlightIsNotShown() {
-    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
-    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
-    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      it.recreate().use {
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.custom_text)).check(doesNotExist())
-      }
-    }
-  }
+//  @DisableAccessibilityChecks
+//  @Test
+//  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightAlreadySeenBefore_checkSpotlightIsNotShown() {
+//    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+//    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
+//    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+//      testCoroutineDispatchers.runCurrent()
+//      onView(withId(R.id.close_target)).perform(click())
+//      testCoroutineDispatchers.runCurrent()
+//
+//      it.recreate().use {
+//        testCoroutineDispatchers.runCurrent()
+//        onView(withId(R.id.custom_text)).check(doesNotExist())
+//      }
+//    }
+//  }
 
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {

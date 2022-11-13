@@ -28,6 +28,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.protobuf.MessageLite
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -134,8 +136,6 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -206,6 +206,31 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       verifyTextOnStorySummaryListItemAtPosition(itemPosition = 2, stringToMatch = "2 Chapters")
+    }
+  }
+
+  @Test
+  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkIsShown() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    storyProgressTestHelper.markCompletedRatiosTopic(profileId, false)
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      // mark lessons spotlight seen
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_chaptersNotComplete_checkIsNotShown() {
+    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+      // mark lessons spotlight seen
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(not(isDisplayed())))
     }
   }
 

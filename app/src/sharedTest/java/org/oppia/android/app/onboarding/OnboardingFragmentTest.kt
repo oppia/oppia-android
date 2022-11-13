@@ -174,6 +174,13 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testNextButtonSpotlight_setToShowOnStartup_neverSeenBefore_checkSpotlightIsShown() {
+    launch(OnboardingActivity::class.java).use {
+     onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_checkDefaultSlideDescription_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(

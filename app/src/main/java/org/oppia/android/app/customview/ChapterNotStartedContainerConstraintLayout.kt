@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightTarget
@@ -50,7 +51,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
-        "Tap to start a chapter",
+        context.getString(R.string.first_chapter_spotlight_hint),
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
       getSpotlightFragment().requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
