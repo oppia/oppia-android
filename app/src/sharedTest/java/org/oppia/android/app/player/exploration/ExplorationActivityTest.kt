@@ -409,6 +409,33 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
+
+  @Test
+  fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_neverSeenBefore_checkSpotlightIsShown() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
   @Test
   fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
     setUpAudioForFractionLesson()
