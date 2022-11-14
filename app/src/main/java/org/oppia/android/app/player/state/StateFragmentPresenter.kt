@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -216,6 +217,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     this.helpIndex = helpIndex
     showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
+
   }
 
   private fun createRecyclerViewAssembler(
@@ -462,6 +464,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       setHintOpenedAndUnRevealed(false)
@@ -495,6 +498,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
     if (isHintUnrevealed) {
+
       val hintBulbAnimation = AnimationUtils.loadAnimation(
         context,
         R.anim.hint_bulb_animation
@@ -506,6 +510,8 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            Log.d("hints", "announcement expected now")
+            binding.hintsAndSolutionFragmentContainer.announceForAccessibility("Go to the bottom of the screen for hint")
           }
         }
       }
