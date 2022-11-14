@@ -1,15 +1,15 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.toolbar.*
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
@@ -24,7 +24,6 @@ import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
@@ -37,7 +36,6 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val profileManagementController: ProfileManagementController,
-  private val topicListController: TopicListController
 ) {
 
   private var internalProfileId: Int = -1
@@ -89,8 +87,9 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   private fun showSpotlights(numberOfLogins: Int) {
+    Log.d("overlay", "login count: $numberOfLogins")
     val explorationToolbar =
-      fragment.requireActivity().toolbar
+      fragment.requireActivity().findViewById<View>(R.id.exploration_toolbar) as Toolbar
     explorationToolbar.forEach {
       if (it is ImageButton) {
         // this toolbar contains only one image button, which is the back navigation icon
@@ -102,17 +101,19 @@ class ExplorationFragmentPresenter @Inject constructor(
         )
         checkNotNull(getSpotlightFragment()).requestSpotlight(backButtonSpotlightTarget)
       }
-      if (it.id == R.id.action_audio_player){
-        if (numberOfLogins >= 3) {  // spotlight voice-over icon after 3 logins
-          val audioPlayerSpotlightTarget = SpotlightTarget(
-            it,
-            fragment.requireContext().getString(R.string.voiceover_icon_spotlight_hint),
-            SpotlightShape.Circle,
-            Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-          )
-          checkNotNull(getSpotlightFragment()).requestSpotlight(audioPlayerSpotlightTarget)
-        }
-      }
+    }
+
+    val voiceoverIcon = fragment.requireActivity().findViewById<View>(R.id.action_audio_player)
+    if (numberOfLogins >= 3) {  // spotlight voice-over icon after 3 logins
+      val audioPlayerSpotlightTarget = SpotlightTarget(
+        voiceoverIcon,
+        fragment.requireContext().getString(R.string.voiceover_icon_spotlight_hint),
+        SpotlightShape.Circle,
+        Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+      )
+      checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(
+        audioPlayerSpotlightTarget
+      )
     }
   }
 
