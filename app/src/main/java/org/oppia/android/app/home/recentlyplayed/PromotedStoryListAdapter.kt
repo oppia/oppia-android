@@ -9,7 +9,10 @@ import org.oppia.android.databinding.SectionTitleBinding
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
-/** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List. */
+/** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List.
+ *
+ * @param [itemList] list of items that may be displayed in recently-played fragment recycler view.
+ * */
 class PromotedStoryListAdapter(
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
