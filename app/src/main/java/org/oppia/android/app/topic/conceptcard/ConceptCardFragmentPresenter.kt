@@ -55,6 +55,10 @@ class ConceptCardFragmentPresenter @Inject constructor(
       R.string.concept_card_close_icon_description
     )
     binding.conceptCardToolbar.setNavigationOnClickListener {
+      ConceptCardBackStackManager.remove()
+      if (ConceptCardBackStackManager.stackSize.value == 0) {
+        ConceptCardBackStackManager.destroyBackStack()
+      }
       (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()
     }
 

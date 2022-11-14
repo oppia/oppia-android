@@ -68,6 +68,16 @@ class ConceptCardFragment : InjectableDialogFragment() {
         "Expected skillId to be passed to ConceptCardFragment"
       }
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    if (ConceptCardBackStackManager.stackSize.value == ConceptCardBackStackManager.DEFAULT_STACK_SIZE) {
+      ConceptCardBackStackManager.initBackStack()
+      ConceptCardBackStackManager.addToStack(skillId)
+    } else {
+      if (ConceptCardBackStackManager.peek() == skillId) {
+        dismiss()
+      } else {
+        ConceptCardBackStackManager.addToStack(skillId)
+      }
+    }
     return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId, profileId)
   }
 
