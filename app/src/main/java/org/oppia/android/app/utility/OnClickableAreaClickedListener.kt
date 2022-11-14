@@ -10,6 +10,7 @@ interface OnClickableAreaClickedListener {
    * For an specified region it will be called with [NamedRegionClickedEvent] with region name.
    * For an unspecified region it will be called with [DefaultRegionClickedEvent].
    *
+   * @param coordinates the coordinates of unlabelled region
    */
   fun onClickableAreaTouched(
     region: RegionClickedEvent,
