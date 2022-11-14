@@ -8,6 +8,7 @@ import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.RawUserAnswer
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.WrittenTranslationContext
@@ -60,7 +61,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
   }
 
-  override fun onClickableAreaTouched(region: RegionClickedEvent) {
+  override fun onClickableAreaTouched(region: RegionClickedEvent, coordinates: Point2d) {
     when (region) {
       is DefaultRegionClickedEvent -> {
         answerText = ""

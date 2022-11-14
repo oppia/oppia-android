@@ -1,5 +1,7 @@
 package org.oppia.android.app.utility
 
+import org.oppia.android.app.model.Point2d
+
 /** Listener for an image when it is clicked which have a [ClickableAreasImage] attached to the view. */
 interface OnClickableAreaClickedListener {
   /**
@@ -9,5 +11,8 @@ interface OnClickableAreaClickedListener {
    * For an unspecified region it will be called with [DefaultRegionClickedEvent].
    *
    */
-  fun onClickableAreaTouched(region: RegionClickedEvent)
+  fun onClickableAreaTouched(
+    region: RegionClickedEvent,
+    coordinates: Point2d = Point2d.getDefaultInstance()
+  )
 }

@@ -52,7 +52,7 @@
       app:entityId="@{viewModel.entityId}"
       app:imageUrl="@{viewModel.imagePath}"
       app:lastSelectedRegion="@{viewModel.lastSelectedRegion}"
-      app:onRegionClicked="@{(region) -> viewModel.onClickableAreaTouched(region)}"
+      app:onRegionClicked="@{(region, coordinates) -> viewModel.onClickableAreaTouched(region, coordinates)}"
       app:overlayView="@{interactionContainerFrameLayout}" />
 
     <View

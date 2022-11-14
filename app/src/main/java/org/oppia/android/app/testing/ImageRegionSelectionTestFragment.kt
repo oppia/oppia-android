@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
@@ -36,7 +37,7 @@ class ImageRegionSelectionTestFragment : InjectableFragment(), OnClickableAreaCl
     return imageRegionSelectionTestFragmentPresenter.handleCreateView(inflater, container)
   }
 
-  override fun onClickableAreaTouched(region: RegionClickedEvent) {
-    mockOnClickableAreaClickedListener.onClickableAreaTouched(region)
+  override fun onClickableAreaTouched(region: RegionClickedEvent, coordinates: Point2d) {
+    mockOnClickableAreaClickedListener.onClickableAreaTouched(region, coordinates)
   }
 }

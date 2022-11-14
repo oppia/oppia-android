@@ -31,12 +31,9 @@ class SelectionInteractionView @JvmOverloads constructor(
   @field:[Inject ExplorationHtmlParserEntityType] lateinit var entityType: String
   @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-  @Inject
-  lateinit var bindingInterface: ViewBindingShim
-  @Inject
-  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var bindingInterface: ViewBindingShim
+  @Inject lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 
   private lateinit var selectionItemInputType: SelectionItemInputType
   private lateinit var entityId: String

@@ -10,6 +10,7 @@ import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions
+import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import kotlin.math.roundToInt
@@ -48,7 +49,8 @@ class ClickableAreasImage(
       defaultRegionView.setBackgroundResource(R.drawable.selected_region_background)
       defaultRegionView.x = x
       defaultRegionView.y = y
-      listener.onClickableAreaTouched(DefaultRegionClickedEvent())
+      val coordinates = Point2d.newBuilder().setX(x).setY(y).build()
+      listener.onClickableAreaTouched(DefaultRegionClickedEvent(), coordinates)
     }
   }
 
