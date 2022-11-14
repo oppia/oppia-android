@@ -7,8 +7,6 @@ import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_selection_interaction_items.view.*
-import kotlinx.android.synthetic.main.multiple_choice_interaction_items.view.*
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
@@ -30,10 +28,8 @@ class SelectionInteractionView @JvmOverloads constructor(
   attrs: AttributeSet? = null,
   defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
-  @field:[Inject ExplorationHtmlParserEntityType]
-  lateinit var entityType: String
-  @field:[Inject DefaultResourceBucketName]
-  lateinit var resourceBucketName: String
+  @field:[Inject ExplorationHtmlParserEntityType] lateinit var entityType: String
+  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
   @Inject
   lateinit var htmlParserFactory: HtmlParser.Factory
@@ -106,17 +102,11 @@ class SelectionInteractionView @JvmOverloads constructor(
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
-              val checkBox = bindingInterface.provideSelectionInteractionViewInflatedView(
+              bindingInterface.provideSelectionInteractionViewInflatedView(
                 LayoutInflater.from(parent.context),
                 parent,
                 /* attachToParent= */ false
               )
-              if (dataList.map { it.disableAnimation }.any { it }) {
-                checkBox.multiple_choice_radio_button.setOnCheckedChangeListener { view, _ ->
-                  view.jumpDrawablesToCurrentState()
-                }
-              }
-              checkBox
             },
             bindView = { view, viewModel ->
               bindingInterface.provideSelectionInteractionViewModel(
@@ -135,17 +125,11 @@ class SelectionInteractionView @JvmOverloads constructor(
         singleTypeBuilderFactory.create<SelectionInteractionContentViewModel>()
           .registerViewBinder(
             inflateView = { parent ->
-              val radioButton = bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
+              bindingInterface.provideMultipleChoiceInteractionItemsInflatedView(
                 LayoutInflater.from(parent.context),
                 parent,
                 /* attachToParent= */ false
               )
-              if (dataList.map { it.disableAnimation }.any { it }) {
-                radioButton.multiple_choice_radio_button.setOnCheckedChangeListener { view, _ ->
-                  view.jumpDrawablesToCurrentState()
-                }
-              }
-              radioButton
             },
             bindView = { view, viewModel ->
               bindingInterface.provideMultipleChoiceInteractionItemsViewModel(

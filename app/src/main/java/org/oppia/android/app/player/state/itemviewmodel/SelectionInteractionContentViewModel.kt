@@ -8,7 +8,6 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class SelectionInteractionContentViewModel(
   val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
-  var disableAnimation: Boolean,
   private val itemIndex: Int,
   private val selectionInteractionViewModel: SelectionInteractionViewModel
 ) : ObservableViewModel() {

@@ -77,7 +77,6 @@ class SelectionInteractionViewModel private constructor(
       rawUserAnswer.itemSelection.selectedIndexesList.forEach { index ->
         selectedItems += index
         updateIsAnswerAvailable()
-        choiceItems[index].disableAnimation = true
         choiceItems[index].isAnswerSelected.set(true)
       }
     }
@@ -219,7 +218,6 @@ class SelectionInteractionViewModel private constructor(
         SelectionInteractionContentViewModel(
           htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
-          disableAnimation = false,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel
         )
