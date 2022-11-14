@@ -104,7 +104,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     }
 
     val voiceoverIcon = fragment.requireActivity().findViewById<View>(R.id.action_audio_player)
-    if (numberOfLogins >= 3) {  // spotlight voice-over icon after 3 logins
+    if (numberOfLogins >= 3 && voiceoverIcon.visibility == View.VISIBLE) {
+      // spotlight voice-over icon after 3 logins
       val audioPlayerSpotlightTarget = SpotlightTarget(
         voiceoverIcon,
         fragment.requireContext().getString(R.string.voiceover_icon_spotlight_hint),
