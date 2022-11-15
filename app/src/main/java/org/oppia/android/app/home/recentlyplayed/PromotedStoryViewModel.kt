@@ -20,22 +20,28 @@ class PromotedStoryViewModel(
   private val resourceHandler: AppLanguageResourceHandler,
   translationController: TranslationController
 ) : RecentlyPlayedItemViewModel() {
+  /** Sets the story title of the recently played story */
   val storyTitle by lazy {
     translationController.extractString(
       promotedStory.storyTitle, promotedStory.storyWrittenTranslationContext
     )
   }
+  /** Sets the topic of the recently played story */
   val topicTitle by lazy {
     translationController.extractString(
       promotedStory.topicTitle, promotedStory.topicWrittenTranslationContext
     )
   }
+  /** Sets the next chapter title of the recently played story */
   val nextChapterTitle by lazy {
     translationController.extractString(
       promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
     )
   }
 
+  /** Starts [ResumeLessonActivity] if a saved exploration is selected
+   *  or [ExplorationActivity] if an un-started recommended story is selected
+   */
   fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     promotedStoryClickListener.promotedStoryClicked(promotedStory)
   }
@@ -118,6 +124,9 @@ class PromotedStoryViewModel(
     }
   }
 
+  /** Creates the content description of the story thumbnail by interpolating
+   * the thumbnail description string resource and the next chapter title
+   * */
   fun computeLessonThumbnailContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.lesson_thumbnail_content_description, nextChapterTitle

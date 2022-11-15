@@ -79,6 +79,12 @@ class PromotedStoryListAdapter(
     return itemList.size
   }
 
+  /**
+   *  Defines the number of columns of recently played stories shown in the recently played stories
+   *  list.
+   *
+   *  @param [spanCount] defines the number of spaces this item should occupy, based on screen size
+   */
   fun setSpanCount(spanCount: Int) {
     this.spanCount = spanCount
   }
@@ -86,6 +92,7 @@ class PromotedStoryListAdapter(
   private class SectionTitleViewHolder(
     val binding: SectionTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
+    /** Binds the viewmodel that sets section titles */
     fun bind(sectionTitleViewModel: SectionTitleViewModel) {
       binding.viewModel = sectionTitleViewModel
     }
@@ -94,6 +101,7 @@ class PromotedStoryListAdapter(
   private class PromotedStoryViewHolder(
     val binding: RecentlyPlayedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
+    /** Binds the viewmodel that sets recently played items */
     fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
     }
