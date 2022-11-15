@@ -64,7 +64,6 @@
   <dimen name="dot_gap">12dp</dimen>
   <dimen name="enter_text_view_padding_start">60dp</dimen>
   <dimen name="enter_text_view_padding_end">60dp</dimen>
-  <dimen name="promoted_story_card_width">280dp</dimen>
   <dimen name="home_padding_end">20dp</dimen>
   <dimen name="home_padding_start">20dp</dimen>
   <dimen name="home_outer_margin">28dp</dimen>
@@ -541,7 +540,10 @@
 
   <dimen name="promoted_story_card_layout_margin_end">8dp</dimen>
   <dimen name="promoted_story_card_layout_margin_start">8dp</dimen>
-  <dimen name="promoted_story_card_layout_width">280dp</dimen>
+  <!-- The width is set to sp so that it will scale according to the device screen -->
+  <dimen name="promoted_story_card_layout_width">280sp</dimen>
+  <!-- The width is set to sp so that it will scale according to the device screen -->
+  <dimen name="promoted_story_card_width">280sp</dimen>
   <dimen name="promoted_story_card_text_size">16sp</dimen>
   <dimen name="promoted_story_card_margin_top">8dp</dimen>
 

@@ -16,12 +16,8 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
-  deviceSettings: DeviceSettings,
-  private val automaticallyUpdateTopic: Boolean,
+  deviceSettings: DeviceSettings
 ) : AdministratorControlsItemViewModel() {
-
-  val isVisible = ObservableField(automaticallyUpdateTopic)
-
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
   val isTopicAutoUpdatePermission =
