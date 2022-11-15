@@ -18,7 +18,7 @@ private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
 
 /* Fragment that displays a fullscreen dialog for concept cards */
-class ConceptCardFragment() : InjectableDialogFragment() {
+class ConceptCardFragment : InjectableDialogFragment() {
 
   companion object {
     /** The fragment tag corresponding to the concept card dialog fragment. */
