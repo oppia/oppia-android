@@ -18,7 +18,7 @@ private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
 
 /* Fragment that displays a fullscreen dialog for concept cards */
-class ConceptCardFragment : InjectableDialogFragment() {
+class ConceptCardFragment() : InjectableDialogFragment() {
 
   companion object {
     /** The fragment tag corresponding to the concept card dialog fragment. */
@@ -44,9 +44,31 @@ class ConceptCardFragment : InjectableDialogFragment() {
   @Inject
   lateinit var conceptCardFragmentPresenter: ConceptCardFragmentPresenter
 
+  @Inject
+  lateinit var conceptCardBackStackManager: ConceptCardBackStackManager
+
+  private lateinit var args: Bundle
+
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
+    args = checkNotNull(arguments) {
+      "Expected arguments to be passed to ConceptCardFragment"
+    }
+    val skillId =
+      checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
+        "Expected skillId to be passed to ConceptCardFragment"
+      }
+    if (conceptCardBackStackManager.stackSize.value == ConceptCardBackStackManager.DEFAULT_STACK_SIZE) {
+      conceptCardBackStackManager.initBackStack()
+      conceptCardBackStackManager.addToStack(skillId)
+    } else {
+      if (conceptCardBackStackManager.peek() == skillId) {
+        dismiss()
+      } else {
+        conceptCardBackStackManager.addToStack(skillId)
+      }
+    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,24 +82,11 @@ class ConceptCardFragment : InjectableDialogFragment() {
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val args = checkNotNull(arguments) {
-      "Expected arguments to be passed to ConceptCardFragment"
-    }
     val skillId =
       checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
         "Expected skillId to be passed to ConceptCardFragment"
       }
     val profileId = args.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
-    if (ConceptCardBackStackManager.stackSize.value == ConceptCardBackStackManager.DEFAULT_STACK_SIZE) {
-      ConceptCardBackStackManager.initBackStack()
-      ConceptCardBackStackManager.addToStack(skillId)
-    } else {
-      if (ConceptCardBackStackManager.peek() == skillId) {
-        dismiss()
-      } else {
-        ConceptCardBackStackManager.addToStack(skillId)
-      }
-    }
     return conceptCardFragmentPresenter.handleCreateView(inflater, container, skillId, profileId)
   }
 

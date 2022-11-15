@@ -27,7 +27,8 @@ class ConceptCardFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
   private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val conceptCardBackStackManager: ConceptCardBackStackManager
 ) {
   /**
    * Sets up data binding and toolbar.
@@ -55,9 +56,9 @@ class ConceptCardFragmentPresenter @Inject constructor(
       R.string.concept_card_close_icon_description
     )
     binding.conceptCardToolbar.setNavigationOnClickListener {
-      ConceptCardBackStackManager.remove()
-      if (ConceptCardBackStackManager.stackSize.value == 0) {
-        ConceptCardBackStackManager.destroyBackStack()
+      conceptCardBackStackManager.remove()
+      if (conceptCardBackStackManager.stackSize.value == 0) {
+        conceptCardBackStackManager.destroyBackStack()
       }
       (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()
     }

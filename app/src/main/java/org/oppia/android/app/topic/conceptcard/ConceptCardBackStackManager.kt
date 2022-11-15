@@ -1,10 +1,15 @@
 package org.oppia.android.app.topic.conceptcard
 
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object ConceptCardBackStackManager {
+@Singleton
+class ConceptCardBackStackManager @Inject constructor() {
 
-  const val DEFAULT_STACK_SIZE = -1
+  companion object {
+    const val DEFAULT_STACK_SIZE = -1
+  }
 
   private var conceptCardBackStack: ArrayDeque<String>? = null
   val stackSize: MutableLiveData<Int> = MutableLiveData(DEFAULT_STACK_SIZE)
