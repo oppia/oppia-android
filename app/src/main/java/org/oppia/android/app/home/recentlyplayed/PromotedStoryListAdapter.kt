@@ -3,7 +3,7 @@ package org.oppia.android.app.home.recentlyplayed
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.databinding.OngoingStoryCardBinding
+import org.oppia.android.databinding.RecentlyPlayedStoryCardBinding
 import org.oppia.android.databinding.SectionTitleBinding
 
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
@@ -37,7 +37,7 @@ class PromotedStoryListAdapter(
       VIEW_TYPE_SECTION_STORY_ITEM -> {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-          OngoingStoryCardBinding.inflate(
+          RecentlyPlayedStoryCardBinding.inflate(
             inflater,
             parent,
             /* attachToParent= */ false
@@ -92,7 +92,7 @@ class PromotedStoryListAdapter(
   }
 
   private class PromotedStoryViewHolder(
-    val binding: OngoingStoryCardBinding
+    val binding: RecentlyPlayedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
