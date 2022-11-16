@@ -9,10 +9,11 @@ import org.oppia.android.databinding.SectionTitleBinding
 private const val VIEW_TYPE_SECTION_TITLE_TEXT = 1
 private const val VIEW_TYPE_SECTION_STORY_ITEM = 2
 
-/** Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List.
+/**
+ * Adapter to inflate different items/views inside [RecyclerView] for Ongoing Story List.
  *
- * @param [itemList] list of items that may be displayed in recently-played fragment recycler view.
- * */
+ * @property itemList the items that may be displayed in [RecentlyPlayedFragment]'s recycler view
+ */
 class PromotedStoryListAdapter(
   private val itemList: MutableList<RecentlyPlayedItemViewModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -79,11 +80,11 @@ class PromotedStoryListAdapter(
     return itemList.size
   }
 
-  /**
-   *  Defines the number of columns of recently played stories shown in the recently played stories
+/**
+   *  Specifies the number of columns of recently played stories shown in the recently played stories
    *  list.
    *
-   *  @param [spanCount] defines the number of spaces this item should occupy, based on screen size
+   *  @param spanCount specifies the number of spaces this item should occupy, based on screen size
    */
   fun setSpanCount(spanCount: Int) {
     this.spanCount = spanCount
@@ -92,7 +93,7 @@ class PromotedStoryListAdapter(
   private class SectionTitleViewHolder(
     val binding: SectionTitleBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    /** Binds the viewmodel that sets section titles */
+    /** Binds the view model that sets section titles. */
     fun bind(sectionTitleViewModel: SectionTitleViewModel) {
       binding.viewModel = sectionTitleViewModel
     }
@@ -101,7 +102,7 @@ class PromotedStoryListAdapter(
   private class PromotedStoryViewHolder(
     val binding: RecentlyPlayedStoryCardBinding
   ) : RecyclerView.ViewHolder(binding.root) {
-    /** Binds the viewmodel that sets recently played items */
+    /** Binds the view model that sets recently played items. */
     fun bind(promotedStoryViewModel: PromotedStoryViewModel) {
       binding.viewModel = promotedStoryViewModel
     }

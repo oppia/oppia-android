@@ -4,9 +4,10 @@ import org.oppia.android.app.model.PromotedStory
 
 /** Listener interface for when promoted story is clicked in the UI. */
 interface PromotedStoryClickListener {
-  /** Called when the a promoted story card is clicked by the user.
+  /**
+   * Called when a promoted story card is clicked by the user
    *
-   * @param promotedStory object of the story selected
-   * */
+   * @param promotedStory the [PromotedStory] that was clicked
+   */
   fun promotedStoryClicked(promotedStory: PromotedStory)
 }
