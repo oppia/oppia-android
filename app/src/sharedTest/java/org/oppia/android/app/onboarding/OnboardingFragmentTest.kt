@@ -230,6 +230,13 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testNextButtonSpotlight_setToShowOnStartup_checkSpotlightIsShown() {
+    launch(OnboardingActivity::class.java).use {
+      onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.skip_text_view)).perform(click())

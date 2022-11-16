@@ -57,6 +57,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -96,6 +97,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -103,8 +105,11 @@ import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -164,6 +169,9 @@ class TopicLessonsFragmentTest {
   lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
+  @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
 
   @field:[Inject EnableExtraTopicTabsUi]
@@ -206,31 +214,6 @@ class TopicLessonsFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
       clickLessonTab()
       verifyTextOnStorySummaryListItemAtPosition(itemPosition = 2, stringToMatch = "2 Chapters")
-    }
-  }
-
-  @Test
-  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkIsShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    storyProgressTestHelper.markCompletedRatiosTopic(profileId, false)
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      // mark lessons spotlight seen
-      onView(withId(R.id.close_target)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_chaptersNotComplete_checkIsNotShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
-      // mark lessons spotlight seen
-      onView(withId(R.id.close_target)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(not(isDisplayed())))
     }
   }
 

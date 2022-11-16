@@ -321,44 +321,39 @@ class HomeActivityTest {
     }
   }
 
+  @DisableAccessibilityChecks
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightNeverSeenBefore_checkSpotlightShown() {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.custom_text)).check(matches(isDisplayed()))
-      onView(withId(R.id.custom_text)).check(
-        matches(
-          withText(
-            R.string.promoted_story_spotlight_hint
-          )
-        )
-      )
+      onView(withText(R.string.promoted_story_spotlight_hint)).check(matches(isDisplayed()))
     }
   }
 
-//  @DisableAccessibilityChecks
-//  @Test
-//  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightAlreadySeenBefore_checkSpotlightIsNotShown() {
-//    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
-//    dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
-//    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-//      testCoroutineDispatchers.runCurrent()
-//      onView(withId(R.id.close_target)).perform(click())
-//      testCoroutineDispatchers.runCurrent()
-//
-//      it.recreate().use {
-//        testCoroutineDispatchers.runCurrent()
-//        onView(withId(R.id.custom_text)).check(doesNotExist())
-//      }
-//    }
-//  }
+  @DisableAccessibilityChecks
+  @Test
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightIsNotShownAgain() {
+   logIntoUserTwice()
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
 
+    // re-launch the activity
+    launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
+  @DisableAccessibilityChecks
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.custom_text)).check(doesNotExist())
+      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
     }
   }
 

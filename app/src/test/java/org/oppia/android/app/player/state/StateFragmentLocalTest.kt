@@ -288,40 +288,6 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testBackButtonSpotlight_setToShowOnFirstLogin_neverSeenBefore_checkSpotlightIsShown() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      startPlayingExploration()
-
-      onView(withText(R.string.exploration_exit_button_spotlight_hint)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_neverSeenBefore_checkSpotlightIsShown() {
-    logIntoUserThrice()
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      startPlayingExploration()
-      // mark exit button spotlight seen
-      onView(withId(R.id.close_target)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_1stLogin_checkSpotlightIsNotShown() {
-    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
-      startPlayingExploration()
-      // mark exit button spotlight seen
-      onView(withId(R.id.close_target)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
   fun testStateFragment_nextState_wait10seconds_noHintAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
@@ -2349,12 +2315,6 @@ class StateFragmentLocalTest {
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)
-  }
-
-  private fun logIntoUserThrice() {
-    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
-    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
-    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoUser())
   }
 
   /**

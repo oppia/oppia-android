@@ -46,6 +46,10 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.IOException
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -76,6 +80,7 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -115,6 +120,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -129,6 +135,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -139,6 +146,7 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
 import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -165,10 +173,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.IOException
-import java.util.concurrent.TimeoutException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -177,6 +181,7 @@ import javax.inject.Singleton
   application = ExplorationActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+
 class ExplorationActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -186,6 +191,12 @@ class ExplorationActivityTest {
 
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
 
   @Inject
   lateinit var explorationDataController: ExplorationDataController
@@ -221,6 +232,7 @@ class ExplorationActivityTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
@@ -409,7 +421,6 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-
   @Test
   fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_neverSeenBefore_checkSpotlightIsShown() {
     setUpAudioForFractionLesson()
@@ -433,6 +444,209 @@ class ExplorationActivityTest {
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_alreadySeen_checkSpotlightIsNotShown() {
+    setUpAudioForFractionLesson()
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
+    }
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      networkConnectionUtil.setCurrentConnectionStatus(ProdConnectionStatus.LOCAL)
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.action_audio_player)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testBackButtonSpotlight_setToShowOnFirstLogin_neverSeenBefore_checkSpotlightIsShown() {
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+
+      onView(withText(R.string.exploration_exit_button_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testBackButtonSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightIsNotShown() {
+    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      onView(withId(R.id.close_target)).perform(click())
+    }
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      onView(withText(R.string.exploration_exit_button_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_neverSeenBefore_checkSpotlightIsShown() {
+    logIntoUserThrice()
+    markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_alreadySeen_checkSpotlightIsNotShown() {
+    logIntoUserThrice()
+    markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
+    }
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_1stLogin_checkSpotlightIsNotShown() {
+    markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        shouldSavePartialProgress = false
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(doesNotExist())
     }
   }
 
@@ -1919,6 +2133,24 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.options_menu_bottom_sheet_container)).check(doesNotExist())
     }
+  }
+
+  private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
+    val profileId = ProfileId.newBuilder()
+      .setInternalId(internalProfileId)
+      .build()
+    monitorFactory.waitForNextSuccessfulResult(
+      spotlightStateController.markSpotlightViewed(
+        profileId,
+        feature
+      )
+    )
+  }
+
+  private fun logIntoUserThrice() {
+    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
+    monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
   }
 
   private fun createExplorationActivityIntent(
