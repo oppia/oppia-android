@@ -14,8 +14,8 @@ import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsControll
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
 import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.logging.EventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
@@ -30,7 +30,7 @@ class LogUploadWorker private constructor(
   private val exceptionsController: ExceptionsController,
   private val performanceMetricsController: PerformanceMetricsController,
   private val exceptionLogger: ExceptionLogger,
-  private val eventLogger: EventLogger,
+  private val analyticsEventLogger: AnalyticsEventLogger,
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   private val consoleLogger: ConsoleLogger,
   private val syncStatusManager: SyncStatusManager,
@@ -91,7 +91,7 @@ class LogUploadWorker private constructor(
     return try {
       syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADING)
       analyticsController.getEventLogStoreList().forEach { eventLog ->
-        eventLogger.logEvent(eventLog)
+        analyticsEventLogger.logEvent(eventLog)
         analyticsController.removeFirstEventLogFromStore()
       }
       syncStatusManager.setSyncStatus(SyncStatusManager.SyncStatus.DATA_UPLOADED)
@@ -124,7 +124,7 @@ class LogUploadWorker private constructor(
     private val exceptionsController: ExceptionsController,
     private val performanceMetricsController: PerformanceMetricsController,
     private val exceptionLogger: ExceptionLogger,
-    private val eventLogger: EventLogger,
+    private val analyticsEventLogger: AnalyticsEventLogger,
     private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
     private val consoleLogger: ConsoleLogger,
     private val syncStatusManager: SyncStatusManager,
@@ -139,7 +139,7 @@ class LogUploadWorker private constructor(
         exceptionsController,
         performanceMetricsController,
         exceptionLogger,
-        eventLogger,
+        analyticsEventLogger,
         performanceMetricsEventLogger,
         consoleLogger,
         syncStatusManager,

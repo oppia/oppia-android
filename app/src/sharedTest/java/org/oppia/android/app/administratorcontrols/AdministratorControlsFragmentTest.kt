@@ -17,6 +17,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -74,13 +75,14 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -143,7 +145,7 @@ class AdministratorControlsFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(true)
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
@@ -216,24 +218,19 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
-    TestPlatformParameterModule.forceShowAutomaticUpdateTopicSettingUi(false)
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      verifyTextOnAdministratorListItemAtPosition(
-        itemPosition = 2,
-        targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_label
-      )
-      verifyItemDisplayedOnAdministratorControlListItem(
-        itemPosition = 2,
-        targetView = R.id.topic_update_on_wifi_constraint_layout
-      )
       scrollToPosition(position = 2)
-      verifyItemNotDisplayedOnAdministratorControlListItem(
+      verifyItemDoesNotExistInAdministratorControlListItem(
+        itemPosition = 2,
+        targetView = R.id.download_permissions_text_view
+      )
+      verifyItemDoesNotExistInAdministratorControlListItem(
         itemPosition = 2,
         targetView = R.id.auto_update_topic_constraint_layout
       )
@@ -589,7 +586,7 @@ class AdministratorControlsFragmentTest {
     ).check(matches(isDisplayed()))
   }
 
-  private fun verifyItemNotDisplayedOnAdministratorControlListItem(
+  private fun verifyItemDoesNotExistInAdministratorControlListItem(
     itemPosition: Int,
     targetView: Int
   ) {
@@ -599,7 +596,7 @@ class AdministratorControlsFragmentTest {
         position = itemPosition,
         targetViewId = targetView
       )
-    ).check(matches(not(isDisplayed())))
+    ).check(doesNotExist())
   }
 
   private fun verifyTextOnAdministratorListItemAtPosition(
@@ -656,7 +653,8 @@ class AdministratorControlsFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

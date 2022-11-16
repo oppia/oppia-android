@@ -12,12 +12,11 @@
   </data>
 
   <org.oppia.android.app.customview.PromotedStoryCardView
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/promoted_story_card_layout_width"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/promoted_story_card_layout_margin_start"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    android:minWidth="@dimen/promoted_story_card_layout_width"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     android:index="@{viewModel.index}">
@@ -27,18 +26,13 @@
       android:layout_width="@{viewModel.computeLayoutWidth(), default=match_parent}"
       android:layout_height="wrap_content"
       android:onClick="@{(v) -> viewModel.clickOnStoryTile()}"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/recently_played_stories_text_view"
       app:roundedRectDrawableWithColor="@{viewModel.promotedStory.lessonThumbnail.backgroundColorRgb}">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
         android:id="@+id/lesson_thumbnail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
-        android:minWidth="280dp"
         app:entityId="@{viewModel.promotedStory.storyId}"
         app:entityType="@{viewModel.entityType}"
         app:layout_constraintDimensionRatio="H, 16:9"
@@ -48,7 +42,7 @@
         app:lessonThumbnail="@{viewModel.promotedStory.lessonThumbnail}" />
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_rounded_rect_white_background"
         android:orientation="vertical"

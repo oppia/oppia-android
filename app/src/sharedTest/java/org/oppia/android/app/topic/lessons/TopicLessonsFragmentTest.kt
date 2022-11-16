@@ -28,8 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.protobuf.MessageLite
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -86,13 +84,15 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
+import org.oppia.android.domain.exploration.testing.FakeExplorationRetriever
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -113,7 +113,6 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
-import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -141,6 +140,8 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [TopicLessonsFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -150,29 +151,18 @@ import org.robolectric.annotation.LooperMode
   qualifiers = "port-xxhdpi"
 )
 class TopicLessonsFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var fakeAccessibilityService: FakeAccessibilityService
-
-  @Inject
-  lateinit var spotlightStateController: SpotlightStateController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject lateinit var spotlightStateController: SpotlightStateController
 
   @Inject
   lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
@@ -562,13 +552,17 @@ class TopicLessonsFragmentTest {
   @Test
   fun testLessPlayFrag_loadFractionsTopic_clickChap_outdatedCheckpointSaved_opensExplorationAct() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    fakeExplorationRetriever.setExplorationProxy(
+      expIdToLoad = FRACTIONS_EXPLORATION_ID_0,
+      expIdToLoadInstead = "test_checkpointing_exploration_multiple_updates_one_incompatible"
+    )
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
       timestampOlderThanOneWeek = false
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_OLD_VERSION
+      version = 1 // Old version, but it doesn't matter since the new version is incompatible.
     )
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
       clickLessonTab()
@@ -1091,7 +1085,7 @@ class TopicLessonsFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageTestModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,
@@ -1099,7 +1093,8 @@ class TopicLessonsFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

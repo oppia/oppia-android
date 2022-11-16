@@ -253,8 +253,8 @@ class ExplorationActivityPresenter @Inject constructor(
   fun deleteOldestSavedProgressAndStopExploration() {
     // If oldestCheckpointExplorationId is not initialized, it means that there was an error while
     // retrieving the oldest saved checkpoint details. In this case, the exploration is exited
-    // without deleting the any checkpoints.
-    oldestCheckpointExplorationId.let {
+    // without deleting any checkpoints.
+    if (::oldestCheckpointExplorationId.isInitialized) {
       explorationDataController.deleteExplorationProgressById(
         profileId, oldestCheckpointExplorationId
       )
@@ -398,7 +398,7 @@ class ExplorationActivityPresenter @Inject constructor(
     }
     // If any one of oldestCheckpointExplorationId or oldestCheckpointExplorationTitle is not
     // initialized, it means that there was an error while retrieving the oldest saved checkpoint
-    // details. In that case the exploration will be exited without deleting the any checkpoints.
+    // details or no checkpoint was found. In this case, exit without deleting any checkpoints.
     if (
       !::oldestCheckpointExplorationId.isInitialized ||
       !::oldestCheckpointExplorationTitle.isInitialized
@@ -431,39 +431,40 @@ class ExplorationActivityPresenter @Inject constructor(
   /**
    * Listens to the result of [ExplorationDataController.getOldestExplorationDetailsDataProvider].
    *
-   * If the result is success it updates the value of the variables oldestCheckpointExplorationId
-   * and oldestCheckpointExplorationTitle. If the result fails, it does not initializes the
-   * variables oldestCheckpointExplorationId and oldestCheckpointExplorationTitle with any value.
+   * If the result is success it updates the value of the variables [oldestCheckpointExplorationId]
+   * and [oldestCheckpointExplorationTitle]. If the result fails, it does not initializes the
+   * variables [oldestCheckpointExplorationId] and [oldestCheckpointExplorationTitle] with any
+   * value. In cases when no checkpoint was found, [oldestCheckpointExplorationId] will remain
+   * uninitialized.
    *
-   * Since this function is kicked off before any other save operation, therefore it is expected
-   * to complete before any following save operation completes.
+   * Since this function is kicked off before any other save operation, it is expected to complete
+   * before any following save operations complete.
    *
-   * If operations fails or this function does not get enough time to complete, user is not blocked
-   * instead the flow of the application proceeds as if the checkpoints were not found. In that case,
-   * the variables oldestCheckpointExplorationId and oldestCheckpointExplorationTitle are not
-   * initialized and they remain uninitialized.
+   * If the operations fails or this function does not get enough time to complete, the user is not
+   * blocked. Instead, the flow of the application proceeds as if the checkpoints were not found. In
+   * that case, the variables [oldestCheckpointExplorationId] and [oldestCheckpointExplorationTitle]
+   * are not initialized.
    */
   private fun subscribeToOldestSavedExplorationDetails() {
     explorationDataController.getOldestExplorationDetailsDataProvider(
       profileId
-    ).toLiveData().observe(
-      activity,
-      Observer {
-        when (it) {
-          is AsyncResult.Success -> {
+    ).toLiveData().observe(activity) {
+      when (it) {
+        is AsyncResult.Success -> {
+          // Only set the exploration parameters if a checkpoint was found.
+          if (it.value.explorationId.isNotEmpty()) {
             oldestCheckpointExplorationId = it.value.explorationId
             oldestCheckpointExplorationTitle = it.value.explorationTitle
           }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
-            )
-          }
-          is AsyncResult.Pending -> {
-          } // Wait for an actual result.
         }
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ExplorationActivity", "Failed to retrieve oldest saved checkpoint details.", it.error
+          )
+        }
+        is AsyncResult.Pending -> {} // Wait for an actual result.
       }
-    )
+    }
   }
 
   /**
