@@ -265,8 +265,9 @@ class TopicFragmentTest {
     markFirstChapterSpotlightSeen()
     markLessonsTabSpotlightSeen()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markCompletedRatiosStory0(profileId, false)
-    storyProgressTestHelper.markCompletedRatiosStory1(profileId, false)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
       // mark lessons spotlight seen
@@ -295,8 +296,9 @@ class TopicFragmentTest {
     markFirstChapterSpotlightSeen()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
-    storyProgressTestHelper.markCompletedRatiosStory0(profileId, false)
-    storyProgressTestHelper.markCompletedRatiosStory1(profileId, false)
+    storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
+    storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
+    storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
       testCoroutineDispatchers.runCurrent()
       // mark revision tab spotlight seen
