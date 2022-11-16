@@ -144,6 +144,8 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.testing.DisableAccessibilityChecks
 
 // Time: Tue Apr 23 2019 23:22:00
@@ -188,6 +190,9 @@ class HomeActivityTest {
 
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
@@ -321,7 +326,6 @@ class HomeActivityTest {
     }
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightNeverSeenBefore_checkSpotlightShown() {
     logIntoUserTwice()
@@ -331,7 +335,6 @@ class HomeActivityTest {
     }
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightIsNotShownAgain() {
    logIntoUserTwice()
@@ -348,7 +351,6 @@ class HomeActivityTest {
     }
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -779,6 +781,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickViewAll_opensRecentlyPlayedActivity() {
+    markSpotlightSeen(profileId1)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -906,6 +909,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_clickPromotedStory_opensTopicActivity() {
+    markSpotlightSeen(profileId1)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
@@ -955,6 +959,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_firstTestTopic_topicSummary_opensTopicActivityThroughPlayIntent() {
     logIntoUserTwice()
+    markSpotlightSeen(profileId1)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(5)
@@ -1125,6 +1130,7 @@ class HomeActivityTest {
   @Test
   fun testHomeActivity_clickTopicSummary_opensTopicActivity() {
     logIntoUserTwice()
+    markSpotlightSeen(profileId1)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3)
@@ -1344,6 +1350,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsStarted_tabletPortraitDisplaysTopicsIn3Columns() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
+    markSpotlightSeen(profileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyHomeRecyclerViewHasGridColumnCount(columnCount = 3)
@@ -1359,6 +1366,7 @@ class HomeActivityTest {
   fun testHomeActivity_noTopicsStarted_tabletLandscapeDisplaysTopicsIn4Columns() {
     // Only new users will have no progress for any topics.
     logIntoAdminTwice()
+    markSpotlightSeen(profileId)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1731,6 +1739,11 @@ class HomeActivityTest {
       val localeContext = displayLocale.localeContext
       assertThat(localeContext.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
     }
+  }
+
+  private fun markSpotlightSeen(profileId: ProfileId) {
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.PROMOTED_STORIES)
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createHomeActivityIntent(profileId: Int): Intent {
