@@ -76,7 +76,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   fun startSpotlight() {
     viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
-      if (numberOfChaptersCompleted != -1) {
+      if (numberOfChaptersCompleted != null) {
         val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LESSONS))?.view
         lessonsTabView?.let { lessonsTabView ->
           val lessonsTabSpotlightTarget = SpotlightTarget(

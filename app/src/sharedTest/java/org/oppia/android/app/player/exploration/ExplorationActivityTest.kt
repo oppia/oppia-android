@@ -286,6 +286,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_hasCorrectActivityLabel() {
+    markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -328,6 +329,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_marqueeInRtl_isDisplayedCorrectly() {
+    markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -350,6 +352,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_toolbarTitle_marqueeInLtr_isDisplayedCorrectly() {
+    markAllSpotlightsSeen()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
         internalProfileId,
@@ -424,6 +427,8 @@ class ExplorationActivityTest {
   @Test
   fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_neverSeenBefore_checkSpotlightIsShown() {
     setUpAudioForFractionLesson()
+    markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -450,6 +455,8 @@ class ExplorationActivityTest {
   @Test
   fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_alreadySeen_checkSpotlightIsNotShown() {
     setUpAudioForFractionLesson()
+    markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -519,7 +526,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testBackButtonSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightIsNotShown() {
-    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON)
+    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -560,6 +567,7 @@ class ExplorationActivityTest {
   @Test
   fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_neverSeenBefore_checkSpotlightIsShown() {
     logIntoUserThrice()
+    setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -585,6 +593,7 @@ class ExplorationActivityTest {
   @Test
   fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_alreadySeen_checkSpotlightIsNotShown() {
     logIntoUserThrice()
+    setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -652,6 +661,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExploration_clickAudioIcon_contentDescription_changesCorrectly() {
+    markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -752,6 +762,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithNoConnection_openRatioExploration_clickAudioIcon_checkOpensNoConnectionDialog() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -780,6 +791,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWithCellular_openRatioExploration_clickAudioIcon_checkOpensCellularAudioDialog() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -806,6 +818,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_configChange_opensCellularAudioDialog() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -869,6 +882,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickPositive_checkAudioFragmentIsVisible() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -914,6 +928,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_check_negative_audioIcon_audioFragHiddenDialogNotDisplay() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -954,6 +969,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_checkPositive_audioIconTwice_audioFragVisDialogNotDisplay() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1036,6 +1052,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioWifi_fractionsExp_changeLang_next_langIsHinglish() {
+    markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1136,6 +1153,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_loadExplorationFragment_hasDummyString() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1179,6 +1197,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_onToolbarClosePressed_showsUnsavedExplorationDialog() {
+    markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1208,6 +1227,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_dismissesDialog() {
+    markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     explorationActivityTestRule.launchActivity(
       createExplorationActivityIntent(
@@ -1262,6 +1282,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExpActivity_showUnsavedExpDialog_cancel_checkOldestProgressIsSaved() {
+    markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -1297,6 +1318,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_showUnsavedExpDialog_leave_checkOldestProgressIsSaved() {
+    markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -1391,6 +1413,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with test cases ignored above.
   @Test
   fun testExpActivity_progressSaved_onBackPress_checkNoProgressDeleted() {
+    markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -1462,6 +1485,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_databaseFull_onToolbarClosePressed_showsProgressDatabaseFullDialog() {
+    markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -1498,6 +1522,7 @@ class ExplorationActivityTest {
   // TODO(#89): Check this test case too. It works in pair with below test cases.
   @Test
   fun testExplorationActivity_showProgressDatabaseFullDialog_backToLesson_checkDialogDismisses() {
+    markAllSpotlightsSeen()
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
@@ -2018,6 +2043,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_initialise_openBottomSheet_showsBottomSheet() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2043,6 +2069,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_openBottomsheet_selectHelpInBottomsheet_opensHelpActivity() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2076,6 +2103,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_openBottomsheet_selectOptionsInBottomsheet_opensOptionsActivity() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2109,6 +2137,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testExplorationActivity_openBottomsheet_selectCloseOption_bottomSheetCloses() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2136,15 +2165,15 @@ class ExplorationActivityTest {
   }
 
   private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
-    monitorFactory.waitForNextSuccessfulResult(
-      spotlightStateController.markSpotlightViewed(
-        profileId,
-        feature
-      )
-    )
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(profileId, feature)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun markAllSpotlightsSeen() {
+    markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
+    markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON)
   }
 
   private fun logIntoUserThrice() {

@@ -31,8 +31,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -90,9 +88,9 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
+import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -101,6 +99,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -154,6 +153,9 @@ class TopicFragmentTest {
   lateinit var spotlightStateController: SpotlightStateController
 
   @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
   lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   @field:[Inject EnableExtraTopicTabsUi]
@@ -183,7 +185,6 @@ class TopicFragmentTest {
     }
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent(false)
@@ -200,7 +201,6 @@ class TopicFragmentTest {
     }
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testTopicLessonTabSpotlight_spotlightNotSeenBefore_checkSpotlightIsShown() {
     initializeApplicationComponent(false)
@@ -214,11 +214,10 @@ class TopicFragmentTest {
     onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(matches(isDisplayed()))
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
     initializeApplicationComponent(false)
-    markLessonsSpotlightSeen()
+    markLessonsTabSpotlightSeen()
     activityTestRule.launchActivity(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
@@ -230,10 +229,9 @@ class TopicFragmentTest {
     onView(withText(R.string.first_chapter_spotlight_hint)).check(matches(isDisplayed()))
   }
 
-  @DisableAccessibilityChecks
   @Test
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightNotShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    initializeApplicationComponent(false)
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
@@ -262,12 +260,14 @@ class TopicFragmentTest {
 
   @Test
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkIsShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
+    initializeApplicationComponent(false)
     markFirstChapterSpotlightSeen()
-    markLessonsSpotlightSeen()
+    markLessonsTabSpotlightSeen()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markCompletedRatiosTopic(profileId, false)
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    storyProgressTestHelper.markCompletedRatiosStory0(profileId, false)
+    storyProgressTestHelper.markCompletedRatiosStory1(profileId, false)
+    testCoroutineDispatchers.runCurrent()
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
       // mark lessons spotlight seen
       onView(withId(R.id.close_target)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -278,29 +278,31 @@ class TopicFragmentTest {
 
   @Test
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_chaptersNotComplete_checkIsNotShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    markLessonsSpotlightSeen()
+    initializeApplicationComponent(false)
+    markLessonsTabSpotlightSeen()
     markFirstChapterSpotlightSeen()
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
     }
   }
 
   @Test
-  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadyBefore_checkIsNotShown() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(false)
-    markLessonsSpotlightSeen()
+  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkIsNotShown() {
+    initializeApplicationComponent(false)
+    markLessonsTabSpotlightSeen()
     markFirstChapterSpotlightSeen()
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    storyProgressTestHelper.markCompletedRatiosTopic(profileId, false)
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    storyProgressTestHelper.markCompletedRatiosStory0(profileId, false)
+    storyProgressTestHelper.markCompletedRatiosStory1(profileId, false)
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
       testCoroutineDispatchers.runCurrent()
       // mark revision tab spotlight seen
       onView(withId(R.id.close_target)).perform(click())
     }
 
-    launch<TopicActivity>(createTopicActivityIntent(internalProfileId, RATIOS_TOPIC_ID)).use {
+    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
     }
@@ -438,6 +440,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = true)
+    markAllSpotlightsSeen()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION)
@@ -509,6 +512,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = true)
+    markAllSpotlightsSeen()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -534,6 +538,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
     initializeApplicationComponent(enableExtraTabsUi = false)
+    markAllSpotlightsSeen()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
@@ -595,6 +600,7 @@ class TopicFragmentTest {
   @Test
   fun enableExtraTabs_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent(enableExtraTabsUi = true)
+    markAllSpotlightsSeen()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
@@ -620,6 +626,7 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnReviewTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent(enableExtraTabsUi = false)
+    markAllSpotlightsSeen()
     launchTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
@@ -678,6 +685,7 @@ class TopicFragmentTest {
   @Test
   fun enableExtraTabs_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent(enableExtraTabsUi = true)
+    markAllSpotlightsSeen()
     launchTopicPlayStoryActivityIntent(
       internalProfileId,
       FRACTIONS_TOPIC_ID,
@@ -794,7 +802,21 @@ class TopicFragmentTest {
     )
   }
 
-  private fun markLessonsSpotlightSeen() {
+  private fun markAllSpotlightsSeen() {
+    markLessonsTabSpotlightSeen()
+    markFirstChapterSpotlightSeen()
+    markRevisionTabSpotlightSeen()
+  }
+
+  private fun markRevisionTabSpotlightSeen() {
+    val profileId = ProfileId.newBuilder()
+      .setInternalId(internalProfileId)
+      .build()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_REVISION_TAB)
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun markLessonsTabSpotlightSeen() {
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
@@ -814,6 +836,7 @@ class TopicFragmentTest {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(enableExtraTabsUi)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun setUpTestApplicationComponent() {

@@ -34,6 +34,9 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -65,6 +68,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
+  private lateinit var binding: ExplorationActivityBinding
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
@@ -79,7 +83,7 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+    binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
       R.layout.exploration_activity
     )
@@ -138,6 +142,21 @@ class ExplorationActivityPresenter @Inject constructor(
         R.id.exploration_spotlight_fragment_placeholder,
         spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
+    }
+  }
+
+  fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
+    if (numberOfLogins >= 3) {
+      // spotlight voice-over icon after 3 logins
+      val audioPlayerSpotlightTarget = SpotlightTarget(
+        binding.actionAudioPlayer,
+        activity.getString(R.string.voiceover_icon_spotlight_hint),
+        SpotlightShape.Circle,
+        Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+      )
+      checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(
+        audioPlayerSpotlightTarget
+      )
     }
   }
 

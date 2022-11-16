@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,7 +86,6 @@ class ExplorationFragmentPresenter @Inject constructor(
   }
 
   private fun showSpotlights(numberOfLogins: Int) {
-    Log.d("overlay", "login count: $numberOfLogins")
     val explorationToolbar =
       fragment.requireActivity().findViewById<View>(R.id.exploration_toolbar) as Toolbar
     explorationToolbar.forEach {
@@ -97,25 +95,13 @@ class ExplorationFragmentPresenter @Inject constructor(
           it,
           fragment.requireContext().getString(R.string.exploration_exit_button_spotlight_hint),
           SpotlightShape.Circle,
-          Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+          Spotlight.FeatureCase.LESSONS_BACK_BUTTON
         )
         checkNotNull(getSpotlightFragment()).requestSpotlight(backButtonSpotlightTarget)
       }
     }
 
-    val voiceoverIcon = fragment.requireActivity().findViewById<View>(R.id.action_audio_player)
-    if (numberOfLogins >= 3 && voiceoverIcon.visibility == View.VISIBLE) {
-      // spotlight voice-over icon after 3 logins
-      val audioPlayerSpotlightTarget = SpotlightTarget(
-        voiceoverIcon,
-        fragment.requireContext().getString(R.string.voiceover_icon_spotlight_hint),
-        SpotlightShape.Circle,
-        Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-      )
-      checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(
-        audioPlayerSpotlightTarget
-      )
-    }
+    (fragment.requireActivity() as RequestVoiceOverIconSpotlightListener).requestVoiceOverIconSpotlight(numberOfLogins)
   }
 
   private fun getSpotlightFragment(): SpotlightFragment? {

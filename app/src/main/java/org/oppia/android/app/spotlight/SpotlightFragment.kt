@@ -80,6 +80,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
 
   fun requestSpotlightViewWithDelayedLayout(spotlightTarget: SpotlightTarget) {
     spotlightTarget.anchor.doOnPreDraw {
+      if (it.visibility != View.VISIBLE) {
+        return@doOnPreDraw
+      }
       val targetAfterViewFullyDrawn = SpotlightTarget(
         it,
         spotlightTarget.hint,
@@ -153,16 +156,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
 
-          Log.d("overlay", "target  start")
         }
 
         override fun onEnded() {
-          Log.d("overlay", "target  end")
           targetList.pop()
-//          val profileId = ProfileId.newBuilder()
-//            .setInternalId(internalProfileId)
-//            .build()
-//          spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
+          val profileId = ProfileId.newBuilder()
+            .setInternalId(internalProfileId)
+            .build()
+          spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
         }
       })
       .build(spotlightTarget.anchor)
@@ -182,14 +183,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
-          Log.d("overlay", "spotlight  start")
-
           isSpotlightActive.value = true
         }
 
         override fun onEnded() {
-          Log.d("overlay", "spotlight  end")
-
           isSpotlightActive.value = false
           startSpotlight()
         }

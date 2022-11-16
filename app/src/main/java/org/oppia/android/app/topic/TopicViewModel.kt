@@ -48,12 +48,12 @@ class TopicViewModel @Inject constructor(
 
   private fun computeNumberOfChaptersCompleted(
     topicListResult: AsyncResult<PromotedActivityList>
-  ): Int {
+  ): Int? {
+    var numberOfChaptersCompleted = 0
     return when (topicListResult) {
-      is AsyncResult.Failure -> -1
-      is AsyncResult.Pending -> -1
+      is AsyncResult.Failure -> null
+      is AsyncResult.Pending -> null
       is AsyncResult.Success -> {
-        var numberOfChaptersCompleted = 0
         topicListResult.value.promotedStoryList.recentlyPlayedStoryList.forEach {
           numberOfChaptersCompleted += it.completedChapterCount
         }

@@ -24,7 +24,7 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
     if (getSpotlightFragment() == null) {
       val spotlightFragment = SpotlightFragment()
       val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, 0)
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, -1)
       spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.onboarding_spotlight_fragment_placeholder,
