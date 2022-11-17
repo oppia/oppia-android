@@ -127,7 +127,6 @@ class PromotedStoryViewModel(
   /**
    * Creates the content description of the story thumbnail by interpolating the thumbnail
    * description string resource and the next chapter title.
-   *
    */
   fun computeLessonThumbnailContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
