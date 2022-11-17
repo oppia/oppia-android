@@ -37,6 +37,11 @@ import java.util.LinkedList
 import java.util.Locale
 import javax.inject.Inject
 
+/**
+ * Fragment to hold the spotlights on elements. This fragments provides a single place for all the spotlight
+ * interactions, and handles lifecycle related functionality for spotlights, such as surviving orientation changes
+ * and marking spotlights as seen.
+ */
 class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
   @Inject
   lateinit var activity: AppCompatActivity
@@ -64,6 +69,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     screenWidth = displayMetrics.widthPixels
   }
 
+  /** LiveData to monitor spotlight activity status. */
   fun getSpotlightStatusLiveData(): MutableLiveData<Boolean> {
     return isSpotlightActive
   }
@@ -78,6 +84,16 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     checkIsRTL()
   }
 
+  /**
+   * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
+   * hasn't been shown before in a FIFO buffer. This API can ensure proper spotlighting of a [SpotlightTarget]
+   * which is laid out after an animation. For the spotlights to work correctly, we must know the
+   * [SpotlightTarget]'s anchor's size and position. For a view that is laid out after an animation, we must
+   * wait until the final size and positions of the anchor view are measured, which can be achieved by using
+   * doOnPreDraw (refer: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2).
+   *
+   * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
+   */
   fun requestSpotlightViewWithDelayedLayout(spotlightTarget: SpotlightTarget) {
     spotlightTarget.anchor.doOnPreDraw {
       if (it.visibility != View.VISIBLE) {
@@ -93,6 +109,16 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     }
   }
 
+  /**
+   * Requests a spotlight to be shown on the first item of a recycler view. The API is designed to work
+   * with custom views used as recycler view items. [requestSpotlightViewWithDelayedLayout] should be used
+   * as a replacement for this API, since we must wait for the views to be laid out first (for which
+   * onPreDraw is used), and only then the index of the item should be checked for the spotlight to work correctly.
+   *
+   * @param customView The custom view being used as the recycler view item
+   * @param index The position of the custom view object inside the recycler view
+   * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
+   */
   fun requestSpotlightOnFirstRecyclerItem(customView: View, index: Int, spotlightTarget: SpotlightTarget) {
     customView.doOnPreDraw {
       if (index == 0) {
@@ -109,7 +135,11 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
 
   /**
    * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
-   * hasn't been shown before in a FIFO buffer.
+   * hasn't been shown before in a FIFO buffer. This API can ensure proper spotlighting of a [SpotlightTarget]
+   * when it is laid out late due to a data provider call. It cannot ensure the same if the view has to be
+   * spotlight immediately after an animation. It also cannot spotlight targets which are a part of a
+   * recycler view which are laid out after a data provider call. If TalkBack is turned on, no spotlight shall
+   * be shown.
    *
    * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
    */

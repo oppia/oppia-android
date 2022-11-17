@@ -2,6 +2,14 @@ package org.oppia.android.app.spotlight
 
 import android.view.View
 
+/**
+ * Data class to hold a [SpotlightTarget].
+ *
+ * @param anchor the view that should be spotlit
+ * @param hint the hint text that should be shown on the spotlight overlay
+ * @param shape [SpotlightShape] of the spotlight
+ * @param feature The [Spotlight] feature-case corresponding to the spotlight target
+ */
 data class SpotlightTarget(
   val anchor: View,
   val hint: String = "",
