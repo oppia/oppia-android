@@ -200,13 +200,36 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() {
-    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
     assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralState.hasPreviousState).isFalse()
     assertThat(ephemeralState.state.name).isEqualTo("Continue")
+  }
+
+  @Test
+  fun testEphemeralState_startExploration_shouldIndicateButtonAnimation() {
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    oppiaClock.setCurrentTimeMs(currentTime)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
+    assertThat(ephemeralState.continueButtonAnimationTimestamp).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+  }
+
+  @Test
+  fun testEphemeralState_moveToNextState_shouldIndicateNoButtonAnimation() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    moveToNextState()
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(false)
+  }
+
+  @Test
+  fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
+    val profileId2 = ProfileId
   }
 
   @Test
