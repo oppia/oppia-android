@@ -48,6 +48,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -76,6 +77,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
@@ -118,6 +120,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
@@ -168,8 +171,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Ignore
-import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -377,8 +378,15 @@ class StateFragmentLocalTest {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION))
-      typeTextIntoInteraction("1+2", interactionViewId = R.id.math_expression_input_interaction_view)
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
       clickSubmitAnswerButton()
 
       testCoroutineDispatchers.advanceTimeBy(45000)
@@ -393,12 +401,26 @@ class StateFragmentLocalTest {
     TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
     launchForExploration(TEST_EXPLORATION_ID_5).use {
       startPlayingExploration()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION))
-      typeTextIntoInteraction("1+2", interactionViewId = R.id.math_expression_input_interaction_view)
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
-      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION))
-      typeTextIntoInteraction("1+2", interactionViewId = R.id.math_expression_input_interaction_view)
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
       clickSubmitAnswerButton()
       testCoroutineDispatchers.advanceTimeBy((TimeUnit.SECONDS.toMillis(45)))
       onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))

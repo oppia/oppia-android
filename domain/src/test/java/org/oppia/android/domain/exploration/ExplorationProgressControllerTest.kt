@@ -139,18 +139,30 @@ class ExplorationProgressControllerTest {
   //  - testSubmitAnswer_whileSubmittingAnotherAnswer_failsWithError
   //  - testMoveToPrevious_whileSubmittingAnswer_failsWithError
 
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var context: Context
-  @Inject lateinit var explorationDataController: ExplorationDataController
-  @Inject lateinit var explorationProgressController: ExplorationProgressController
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var oppiaClock: FakeOppiaClock
-  @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var fakeEventLogger: FakeEventLogger
-  @Inject lateinit var profileManagementController: ProfileManagementController
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var explorationDataController: ExplorationDataController
+  @Inject
+  lateinit var explorationProgressController: ExplorationProgressController
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
+  @Inject
+  lateinit var explorationCheckpointController: ExplorationCheckpointController
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var translationController: TranslationController
+  @Inject
+  lateinit var fakeEventLogger: FakeEventLogger
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -217,7 +229,11 @@ class ExplorationProgressControllerTest {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
-    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(
+      currentTime + TimeUnit.SECONDS.toMillis(
+        45
+      )
+    )
   }
 
   @Test
@@ -240,11 +256,15 @@ class ExplorationProgressControllerTest {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, profileId2)
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
-    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(
+      currentTime + TimeUnit.SECONDS.toMillis(
+        45
+      )
+    )
   }
 
   @Test
-  fun testEphemeralState_startExploration_clicksContinue_reEnterExploration_shouldIndicateNoButtonAnimation() {
+  fun testEphemeralState_startExp_clicksContinue_reEnterExp_shouldIndicateNoButtonAnimation() {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     playThroughPrototypeState1AndMoveToNextState()
     val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
@@ -255,7 +275,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testEphemeralState_startExploration_seesAnimation_reEnterExploration_shouldIndicateButtonAnimation() {
+  fun testEphemeralState_startExp_seesAnimation_reEnterExploration_shouldIndicateButtonAnimation() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
@@ -265,7 +285,11 @@ class ExplorationProgressControllerTest {
     restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
-    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(
+      currentTime + TimeUnit.SECONDS.toMillis(
+        45
+      )
+    )
   }
 
   @Test
