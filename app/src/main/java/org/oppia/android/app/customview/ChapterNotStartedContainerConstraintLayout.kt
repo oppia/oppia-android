@@ -54,7 +54,9 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
         context.getString(R.string.first_chapter_spotlight_hint),
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
-      checkNotNull(getSpotlightFragment()).requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
+      if (index == 0) {
+        checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+      }
     }
   }
 }

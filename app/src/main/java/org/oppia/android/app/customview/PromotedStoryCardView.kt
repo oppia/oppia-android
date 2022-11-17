@@ -45,7 +45,9 @@ class PromotedStoryCardView @JvmOverloads constructor(
         context.getString(R.string.promoted_story_spotlight_hint),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
-      checkNotNull(getSpotlightFragment()).requestSpotlightOnFirstRecyclerItem(this, index, spotlightTarget)
+      if (index == 0) {
+        checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+      }
     }
 
   }

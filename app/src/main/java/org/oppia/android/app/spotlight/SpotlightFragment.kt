@@ -18,6 +18,8 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
+import java.util.*
+import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
@@ -33,9 +35,6 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityServiceImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.LinkedList
-import java.util.Locale
-import javax.inject.Inject
 
 /**
  * Fragment to hold the spotlights on elements. This fragments provides a single place for all the spotlight
@@ -106,30 +105,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
         spotlightTarget.feature
       )
       requestSpotlight(targetAfterViewFullyDrawn)
-    }
-  }
-
-  /**
-   * Requests a spotlight to be shown on the first item of a recycler view. The API is designed to work
-   * with custom views used as recycler view items. [requestSpotlightViewWithDelayedLayout] should be used
-   * as a replacement for this API, since we must wait for the views to be laid out first (for which
-   * onPreDraw is used), and only then the index of the item should be checked for the spotlight to work correctly.
-   *
-   * @param customView The custom view being used as the recycler view item
-   * @param index The position of the custom view object inside the recycler view
-   * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
-   */
-  fun requestSpotlightOnFirstRecyclerItem(customView: View, index: Int, spotlightTarget: SpotlightTarget) {
-    customView.doOnPreDraw {
-      if (index == 0) {
-        val targetAfterViewFullyDrawn = SpotlightTarget(
-          it,
-          spotlightTarget.hint,
-          spotlightTarget.shape,
-          spotlightTarget.feature
-        )
-        requestSpotlight(targetAfterViewFullyDrawn)
-      }
     }
   }
 
@@ -354,22 +329,21 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight() - 5.dp).toInt(),
-        10.dp,
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight() - 5.dp).toInt(),
-        10.dp,
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams = arrowParams
 
     return (overlayBinding as BottomLeftOverlayBinding).root
   }
-
 
   private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
     Log.d("overlay", "bottom right overlay")
@@ -385,18 +359,18 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
-        10.dp,
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
         screenWidth -
           (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-        10.dp,
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams = arrowParams
@@ -419,17 +393,17 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
-        10.dp,
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
         screenWidth - (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-        10.dp,
-        10.dp
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as TopRightOverlayBinding).arrow.layoutParams = arrowParams
@@ -454,15 +428,15 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
-        10.dp,
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
-        10.dp,
-        10.dp
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams = arrowParams
