@@ -78,7 +78,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.FakeEventLogger
+import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -160,7 +160,7 @@ class ExplorationProgressControllerTest {
   @Inject
   lateinit var translationController: TranslationController
   @Inject
-  lateinit var fakeEventLogger: FakeEventLogger
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject
   lateinit var profileManagementController: ProfileManagementController
 
@@ -1986,8 +1986,8 @@ class ExplorationProgressControllerTest {
     waitForGetCurrentStateSuccessfulLoad()
 
     val exploration = loadExploration(TEST_EXPLORATION_ID_2)
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
@@ -1999,14 +1999,14 @@ class ExplorationProgressControllerTest {
   fun testResumeExploration_logsResumeExplorationEventAndNotStartCardEvent() {
     logIntoAnalyticsReadyAdminProfile()
     val checkpoint = createTestExp2CheckpointToState6()
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint)
     waitForGetCurrentStateSuccessfulLoad()
 
     // Resuming shouldn't log a 'start card' event.
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasResumeExplorationContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()
@@ -2017,13 +2017,13 @@ class ExplorationProgressControllerTest {
   fun testStartOverExploration_logsStartCardAndStartOverEvents() {
     logIntoAnalyticsReadyAdminProfile()
     createTestExp2CheckpointToState6()
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
 
-    val (eventLog1, eventLog2) = fakeEventLogger.getMostRecentEvents(count = 2)
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(2)
+    val (eventLog1, eventLog2) = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(2)
     assertThat(eventLog1).hasStartOverExplorationContextThat {
       hasLearnerIdThat().isNotEmpty()
       hasInstallationIdThat().isNotEmpty()
@@ -2040,13 +2040,13 @@ class ExplorationProgressControllerTest {
   fun testPlayExplorationAgain_logsStartCardEvent() {
     logIntoAnalyticsReadyAdminProfile()
     createTestExp2CheckpointToState6()
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     replayExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
@@ -2061,12 +2061,12 @@ class ExplorationProgressControllerTest {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
     playThroughPrototypeState1AndMoveToNextState()
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     submitPrototypeState2Answer()
 
-    val (eventLog1, eventLog2) = fakeEventLogger.getMostRecentEvents(count = 2)
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(2)
+    val (eventLog1, eventLog2) = fakeAnalyticsEventLogger.getMostRecentEvents(count = 2)
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(2)
     assertThat(eventLog1).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
@@ -2085,12 +2085,12 @@ class ExplorationProgressControllerTest {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
     playThroughPrototypeState1AndMoveToNextState()
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     submitWrongAnswerForPrototypeState2()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasSubmitAnswerContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
@@ -2104,12 +2104,12 @@ class ExplorationProgressControllerTest {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     waitForGetCurrentStateSuccessfulLoad()
     submitPrototypeState1Answer()
-    fakeEventLogger.clearAllEvents()
+    fakeAnalyticsEventLogger.clearAllEvents()
 
     moveToNextState()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
-    assertThat(fakeEventLogger.getEventListCount()).isEqualTo(1)
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(1)
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
@@ -2128,7 +2128,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     submitWrongAnswerForPrototypeState2()
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasHintOfferedContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
@@ -2150,7 +2150,7 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessHintContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Fractions")
@@ -2171,7 +2171,7 @@ class ExplorationProgressControllerTest {
     submitMultipleChoiceAnswer(choiceIndex = 0)
     submitMultipleChoiceAnswer(choiceIndex = 0)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasHintOfferedContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
@@ -2196,7 +2196,7 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitHintIsRevealed(hintIndex = 0)
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessHintContextThat {
       hasExplorationDetailsThat().containsFractionsExp0Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Parts of a whole")
@@ -2221,7 +2221,7 @@ class ExplorationProgressControllerTest {
     submitWrongAnswerForPrototypeState2()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasSolutionOfferedContextThat().containsTestExp2Details()
     assertThat(eventLog).hasSolutionOfferedContextThat().hasStateNameThat().isEqualTo("Fractions")
   }
@@ -2246,7 +2246,7 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitSolutionIsRevealed()
     )
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasAccessSolutionContextThat().containsTestExp2Details()
     assertThat(eventLog).hasAccessSolutionContextThat().hasStateNameThat().isEqualTo("Fractions")
   }
@@ -2259,7 +2259,7 @@ class ExplorationProgressControllerTest {
 
     endExploration(isCompletion = false)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasExitExplorationContextThat().containsTestExp2Details()
     assertThat(eventLog).hasExitExplorationContextThat().hasStateNameThat().isEqualTo("Continue")
   }
@@ -2273,7 +2273,7 @@ class ExplorationProgressControllerTest {
 
     endExploration(isCompletion = true)
 
-    val eventLog = fakeEventLogger.getMostRecentEvent()
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFinishExplorationContextThat().containsTestExp2Details()
     assertThat(eventLog).hasFinishExplorationContextThat().hasStateNameThat().isEqualTo("End")
   }
