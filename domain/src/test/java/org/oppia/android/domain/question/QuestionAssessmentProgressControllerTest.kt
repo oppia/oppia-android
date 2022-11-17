@@ -112,6 +112,25 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
+  fun testEphemeralState_startExploration_shouldIndicateNoButtonAnimation() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
+    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isEqualTo(false)
+  }
+
+  @Test
+  fun testEphemeralState_moveToNextState_shouldIndicateNoButtonAnimation() {
+    setUpTestApplicationWithSeed(questionSeed = 0)
+    startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
+    waitForGetCurrentQuestionSuccessfulLoad()
+    submitCorrectAnswerForQuestion0()
+    moveToNextQuestion()
+    val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
+    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isEqualTo(false)
+  }
+
+  @Test
   fun testGetCurrentQuestion_noSessionStarted_throwsException() {
     setUpTestApplicationWithSeed(questionSeed = 0)
 

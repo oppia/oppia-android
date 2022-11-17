@@ -211,25 +211,61 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testEphemeralState_startExploration_shouldIndicateButtonAnimation() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val currentTime = oppiaClock.getCurrentTimeMs()
     oppiaClock.setCurrentTimeMs(currentTime)
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
-    assertThat(ephemeralState.continueButtonAnimationTimestamp).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
   }
 
   @Test
   fun testEphemeralState_moveToNextState_shouldIndicateNoButtonAnimation() {
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
-    moveToNextState()
+    playThroughPrototypeState1AndMoveToNextState()
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(false)
   }
 
   @Test
   fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
-    val profileId2 = ProfileId
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val profileId2 = ProfileId.newBuilder().setInternalId(1).build()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    endExploration()
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    oppiaClock.setCurrentTimeMs(currentTime)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, profileId2)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+  }
+
+  @Test
+  fun testEphemeralState_startExploration_clicksContinue_reEnterExploration_shouldIndicateNoButtonAnimation() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    endExploration()
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(false)
+  }
+
+  @Test
+  fun testEphemeralState_startExploration_seesAnimation_reEnterExploration_shouldIndicateButtonAnimation() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+    endExploration()
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    oppiaClock.setCurrentTimeMs(currentTime)
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isEqualTo(true)
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs).isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
   }
 
   @Test
