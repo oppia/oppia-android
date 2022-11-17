@@ -19,7 +19,7 @@ kt_android_library(
 kt_android_library(
     name = "prod_impl",
     srcs = [
-        "FirebaseEventLogger.kt",
+        "FirebaseAnalyticsEventLogger.kt",
         "FirebaseLogUploader.kt",
     ],
     deps = [
@@ -60,7 +60,7 @@ kt_android_library(
 kt_android_library(
     name = "debug_event_logger",
     srcs = [
-        "DebugEventLogger.kt",
+        "DebugAnalyticsEventLogger.kt",
     ],
     visibility = [
         "//app:__pkg__",
