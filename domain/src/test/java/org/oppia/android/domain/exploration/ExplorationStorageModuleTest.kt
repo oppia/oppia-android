@@ -1,4 +1,4 @@
-package org.oppia.android.domain.exploration.lightweightcheckpointing
+package org.oppia.android.domain.exploration
 
 import android.app.Application
 import android.content.Context
@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageDatabaseSize
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -23,7 +24,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -44,20 +44,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ExplorationStorageModule]. */
+// FunctionName: test names are conventionally named with underscores.
+@Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationStorageModuleTest.TestApplication::class)
 class ExplorationStorageModuleTest {
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var explorationCheckpointController: ExplorationCheckpointController
+  @field:[Inject JvmField ExplorationStorageDatabaseSize] var databaseSize: Int = Int.MIN_VALUE
+  @Inject lateinit var explorationRetriever: ExplorationRetriever
 
   @Before
   fun setUp() {
@@ -65,16 +61,17 @@ class ExplorationStorageModuleTest {
   }
 
   @Test
-  fun testExplorationStorageModule_checkExplorationStorageModuleLimitIsEqualTo2MB() {
-    explorationCheckpointController.getExplorationCheckpointDatabaseSizeLimit()
-    assertThat(
-      explorationCheckpointController.getExplorationCheckpointDatabaseSizeLimit()
-    ).isEqualTo(2097152)
+  fun testExplorationStorageDataSizeInjection_isEqualToTwoMebibytes() {
+    assertThat(databaseSize).isEqualTo(2 * 1024 * 1024)
+  }
+
+  @Test
+  fun testExplorationRetrieverInjection_retrieverIsProductionImplementation() {
+    assertThat(explorationRetriever).isInstanceOf(ExplorationRetrieverImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

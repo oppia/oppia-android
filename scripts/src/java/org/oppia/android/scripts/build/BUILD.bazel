@@ -5,6 +5,16 @@ Libraries corresponding to build pipeline scripts.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
 
 kt_jvm_library(
+    name = "filter_per_language_resources_lib",
+    srcs = ["FilterPerLanguageResources.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//model/src/main/proto:languages_java_proto",
+        "//third_party:com_android_tools_build_aapt2-proto",
+    ],
+)
+
+kt_jvm_library(
     name = "transform_android_manifest_lib",
     srcs = ["TransformAndroidManifest.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
