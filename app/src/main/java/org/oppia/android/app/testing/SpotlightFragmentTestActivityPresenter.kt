@@ -18,7 +18,8 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
   private lateinit var binding: SpotlightFragmentTestActivityBinding
 
   fun handleOnCreate(internalProfileId: Int) {
-    activity.setContentView(R.layout.spotlight_fragment_test_activity)
+    binding = SpotlightFragmentTestActivityBinding.inflate(activity.layoutInflater)
+    activity.setContentView(binding.root)
 
     if (getSpotlightFragment() == null) {
       val spotlightFragment = SpotlightFragment()

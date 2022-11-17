@@ -74,6 +74,7 @@ import org.oppia.android.app.testing.PoliciesFragmentTestActivity
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.testing.ProfileEditFragmentTestActivity
 import org.oppia.android.app.testing.SplashTestActivity
+import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.StateAssemblerMarginBindingAdaptersTestActivity
 import org.oppia.android.app.testing.StateAssemblerPaddingBindingAdaptersTestActivity
 import org.oppia.android.app.testing.TestFontScaleConfigurationUtilActivity
@@ -197,4 +198,5 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
+  fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
 }

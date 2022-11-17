@@ -3,7 +3,6 @@ package org.oppia.android.app.spotlight
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.text.Spannable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -20,7 +19,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -49,7 +47,6 @@ import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.SpotlightFragmentTestActivity.Companion.createSpotlightFragmentTestActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.clickPoint
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -114,14 +111,11 @@ import org.robolectric.annotation.LooperMode
   qualifiers = "port-xxhdpi"
 )
 class SpotlightFragmentTest {
-
-  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
-
   @Inject
   lateinit var context: Context
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+//  @get:Rule
+//  val oppiaTestRule = OppiaTestRule()
 
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -136,20 +130,14 @@ class SpotlightFragmentTest {
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
 
-  @get:Rule
-  var activityScenarioRule: ActivityScenarioRule<SpotlightFragmentTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        SpotlightFragmentTestActivity::class.java
-      )
-    )
-
-  // Note that the locale rule must be initialized first since the scenario rule can depend on the
-  // locale being initialized.
-  @get:Rule
-  val chain: TestRule =
-    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
+//  @get:Rule
+//  var activityScenarioRule: ActivityScenarioRule<SpotlightFragmentTestActivity> =
+//    ActivityScenarioRule(
+//      Intent(
+//        ApplicationProvider.getApplicationContext(),
+//        SpotlightFragmentTestActivity::class.java
+//      )
+//    )
 
   private val sampleSpotlightText = "Sample spotlight hint text"
   private val sampleSecondSpotlightText = "Sample hint text for second spotlight"
@@ -170,7 +158,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(ApplicationProvider.getApplicationContext())
+      createSpotlightFragmentTestActivity(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -191,7 +179,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(ApplicationProvider.getApplicationContext())
+      createSpotlightFragmentTestActivity(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -205,8 +193,8 @@ class SpotlightFragmentTest {
         checkNotNull(
           activity.getSpotlightFragment()
         ).requestSpotlightViewWithDelayedLayout(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.advanceUntilIdle()
       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
@@ -214,7 +202,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(ApplicationProvider.getApplicationContext())
+      createSpotlightFragmentTestActivity(context)
     ).use {
       it.onActivity { activity->
         val spotlightTarget = SpotlightTarget(
@@ -231,9 +219,9 @@ class SpotlightFragmentTest {
     }
 
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(ApplicationProvider.getApplicationContext())
+      createSpotlightFragmentTestActivity(context)
     ).use {
-      it.onActivity { activity->
+      it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
           activity.getSampleSpotlightTarget(),
           sampleSpotlightText,
@@ -251,7 +239,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(ApplicationProvider.getApplicationContext())
+      createSpotlightFragmentTestActivity(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -281,7 +269,7 @@ class SpotlightFragmentTest {
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(ApplicationProvider.getApplicationContext())
+      createSpotlightFragmentTestActivity(context)
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
