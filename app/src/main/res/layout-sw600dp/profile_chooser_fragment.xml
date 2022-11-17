@@ -56,7 +56,7 @@
           android:id="@+id/profile_select_text"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginStart="64dp"
+          android:layout_marginStart="@dimen/profile_chooser_fragment_profile_text_view_margin_start"
           android:layout_marginTop="80dp"
           android:fontFamily="sans-serif"
           android:text="@string/profile_chooser_select"
@@ -74,14 +74,14 @@
           android:fadingEdgeLength="72dp"
           android:orientation="vertical"
           android:overScrollMode="never"
-          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_padding_bottom_profile_already_added : @dimen/bottom_white_space}"
+          android:paddingBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_padding_bottom_profile_already_added: @dimen/bottom_white_space}"
           android:requiresFadingEdge="vertical"
           android:scrollbars="none"
           android:tag="profile_recycler_view"
           app:data="@{viewModel.profiles}"
           app:layoutMarginEnd="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_end_profile_already_added : @dimen/space_0dp}"
           app:layoutMarginStart="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_margin_start_profile_already_added : @dimen/space_0dp}"
-          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_fragment_margin_top_profile_already_added : @dimen/profile_chooser_fragment_margin_top_profile_not_added}"
+          app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_fragment_recycle_view_margin_top : @dimen/profile_chooser_margin_top_profile_not_added}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +108,7 @@
 
       <TextView
         style="@style/Heading1ViewCenter"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="@dimen/profile_chooser_fragment_heading_text_view_margin_bottom"
         android:minHeight="48dp"
         android:text="@string/profile_chooser_administrator_controls"
         android:textColor="@color/profile_chooser_grey_text" />
@@ -117,7 +117,7 @@
         android:id="@+id/profile_chooser_setting_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginEnd="@dimen/profile_chooser_fragment_profile_chooser_image_view_margin_end"
         android:padding="8dp"
         app:srcCompat="@drawable/ic_settings_grey_48dp" />
     </LinearLayout>

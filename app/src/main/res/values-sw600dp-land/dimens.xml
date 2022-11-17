@@ -507,4 +507,10 @@
   <dimen name="topic_fragment_tab_layout_margin_start">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_margin_end">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <!-- ProfileChooserFragment -->
+  <dimen name="profile_chooser_fragment_profile_text_view_margin_start">96dp</dimen>
+  <dimen name="profile_chooser_fragment_recycle_view_margin_top">0dp</dimen>
+  <dimen name="profile_chooser_fragment_heading_text_view_margin_bottom">28dp</dimen>
+  <dimen name="profile_chooser_fragment_profile_chooser_image_view_margin_end">96dp</dimen>
 </resources>
