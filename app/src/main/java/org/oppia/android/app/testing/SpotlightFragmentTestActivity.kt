@@ -12,7 +12,7 @@ import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 class SpotlightFragmentTestActivity : TestActivity() {
 
   @Inject
-  private lateinit var spotlightFragmentTestActivityPresenter: SpotlightFragmentTestActivityPresenter
+  lateinit var spotlightFragmentTestActivityPresenter: SpotlightFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
