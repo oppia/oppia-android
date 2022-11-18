@@ -175,13 +175,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testNextButtonSpotlight_setToShowOnStartup_neverSeenBefore_checkSpotlightIsShown() {
-    launch(OnboardingActivity::class.java).use {
-     onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkDefaultSlideDescription_isCorrect() {
     launch(OnboardingActivity::class.java).use {
       onView(
@@ -233,6 +226,7 @@ class OnboardingFragmentTest {
   @Test
   fun testNextButtonSpotlight_setToShowOnStartup_checkSpotlightIsShown() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
     }
   }
@@ -240,6 +234,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -342,6 +338,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -449,6 +447,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -519,6 +519,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
@@ -573,6 +575,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -677,6 +681,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide3_policiesLinkIsVisible() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.close_target)).perform(click())
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).perform(

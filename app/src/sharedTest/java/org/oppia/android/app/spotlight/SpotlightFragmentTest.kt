@@ -194,8 +194,7 @@ class SpotlightFragmentTest {
           activity.getSpotlightFragment()
         ).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
-      testCoroutineDispatchers.advanceUntilIdle()
-      onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
+       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
 

@@ -111,6 +111,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.domain.spotlight.SpotlightStateController
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -132,6 +135,9 @@ class TopicRevisionFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
@@ -144,6 +150,7 @@ class TopicRevisionFragmentTest {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    markAllSpotlightsSeen()
   }
 
   @After
@@ -267,6 +274,16 @@ class TopicRevisionFragmentTest {
         )
       ).check(matches(hasScaleType(ImageView.ScaleType.FIT_CENTER)))
     }
+  }
+
+  private fun markAllSpotlightsSeen() {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_LESSON_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_REVISION_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.FIRST_CHAPTER)
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {

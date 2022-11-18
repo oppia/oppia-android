@@ -270,8 +270,6 @@ class TopicFragmentTest {
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
-      // mark lessons spotlight seen
-      onView(withId(R.id.close_target)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
