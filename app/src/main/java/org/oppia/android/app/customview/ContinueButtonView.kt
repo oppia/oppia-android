@@ -70,8 +70,10 @@ class ContinueButtonView @JvmOverloads constructor(
     maybeInitializeAnimation()
   }
 
-  /** Sets when, in clock time, the animation controlled by [setShouldAnimateContinueButton] should
-   *  play. */
+  /**
+   * Sets when, in clock time, the animation controlled by [setShouldAnimateContinueButton] should
+   * play.
+   */
   fun setContinueButtonAnimationTimestampMs(continueButtonAnimationTimestampMs: Long) {
     continueButtonAnimationTimestampMsLateinit = continueButtonAnimationTimestampMs
     maybeInitializeAnimation()
