@@ -64,13 +64,14 @@ class ContinueButtonView @JvmOverloads constructor(
     cancelOngoingTimer()
   }
 
-  /** Sets shouldAnimateContinueButton value. */
+  /** Sets whether the view should animate to catch a user's attention. */
   fun setShouldAnimateContinueButton(shouldAnimateContinueButton: Boolean) {
     shouldAnimateContinueButtonLateinit = shouldAnimateContinueButton
     maybeInitializeAnimation()
   }
 
-  /** Sets continueButtonAnimationTimestampMs value. */
+  /** Sets when, in clock time, the animation controlled by [setShouldAnimateContinueButton] should
+   *  play. */
   fun setContinueButtonAnimationTimestampMs(continueButtonAnimationTimestampMs: Long) {
     continueButtonAnimationTimestampMsLateinit = continueButtonAnimationTimestampMs
     maybeInitializeAnimation()

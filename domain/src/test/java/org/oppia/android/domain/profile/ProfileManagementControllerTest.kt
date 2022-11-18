@@ -261,14 +261,18 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testFetchContinueButtonAnimationStatus_noLoggedInProfile_returnsNull() {
+  fun testFetchContinueButtonAnimationStatus_logInProfile1_checkStatusForProfile2IsFalse() {
     setUpTestApplicationComponent()
     addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_2
     )
-    assertThat(continueButtonSeenStatus).isNull()
+    assertThat(continueButtonSeenStatus).isFalse()
   }
 
   @Test
@@ -280,7 +284,7 @@ class ProfileManagementControllerTest {
     )
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+      profileManagementController::fetchContinueAnimationSeenStatus, PROFILE_ID_1
     )
     assertThat(continueButtonSeenStatus).isFalse()
   }
@@ -293,10 +297,14 @@ class ProfileManagementControllerTest {
       profileManagementController.loginToProfile(PROFILE_ID_1)
     )
 
-    fetchSuccessfulAsyncValue(profileManagementController::markCurrentContinueButtonAnimationSeen)
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_1
     )
     assertThat(continueButtonSeenStatus).isTrue()
   }
@@ -309,11 +317,18 @@ class ProfileManagementControllerTest {
       profileManagementController.loginToProfile(PROFILE_ID_1)
     )
 
-    fetchSuccessfulAsyncValue(profileManagementController::markCurrentContinueButtonAnimationSeen)
-    fetchSuccessfulAsyncValue(profileManagementController::markCurrentContinueButtonAnimationSeen)
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_1
     )
     assertThat(continueButtonSeenStatus).isTrue()
   }
@@ -326,14 +341,18 @@ class ProfileManagementControllerTest {
       profileManagementController.loginToProfile(PROFILE_ID_1)
     )
 
-    profileManagementController::markCurrentContinueButtonAnimationSeen
+    fetchSuccessfulAsyncValue (
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
 
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_2)
     )
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_2
     )
     assertThat(continueButtonSeenStatus).isFalse()
   }
@@ -922,6 +941,10 @@ class ProfileManagementControllerTest {
 
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
+
+  private fun <T> fetchSuccessfulAsyncValue(
+    block: suspend (profileId: ProfileId) -> T, profileId: ProfileId
+  ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
     return when (val result = waitForResult()) {
