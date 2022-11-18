@@ -341,7 +341,7 @@ class ProfileManagementControllerTest {
       profileManagementController.loginToProfile(PROFILE_ID_1)
     )
 
-    fetchSuccessfulAsyncValue (
+    fetchSuccessfulAsyncValue(
       profileManagementController::markContinueButtonAnimationSeen,
       PROFILE_ID_1
     )
@@ -943,7 +943,8 @@ class ProfileManagementControllerTest {
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
   private fun <T> fetchSuccessfulAsyncValue(
-    block: suspend (profileId: ProfileId) -> T, profileId: ProfileId
+    block: suspend (profileId: ProfileId) -> T,
+    profileId: ProfileId
   ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
