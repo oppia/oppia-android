@@ -60,7 +60,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
-import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -112,11 +111,11 @@ class QuestionAssessmentProgressControllerTest {
   }
 
   @Test
-  fun testEphemeralState_startExploration_shouldIndicateNoButtonAnimation() {
+  fun testEphemeralState_playSession_shouldIndicateNoButtonAnimation() {
     setUpTestApplicationWithSeed(questionSeed = 0)
     startSuccessfulTrainingSession(TEST_SKILL_ID_LIST_012)
     val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
-    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isEqualTo(false)
+    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isFalse()
   }
 
   @Test
@@ -127,7 +126,7 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion0()
     moveToNextQuestion()
     val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
-    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isEqualTo(false)
+    assertThat(ephemeralQuestion.ephemeralState.showContinueButtonAnimation).isFalse()
   }
 
   @Test

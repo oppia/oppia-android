@@ -764,6 +764,12 @@ class ProfileManagementController @Inject constructor(
     return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
   }
 
+  /**
+   * Marks the continue button seen status corresponding to the current logged-in profile (as given
+   * by [getCurrentProfileId]), or null if there's no currently logged-in user.
+   *
+   * See [markContinueButtonAnimationSeen] for specifics.
+   */
   suspend fun markCurrentContinueButtonAnimationSeen() = markContinueButtonAnimationSeen(getCurrentProfileId())
 
   /** Marks that the continue button animation has been seen. */
