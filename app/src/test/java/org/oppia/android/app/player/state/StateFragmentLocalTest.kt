@@ -422,7 +422,7 @@ class StateFragmentLocalTest {
         interactionViewId = R.id.math_expression_input_interaction_view
       )
       clickSubmitAnswerButton()
-      testCoroutineDispatchers.advanceTimeBy((TimeUnit.SECONDS.toMillis(45)))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
       onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }

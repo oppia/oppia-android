@@ -293,7 +293,7 @@ class ProfileManagementControllerTest {
       profileManagementController.loginToProfile(PROFILE_ID_1)
     )
 
-    profileManagementController::markCurrentContinueButtonAnimationSeen
+    fetchSuccessfulAsyncValue(profileManagementController::markCurrentContinueButtonAnimationSeen)
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
       profileManagementController::fetchCurrentContinueAnimationSeenStatus
@@ -309,8 +309,8 @@ class ProfileManagementControllerTest {
       profileManagementController.loginToProfile(PROFILE_ID_1)
     )
 
-    profileManagementController::markCurrentContinueButtonAnimationSeen
-    profileManagementController::markCurrentContinueButtonAnimationSeen
+    fetchSuccessfulAsyncValue(profileManagementController::markCurrentContinueButtonAnimationSeen)
+    fetchSuccessfulAsyncValue(profileManagementController::markCurrentContinueButtonAnimationSeen)
 
     val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
       profileManagementController::fetchCurrentContinueAnimationSeenStatus
