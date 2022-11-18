@@ -6,6 +6,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityMo
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityScope.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/InjectableAppCompatActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/route/Route.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/lifecycle/LifecycleSafeTimerFactory.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/route/RouteKey.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsFragmentPresenter.kt"

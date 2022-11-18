@@ -16,6 +16,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
+/** A custom [AppCompatButton] used to show continue button animations. */
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -63,11 +64,13 @@ class ContinueButtonView @JvmOverloads constructor(
     cancelOngoingTimer()
   }
 
+  /** Sets shouldAnimateContinueButton value. */
   fun setShouldAnimateContinueButton(shouldAnimateContinueButton: Boolean) {
     shouldAnimateContinueButtonLateinit = shouldAnimateContinueButton
     maybeInitializeAnimation()
   }
 
+  /** Sets continueButtonAnimationTimestampMs value. */
   fun setContinueButtonAnimationTimestampMs(continueButtonAnimationTimestampMs: Long) {
     continueButtonAnimationTimestampMsLateinit = continueButtonAnimationTimestampMs
     maybeInitializeAnimation()

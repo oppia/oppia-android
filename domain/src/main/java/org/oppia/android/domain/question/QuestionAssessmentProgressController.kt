@@ -623,12 +623,13 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
-    progress.stateDeck.getCurrentEphemeralState(
+  private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState {
+    return progress.stateDeck.getCurrentEphemeralState(
       hintHandler.getCurrentHelpIndex().value,
       oppiaClock.getCurrentTimeMs(),
       isContinueButtonAnimationSeen = true
     )
+  }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>

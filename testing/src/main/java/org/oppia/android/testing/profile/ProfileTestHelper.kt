@@ -10,11 +10,14 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.data.DataProviderTestMonitor_Factory_Factory
 
 /** This helper allows tests to easily create new profiles and switch between them. */
 class ProfileTestHelper @Inject constructor(
   private val profileManagementController: ProfileManagementController,
-  private val testCoroutineDispatchers: TestCoroutineDispatchers
+  private val testCoroutineDispatchers: TestCoroutineDispatchers,
+  private val monitorFactory: DataProviderTestMonitor.Factory
 ) {
 
   private val observer = Observer<AsyncResult<Any?>> { }
@@ -121,12 +124,11 @@ class ProfileTestHelper @Inject constructor(
     )
   }
 
-  fun getProfile(profileId: ProfileId): DataProvider<Profile> {
-    return profileManagementController.getProfile(profileId)
-  }
-
-  suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
-    return profileManagementController.markContinueButtonAnimationSeen(profileId)
+  /** Returns the continue button animation seen for profile. */
+  fun getContinueButtonAnimationSeenStatus(profileId: ProfileId): Boolean {
+    return monitorFactory.waitForNextSuccessfulResult(
+      profileManagementController.getProfile(profileId)
+    ).isContinueButtonAnimationSeen
   }
 
   /**

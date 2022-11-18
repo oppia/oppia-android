@@ -171,6 +171,8 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
@@ -298,7 +300,9 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
       onView(withId(R.id.continue_interaction_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      assertThat(getContinueButtonAnimationSeenStatus()).isTrue()
+      val continueButtonAnimationSeenStatus =
+        profileTestHelper.getContinueButtonAnimationSeenStatus(profileId)
+      assertThat(continueButtonAnimationSeenStatus).isTrue()
     }
   }
 
@@ -2486,12 +2490,6 @@ class StateFragmentLocalTest {
 
   private fun isAnimating(): TypeSafeMatcher<View> {
     return ActiveAnimationMatcher()
-  }
-
-  private fun getContinueButtonAnimationSeenStatus(): Boolean {
-    return monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.getProfile(profileId)
-    ).isContinueButtonAnimationSeen
   }
 
   private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {

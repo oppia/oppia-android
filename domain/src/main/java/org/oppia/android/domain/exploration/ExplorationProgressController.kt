@@ -418,9 +418,7 @@ class ExplorationProgressController @Inject constructor(
                   learnerId,
                   learnerAnalyticsLogger,
                   startSessionTimeMs = oppiaClock.getCurrentTimeMs(),
-                  isContinueButtonAnimationSeen,
-                  profileManagementController,
-                  profileId
+                  isContinueButtonAnimationSeen
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -500,9 +498,7 @@ class ExplorationProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) {
-      AsyncResult.Failure(e)
-    }
+    } catch (e: Exception) { AsyncResult.Failure(e) }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
@@ -1066,8 +1062,6 @@ class ExplorationProgressController @Inject constructor(
     private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
     val startSessionTimeMs: Long,
     var isContinueButtonAnimationSeen: Boolean,
-    private val profileManagementController: ProfileManagementController,
-    private val profileId: ProfileId
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -1156,11 +1150,9 @@ class ExplorationProgressController @Inject constructor(
             NEXT_AVAILABLE_HINT_INDEX -> // No solution, so revealing the hint ends available help.
               stateAnalyticsLogger?.logViewHint(helpIndex.nextAvailableHintIndex)
             // Nothing to do in these cases.
-            LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {
-            }
+            LATEST_REVEALED_HINT_INDEX, EVERYTHING_REVEALED, INDEXTYPE_NOT_SET, null -> {}
           }
-          INDEXTYPE_NOT_SET, null -> {
-          } // Nothing to do here.
+          INDEXTYPE_NOT_SET, null -> {} // Nothing to do here.
         }
         helpIndex = newHelpIndex
       }
