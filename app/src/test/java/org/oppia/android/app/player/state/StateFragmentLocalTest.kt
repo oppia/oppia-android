@@ -171,8 +171,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
