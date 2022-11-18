@@ -62,9 +62,9 @@
         android:background="@color/component_color_story_activity_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/story_fragment_padding_bottom"
         android:paddingStart="64dp"
         android:paddingEnd="64dp"
+        android:paddingBottom="@dimen/story_fragment_padding_bottom"
         android:scrollbars="none"
         app:data="@{viewModel.storyChapterLiveData}"
         tools:listitem="@layout/story_chapter_view" />
