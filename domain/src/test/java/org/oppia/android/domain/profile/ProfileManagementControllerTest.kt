@@ -261,6 +261,84 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  fun testFetchContinueButtonAnimationStatus_noLoggedInProfile_returnsNull() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+    )
+    assertThat(continueButtonSeenStatus).isNull()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_notSeen_returnsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_returnsTrue() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    profileManagementController::markCurrentContinueButtonAnimationSeen
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+    )
+    assertThat(continueButtonSeenStatus).isTrue()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeenTwice_returnsTrue() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    profileManagementController::markCurrentContinueButtonAnimationSeen
+    profileManagementController::markCurrentContinueButtonAnimationSeen
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+    )
+    assertThat(continueButtonSeenStatus).isTrue()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_inDiffProfile_returnsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    profileManagementController::markCurrentContinueButtonAnimationSeen
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchCurrentContinueAnimationSeenStatus
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
+  }
+
+  @Test
   fun testFetchCurrentLearnerId_loggedInProfile_createdWithStudyOff_returnsEmptyString() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     addTestProfiles()
