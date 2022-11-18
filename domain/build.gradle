@@ -116,7 +116,7 @@ dependencies {
       'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2',
       'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.2',
       'org.mockito:mockito-core:3.9.0',
-      'org.robolectric:robolectric:4.5',
+      'org.robolectric:robolectric:4.7',
       project(":testing"),
   )
   kapt(
