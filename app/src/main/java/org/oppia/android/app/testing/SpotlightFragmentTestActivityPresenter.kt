@@ -10,6 +10,7 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
 
+/** The presenter for [SpotlightFragmentTestActivity] */
 @ActivityScope
 class SpotlightFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
@@ -17,6 +18,7 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
 
   private lateinit var binding: SpotlightFragmentTestActivityBinding
 
+  /** Handles onCreate() method of the [SpotlightFragmentTestActivity]. */
   fun handleOnCreate(internalProfileId: Int) {
     binding = SpotlightFragmentTestActivityBinding.inflate(activity.layoutInflater)
     activity.setContentView(binding.root)
@@ -33,11 +35,13 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
     }
   }
 
+  /** Returns the spotlight fragment. */
   fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment?
   }
 
+  /** Returns a view to be used as a spotlight anchor. */
   fun getSampleSpotlightTarget() = binding.sampleSpotlightTarget
 }

@@ -8,10 +8,11 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 
+/** Test Activity used for testing [SpotlightFragment]. */
 class SpotlightFragmentTestActivity : TestActivity() {
 
   @Inject
-  lateinit var spotlightFragmentTestActivityPresenter: SpotlightFragmentTestActivityPresenter
+  private lateinit var spotlightFragmentTestActivityPresenter: SpotlightFragmentTestActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -24,8 +25,10 @@ class SpotlightFragmentTestActivity : TestActivity() {
     )
   }
 
+  /** Returns the spotlight fragment. */
   fun getSpotlightFragment() = spotlightFragmentTestActivityPresenter.getSpotlightFragment()
 
+  /** Returns a view to be used as a spotlight anchor. */
   fun getSampleSpotlightTarget() = spotlightFragmentTestActivityPresenter.getSampleSpotlightTarget()
 
   companion object {
