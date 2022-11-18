@@ -35,7 +35,6 @@
       android:layout_height="wrap_content"
       android:text="this is a custom text"
       android:gravity="end"
-      android:textColor="@android:color/white"
       android:textSize="24dp"
       android:textStyle="bold"
       android:textAlignment="viewEnd"

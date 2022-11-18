@@ -35,7 +35,6 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="10dp"
       android:text="this is a custom text"
-      android:textColor="@android:color/white"
       android:textSize="24dp"
       android:textStyle="bold"
       app:layout_constraintBottom_toTopOf="@id/arrow"

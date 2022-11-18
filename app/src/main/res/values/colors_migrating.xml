@@ -113,4 +113,6 @@
   <color name="coming_soon_end">#674172</color>
   <color name="coming_soon_start">#7659B6</color>
   <color name="spotlightBackground">#BF000000</color>
+  <!--SPOTLIGHT OVERLAY COLORS-->
+  <color name="spotlight_hint_background">#FFFFF0</color>
 </resources>
