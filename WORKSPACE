@@ -146,15 +146,6 @@ git_repository(
     shallow_since = "1647554845 -0700",
 )
 
-# A custom fork of Android-MarqueeView that is updated with latest dependencies compatible with Oppia and also
-# min target SDK version set to be compatible with Oppia.
-git_repository(
-    name = "marqueeview",
-    commit = "a935a78c88a01958716396e6f2cb4abf4559eccc",
-    remote = "https://github.com/oppia/Android-MarqueeView",
-    shallow_since = "1663393399 -0400",
-)
-
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
