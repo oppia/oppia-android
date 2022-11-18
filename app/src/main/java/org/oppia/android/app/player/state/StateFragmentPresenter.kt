@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state
 
+import org.oppia.android.util.accessibility.AccessibilityService
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -73,7 +75,9 @@ class StateFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val accessibilityService: AccessibilityService,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -509,7 +513,12 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
-            binding.hintsAndSolutionFragmentContainer.announceForAccessibility("Go to the bottom of the screen for hint")
+            accessibilityService.announceForAccessibilityForView(
+              binding.hintsAndSolutionFragmentContainer,
+              resourceHandler.getStringInLocale(
+                R.string.state_fragment_hint_bar_forced_announcement_text
+              )
+            )
           }
         }
       }

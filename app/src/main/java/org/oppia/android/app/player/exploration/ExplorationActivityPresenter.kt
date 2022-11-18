@@ -37,6 +37,7 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"
@@ -53,7 +54,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resouceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -150,7 +152,7 @@ class ExplorationActivityPresenter @Inject constructor(
       // spotlight voice-over icon after 3 logins
       val audioPlayerSpotlightTarget = SpotlightTarget(
         binding.actionAudioPlayer,
-        activity.getString(R.string.voiceover_icon_spotlight_hint),
+        resouceHandler.getStringInLocale(R.string.voiceover_icon_spotlight_hint),
         SpotlightShape.Circle,
         Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
       )

@@ -10,6 +10,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 
@@ -24,6 +25,9 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
 
   @Inject
   lateinit var fragment: Fragment
+
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
 
   fun setStoryIndex(index: Int) {
     // Only spotlight the first chapter of the "first" story. We know for sure that for a new user,
@@ -50,7 +54,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
-        context.getString(R.string.first_chapter_spotlight_hint),
+        resourceHandler.getStringInLocale(R.string.first_chapter_spotlight_hint),
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
       if (index == 0) {

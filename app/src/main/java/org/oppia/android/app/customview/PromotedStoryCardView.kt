@@ -12,6 +12,7 @@ import org.oppia.android.R
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 class PromotedStoryCardView @JvmOverloads constructor(
   context: Context,
@@ -22,8 +23,9 @@ class PromotedStoryCardView @JvmOverloads constructor(
   @Inject
   lateinit var fragment: Fragment
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var index: Int = -1
   private var isSpotlit = false
 
   fun setIndex(index: Int) {
@@ -31,14 +33,13 @@ class PromotedStoryCardView @JvmOverloads constructor(
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
-        context.getString(R.string.promoted_story_spotlight_hint),
+        resourceHandler.getStringInLocale(R.string.promoted_story_spotlight_hint),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
       if (index == 0) {
         checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
     }
-
   }
 
   private fun getSpotlightFragment(): SpotlightManager? {
@@ -49,11 +50,9 @@ class PromotedStoryCardView @JvmOverloads constructor(
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
     val viewComponentFactory =
       FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
-
   }
 }

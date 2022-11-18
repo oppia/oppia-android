@@ -12,6 +12,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Fragment that contains displays single exploration. */
 class ExplorationFragment : InjectableFragment() {

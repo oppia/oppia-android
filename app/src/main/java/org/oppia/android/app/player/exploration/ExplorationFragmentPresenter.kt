@@ -19,6 +19,7 @@ import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -35,6 +36,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val profileManagementController: ProfileManagementController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private var internalProfileId: Int = -1
@@ -93,7 +95,7 @@ class ExplorationFragmentPresenter @Inject constructor(
         // this toolbar contains only one image button, which is the back navigation icon
         val backButtonSpotlightTarget = SpotlightTarget(
           it,
-          fragment.requireContext().getString(R.string.exploration_exit_button_spotlight_hint),
+          resourceHandler.getStringInLocale(R.string.exploration_exit_button_spotlight_hint),
           SpotlightShape.Circle,
           Spotlight.FeatureCase.LESSONS_BACK_BUTTON
         )

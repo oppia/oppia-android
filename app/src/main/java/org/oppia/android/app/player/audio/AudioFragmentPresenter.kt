@@ -132,7 +132,7 @@ class AudioFragmentPresenter @Inject constructor(
   private fun startSpotlights() {
     val audioLanguageIconSpotlightTarget = SpotlightTarget(
       binding.audioLanguageIcon,
-      context.getString(R.string.voiceover_language_icon_spotlight_hint),
+      resourceHandler.getStringInLocale(R.string.voiceover_language_icon_spotlight_hint),
       SpotlightShape.Circle,
       Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
     )

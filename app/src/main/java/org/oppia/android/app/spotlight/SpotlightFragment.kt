@@ -327,14 +327,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     if (isRTL) {
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight() - 5.dp).toInt(),
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight() - 5.dp).toInt(),
+        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
@@ -393,7 +393,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     if (isRTL) {
       arrowParams.setMargins(
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
         screenWidth - (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
@@ -426,14 +426,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     if (isRTL) {
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight + 5.dp).toInt(),
+        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
@@ -442,7 +442,4 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     return (overlayBinding as TopLeftOverlayBinding).root
   }
-
-  private val Int.dp: Int
-    get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 }

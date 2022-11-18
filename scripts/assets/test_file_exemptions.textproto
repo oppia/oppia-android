@@ -292,6 +292,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/HintsAndSolutionExplorationManagerFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/HintsAndSolutionExplorationManagerFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/HintsAndSolutionExplorationManagerListener.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/RequestVoiceOverIconSpotlightListener.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/testing/BottomSheetOptionsMenuTestActivity.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/ConfettiConfig.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt"

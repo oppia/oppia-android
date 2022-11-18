@@ -580,8 +580,9 @@
   <string name="topic_revision_tab_spotlight_hint">Revise your lessons here</string>
   <string name="first_chapter_spotlight_hint">Tap to start a chapter</string>
   <string name="exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
-  <string name="voiceover_icon_spotlight_hint">Would you like Oppia to read for you? Tap on this button to try!</string>
+  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try!</string>
   <string name="voiceover_language_icon_spotlight_hint">Tap to change voiceover language</string>
   <string name="onboarding_next_button_spotlight_hint">Next</string>
   <string name="promoted_story_spotlight_hint">From now, you can see stories recommended for you here</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for hint</string>
 </resources>
