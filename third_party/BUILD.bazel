@@ -82,14 +82,6 @@ android_library(
     ],
 )
 
-android_library(
-    name = "asia_ivity_android_marqueeview",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@marqueeview//library:Android-MarqueeView",
-    ],
-)
-
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
 # can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
 # Android assets which java_library targets do not export.
