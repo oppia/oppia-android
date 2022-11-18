@@ -58,8 +58,8 @@ class TopicFragmentPresenter @Inject constructor(
       (activity as TopicActivity).finish()
     }
 
-    binding.topicToolbarTitle.setOnClickListener {
-      binding.topicMarqueeView.startMarquee()
+    binding.topicToolbar.setOnClickListener {
+      binding.topicToolbarTitle.isSelected = true
     }
 
     viewModel.setInternalProfileId(internalProfileId)
