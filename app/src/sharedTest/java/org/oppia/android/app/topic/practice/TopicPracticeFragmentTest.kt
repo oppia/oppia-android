@@ -109,6 +109,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.domain.spotlight.SpotlightStateController
 
 /** Tests for [TopicPracticeFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -130,6 +133,9 @@ class TopicPracticeFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
@@ -141,6 +147,7 @@ class TopicPracticeFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     skillIdList.add("5RM9KPfQxobH")
     skillIdList.add("B39yK4cbHZYI")
+    markAllSpotlightsSeen()
   }
 
   @After
@@ -411,6 +418,16 @@ class TopicPracticeFragmentTest {
         targetViewId = targetViewId
       )
     ).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun markAllSpotlightsSeen() {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_LESSON_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_REVISION_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.FIRST_CHAPTER)
     testCoroutineDispatchers.runCurrent()
   }
 

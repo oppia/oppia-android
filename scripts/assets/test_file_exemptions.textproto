@@ -64,6 +64,8 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/
 exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListFragment.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/completedstorylist/CompletedStoryListViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/customview/interaction/FractionInputInteractionView.kt"
