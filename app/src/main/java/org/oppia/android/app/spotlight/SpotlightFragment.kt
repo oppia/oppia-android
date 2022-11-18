@@ -25,14 +25,13 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
-import org.oppia.android.app.onboarding.SpotlightNavigationListener
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
 import org.oppia.android.databinding.TopLeftOverlayBinding
 import org.oppia.android.databinding.TopRightOverlayBinding
 import org.oppia.android.domain.spotlight.SpotlightStateController
-import org.oppia.android.util.accessibility.AccessibilityServiceImpl
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
@@ -41,7 +40,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
  * interactions, and handles lifecycle related functionality for spotlights, such as surviving orientation changes
  * and marking spotlights as seen.
  */
-class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
+class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, SpotlightManager {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -49,7 +48,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
   lateinit var spotlightStateController: SpotlightStateController
 
   @Inject
-  lateinit var accessibilityServiceImpl: AccessibilityServiceImpl
+  lateinit var accessibilityService: AccessibilityService
 
   private var targetList = LinkedList<Target>()
   private lateinit var spotlight: Spotlight
@@ -93,7 +92,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
    *
    * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
    */
-  fun requestSpotlightViewWithDelayedLayout(spotlightTarget: SpotlightTarget) {
+  override fun requestSpotlightViewWithDelayedLayout(spotlightTarget: SpotlightTarget) {
     spotlightTarget.anchor.doOnPreDraw {
       if (it.visibility != View.VISIBLE) {
         return@doOnPreDraw
@@ -118,9 +117,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
    *
    * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
    */
-  fun requestSpotlight(spotlightTarget: SpotlightTarget) {
+  override fun requestSpotlight(spotlightTarget: SpotlightTarget) {
 
-    if (accessibilityServiceImpl.isScreenReaderEnabled()) return
+    if (accessibilityService.isScreenReaderEnabled()) return
 
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
@@ -318,7 +317,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as BottomLeftOverlayBinding).let {
       it.lifecycleOwner = this
-      it.presenter = this
+      it.listener = this
     }
 
     (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
@@ -350,7 +349,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as BottomRightOverlayBinding).let {
       it.lifecycleOwner = this
-      it.presenter = this
+      it.listener = this
     }
 
     (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
@@ -384,7 +383,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     overlayBinding = TopRightOverlayBinding.inflate(layoutInflater)
     (overlayBinding as TopRightOverlayBinding).let {
       it.lifecycleOwner = this
-      it.presenter = this
+      it.listener = this
     }
 
     (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
@@ -417,7 +416,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener {
     overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as TopLeftOverlayBinding).let {
       it.lifecycleOwner = this
-      it.presenter = this
+      it.listener = this
     }
 
     (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint

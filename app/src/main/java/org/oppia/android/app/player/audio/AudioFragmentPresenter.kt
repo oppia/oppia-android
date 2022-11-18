@@ -24,9 +24,9 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
@@ -142,7 +142,7 @@ class AudioFragmentPresenter @Inject constructor(
 
   private fun getSpotlightFragment(): SpotlightFragment {
     return activity.supportFragmentManager.findFragmentByTag(
-      SPOTLIGHT_FRAGMENT_TAG
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment
   }
 

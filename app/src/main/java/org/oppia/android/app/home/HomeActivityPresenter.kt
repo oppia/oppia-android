@@ -10,8 +10,8 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import javax.inject.Inject
+import org.oppia.android.app.spotlight.SpotlightManager
 
 const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
 
@@ -38,7 +38,7 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
       spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.home_spotlight_fragment_placeholder,
-        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }

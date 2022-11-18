@@ -6,8 +6,8 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 
 /** The presenter for [OnboardingActivity]. */
 @ActivityScope
@@ -28,7 +28,7 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
       spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.onboarding_spotlight_fragment_placeholder,
-        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }

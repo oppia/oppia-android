@@ -8,9 +8,8 @@ import androidx.fragment.app.FragmentManager
 import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 
@@ -33,10 +32,10 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     this.index = index
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment? {
+  private fun getSpotlightFragment(): SpotlightManager? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
-      SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment?
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   override fun onAttachedToWindow() {

@@ -394,7 +394,9 @@ VIEW_MODELS = [
 
 # keep sorted
 VIEWS_WITH_RESOURCE_IMPORTS = [
+    "src/main/java/org/oppia/android/app/customview/ChapterNotStartedContainerConstraintLayout.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
+    "src/main/java/org/oppia/android/app/customview/PromotedStoryCardView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",
@@ -575,6 +577,7 @@ android_library(
         ":resources",
         ":view_models",
         ":views",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_activity_injector_provider",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_resource_handler",
         "//model/src/main/proto:interaction_object_java_proto_lite",
@@ -631,6 +634,7 @@ kt_android_library(
         ":snap_helper",
         ":view_models",
         "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/spotlight",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_scope",
         "//third_party:androidx_appcompat_appcompat",
@@ -745,6 +749,7 @@ kt_android_library(
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentComponentImpl.kt",
         "//app/src/main/java/org/oppia/android/app/fragment:FragmentModule.kt",
         "//app/src/main/java/org/oppia/android/app/view:ViewComponentBuilderModule.kt",
+        "//app/src/main/java/org/oppia/android/app/spotlight:SpotlightFragment_updated.kt",
     ],
     custom_package = "org.oppia.android.app.ui",
     enable_data_binding = 1,
@@ -779,6 +784,8 @@ kt_android_library(
         "//third_party:androidx_viewpager2_viewpager2",
         "//third_party:androidx_viewpager_viewpager",
         "//third_party:com_caverock_androidsvg",
+        "//third_party:com_github_takusemba_spotlight",
+        "//domain/src/main/java/org/oppia/android/domain/spotlight:spotlight_state_controller",
         "//third_party:com_google_android_flexbox_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//utility",

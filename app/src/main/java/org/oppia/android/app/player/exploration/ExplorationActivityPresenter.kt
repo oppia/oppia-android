@@ -23,7 +23,6 @@ import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragme
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -35,6 +34,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 
@@ -140,7 +140,7 @@ class ExplorationActivityPresenter @Inject constructor(
       spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_spotlight_fragment_placeholder,
-        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }
@@ -162,7 +162,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      SPOTLIGHT_FRAGMENT_TAG
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment?
   }
 
