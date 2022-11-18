@@ -1,6 +1,7 @@
 package org.oppia.android.app.spotlight
 
 import android.view.View
+import org.oppia.android.app.model.Spotlight.FeatureCase
 
 /**
  * Data class to hold a [SpotlightTarget].
@@ -14,7 +15,7 @@ data class SpotlightTarget(
   val anchor: View,
   val hint: String = "",
   val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
-  val feature: org.oppia.android.app.model.Spotlight.FeatureCase
+  val feature: FeatureCase
 ) {
   val anchorLeft: Float = calculateAnchorLeft()
   val anchorTop: Float = calculateAnchorTop()

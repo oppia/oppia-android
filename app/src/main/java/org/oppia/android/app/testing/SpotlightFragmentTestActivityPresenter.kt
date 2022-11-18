@@ -6,8 +6,8 @@ import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
 
 @ActivityScope
@@ -28,14 +28,14 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
       spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.test_spotlight_overlay_placeholder,
-        spotlightFragment, SPOTLIGHT_FRAGMENT_TAG
+        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }
 
   fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      SPOTLIGHT_FRAGMENT_TAG
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment?
   }
 

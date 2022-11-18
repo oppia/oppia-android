@@ -21,6 +21,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.spotlight.SpotlightManager
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -104,7 +105,7 @@ class TopicFragmentPresenter @Inject constructor(
 
   private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
-      SPOTLIGHT_FRAGMENT_TAG
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment?
   }
 

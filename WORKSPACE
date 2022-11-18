@@ -130,6 +130,13 @@ git_repository(
     shallow_since = "1647295507 -0700",
 )
 
+git_repository(
+    name = "android-spotlight",
+    commit = "1ba764bb9e3685947433f115120448910ef737ed",
+    remote = "https://github.com/oppia/android-spotlight",
+    shallow_since = "1667677977 -0500",
+)
+
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
 # min target SDK version to be compatible with Oppia.
 git_repository(

@@ -7,8 +7,8 @@
     <import type="android.view.View" />
 
     <variable
-      name="presenter"
-      type="org.oppia.android.app.onboarding.SpotlightNavigationListener" />
+      name="listener"
+      type="org.oppia.android.app.spotlight.SpotlightNavigationListener" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +55,7 @@
       android:clickable="true"
       android:focusable="true"
       android:gravity="center"
-      android:onClick="@{(v) -> presenter.clickOnNextTip()}"
+      android:onClick="@{(v) -> listener.clickOnNextTip()}"
       android:text="Done"
       android:textColor="#FFFFFF"
       android:textSize="14dp"

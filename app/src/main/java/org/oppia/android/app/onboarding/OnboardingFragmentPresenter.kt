@@ -24,9 +24,9 @@ import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.topic.SPOTLIGHT_FRAGMENT_TAG
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -62,7 +62,7 @@ class OnboardingFragmentPresenter @Inject constructor(
 
   private fun getSpotlightFragment(): SpotlightFragment {
     return activity.supportFragmentManager.findFragmentByTag(
-      SPOTLIGHT_FRAGMENT_TAG
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment
   }
 

@@ -1,0 +1,25 @@
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
+
+genrule(
+    name = "update_SpotlightFragment",
+    srcs = ["SpotlightFragment.kt"],
+    outs = ["SpotlightFragment_updated.kt"],
+    cmd = """
+    cat $(SRCS) |
+    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' |
+    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
+    """,
+    visibility = ["//app:app_visibility"],
+)
+
+kt_android_library(
+    name = "spotlight",
+    srcs = [
+        "SpotlightManager.kt",
+        "SpotlightNavigationListener.kt",
+        "SpotlightShape.kt",
+        "SpotlightTarget.kt",
+    ],
+    visibility = ["//app:app_visibility"],
+    deps = ["//model/src/main/proto:spotlight_java_proto_lite"],
+)

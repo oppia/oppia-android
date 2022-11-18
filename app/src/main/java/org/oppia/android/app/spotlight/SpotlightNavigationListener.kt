@@ -1,4 +1,4 @@
-package org.oppia.android.app.onboarding
+package org.oppia.android.app.spotlight
 
 interface SpotlightNavigationListener {
 
