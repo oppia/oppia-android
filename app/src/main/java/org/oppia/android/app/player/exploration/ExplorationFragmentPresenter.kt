@@ -8,7 +8,6 @@ import android.widget.ImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
@@ -28,6 +27,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
@@ -103,7 +103,8 @@ class ExplorationFragmentPresenter @Inject constructor(
       }
     }
 
-    (fragment.requireActivity() as RequestVoiceOverIconSpotlightListener).requestVoiceOverIconSpotlight(numberOfLogins)
+    (fragment.requireActivity() as RequestVoiceOverIconSpotlightListener)
+      .requestVoiceOverIconSpotlight(numberOfLogins)
   }
 
   private fun getSpotlightFragment(): SpotlightFragment? {

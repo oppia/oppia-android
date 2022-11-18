@@ -2,7 +2,6 @@ package org.oppia.android.app.spotlight
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -14,17 +13,12 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
@@ -78,10 +72,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -102,6 +94,8 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [SpotlightFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -194,7 +188,7 @@ class SpotlightFragmentTest {
           activity.getSpotlightFragment()
         ).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
-       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
+      onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
 
@@ -203,7 +197,7 @@ class SpotlightFragmentTest {
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
-      it.onActivity { activity->
+      it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
           activity.getSampleSpotlightTarget(),
           sampleSpotlightText,

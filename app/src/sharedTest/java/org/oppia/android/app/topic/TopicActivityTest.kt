@@ -39,6 +39,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
@@ -71,6 +74,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -104,8 +108,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.Spotlight
-import org.oppia.android.domain.spotlight.SpotlightStateController
 
 /** Tests for [TopicActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -214,11 +216,11 @@ class TopicActivityTest {
 
   private fun markAllSpotlightsSeen() {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_LESSON_TAB)
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_REVISION_TAB)
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
     testCoroutineDispatchers.runCurrent()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.FIRST_CHAPTER)
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     testCoroutineDispatchers.runCurrent()
   }
 

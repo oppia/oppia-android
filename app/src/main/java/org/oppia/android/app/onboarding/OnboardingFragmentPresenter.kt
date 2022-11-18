@@ -11,8 +11,13 @@ import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PolicyPage
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
@@ -22,11 +27,6 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.spotlight.SpotlightFragment
-import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.spotlight.SpotlightShape
-import org.oppia.android.app.spotlight.SpotlightTarget
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -65,7 +65,6 @@ class OnboardingFragmentPresenter @Inject constructor(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as SpotlightFragment
   }
-
 
   fun startSpotlight() {
     val nextSpotlightTarget = SpotlightTarget(

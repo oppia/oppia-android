@@ -43,8 +43,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.containsString
@@ -130,7 +128,6 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -419,7 +416,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_neverSeenBefore_checkSpotlightIsShown() {
+  fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_notSeen_checkSpotlightIsShown() {
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
@@ -442,7 +439,8 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(matches(isDisplayed()))
+      onView(withText(R.string.voiceover_language_icon_spotlight_hint))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -497,7 +495,7 @@ class ExplorationActivityTest {
   }
 
   @Test
-  fun testBackButtonSpotlight_setToShowOnFirstLogin_neverSeenBefore_checkSpotlightIsShown() {
+  fun testBackButtonSpotlight_setToShowOnFirstLogin_notSeen_checkSpotlightIsShown() {
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -514,7 +512,8 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
 
-      onView(withText(R.string.exploration_exit_button_spotlight_hint)).check(matches(isDisplayed()))
+      onView(withText(R.string.exploration_exit_button_spotlight_hint))
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -554,12 +553,13 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
-      onView(withText(R.string.exploration_exit_button_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.exploration_exit_button_spotlight_hint))
+        .check(doesNotExist())
     }
   }
 
   @Test
-  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_neverSeenBefore_checkSpotlightIsShown() {
+  fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_notSeen_checkSpotlightShown() {
     logIntoUserThrice()
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
@@ -580,12 +580,13 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(matches(isDisplayed()))
+      onView(withText(R.string.voiceover_icon_spotlight_hint))
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_alreadySeen_checkSpotlightIsNotShown() {
+  fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_alreadySeen_checkSpotlightNotShown() {
     logIntoUserThrice()
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
@@ -625,12 +626,13 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.voiceover_icon_spotlight_hint))
+        .check(doesNotExist())
     }
   }
 
   @Test
-  fun testVoiceoverIconSpotlight_setToShowOn3rdLoginChapterComplete_1stLogin_checkSpotlightIsNotShown() {
+  fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_1stLogin_checkNotShown() {
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -649,7 +651,8 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint)).check(doesNotExist())
+      onView(withText(R.string.voiceover_icon_spotlight_hint))
+        .check(doesNotExist())
     }
   }
 

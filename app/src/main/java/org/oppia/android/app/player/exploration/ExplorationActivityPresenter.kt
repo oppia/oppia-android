@@ -18,12 +18,17 @@ import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
@@ -33,11 +38,6 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.spotlight.SpotlightShape
-import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 private const val TAG_UNSAVED_EXPLORATION_DIALOG = "UNSAVED_EXPLORATION_DIALOG"
 private const val TAG_STOP_EXPLORATION_DIALOG = "STOP_EXPLORATION_DIALOG"

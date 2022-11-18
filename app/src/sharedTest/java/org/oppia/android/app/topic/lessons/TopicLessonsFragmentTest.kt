@@ -55,7 +55,9 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
-import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -940,11 +942,11 @@ class TopicLessonsFragmentTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_LESSON_TAB)
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_REVISION_TAB)
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
     testCoroutineDispatchers.runCurrent()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.FIRST_CHAPTER)
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     testCoroutineDispatchers.runCurrent()
   }
 

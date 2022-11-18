@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state
 
-import org.oppia.android.util.accessibility.AccessibilityService
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +35,7 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.app.viewmodel.ViewModelProvider
@@ -43,6 +43,7 @@ import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -50,7 +51,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -220,7 +220,6 @@ class StateFragmentPresenter @Inject constructor(
   fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
     this.helpIndex = helpIndex
     showHintsAndSolutions(helpIndex, isCurrentStatePendingState)
-
   }
 
   private fun createRecyclerViewAssembler(

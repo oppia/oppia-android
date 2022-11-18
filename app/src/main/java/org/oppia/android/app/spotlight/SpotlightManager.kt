@@ -30,4 +30,3 @@ interface SpotlightManager {
     const val SPOTLIGHT_FRAGMENT_TAG = "SpotlightFragment"
   }
 }
-

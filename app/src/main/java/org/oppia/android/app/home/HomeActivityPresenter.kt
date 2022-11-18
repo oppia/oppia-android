@@ -9,9 +9,9 @@ import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
-import org.oppia.android.app.spotlight.SpotlightManager
 
 const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
 

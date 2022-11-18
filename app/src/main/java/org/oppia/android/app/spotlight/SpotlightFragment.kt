@@ -1,7 +1,6 @@
 package org.oppia.android.app.spotlight
 
 import android.content.Context
-import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -18,8 +17,6 @@ import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
-import java.util.*
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
@@ -34,6 +31,8 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.LinkedList
+import javax.inject.Inject
 
 /**
  * Fragment to hold the spotlights on elements. This fragments provides a single place for all the spotlight
@@ -159,7 +158,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       .setOverlay(requestOverlayResource(spotlightTarget))
       .setOnTargetListener(object : OnTargetListener {
         override fun onStarted() {
-
         }
 
         override fun onEnded() {
@@ -257,7 +255,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     } else {
       AnchorPosition.TopLeft
     }
-
   }
 
   private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View {
@@ -328,15 +325,15 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams = arrowParams
@@ -358,18 +355,18 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
         screenWidth -
           (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams = arrowParams
@@ -392,10 +389,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       as ViewGroup.MarginLayoutParams
     if (isRTL) {
       arrowParams.setMargins(
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
         screenWidth - (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
@@ -427,15 +424,15 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     } else {
       arrowParams.setMargins(
         spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
     (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams = arrowParams

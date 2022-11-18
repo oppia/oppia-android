@@ -5,14 +5,14 @@ import android.util.AttributeSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.card.MaterialCardView
-import org.oppia.android.app.view.ViewComponentFactory
-import org.oppia.android.app.view.ViewComponentImpl
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.ViewComponentFactory
+import org.oppia.android.app.view.ViewComponentImpl
+import javax.inject.Inject
 
 class PromotedStoryCardView @JvmOverloads constructor(
   context: Context,

@@ -13,6 +13,7 @@ import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -21,7 +22,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.spotlight.SpotlightManager
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope

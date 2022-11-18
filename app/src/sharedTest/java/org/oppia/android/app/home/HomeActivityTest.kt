@@ -66,6 +66,7 @@ import org.oppia.android.app.model.OppiaLanguage.ENGLISH_VALUE
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -109,6 +110,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -149,9 +151,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.Spotlight
-import org.oppia.android.domain.spotlight.SpotlightStateController
-import org.oppia.android.testing.DisableAccessibilityChecks
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -335,17 +334,18 @@ class HomeActivityTest {
   }
 
   @Test
-  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_spotlightNeverSeenBefore_checkSpotlightShown() {
+  fun testPromotedStorySpotlight_setToShowOnSecondLogin_notSeenBefore_checkSpotlightShown() {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint)).check(matches(isDisplayed()))
+      onView(withText(R.string.promoted_story_spotlight_hint))
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightIsNotShownAgain() {
-   logIntoUserTwice()
+  fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightNotShown() {
+    logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_target)).perform(click())

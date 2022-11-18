@@ -2,19 +2,19 @@ package org.oppia.android.app.testing
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.databinding.SpotlightFragmentTestActivityBinding
+import javax.inject.Inject
 
 /** The presenter for [SpotlightFragmentTestActivity] */
 @ActivityScope
 class SpotlightFragmentTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
-  ) {
+) {
 
   private lateinit var binding: SpotlightFragmentTestActivityBinding
 

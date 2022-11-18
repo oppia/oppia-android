@@ -26,8 +26,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matchers.allOf
 import org.junit.After
@@ -48,7 +46,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -118,6 +116,8 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -258,7 +258,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkIsShown() {
+  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkShown() {
     initializeApplicationComponent(false)
     markFirstChapterSpotlightSeen()
     markLessonsTabSpotlightSeen()
@@ -267,7 +267,9 @@ class TopicFragmentTest {
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     testCoroutineDispatchers.runCurrent()
-    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    ).use {
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(matches(isDisplayed()))
@@ -275,18 +277,20 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_chaptersNotComplete_checkIsNotShown() {
+  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notComplete_checkNotShown() {
     initializeApplicationComponent(false)
     markLessonsTabSpotlightSeen()
     markFirstChapterSpotlightSeen()
-    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
     }
   }
 
   @Test
-  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkIsNotShown() {
+  fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkNotShown() {
     initializeApplicationComponent(false)
     markLessonsTabSpotlightSeen()
     markFirstChapterSpotlightSeen()
@@ -295,13 +299,17 @@ class TopicFragmentTest {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
-    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    ).use {
       testCoroutineDispatchers.runCurrent()
       // mark revision tab spotlight seen
       onView(withId(R.id.close_target)).perform(click())
     }
 
-    launch<TopicActivity>(createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)).use {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
+    ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
     }
@@ -807,7 +815,7 @@ class TopicFragmentTest {
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_REVISION_TAB)
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
     testCoroutineDispatchers.runCurrent()
   }
 

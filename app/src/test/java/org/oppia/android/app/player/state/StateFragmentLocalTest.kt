@@ -136,6 +136,7 @@ import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -168,7 +169,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.testing.story.StoryProgressTestHelper
 
 /**
  * Tests for [StateFragment] that can only be run locally, e.g. using Robolectric, and not on an
