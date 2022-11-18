@@ -89,7 +89,7 @@ class ExplorationActivityPresenter @Inject constructor(
     activity.setSupportActionBar(explorationToolbar)
 
     binding.explorationToolbarTitle.setOnClickListener {
-      binding.explorationMarqueeView.startMarquee()
+      binding.explorationToolbarTitle.isSelected = true
     }
 
     binding.explorationToolbar.setNavigationOnClickListener {
