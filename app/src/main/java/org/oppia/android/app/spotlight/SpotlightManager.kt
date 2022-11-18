@@ -1,5 +1,6 @@
 package org.oppia.android.app.spotlight
 
+/** Manager for the [SpotlightFragment]. */
 interface SpotlightManager {
   /**
    * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it

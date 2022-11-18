@@ -223,7 +223,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     val locale = Locale.getDefault()
     val directionality: Byte = Character.getDirectionality(locale.displayName[0].toInt())
     isRTL = directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
-      directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
+      directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT
   }
 
   private fun getArrowWidth(): Float {
