@@ -109,7 +109,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -136,6 +135,7 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
 import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -216,6 +216,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     Intents.init()
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
@@ -811,7 +812,7 @@ class ExplorationActivityTest {
           1
         )
       )
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
@@ -832,7 +833,7 @@ class ExplorationActivityTest {
           1
         )
       )
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(
         allOf(
           withId(R.id.audio_language_icon),
@@ -866,11 +867,11 @@ class ExplorationActivityTest {
     ).use {
       waitForTheView(withText("What is a Ratio?"))
       // Clicks continue until we reach the first interaction.
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(
@@ -1978,7 +1979,7 @@ class ExplorationActivityTest {
 
   private fun clickContinueButton() {
     scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -2091,7 +2092,7 @@ class ExplorationActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

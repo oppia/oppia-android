@@ -394,6 +394,7 @@ VIEW_MODELS = [
 
 # keep sorted
 VIEWS_WITH_RESOURCE_IMPORTS = [
+    "src/main/java/org/oppia/android/app/customview/ContinueButtonView.kt",
     "src/main/java/org/oppia/android/app/customview/LessonThumbnailImageView.kt",
     "src/main/java/org/oppia/android/app/customview/SegmentedCircularProgressView.kt",
     "src/main/java/org/oppia/android/app/customview/VerticalDashedLineView.kt",
@@ -630,6 +631,7 @@ kt_android_library(
         ":snap_helper",
         ":view_models",
         "//app/src/main/java/org/oppia/android/app/shim:view_binding_shim",
+        "//app/src/main/java/org/oppia/android/app/utility/lifecycle:lifecycle_safe_timer_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_component_factory",
         "//app/src/main/java/org/oppia/android/app/view:view_scope",
         "//third_party:androidx_appcompat_appcompat",
