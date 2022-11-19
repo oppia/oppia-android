@@ -89,16 +89,16 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     calculateScreenSize()
-    checkIsRTL()
   }
 
   /**
    * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
    * [SpotlightTarget] hasn't been shown before in a FIFO buffer. This API can ensure proper
    * spotlighting of a which is laid out after an animation. For the spotlights to work correctly,
-   * we must know the [SpotlightTarget]'s anchor's size and position. For a view that is laid out after an animation, we must
-   * wait until the final size and positions of the anchor view are measured, which can be achieved by using
-   * doOnPreDraw (refer: https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2).
+   * we must know the [SpotlightTarget]'s anchor's size and position. For a view that is laid out
+   * after an animation, we must wait until the final size and positions of the anchor view are
+   * measured, which can be achieved by using doOnPreDraw. Refer:
+   * https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2
    *
    * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
    */
