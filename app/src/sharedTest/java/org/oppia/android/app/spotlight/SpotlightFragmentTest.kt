@@ -172,9 +172,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
-    launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
-    ).use {
+    launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -187,6 +185,7 @@ class SpotlightFragmentTest {
         checkNotNull(
           activity.getSpotlightFragment()
         ).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+        testCoroutineDispatchers.runCurrent()
       }
       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
@@ -194,9 +193,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
-    launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
-    ).use {
+    launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
           activity.getSampleSpotlightTarget(),

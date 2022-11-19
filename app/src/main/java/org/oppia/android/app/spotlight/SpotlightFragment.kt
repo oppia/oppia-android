@@ -115,6 +115,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
       requestSpotlight(targetAfterViewFullyDrawn)
     }
+    spotlightTarget.anchor.invalidate()
+    spotlightTarget.anchor.requestLayout()
   }
 
   /**
