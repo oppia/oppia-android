@@ -89,7 +89,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     calculateScreenSize()
-    checkIsRTL()
   }
 
   /**

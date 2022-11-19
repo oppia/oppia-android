@@ -55,7 +55,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
-  private val resouceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -149,10 +149,13 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     if (numberOfLogins >= 3) {
-      // spotlight voice-over icon after 3 logins
+      // Spotlight the voice-over icon after 3 or more logins.
       val audioPlayerSpotlightTarget = SpotlightTarget(
         binding.actionAudioPlayer,
-        resouceHandler.getStringInLocale(R.string.voiceover_icon_spotlight_hint),
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.voiceover_icon_spotlight_hint,
+          resourceHandler.getStringInLocale(R.string.app_name)
+        ),
         SpotlightShape.Circle,
         Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
       )
