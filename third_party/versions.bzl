@@ -104,8 +104,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "org.jetbrains.kotlinx:kotlinx-coroutines-test": "1.2.2",
     "org.mockito.kotlin:mockito-kotlin": "3.2.0",
     "org.mockito:mockito-core": "2.19.0",
-    "org.robolectric:annotations": "4.7",
-    "org.robolectric:robolectric": "4.7",
+    "org.robolectric:annotations": "4.5",
+    "org.robolectric:robolectric": "4.5",
 }
 
 # Note to developers: Please keep this dict sorted by key to make it easier to find dependencies.
