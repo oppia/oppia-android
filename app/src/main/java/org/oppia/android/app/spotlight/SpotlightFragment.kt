@@ -27,6 +27,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
 import org.oppia.android.databinding.TopLeftOverlayBinding
@@ -37,7 +38,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.util.LinkedList
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /**
  * Fragment to hold the spotlights on elements. This fragments provides a single place for all the
@@ -64,7 +64,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
   private val isSpotlightActive = MutableLiveData(false)
-
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
