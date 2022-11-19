@@ -496,6 +496,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testBackButtonSpotlight_setToShowOnFirstLogin_notSeen_checkSpotlightIsShown() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -511,6 +512,7 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.exploration_exit_button_spotlight_hint))
         .check(matches(isDisplayed()))
@@ -520,6 +522,7 @@ class ExplorationActivityTest {
   @Test
   fun testBackButtonSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightIsNotShown() {
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -535,6 +538,7 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_target)).perform(click())
     }
 
@@ -553,6 +557,8 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(R.string.exploration_exit_button_spotlight_hint))
         .check(doesNotExist())
     }
@@ -580,7 +586,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
         .check(matches(isDisplayed()))
     }
   }
@@ -626,7 +632,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
         .check(doesNotExist())
     }
   }
@@ -634,6 +640,7 @@ class ExplorationActivityTest {
   @Test
   fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_1stLogin_checkNotShown() {
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -651,7 +658,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
         .check(doesNotExist())
     }
   }
@@ -843,6 +850,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1849,6 +1857,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
+    markAllSpotlightsSeen()
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ENGLISH
@@ -1888,6 +1897,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_hasCorrectContentDescription() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1930,6 +1940,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1965,6 +1976,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2001,6 +2013,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
+    markAllSpotlightsSeen()
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ARABIC

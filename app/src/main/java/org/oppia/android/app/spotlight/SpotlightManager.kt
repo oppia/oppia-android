@@ -27,6 +27,10 @@ interface SpotlightManager {
   fun requestSpotlight(spotlightTarget: SpotlightTarget)
 
   companion object {
+    /**
+     * The tag that should be associated with fragment implementations of [SpotlightManager] so that
+     * it can be used for later retrieval.
+     */
     const val SPOTLIGHT_FRAGMENT_TAG = "SpotlightFragment"
   }
 }

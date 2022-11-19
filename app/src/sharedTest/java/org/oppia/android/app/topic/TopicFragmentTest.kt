@@ -46,6 +46,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -823,7 +825,7 @@ class TopicFragmentTest {
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.TOPIC_LESSON_TAB)
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -831,7 +833,7 @@ class TopicFragmentTest {
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
-    spotlightStateController.markSpotlightViewed(profileId, Spotlight.FeatureCase.FIRST_CHAPTER)
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
     testCoroutineDispatchers.runCurrent()
   }
 

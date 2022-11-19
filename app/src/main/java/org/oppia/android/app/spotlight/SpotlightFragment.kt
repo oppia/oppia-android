@@ -89,7 +89,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     calculateScreenSize()
-    checkIsRTL()
   }
 
   /**
@@ -115,6 +114,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
       requestSpotlight(targetAfterViewFullyDrawn)
     }
+    spotlightTarget.anchor.invalidate()
+    spotlightTarget.anchor.requestLayout()
   }
 
   /**
