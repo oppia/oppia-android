@@ -507,5 +507,6 @@
   <dimen name="topic_fragment_tab_layout_margin_end">64dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
 
-  <dimen name="profile_view_already_added_description_parent_margin_top">16dp</dimen>
+  <dimen name="profile_view_already_added_description_parent_margin_top">20dp</dimen>
+  <dimen name="profile_view_already_added_description_textview_parent_margin_top">10dp</dimen>
 </resources>

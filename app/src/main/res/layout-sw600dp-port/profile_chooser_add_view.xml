@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
         android:orientation="vertical"
-        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
+        app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_textview_parent_margin_top : @dimen/space_0dp}"
         android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
         android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}">
 
