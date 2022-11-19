@@ -42,7 +42,7 @@ class PromotedStoryViewModel(
   /** Starts [ResumeLessonActivity] if a saved exploration is selected
    *  or [ExplorationActivity] if an un-started recommended story is selected.
    */
-  fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
+  fun clickOnPromotedStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
     promotedStoryClickListener.promotedStoryClicked(promotedStory)
   }
 
