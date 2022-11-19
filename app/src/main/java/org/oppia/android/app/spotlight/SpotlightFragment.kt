@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -35,8 +36,8 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.util.LinkedList
-import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /**
  * Fragment to hold the spotlights on elements. This fragments provides a single place for all the
@@ -53,6 +54,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   @Inject
   lateinit var accessibilityService: AccessibilityService
 
+  @Inject
+  lateinit var resourceHandler: AppLanguageResourceHandler
+
   private var targetList = LinkedList<Target>()
   private lateinit var spotlight: Spotlight
   private var screenHeight: Int = 0
@@ -60,7 +64,11 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
   private val isSpotlightActive = MutableLiveData(false)
-  private var isRTL = false
+
+
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  }
 
   private fun calculateScreenSize() {
     val displayMetrics = DisplayMetrics()
@@ -221,13 +229,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
   }
 
-  private fun checkIsRTL() {
-    val locale = Locale.getDefault()
-    val directionality: Byte = Character.getDirectionality(locale.displayName[0].toInt())
-    isRTL = directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
-      directionality == Character.DIRECTIONALITY_RIGHT_TO_LEFT
-  }
-
   private fun getArrowWidth(): Float {
     return this.resources.getDimension(R.dimen.arrow_width)
   }
@@ -247,7 +248,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun calculateAnchorPosition(spotlightTarget: SpotlightTarget): AnchorPosition {
-    Log.d("overlay", "checking anchor position. RTL = $isRTL")
+    Log.d("overlay", "checking anchor position. RTL = $isRtl")
     return if (spotlightTarget.anchorCentreX > getScreenCentreX()) {
       if (spotlightTarget.anchorCentreY > getScreenCentreY()) {
         AnchorPosition.BottomRight
@@ -267,28 +268,28 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     return when (anchorPosition) {
       AnchorPosition.TopLeft -> {
-        if (isRTL) {
+        if (isRtl) {
           configureTopRightOverlay(spotlightTarget)
         } else {
           configureTopLeftOverlay(spotlightTarget)
         }
       }
       AnchorPosition.TopRight -> {
-        if (isRTL) {
+        if (isRtl) {
           configureTopLeftOverlay(spotlightTarget)
         } else {
           configureTopRightOverlay(spotlightTarget)
         }
       }
       AnchorPosition.BottomRight -> {
-        if (isRTL) {
+        if (isRtl) {
           configureBottomLeftOverlay(spotlightTarget)
         } else {
           configureBottomRightOverlay(spotlightTarget)
         }
       }
       AnchorPosition.BottomLeft -> {
-        if (isRTL) {
+        if (isRtl) {
           configureBottomRightOverlay(spotlightTarget)
         } else {
           configureBottomLeftOverlay(spotlightTarget)
@@ -298,9 +299,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private sealed class AnchorPosition {
+    /** The position corresponding to the anchor when it is on the top left of the screen. */
     object TopLeft : AnchorPosition()
+    /** The position corresponding to the anchor when it is on the top right of the screen. */
     object TopRight : AnchorPosition()
+    /** The position corresponding to the anchor when it is on the bottom left of the screen. */
     object BottomLeft : AnchorPosition()
+    /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
   }
 
@@ -326,7 +331,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     val arrowParams = (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    if (isRTL) {
+    if (isRtl) {
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
@@ -359,7 +364,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     val arrowParams = (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    if (isRTL) {
+    if (isRtl) {
       arrowParams.setMargins(
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
         (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
@@ -405,7 +410,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     val arrowParams = (overlayBinding as TopRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    if (isRTL) {
+    if (isRtl) {
       arrowParams.setMargins(
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
@@ -439,7 +444,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     val arrowParams = (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
-    if (isRTL) {
+    if (isRtl) {
       arrowParams.setMargins(
         screenWidth - spotlightTarget.anchorLeft.toInt(),
         (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),

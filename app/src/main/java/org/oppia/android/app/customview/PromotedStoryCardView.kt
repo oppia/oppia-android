@@ -14,6 +14,7 @@ import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
+/** Custom view to hold the promoted story cards. */
 class PromotedStoryCardView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -28,6 +29,7 @@ class PromotedStoryCardView @JvmOverloads constructor(
 
   private var isSpotlit = false
 
+  /** Sets the index at which this custom view is located inside the recycler view. */
   fun setIndex(index: Int) {
     if (!isSpotlit) {
       isSpotlit = true

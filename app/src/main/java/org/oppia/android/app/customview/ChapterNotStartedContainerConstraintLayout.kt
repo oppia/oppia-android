@@ -14,6 +14,7 @@ import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
+/** Custom view to hold the chapter that has not yet been started. */
 class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
@@ -29,6 +30,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
+  /** Set the index of the story of which this custom view is a part of. */
   fun setStoryIndex(index: Int) {
     // Only spotlight the first chapter of the "first" story. We know for sure that for a new user,
     // the first chapter shall be a type of not started chapter view. The index tells which story
