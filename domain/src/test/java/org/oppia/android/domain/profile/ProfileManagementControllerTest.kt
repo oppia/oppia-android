@@ -121,6 +121,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(profile.numberOfLogins).isEqualTo(0)
+    assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
     assertThat(File(getAbsoluteDirPath("0")).isDirectory).isTrue()
   }
 
@@ -257,6 +258,103 @@ class ProfileManagementControllerTest {
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
 
     assertThat(learnerId).isNull()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_logInProfile1_checkStatusForProfile2IsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_2
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_notSeen_returnsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus, PROFILE_ID_1
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_returnsTrue() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_1
+    )
+    assertThat(continueButtonSeenStatus).isTrue()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeenTwice_returnsTrue() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_1
+    )
+    assertThat(continueButtonSeenStatus).isTrue()
+  }
+
+  @Test
+  fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_inDiffProfile_returnsFalse() {
+    setUpTestApplicationComponent()
+    addTestProfiles()
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_1)
+    )
+
+    fetchSuccessfulAsyncValue(
+      profileManagementController::markContinueButtonAnimationSeen,
+      PROFILE_ID_1
+    )
+
+    monitorFactory.ensureDataProviderExecutes(
+      profileManagementController.loginToProfile(PROFILE_ID_2)
+    )
+
+    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
+      profileManagementController::fetchContinueAnimationSeenStatus,
+      PROFILE_ID_2
+    )
+    assertThat(continueButtonSeenStatus).isFalse()
   }
 
   @Test
@@ -843,6 +941,11 @@ class ProfileManagementControllerTest {
 
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
+
+  private fun <T> fetchSuccessfulAsyncValue(
+    block: suspend (profileId: ProfileId) -> T,
+    profileId: ProfileId
+  ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
   private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
     return when (val result = waitForResult()) {

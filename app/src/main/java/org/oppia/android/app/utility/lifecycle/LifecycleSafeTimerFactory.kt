@@ -1,4 +1,4 @@
-package org.oppia.android.app.utility
+package org.oppia.android.app.utility.lifecycle
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

@@ -3,6 +3,7 @@ package org.oppia.android.app.view
 import android.view.View
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.oppia.android.app.customview.ContinueButtonView
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.customview.SegmentedCircularProgressView
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsListView
@@ -27,6 +28,7 @@ interface ViewComponentImpl : ViewComponent {
   }
 
   fun inject(comingSoonTopicsListView: ComingSoonTopicsListView)
+  fun inject(continueButtonView: ContinueButtonView)
   fun inject(selectionInteractionView: SelectionInteractionView)
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
