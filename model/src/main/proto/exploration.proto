@@ -270,6 +270,12 @@ message EphemeralState {
 
   // The identifier of the current session that'd be used for analytics logging.
   string session_id = 9;
+
+  // Determines if the continue button animation should be shown or not.
+  bool show_continue_button_animation = 10;
+
+  // The timestamp at which continue buttons (both interaction & navigation) should start animating.
+  int64 continue_button_animation_timestamp_ms = 11;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
