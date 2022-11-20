@@ -64,19 +64,5 @@
       android:textSize="14dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-      android:id="@+id/close_spotlight"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="10dp"
-      android:layout_marginTop="50dp"
-      android:text="dismiss"
-      android:textColor="#FFFFFF"
-      android:textSize="20sp"
-      android:textStyle="bold"
-      android:visibility="invisible"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
