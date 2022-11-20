@@ -110,7 +110,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
@@ -138,6 +137,7 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
 import org.oppia.android.testing.lightweightcheckpointing.RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -225,6 +225,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     Intents.init()
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -496,6 +497,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testBackButtonSpotlight_setToShowOnFirstLogin_notSeen_checkSpotlightIsShown() {
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -511,6 +513,7 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.exploration_exit_button_spotlight_hint))
         .check(matches(isDisplayed()))
@@ -520,6 +523,7 @@ class ExplorationActivityTest {
   @Test
   fun testBackButtonSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightIsNotShown() {
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -535,6 +539,7 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_target)).perform(click())
     }
 
@@ -553,6 +558,8 @@ class ExplorationActivityTest {
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0
       )
+      testCoroutineDispatchers.runCurrent()
+
       onView(withText(R.string.exploration_exit_button_spotlight_hint))
         .check(doesNotExist())
     }
@@ -580,7 +587,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
         .check(matches(isDisplayed()))
     }
   }
@@ -626,7 +633,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
         .check(doesNotExist())
     }
   }
@@ -634,6 +641,7 @@ class ExplorationActivityTest {
   @Test
   fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_1stLogin_checkNotShown() {
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
+    setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -651,7 +659,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.voiceover_icon_spotlight_hint))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
         .check(doesNotExist())
     }
   }
@@ -843,6 +851,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testAudioCellular_ratioExp_audioIcon_clickNegative_audioFragmentIsHidden() {
+    markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -1073,7 +1082,7 @@ class ExplorationActivityTest {
           1
         )
       )
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(
         allOf(
@@ -1094,7 +1103,7 @@ class ExplorationActivityTest {
           1
         )
       )
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
       onView(
         allOf(
           withId(R.id.audio_language_icon),
@@ -1128,11 +1137,11 @@ class ExplorationActivityTest {
     ).use {
       waitForTheView(withText("What is a Ratio?"))
       // Clicks continue until we reach the first interaction.
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
-      onView(withId(R.id.continue_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      onView(withId(R.id.continue_interaction_button)).perform(click())
 
       onView(withId(R.id.action_audio_player)).perform(click())
       onView(withId(R.id.text_input_interaction_view)).perform(
@@ -1849,6 +1858,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_englishContentLang_showHint_explanationInEnglish() {
+    markAllSpotlightsSeen()
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ENGLISH
@@ -1888,6 +1898,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_hasCorrectContentDescription() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1930,6 +1941,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_checkExpandListIconWithScreenReader_isClickable() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -1965,6 +1977,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testExpActivity_showHint_checkExpandListIconWithoutScreenReader_isNotClickable() {
+    markAllSpotlightsSeen()
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
         internalProfileId,
@@ -2001,6 +2014,7 @@ class ExplorationActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testExpActivity_profileWithArabicContentLang_showHint_explanationInArabic() {
+    markAllSpotlightsSeen()
     updateContentLanguage(
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       OppiaLanguage.ARABIC
@@ -2270,7 +2284,7 @@ class ExplorationActivityTest {
 
   private fun clickContinueButton() {
     scrollToViewType(StateItemViewModel.ViewType.CONTINUE_INTERACTION)
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -2383,7 +2397,7 @@ class ExplorationActivityTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

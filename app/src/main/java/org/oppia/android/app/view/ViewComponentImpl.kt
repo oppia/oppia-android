@@ -4,6 +4,7 @@ import android.view.View
 import dagger.BindsInstance
 import dagger.Subcomponent
 import org.oppia.android.app.customview.ChapterNotStartedContainerConstraintLayout
+import org.oppia.android.app.customview.ContinueButtonView
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.customview.PromotedStoryCardView
 import org.oppia.android.app.customview.SegmentedCircularProgressView
@@ -29,6 +30,7 @@ interface ViewComponentImpl : ViewComponent {
   }
 
   fun inject(comingSoonTopicsListView: ComingSoonTopicsListView)
+  fun inject(continueButtonView: ContinueButtonView)
   fun inject(selectionInteractionView: SelectionInteractionView)
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)

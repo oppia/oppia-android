@@ -1,9 +1,6 @@
 package org.oppia.android.app.spotlight
 
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.BackgroundColorSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -12,7 +9,6 @@ import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
@@ -63,8 +59,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private var screenWidth: Int = 0
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
-  private val isSpotlightActive = MutableLiveData(false)
-
+  private var isSpotlightActive = false
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
@@ -75,11 +70,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     screenHeight = displayMetrics.heightPixels
     screenWidth = displayMetrics.widthPixels
-  }
-
-  /** LiveData to monitor spotlight activity status. */
-  fun getSpotlightStatusLiveData(): MutableLiveData<Boolean> {
-    return isSpotlightActive
   }
 
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
@@ -98,7 +88,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
    * we must know the [SpotlightTarget]'s anchor's size and position. For a view that is laid out
    * after an animation, we must wait until the final size and positions of the anchor view are
    * measured, which can be achieved by using doOnPreDraw. Refer:
-   * https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2
+   * (https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2)
    *
    * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
    */
@@ -115,15 +105,17 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
       requestSpotlight(targetAfterViewFullyDrawn)
     }
+    spotlightTarget.anchor.invalidate()
+    spotlightTarget.anchor.requestLayout()
   }
 
   /**
    * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
-   * hasn't been shown before in a FIFO buffer. This API can ensure proper spotlighting of a [SpotlightTarget]
-   * when it is laid out late due to a data provider call. It cannot ensure the same if the view has to be
-   * spotlight immediately after an animation. It also cannot spotlight targets which are a part of a
-   * recycler view which are laid out after a data provider call. If TalkBack is turned on, no spotlight shall
-   * be shown.
+   * hasn't been shown before in a FIFO buffer. This API can ensure proper spotlighting of a
+   * [SpotlightTarget] when it is laid out late due to a data provider call. It cannot ensure the
+   * same if the view has to be spotlight immediately after an animation. It also cannot spotlight
+   * targets which are a part of a recycler view which are laid out after a data provider call. If
+   * TalkBack is turned on, no spotlight shall be shown.
    *
    * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
    */
@@ -182,9 +174,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       .build(spotlightTarget.anchor)
 
     targetList.add(target)
-    if (!isSpotlightActive.value!!) {
-      startSpotlight()
-    }
+    if (!isSpotlightActive) startSpotlight()
   }
 
   private fun startSpotlight() {
@@ -196,11 +186,11 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
-          isSpotlightActive.value = true
+          isSpotlightActive = true
         }
 
         override fun onEnded() {
-          isSpotlightActive.value = false
+          isSpotlightActive = false
           startSpotlight()
         }
       })
@@ -308,25 +298,19 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     object BottomRight : AnchorPosition()
   }
 
-  override fun clickOnDismiss() {
-    spotlight.finish()
-  }
-
   override fun clickOnNextTip() {
     spotlight.next()
   }
 
   private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "bottom left overlay")
-
     overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as BottomLeftOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as BottomLeftOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
+
 
     val arrowParams = (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -351,15 +335,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "bottom right overlay")
     overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as BottomRightOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as BottomRightOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -384,28 +366,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     return (overlayBinding as BottomRightOverlayBinding).root
   }
 
-  private fun getSpannableHint(hint: String): SpannableString {
-    val spannable = SpannableString(hint)
-    spannable.setSpan(
-      BackgroundColorSpan(resources.getColor(R.color.spotlight_hint_background)),
-      0, // start
-      spannable.length, // end
-      Spannable.SPAN_INCLUSIVE_INCLUSIVE
-    )
-    return spannable
-  }
-
   private fun configureTopRightOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "top right overlay")
-
     overlayBinding = TopRightOverlayBinding.inflate(layoutInflater)
     (overlayBinding as TopRightOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as TopRightOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -430,16 +398,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureTopLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "top left overlay")
-
     overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as TopLeftOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as TopLeftOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
