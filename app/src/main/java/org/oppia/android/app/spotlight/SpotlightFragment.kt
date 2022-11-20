@@ -262,7 +262,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as BottomLeftOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRtl) {
       arrowParams.setMargins(
@@ -279,7 +279,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
-    (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as BottomLeftOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
     return (overlayBinding as BottomLeftOverlayBinding).root
   }
 
@@ -291,7 +291,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as BottomRightOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRtl) {
       arrowParams.setMargins(
@@ -309,7 +309,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
-    (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as BottomRightOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
     return (overlayBinding as BottomRightOverlayBinding).root
   }
 
@@ -321,7 +321,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as TopRightOverlayBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as TopRightOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRtl) {
       arrowParams.setMargins(
@@ -338,7 +338,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
-    (overlayBinding as TopRightOverlayBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as TopRightOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
     return (overlayBinding as TopRightOverlayBinding).root
   }
 
@@ -350,7 +350,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams
+    val arrowParams = (overlayBinding as TopLeftOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
     if (isRtl) {
       arrowParams.setMargins(
@@ -367,7 +367,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       )
     }
-    (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams = arrowParams
+    (overlayBinding as TopLeftOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
     return (overlayBinding as TopLeftOverlayBinding).root
   }
 
@@ -388,5 +388,5 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     object BottomLeft : AnchorPosition()
     /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
-  }s
+  }
 }

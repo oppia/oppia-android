@@ -92,6 +92,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
+  private var forceAnnouncedForHintsBar = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -512,13 +513,18 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
-            // The forced announcement should be called
-            accessibilityService.announceForAccessibilityForView(
-              binding.hintsAndSolutionFragmentContainer,
-              resourceHandler.getStringInLocale(
-                R.string.state_fragment_hint_bar_forced_announcement_text
+            // The forced announcement should be called after 5 seconds after the hints bar appears
+            // otherwise it might interrupt with the submit button's content description during 
+            // Talkback.
+            if (!forceAnnouncedForHintsBar) {
+              forceAnnouncedForHintsBar = true
+              accessibilityService.announceForAccessibilityForView(
+                binding.hintsAndSolutionFragmentContainer,
+                resourceHandler.getStringInLocale(
+                  R.string.state_fragment_hint_bar_forced_announcement_text
+                )
               )
-            )
+            }
           }
         }
       }

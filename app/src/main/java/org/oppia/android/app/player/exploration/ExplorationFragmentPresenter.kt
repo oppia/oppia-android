@@ -82,7 +82,6 @@ class ExplorationFragmentPresenter @Inject constructor(
           fragment.requireActivity().recreate()
         } else showSpotlights(result.value.numberOfLogins)
       }
-     }
     }
   }
 
