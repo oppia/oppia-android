@@ -1,9 +1,6 @@
 package org.oppia.android.app.spotlight
 
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.BackgroundColorSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -12,7 +9,6 @@ import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
@@ -63,8 +59,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   private var screenWidth: Int = 0
   private lateinit var overlayBinding: Any
   private var internalProfileId: Int = -1
-  private val isSpotlightActive = MutableLiveData(false)
-
+  private val isSpotlightActive = false
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
@@ -75,11 +70,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
     screenHeight = displayMetrics.heightPixels
     screenWidth = displayMetrics.widthPixels
-  }
-
-  /** LiveData to monitor spotlight activity status. */
-  fun getSpotlightStatusLiveData(): MutableLiveData<Boolean> {
-    return isSpotlightActive
   }
 
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
@@ -183,9 +173,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       .build(spotlightTarget.anchor)
 
     targetList.add(target)
-    if (!isSpotlightActive.value!!) {
-      startSpotlight()
-    }
+    if (!isSpotlightActive) startSpotlight()
   }
 
   private fun startSpotlight() {
@@ -197,11 +185,11 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
-          isSpotlightActive.value = true
+          isSpotlightActive = true
         }
 
         override fun onEnded() {
-          isSpotlightActive.value = false
+          isSpotlightActive = false
           startSpotlight()
         }
       })
@@ -318,16 +306,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "bottom left overlay")
-
     overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as BottomLeftOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as BottomLeftOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
+
 
     val arrowParams = (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -352,15 +338,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "bottom right overlay")
     overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as BottomRightOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as BottomRightOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -385,28 +369,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     return (overlayBinding as BottomRightOverlayBinding).root
   }
 
-  private fun getSpannableHint(hint: String): SpannableString {
-    val spannable = SpannableString(hint)
-    spannable.setSpan(
-      BackgroundColorSpan(resources.getColor(R.color.spotlight_hint_background)),
-      0, // start
-      spannable.length, // end
-      Spannable.SPAN_INCLUSIVE_INCLUSIVE
-    )
-    return spannable
-  }
-
   private fun configureTopRightOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "top right overlay")
-
     overlayBinding = TopRightOverlayBinding.inflate(layoutInflater)
     (overlayBinding as TopRightOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as TopRightOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopRightOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -431,16 +401,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureTopLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    Log.d("overlay", "top left overlay")
-
     overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater)
     (overlayBinding as TopLeftOverlayBinding).let {
       it.lifecycleOwner = this
       it.listener = this
     }
 
-    (overlayBinding as TopLeftOverlayBinding).customText.text =
-      getSpannableHint(spotlightTarget.hint)
+    (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams
       as ViewGroup.MarginLayoutParams

@@ -15,28 +15,33 @@
     android:id="@+id/overlayConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
+    android:background="@drawable/transparent_background"
     android:clickable="true"
-    android:background="@drawable/transparent_background">
+    android:focusable="true">
 
     <ImageView
       android:id="@+id/arrow"
       android:layout_width="@dimen/arrow_width"
       android:layout_height="@dimen/arrow_height"
       android:rotationX="180"
-      app:srcCompat="@drawable/ic_rounded_arrow_up_right"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_rounded_arrow_up_right" />
 
     <TextView
       android:id="@+id/custom_text"
       style="@style/TextViewStart"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
       android:layout_marginEnd="10dp"
+      android:background="@drawable/spotlight_overlay_hint_background"
+      android:paddingStart="8dp"
+      android:paddingTop="4dp"
+      android:paddingEnd="4dp"
+      android:paddingBottom="4dp"
       android:text="this is a custom text"
-      android:textSize="24dp"
-      android:textStyle="bold"
+      android:textSize="20dp"
       app:layout_constraintBottom_toTopOf="@id/arrow"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@+id/arrow" />
@@ -46,18 +51,18 @@
       style="@style/StateButtonActive"
       android:layout_width="160dp"
       android:layout_height="48dp"
-      android:paddingTop="8dp"
-      android:paddingBottom="8dp"
-      android:textSize="14dp"
-      android:gravity="center"
-      android:focusable="true"
-      android:clickable="true"
-      android:background="@color/color_def_dark_blue"
       android:layout_marginTop="50dp"
       android:layout_marginEnd="10dp"
+      android:background="@color/color_def_dark_blue"
+      android:clickable="true"
+      android:focusable="true"
+      android:gravity="center"
       android:onClick="@{(v) -> listener.clickOnNextTip()}"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
       android:text="Done"
       android:textColor="#FFFFFF"
+      android:textSize="14dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,10 +73,10 @@
       android:layout_marginStart="10dp"
       android:layout_marginTop="50dp"
       android:text="dismiss"
-      android:visibility="invisible"
       android:textColor="#FFFFFF"
       android:textSize="20sp"
       android:textStyle="bold"
+      android:visibility="invisible"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
