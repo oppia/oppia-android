@@ -64,7 +64,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
-  // since this fragment does not have any view to inflate yet, all the tasks should be done here.
+  // Since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)

@@ -73,17 +73,16 @@ class ExplorationFragmentPresenter @Inject constructor(
       fragment
     ) { result ->
       val readingTextSize = retrieveArguments().readingTextSize
-      if (result is AsyncResult.Success && result.value.readingTextSize != readingTextSize) {
-        selectNewReadingTextSize(result.value.readingTextSize)
+      if (result is AsyncResult.Success) {
+        if (result.value.readingTextSize != readingTextSize) {
 
-        // Since text views are based on sp for sizing, the activity needs to be recreated so that
-        // sp can be correctly recomputed.
-        fragment.requireActivity().recreate()
-      } else {
-        if (result is AsyncResult.Success) {
-          showSpotlights(result.value.numberOfLogins)
-        }
+          // Since text views are based on sp for sizing, the activity needs to be recreated so that
+          // sp can be correctly recomputed.
+          selectNewReadingTextSize(result.value.readingTextSize)
+          fragment.requireActivity().recreate()
+        } else showSpotlights(result.value.numberOfLogins)
       }
+     }
     }
   }
 
@@ -92,7 +91,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       fragment.requireActivity().findViewById<View>(R.id.exploration_toolbar) as Toolbar
     explorationToolbar.forEach {
       if (it is ImageButton) {
-        // this toolbar contains only one image button, which is the back navigation icon
+        // This toolbar contains only one image button, which is the back navigation icon.
         val backButtonSpotlightTarget = SpotlightTarget(
           it,
           resourceHandler.getStringInLocale(R.string.exploration_exit_button_spotlight_hint),

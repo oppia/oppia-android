@@ -31,16 +31,16 @@ class PromotedStoryCardView @JvmOverloads constructor(
 
   /** Sets the index at which this custom view is located inside the recycler view. */
   fun setIndex(index: Int) {
-    if (!isSpotlit) {
+    // This view can get attached multiple times and we must make sure that the spotlight is
+    // requested only once. Only spotlight the item at the first index of the recycler view.
+    if (!isSpotlit && index == 0) {
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
         resourceHandler.getStringInLocale(R.string.promoted_story_spotlight_hint),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
-      if (index == 0) {
-        checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
-      }
+      checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
     }
   }
 

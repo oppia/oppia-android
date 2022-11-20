@@ -73,7 +73,7 @@ class OnboardingFragmentPresenter @Inject constructor(
       SpotlightShape.Circle,
       Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
     )
-    getSpotlightFragment().requestSpotlightViewWithDelayedLayout(nextSpotlightTarget)
+    checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(nextSpotlightTarget)
   }
 
   private fun setUpViewPager() {

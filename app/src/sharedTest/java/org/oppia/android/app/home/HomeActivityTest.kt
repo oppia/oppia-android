@@ -352,7 +352,7 @@ class HomeActivityTest {
       testCoroutineDispatchers.runCurrent()
     }
 
-    // re-launch the activity
+    // Re-launch the activity.
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())

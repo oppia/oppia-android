@@ -567,7 +567,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_notSeen_checkSpotlightShown() {
-    logIntoUserThrice()
+    logIntoAdminThrice()
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
@@ -594,7 +594,7 @@ class ExplorationActivityTest {
 
   @Test
   fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_alreadySeen_checkSpotlightNotShown() {
-    logIntoUserThrice()
+    logIntoAdminThrice()
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
@@ -2187,7 +2187,7 @@ class ExplorationActivityTest {
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON)
   }
 
-  private fun logIntoUserThrice() {
+  private fun logIntoAdminThrice() {
     monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
     monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
     monitorFactory.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())

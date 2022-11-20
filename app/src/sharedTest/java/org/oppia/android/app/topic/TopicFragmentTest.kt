@@ -120,6 +120,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.Spotlight
 
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
@@ -189,9 +190,9 @@ class TopicFragmentTest {
   @Test
   fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent(false)
-    markFirstChapterSpotlightSeen()
+    markSpotlightSeen(FIRST_CHAPTER)
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
-      // mark lessons spotlight seen
+      // Mark lessons spotlight seen.
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_target)).perform(click())
     }
@@ -218,7 +219,7 @@ class TopicFragmentTest {
   @Test
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
     initializeApplicationComponent(false)
-    markLessonsTabSpotlightSeen()
+    markSpotlightSeen(TOPIC_LESSON_TAB)
     activityTestRule.launchActivity(
       createTopicPlayStoryActivityIntent(
         internalProfileId,
@@ -240,7 +241,7 @@ class TopicFragmentTest {
         FRACTIONS_STORY_ID_0
       )
     ).use {
-      // mark first chapter spotlight seen
+      // Mark first chapter spotlight seen.
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_target)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -262,8 +263,8 @@ class TopicFragmentTest {
   @Test
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkShown() {
     initializeApplicationComponent(false)
-    markFirstChapterSpotlightSeen()
-    markLessonsTabSpotlightSeen()
+    markSpotlightSeen(FIRST_CHAPTER)
+    markSpotlightSeen(TOPIC_LESSON_TAB)
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(profileId, false)
@@ -281,8 +282,8 @@ class TopicFragmentTest {
   @Test
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notComplete_checkNotShown() {
     initializeApplicationComponent(false)
-    markLessonsTabSpotlightSeen()
-    markFirstChapterSpotlightSeen()
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    markSpotlightSeen(FIRST_CHAPTER)
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
     ).use {
@@ -294,8 +295,8 @@ class TopicFragmentTest {
   @Test
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkNotShown() {
     initializeApplicationComponent(false)
-    markLessonsTabSpotlightSeen()
-    markFirstChapterSpotlightSeen()
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    markSpotlightSeen(FIRST_CHAPTER)
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(profileId, false)
@@ -305,7 +306,7 @@ class TopicFragmentTest {
       createTopicPlayStoryActivityIntent(internalProfileId, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0)
     ).use {
       testCoroutineDispatchers.runCurrent()
-      // mark revision tab spotlight seen
+      // Mark revision tab spotlight seen.
       onView(withId(R.id.close_target)).perform(click())
     }
 
@@ -808,32 +809,16 @@ class TopicFragmentTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    markLessonsTabSpotlightSeen()
-    markFirstChapterSpotlightSeen()
-    markRevisionTabSpotlightSeen()
+    markSpotlightSeen(TOPIC_LESSON_TAB)
+    markSpotlightSeen(FIRST_CHAPTER)
+    markSpotlightSeen(TOPIC_REVISION_TAB)
   }
 
-  private fun markRevisionTabSpotlightSeen() {
+  private fun markSpotlightSeen(feature: Spotlight.FeatureCase) {
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
-    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun markLessonsTabSpotlightSeen() {
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
-    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun markFirstChapterSpotlightSeen() {
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
-    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    spotlightStateController.markSpotlightViewed(profileId, feature)
     testCoroutineDispatchers.runCurrent()
   }
 

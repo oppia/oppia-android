@@ -9,7 +9,7 @@
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/overlayConstraintLayout"
+    android:id="@+id/spotlight_overlay_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/transparent_background"
@@ -17,7 +17,7 @@
     android:focusable="true">
 
     <ImageView
-      android:id="@+id/arrow"
+      android:id="@+id/spotlight_overlay_arrow"
       android:layout_width="@dimen/arrow_width"
       android:layout_height="@dimen/arrow_height"
       app:layout_constraintStart_toStartOf="parent"
@@ -38,8 +38,8 @@
       android:paddingBottom="4dp"
       android:textSize="20dp"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@id/arrow"
-      app:layout_constraintTop_toBottomOf="@id/arrow" />
+      app:layout_constraintStart_toStartOf="@id/spotlight_overlay_arrow"
+      app:layout_constraintTop_toBottomOf="@id/spotlight_overlay_arrow" />
 
     <TextView
       android:id="@+id/close_target"
