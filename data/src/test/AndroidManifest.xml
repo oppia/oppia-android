@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.android.data">
   <uses-sdk android:minSdkVersion="19"
-    android:targetSdkVersion="30" />
+    android:maxSdkVersion="30" />
 </manifest>
