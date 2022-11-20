@@ -185,6 +185,7 @@ interface ActivityComponentImpl :
       StateAssemblerPaddingBindingAdaptersTestActivity
   )
 
+  fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
   fun inject(stateFragmentTestActivity: StateFragmentTestActivity)
   fun inject(storyActivity: StoryActivity)
   fun inject(testFontScaleConfigurationUtilActivity: TestFontScaleConfigurationUtilActivity)
@@ -198,5 +199,4 @@ interface ActivityComponentImpl :
   fun inject(viewEventLogsActivity: ViewEventLogsActivity)
   fun inject(viewEventLogsTestActivity: ViewEventLogsTestActivity)
   fun inject(walkthroughActivity: WalkthroughActivity)
-  fun inject(spotlightFragmentTestActivity: SpotlightFragmentTestActivity)
 }

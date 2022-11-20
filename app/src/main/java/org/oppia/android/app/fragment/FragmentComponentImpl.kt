@@ -161,6 +161,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)
+  fun inject(spotlightFragment: SpotlightFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
   fun inject(storyFragment: StoryFragment)
@@ -176,5 +177,4 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)
-  fun inject(spotlightFragment: SpotlightFragment)
 }

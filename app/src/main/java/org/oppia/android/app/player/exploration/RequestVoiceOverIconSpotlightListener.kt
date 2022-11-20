@@ -1,7 +1,7 @@
 package org.oppia.android.app.player.exploration
 
-/** Interface to request voice-over icon spotlight. */
+/** Listener for scenarios when the user should be shown a spotlight for playing voiceovers. */
 interface RequestVoiceOverIconSpotlightListener {
-  /** Requests the spotlight fragment to show voice-over icon spotlight. */
+  /** Requests to show a voice-over icon spotlight. */
   fun requestVoiceOverIconSpotlight(numberOfLogins: Int)
 }

@@ -8,7 +8,7 @@ import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
-/** Test Activity used for testing [SpotlightFragment]. */
+/** Test activity used for testing [SpotlightFragment]. */
 class SpotlightFragmentTestActivity : TestActivity() {
 
   @Inject

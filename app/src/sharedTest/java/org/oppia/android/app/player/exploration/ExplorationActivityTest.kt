@@ -587,7 +587,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
+      onView(withText(context.getString(R.string.voiceover_icon_spotlight_hint, R.string.app_name)))
         .check(matches(isDisplayed()))
     }
   }
@@ -633,7 +633,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
+      onView(withText(context.getString(R.string.voiceover_icon_spotlight_hint, R.string.app_name)))
         .check(doesNotExist())
     }
   }

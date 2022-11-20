@@ -29,14 +29,14 @@ interface ViewComponentImpl : ViewComponent {
     override fun build(): ViewComponentImpl
   }
 
+  fun inject(chapterNotStartedContainerConstraintLayout: ChapterNotStartedContainerConstraintLayout)
   fun inject(comingSoonTopicsListView: ComingSoonTopicsListView)
   fun inject(continueButtonView: ContinueButtonView)
   fun inject(selectionInteractionView: SelectionInteractionView)
   fun inject(dragDropSortInteractionView: DragDropSortInteractionView)
   fun inject(imageRegionSelectionInteractionView: ImageRegionSelectionInteractionView)
   fun inject(lessonThumbnailImageView: LessonThumbnailImageView)
+  fun inject(promotedStoryCardView: PromotedStoryCardView)
   fun inject(promotedStoryListView: PromotedStoryListView)
   fun inject(segmentedCircularProgressView: SegmentedCircularProgressView)
-  fun inject(promotedStoryCardView: PromotedStoryCardView)
-  fun inject(chapterNotStartedContainerConstraintLayout: ChapterNotStartedContainerConstraintLayout)
 }

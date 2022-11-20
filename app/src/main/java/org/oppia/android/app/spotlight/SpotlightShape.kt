@@ -2,9 +2,9 @@ package org.oppia.android.app.spotlight
 
 /** The shape of the overlay screen cutout surrounding the spotlit view. */
 sealed class SpotlightShape {
-  /** Circle shape for the spotlight highlight. */
+  /** Represents a circular spotlight highlight region. */
   object Circle : SpotlightShape()
 
-  /** Rounded rectangle shape for the spotlight highlight. */
+  /** Represents a rounded rectangular spotlight highlight region. */
   object RoundedRectangle : SpotlightShape()
 }
