@@ -512,6 +512,7 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            // The forced announcement should be called
             accessibilityService.announceForAccessibilityForView(
               binding.hintsAndSolutionFragmentContainer,
               resourceHandler.getStringInLocale(
