@@ -64,14 +64,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
   }
 
-  private fun calculateScreenSize() {
-    val displayMetrics = DisplayMetrics()
-    activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-
-    screenHeight = displayMetrics.heightPixels
-    screenWidth = displayMetrics.widthPixels
-  }
-
   // since this fragment does not have any view to inflate yet, all the tasks should be done here.
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -128,6 +120,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
       }
     )
+  }
+
+  override fun clickOnDone() {
+    spotlight.next()
   }
 
   private fun createTarget(spotlightTarget: SpotlightTarget) {
@@ -225,7 +221,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
   private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View {
     val anchorPosition = calculateAnchorPosition(spotlightTarget)
-    Log.d("overlay", anchorPosition.toString())
 
     return when (anchorPosition) {
       AnchorPosition.TopLeft -> {
@@ -257,21 +252,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
       }
     }
-  }
-
-  private sealed class AnchorPosition {
-    /** The position corresponding to the anchor when it is on the top left of the screen. */
-    object TopLeft : AnchorPosition()
-    /** The position corresponding to the anchor when it is on the top right of the screen. */
-    object TopRight : AnchorPosition()
-    /** The position corresponding to the anchor when it is on the bottom left of the screen. */
-    object BottomLeft : AnchorPosition()
-    /** The position corresponding to the anchor when it is on the bottom right of the screen. */
-    object BottomRight : AnchorPosition()
-  }
-
-  override fun clickOnNextTip() {
-    spotlight.next()
   }
 
   private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
@@ -390,4 +370,23 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams = arrowParams
     return (overlayBinding as TopLeftOverlayBinding).root
   }
+
+  private fun calculateScreenSize() {
+    val displayMetrics = DisplayMetrics()
+    activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+    screenHeight = displayMetrics.heightPixels
+    screenWidth = displayMetrics.widthPixels
+  }
+
+  private sealed class AnchorPosition {
+    /** The position corresponding to the anchor when it is on the top left of the screen. */
+    object TopLeft : AnchorPosition()
+    /** The position corresponding to the anchor when it is on the top right of the screen. */
+    object TopRight : AnchorPosition()
+    /** The position corresponding to the anchor when it is on the bottom left of the screen. */
+    object BottomLeft : AnchorPosition()
+    /** The position corresponding to the anchor when it is on the bottom right of the screen. */
+    object BottomRight : AnchorPosition()
+  }s
 }

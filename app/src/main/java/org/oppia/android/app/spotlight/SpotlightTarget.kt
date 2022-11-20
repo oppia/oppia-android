@@ -28,7 +28,7 @@ data class SpotlightTarget(
   val anchorWidth: Int = calculateAnchorWidth()
   /** The position of the vertical centre of the anchor. */
   val anchorCentreX = calculateAnchorCentreX()
-  /** The margin of the horizontal anchor. */
+  /** The position of the horizontal centre of the anchor. */
   val anchorCentreY = calculateAnchorCentreY()
 
   init {

@@ -50,7 +50,7 @@
       android:layout_marginBottom="50dp"
       android:background="@color/color_def_dark_blue"
       android:gravity="center"
-      android:onClick="@{(v) -> listener.clickOnNextTip()}"
+      android:onClick="@{(v) -> listener.clickOnDone()}"
       android:paddingTop="50dp"
       android:paddingBottom="8dp"
       android:text="Done"

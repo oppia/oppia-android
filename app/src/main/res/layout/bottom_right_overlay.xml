@@ -53,7 +53,7 @@
       android:clickable="true"
       android:focusable="true"
       android:gravity="center"
-      android:onClick="@{(v) -> listener.clickOnNextTip()}"
+      android:onClick="@{(v) -> listener.clickOnDone()}"
       android:paddingTop="8dp"
       android:paddingBottom="8dp"
       android:text="Done"
