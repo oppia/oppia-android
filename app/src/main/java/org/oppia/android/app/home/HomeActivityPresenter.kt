@@ -69,6 +69,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
   private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentById(
       R.id.home_spotlight_fragment_placeholder
-    ) as SpotlightFragment?
+    ) as? SpotlightFragment
   }
 }

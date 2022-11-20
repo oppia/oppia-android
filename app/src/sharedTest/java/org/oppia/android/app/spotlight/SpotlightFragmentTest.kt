@@ -108,9 +108,6 @@ class SpotlightFragmentTest {
   @Inject
   lateinit var context: Context
 
-//  @get:Rule
-//  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
@@ -123,15 +120,6 @@ class SpotlightFragmentTest {
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
-
-//  @get:Rule
-//  var activityScenarioRule: ActivityScenarioRule<SpotlightFragmentTestActivity> =
-//    ActivityScenarioRule(
-//      Intent(
-//        ApplicationProvider.getApplicationContext(),
-//        SpotlightFragmentTestActivity::class.java
-//      )
-//    )
 
   private val sampleSpotlightText = "Sample spotlight hint text"
   private val sampleSecondSpotlightText = "Sample hint text for second spotlight"

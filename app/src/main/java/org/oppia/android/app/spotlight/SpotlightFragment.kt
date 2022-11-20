@@ -36,7 +36,7 @@ import java.util.LinkedList
 import javax.inject.Inject
 
 /**
- * Fragment to hold the spotlights on elements. This fragments provides a single place for all the
+ * Fragment to hold spotlights on elements. This fragment provides a single place for all the
  * spotlight interactions, and handles lifecycle related functionality for spotlights, such as
  * surviving orientation changes and marking spotlights as seen.
  */
@@ -76,23 +76,15 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-
     internalProfileId = arguments?.getInt(PROFILE_ID_ARGUMENT_KEY) ?: -1
     calculateScreenSize()
   }
 
-  /**
-   * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
-   * [SpotlightTarget] hasn't been shown before in a FIFO buffer. This API can ensure proper
-   * spotlighting of a which is laid out after an animation. For the spotlights to work correctly,
-   * we must know the [SpotlightTarget]'s anchor's size and position. For a view that is laid out
-   * after an animation, we must wait until the final size and positions of the anchor view are
-   * measured, which can be achieved by using doOnPreDraw. Refer:
-   * https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2
-   *
-   * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
-   */
   override fun requestSpotlightViewWithDelayedLayout(spotlightTarget: SpotlightTarget) {
+    // For the spotlights to work correctly, we must know the [SpotlightTarget]'s anchor's size and
+    // position. For a view that is laid out after an animation, we must wait until the final size
+    // and positions of the anchor view are measured, which can be achieved by using doOnPreDraw:
+    // https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2
     spotlightTarget.anchor.doOnPreDraw {
       if (it.visibility != View.VISIBLE) {
         return@doOnPreDraw
@@ -109,20 +101,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     spotlightTarget.anchor.requestLayout()
   }
 
-  /**
-   * Requests a spotlight to be shown on the [SpotlightTarget]. The spotlight is enqueued if it
-   * hasn't been shown before in a FIFO buffer. This API can ensure proper spotlighting of a
-   * [SpotlightTarget] when it is laid out late due to a data provider call. It cannot ensure the
-   * same if the view has to be spotlit immediately after an animation. It also cannot spotlight
-   * targets which are a part of a recycler view which are laid out after a data provider call. If
-   * TalkBack is turned on, no spotlight shall be shown.
-   *
-   * @param spotlightTarget The [SpotlightTarget] for which the spotlight is requested
-   */
   override fun requestSpotlight(spotlightTarget: SpotlightTarget) {
-
+    // When Talkback is turned on, do not show spotlights since they are visual tools and can
+    // potentially make the app experience difficult for a non-sighted user.
     if (accessibilityService.isScreenReaderEnabled()) return
-
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
@@ -133,29 +115,22 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         spotlightTarget.feature
       ).toLiveData()
 
-    // use activity as observer because this fragment's view hasn't been created yet.
+    // Use activity as observer because this fragment's view hasn't been created yet.
     featureViewStateLiveData.observe(
       activity,
       object : Observer<AsyncResult<SpotlightViewState>> {
         override fun onChanged(it: AsyncResult<SpotlightViewState>?) {
           if (it is AsyncResult.Success) {
-            val viewState = (it.value)
-            if (viewState == SpotlightViewState.SPOTLIGHT_SEEN) {
-              return
-            } else if (viewState == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
-              createTarget(spotlightTarget)
-              featureViewStateLiveData.removeObserver(this)
-            }
+            if (it.value == SpotlightViewState.SPOTLIGHT_SEEN) return
+            createTarget(spotlightTarget)
+            featureViewStateLiveData.removeObserver(this)
           }
         }
       }
     )
   }
 
-  private fun createTarget(
-    spotlightTarget: SpotlightTarget
-  ) {
-
+  private fun createTarget(spotlightTarget: SpotlightTarget) {
     val target = Target.Builder()
       .setShape(getShape(spotlightTarget))
       .setOverlay(requestOverlayResource(spotlightTarget))
@@ -210,9 +185,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       }
       SpotlightShape.Circle -> {
         return if (spotlightTarget.anchorHeight > spotlightTarget.anchorWidth) {
-          Circle((spotlightTarget.anchorHeight / 2).toFloat())
+          Circle((spotlightTarget.anchorHeight / 2.0f))
         } else {
-          Circle((spotlightTarget.anchorWidth / 2).toFloat())
+          Circle((spotlightTarget.anchorWidth / 2.0f))
         }
       }
     }
@@ -227,17 +202,14 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun getScreenCentreY(): Int {
-    Log.d("overlay screenCentre Y", (screenHeight / 2).toString())
     return screenHeight / 2
   }
 
   private fun getScreenCentreX(): Int {
-    Log.d("overlay screenCentre X", (screenWidth / 2).toString())
     return screenWidth / 2
   }
 
   private fun calculateAnchorPosition(spotlightTarget: SpotlightTarget): AnchorPosition {
-    Log.d("overlay", "checking anchor position. RTL = $isRtl")
     return if (spotlightTarget.anchorCentreX > getScreenCentreX()) {
       if (spotlightTarget.anchorCentreY > getScreenCentreY()) {
         AnchorPosition.BottomRight
@@ -308,7 +280,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-
     (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams
@@ -329,7 +300,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
     }
     (overlayBinding as BottomLeftOverlayBinding).arrow.layoutParams = arrowParams
-
     return (overlayBinding as BottomLeftOverlayBinding).root
   }
 
@@ -339,7 +309,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-
     (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams
@@ -361,7 +330,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
     }
     (overlayBinding as BottomRightOverlayBinding).arrow.layoutParams = arrowParams
-
     return (overlayBinding as BottomRightOverlayBinding).root
   }
 
@@ -371,7 +339,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-
     (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopRightOverlayBinding).arrow.layoutParams
@@ -392,7 +359,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
     }
     (overlayBinding as TopRightOverlayBinding).arrow.layoutParams = arrowParams
-
     return (overlayBinding as TopRightOverlayBinding).root
   }
 
@@ -402,7 +368,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-
     (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams
@@ -423,7 +388,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       )
     }
     (overlayBinding as TopLeftOverlayBinding).arrow.layoutParams = arrowParams
-
     return (overlayBinding as TopLeftOverlayBinding).root
   }
 }

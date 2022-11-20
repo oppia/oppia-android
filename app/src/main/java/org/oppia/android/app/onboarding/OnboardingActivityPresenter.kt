@@ -46,6 +46,6 @@ class OnboardingActivityPresenter @Inject constructor(private val activity: AppC
       .supportFragmentManager
       .findFragmentById(
         R.id.onboarding_spotlight_fragment_placeholder
-      ) as SpotlightFragment?
+      ) as? SpotlightFragment
   }
 }

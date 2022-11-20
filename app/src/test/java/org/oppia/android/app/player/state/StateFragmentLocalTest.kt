@@ -139,7 +139,6 @@ import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -218,9 +217,6 @@ class StateFragmentLocalTest {
 
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
   private val solutionIndex: Int = 4

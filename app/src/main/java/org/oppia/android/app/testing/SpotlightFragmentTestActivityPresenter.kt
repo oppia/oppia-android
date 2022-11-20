@@ -39,7 +39,7 @@ class SpotlightFragmentTestActivityPresenter @Inject constructor(
   fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment?
+    ) as? SpotlightFragment
   }
 
   /** Returns a view to be used as a spotlight anchor. */

@@ -31,7 +31,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
   @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
-  private val resourceHandler: AppLanguageResourceHandler,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var tabLayout: TabLayout
   private var internalProfileId: Int = -1
@@ -106,7 +106,7 @@ class TopicFragmentPresenter @Inject constructor(
   private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment?
+    ) as? SpotlightFragment
   }
 
   private fun setCurrentTab(tab: TopicTab) {
@@ -126,7 +126,7 @@ class TopicFragmentPresenter @Inject constructor(
       val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
-      tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescription)
+      tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescriptionResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
       if (enableExtraTopicTabsUi.value) {

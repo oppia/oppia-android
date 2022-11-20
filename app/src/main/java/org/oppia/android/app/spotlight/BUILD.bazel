@@ -1,3 +1,7 @@
+"""
+Constructs for setting up spotlights.
+"""
+
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 genrule(

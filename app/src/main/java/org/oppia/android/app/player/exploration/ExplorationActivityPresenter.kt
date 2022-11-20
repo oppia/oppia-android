@@ -168,7 +168,7 @@ class ExplorationActivityPresenter @Inject constructor(
   private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment?
+    ) as? SpotlightFragment
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {

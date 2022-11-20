@@ -3,9 +3,6 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
-
-    <import type="android.view.View" />
-
     <variable
       name="listener"
       type="org.oppia.android.app.spotlight.SpotlightNavigationListener" />
@@ -40,7 +37,6 @@
       android:paddingTop="4dp"
       android:paddingEnd="4dp"
       android:paddingBottom="4dp"
-      android:text="this is a custom text"
       android:textSize="20dp"
       app:layout_constraintBottom_toTopOf="@id/arrow"
       app:layout_constraintEnd_toEndOf="@+id/arrow"

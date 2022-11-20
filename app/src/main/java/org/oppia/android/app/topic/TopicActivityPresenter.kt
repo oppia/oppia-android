@@ -63,6 +63,6 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
   private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment?
+    ) as? SpotlightFragment
   }
 }

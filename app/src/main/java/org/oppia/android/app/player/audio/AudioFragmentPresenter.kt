@@ -204,12 +204,6 @@ class AudioFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun handleOnPlay() {
-    if (!activity.isChangingConfigurations && prepared) {
-      viewModel.togglePlayPause(UiAudioPlayStatus.PAUSED)
-    }
-  }
-
   /** Releases audio player resources */
   fun handleOnDestroy() {
     if (!activity.isChangingConfigurations) {

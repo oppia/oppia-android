@@ -4,16 +4,16 @@ import android.view.View
 import org.oppia.android.app.model.Spotlight.FeatureCase
 
 /**
- * Data class to hold a [SpotlightTarget].
+ * Represents a screen target that can be spotlit using [SpotlightManager].
  *
- * @param anchor the view that should be spotlit
- * @param hint the hint text that should be shown on the spotlight overlay
- * @param shape [SpotlightShape] of the spotlight
- * @param feature The [Spotlight] feature-case corresponding to the spotlight target
+ * @property anchor the view that should be spotlit
+ * @property hint the hint text that should be shown on the spotlight overlay
+ * @property shape [SpotlightShape] of the spotlight
+ * @property feature the [Spotlight] feature being spotlit by this target
  */
 data class SpotlightTarget(
   val anchor: View,
-  val hint: String = "",
+  val hint: String,
   val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
   val feature: FeatureCase
 ) {

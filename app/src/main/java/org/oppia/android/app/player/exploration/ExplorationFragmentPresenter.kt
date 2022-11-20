@@ -110,7 +110,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   private fun getSpotlightFragment(): SpotlightFragment? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment?
+    ) as? SpotlightFragment
   }
 
   fun handlePlayAudio() {
