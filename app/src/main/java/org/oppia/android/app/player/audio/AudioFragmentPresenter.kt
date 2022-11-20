@@ -119,16 +119,6 @@ class AudioFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  private fun subscribeToSpotlightStatusLiveData() {
-    getSpotlightFragment().getSpotlightStatusLiveData().observe(fragment) { isSpotlightActive ->
-      if (isSpotlightActive) {
-        handleOnStop()
-      } else {
-        handleOnPlay()
-      }
-    }
-  }
-
   private fun startSpotlights() {
     val audioLanguageIconSpotlightTarget = SpotlightTarget(
       binding.audioLanguageIcon,
@@ -297,13 +287,12 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
       // This isn't reloading content since it's the first case of the content auto-playing.
-      loadMainContentAudio(allowAutoPlay = true, reloadingContent = false)
+      loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
     } else {
-      loadFeedbackAudio(feedbackId!!, true)
+      loadFeedbackAudio(feedbackId!!, false)
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
     startSpotlights()
-    subscribeToSpotlightStatusLiveData()
   }
 
   private fun hideAudioFragment() {
