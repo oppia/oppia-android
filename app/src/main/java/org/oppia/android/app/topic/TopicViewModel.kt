@@ -37,6 +37,7 @@ class TopicViewModel @Inject constructor(
   }
 
   private val topicListResultLiveData: LiveData<AsyncResult<PromotedActivityList>> by lazy {
+    // TODO(#4754): Replace with a mechanism that properly accounts for fully completed stories.
     topicListController.getPromotedActivityList(
       ProfileId.newBuilder().setInternalId(internalProfileId).build()
     ).toLiveData()

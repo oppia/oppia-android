@@ -20,7 +20,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
 
     spotlightFragmentTestActivityPresenter.handleOnCreate(
       intent.getIntExtra(
-        PROFILE_ID_ARGUMENT_KEY, /* profileIdKeyDefaultValue */ -1
+        PROFILE_ID_ARGUMENT_KEY, /* profileIdKeyDefaultValue= */ -1
       )
     )
   }
@@ -35,7 +35,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
     /** Returns the [Intent] for opening [SpotlightFragmentTestActivity]. */
     fun createSpotlightFragmentTestActivity(context: Context): Intent {
       return Intent(context, SpotlightFragmentTestActivity::class.java).also {
-        it.putExtra(PROFILE_ID_ARGUMENT_KEY, /* profileIdKeyDefaultValue */ 0)
+        it.putExtra(PROFILE_ID_ARGUMENT_KEY, /* profileIdKeyDefaultValue= */ 0)
       }
     }
   }
