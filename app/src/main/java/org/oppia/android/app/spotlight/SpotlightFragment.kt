@@ -32,7 +32,6 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.LinkedList
 import javax.inject.Inject
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -58,7 +57,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   @field:[Inject EnableSpotlightUi]
   lateinit var enableSpotlightUi: PlatformParameterValue<Boolean>
 
-  private var targetList = LinkedList<Target>()
+  private var targetList = mutableListOf<Target>()
   private lateinit var spotlight: Spotlight
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
@@ -140,7 +139,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
 
         override fun onEnded() {
-          targetList.pop()
+          targetList.removeFirst()
           val profileId = ProfileId.newBuilder()
             .setInternalId(internalProfileId)
             .build()
@@ -181,7 +180,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         RoundedRectangle(
           spotlightTarget.anchorHeight.toFloat(),
           spotlightTarget.anchorWidth.toFloat(),
-          24f
+          resources.getDimensionPixelSize(R.dimen.spotlight_highlight_rectangle_corner_radius).toFloat()
         )
       }
       SpotlightShape.Circle -> {
@@ -195,11 +194,11 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun getArrowWidth(): Float {
-    return this.resources.getDimension(R.dimen.arrow_width)
+    return this.resources.getDimension(R.dimen.spotlight_arrow_width)
   }
 
   private fun getArrowHeight(): Float {
-    return this.resources.getDimension(R.dimen.arrow_height)
+    return this.resources.getDimension(R.dimen.spotlight_arrow_height)
   }
 
   private fun getScreenCentreY(): Int {

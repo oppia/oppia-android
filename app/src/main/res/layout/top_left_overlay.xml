@@ -19,14 +19,14 @@
 
     <ImageView
       android:id="@+id/spotlight_overlay_arrow"
-      android:layout_width="@dimen/arrow_width"
-      android:layout_height="@dimen/arrow_height"
+      android:layout_width="@dimen/spotlight_arrow_width"
+      android:layout_height="@dimen/spotlight_arrow_height"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:srcCompat="@drawable/ic_rounded_arrow_up_right" />
 
     <TextView
-      android:id="@+id/custom_text"
+      android:id="@+id/spotlight_hint_text"
       style="@style/TextViewStart"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -37,13 +37,13 @@
       android:paddingTop="4dp"
       android:paddingEnd="4dp"
       android:paddingBottom="4dp"
-      android:textSize="20dp"
+      android:textSize="20sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="@id/spotlight_overlay_arrow"
       app:layout_constraintTop_toBottomOf="@id/spotlight_overlay_arrow" />
 
     <Button
-      android:id="@+id/close_target"
+      android:id="@+id/close_spotlight_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

@@ -19,7 +19,7 @@
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    android:index="@{viewModel.index}">
+    app:promotedStoryIndex="@{viewModel.index}">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/promoted_story_card_container"

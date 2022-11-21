@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Default screen margins, per the Android Design guidelines. -->
-  <dimen name="arrow_height">57dp</dimen>
-  <dimen name="arrow_width">21dp</dimen>
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="match_parent">-2px</dimen>
@@ -451,9 +449,6 @@
   <dimen name="policies_fragment_page_padding_bottom">60dp</dimen>
   <dimen name="policies_fragment_page_scroll_padding_bottom">80dp</dimen>
 
-
-  <dimen name="spotlight_overlay_arrow_left_margin">10dp</dimen>
-
   <!-- FAQ -->
   <dimen name="faq_list_scroll_padding_bottom">80dp</dimen>
   <dimen name="faq_list_padding_bottom">60dp</dimen>
@@ -765,4 +760,10 @@
 
   <!-- ProfileListFragment -->
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">40dp</dimen>
+
+  <!-- SpotlightFragment -->
+  <dimen name="spotlight_arrow_height">57dp</dimen>
+  <dimen name="spotlight_arrow_width">21dp</dimen>
+  <dimen name="spotlight_overlay_arrow_left_margin">8dp</dimen>
+  <dimen name="spotlight_highlight_rectangle_corner_radius">8dp</dimen>
 </resources>

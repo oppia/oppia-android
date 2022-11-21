@@ -235,7 +235,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -339,7 +339,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -448,7 +448,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -520,7 +520,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
@@ -576,7 +576,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -682,7 +682,7 @@ class OnboardingFragmentTest {
   fun testOnboardingFragment_checkSlide3_policiesLinkIsVisible() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).perform(
@@ -718,6 +718,10 @@ class OnboardingFragmentTest {
         (view as ViewPager2).setCurrentItem(position, /* smoothScroll= */ false)
       }
     }
+  }
+
+  private fun skipNextSlideButtonSpotlight() {
+    onView(withId(R.id.close_spotlight_button)).perform(click())
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

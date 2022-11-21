@@ -348,7 +348,7 @@ class HomeActivityTest {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
     }
 

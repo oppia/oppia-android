@@ -215,7 +215,7 @@ class SpotlightFragmentTest {
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
         testCoroutineDispatchers.runCurrent()
       }
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<SpotlightFragmentTestActivity>(
@@ -326,7 +326,7 @@ class SpotlightFragmentTest {
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(secondSpotlightTarget)
         testCoroutineDispatchers.runCurrent()
       }
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSecondSpotlightText)).check(matches(isDisplayed()))
     }

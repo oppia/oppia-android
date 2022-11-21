@@ -469,7 +469,7 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<ExplorationActivity>(
@@ -540,7 +540,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<ExplorationActivity>(
@@ -613,7 +613,7 @@ class ExplorationActivityTest {
         FRACTIONS_EXPLORATION_ID_0
       )
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<ExplorationActivity>(
