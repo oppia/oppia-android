@@ -153,8 +153,8 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSpotlightText)).check(doesNotExist())
     }
   }
@@ -175,8 +175,8 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
@@ -197,8 +197,8 @@ class SpotlightFragmentTest {
         checkNotNull(
           activity.getSpotlightFragment()
         ).requestSpotlightViewWithDelayedLayout(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
@@ -216,8 +216,8 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
@@ -233,8 +233,8 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSpotlightText)).check(doesNotExist())
     }
   }
@@ -252,8 +252,8 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
     }
 
     launch<SpotlightFragmentTestActivity>(
@@ -268,8 +268,8 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
@@ -297,10 +297,9 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(firstSpotlightTarget)
-        testCoroutineDispatchers.runCurrent()
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(secondSpotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
@@ -328,10 +327,9 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(firstSpotlightTarget)
-        testCoroutineDispatchers.runCurrent()
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(secondSpotlightTarget)
-        testCoroutineDispatchers.runCurrent()
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.close_spotlight_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(sampleSecondSpotlightText)).check(matches(isDisplayed()))

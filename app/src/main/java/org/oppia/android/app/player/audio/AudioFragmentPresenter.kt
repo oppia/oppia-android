@@ -130,13 +130,15 @@ class AudioFragmentPresenter @Inject constructor(
       Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
     )
 
-    getSpotlightFragment().requestSpotlightViewWithDelayedLayout(audioLanguageIconSpotlightTarget)
+    checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(
+      audioLanguageIconSpotlightTarget
+    )
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment {
+  private fun getSpotlightFragment(): SpotlightFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as SpotlightFragment
+    ) as? SpotlightFragment
   }
 
   private fun getProfileData(): LiveData<String> {

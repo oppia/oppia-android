@@ -766,4 +766,5 @@
   <dimen name="spotlight_arrow_width">21dp</dimen>
   <dimen name="spotlight_overlay_arrow_left_margin">8dp</dimen>
   <dimen name="spotlight_highlight_rectangle_corner_radius">8dp</dimen>
+  <dimen name="spotlight_done_button_corner_radius">4dp</dimen>
 </resources>

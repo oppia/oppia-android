@@ -114,8 +114,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       object : Observer<AsyncResult<SpotlightViewState>> {
         override fun onChanged(it: AsyncResult<SpotlightViewState>?) {
           if (it is AsyncResult.Success) {
-            if (it.value == SpotlightViewState.SPOTLIGHT_SEEN) return
-            createTarget(spotlightTarget)
+            if (it.value == SpotlightViewState.SPOTLIGHT_NOT_SEEN) {
+              createTarget(spotlightTarget)
+            }
             featureViewStateLiveData.removeObserver(this)
           }
         }
