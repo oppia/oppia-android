@@ -3,7 +3,7 @@ package org.oppia.android.app.spotlight
 import android.content.Context
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -216,9 +216,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View {
-    val anchorPosition = calculateAnchorPosition(spotlightTarget)
-
-    return when (anchorPosition) {
+    return when (calculateAnchorPosition(spotlightTarget)) {
       AnchorPosition.TopLeft -> {
         if (isRtl) {
           configureTopRightOverlay(spotlightTarget)
@@ -251,120 +249,103 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater)
-    (overlayBinding as BottomLeftOverlayBinding).let {
-      it.lifecycleOwner = this
-      it.listener = this
+    val overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater).also {
+      this.overlayBinding = it
     }
-    (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
+    overlayBinding.lifecycleOwner = this
+    overlayBinding.listener = this
+    overlayBinding.customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as BottomLeftOverlayBinding).spotlightOverlayArrow.layoutParams
-      as ViewGroup.MarginLayoutParams
-    if (isRtl) {
-      arrowParams.setMargins(
-        screenWidth - spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    } else {
-      arrowParams.setMargins(
-        spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    }
-    (overlayBinding as BottomLeftOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
-    return (overlayBinding as BottomLeftOverlayBinding).root
+    val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
+    arrowLayoutParams.computeMargins(AnchorPosition.BottomLeft, spotlightTarget)
+    return overlayBinding.root
   }
 
   private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater)
-    (overlayBinding as BottomRightOverlayBinding).let {
-      it.lifecycleOwner = this
-      it.listener = this
+    val overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater).also {
+      this.overlayBinding = it
     }
-    (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
+    overlayBinding.lifecycleOwner = this
+    overlayBinding.listener = this
+    overlayBinding.customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as BottomRightOverlayBinding).spotlightOverlayArrow.layoutParams
-      as ViewGroup.MarginLayoutParams
-    if (isRtl) {
-      arrowParams.setMargins(
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-        screenWidth -
-          (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    } else {
-      arrowParams.setMargins(
-        (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
-        (spotlightTarget.anchorTop.toInt() - getArrowHeight()).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    }
-    (overlayBinding as BottomRightOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
-    return (overlayBinding as BottomRightOverlayBinding).root
+    val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
+    arrowLayoutParams.computeMargins(AnchorPosition.BottomRight, spotlightTarget)
+    return overlayBinding.root
   }
 
   private fun configureTopRightOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = TopRightOverlayBinding.inflate(layoutInflater)
-    (overlayBinding as TopRightOverlayBinding).let {
-      it.lifecycleOwner = this
-      it.listener = this
+    val overlayBinding = TopRightOverlayBinding.inflate(this.layoutInflater).also {
+      this.overlayBinding = it
     }
-    (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
+    overlayBinding.lifecycleOwner = this
+    overlayBinding.listener = this
+    overlayBinding.customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as TopRightOverlayBinding).spotlightOverlayArrow.layoutParams
-      as ViewGroup.MarginLayoutParams
-    if (isRtl) {
-      arrowParams.setMargins(
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-        screenWidth - (spotlightTarget.anchorLeft + getArrowWidth()).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    } else {
-      arrowParams.setMargins(
-        (spotlightTarget.anchorLeft + spotlightTarget.anchorWidth - getArrowWidth()).toInt(),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    }
-    (overlayBinding as TopRightOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
-    return (overlayBinding as TopRightOverlayBinding).root
+    val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
+    arrowLayoutParams.computeMargins(AnchorPosition.TopRight, spotlightTarget)
+    return overlayBinding.root
   }
 
   private fun configureTopLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater)
-    (overlayBinding as TopLeftOverlayBinding).let {
-      it.lifecycleOwner = this
-      it.listener = this
+    val overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater).also {
+      this.overlayBinding = it
     }
-    (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
+    overlayBinding.lifecycleOwner = this
+    overlayBinding.listener = this
+    overlayBinding.customText.text = spotlightTarget.hint
 
-    val arrowParams = (overlayBinding as TopLeftOverlayBinding).spotlightOverlayArrow.layoutParams
-      as ViewGroup.MarginLayoutParams
-    if (isRtl) {
-      arrowParams.setMargins(
-        screenWidth - spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
-    } else {
-      arrowParams.setMargins(
-        spotlightTarget.anchorLeft.toInt(),
-        (spotlightTarget.anchorTop + spotlightTarget.anchorHeight).toInt(),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin),
-        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-      )
+    val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
+    arrowLayoutParams.computeMargins(AnchorPosition.TopLeft, spotlightTarget)
+    return overlayBinding.root
+  }
+
+  private fun MarginLayoutParams.computeMargins(
+    anchorPosition: AnchorPosition, spotlightTarget: SpotlightTarget
+  ) {
+    setMargins(
+      computeLeftMargin(anchorPosition, spotlightTarget),
+      computeTopMargin(anchorPosition, spotlightTarget),
+      computeRightMargin(anchorPosition, spotlightTarget),
+      computeBottomMargin()
+    )
+  }
+
+  private fun computeLeftMargin(anchorPosition: AnchorPosition, target: SpotlightTarget): Int {
+    return when (anchorPosition) {
+      AnchorPosition.BottomLeft, AnchorPosition.TopLeft ->
+        if (isRtl) screenWidth - target.anchorLeft.toInt() else target.anchorLeft.toInt()
+      AnchorPosition.BottomRight, AnchorPosition.TopRight -> {
+        if (isRtl) {
+          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        } else (target.anchorLeft + target.anchorWidth - getArrowWidth()).toInt()
+      }
     }
-    (overlayBinding as TopLeftOverlayBinding).spotlightOverlayArrow.layoutParams = arrowParams
-    return (overlayBinding as TopLeftOverlayBinding).root
+  }
+
+  private fun computeTopMargin(anchorPosition: AnchorPosition, target: SpotlightTarget): Int {
+    return when (anchorPosition) {
+      AnchorPosition.BottomLeft, AnchorPosition.BottomRight ->
+        (target.anchorTop - getArrowHeight()).toInt()
+      AnchorPosition.TopLeft, AnchorPosition.TopRight ->
+        (target.anchorTop + target.anchorHeight).toInt()
+    }
+  }
+
+  private fun computeRightMargin(anchorPosition: AnchorPosition, target: SpotlightTarget): Int {
+    return when (anchorPosition) {
+      AnchorPosition.BottomLeft, AnchorPosition.TopLeft ->
+        resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+      AnchorPosition.BottomRight, AnchorPosition.TopRight -> {
+        if (isRtl) {
+          screenWidth - (target.anchorLeft + getArrowWidth()).toInt()
+        } else resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+      }
+    }
+  }
+
+  private fun computeBottomMargin(): Int {
+    return resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
   }
 
   private fun calculateScreenSize() {
