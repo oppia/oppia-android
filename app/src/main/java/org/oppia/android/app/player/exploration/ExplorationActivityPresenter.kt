@@ -1,11 +1,12 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
-import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -26,7 +27,6 @@ import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
@@ -146,19 +146,23 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
     if (numberOfLogins >= 3) {
-      // Spotlight the voice-over icon after 3 or more logins.
-      val audioPlayerSpotlightTarget = SpotlightTarget(
-        binding.actionAudioPlayer,
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.voiceover_icon_spotlight_hint,
-          resourceHandler.getStringInLocale(R.string.app_name)
-        ),
-        SpotlightShape.Circle,
-        Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
-      )
-      checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(
-        audioPlayerSpotlightTarget
-      )
+      // Spotlight the voice-over icon after 3 or more logins, and only if it's visible. Note that
+      // the doOnPreDraw here ensures that the visibility check for the button is up-to-date before
+      // a decision is made on whether to show the button.
+      binding.actionAudioPlayer.doOnPreDraw {
+        if (it.visibility == View.VISIBLE) {
+          val audioPlayerSpotlightTarget = SpotlightTarget(
+            it,
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.voiceover_icon_spotlight_hint,
+              resourceHandler.getStringInLocale(R.string.app_name)
+            ),
+            SpotlightShape.Circle,
+            Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+          )
+          checkNotNull(getSpotlightFragment()).requestSpotlight(audioPlayerSpotlightTarget)
+        }
+      }
     }
   }
 

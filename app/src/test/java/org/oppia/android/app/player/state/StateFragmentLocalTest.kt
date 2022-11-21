@@ -857,7 +857,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkAnnouncesIn5SecsAfter() {
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkAnnouncesAfter5Seconds() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
@@ -873,7 +873,7 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkDoesNotRepeatAnnouncementAfter30Sec() {
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_doesNotRepeatAnnouncementAfter30Sec() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
       playThroughFractionsState1()
