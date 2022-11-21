@@ -36,6 +36,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
 private const val TAG_CELLULAR_DATA_DIALOG = "CELLULAR_DATA_DIALOG"
@@ -52,7 +54,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableSpotlightUi private val enableSpotlightUi: PlatformParameterValue<Boolean>
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -281,9 +284,9 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
       // This isn't reloading content since it's the first case of the content auto-playing.
-      loadMainContentAudio(allowAutoPlay = false, reloadingContent = false)
+      loadMainContentAudio(allowAutoPlay = !enableSpotlightUi.value, reloadingContent = false)
     } else {
-      loadFeedbackAudio(feedbackId!!, false)
+      loadFeedbackAudio(feedbackId!!, !enableSpotlightUi.value)
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
     startSpotlights()

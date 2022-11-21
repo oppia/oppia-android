@@ -2,15 +2,15 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".app.topic.TopicActivity" >
+  tools:context=".app.topic.TopicActivity">
 
   <FrameLayout
+    android:id="@+id/topic_spotlight_fragment_placeholder"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/topic_spotlight_fragment_placeholder"/>
+    android:layout_height="match_parent" />
 
   <FrameLayout
+    android:id="@+id/topic_fragment_placeholder"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/topic_fragment_placeholder"/>
+    android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

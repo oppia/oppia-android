@@ -75,6 +75,7 @@ class TopicFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /* Requests the spotlights required in this activity to be enqueued. */
   fun startSpotlight() {
     viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
       if (numberOfChaptersCompleted != null) {

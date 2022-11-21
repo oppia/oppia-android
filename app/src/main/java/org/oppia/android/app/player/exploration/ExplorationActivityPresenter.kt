@@ -138,13 +138,10 @@ class ExplorationActivityPresenter @Inject constructor(
     }
 
     if (getSpotlightFragment() == null) {
-      val spotlightFragment = SpotlightFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, profileId.internalId)
-      spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_spotlight_fragment_placeholder,
-        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }

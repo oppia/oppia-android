@@ -30,7 +30,7 @@ class PromotedStoryCardView @JvmOverloads constructor(
   private var isSpotlit = false
 
   /** Sets the index at which this custom view is located inside the recycler view. */
-  fun setIndex(index: Int) {
+  fun setPromotedStoryIndex(index: Int) {
     // This view can get attached multiple times and we must make sure that the spotlight is
     // requested only once. Only spotlight the item at the first index of the recycler view.
     if (!isSpotlit && index == 0) {

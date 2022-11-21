@@ -194,7 +194,7 @@ class TopicFragmentTest {
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
       // Mark lessons spotlight seen.
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<TopicActivity>(createTopicActivityIntent(internalProfileId, FRACTIONS_TOPIC_ID)).use {
@@ -243,9 +243,9 @@ class TopicFragmentTest {
     ).use {
       // Mark first chapter spotlight seen.
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<TopicActivity>(
@@ -307,7 +307,7 @@ class TopicFragmentTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       // Mark revision tab spotlight seen.
-      onView(withId(R.id.close_target)).perform(click())
+      onView(withId(R.id.close_spotlight_button)).perform(click())
     }
 
     launch<TopicActivity>(

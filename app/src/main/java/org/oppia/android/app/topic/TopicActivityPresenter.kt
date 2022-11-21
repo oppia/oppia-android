@@ -41,13 +41,10 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     }
 
     if (getSpotlightFragment() == null) {
-      val spotlightFragment = SpotlightFragment()
-      val args = Bundle()
-      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
-      spotlightFragment.arguments = args
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_spotlight_fragment_placeholder,
-        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+        SpotlightFragment.newInstance(internalProfileId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }
   }

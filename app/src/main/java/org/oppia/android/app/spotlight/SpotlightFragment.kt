@@ -1,6 +1,7 @@
 package org.oppia.android.app.spotlight
 
 import android.content.Context
+import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
@@ -31,8 +32,9 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import java.util.LinkedList
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -52,7 +54,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var targetList = LinkedList<Target>()
+  @field:[Inject EnableSpotlightUi]
+  lateinit var enableSpotlightUi: PlatformParameterValue<Boolean>
+
+  private var targetList = mutableListOf<Target>()
   private lateinit var spotlight: Spotlight
   private var screenHeight: Int = 0
   private var screenWidth: Int = 0
@@ -92,7 +97,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun requestSpotlight(spotlightTarget: SpotlightTarget) {
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
-    if (accessibilityService.isScreenReaderEnabled()) return
+    if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
@@ -131,7 +136,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
 
         override fun onEnded() {
-          targetList.pop()
+          targetList.removeFirst()
           val profileId = ProfileId.newBuilder()
             .setInternalId(internalProfileId)
             .build()
@@ -172,7 +177,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         RoundedRectangle(
           spotlightTarget.anchorHeight.toFloat(),
           spotlightTarget.anchorWidth.toFloat(),
-          24f
+          resources.getDimensionPixelSize(R.dimen.spotlight_highlight_rectangle_corner_radius).toFloat()
         )
       }
       SpotlightShape.Circle -> {
@@ -186,11 +191,11 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun getArrowWidth(): Float {
-    return this.resources.getDimension(R.dimen.arrow_width)
+    return this.resources.getDimension(R.dimen.spotlight_arrow_width)
   }
 
   private fun getArrowHeight(): Float {
-    return this.resources.getDimension(R.dimen.arrow_height)
+    return this.resources.getDimension(R.dimen.spotlight_arrow_height)
   }
 
   private fun getScreenCentreY(): Int {
@@ -254,7 +259,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
-    overlayBinding.customText.text = spotlightTarget.hint
+    overlayBinding.spotlightHintText.text = spotlightTarget.hint
 
     val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
     arrowLayoutParams.computeMargins(AnchorPosition.BottomLeft, spotlightTarget)
@@ -267,7 +272,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
-    overlayBinding.customText.text = spotlightTarget.hint
+    overlayBinding.spotlightHintText.text = spotlightTarget.hint
 
     val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
     arrowLayoutParams.computeMargins(AnchorPosition.BottomRight, spotlightTarget)
@@ -280,7 +285,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
-    overlayBinding.customText.text = spotlightTarget.hint
+    overlayBinding.spotlightHintText.text = spotlightTarget.hint
 
     val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
     arrowLayoutParams.computeMargins(AnchorPosition.TopRight, spotlightTarget)
@@ -293,7 +298,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
-    overlayBinding.customText.text = spotlightTarget.hint
+    overlayBinding.spotlightHintText.text = spotlightTarget.hint
 
     val arrowLayoutParams = overlayBinding.spotlightOverlayArrow.layoutParams as MarginLayoutParams
     arrowLayoutParams.computeMargins(AnchorPosition.TopLeft, spotlightTarget)
@@ -365,5 +370,16 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     object BottomLeft : AnchorPosition()
     /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
+  }
+
+  companion object {
+    /* Returns a new [SpotlightFragment]. */
+    fun newInstance(internalProfileId: Int): SpotlightFragment {
+      val spotlightFragment = SpotlightFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      spotlightFragment.arguments = args
+      return spotlightFragment
+    }
   }
 }
