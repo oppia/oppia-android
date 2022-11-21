@@ -1,6 +1,7 @@
 package org.oppia.android.app.spotlight
 
 import android.content.Context
+import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.util.LinkedList
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -51,6 +54,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
+
+  @field:[Inject EnableSpotlightUi]
+  lateinit var enableSpotlightUi: PlatformParameterValue<Boolean>
 
   private var targetList = LinkedList<Target>()
   private lateinit var spotlight: Spotlight
@@ -95,7 +101,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun requestSpotlight(spotlightTarget: SpotlightTarget) {
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
-    if (accessibilityService.isScreenReaderEnabled()) return
+    if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
@@ -387,5 +393,16 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     object BottomLeft : AnchorPosition()
     /** The position corresponding to the anchor when it is on the bottom right of the screen. */
     object BottomRight : AnchorPosition()
+  }
+
+  companion object {
+    /* Returns a new [SpotlightFragment]. */
+    fun newInstance(internalProfileId: Int): SpotlightFragment {
+      val spotlightFragment = SpotlightFragment()
+      val args = Bundle()
+      args.putInt(PROFILE_ID_ARGUMENT_KEY, internalProfileId)
+      spotlightFragment.arguments = args
+      return spotlightFragment
+    }
   }
 }

@@ -67,7 +67,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -92,6 +91,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -135,6 +135,28 @@ class SpotlightFragmentTest {
   fun tearDown() {
     Intents.release()
     testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  @Test
+  fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(false)
+    launch<SpotlightFragmentTestActivity>(
+      createSpotlightFragmentTestActivity(context)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      it.onActivity { activity ->
+        val spotlightTarget = SpotlightTarget(
+          activity.getSampleSpotlightTarget(),
+          sampleSpotlightText,
+          SpotlightShape.RoundedRectangle,
+          Spotlight.FeatureCase.PROMOTED_STORIES
+        )
+
+        checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
+        testCoroutineDispatchers.runCurrent()
+      }
+      onView(withText(sampleSpotlightText)).check(doesNotExist()bot)
+    }
   }
 
   @Test
@@ -319,7 +341,7 @@ class SpotlightFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

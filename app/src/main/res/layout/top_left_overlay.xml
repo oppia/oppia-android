@@ -3,6 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
     <variable
       name="listener"
       type="org.oppia.android.app.spotlight.SpotlightNavigationListener" />
@@ -41,23 +42,19 @@
       app:layout_constraintStart_toStartOf="@id/spotlight_overlay_arrow"
       app:layout_constraintTop_toBottomOf="@id/spotlight_overlay_arrow" />
 
-    <TextView
+    <Button
       android:id="@+id/close_target"
       style="@style/StateButtonActive"
-      android:layout_width="160dp"
-      android:layout_height="48dp"
-      android:layout_marginEnd="10dp"
-      android:layout_marginBottom="50dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="52dp"
       android:background="@color/color_def_dark_blue"
-      android:clickable="true"
-      android:focusable="true"
       android:gravity="center"
+      android:minWidth="160dp"
+      android:minHeight="48dp"
       android:onClick="@{(v) -> listener.clickOnDone()}"
-      android:paddingTop="8dp"
-      android:paddingBottom="8dp"
       android:text="@string/mark_spotlight_seen_button_text"
-      android:textColor="#FFFFFF"
-      android:textSize="14dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
