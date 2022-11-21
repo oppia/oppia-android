@@ -653,6 +653,7 @@ exempted_file_path: "domain/src/main/java/org/oppia/android/domain/onboarding/te
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/ApplicationIdSeed.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/ApplicationStartupListener.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/LogStorageModule.kt"
+exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsStartupListener.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/CpuPerformanceLoggingTimePeriodMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsInactivityLimitMillis.kt"
 exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions/UncaughtExceptionLoggerModule.kt"

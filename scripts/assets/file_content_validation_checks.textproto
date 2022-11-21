@@ -400,3 +400,10 @@ file_content_checks {
   exempted_file_patterns: "testing.+?\\.kt"
   required_content_regex: "decorateWithScreenName\\("
 }
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "WorkManager.getInstance"
+  failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
+  exempted_file_patterns: ".+?Test\\.kt"
+}
