@@ -31,6 +31,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
 import org.oppia.android.util.data.DataProviders.NestedTransformedDataProvider
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
 import javax.inject.Inject
@@ -96,6 +97,7 @@ class QuestionAssessmentProgressController @Inject constructor(
   private val hintHandlerFactory: HintHandler.Factory,
   private val translationController: TranslationController,
   private val oppiaLogger: OppiaLogger,
+  private val oppiaClock: OppiaClock,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
   // TODO(#247): Add support for populating the list of skill IDs to review at the end of the
@@ -443,7 +445,9 @@ class QuestionAssessmentProgressController @Inject constructor(
         // processed (if there's a flow).
         else -> AsyncResult.Pending()
       }
-    } catch (e: Exception) { AsyncResult.Failure(e) }
+    } catch (e: Exception) {
+      AsyncResult.Failure(e)
+    }
 
     // This must be assigned separately since flowResult should always be calculated, even if
     // there's no callbackFlow to report it.
@@ -536,7 +540,12 @@ class QuestionAssessmentProgressController @Inject constructor(
             // Otherwise, push a synthetic state for the end of the session.
             State.getDefaultInstance()
           }
-          progress.stateDeck.pushState(newState, prohibitSameStateName = false)
+          progress.stateDeck.pushState(
+            newState,
+            prohibitSameStateName = false,
+            timestamp = 0,
+            isContinueButtonAnimationSeen = true
+          )
           hintHandler.finishState(newState)
         } else {
           // Schedule a new hints or solution or show a new hint or solution immediately based on
@@ -614,8 +623,13 @@ class QuestionAssessmentProgressController @Inject constructor(
     }
   }
 
-  private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
-    progress.stateDeck.getCurrentEphemeralState(hintHandler.getCurrentHelpIndex().value)
+  private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState {
+    return progress.stateDeck.getCurrentEphemeralState(
+      hintHandler.getCurrentHelpIndex().value,
+      oppiaClock.getCurrentTimeMs(),
+      isContinueButtonAnimationSeen = true
+    )
+  }
 
   private fun createCurrentQuestionDataProvider(
     questionsListDataProvider: DataProvider<List<Question>>
