@@ -1,12 +1,10 @@
 package org.oppia.android.app.onboarding
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 /** The presenter for [OnboardingActivity]. */

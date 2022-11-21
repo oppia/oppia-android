@@ -1,6 +1,5 @@
 package org.oppia.android.app.home
 
-import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -10,7 +9,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.topic.PROFILE_ID_ARGUMENT_KEY
 import javax.inject.Inject
 
 const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"

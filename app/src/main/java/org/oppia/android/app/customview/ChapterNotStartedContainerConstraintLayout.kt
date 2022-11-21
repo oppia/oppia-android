@@ -31,7 +31,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
   lateinit var resourceHandler: AppLanguageResourceHandler
 
   /** Sets the index of the story of which this custom view is a part of. */
-   fun setStoryIndex(index: Int) {
+  fun setStoryIndex(index: Int) {
     // Only spotlight the first chapter of the "first" story. We know for sure that for a new user,
     // the first chapter shall be a type of not started chapter view. The index tells which story
     // are we on.

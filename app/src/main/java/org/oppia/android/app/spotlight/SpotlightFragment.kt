@@ -13,10 +13,10 @@ import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
-import com.takusemba.spotlight.Target
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
@@ -32,9 +32,9 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -177,7 +177,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         RoundedRectangle(
           spotlightTarget.anchorHeight.toFloat(),
           spotlightTarget.anchorWidth.toFloat(),
-          resources.getDimensionPixelSize(R.dimen.spotlight_highlight_rectangle_corner_radius).toFloat()
+          resources.getDimensionPixelSize(
+            R.dimen.spotlight_highlight_rectangle_corner_radius
+          ).toFloat()
         )
       }
       SpotlightShape.Circle -> {
@@ -306,7 +308,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun MarginLayoutParams.computeMargins(
-    anchorPosition: AnchorPosition, spotlightTarget: SpotlightTarget
+    anchorPosition: AnchorPosition,
+    spotlightTarget: SpotlightTarget
   ) {
     setMargins(
       computeLeftMargin(anchorPosition, spotlightTarget),
@@ -373,7 +376,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   companion object {
-    /* Returns a new [SpotlightFragment]. */
+    /** Returns a new [SpotlightFragment]. */
     fun newInstance(internalProfileId: Int): SpotlightFragment {
       val spotlightFragment = SpotlightFragment()
       val args = Bundle()
