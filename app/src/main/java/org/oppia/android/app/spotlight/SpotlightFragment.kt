@@ -77,9 +77,6 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // and positions of the anchor view are measured, which can be achieved by using doOnPreDraw:
     // https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2
     spotlightTarget.anchor.doOnPreDraw {
-      if (it.visibility != View.VISIBLE) {
-        return@doOnPreDraw
-      }
       val targetAfterViewFullyDrawn = SpotlightTarget(
         it,
         spotlightTarget.hint,
