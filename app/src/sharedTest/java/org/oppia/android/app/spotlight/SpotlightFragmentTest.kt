@@ -155,7 +155,7 @@ class SpotlightFragmentTest {
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
         testCoroutineDispatchers.runCurrent()
       }
-      onView(withText(sampleSpotlightText)).check(doesNotExist()bot)
+      onView(withText(sampleSpotlightText)).check(doesNotExist())
     }
   }
 
