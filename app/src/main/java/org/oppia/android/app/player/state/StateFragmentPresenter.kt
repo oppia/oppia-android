@@ -513,9 +513,12 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
-            // The forced announcement should be called after 5 seconds after the hints bar appears
-            // otherwise it might interrupt with the submit button's content description during 
-            // Talkback.
+            // Make a forced announcement when the hint bar becomes visible so that the non sighted
+            // users know about the availability of hints. Instead of suddenly changing the focus of
+            // the app (which is a bad practice) to the hints bar upon availability, make a forced
+            // announcement. The forced announcement should be called after 5 seconds after the
+            // hints bar appears otherwise it might interrupt with the submit button's content
+            // description during Talkback.
             if (!forceAnnouncedForHintsBar) {
               forceAnnouncedForHintsBar = true
               accessibilityService.announceForAccessibilityForView(

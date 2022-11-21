@@ -158,16 +158,13 @@ class TopicLessonsFragmentTest {
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
   @Inject lateinit var spotlightStateController: SpotlightStateController
-
-  @Inject
-  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
-
   private lateinit var profileId: ProfileId
 
   @Before

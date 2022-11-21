@@ -105,11 +105,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class SpotlightFragmentTest {
-  @Inject
-  lateinit var context: Context
-
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @Inject
+  lateinit var context: Context
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -211,6 +211,40 @@ class SpotlightFragmentTest {
         testCoroutineDispatchers.runCurrent()
       }
       onView(withText(sampleSpotlightText)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
+    launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
+      it.onActivity { activity ->
+        val spotlightTarget = SpotlightTarget(
+          activity.getSampleSpotlightTarget(),
+          sampleSpotlightText,
+          SpotlightShape.RoundedRectangle,
+          Spotlight.FeatureCase.PROMOTED_STORIES
+        )
+
+        checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+
+    launch<SpotlightFragmentTestActivity>(
+      createSpotlightFragmentTestActivity(context)
+    ).use {
+      it.onActivity { activity ->
+        val spotlightTarget = SpotlightTarget(
+          activity.getSampleSpotlightTarget(),
+          sampleSpotlightText,
+          SpotlightShape.RoundedRectangle,
+          Spotlight.FeatureCase.PROMOTED_STORIES
+        )
+
+        checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
+        testCoroutineDispatchers.runCurrent()
+      }
+      onView(withText(sampleSpotlightText)).check(matches(isDisplayed()))
     }
   }
 

@@ -55,7 +55,7 @@
       android:onClick="@{(v) -> listener.clickOnDone()}"
       android:paddingTop="8dp"
       android:paddingBottom="8dp"
-      android:text="Done"
+      android:text="@string/mark_spotlight_seen_button_text"
       android:textColor="#FFFFFF"
       android:textSize="14dp"
       app:layout_constraintBottom_toBottomOf="parent"
