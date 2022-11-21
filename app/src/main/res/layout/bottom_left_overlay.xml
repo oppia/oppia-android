@@ -32,7 +32,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
       android:layout_marginEnd="10dp"
-      android:background="@drawable/spotlight_overlay_hint_background"
+      android:background="@drawable/spotlight_hint_text_background"
       android:paddingStart="8dp"
       android:paddingTop="4dp"
       android:paddingEnd="4dp"

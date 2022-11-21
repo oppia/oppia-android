@@ -2,7 +2,6 @@ package org.oppia.android.app.spotlight
 
 import android.content.Context
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
@@ -13,10 +12,10 @@ import androidx.lifecycle.Observer
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.OnTargetListener
 import com.takusemba.spotlight.Spotlight
-import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import com.takusemba.spotlight.shape.RoundedRectangle
 import com.takusemba.spotlight.shape.Shape
+import com.takusemba.spotlight.Target
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
@@ -152,7 +151,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     if (targetList.isNullOrEmpty()) return
     spotlight = Spotlight.Builder(activity)
       .setTargets(targetList)
-      .setBackgroundColorRes(R.color.spotlightBackground)
+      .setBackgroundColorRes(R.color.spotlight_overlay_background)
       .setDuration(1000L)
       .setAnimation(DecelerateInterpolator(2f))
       .setOnSpotlightListener(object : OnSpotlightListener {
