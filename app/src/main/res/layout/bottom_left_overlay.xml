@@ -48,14 +48,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
-      android:layout_marginBottom="52dp"
+      android:layout_marginTop="8dp"
       android:background="@color/color_def_dark_blue"
       android:gravity="center"
       android:minWidth="160dp"
       android:minHeight="48dp"
       android:onClick="@{(v) -> listener.clickOnDone()}"
       android:text="@string/mark_spotlight_seen_button_text"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
