@@ -264,7 +264,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-    (overlayBinding as BottomLeftOverlayBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as BottomLeftOverlayBinding).spotlightHintText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as BottomLeftOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -293,7 +293,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-    (overlayBinding as BottomRightOverlayBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as BottomRightOverlayBinding).spotlightHintText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as BottomRightOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -323,7 +323,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-    (overlayBinding as TopRightOverlayBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as TopRightOverlayBinding).spotlightHintText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopRightOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
@@ -352,7 +352,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
       it.lifecycleOwner = this
       it.listener = this
     }
-    (overlayBinding as TopLeftOverlayBinding).customText.text = spotlightTarget.hint
+    (overlayBinding as TopLeftOverlayBinding).spotlightHintText.text = spotlightTarget.hint
 
     val arrowParams = (overlayBinding as TopLeftOverlayBinding).spotlightOverlayArrow.layoutParams
       as ViewGroup.MarginLayoutParams
