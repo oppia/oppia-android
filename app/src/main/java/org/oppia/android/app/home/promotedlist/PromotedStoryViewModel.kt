@@ -21,7 +21,8 @@ class PromotedStoryViewModel(
   private val totalStoryCount: Int,
   val entityType: String,
   val promotedStory: PromotedStory,
-  translationController: TranslationController
+  translationController: TranslationController,
+  val index: Int
 ) : ObservableViewModel() {
   val storyTitle by lazy {
     translationController.extractString(
