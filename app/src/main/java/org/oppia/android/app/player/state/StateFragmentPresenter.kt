@@ -35,13 +35,15 @@ import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.SplitScreenManager
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.StateFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.StoryProgressController
+import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -73,7 +75,9 @@ class StateFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val assemblerBuilderFactory: StatePlayerRecyclerViewAssembler.Builder.Factory,
   private val splitScreenManager: SplitScreenManager,
-  private val oppiaClock: OppiaClock
+  private val oppiaClock: OppiaClock,
+  private val accessibilityService: AccessibilityService,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
 
   private val routeToHintsAndSolutionListener = activity as RouteToHintsAndSolutionListener
@@ -88,6 +92,7 @@ class StateFragmentPresenter @Inject constructor(
   private lateinit var binding: StateFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private lateinit var helpIndex: HelpIndex
+  private var forceAnnouncedForHintsBar = false
 
   private val viewModel: StateViewModel by lazy {
     getStateViewModel()
@@ -462,6 +467,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun showHintsAndSolutions(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) {
+
     if (!isCurrentStatePendingState) {
       // If current state is not the pending top state, hide the hint bulb.
       setHintOpenedAndUnRevealed(false)
@@ -495,6 +501,7 @@ class StateFragmentPresenter @Inject constructor(
   private fun setHintOpenedAndUnRevealed(isHintUnrevealed: Boolean) {
     viewModel.setHintOpenedAndUnRevealedVisibility(isHintUnrevealed)
     if (isHintUnrevealed) {
+
       val hintBulbAnimation = AnimationUtils.loadAnimation(
         context,
         R.anim.hint_bulb_animation
@@ -506,6 +513,21 @@ class StateFragmentPresenter @Inject constructor(
         activity.runPeriodically(delayMillis = 5_000, periodMillis = 30_000) {
           return@runPeriodically viewModel.isHintOpenedAndUnRevealed.get()!!.also { playAnim ->
             if (playAnim) binding.hintBulb.startAnimation(hintBulbAnimation)
+            // Make a forced announcement when the hint bar becomes visible so that the non sighted
+            // users know about the availability of hints. Instead of suddenly changing the focus of
+            // the app (which is a bad practice) to the hints bar upon availability, make a forced
+            // announcement. The forced announcement should be called after 5 seconds after the
+            // hints bar appears otherwise it might interrupt with the submit button's content
+            // description during Talkback.
+            if (!forceAnnouncedForHintsBar) {
+              forceAnnouncedForHintsBar = true
+              accessibilityService.announceForAccessibilityForView(
+                binding.hintsAndSolutionFragmentContainer,
+                resourceHandler.getStringInLocale(
+                  R.string.state_fragment_hint_bar_forced_announcement_text
+                )
+              )
+            }
           }
         }
       }

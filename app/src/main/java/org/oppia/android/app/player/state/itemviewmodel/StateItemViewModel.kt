@@ -7,7 +7,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 /**
- * The root [ObservableViewModel] for all individual items that may be displayed in the state fragment recycler view.
+ * The root [ObservableViewModel] for all individual items that may be displayed in the state
+ * fragment recycler view.
  */
 abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel() {
 
@@ -40,9 +41,13 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
   interface InteractionItemFactory {
     /**
      * Returns a new [StateItemViewModel] corresponding to this interaction with the GCS entity ID,
-     * the [Interaction] object corresponding to the interaction view, a receiver for answers if this
-     * interaction pushes answers, and whether there's a previous button enabled (only relevant for
-     * navigation-based interactions).
+     * the [Interaction] object corresponding to the interaction view, a receiver for answers if
+     * this interaction pushes answers, and whether there's a previous button enabled (only relevant
+     * for navigation-based interactions).
+     *
+     * @param timeToStartNoticeAnimationMs the milliseconds at which the implementation should start
+     *     its "take notice" animation for the user, if it has one. When null, the animation should
+     *     never be shown.
      */
     fun create(
       entityId: String,
@@ -52,7 +57,8 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel
   }
 }

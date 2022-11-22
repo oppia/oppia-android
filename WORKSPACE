@@ -11,7 +11,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_depend
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
-    api_level = 30,
+    api_level = 31,
     build_tools_version = "29.0.2",
 )
 
@@ -128,6 +128,13 @@ git_repository(
     commit = "4bc1d26412f0fb9fd4ef263fa93f6a64f4d4dbcf",
     remote = "https://github.com/oppia/androidsvg",
     shallow_since = "1647295507 -0700",
+)
+
+git_repository(
+    name = "android-spotlight",
+    commit = "ebde38335bfb56349eae57e705b611ead9addb15",
+    remote = "https://github.com/oppia/android-spotlight",
+    shallow_since = "1668824029 -0800",
 )
 
 # A custom fork of KotliTeX that removes resources artifacts that break the build, and updates the
