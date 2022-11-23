@@ -82,7 +82,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
@@ -90,6 +89,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -224,8 +224,18 @@ class OnboardingFragmentTest {
   }
 
   @Test
+  fun testNextButtonSpotlight_setToShowOnStartup_checkSpotlightIsShown() {
+    launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
   fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -328,6 +338,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 1))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -435,6 +447,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 2))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.skip_text_view)).perform(click())
@@ -505,6 +519,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.onboarding_slide_view_pager)).perform(scrollToPosition(position = 3))
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.get_started_button)).perform(scrollTo(), click())
@@ -559,6 +575,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -663,6 +681,8 @@ class OnboardingFragmentTest {
   @Test
   fun testOnboardingFragment_checkSlide3_policiesLinkIsVisible() {
     launch(OnboardingActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      skipNextSlideButtonSpotlight()
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).perform(
@@ -700,12 +720,16 @@ class OnboardingFragmentTest {
     }
   }
 
+  private fun skipNextSlideButtonSpotlight() {
+    onView(withId(R.id.close_spotlight_button)).perform(click())
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
       RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

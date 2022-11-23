@@ -857,6 +857,39 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkAnnouncesAfter5Seconds() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(
+        "Go to the bottom of the screen for a hint."
+      )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_doesNotRepeatAnnouncementAfter30Sec() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      // announcement played
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      fakeAccessibilityService.resetLatestAnnouncement()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(null)
+    }
+  }
+
+  @Test
   fun testStateFragment_nextState_submitTwoWrongAnswersAndWait_canViewOneHint() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()

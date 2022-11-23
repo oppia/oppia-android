@@ -218,7 +218,7 @@ const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_
 annotation class EnableSpotlightUi
 
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
-const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
+const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
 
 /**
  * Qualifier for the platform parameter that controls whether input interaction state is correctly
