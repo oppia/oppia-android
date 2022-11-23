@@ -122,6 +122,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/classify:classification_result",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduling_worker_factory",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_factory",
