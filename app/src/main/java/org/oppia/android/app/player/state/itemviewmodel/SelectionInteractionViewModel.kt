@@ -56,13 +56,13 @@ class SelectionInteractionViewModel private constructor(
       ?: minAllowableSelectionCount
   }
   val selectedItems: MutableList<Int> = mutableListOf()
+  private val enabledItemsList by lazy { List(choiceSubtitledHtmls.size) { ObservableBoolean(true) } }
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
+    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this, enabledItemsList)
 
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText =
     ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
-  val enabledItemsList by lazy { List(choiceItems.size) { ObservableBoolean() } }
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
@@ -227,6 +227,7 @@ class SelectionInteractionViewModel private constructor(
       choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel,
+      enabledItemsList: List<ObservableBoolean>
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
@@ -234,7 +235,8 @@ class SelectionInteractionViewModel private constructor(
           htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
           itemIndex = index,
-          selectionInteractionViewModel = selectionInteractionViewModel
+          selectionInteractionViewModel = selectionInteractionViewModel,
+          enabledItem = enabledItemsList[index]
         )
       }
       return observableList

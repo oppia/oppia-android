@@ -586,7 +586,7 @@
   <string name="onboarding_next_button_spotlight_hint">Next</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
   <string name="mark_spotlight_seen_button_text">Done</string>
-  <string name="please_select_all_correct_choices">Please select all correct choices</string>
-  <string name="you_may_select_more_choices">You may select more choices</string>
+  <string name="please_select_all_correct_choices">Please select all correct choices.</string>
+  <string name="you_may_select_more_choices">You may select more choices.</string>
   <string name="no_more_than_choices_may_be_selected">No more than %s choices may be selected.</string>
 </resources>

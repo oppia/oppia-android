@@ -9,7 +9,8 @@ class SelectionInteractionContentViewModel(
   val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
   private val itemIndex: Int,
-  private val selectionInteractionViewModel: SelectionInteractionViewModel
+  private val selectionInteractionViewModel: SelectionInteractionViewModel,
+  val enabledItem: ObservableBoolean
 ) : ObservableViewModel() {
   var isAnswerSelected = ObservableBoolean()
 
@@ -20,22 +21,13 @@ class SelectionInteractionContentViewModel(
     if (isCurrentlySelected != shouldNowBeSelected) {
       isAnswerSelected.set(shouldNowBeSelected)
     }
-  }
-
-  fun enableItem(): Boolean {
-    return if (
+    if (
       selectionInteractionViewModel.selectedItems.size ==
       selectionInteractionViewModel.maxAllowableSelectionCount
     ) {
-      selectionInteractionViewModel.enabledItemsList.forEach {
-        it.set(isAnswerSelected.get())
-      }
-      selectionInteractionViewModel.enabledItemsList[itemIndex].get()
+      enabledItem.set(isAnswerSelected.get())
     } else {
-      selectionInteractionViewModel.enabledItemsList.forEach {
-        it.set(true)
-      }
-      true
+      enabledItem.set(true)
     }
   }
 }
