@@ -27,8 +27,11 @@ class FakeAnalyticsEventLogger @Inject constructor() : AnalyticsEventLogger {
   /** Clears all the events that are currently logged. */
   fun clearAllEvents() = eventList.clear()
 
-  /** Checks if a certain event has been logged or not. */
-  fun hasEventLogged(eventLog: EventLog): Boolean = eventList.contains(eventLog)
+  /** Returns whether a certain event has been logged or not, based on the provided [predicate]. */
+  fun hasEventLogged(predicate: (EventLog) -> Boolean): Boolean = eventList.find(predicate) != null
+
+  /** Returns the number of logged events that match the provided [predicate]. */
+  fun countEvents(predicate: (EventLog) -> Boolean): Int = eventList.count(predicate)
 
   /** Returns true if there are no events logged. */
   fun noEventsPresent(): Boolean = eventList.isEmpty()
