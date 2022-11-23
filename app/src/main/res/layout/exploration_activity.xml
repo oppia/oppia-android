@@ -27,7 +27,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/exploration_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_exploration_activity_toolbar_color"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
@@ -38,21 +38,13 @@
           android:layout_height="wrap_content"
           android:orientation="horizontal">
 
-          <asia.ivity.android.marqueeview.MarqueeView
-            android:id="@+id/exploration_marquee_view"
-            android:layout_width="match_parent"
+          <TextView
+            android:id="@+id/exploration_toolbar_title"
+            style="@style/MarqueeToolbarTitleTextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:layout_weight="1"
-            app:animationDelay="500"
-            app:animationSpeed="10">
-
-            <TextView
-              android:id="@+id/exploration_toolbar_title"
-              style="@style/MarqueeToolbarTitleTextView"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
-          </asia.ivity.android.marqueeview.MarqueeView>
+            android:layout_weight="1" />
 
           <ImageView
             android:id="@+id/action_audio_player"
@@ -73,7 +65,6 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:scaleType="center" />
-
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -81,6 +72,11 @@
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent">
+
+      <FrameLayout
+        android:id="@+id/exploration_spotlight_fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
       <FrameLayout
         android:id="@+id/exploration_fragment_placeholder"

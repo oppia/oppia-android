@@ -21,7 +21,7 @@
       <androidx.appcompat.widget.Toolbar
         android:id="@+id/revision_card_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/component_color_concept_card_fragment_toolbar_color"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
@@ -39,20 +39,12 @@
           android:minHeight="48dp"
           android:scaleType="center" />
 
-        <asia.ivity.android.marqueeview.MarqueeView
-          android:id="@+id/revision_card_marquee_view"
-          android:layout_width="match_parent"
+        <TextView
+          android:id="@+id/revision_card_toolbar_title"
+          style="@style/MarqueeToolbarTitleTextView"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          app:animationDelay="500"
-          app:animationSpeed="10">
-
-          <TextView
-            android:id="@+id/revision_card_toolbar_title"
-            style="@style/MarqueeToolbarTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp" />
-        </asia.ivity.android.marqueeview.MarqueeView>
+          android:layout_marginEnd="20dp"/>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

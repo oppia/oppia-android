@@ -6,7 +6,7 @@ The oppia_proto_library() rule creates a proto file library to be used in multip
 The java_lite_proto_library() rule takes in a proto_library target and generates java code.
 """
 
-load("@rules_java//java:defs.bzl", "java_lite_proto_library")
+load("@rules_java//java:defs.bzl", "java_lite_proto_library", "java_proto_library")
 load("//model:oppia_proto_library.bzl", "oppia_proto_library")
 
 # NOTE TO DEVELOPERS: When adding new protos, each proto will need to have both a proto_library
@@ -93,6 +93,12 @@ oppia_proto_library(
     name = "languages_proto",
     srcs = ["languages.proto"],
     visibility = ["//:oppia_api_visibility"],
+)
+
+java_proto_library(
+    name = "languages_java_proto",
+    visibility = ["//scripts:oppia_script_library_visibility"],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(

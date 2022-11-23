@@ -5,6 +5,17 @@ Tests corresponding to build pipeline scripts.
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_test")
 
 kt_jvm_test(
+    name = "FilterPerLanguageResourcesTest",
+    srcs = ["FilterPerLanguageResourcesTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/build:filter_per_language_resources_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+    ],
+)
+
+kt_jvm_test(
     name = "TransformAndroidManifestTest",
     srcs = ["TransformAndroidManifestTest.kt"],
     deps = [

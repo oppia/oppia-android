@@ -46,12 +46,13 @@ _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_DEV_VERSION_CODE,
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
@@ -59,13 +60,14 @@ _FLAVOR_METADATA = {
     "dev_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 19,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_DEV_KITKAT_VERSION_CODE,
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
@@ -73,12 +75,13 @@ _FLAVOR_METADATA = {
     "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
@@ -86,13 +89,14 @@ _FLAVOR_METADATA = {
     "alpha_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 19,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],  # TODO(#3886): Re-add Proguard support to alpha_kitkat.
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_ALPHA_KITKAT_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
@@ -100,12 +104,13 @@ _FLAVOR_METADATA = {
     "alpha_kenya": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alphakenya:alpha_kenya_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
         "version_code": OPPIA_ALPHA_KENYA_VERSION_CODE,
         "application_class": ".app.application.alphakenya.AlphaKenyaOppiaApplication",
@@ -113,12 +118,13 @@ _FLAVOR_METADATA = {
     "beta": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+            "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_BETA_VERSION_CODE,
         "application_class": ".app.application.beta.BetaOppiaApplication",
@@ -126,12 +132,13 @@ _FLAVOR_METADATA = {
     "ga": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 30,
+        "target_sdk_version": 31,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+            "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_GA_VERSION_CODE,
         "application_class": ".app.application.ga.GaOppiaApplication",
