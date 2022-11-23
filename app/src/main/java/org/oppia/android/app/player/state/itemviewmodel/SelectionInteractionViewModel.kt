@@ -56,8 +56,14 @@ class SelectionInteractionViewModel private constructor(
       ?: minAllowableSelectionCount
   }
   val selectedItems: MutableList<Int> = mutableListOf()
-  private val enabledItemsList by lazy { List(choiceSubtitledHtmls.size) {
-    ObservableBoolean(true) }
+  private val enabledItemsList by lazy {
+    List(
+      choiceSubtitledHtmls.size
+    ) {
+      ObservableBoolean(
+        true
+      )
+    }
   }
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
     computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this, enabledItemsList)
