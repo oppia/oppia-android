@@ -32,6 +32,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
+      android:layout_marginEnd="20dp"
       android:background="@drawable/spotlight_hint_text_background"
       android:paddingStart="8dp"
       android:paddingTop="4dp"
@@ -47,15 +48,13 @@
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="8dp"
-      android:layout_marginBottom="24dp"
+      android:layout_marginTop="8dp"
       android:background="@drawable/spotlight_done_button_background"
-      android:gravity="center"
       android:minWidth="160dp"
       android:minHeight="48dp"
       android:onClick="@{(v) -> listener.clickOnDone()}"
       android:text="@string/mark_spotlight_seen_button_text"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent" />
+      app:layout_constraintEnd_toEndOf="@id/spotlight_hint_text"
+      app:layout_constraintTop_toBottomOf="@id/spotlight_hint_text" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

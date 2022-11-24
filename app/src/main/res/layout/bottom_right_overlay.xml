@@ -56,7 +56,7 @@
       android:minHeight="48dp"
       android:onClick="@{(v) -> listener.clickOnDone()}"
       android:text="@string/mark_spotlight_seen_button_text"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintBottom_toTopOf="@id/spotlight_hint_text"
+      app:layout_constraintEnd_toEndOf="@id/spotlight_hint_text" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
