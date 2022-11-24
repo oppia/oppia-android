@@ -4,6 +4,7 @@ package model;
 
 import "exploration.proto";
 import "exploration_checkpoint.proto";
+import "languages.proto";
 import "profile.proto";
 import "translation.proto";
 
@@ -277,4 +278,34 @@ enum PolicyPage {
 
   // Corresponds to the Terms of Service page.
   TERMS_OF_SERVICE = 2;
+}
+
+// Arguments required when creating a new AppLanguageFragment.
+message AppLanguageFragmentArguments {
+  // The default app language previously selected by the user (upon opening the fragment).
+  OppiaLanguage oppia_language = 1;
+}
+
+// The bundle of properties that are saved upon configuration changes in AppLanguageFragment.
+message AppLanguageFragmentStateBundle {
+  // The default app language selected by the user.
+  OppiaLanguage oppia_language = 1;
+}
+
+// Params required when creating a new AppLanguageActivity.
+message AppLanguageActivityParams {
+  // The default app language previously selected by the user (upon opening the activity).
+  OppiaLanguage oppia_language = 2;
+}
+
+// The bundle of properties that are returned by AppLanguageActivity after it's finished.
+message AppLanguageActivityResultBundle {
+  // The new default audio language selected by the user.
+  OppiaLanguage oppia_language = 2;
+}
+
+// The bundle of properties that are saved upon configuration changes in AppLanguageActivity.
+message AppLanguageActivityStateBundle {
+  // The default audio language selected by the user.
+  OppiaLanguage oppia_language = 2;
 }

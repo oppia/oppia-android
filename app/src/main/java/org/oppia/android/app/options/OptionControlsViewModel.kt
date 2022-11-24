@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -88,10 +87,15 @@ class OptionControlsViewModel @Inject constructor(
 
     val optionsReadingTextSizeViewModel =
       OptionsReadingTextSizeViewModel(
-        routeToReadingTextSizeListener, loadReadingTextSizeListener, resourceHandler
+        routeToReadingTextSizeListener,
+        loadReadingTextSizeListener, resourceHandler
       )
     val optionsAppLanguageViewModel =
-      OptionsAppLanguageViewModel(routeToAppLanguageListListener, loadAppLanguageListListener)
+      OptionsAppLanguageViewModel(
+        routeToAppLanguageListListener,
+        loadAppLanguageListListener, profile.oppiaLanguage,
+        resourceHandler.computeLocalizedDisplayName(profile.oppiaLanguage)
+      )
     val optionAudioViewViewModel =
       OptionsAudioLanguageViewModel(
         routeToAudioLanguageListListener,
@@ -101,7 +105,6 @@ class OptionControlsViewModel @Inject constructor(
       )
 
     optionsReadingTextSizeViewModel.readingTextSize.set(profile.readingTextSize)
-    optionsAppLanguageViewModel.appLanguage.set(getAppLanguage(profile.appLanguage))
 
     itemViewModelList.add(optionsReadingTextSizeViewModel as OptionsItemViewModel)
 
@@ -126,15 +129,5 @@ class OptionControlsViewModel @Inject constructor(
    */
   fun isFirstOpen(isFirstOpen: Boolean) {
     this.isFirstOpen = isFirstOpen
-  }
-
-  fun getAppLanguage(appLanguage: AppLanguage): String {
-    return when (appLanguage) {
-      AppLanguage.ENGLISH_APP_LANGUAGE -> "English"
-      AppLanguage.HINDI_APP_LANGUAGE -> "Hindi"
-      AppLanguage.FRENCH_APP_LANGUAGE -> "French"
-      AppLanguage.CHINESE_APP_LANGUAGE -> "Chinese"
-      else -> "English"
-    }
   }
 }

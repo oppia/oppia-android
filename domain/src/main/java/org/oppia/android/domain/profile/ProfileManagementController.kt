@@ -8,9 +8,9 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
 import org.oppia.android.app.model.ProfileDatabase
@@ -236,7 +236,7 @@ class ProfileManagementController @Inject constructor(
         dateCreatedTimestampMs = oppiaClock.getCurrentTimeMs()
         this.isAdmin = isAdmin
         readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-        appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+        oppiaLanguage = OppiaLanguage.ENGLISH
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
         numberOfLogins = 0
 
@@ -526,7 +526,7 @@ class ProfileManagementController @Inject constructor(
    * @param appLanguage New app language for the profile being updated.
    * @return a [DataProvider] that indicates the success/failure of this update operation.
    */
-  fun updateAppLanguage(profileId: ProfileId, appLanguage: AppLanguage): DataProvider<Any?> {
+  fun updateAppLanguage(profileId: ProfileId, appLanguage: OppiaLanguage): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync(
       updateInMemoryCache = true
     ) {
@@ -535,7 +535,7 @@ class ProfileManagementController @Inject constructor(
           it,
           ProfileActionStatus.PROFILE_NOT_FOUND
         )
-      val updatedProfile = profile.toBuilder().setAppLanguage(appLanguage).build()
+      val updatedProfile = profile.toBuilder().setOppiaLanguage(appLanguage).build()
       val profileDatabaseBuilder = it.toBuilder().putProfiles(
         profileId.internalId,
         updatedProfile

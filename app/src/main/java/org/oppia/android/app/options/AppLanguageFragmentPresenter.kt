@@ -1,9 +1,11 @@
 package org.oppia.android.app.options
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.AppLanguageFragmentBinding
 import org.oppia.android.databinding.AppLanguageItemBinding
@@ -15,19 +17,18 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
-  private lateinit var prefSummaryValue: String
+  private lateinit var appLanguage: OppiaLanguage
   fun handleOnCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    prefKey: String,
-    prefSummaryValue: String
+    prefSummaryValue: OppiaLanguage
   ): View? {
     val binding = AppLanguageFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-    this.prefSummaryValue = prefSummaryValue
+    this.appLanguage = prefSummaryValue
     binding.viewModel = appLanguageSelectionViewModel
     appLanguageSelectionViewModel.selectedLanguage.value = prefSummaryValue
     binding.languageRecyclerView.apply {
@@ -37,8 +38,9 @@ class AppLanguageFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  fun getLanguageSelected(): String? {
+  fun getLanguageSelected(): OppiaLanguage {
     return appLanguageSelectionViewModel.selectedLanguage.value
+      ?: OppiaLanguage.LANGUAGE_UNSPECIFIED
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<AppLanguageItemViewModel> {
@@ -49,8 +51,10 @@ class AppLanguageFragmentPresenter @Inject constructor(
       ).build()
   }
 
-  private fun updateAppLanguage(appLanguage: String) {
+  private fun updateAppLanguage(appLanguage: OppiaLanguage) {
     // The first branch of (when) will be used in the case of multipane
+    Log.e("updateAppLanguage", "AppLanguageFragmentPresenter $appLanguage")
+    Log.e("parentActivity", fragment.activity?.javaClass?.simpleName.toString())
     when (val parentActivity = fragment.activity) {
       is OptionsActivity -> parentActivity.optionActivityPresenter.updateAppLanguage(appLanguage)
       is AppLanguageActivity -> parentActivity.appLanguageActivityPresenter.setLanguageSelected(
@@ -59,8 +63,9 @@ class AppLanguageFragmentPresenter @Inject constructor(
     }
   }
 
-  fun onLanguageSelected(selectedLanguage: String) {
+  fun onLanguageSelected(selectedLanguage: OppiaLanguage) {
     appLanguageSelectionViewModel.selectedLanguage.value = selectedLanguage
+    Log.e("selected language", selectedLanguage.name)
     updateAppLanguage(selectedLanguage)
   }
 }

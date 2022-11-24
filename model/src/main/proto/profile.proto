@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package model;
 
+import "languages.proto";
+
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
@@ -63,8 +65,8 @@ message Profile {
   // Represents user selected audio-language.
   AudioLanguage audio_language = 11;
 
-  // Represents user selected app-language.
-  AppLanguage app_language = 12;
+  // Represents user selected oppia-language.
+  OppiaLanguage oppia_language = 12;
 
   // Represents a generally study-unique ID that helps identify this profile for analytics logs that
   // are enabled as part of a user study. In non-user study cases this is expected to either be
@@ -112,15 +114,6 @@ enum ReadingTextSize {
   MEDIUM_TEXT_SIZE = 2;
   LARGE_TEXT_SIZE = 3;
   EXTRA_LARGE_TEXT_SIZE =  4;
-}
-
-// TODO(#3793): Replace this with OppiaLanguage.
-enum AppLanguage {
-  APP_LANGUAGE_UNSPECIFIED = 0;
-  ENGLISH_APP_LANGUAGE = 1;
-  HINDI_APP_LANGUAGE = 2;
-  FRENCH_APP_LANGUAGE = 3;
-  CHINESE_APP_LANGUAGE =  4;
 }
 
 // TODO(#3793): Replace this with OppiaLanguage.

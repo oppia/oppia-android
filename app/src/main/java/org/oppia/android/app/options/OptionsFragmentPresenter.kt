@@ -1,5 +1,6 @@
 package org.oppia.android.app.options
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AppLanguage
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -51,7 +52,7 @@ class OptionsFragmentPresenter @Inject constructor(
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>
   private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
-  private var appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
+  private var appLanguage = OppiaLanguage.ENGLISH
   private var audioLanguage = AudioLanguage.NO_AUDIO
   private val viewModel = getOptionControlsItemViewModel()
 
@@ -199,74 +200,21 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
-  fun updateAppLanguage(language: String) {
-    when (language) {
-      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.ENGLISH_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.ENGLISH_APP_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> appLanguage = AppLanguage.ENGLISH_APP_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: English", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
+  fun updateAppLanguage(language: OppiaLanguage) {
+    profileManagementController.updateAppLanguage(profileId, language).toLiveData().observe(
+      fragment,
+      {
+        when (it) {
+          is AsyncResult.Success -> {
+            Log.e("USER PREV SELECTED LANG", "OptionsFragmentPresenter.updateAppLanguage $language")
+            appLanguage = language
           }
-        )
+          is AsyncResult.Failure ->
+            oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: French", it.error)
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
       }
-      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.HINDI_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.HINDI_APP_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> appLanguage = AppLanguage.HINDI_APP_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: Hindi", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.CHINESE_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.CHINESE_APP_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> appLanguage = AppLanguage.CHINESE_APP_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: Chinese", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-      getOptionControlsItemViewModel().getAppLanguage(AppLanguage.FRENCH_APP_LANGUAGE) -> {
-        profileManagementController.updateAppLanguage(
-          profileId,
-          AppLanguage.FRENCH_APP_LANGUAGE
-        ).toLiveData().observe(
-          fragment,
-          Observer {
-            when (it) {
-              is AsyncResult.Success -> appLanguage = AppLanguage.FRENCH_APP_LANGUAGE
-              is AsyncResult.Failure ->
-                oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: French", it.error)
-              is AsyncResult.Pending -> {} // Wait for a result.
-            }
-          }
-        )
-      }
-    }
-
+    )
     recyclerViewAdapter.notifyItemChanged(1)
   }
 

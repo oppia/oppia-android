@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentComponent
@@ -66,6 +67,12 @@ abstract class InjectableAppCompatActivity :
     // to prevent these data races unless they're actually hit by users. It shouldn't, in practice,
     // be possible since it requires changing the system language between activity transitions, and
     // in most cases that should result in an activity recreation by the mixin, anyway.
+    Log.e(
+      "LANG CONFIG CHANGE",
+      "InjectableAppCompatActivity.onInitializeLocalization" + " " +
+        newBase?.resources?.configuration?.locale?.displayName.toString()
+    )
+
     val appLanguageAppInjectorProvider =
       applicationContext as AppLanguageApplicationInjectorProvider
     val appLanguageAppInjector = appLanguageAppInjectorProvider.getAppLanguageApplicationInjector()

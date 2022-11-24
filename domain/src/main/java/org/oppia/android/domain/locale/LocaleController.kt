@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
@@ -440,6 +441,7 @@ class LocaleController @Inject constructor(
   private suspend fun retrieveAllLanguageDefinitions() = definitionsLock.withLock {
     if (!::supportedLanguages.isInitialized) {
       supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
+      Log.e("RETRIEVED LANGS", supportedLanguages.languageDefinitionsOrBuilderList.toString())
     }
     return@withLock supportedLanguages
   }

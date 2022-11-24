@@ -3,13 +3,16 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAppCompatActivity
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
+import org.oppia.android.app.model.AppLanguageActivityResultBundle
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
@@ -102,8 +105,12 @@ class OptionsActivity :
         optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
       }
       REQUEST_CODE_APP_LANGUAGE -> {
-        val appLanguage = data.getStringExtra(MESSAGE_APP_LANGUAGE_ARGUMENT_KEY) as String
+        val appLanguage = data.getProtoExtra(
+          MESSAGE_APP_LANGUAGE_ARGUMENT_KEY,
+          AppLanguageActivityResultBundle.getDefaultInstance()
+        ).oppiaLanguage
         optionActivityPresenter.updateAppLanguage(appLanguage)
+        Log.e("new updated lang", "OptionsActivity $appLanguage")
       }
       REQUEST_CODE_AUDIO_LANGUAGE -> {
         val audioLanguage = data.getProtoExtra(
@@ -114,11 +121,10 @@ class OptionsActivity :
     }
   }
 
-  override fun routeAppLanguageList(appLanguage: String?) {
+  override fun routeAppLanguageList(appLanguage: OppiaLanguage) {
     startActivityForResult(
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
-        APP_LANGUAGE,
         appLanguage
       ),
       REQUEST_CODE_APP_LANGUAGE
@@ -147,7 +153,7 @@ class OptionsActivity :
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
 
-  override fun loadAppLanguageFragment(appLanguage: String) {
+  override fun loadAppLanguageFragment(appLanguage: OppiaLanguage) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
       resourceHandler.getStringInLocale(R.string.app_language)

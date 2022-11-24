@@ -1,5 +1,6 @@
 package org.oppia.android.domain.translation
 
+import android.util.Log
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.LanguageSupportDefinition
@@ -15,6 +16,7 @@ import org.oppia.android.app.model.Translation
 import org.oppia.android.app.model.TranslationMapping
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.domain.locale.LanguageConfigRetriever
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
@@ -55,7 +57,8 @@ class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val languageConfigRetriever: LanguageConfigRetriever
 ) {
   // TODO(#52): Finish this implementation. The implementation below doesn't actually save/restore
   //  settings from the local filesystem since the UI has been currently disabled as part of #20.
@@ -91,8 +94,21 @@ class TranslationController @Inject constructor(
    */
   fun getAppLanguage(profileId: ProfileId): DataProvider<OppiaLanguage> {
     return getAppLanguageLocale(profileId).transform(APP_LANGUAGE_DATA_PROVIDER_ID) { locale ->
+      Log.e("LOCALE DATA", "TranslationController.getAppLanguage" + locale.localeContext.toString())
       locale.getCurrentLanguage()
     }
+  }
+
+  /**
+   * Returns data for all available language definitions from mock proto.
+   */
+  fun getAllAppLanguageDefinitions(): List<OppiaLanguage> {
+    val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()
+    val supportedLanguageList = arrayListOf<OppiaLanguage>()
+    for (LangaugeSupportDefinition in supportedLanguages.languageDefinitionsList) {
+      supportedLanguageList.add(LangaugeSupportDefinition.language)
+    }
+    return supportedLanguageList
   }
 
   /**
@@ -289,6 +305,11 @@ class TranslationController @Inject constructor(
     systemLanguage: OppiaLanguage
   ): OppiaLanguage {
     val languageSelection = retrieveAppLanguageSelection(profileId)
+    Log.e(
+      "COMPUTE APP LANG",
+      "TranslationController.computeAppLanguage " +
+        "${languageSelection.selectionTypeCase.name}"
+    )
     return when (languageSelection.selectionTypeCase) {
       AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE -> languageSelection.selectedLanguage
       AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT,
@@ -324,11 +345,17 @@ class TranslationController @Inject constructor(
     }
   }
 
-  private fun retrieveAppLanguageSelection(profileId: ProfileId): AppLanguageSelection {
-    return dataLock.withLock {
-      appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
+  private fun retrieveAppLanguageSelection(profileId: ProfileId):
+    AppLanguageSelection {
+      return dataLock.withLock {
+        Log.e(
+          "LANG SETTINGS",
+          "retrieveAppLanguageSelection" +
+            appLanguageSettings[profileId].toString()
+        )
+        appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
+      }
     }
-  }
 
   private suspend fun updateAppLanguageSelection(
     profileId: ProfileId,

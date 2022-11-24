@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.util.extensions.getStringFromBundle
 import javax.inject.Inject
@@ -74,7 +75,7 @@ class OptionsFragment : InjectableFragment() {
     }
   }
 
-  fun updateAppLanguage(appLanguage: String) {
+  fun updateAppLanguage(appLanguage: OppiaLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
       optionsFragmentPresenter.updateAppLanguage(appLanguage)
     }

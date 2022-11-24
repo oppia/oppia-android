@@ -3,6 +3,7 @@ syntax = "proto3";
 package model;
 
 import "profile.proto";
+import "languages.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -325,7 +326,7 @@ message FeedbackReportingAppContext {
   // The text size the app is set to.
   ReadingTextSize text_size = 5;
   // The text language the app is set to.
-  AppLanguage text_language = 6;
+  OppiaLanguage text_language = 6;
   // The audio language the app is set to.
   AudioLanguage audio_language = 7;
   // The app's specific device settings.

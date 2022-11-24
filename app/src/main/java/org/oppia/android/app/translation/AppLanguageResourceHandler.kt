@@ -5,6 +5,7 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
 import javax.inject.Inject
@@ -157,6 +158,26 @@ class AppLanguageResourceHandler @Inject constructor(
       AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE -> getLocalizedDisplayName("pt", "BR")
       AudioLanguage.NO_AUDIO, AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED, AudioLanguage.UNRECOGNIZED,
       AudioLanguage.ENGLISH_AUDIO_LANGUAGE -> getLocalizedDisplayName("en")
+    }
+  }
+
+  /**
+   * Returns a human-readable, localized representation of the specified [OppiaLanguage].
+   *
+   * Note that the returned string is not expected to be localized to the user's current locale.
+   * Instead, it will be localized for that specific language (i.e. each language will be
+   * represented within that language to make it easier to identify when choosing a language).
+   */
+  fun computeLocalizedDisplayName(oppiaLanguage: OppiaLanguage): String {
+    return when (oppiaLanguage) {
+      OppiaLanguage.HINDI -> getLocalizedDisplayName("hi")
+      OppiaLanguage.PORTUGUESE -> getLocalizedDisplayName("pt")
+      OppiaLanguage.SWAHILI -> getLocalizedDisplayName("sw")
+      OppiaLanguage.BRAZILIAN_PORTUGUESE -> getLocalizedDisplayName("pt", "BR")
+      OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED,
+      OppiaLanguage.ENGLISH -> getLocalizedDisplayName("en")
+      OppiaLanguage.ARABIC -> getLocalizedDisplayName("ar")
+      OppiaLanguage.HINGLISH -> getLocalizedDisplayName("hi", "en")
     }
   }
 
