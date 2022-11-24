@@ -10,29 +10,26 @@ option java_multiple_files = true;
 message Spotlight {
   // Determines the UI element being spotlit.
   oneof feature {
-    // Corresponds to the onboarding screen's next button.
-    SpotlightViewState onboarding_next_button = 1;
-
     // Corresponds to the topic fragment's lessons tab.
-    SpotlightViewState topic_lesson_tab = 2;
+    SpotlightViewState topic_lesson_tab = 1;
 
     // Corresponds to the topic fragment's revision tab.
-    SpotlightViewState topic_revision_tab = 3;
+    SpotlightViewState topic_revision_tab = 2;
 
     // Corresponds to the first lesson under lessons tab.
-    SpotlightViewState first_chapter = 4;
+    SpotlightViewState first_chapter = 3;
 
     // Corresponds to the promoted stories.
-    SpotlightViewState promoted_stories = 5;
+    SpotlightViewState promoted_stories = 4;
 
     // Corresponds to the back button in exploration screen.
-    SpotlightViewState lessons_back_button = 6;
+    SpotlightViewState lessons_back_button = 5;
 
     // Corresponds to the voice-over icon in exploration screen.
-    SpotlightViewState voiceover_play_icon = 7;
+    SpotlightViewState voiceover_play_icon = 6;
 
     // Corresponds to the voice-over language option in audio player.
-    SpotlightViewState voiceover_language_icon = 8;
+    SpotlightViewState voiceover_language_icon = 7;
   }
 }
 
@@ -51,27 +48,24 @@ enum SpotlightViewState {
 
 // Top level proto that will be used to store SpotlightsViewStates per user profile.
 message SpotlightStateDatabase {
-  // Corresponds to the onboarding screen's next button.
-  SpotlightViewState onboarding_next_button = 1;
-
   // Corresponds to the topic fragment's lessons tab.
-  SpotlightViewState topic_lesson_tab = 2;
+  SpotlightViewState topic_lesson_tab = 1;
 
   // Corresponds to the topic fragment's revision tab.
-  SpotlightViewState topic_revision_tab = 3;
+  SpotlightViewState topic_revision_tab = 2;
 
   // Corresponds to the first lesson under lessons tab.
-  SpotlightViewState first_chapter = 4;
+  SpotlightViewState first_chapter = 3;
 
   // Corresponds to the promoted stories.
-  SpotlightViewState promoted_stories = 5;
+  SpotlightViewState promoted_stories = 4;
 
   // Corresponds to the back button in exploration screen.
-  SpotlightViewState lessons_back_button = 6;
+  SpotlightViewState lessons_back_button = 5;
 
   // Corresponds to the voice-over icon in exploration screen.
-  SpotlightViewState voiceover_play_icon = 7;
+  SpotlightViewState voiceover_play_icon = 6;
 
   // Corresponds to the voice-over language option in audio player.
-  SpotlightViewState voiceover_language_icon = 8;
+  SpotlightViewState voiceover_language_icon = 7;
 }

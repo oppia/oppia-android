@@ -224,30 +224,6 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  fun testNextButtonSpotlight_setToShowOnStartup_checkSpotlightIsShown() {
-    launch(OnboardingActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testOnboardingFragment_checkDefaultSlide_clickSkipButton_shiftsToLastSlide() {
-    launch(OnboardingActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      skipNextSlideButtonSpotlight()
-      onView(withId(R.id.skip_text_view)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
-      ).check(matches(withText(R.string.onboarding_slide_3_title)))
-    }
-  }
-
-  @Test
   fun testOnboardingFragment_checkDefaultSlide_getStartedButtonIsNotVisible() {
     launch(OnboardingActivity::class.java).use {
       onView(withId(R.id.get_started_button)).check(doesNotExist())
