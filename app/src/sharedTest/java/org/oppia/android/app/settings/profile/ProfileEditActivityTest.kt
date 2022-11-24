@@ -62,13 +62,14 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -283,10 +284,10 @@ class ProfileEditActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).check(matches((isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -321,11 +322,8 @@ class ProfileEditActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_edit_toolbar)).check(matches(hasDescendant(withText("Ben"))))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
-      onView(withId(R.id.profile_edit_allow_download_sub))
-        .perform(scrollTo()).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch))
-        .perform(scrollTo()).check(matches((isDisplayed())))
-      onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches(isDisplayed()))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).check(matches(isDisplayed()))
     }
   }
@@ -393,7 +391,8 @@ class ProfileEditActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -16,6 +16,7 @@ file_content_checks {
   failure_message: "When using announceForAccessibility, please add an exempt file in file_content_validation_checks.textproto."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
   exempted_file_name: "app/src/test/java/org/oppia/android/app/accessibility/FakeAccessibilityServiceTest.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityService.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
@@ -35,6 +36,11 @@ file_content_checks {
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+}
+file_content_checks {
+  file_path_regex: ".+?\\.xml"
+  prohibited_content_regex: "<include"
+  failure_message: "Remove <include .../> tag from layouts and instead use the widget directly, e.g. AppBarLayout."
 }
 file_content_checks {
   file_path_regex: ".+?\\.xml"
@@ -269,7 +275,7 @@ file_content_checks {
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedMethod.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/robolectric/ShadowBidiFormatter.kt"
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/robolectric/ShadowBidiFormatterTest.kt"
-  exempted_file_name: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseEventLogger.kt"
+  exempted_file_name: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseAnalyticsEventLogger.kt"
   exempted_file_patterns: "app/src/(?:((main)|(test)))/java/org/oppia/android/app/translation/.+?\\.kt"
   exempted_file_patterns: "domain/src/main/java/org/oppia/android/domain/locale/.+?\\.kt"
   exempted_file_patterns: "domain/src/test/java/org/oppia/android/domain/.+?\\.kt"
@@ -394,4 +400,11 @@ file_content_checks {
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/player/state/testing.+?\\.kt"
   exempted_file_patterns: "testing.+?\\.kt"
   required_content_regex: "decorateWithScreenName\\("
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "WorkManager.getInstance"
+  failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
+  exempted_file_patterns: ".+?Test\\.kt"
 }

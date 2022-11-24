@@ -16,9 +16,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-      android:id="@+id/add_profile_activity_toolbar"
-      layout="@layout/toolbar" />
+    <androidx.appcompat.widget.Toolbar
+       android:id="@+id/add_profile_activity_toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@color/component_color_shared_activity_toolbar_color"
+       android:minHeight="?attr/actionBarSize"
+       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+       app:titleTextAppearance="@style/ToolbarTitle" />
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -52,33 +58,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:srcCompat="@{@drawable/ic_add_profile}"/>
+            app:srcCompat="@{@drawable/ic_default_avatar}"/>
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:contentDescription="@string/edit_profile_picture_content_description"
+            android:elevation="4dp"
             android:paddingStart="12dp"
             android:paddingTop="12dp"
-            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="@+id/add_profile_activity_user_image_view"
             app:layout_constraintEnd_toEndOf="@+id/add_profile_activity_user_image_view"
             app:srcCompat="@drawable/rounded_white_background_with_shadow" />
-
-          <TextView
-            android:id="@+id/add_profile_activity_required_heading_text_view"
-            style="@style/TextViewStart"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:contentDescription="@string/required_fields_content_description"
-            android:text="@{viewModel.requiredTextWithStar}"
-            android:textColor="@color/component_color_add_profile_activity_label_text_color"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view" />
 
           <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_profile_activity_user_name"
@@ -88,9 +80,11 @@
             android:layout_marginTop="16dp"
             android:hint="@string/add_profile_input_name"
             app:errorMessage="@{viewModel.nameErrorMsg}"
+            app:helperText="@string/add_profile_required"
+            app:helperTextEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_required_heading_text_view">
+            app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_image_view">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_profile_activity_user_name_edit_text"
@@ -108,9 +102,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
-            android:textColor="@color/component_color_add_profile_activity_label_text_color"
             android:minHeight="48dp"
             android:text="@string/add_profile_create_a_3_digit_pin"
+            android:textColor="@color/component_color_add_profile_activity_label_text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_user_name" />
 
@@ -142,6 +136,8 @@
               android:layout_marginTop="24dp"
               android:hint="@string/add_profile_input_pin"
               app:errorMessage="@{viewModel.pinErrorMsg}"
+              app:helperText="@string/add_profile_required"
+              app:helperTextEnabled="true"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toTopOf="parent">
@@ -165,6 +161,8 @@
               android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
               android:hint="@string/add_profile_input_confirm_pin"
               app:errorMessage="@{viewModel.confirmPinErrorMsg}"
+              app:helperText="@string/add_profile_required"
+              app:helperTextEnabled="true"
               app:layout_constraintEnd_toEndOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_pin">
@@ -188,6 +186,7 @@
               android:clickable="@{viewModel.validPin ? true : false}"
               android:focusable="true"
               android:importantForAccessibility="yes"
+              android:visibility="@{viewModel.showAllowDownloadAccess ? View.VISIBLE : View.GONE}"
               app:layout_constraintTop_toBottomOf="@+id/add_profile_activity_confirm_pin">
 
               <TextView

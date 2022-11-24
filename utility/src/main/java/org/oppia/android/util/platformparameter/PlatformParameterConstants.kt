@@ -11,11 +11,13 @@ import javax.inject.Qualifier
  */
 
 /**
- * Qualifier for the platform parameter that automatically updates topics when a user toggles the
- * switch in the [AdministratorControlsFragmentPresenter].
+ * Qualifier for the platform parameter that controls whether the user has support for manually
+ * downloading topics.
  */
-@Qualifier
-annotation class AutomaticUpdateTopicSetting
+@Qualifier annotation class EnableDownloadsSupport
+
+/** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
+const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 
 /**
  * Name of the platform parameter that automatically updates topics when a user toggles the
@@ -139,6 +141,17 @@ const val ENABLE_PERFORMANCE_METRICS_COLLECTION = "enable_performance_metrics_co
 const val ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE = false
 
 /**
+ * Qualifier for the platform parameter that controls whether to animate the continue button
+ * interaction and navigation items. This is used to disable the animation during testing because
+ * Espresso has known problems while testing views that contain animations.
+ */
+@Qualifier
+annotation class EnableContinueButtonAnimation
+
+/** Default value for whether to enable continue button animation. */
+const val ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE = true
+
+/**
  * Qualifier for the platform parameter that controls the time interval in minutes of uploading
  * previously recorded performance metrics to the remote service.
  */
@@ -205,4 +218,16 @@ const val PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_
 annotation class EnableSpotlightUi
 
 /** Default value for the feature flag corresponding to [EnableSpotlightUi]. */
-const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = true
+const val ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the platform parameter that controls whether input interaction state is correctly
+ * retained across configuration changes.
+ */
+@Qualifier
+annotation class EnableInteractionConfigChangeStateRetention
+
+/**
+ * Default value for feature flag corresponding to [EnableInteractionConfigChangeStateRetention].
+ */
+const val ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE = false

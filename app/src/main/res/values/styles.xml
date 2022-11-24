@@ -410,14 +410,11 @@
   </style>
   <!-- Start Over Lesson Button -->
   <style name="StartOverLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_width">144dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
-    <item name="android:paddingTop">8dp</item>
-    <item name="android:paddingBottom">8dp</item>
-    <item name="android:minWidth">48dp</item>
-    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:minWidth">144dp</item>
     <item name="android:background">@drawable/start_over_button_background</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="drawableStartCompat">@drawable/ic_start_over_24dp</item>
@@ -429,14 +426,12 @@
   </style>
   <!-- Continue Lesson Button -->
   <style name="ContinueLessonButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_width">144dp</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:drawablePadding">4dp</item>
     <item name="android:paddingEnd">12dp</item>
     <item name="android:paddingStart">12dp</item>
-    <item name="android:paddingTop">8dp</item>
-    <item name="android:paddingBottom">8dp</item>
-    <item name="android:minWidth">48dp</item>
+    <item name="android:minWidth">144dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="drawableEndCompat">@drawable/ic_arrow_right_alt_24dp</item>
     <item name="drawableTint">@color/color_def_white</item>
@@ -450,13 +445,19 @@
   <style name="BorderlessMaterialButton" parent="Widget.AppCompat.Button.Borderless" />
 
   <style name="MarqueeToolbarTitleTextView" parent="TextView.Common1">
+    <item name="android:ellipsize">marquee</item>
+    <item name="android:fadingEdge">horizontal</item>
+    <item name="android:fadingEdgeLength">20dp</item>
     <item name="android:focusable">false</item>
     <item name="android:focusableInTouchMode">true</item>
     <item name="android:fontFamily">sans-serif</item>
+    <item name="android:marqueeRepeatLimit">1</item>
     <item name="android:minHeight">48dp</item>
     <item name="android:textAlignment">viewStart</item>
     <item name="android:textColor">@color/color_def_white</item>
     <item name="android:textSize">20sp</item>
+    <item name="android:requiresFadingEdge">horizontal</item>
+    <item name="android:scrollHorizontally">true</item>
     <item name="android:singleLine">true</item>
     <item name="fontFamily">sans-serif</item>
     <item name="textAllCaps">false</item>

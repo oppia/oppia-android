@@ -27,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
@@ -128,6 +129,9 @@ class EventBundleCreator @Inject constructor(
    * [OppiaMetricLog.LoggableMetric.getLoggableMetricTypeCase]).
    */
   fun fillPerformanceMetricsEventBundle(oppiaMetricLog: OppiaMetricLog, bundle: Bundle): String {
+    bundle.putInt("android_sdk", androidSdkVersion)
+    bundle.putString("app_version_name", appVersionName)
+    bundle.putInt("app_version_code", appVersionCode)
     bundle.putLong("timestamp", oppiaMetricLog.timestampMillis)
     bundle.putString("priority", oppiaMetricLog.priority.toAnalyticsName())
     bundle.putString("is_app_in_foreground", oppiaMetricLog.isAppInForeground.toString())
@@ -171,6 +175,7 @@ class EventBundleCreator @Inject constructor(
       DELETE_PROFILE_CONTEXT -> LearnerDetailsContext(activityName, deleteProfileContext)
       OPEN_HOME -> EmptyContext(activityName)
       OPEN_PROFILE_CHOOSER -> EmptyContext(activityName)
+      REACH_INVESTED_ENGAGEMENT -> ExplorationContext(activityName, reachInvestedEngagement)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
@@ -237,6 +242,7 @@ class EventBundleCreator @Inject constructor(
       if (!isSensitive || allowUserIds) {
         val propertyName = computePropertyName(valueName)
         when (value) {
+          is Double -> bundle.putDouble(propertyName, value)
           is Long -> bundle.putLong(propertyName, value)
           is Iterable<*> -> bundle.putString(propertyName, value.joinToString(separator = ","))
           else -> bundle.putString(propertyName, value.toString())
@@ -610,5 +616,6 @@ class EventBundleCreator @Inject constructor(
     ScreenName.ADMIN_PIN_ACTIVITY -> "admin_pin_activity"
     ScreenName.POLICIES_ACTIVITY -> "policies_activity"
     ScreenName.UNRECOGNIZED -> "unrecognized"
+    ScreenName.FOREGROUND_SCREEN -> "foreground_screen"
   }
 }

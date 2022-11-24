@@ -1,7 +1,6 @@
 package org.oppia.android.domain.platformparameter.syncup
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.work.Constraints
 import androidx.work.Data
@@ -9,7 +8,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import java.util.UUID
@@ -21,9 +20,8 @@ import javax.inject.Inject
  * from the remote service on application creation.
  */
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
-  private val context: Context,
   @SyncUpWorkerTimePeriodHours private val workRequestRepeatInterval: PlatformParameterValue<Int>
-) : ApplicationStartupListener {
+) : AnalyticsStartupListener {
 
   private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
 
@@ -53,8 +51,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
       .setConstraints(platformParameterSyncUpWorkerConstraints)
       .build()
 
-  override fun onCreate() {
-    val workManager = WorkManager.getInstance(context)
+  override fun onCreate(workManager: WorkManager) {
     workManager.enqueueUniquePeriodicWork(
       OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME,
       ExistingPeriodicWorkPolicy.KEEP,

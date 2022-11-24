@@ -3,20 +3,24 @@ package org.oppia.android.testing.platformparameter
 import androidx.annotation.VisibleForTesting
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
-import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
+import org.oppia.android.util.platformparameter.ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableContinueButtonAnimation
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -41,6 +45,10 @@ import javax.inject.Singleton
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
 class TestPlatformParameterModule {
+  @Provides
+  @EnableDownloadsSupport
+  fun provideEnableDownloadsSupport(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
 
   @TestStringParam
   @Provides
@@ -94,34 +102,19 @@ class TestPlatformParameterModule {
   }
 
   @Provides
-  @AutomaticUpdateTopicSetting
-  fun provideAutomaticUpdateTopicSettingParam(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      enableAutomaticUpdateTopicSettingUi
-    )
-  }
-
-  @Provides
   @EnableLanguageSelectionUi
-  fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      enableLanguageSelectionUi
-    )
-  }
+  fun provideEnableLanguageSelectionUi(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableLanguageSelectionUi)
 
   @Provides
   @EnableEditAccountsOptionsUi
-  fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      enableEditAccountsOptionsUi
-    )
-  }
+  fun provideEnableEditAccountsOptionsUi(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableEditAccountsOptionsUi)
 
   @Provides
   @LearnerStudyAnalytics
-  fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(enableLearnerStudyAnalytics)
-  }
+  fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableLearnerStudyAnalytics)
 
   @Provides
   @CacheLatexRendering
@@ -134,14 +127,8 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnablePerformanceMetricsCollection
-  fun provideEnablePerformanceMetricCollection(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-    )
+  fun provideEnablePerformanceMetricCollection(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsCollection)
   }
 
   @Provides
@@ -182,24 +169,48 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnableExtraTopicTabsUi
-  fun provideEnableExtraTopicTabsUi(): PlatformParameterValue<Boolean> {
+  fun provideEnableExtraTopicTabsUi(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableExtraTopicTabsUi)
+
+  @Provides
+  @EnableInteractionConfigChangeStateRetention
+  fun provideEnableInteractionConfigChangeStateRetention(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableInteractionConfigChangeStateRetention)
+
+  @Provides
+  @EnableContinueButtonAnimation
+  fun provideEnableContinueButtonAnimation(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(
-      enableExtraTopicTabsUi
+      enableContinueButtonAnimation
+    )
+  }
+
+  @Provides
+  @EnableSpotlightUi
+  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableSpotlightUi
     )
   }
 
   companion object {
-    private var enableAutomaticUpdateTopicSettingUi = AUTOMATIC_UPDATE_TOPIC_SETTING_VALUE
+    private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
     private var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
     private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+    private var enableInteractionConfigChangeStateRetention =
+      ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
+    private var enablePerformanceMetricsCollection =
+      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+    private var enableSpotlightUi = true
 
-    /** Enables forcing [EnableAutomaticUpdateTopicSettingUi] platform parameter flag from tests. */
+    /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceShowAutomaticUpdateTopicSettingUi(value: Boolean) {
-      enableAutomaticUpdateTopicSettingUi = value
+    fun forceEnableDownloadsSupport(value: Boolean) {
+      enableDownloadsSupport = value
     }
+    private var enableContinueButtonAnimation = ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -223,6 +234,42 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableExtraTopicTabsUi(value: Boolean) {
       enableExtraTopicTabsUi = value
+    }
+
+    /** Enables forcing [EnableInteractionConfigChangeStateRetention] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableInteractionConfigChangeStateRetention(value: Boolean) {
+      enableInteractionConfigChangeStateRetention = value
+    }
+
+    /** Enables forcing [EnablePerformanceMetricsCollection] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnablePerformanceMetricsCollection(value: Boolean) {
+      enablePerformanceMetricsCollection = value
+    }
+
+    /** Enables forcing [EnableContinueButtonAnimation] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableContinueButtonAnimation(value: Boolean) {
+      enableContinueButtonAnimation = value
+    }
+
+    /** Enables forcing [EnableSpotlightUi] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableSpotlightUi(value: Boolean) {
+      enableSpotlightUi = value
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun reset() {
+      enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
+      enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
+      enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+      enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+      enableInteractionConfigChangeStateRetention =
+        ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
+      enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
     }
   }
 }

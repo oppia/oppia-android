@@ -84,13 +84,14 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
@@ -270,7 +271,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_okay_button)).perform(click())
@@ -286,7 +287,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 3)
+      scrollToPosition(position = 2)
       onView(withId(R.id.app_version_text_view)).perform(click())
       intended(hasComponent(AppVersionActivity::class.java.name))
     }
@@ -315,7 +316,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
@@ -331,9 +332,9 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_okay_button)
@@ -349,7 +350,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
@@ -366,7 +367,7 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(position = 4)
+      scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(textInDialogId = R.string.log_out_dialog_message)
       onView(withText(R.string.log_out_dialog_cancel_button)).perform(click())
@@ -528,12 +529,7 @@ class AdministratorControlsActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
-      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
-      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
       onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
     }
   }
 
@@ -546,16 +542,92 @@ class AdministratorControlsActivityTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name)).check(
-        matches(withText("Ben"))
-      ).perform(click())
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
+        .check(matches(withText("Ben"))).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
+      onView(withId(R.id.profile_delete_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdminControls_selectAdmin_tabletConfigChange_downloadsEnabled_hasNoDownloadSettings() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickAdminProfile()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdminControls_selectUser_tabletConfigChange_downloadsEnabled_hasDownloadSettings() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
+        .check(matches(withText("Ben"))).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(isDisplayed()))
       onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(isDisplayed()))
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isDisplayed()))
-      onView(withId(R.id.profile_delete_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdminControls_selectAdmin_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      clickAdminProfile()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.extra_controls_title)).check(matches(withText("Admin")))
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_delete_button)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdminControls_selectUser_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(atPositionOnView(R.id.profile_list_recycler_view, 1, R.id.profile_list_name))
+        .check(matches(withText("Ben"))).perform(click())
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.profile_edit_allow_download_heading)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_sub)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isDisplayed())))
     }
   }
 
@@ -808,11 +880,8 @@ class AdministratorControlsActivityTest {
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.administrator_controls_list)).perform(
-      scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
-    )
+    onView(withId(R.id.administrator_controls_list))
+      .perform(scrollToPosition<RecyclerView.ViewHolder>(position))
   }
 
   private fun verifyTextInDialog(@StringRes textInDialogId: Int) {
@@ -848,7 +917,8 @@ class AdministratorControlsActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class
+      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

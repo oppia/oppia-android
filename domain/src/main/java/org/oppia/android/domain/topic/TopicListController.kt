@@ -212,7 +212,6 @@ class TopicListController @Inject constructor(
           baseMessage = StoryRecord.getDefaultInstance()
         )
       }
-      val firstStoryId = storyRecords.getOrNull(0)?.storyId
       TopicSummary.newBuilder().apply {
         this.topicId = topicId
         putAllWrittenTranslations(topicRecord.writtenTranslationsMap)
@@ -353,8 +352,8 @@ class TopicListController @Inject constructor(
 
     sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
-      // Ignore topics that are no longer on the device.
-      if (topic != null) {
+      // Ignore topics that are no longer on the device, or that have been unpublished.
+      if (topic?.topicPlayAvailability?.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
         val isTopicConsideredCompleted = topic.hasAtLeastOneStoryCompleted(topicProgress)
 
         topicProgress.storyProgressMap.values.forEach { storyProgress ->

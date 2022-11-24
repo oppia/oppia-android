@@ -34,6 +34,8 @@ class RegexPatternValidationCheckTest {
   private val settableFutureUsageErrorMessage =
     "SettableFuture should only be used in pre-approved locations since it's easy to potentially " +
       "mess up & lead to a hanging ListenableFuture."
+  private val androidLayoutIncludeTagErrorMessage =
+    "Remove <include .../> tag from layouts and instead use the widget directly, e.g. AppBarLayout."
   private val androidGravityLeftErrorMessage =
     "Use android:gravity=\"start\", instead, for proper RTL support"
   private val androidGravityRightErrorMessage =
@@ -162,6 +164,10 @@ class RegexPatternValidationCheckTest {
     "Only colors from color_palette.xml may be used in component_colors.xml."
   private val doesNotReferenceColorFromColorDefs =
     "Only colors from color_defs.xml may be used in color_palette.xml."
+  private val doesNotUseWorkManagerGetInstance =
+    "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one" +
+      " using getInstance (as the latter may create a WorkManager if one isn't already present, " +
+      "and the application may intend to disable it)."
   private val wikiReferenceNote =
     "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
       "#regexpatternvalidation-check for more details on how to fix this."
@@ -379,6 +385,26 @@ class RegexPatternValidationCheckTest {
       .isEqualTo(
         """
         TestFile.kt:1: $settableFutureUsageErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_androidLayoutIncludeTag_fileContentIsNotCorrect() {
+    val prohibitedContent = "<include"
+    val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
+    fileContainsSupportLibraryImport.writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        test_layout.xml:1: $androidLayoutIncludeTagErrorMessage
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2236,6 +2262,31 @@ class RegexPatternValidationCheckTest {
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_referenceGetInstance_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+        val workManager = WorkManager.getInstance(context)
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows(Exception::class) {
+      runScript()
+    }
+
+    // Verify that all patterns are properly detected & prohibited.
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath:1: $doesNotUseWorkManagerGetInstance
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   /** Runs the regex_pattern_validation_check. */
