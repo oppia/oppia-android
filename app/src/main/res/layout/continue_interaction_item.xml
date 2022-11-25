@@ -11,6 +11,10 @@
       type="org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewModel" />
   </data>
 
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false">
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/continue_interaction_container"
     android:layout_width="match_parent"
@@ -60,4 +64,5 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
+  </FrameLayout>
 </layout>
