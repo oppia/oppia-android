@@ -275,6 +275,7 @@
   <string name="onboarding_activity_onboarding_slide_dots_content_description">Slide %s of %s</string>
   <string name="onboarding_activity_title">Introduction</string>
   <string name="onboarding_activity_agree_to_terms"><![CDATA[By using %s, you agree to our <br> <oppia-noninteractive-policy link=\"tos\">Terms of Service</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">Privacy Policy</oppia-noninteractive-policy>.]]></string>
+  <string name="onboarding_activity_onboarding_next_button_spotlight_hint">Next</string>
   <!-- OptionsActivity -->
   <string name="options_activity_title">Options</string>
   <string name="app_language_activity_label_text">App Language</string>
@@ -410,6 +411,7 @@
   <string name="state_fragment_activity_correct_text">Correct!</string>
   <string name="state_fragment_activity_hint_bulb_no_state_activity_new_hint_available_text">No new hint available</string>
   <string name="state_activity_new_hint_available">New hint available</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
   <!-- StoryActivity -->
   <string name="story_activity_title">Chapter List</string>
   <string name="story_summary_activity_topic_story_progress_percentage">%s\%%</string>
@@ -616,4 +618,6 @@
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
+  <string name="mark_spotlight_seen_button_text">Done</string>
+  <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
 </resources>

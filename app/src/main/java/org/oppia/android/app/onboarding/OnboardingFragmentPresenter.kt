@@ -69,7 +69,9 @@ class OnboardingFragmentPresenter @Inject constructor(
   fun startSpotlight() {
     val nextSpotlightTarget = SpotlightTarget(
       binding.onboardingFragmentNextImageView,
-      resourceHandler.getStringInLocale(R.string.onboarding_next_button_spotlight_hint),
+      resourceHandler.getStringInLocale(
+        R.string.onboarding_activity_onboarding_next_button_spotlight_hint
+      ),
       SpotlightShape.Circle,
       Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
     )

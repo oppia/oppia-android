@@ -227,7 +227,11 @@ class OnboardingFragmentTest {
   fun testNextButtonSpotlight_setToShowOnStartup_checkSpotlightIsShown() {
     launch(OnboardingActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.onboarding_next_button_spotlight_hint)).check(matches(isDisplayed()))
+      onView(
+        withText(
+          R.string.onboarding_activity_onboarding_next_button_spotlight_hint
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
