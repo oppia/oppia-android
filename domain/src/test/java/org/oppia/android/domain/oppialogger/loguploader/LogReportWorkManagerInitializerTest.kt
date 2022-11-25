@@ -10,6 +10,7 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.DelegatingWorkerFactory
 import androidx.work.NetworkType
+import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
@@ -113,7 +114,7 @@ class LogReportWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    logReportWorkManagerInitializer.onCreate()
+    logReportWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
     testCoroutineDispatchers.runCurrent()
 
     val enqueuedEventWorkRequestId = logReportWorkManagerInitializer.getWorkRequestForEventsId()
