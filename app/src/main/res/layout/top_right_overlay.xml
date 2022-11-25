@@ -43,19 +43,20 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/spotlight_overlay_arrow" />
 
-    <Button
+    <ImageButton
       android:id="@+id/close_spotlight_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="8dp"
+      android:layout_marginBottom="4dp"
       android:layout_marginEnd="0dp"
+      app:srcCompat="@drawable/ic_close_black_24"
       android:background="@drawable/spotlight_done_button_background"
-      android:minWidth="160dp"
+      android:gravity="center"
+      android:minWidth="48dp"
       android:minHeight="48dp"
       android:onClick="@{(v) -> listener.clickOnDone()}"
-      android:text="@string/mark_spotlight_seen_button_text"
-      app:layout_constraintEnd_toEndOf="@id/spotlight_hint_text"
-      app:layout_constraintTop_toBottomOf="@id/spotlight_hint_text" />
+      app:layout_constraintStart_toStartOf="@id/spotlight_hint_text"
+      app:layout_constraintBottom_toTopOf="@id/spotlight_hint_text"/>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
