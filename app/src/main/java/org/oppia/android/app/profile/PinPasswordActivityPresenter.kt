@@ -10,8 +10,8 @@ import org.oppia.android.R
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.PinPasswordActivityBinding
 import org.oppia.android.domain.profile.ProfileManagementController

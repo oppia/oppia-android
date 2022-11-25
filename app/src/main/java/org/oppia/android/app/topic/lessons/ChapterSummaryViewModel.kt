@@ -14,7 +14,8 @@ class ChapterSummaryViewModel(
   val storyId: String,
   private val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  val storyIndex: Int
 ) : ObservableViewModel() {
 
   fun onClick(explorationId: String) {

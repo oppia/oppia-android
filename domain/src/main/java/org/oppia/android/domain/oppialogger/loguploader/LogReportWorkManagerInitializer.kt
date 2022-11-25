@@ -1,12 +1,11 @@
 package org.oppia.android.domain.oppialogger.loguploader
 
-import android.content.Context
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.MetricLogScheduler
@@ -22,14 +21,13 @@ import javax.inject.Inject
  * on application creation.
  */
 class LogReportWorkManagerInitializer @Inject constructor(
-  private val context: Context,
   private val logUploader: LogUploader,
   private val metricLogScheduler: MetricLogScheduler,
   @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   performanceMetricsCollectionHighFrequencyTimeInterval: PlatformParameterValue<Int>,
   @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
   performanceMetricCollectionLowFrequencyTimeInterval: PlatformParameterValue<Int>
-) : ApplicationStartupListener {
+) : AnalyticsStartupListener {
 
   private val logReportWorkerConstraints = Constraints.Builder()
     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -126,8 +124,7 @@ class LogReportWorkManagerInitializer @Inject constructor(
       .setConstraints(logReportWorkerConstraints)
       .build()
 
-  override fun onCreate() {
-    val workManager = WorkManager.getInstance(context)
+  override fun onCreate(workManager: WorkManager) {
     logUploader.enqueueWorkRequestForEvents(workManager, workRequestForUploadingEvents)
     logUploader.enqueueWorkRequestForExceptions(workManager, workRequestForUploadingExceptions)
     logUploader.enqueueWorkRequestForPerformanceMetrics(

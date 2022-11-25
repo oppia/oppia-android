@@ -26,4 +26,9 @@ class OnboardingFragment : InjectableFragment() {
   ): View? {
     return onboardingFragmentPresenter.handleCreateView(inflater, container)
   }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    onboardingFragmentPresenter.startSpotlight()
+  }
 }

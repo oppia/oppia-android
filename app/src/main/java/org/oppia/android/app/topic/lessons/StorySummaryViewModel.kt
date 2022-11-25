@@ -15,7 +15,8 @@ class StorySummaryViewModel(
   private val storySummarySelector: StorySummarySelector,
   private val chapterSummarySelector: ChapterSummarySelector,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val storyIndex: Int
 ) : TopicLessonsItemViewModel() {
   val storySummary = ephemeralStorySummary.storySummary
   val storyTitle by lazy {
@@ -90,7 +91,8 @@ class StorySummaryViewModel(
         storyId = storySummary.storyId,
         index = index,
         chapterSummarySelector = chapterSummarySelector,
-        resourceHandler = resourceHandler
+        resourceHandler = resourceHandler,
+        storyIndex = storyIndex
       )
     }
   }

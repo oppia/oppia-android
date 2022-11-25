@@ -51,6 +51,7 @@ class StandardEventTypeToHumanReadableNameConverterImpl @Inject constructor() :
       ActivityContextCase.DELETE_PROFILE_CONTEXT -> "delete_profile"
       ActivityContextCase.OPEN_HOME -> "open_home_screen"
       ActivityContextCase.OPEN_PROFILE_CHOOSER -> "open_profile_chooser_screen"
+      ActivityContextCase.REACH_INVESTED_ENGAGEMENT -> "reach_invested_engagement"
       ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
       ActivityContextCase.ACTIVITYCONTEXT_NOT_SET -> "ERROR_internal_logging_failure"
     }

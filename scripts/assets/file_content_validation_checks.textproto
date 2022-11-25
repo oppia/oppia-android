@@ -16,6 +16,7 @@ file_content_checks {
   failure_message: "When using announceForAccessibility, please add an exempt file in file_content_validation_checks.textproto."
   exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
   exempted_file_name: "app/src/test/java/org/oppia/android/app/accessibility/FakeAccessibilityServiceTest.kt"
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityService.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/accessibility/AccessibilityServiceImpl.kt"
@@ -399,4 +400,11 @@ file_content_checks {
   exempted_file_patterns: "app/src/main/java/org/oppia/android/app/player/state/testing.+?\\.kt"
   exempted_file_patterns: "testing.+?\\.kt"
   required_content_regex: "decorateWithScreenName\\("
+}
+file_content_checks {
+  file_path_regex: ".+?.kt"
+  prohibited_content_regex: "WorkManager.getInstance"
+  failure_message: "Use AnalyticsStartupListener to retrieve an instance of WorkManager rather than fetching one using getInstance (as the latter may create a WorkManager if one isn't already present, and the application may intend to disable it)."
+  exempted_file_name: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
+  exempted_file_patterns: ".+?Test\\.kt"
 }

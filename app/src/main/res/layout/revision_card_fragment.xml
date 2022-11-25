@@ -49,6 +49,7 @@
           android:textColor="@color/color_def_black"
           android:textSize="20sp"
           android:textStyle="bold"
+          android:visibility="@{viewModel.subtopicListSize == 1 ? View.INVISIBLE : View.VISIBLE}"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />

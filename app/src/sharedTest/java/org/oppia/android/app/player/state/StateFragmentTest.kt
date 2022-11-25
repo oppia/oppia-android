@@ -156,6 +156,7 @@ import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -234,6 +235,7 @@ class StateFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(false)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -322,7 +324,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_INTERACTION)
 
-      onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -334,7 +336,7 @@ class StateFragmentTest {
       rotateToLandscape()
 
       scrollToViewType(CONTINUE_INTERACTION)
-      onView(withId(R.id.continue_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -1687,7 +1689,7 @@ class StateFragmentTest {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
 
-      onView(withId(R.id.continue_button)).check(matches(withText("Continue")))
+      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
     }
   }
 
@@ -1700,7 +1702,7 @@ class StateFragmentTest {
       startPlayingExploration()
 
       // App strings aren't being translated, so the button label stays the same.
-      onView(withId(R.id.continue_button)).check(matches(withText("Continue")))
+      onView(withId(R.id.continue_interaction_button)).check(matches(withText("Continue")))
     }
   }
 
@@ -3923,7 +3925,7 @@ class StateFragmentTest {
 
   private fun clickContinueInteractionButton() {
     scrollToViewType(CONTINUE_INTERACTION)
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 

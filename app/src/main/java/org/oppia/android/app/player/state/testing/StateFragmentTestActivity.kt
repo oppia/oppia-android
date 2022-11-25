@@ -97,6 +97,10 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.scrollToTop()
   }
 
+  fun stopExploration(isCompletion: Boolean) {
+    stateFragmentTestActivityPresenter.stopExploration(isCompletion)
+  }
+
   override fun dismiss() {}
 
   override fun routeToHintsAndSolution(

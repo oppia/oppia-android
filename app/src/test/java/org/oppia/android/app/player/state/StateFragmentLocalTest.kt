@@ -48,6 +48,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -76,6 +77,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
@@ -113,12 +115,12 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
+import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
@@ -134,6 +136,7 @@ import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiv
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasExpectedNumberOfActiveSystems
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
@@ -270,6 +273,175 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withSubstring("of the above circle is red?")).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testContinueInteractionAnim_openPrototypeExp_checkContinueButtonAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ClickContinueButton_checkAnimSeenStatusIsTrue() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      val continueButtonAnimationSeenStatus =
+        profileTestHelper.getContinueButtonAnimationSeenStatus(profileId)
+      assertThat(continueButtonAnimationSeenStatus).isTrue()
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_checkAnimIsNotShownInTheBeginning() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testContIntAnim_openProtExp_ContButtonAnimAlreadySeen_checkAnimIsNotShown() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+
+      it.onActivity { activity ->
+        activity.stopExploration(false)
+      }
+
+      startPlayingExploration()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testNavBtnAnim_openProtExp_waitFor30Sec_pressCont_submitAnswer_checkContNavBtnDoesNotAnim() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      playThroughTestState1()
+      submitFractionAnswer("1/2")
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_NAVIGATION_BUTTON))
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandscapeAfter30Sec_checkAnimHasNotStarted() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
+      onView(withId(R.id.continue_interaction_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  @Test
+  fun testConIntAnim_openProtExp_orientLandAfter30Sec_checkAnimStartsIn15SecAfterOrientChange() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(CONTINUE_INTERACTION)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(15))
+      onView(withId(R.id.continue_interaction_button)).check(matches(isAnimating()))
+    }
+  }
+
+  @Test
+  fun testContNavBtnAnim_openMathExp_checkContNavBtnAnimatesAfter45Seconds() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+
+      testCoroutineDispatchers.advanceTimeBy(45000)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isAnimating()))
+    }
+  }
+
+  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
+  @Ignore("Continue navigation animation behavior fails during testing")
+  @Test
+  fun testContNavBtnAnim_openMathExp_playThroughSecondState_checkContBtnDoesNotAnimateAfter45Sec() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_5).use {
+      startPlayingExploration()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToViewType(
+          NUMERIC_EXPRESSION_INPUT_INTERACTION
+        )
+      )
+      typeTextIntoInteraction(
+        "1+2",
+        interactionViewId = R.id.math_expression_input_interaction_view
+      )
+      clickSubmitAnswerButton()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
+    }
+  }
+
+  // TODO(#4742): Figure out why tests for continue navigation item animation are failing.
+  @Ignore("Continue navigation animation behavior fails during testing")
+  @Test
+  fun testConIntAnim_openFractions_expId1_checkButtonDoesNotAnimate() {
+    TestPlatformParameterModule.forceEnableContinueButtonAnimation(true)
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
+      startPlayingExploration()
+      playThroughTestState1()
+      submitFractionAnswer(answerText = "1/2")
+
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+      onView(withId(R.id.continue_navigation_button)).check(matches(not(isAnimating())))
     }
   }
 
@@ -681,6 +853,39 @@ class StateFragmentLocalTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_checkAnnouncesAfter5Seconds() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(
+        "Go to the bottom of the screen for a hint."
+      )
+    }
+  }
+
+  @Test
+  fun testHintBarForcedAnnouncement_submitTwoWrongAnswers_doesNotRepeatAnnouncementAfter30Sec() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+      openHintsAndSolutionsDialog()
+
+      // announcement played
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
+      fakeAccessibilityService.resetLatestAnnouncement()
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(30))
+      assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(null)
     }
   }
 
@@ -2027,7 +2232,7 @@ class StateFragmentLocalTest {
   private fun clickContinueButton() {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(CONTINUE_INTERACTION))
     testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.continue_button)).perform(click())
+    onView(withId(R.id.continue_interaction_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
@@ -2326,6 +2531,20 @@ class StateFragmentLocalTest {
     Locale.setDefault(locale)
   }
 
+  private fun isAnimating(): TypeSafeMatcher<View> {
+    return ActiveAnimationMatcher()
+  }
+
+  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+    override fun describeTo(description: Description) {
+      description.appendText("View is animating")
+    }
+
+    override fun matchesSafely(view: View): Boolean {
+      return view.animation?.hasStarted() ?: false
+    }
+  }
+
   /**
    * Returns a [ViewAssertion] that can be used to check the specified matcher applies the specified
    * number of times for children against the view under test. If the count does not exactly match,
@@ -2387,7 +2606,7 @@ class StateFragmentLocalTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      RobolectricModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

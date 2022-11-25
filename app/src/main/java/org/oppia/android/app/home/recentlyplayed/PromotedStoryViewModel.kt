@@ -11,33 +11,39 @@ import org.oppia.android.domain.translation.TranslationController
 // TODO(#297): Add download status information to promoted-story-card.
 
 /** [ViewModel] for displaying a promoted story. */
-class OngoingStoryViewModel(
+class PromotedStoryViewModel(
   private val activity: AppCompatActivity,
-  val ongoingStory: PromotedStory,
+  val promotedStory: PromotedStory,
   val entityType: String,
-  private val ongoingStoryClickListener: OngoingStoryClickListener,
+  private val promotedStoryClickListener: PromotedStoryClickListener,
   private val position: Int,
   private val resourceHandler: AppLanguageResourceHandler,
   translationController: TranslationController
 ) : RecentlyPlayedItemViewModel() {
+  /** Sets the story title of the recently played story. */
   val storyTitle by lazy {
     translationController.extractString(
-      ongoingStory.storyTitle, ongoingStory.storyWrittenTranslationContext
+      promotedStory.storyTitle, promotedStory.storyWrittenTranslationContext
     )
   }
+  /** Sets the topic of the recently played story. */
   val topicTitle by lazy {
     translationController.extractString(
-      ongoingStory.topicTitle, ongoingStory.topicWrittenTranslationContext
+      promotedStory.topicTitle, promotedStory.topicWrittenTranslationContext
     )
   }
+  /** Sets the next chapter title of the recently played story. */
   val nextChapterTitle by lazy {
     translationController.extractString(
-      ongoingStory.nextChapterTitle, ongoingStory.nextChapterWrittenTranslationContext
+      promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
     )
   }
 
-  fun clickOnOngoingStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
-    ongoingStoryClickListener.onOngoingStoryClicked(ongoingStory)
+  /** Starts [ResumeLessonActivity] if a saved exploration is selected
+   *  or [ExplorationActivity] if an un-started recommended story is selected.
+   */
+  fun clickOnPromotedStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
+    promotedStoryClickListener.promotedStoryClicked(promotedStory)
   }
 
   private val outerMargin by lazy {
@@ -118,6 +124,10 @@ class OngoingStoryViewModel(
     }
   }
 
+  /**
+   * Creates the content description of the story thumbnail by interpolating the thumbnail
+   * description string resource and the next chapter title.
+   */
   fun computeLessonThumbnailContentDescription(): String {
     return resourceHandler.getStringInLocaleWithWrapping(
       R.string.recently_played_story_summary_activity_lesson_thumbnail_content_description,

@@ -95,6 +95,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -199,6 +200,39 @@ class RevisionCardFragmentTest {
 
       onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_openSubtopicWithOnlyOneSubtopicInList_checkContinueStudyingTextNotShown() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        TEST_TOPIC_ID_0,
+        SUBTOPIC_TOPIC_ID,
+        1
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.continue_studying_text_view)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testRevisionCard_openSubtopicWithMultipleSubtopicsInList_checkContinueStudyingTextIsShown() {
+    launch<ExplorationActivity>(
+      createRevisionCardActivityIntent(
+        context,
+        profileId.internalId,
+        FRACTIONS_TOPIC_ID,
+        SUBTOPIC_TOPIC_ID,
+        FRACTIONS_SUBTOPIC_LIST_SIZE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.continue_studying_text_view)).perform(scrollTo())
+      onView(withId(R.id.continue_studying_text_view)).check(matches(isDisplayed()))
     }
   }
 
