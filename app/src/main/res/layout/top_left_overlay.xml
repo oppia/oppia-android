@@ -51,6 +51,7 @@
           android:paddingEnd="4dp"
           android:paddingBottom="8dp"
           android:textSize="20sp"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/close_spotlight_button"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
