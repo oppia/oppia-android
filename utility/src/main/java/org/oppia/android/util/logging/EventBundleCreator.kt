@@ -100,7 +100,7 @@ class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
   @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics:
-  PlatformParameterValue<Boolean>
+      PlatformParameterValue<Boolean>
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
