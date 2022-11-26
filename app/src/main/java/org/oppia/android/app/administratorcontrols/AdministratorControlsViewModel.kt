@@ -35,7 +35,8 @@ class AdministratorControlsViewModel @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   @EnableEditAccountsOptionsUi
   private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics:
+    PlatformParameterValue<Boolean>,
   @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
