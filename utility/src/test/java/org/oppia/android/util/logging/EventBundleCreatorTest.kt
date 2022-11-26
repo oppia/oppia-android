@@ -3,6 +3,7 @@ package org.oppia.android.util.logging
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.util.EventLog
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -86,9 +87,9 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
