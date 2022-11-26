@@ -120,7 +120,8 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("app_version_code", appVersionCode)
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
-      eventContext.storeValue(PropertyStore(bundle, allowUserIds = enableLearnerStudyAnalytics.value))
+      eventContext.storeValue(PropertyStore(bundle,
+        allowUserIds = enableLearnerStudyAnalytics.value))
     }.activityName
   }
 
