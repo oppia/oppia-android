@@ -27,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
@@ -174,6 +175,7 @@ class EventBundleCreator @Inject constructor(
       DELETE_PROFILE_CONTEXT -> LearnerDetailsContext(activityName, deleteProfileContext)
       OPEN_HOME -> EmptyContext(activityName)
       OPEN_PROFILE_CHOOSER -> EmptyContext(activityName)
+      REACH_INVESTED_ENGAGEMENT -> ExplorationContext(activityName, reachInvestedEngagement)
       INSTALL_ID_FOR_FAILED_ANALYTICS_LOG ->
         SensitiveStringContext(activityName, installIdForFailedAnalyticsLog, "install_id")
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.

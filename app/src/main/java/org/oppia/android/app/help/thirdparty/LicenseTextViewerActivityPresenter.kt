@@ -45,7 +45,7 @@ class LicenseTextViewerActivityPresenter @Inject constructor(
     }
 
     binding.licenseTextViewerActivityToolbarTitle.setOnClickListener {
-      binding.licenseTextViewerActivityMarqueeView.startMarquee()
+      binding.licenseTextViewerActivityToolbarTitle.isSelected = true
     }
 
     if (getLicenseTextViewerFragment() == null) {

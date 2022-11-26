@@ -6,6 +6,17 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
+    name = "analytics_startup_listener",
+    srcs = [
+        "AnalyticsStartupListener.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//third_party:androidx_work_work-runtime-ktx",
+    ],
+)
+
+kt_android_library(
     name = "controller",
     srcs = [
         "AnalyticsController.kt",

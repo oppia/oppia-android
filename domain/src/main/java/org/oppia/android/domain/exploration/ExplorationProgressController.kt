@@ -45,6 +45,7 @@ import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -128,6 +129,9 @@ class ExplorationProgressController @Inject constructor(
     )
 
   private var mostRecentCommandQueue: SendChannel<ControllerMessage<*>>? = null
+
+  // The amount of time to wait before the continue interaction button is animated in milliseconds.
+  private val continueButtonAnimationDelay: Long = TimeUnit.SECONDS.toMillis(45)
 
   /**
    * Resets this controller to begin playing the specified [Exploration], and returns a
@@ -396,6 +400,10 @@ class ExplorationProgressController @Inject constructor(
               // Synchronously fetch the learner & installation IDs (these may result in file I/O).
               val learnerId = profileManagementController.fetchLearnerId(message.profileId)
               val installationId = loggingIdentifierController.fetchInstallationId()
+              val isContinueButtonAnimationSeen =
+                profileManagementController.fetchContinueAnimationSeenStatus(
+                  message.profileId
+                ) ?: false
 
               // Ensure the state is completely recreated for each session to avoid leaking state
               // across sessions.
@@ -408,7 +416,9 @@ class ExplorationProgressController @Inject constructor(
                   commandQueue,
                   installationId,
                   learnerId,
-                  learnerAnalyticsLogger
+                  learnerAnalyticsLogger,
+                  startSessionTimeMs = oppiaClock.getCurrentTimeMs(),
+                  isContinueButtonAnimationSeen
                 ).also {
                   it.beginExplorationImpl(
                     message.callbackFlow,
@@ -590,7 +600,12 @@ class ExplorationProgressController @Inject constructor(
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
             endState()
             val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-            explorationProgress.stateDeck.pushState(newState, prohibitSameStateName = true)
+            explorationProgress.stateDeck.pushState(
+              newState,
+              prohibitSameStateName = true,
+              timestamp = startSessionTimeMs + continueButtonAnimationDelay,
+              isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
+            )
             hintHandler.finishState(newState)
           }
           ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
@@ -711,6 +726,11 @@ class ExplorationProgressController @Inject constructor(
         // Ensure the state has been started the first time it's reached.
         maybeStartState(explorationProgress.stateDeck.getViewedStateCount())
       }
+
+      if (!isContinueButtonAnimationSeen) {
+        profileManagementController.markContinueButtonAnimationSeen(profileId)
+      }
+      isContinueButtonAnimationSeen = true
     }
   }
 
@@ -835,7 +855,11 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private fun ControllerState.computeBaseCurrentEphemeralState(): EphemeralState =
-    explorationProgress.stateDeck.getCurrentEphemeralState(retrieveCurrentHelpIndex())
+    explorationProgress.stateDeck.getCurrentEphemeralState(
+      retrieveCurrentHelpIndex(),
+      startSessionTimeMs + continueButtonAnimationDelay,
+      isContinueButtonAnimationSeen
+    )
 
   private fun ControllerState.computeCurrentEphemeralState(): EphemeralState {
     return computeBaseCurrentEphemeralState().toBuilder().apply {
@@ -1035,7 +1059,9 @@ class ExplorationProgressController @Inject constructor(
     val commandQueue: SendChannel<ControllerMessage<*>>,
     private val installationId: String?,
     private val learnerId: String?,
-    private val learnerAnalyticsLogger: LearnerAnalyticsLogger
+    private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
+    val startSessionTimeMs: Long,
+    var isContinueButtonAnimationSeen: Boolean,
   ) {
     /**
      * The [HintHandler] used to monitor and trigger hints in the play session corresponding to this
@@ -1045,6 +1071,9 @@ class ExplorationProgressController @Inject constructor(
 
     private var helpIndex = HelpIndex.getDefaultInstance()
     private var availableCardCount: Int = -1
+
+    private var hasReachedInvestedEngagement = false
+    private var completedStateCount = 0
 
     /**
      * The [LearnerAnalyticsLogger.ExplorationAnalyticsLogger] to be used for logging
@@ -1087,6 +1116,13 @@ class ExplorationProgressController @Inject constructor(
 
         // Force the card count to update.
         availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
+
+        if (!hasReachedInvestedEngagement &&
+          completedStateCount >= MINIMUM_COMPLETED_STATE_COUNT_FOR_INVESTED_ENGAGEMENT
+        ) {
+          it.logInvestedEngagement()
+          hasReachedInvestedEngagement = true
+        }
       }
     }
 
@@ -1106,6 +1142,7 @@ class ExplorationProgressController @Inject constructor(
     fun endState() {
       stateAnalyticsLogger?.logEndCard()
       explorationAnalyticsLogger.endCard()
+      completedStateCount++
     }
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
@@ -1279,6 +1316,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private companion object {
+    private const val MINIMUM_COMPLETED_STATE_COUNT_FOR_INVESTED_ENGAGEMENT = 3
+
     /**
      * Returns a collectable [Flow] that notifies [collector] for this [StateFlow]s initial state,
      * and every change after.

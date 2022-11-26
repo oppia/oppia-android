@@ -746,6 +746,31 @@ class ProfileManagementController @Inject constructor(
     return profileDatabase.profilesMap[profileId.internalId]?.learnerId
   }
 
+  /**
+   * Returns whether the exploration continue button animation has shown (or been disabled) for the
+   * specified [profileId], or null if the profile doesn't exist.
+   */
+  suspend fun fetchContinueAnimationSeenStatus(profileId: ProfileId): Boolean? {
+    val profileDatabase = profileDataStore.readDataAsync().await()
+    return profileDatabase.profilesMap[profileId.internalId]?.isContinueButtonAnimationSeen
+  }
+
+  /** Marks that the continue button animation has been seen for the specified profile. */
+  suspend fun markContinueButtonAnimationSeen(profileId: ProfileId) {
+    val updateDatabaseDeferred = profileDataStore.storeDataAsync(true) {
+      val profile = it.profilesMap[profileId.internalId]
+      if (profile != null) {
+        val updatedProfile = profile.toBuilder().setIsContinueButtonAnimationSeen(true).build()
+        val profileDatabaseBuilder = it.toBuilder().putProfiles(
+          profileId.internalId,
+          updatedProfile
+        )
+        return@storeDataAsync profileDatabaseBuilder.build()
+      } else it
+    }
+    updateDatabaseDeferred.await()
+  }
+
   private suspend fun getDeferredResult(
     profileId: ProfileId?,
     name: String?,

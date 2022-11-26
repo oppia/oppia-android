@@ -130,8 +130,8 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     analyticsEventLogger.logEvent(eventLog2)
 
-    val eventLogStatus1 = fakeAnalyticsEventLogger.hasEventLogged(eventLog1)
-    val eventLogStatus2 = fakeAnalyticsEventLogger.hasEventLogged(eventLog2)
+    val eventLogStatus1 = fakeAnalyticsEventLogger.hasEventLogged { it == eventLog1 }
+    val eventLogStatus2 = fakeAnalyticsEventLogger.hasEventLogged { it == eventLog2 }
     val eventListStatus = fakeAnalyticsEventLogger.noEventsPresent()
 
     assertThat(eventListStatus).isFalse()

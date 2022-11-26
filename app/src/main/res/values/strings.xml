@@ -37,6 +37,9 @@
   <string name="stop_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
+  <string name="exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
+  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try!</string>
+  <string name="voiceover_language_icon_spotlight_hint">Tap to change voiceover language.</string>
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
   <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
   <string name="progress_database_full_dialog_continue_button">Continue</string>
@@ -46,6 +49,13 @@
   <string name="topic_name_text_view">Ratios and Proportional Reasoning</string>
   <string name="topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_start">Start</string>
+  <string name="info_tab_content_description">Details about the topic.</string>
+  <string name="revision_tab_content_description">Revise concepts learned from completed lessons here.</string>
+  <string name="practice_tab_content_description">Practice the concepts learned from completed lessons.</string>
+  <string name="lessons_tab_content_description">Tap here to start playing a lesson.</string>
+  <string name="topic_lessons_tab_spotlight_hint">Find all your lessons here.</string>
+  <string name="topic_revision_tab_spotlight_hint">Revise concepts learned from completed lessons here.</string>
+  <string name="first_chapter_spotlight_hint">Tap here to start playing a lesson.</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
   <string name="previous_state_description">Navigate to the previous card</string>
@@ -336,6 +346,8 @@
   <string name="home_activity_back_dialog_exit">Exit</string>
   <!-- HomeActivity -->
   <string name="home_activity_title">Home</string>
+  <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
+  <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <!-- ProfileListActivity -->
   <string name="profile_list_activity_title">Profiles</string>
   <!-- ProfileEditActivity -->
@@ -570,6 +582,8 @@
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
-  <string name="select_a_topic_to_start">Select a Topic to Start</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
+  <string name="onboarding_next_button_spotlight_hint">Next</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
+  <string name="mark_spotlight_seen_button_text">Done</string>
 </resources>
