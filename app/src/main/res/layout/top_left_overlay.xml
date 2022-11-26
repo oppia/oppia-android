@@ -59,6 +59,7 @@
         <ImageButton
           android:id="@+id/close_spotlight_button"
           style="@style/StateButtonActive"
+          android:layout_marginTop="0dp"
           android:background="@drawable/spotlight_done_button_background"
           android:onClick="@{(v) -> listener.clickOnDone()}"
           app:layout_constraintEnd_toEndOf="parent"

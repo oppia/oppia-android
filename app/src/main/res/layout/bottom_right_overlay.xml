@@ -53,6 +53,7 @@
           android:paddingEnd="4dp"
           android:paddingBottom="8dp"
           android:textSize="20sp"
+          app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toStartOf="@id/close_spotlight_button"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -62,6 +63,7 @@
           style="@style/StateButtonActive"
           android:layout_width="48dp"
           android:layout_height="48dp"
+          android:layout_marginTop="0dp"
           android:background="@drawable/spotlight_done_button_background"
           android:onClick="@{(v) -> listener.clickOnDone()}"
           app:layout_constraintEnd_toEndOf="parent"
