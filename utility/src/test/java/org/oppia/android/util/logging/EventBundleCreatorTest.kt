@@ -3,12 +3,10 @@ package org.oppia.android.util.logging
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.util.EventLog
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.truth.os.BundleSubject.assertThat
-import androidx.work.NetworkType
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -17,6 +15,7 @@ import dagger.Provides
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
@@ -48,7 +47,6 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
-import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -65,6 +63,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.HIGH_MEMORY_TIER
 import org.oppia.android.app.model.OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
+import org.oppia.android.app.model.OppiaMetricLog.NetworkType
 import org.oppia.android.app.model.OppiaMetricLog.NetworkType.CELLULAR
 import org.oppia.android.app.model.OppiaMetricLog.NetworkType.WIFI
 import org.oppia.android.app.model.OppiaMetricLog.Priority
@@ -81,14 +80,15 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.RunParameterized
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
@@ -107,7 +107,8 @@ private const val TEST_ANDROID_SDK_VERSION = 30
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = EventBundleCreatorTest.TestApplication::class, sdk = [TEST_ANDROID_SDK_VERSION]
+  application = EventBundleCreatorTest.TestApplication::class,
+  sdk = [TEST_ANDROID_SDK_VERSION]
 )
 class EventBundleCreatorTest {
   private companion object {
@@ -256,7 +257,8 @@ class EventBundleCreatorTest {
     )
 
     val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetricLog, bundle
+      performanceMetricLog,
+      bundle
     )
 
     assertThat(typeName).isEqualTo("unknown_loggable_metric")
@@ -288,7 +290,8 @@ class EventBundleCreatorTest {
   fun testFillPerformanceMetricBundle_eventWithDifferentPriority_savesDifferentPriorityInBundle() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(priority = MEDIUM_PRIORITY)
+    val performanceMetricLog =
+      createPerformanceMetricLog(priority = MEDIUM_PRIORITY)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -299,7 +302,8 @@ class EventBundleCreatorTest {
   fun testFillPerformanceMetricBundle_eventWithDiffMemoryTier_savesDiffMemoryTierInBundle() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(memoryTier = MEDIUM_MEMORY_TIER)
+    val performanceMetricLog =
+      createPerformanceMetricLog(memoryTier = MEDIUM_MEMORY_TIER)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -310,7 +314,8 @@ class EventBundleCreatorTest {
   fun testFillPerformanceMetricBundle_eventWithDiffStorageTier_savesDiffStorageTierInBundle() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(storageTier = MEDIUM_STORAGE)
+    val performanceMetricLog =
+      createPerformanceMetricLog(storageTier = MEDIUM_STORAGE)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -321,7 +326,8 @@ class EventBundleCreatorTest {
   fun testFillPerformanceMetricBundle_eventWithDiffCurrentScreen_savesDiffCurrentScreenInBundle() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(currentScreen = SCREEN_NAME_UNSPECIFIED)
+    val performanceMetricLog =
+      createPerformanceMetricLog(currentScreen = SCREEN_NAME_UNSPECIFIED)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -332,7 +338,8 @@ class EventBundleCreatorTest {
   fun testFillPerformanceMetricBundle_eventWithDiffNetworkType_savesDiffNetworkTypeInBundle() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(networkType = CELLULAR)
+    val performanceMetricLog =
+      createPerformanceMetricLog(networkType = CELLULAR)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -1550,7 +1557,9 @@ class EventBundleCreatorTest {
     Iteration("home", "name=HOME_ACTIVITY", "expNameStr=home_activity"),
     Iteration("splash", "name=SPLASH_ACTIVITY", "expNameStr=splash_activity"),
     Iteration(
-      "profileChooser", "name=PROFILE_CHOOSER_ACTIVITY", "expNameStr=profile_chooser_activity"
+      "profileChooser",
+      "name=PROFILE_CHOOSER_ACTIVITY",
+      "expNameStr=profile_chooser_activity"
     ),
     Iteration("addProfile", "name=ADD_PROFILE_ACTIVITY", "expNameStr=add_profile_activity"),
     Iteration("background", "name=BACKGROUND_SCREEN", "expNameStr=background_screen"),
@@ -1585,7 +1594,9 @@ class EventBundleCreatorTest {
     ),
     Iteration("help", "name=HELP_ACTIVITY", "expNameStr=help_activity"),
     Iteration(
-      "recentlyPlayed", "name=RECENTLY_PLAYED_ACTIVITY", "expNameStr=recently_played_activity"
+      "recentlyPlayed",
+      "name=RECENTLY_PLAYED_ACTIVITY",
+      "expNameStr=recently_played_activity"
     ),
     Iteration("myDownloads", "name=MY_DOWNLOADS_ACTIVITY", "expNameStr=my_downloads_activity"),
     Iteration("onboarding", "name=ONBOARDING_ACTIVITY", "expNameStr=onboarding_activity"),
@@ -1595,43 +1606,61 @@ class EventBundleCreatorTest {
       "expNameStr=ongoing_topic_list_activity"
     ),
     Iteration(
-      "audioLanguage", "name=AUDIO_LANGUAGE_ACTIVITY", "expNameStr=audio_language_activity"
+      "audioLanguage",
+      "name=AUDIO_LANGUAGE_ACTIVITY",
+      "expNameStr=audio_language_activity"
     ),
     Iteration("appLanguage", "name=APP_LANGUAGE_ACTIVITY", "expNameStr=app_language_activity"),
     Iteration("options", "name=OPTIONS_ACTIVITY", "expNameStr=options_activity"),
     Iteration(
-      "readingTextSize", "name=READING_TEXT_SIZE_ACTIVITY", "expNameStr=reading_text_size_activity"
+      "readingTextSize",
+      "name=READING_TEXT_SIZE_ACTIVITY",
+      "expNameStr=reading_text_size_activity"
     ),
     Iteration("exploration", "name=EXPLORATION_ACTIVITY", "expNameStr=exploration_activity"),
     Iteration("adminAuth", "name=ADMIN_AUTH_ACTIVITY", "expNameStr=admin_auth_activity"),
     Iteration("pinPassword", "name=PIN_PASSWORD_ACTIVITY", "expNameStr=pin_password_activity"),
     Iteration(
-      "profilePicture", "name=PROFILE_PICTURE_ACTIVITY", "expNameStr=profile_picture_activity"
+      "profilePicture",
+      "name=PROFILE_PICTURE_ACTIVITY",
+      "expNameStr=profile_picture_activity"
     ),
     Iteration(
-      "profileProgress", "name=PROFILE_PROGRESS_ACTIVITY", "expNameStr=profile_progress_activity"
+      "profileProgress",
+      "name=PROFILE_PROGRESS_ACTIVITY",
+      "expNameStr=profile_progress_activity"
     ),
     Iteration("resumeLesson", "name=RESUME_LESSON_ACTIVITY", "expNameStr=resume_lesson_activity"),
     Iteration("profileEdit", "name=PROFILE_EDIT_ACTIVITY", "expNameStr=profile_edit_activity"),
     Iteration(
-      "profileResetPin", "name=PROFILE_RESET_PIN_ACTIVITY", "expNameStr=profile_reset_pin_activity"
+      "profileResetPin",
+      "name=PROFILE_RESET_PIN_ACTIVITY",
+      "expNameStr=profile_reset_pin_activity"
     ),
     Iteration(
-      "profileRename", "name=PROFILE_RENAME_ACTIVITY", "expNameStr=profile_rename_activity"
+      "profileRename",
+      "name=PROFILE_RENAME_ACTIVITY",
+      "expNameStr=profile_rename_activity"
     ),
     Iteration("profileList", "name=PROFILE_LIST_ACTIVITY", "expNameStr=profile_list_activity"),
     Iteration("story", "name=STORY_ACTIVITY", "expNameStr=story_activity"),
     Iteration("topic", "name=TOPIC_ACTIVITY", "expNameStr=topic_activity"),
     Iteration("revisionCard", "name=REVISION_CARD_ACTIVITY", "expNameStr=revision_card_activity"),
     Iteration(
-      "questionPlayer", "name=QUESTION_PLAYER_ACTIVITY", "expNameStr=question_player_activity"
+      "questionPlayer",
+      "name=QUESTION_PLAYER_ACTIVITY",
+      "expNameStr=question_player_activity"
     ),
     Iteration("walkthrough", "name=WALKTHROUGH_ACTIVITY", "expNameStr=walkthrough_activity"),
     Iteration(
-      "developerOptions", "name=DEVELOPER_OPTIONS_ACTIVITY", "expNameStr=developer_options_activity"
+      "developerOptions",
+      "name=DEVELOPER_OPTIONS_ACTIVITY",
+      "expNameStr=developer_options_activity"
     ),
     Iteration(
-      "viewEventLogs", "name=VIEW_EVENT_LOGS_ACTIVITY", "expNameStr=view_event_logs_activity"
+      "viewEventLogs",
+      "name=VIEW_EVENT_LOGS_ACTIVITY",
+      "expNameStr=view_event_logs_activity"
     ),
     Iteration(
       "markTopicsCompleted",
@@ -1666,7 +1695,8 @@ class EventBundleCreatorTest {
   fun testMetricsBundle_addScreenName_verifyConversionToCorrectAnalyticalName() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(currentScreen = screenName)
+    val performanceMetricLog =
+      createPerformanceMetricLog(currentScreen = screenName)
 
     eventBundleCreator.fillPerformanceMetricsEventBundle(performanceMetricLog, bundle)
 
@@ -1804,7 +1834,8 @@ class EventBundleCreatorTest {
   ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
 
   private fun <T> createEventContext(
-    value: T, setter: EventContextBuilder.(T) -> EventContextBuilder
+    value: T,
+    setter: EventContextBuilder.(T) -> EventContextBuilder
   ) = EventLog.Context.newBuilder().setter(value).build()
 
   private fun createExplorationContext(
@@ -1826,7 +1857,8 @@ class EventBundleCreatorTest {
   }.build()
 
   private fun createLearnerDetailsContext(
-    learnerId: String = TEST_LEARNER_ID, installId: String = TEST_INSTALLATION_ID
+    learnerId: String = TEST_LEARNER_ID,
+    installId: String = TEST_INSTALLATION_ID
   ) = LearnerDetailsContext.newBuilder().apply {
     this.learnerId = learnerId
     this.installId = installId
@@ -1844,7 +1876,8 @@ class EventBundleCreatorTest {
   }.build()
 
   private fun createStoryContext(
-    topicId: String = TEST_TOPIC_ID, storyId: String = TEST_STORY_ID
+    topicId: String = TEST_TOPIC_ID,
+    storyId: String = TEST_STORY_ID
   ) = StoryContext.newBuilder().apply {
     this.topicId = topicId
     this.storyId = storyId
@@ -1854,7 +1887,8 @@ class EventBundleCreatorTest {
     ConceptCardContext.newBuilder().apply { this.skillId = skillId }.build()
 
   private fun createRevisionCardContext(
-    topicId: String = TEST_TOPIC_ID, subTopicIndex: Int = TEST_SUB_TOPIC_INDEX
+    topicId: String = TEST_TOPIC_ID,
+    subTopicIndex: Int = TEST_SUB_TOPIC_INDEX
   ) = RevisionCardContext.newBuilder().apply {
     this.topicId = topicId
     subTopicId = subTopicIndex
@@ -1895,44 +1929,61 @@ class EventBundleCreatorTest {
   private fun registerTestApplication() {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder().setPackageName(context.packageName).build()
-    val packageInfo = PackageInfoBuilder.newBuilder().setPackageName(context.packageName)
-      .setApplicationInfo(applicationInfo).build()
+      ApplicationInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .build()
+    val packageInfo =
+      PackageInfoBuilder.newBuilder()
+        .setPackageName(context.packageName)
+        .setApplicationInfo(applicationInfo)
+        .build()
     packageInfo.versionName = TEST_APP_VERSION_NAME
     packageInfo.versionCode = TEST_APP_VERSION_CODE
     packageManager.installPackage(packageInfo)
   }
 
-  private fun createApkSizeLoggableMetric() =
-    OppiaMetricLog.LoggableMetric.newBuilder().setApkSizeMetric(
-      OppiaMetricLog.ApkSizeMetric.newBuilder().setApkSizeBytes(TEST_APK_SIZE).build()
-    ).build()
-
-  private fun createStorageUsageLoggableMetric() =
-    LoggableMetric.newBuilder().setStorageUsageMetric(
-      OppiaMetricLog.StorageUsageMetric.newBuilder().setStorageUsageBytes(TEST_STORAGE_USAGE)
+  private fun createApkSizeLoggableMetric() = OppiaMetricLog.LoggableMetric.newBuilder()
+    .setApkSizeMetric(
+      OppiaMetricLog.ApkSizeMetric.newBuilder()
+        .setApkSizeBytes(TEST_APK_SIZE)
         .build()
     ).build()
 
-  private fun createStartupLatencyLoggableMetric() =
-    LoggableMetric.newBuilder().setStartupLatencyMetric(
+  private fun createStorageUsageLoggableMetric() = LoggableMetric.newBuilder()
+    .setStorageUsageMetric(
+      OppiaMetricLog.StorageUsageMetric.newBuilder()
+        .setStorageUsageBytes(TEST_STORAGE_USAGE)
+        .build()
+    ).build()
+
+  private fun createStartupLatencyLoggableMetric() = LoggableMetric.newBuilder()
+    .setStartupLatencyMetric(
       OppiaMetricLog.StartupLatencyMetric.newBuilder()
-        .setStartupLatencyMillis(TEST_STARTUP_LATENCY).build()
+        .setStartupLatencyMillis(TEST_STARTUP_LATENCY)
+        .build()
     ).build()
 
-  private fun createCpuUsageLoggableMetric() = LoggableMetric.newBuilder().setCpuUsageMetric(
-    OppiaMetricLog.CpuUsageMetric.newBuilder().setCpuUsageMetric(TEST_CPU_USAGE).build()
-  ).build()
-
-  private fun createNetworkUsageTestLoggableMetric() =
-    LoggableMetric.newBuilder().setNetworkUsageMetric(
-      OppiaMetricLog.NetworkUsageMetric.newBuilder().setBytesReceived(TEST_NETWORK_USAGE)
-        .setBytesSent(TEST_NETWORK_USAGE).build()
+  private fun createCpuUsageLoggableMetric() = LoggableMetric.newBuilder()
+    .setCpuUsageMetric(
+      OppiaMetricLog.CpuUsageMetric.newBuilder()
+        .setCpuUsageMetric(TEST_CPU_USAGE)
+        .build()
     ).build()
 
-  private fun createMemoryUsageLoggableMetric() = LoggableMetric.newBuilder().setMemoryUsageMetric(
-    OppiaMetricLog.MemoryUsageMetric.newBuilder().setTotalPssBytes(TEST_MEMORY_USAGE).build()
-  ).build()
+  private fun createNetworkUsageTestLoggableMetric() = LoggableMetric.newBuilder()
+    .setNetworkUsageMetric(
+      OppiaMetricLog.NetworkUsageMetric.newBuilder()
+        .setBytesReceived(TEST_NETWORK_USAGE)
+        .setBytesSent(TEST_NETWORK_USAGE)
+        .build()
+    ).build()
+
+  private fun createMemoryUsageLoggableMetric() = LoggableMetric.newBuilder()
+    .setMemoryUsageMetric(
+      OppiaMetricLog.MemoryUsageMetric.newBuilder()
+        .setTotalPssBytes(TEST_MEMORY_USAGE)
+        .build()
+    ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
     TestModule.enableLearnerStudyAnalytics = false
@@ -1968,7 +2019,7 @@ class EventBundleCreatorTest {
     // within the same application instance.
     @Provides
     @Singleton
-    @EnableLearnerStudyAnalytics
+    @LearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
@@ -1995,7 +2046,9 @@ class EventBundleCreatorTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEventBundleCreatorTest_TestApplicationComponent.builder().setApplication(this).build()
+      DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
     }
 
     fun inject(test: EventBundleCreatorTest) {
