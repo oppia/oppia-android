@@ -9,6 +9,8 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +30,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVI
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
@@ -36,8 +38,6 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [SyncStatusManagerImpl]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -46,8 +46,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SyncStatusManagerImplTest.TestApplication::class)
 class SyncStatusManagerImplTest {
-  @Inject lateinit var syncStatusManager: SyncStatusManager
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var syncStatusManager: SyncStatusManager
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -185,7 +187,7 @@ class SyncStatusManagerImplTest {
     }
 
     @Provides
-    @LearnerStudyAnalytics
+    @EnableLearnerStudyAnalytics
     fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
       return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
     }
