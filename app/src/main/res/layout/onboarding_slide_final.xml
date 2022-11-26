@@ -21,8 +21,8 @@
       android:id="@+id/final_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:overScrollMode="always"
-      android:importantForAccessibility="yes">
+      android:importantForAccessibility="yes"
+      android:overScrollMode="always">
 
       <ImageView
         android:id="@+id/slide_image_view"

@@ -1,11 +1,17 @@
 package org.oppia.android.app.onboarding
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
@@ -22,6 +28,7 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.profile_edit_fragment.view.*
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
@@ -82,6 +89,15 @@ class OnboardingFragmentPresenter @Inject constructor(
           positionOffset: Float,
           positionOffsetPixels: Int
         ) {
+          super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+          binding.root.performAccessibilityAction(
+            AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS,
+            null
+          )
+          binding.onboardingSlideViewPager.performAccessibilityAction(
+            AccessibilityNodeInfoCompat.ACTION_FOCUS,
+            null
+          )
         }
 
         override fun onPageSelected(position: Int) {
@@ -249,4 +265,5 @@ class OnboardingFragmentPresenter @Inject constructor(
       dotsList[index].alpha = alphaValue
     }
   }
+
 }
