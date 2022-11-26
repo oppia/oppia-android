@@ -79,7 +79,8 @@ class ProfileManagementController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val loggingIdentifierController: LoggingIdentifierController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
+  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics:
+    PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
