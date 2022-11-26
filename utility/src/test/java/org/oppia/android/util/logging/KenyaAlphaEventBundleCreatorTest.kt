@@ -3,6 +3,7 @@ package org.oppia.android.util.logging
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.util.EventLog
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
@@ -13,10 +14,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
@@ -47,6 +49,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
@@ -58,15 +61,12 @@ import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
