@@ -14,8 +14,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,6 +62,8 @@ import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
