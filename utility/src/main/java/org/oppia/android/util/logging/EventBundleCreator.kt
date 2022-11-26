@@ -99,7 +99,8 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
 class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics:
+  PlatformParameterValue<Boolean>
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
