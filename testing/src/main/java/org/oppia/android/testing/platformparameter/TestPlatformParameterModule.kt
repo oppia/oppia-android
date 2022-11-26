@@ -1,8 +1,6 @@
 package org.oppia.android.testing.platformparameter
 
 import androidx.annotation.VisibleForTesting
-import dagger.Module
-import dagger.Provides
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -40,6 +38,8 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
+import dagger.Module
+import dagger.Provides
 import javax.inject.Singleton
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
