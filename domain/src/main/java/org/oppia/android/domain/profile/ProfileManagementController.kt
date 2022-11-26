@@ -567,7 +567,8 @@ class ProfileManagementController @Inject constructor(
         )
       val updatedProfile = profile.toBuilder().apply {
         learnerId = when {
-          !enableLearnerStudyAnalytics.value -> "" // There should be no learner ID if no ongoing study.
+          !enableLearnerStudyAnalytics.value -> ""
+          // There should be no learner ID if no ongoing study.
           learnerId.isEmpty() -> loggingIdentifierController.createLearnerId() // Generate new ID.
           else -> learnerId // Keep it unchanged.
         }
