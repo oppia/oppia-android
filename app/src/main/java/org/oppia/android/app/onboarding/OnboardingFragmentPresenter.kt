@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
@@ -103,6 +104,15 @@ class OnboardingFragmentPresenter @Inject constructor(
           positionOffset: Float,
           positionOffsetPixels: Int
         ) {
+          super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+          binding.root.performAccessibilityAction(
+            AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS,
+            null
+          )
+          binding.onboardingSlideViewPager.performAccessibilityAction(
+            AccessibilityNodeInfoCompat.ACTION_FOCUS,
+            null
+          )
         }
 
         override fun onPageSelected(position: Int) {
