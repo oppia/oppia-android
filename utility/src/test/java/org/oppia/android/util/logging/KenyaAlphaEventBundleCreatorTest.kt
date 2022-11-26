@@ -64,9 +64,9 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
