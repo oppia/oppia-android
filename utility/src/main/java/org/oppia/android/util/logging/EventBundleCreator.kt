@@ -64,7 +64,7 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
-import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -99,7 +99,7 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
 class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
-  @LearnerStudyAnalytics private val learnerStudyAnalytics: PlatformParameterValue<Boolean>
+  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
@@ -119,7 +119,7 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("app_version_code", appVersionCode)
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
-      eventContext.storeValue(PropertyStore(bundle, allowUserIds = learnerStudyAnalytics.value))
+      eventContext.storeValue(PropertyStore(bundle, allowUserIds = enableLearnerStudyAnalytics.value))
     }.activityName
   }
 

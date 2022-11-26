@@ -14,7 +14,8 @@ import javax.inject.Qualifier
  * Qualifier for the platform parameter that controls whether the user has support for manually
  * downloading topics.
  */
-@Qualifier annotation class EnableDownloadsSupport
+@Qualifier
+annotation class EnableDownloadsSupport
 
 /** Default value for feature flag corresponding to [EnableDownloadsSupport]. */
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
@@ -97,7 +98,7 @@ const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
  * and working of learner study related analytics logging.
  */
 @Qualifier
-annotation class LearnerStudyAnalytics
+annotation class EnableLearnerStudyAnalytics
 
 /**
  * Name of the platform parameter that controls the visibility of [ProfileAndDeviceIdActivity]
