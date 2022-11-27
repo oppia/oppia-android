@@ -59,7 +59,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
       checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
         "Expected skillId to be passed to ConceptCardFragment"
       }
-    if (conceptCardBackStackManager.stackSize.value == ConceptCardBackStackManager.DEFAULT_STACK_SIZE) {
+    if (conceptCardBackStackManager.getSize() ==
+      ConceptCardBackStackManager.DEFAULT_STACK_SIZE
+    ) {
       conceptCardBackStackManager.initBackStack()
       conceptCardBackStackManager.addToStack(skillId)
     } else {

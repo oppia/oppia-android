@@ -57,7 +57,9 @@ class ConceptCardFragmentPresenter @Inject constructor(
     )
     binding.conceptCardToolbar.setNavigationOnClickListener {
       conceptCardBackStackManager.remove()
-      if (conceptCardBackStackManager.stackSize.value == 0) {
+      if (conceptCardBackStackManager.getSize() ==
+        ConceptCardBackStackManager.DEFAULT_STACK_SIZE
+      ) {
         conceptCardBackStackManager.destroyBackStack()
       }
       (fragment.requireActivity() as? ConceptCardListener)?.dismissConceptCard()
