@@ -150,14 +150,14 @@ class ProfileManagementController @Inject constructor(
   }
 
   /** Returns the list of created profiles. */
-  fun getProfiles(): DataProvider<List<Profile>> {
+  fun getProfiles(): DataProvider<List<ContactsContract.Profile>> {
     return profileDataStore.transform(GET_PROFILES_PROVIDER_ID) {
       it.profilesMap.values.toList()
     }
   }
 
   /** Returns a single profile, specified by profiledId. */
-  fun getProfile(profileId: ProfileId): DataProvider<ContactsContract.Profile> {
+  fun getProfile(profileId: ProfileId): DataProvider<Profile> {
     return profileDataStore.transformAsync(GET_PROFILE_PROVIDER_ID) {
       val profile = it.profilesMap[profileId.internalId]
       if (profile != null) {
@@ -230,7 +230,7 @@ class ProfileManagementController @Inject constructor(
       val nextProfileId = it.nextProfileId
       val profileDir = directoryManagementUtil.getOrCreateDir(nextProfileId.toString())
 
-      val newProfile = ContactsContract.Profile.newBuilder().apply {
+      val newProfile = Profile.newBuilder().apply {
         this.name = name
         this.pin = pin
         this.allowDownloadAccess = allowDownloadAccess
