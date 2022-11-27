@@ -12,7 +12,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.Spotlight
-import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
@@ -87,7 +86,7 @@ class TopicFragmentPresenter @Inject constructor(
             SpotlightShape.RoundedRectangle,
             Spotlight.FeatureCase.TOPIC_LESSON_TAB
           )
-          checkNotNull(getSpotlightFragment()).requestSpotlight(lessonsTabSpotlightTarget)
+          checkNotNull(getSpotlightManager()).requestSpotlight(lessonsTabSpotlightTarget)
 
           if (numberOfChaptersCompleted > 2) {
             val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
@@ -97,17 +96,17 @@ class TopicFragmentPresenter @Inject constructor(
               SpotlightShape.RoundedRectangle,
               Spotlight.FeatureCase.TOPIC_REVISION_TAB
             )
-            checkNotNull(getSpotlightFragment()).requestSpotlight(revisionTabSpotlightTarget)
+            checkNotNull(getSpotlightManager()).requestSpotlight(revisionTabSpotlightTarget)
           }
         }
       }
     }
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightFragment
+    ) as? SpotlightManager
   }
 
   private fun setCurrentTab(tab: TopicTab) {
