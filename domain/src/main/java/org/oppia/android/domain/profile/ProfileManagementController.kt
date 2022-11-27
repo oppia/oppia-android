@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.ThumbnailUtils
 import android.net.Uri
+import android.provider.ContactsContract
 import android.provider.MediaStore
 import androidx.exifinterface.media.ExifInterface
 import kotlinx.coroutines.Deferred
@@ -79,8 +80,8 @@ class ProfileManagementController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val loggingIdentifierController: LoggingIdentifierController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudyAnalytics:
-    PlatformParameterValue<Boolean>,
+  @EnableLearnerStudyAnalytics
+  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   private val profileNameValidator: ProfileNameValidator
 ) {
   private var currentProfileId: Int = -1
@@ -149,7 +150,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   /** Returns the list of created profiles. */
-  fun getProfiles(): DataProvider<List<Profile>> {
+  fun getProfiles(): DataProvider<List<ContactsContract.Profile>> {
     return profileDataStore.transform(GET_PROFILES_PROVIDER_ID) {
       it.profilesMap.values.toList()
     }
