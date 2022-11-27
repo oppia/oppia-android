@@ -46,8 +46,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SyncStatusManagerImplTest.TestApplication::class)
 class SyncStatusManagerImplTest {
-  @Inject lateinit var syncStatusManager: SyncStatusManager
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var syncStatusManager: SyncStatusManager
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {

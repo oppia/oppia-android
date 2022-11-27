@@ -210,6 +210,7 @@ class TestPlatformParameterModule {
     fun forceEnableDownloadsSupport(value: Boolean) {
       enableDownloadsSupport = value
     }
+
     private var enableContinueButtonAnimation = ENABLE_CONTINUE_BUTTON_ANIMATION_DEFAULT_VALUE
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
