@@ -58,8 +58,8 @@ import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
