@@ -3,7 +3,6 @@ package org.oppia.android.util.logging
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.util.EventLog
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
