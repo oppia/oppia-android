@@ -29,9 +29,9 @@ oppia_proto_library(
     deps = [
         ":exploration_checkpoint_proto",
         ":exploration_proto",
+        ":languages_proto",
         ":profile_proto",
         ":translation_proto",
-        ":languages_proto",
     ],
 )
 
