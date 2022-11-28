@@ -31,7 +31,7 @@ oppia_proto_library(
         ":exploration_proto",
         ":profile_proto",
         ":translation_proto",
-        ":languages_proto"
+        ":languages_proto",
     ],
 )
 
