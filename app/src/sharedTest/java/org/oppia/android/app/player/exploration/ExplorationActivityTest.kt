@@ -587,7 +587,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try it!"))
         .check(matches(isDisplayed()))
     }
   }
@@ -633,7 +633,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try it!"))
         .check(doesNotExist())
     }
   }
@@ -659,7 +659,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText("Would you like Oppia to read for you? Tap on this button to try!"))
+      onView(withText("Would you like Oppia to read for you? Tap on this button to try it!"))
         .check(doesNotExist())
     }
   }
