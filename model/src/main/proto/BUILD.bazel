@@ -156,6 +156,7 @@ java_lite_proto_library(
 oppia_proto_library(
     name = "profile_proto",
     srcs = ["profile.proto"],
+    deps = [":languages_proto"],
 )
 
 java_lite_proto_library(
