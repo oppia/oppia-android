@@ -40,7 +40,12 @@
   <color name="component_color_shared_correct_text_stroke_color">@color/color_palette_correct_text_stroke_color</color>
   <color name="component_color_shared_correct_text_solid_color">@color/color_palette_correct_text_solid_color</color>
   <color name="component_color_shared_correct_text_color">@color/color_palette_correct_text_color</color>
-  <color name="component_color_shared_submit_button_inactive_solid_color">@color/color_palette_submit_button_inactive_solid_color</color>
+  <color name="component_color_shared_button_inactive_solid_color">@color/color_palette_button_inactive_solid_color</color>
+  <color name="component_color_shared_button_inactive_stroke_color">@color/color_palette_button_inactive_stroke_color</color>
+  <color name="component_color_shared_button_inactive_text_color">@color/color_palette_button_inactive_text_color</color>
+  <color name="component_color_shared_button_active_solid_color">@color/color_palette_button_active_solid_color</color>
+  <color name="component_color_shared_button_active_stroke_color">@color/color_palette_button_active_stroke_color</color>
+  <color name="component_color_shared_button_active_text_color">@color/color_palette_button_active_text_color</color>
   <color name="component_color_shared_submit_button_inactive_stroke_color">@color/color_palette_submit_button_inactive_stroke_color</color>
   <color name="component_color_shared_submit_text_inactive_color">@color/color_palette_submit_text_inactive_color</color>
   <color name="component_color_shared_submit_text_active_color">@color/color_palette_submit_text_active_color</color>
