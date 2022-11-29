@@ -342,4 +342,10 @@
   <color name="component_color_app_version_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_app_version_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_app_version_activity_description_text_color">@color/color_palette_secondary_text_color</color>
+  <!-- Profile Chooser Activity -->
+  <color name="component_color_profile_chooser_activity_background_color">@color/color_palette_profile_chooser_charcoal_black_background_color</color>
+  <color name="component_color_profile_chooser_activity_secondary_options_color">@color/color_palette_profile_chooser_silver_text_color</color>
+  <color name="component_color_profile_chooser_activity_white_text_color">@color/color_palette_profile_chooser_white_text_color</color>
+  <color name="component_color_profile_chooser_activity_avatar_border_color">@color/color_palette_profile_chooser_avatar_border_color</color>
+  <color name="component_color_profile_chooser_activity_divider_color">@color/color_palette_profile_chooser_divider_color</color>
 </resources>
