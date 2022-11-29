@@ -21,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
@@ -59,7 +60,6 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.OppiaLanguage
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
