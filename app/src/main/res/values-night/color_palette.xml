@@ -28,7 +28,8 @@
   <color name="color_palette_light_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_onboarding_divider_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_dots_color">@color/color_def_oppia_silver</color>
-  <color name="color_palette_arrow_color">@color/color_def_oppia_turquoise</color>
+  <color name="color_palette_arrow_color">@color/color_def_white</color>
+  <color name="color_palette_agreement_text_color">@color/color_def_white</color>
   <color name="color_palette_exploration_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_revision_card_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_content_background_solid_color">@color/color_def_oppia_grayish_black</color>

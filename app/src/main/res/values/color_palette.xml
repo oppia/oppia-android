@@ -5,6 +5,7 @@
   <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_highlighted_text_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_skip_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_background_color">@color/color_def_oppia_light_yellow</color>
   <color name="color_palette_dark_background_color">@color/color_def_mid_grey_30</color>
   <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
@@ -29,6 +30,7 @@
   <color name="color_palette_onboarding_divider_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_dots_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_arrow_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_agreement_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_exploration_background_color">@color/color_def_oppia_light_green</color>
   <color name="color_palette_revision_card_background_color">@color/color_def_oppia_light_green</color>
   <color name="color_palette_revision_card_fragment_status_bar_color">@color/color_def_oppia_reddish_brown</color>
