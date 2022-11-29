@@ -22,12 +22,13 @@ import org.oppia.android.databinding.OptionStoryTextSizeBinding
 import org.oppia.android.databinding.OptionsFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.security.InvalidParameterException
 import javax.inject.Inject
 
-const val APP_LANGUAGE = "APP_LANGUAGE"
+val APP_LANGUAGE = OppiaLanguage.ENGLISH
 private const val READING_TEXT_SIZE_TAG = "ReadingTextSize"
 private const val APP_LANGUAGE_TAG = "AppLanguage"
 private const val AUDIO_LANGUAGE_TAG = "AudioLanguage"
@@ -46,7 +47,8 @@ class OptionsFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val viewModelProvider: ViewModelProvider<OptionControlsViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
+  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  private val translationController: TranslationController
 ) {
   private lateinit var binding: OptionsFragmentBinding
   private lateinit var recyclerViewAdapter: RecyclerView.Adapter<*>

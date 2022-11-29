@@ -33,6 +33,11 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
   companion object {
     private const val ACTIVITY_PARAMS_KEY = "AppLanguageActivity.params"
     private const val ACTIVITY_SAVED_STATE_KEY = "AppLanguageActivity.saved_state"
+    internal const val APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY =
+      "AppLanguageActivity.app_language_preference_title"
+    const val APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY =
+      "AppLanguageActivity.app_language_preference_summary_value"
+    internal const val SELECTED_LANGUAGE_EXTRA_KEY = "AppLanguageActivity.selected_language"
 
     /** Returns a new [Intent] to route to [AppLanguageActivity]. */
     fun createAppLanguageActivityIntent(
@@ -58,6 +63,14 @@ class AppLanguageActivity : InjectableAppCompatActivity() {
       return getProto(
         ACTIVITY_SAVED_STATE_KEY, AppLanguageActivityStateBundle.getDefaultInstance()
       ).oppiaLanguage
+    }
+
+    fun getAppLanguagePreferenceTitleExtraKey(): String {
+      return APP_LANGUAGE_PREFERENCE_TITLE_EXTRA_KEY
+    }
+
+    fun getAppLanguagePreferenceSummaryValueExtraKey(): String {
+      return APP_LANGUAGE_PREFERENCE_SUMMARY_VALUE_EXTRA_KEY
     }
   }
 
