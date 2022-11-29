@@ -38,7 +38,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
     this.index = index
   }
 
-  private fun getSpotlightFragment(): SpotlightManager? {
+  private fun getSpotlightManager(): SpotlightManager? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as? SpotlightManager
@@ -60,7 +60,7 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
       if (index == 0) {
-        checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+        checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
     }
   }
