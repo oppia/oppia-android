@@ -12,6 +12,7 @@
   <color name="color_palette_text_input_background_color">@color/color_def_white</color>
   <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
   <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+  <color name="color_palette_helper_text_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_container_background_color">@color/color_def_white</color>
   <color name="color_palette_toolbar_color">@color/color_def_oppia_green</color>
   <color name="color_palette_secondary_toolbar_color">@color/color_def_oppia_green</color>
@@ -48,6 +49,7 @@
   <color name="color_palette_error_text_color">@color/color_def_error_text</color>
   <color name="color_palette_show_eye_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_hide_eye_icon_color">@color/color_def_accessible_grey</color>
+  <color name="color_palette_info_icon_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
   <color name="color_palette_back_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_replay_button_color">@color/color_def_oppia_brown_dark</color>
@@ -74,6 +76,8 @@
   <color name="color_palette_checkbox_text_unselected_state_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_checkbox_text_selected_state_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_checkbox_selected_state_color">@color/color_def_checkbox_green</color>
+  <color name="color_palette_checkbox_checked_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_checkbox_unchecked_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_mark_completed_text_color">@color/color_def_white</color>
   <color name="color_palette_mark_completed_all_text_color">@color/color_def_white</color>
   <color name="color_palette_hints_and_solution_summary_card_border_color">@color/color_def_accessible_light_grey_2</color>

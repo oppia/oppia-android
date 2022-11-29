@@ -175,6 +175,7 @@
     <item name="errorEnabled">true</item>
     <item name="errorIconTint">@color/component_color_shared_text_input_layout_error_color</item>
     <item name="errorTextColor">@color/component_color_shared_text_input_layout_error_color</item>
+    <item name="helperTextTextColor">@color/component_color_shared_text_input_layout_helper_text_color</item>
     <item name="boxStrokeErrorColor">@color/component_color_shared_text_input_layout_error_color</item>
     <item name="hintTextColor">@color/component_color_shared_text_input_layout_text_color</item>
     <item name="android:textAlignment">viewStart</item>

@@ -17,14 +17,14 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-       android:id="@+id/add_profile_activity_toolbar"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:background="@color/component_color_shared_activity_toolbar_color"
-       android:minHeight="?attr/actionBarSize"
-       app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-       app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-       app:titleTextAppearance="@style/ToolbarTitle" />
+      android:id="@+id/add_profile_activity_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_activity_toolbar_color"
+      android:minHeight="?attr/actionBarSize"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:titleTextAppearance="@style/ToolbarTitle" />
 
     <FrameLayout
       android:layout_width="match_parent"
@@ -50,15 +50,15 @@
             android:layout_height="120dp"
             android:clickable="true"
             android:contentDescription="@string/current_profile_picture_content_description"
-            android:focusable="true"
             android:elevation="4dp"
+            android:focusable="true"
             app:add_shadow="true"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shadow_radius="8"
-            app:srcCompat="@{@drawable/ic_default_avatar}"/>
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
+            app:srcCompat="@{@drawable/ic_default_avatar}" />
 
           <ImageView
             android:id="@+id/add_profile_activity_edit_user_image_view"
@@ -102,6 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/add_profile_pin_checkbox_margin_top"
+            android:buttonTint="@color/shared_checkbox_selector"
             android:minHeight="48dp"
             android:text="@string/add_profile_create_a_3_digit_pin"
             android:textColor="@color/component_color_add_profile_activity_label_text_color"
@@ -114,6 +115,7 @@
             android:layout_height="48dp"
             android:contentDescription="@string/add_profile_info_content_description"
             android:padding="12dp"
+            android:tint="@color/component_color_add_profile_activity_info_icon_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/add_profile_activity_pin_check_box"
             app:srcCompat="@drawable/ic_info_icon" />
