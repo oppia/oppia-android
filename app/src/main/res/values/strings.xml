@@ -38,8 +38,8 @@
   <string name="stop_exploration_dialog_cancel_button">Cancel</string>
   <string name="stop_exploration_dialog_leave_button">Leave</string>
   <string name="exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
-  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try!</string>
-  <string name="voiceover_language_icon_spotlight_hint">Tap to change voiceover language.</string>
+  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try it!</string>
+  <string name="voiceover_language_icon_spotlight_hint">Tap to change the voiceover language.</string>
   <string name="progress_database_full_dialog_title">Maximum storage capacity reached</string>
   <string name="progress_database_full_dialog_description">Saved progress for the lesson \"%s\" will be deleted.</string>
   <string name="progress_database_full_dialog_continue_button">Continue</string>
@@ -583,9 +583,7 @@
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
-  <string name="onboarding_next_button_spotlight_hint">Next</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
-  <string name="mark_spotlight_seen_button_text">Done</string>
   <string name="please_select_all_correct_choices">Please select all correct choices.</string>
   <string name="you_may_select_more_choices">You may select more choices.</string>
   <string name="no_more_than_choices_may_be_selected">No more than %s choices may be selected.</string>

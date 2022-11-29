@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
@@ -137,7 +137,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
 
         override fun onEnded() {
-          targetList.removeFirst()
+          if (targetList.isNotEmpty()) targetList.removeFirst()
           val profileId = ProfileId.newBuilder()
             .setInternalId(internalProfileId)
             .build()
@@ -155,8 +155,8 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     spotlight = Spotlight.Builder(activity)
       .setTargets(targetList)
       .setBackgroundColorRes(R.color.spotlight_overlay_background)
-      .setDuration(1000L)
-      .setAnimation(DecelerateInterpolator(2f))
+      .setDuration(500L)
+      .setAnimation(AccelerateInterpolator(0.5f))
       .setOnSpotlightListener(object : OnSpotlightListener {
         override fun onStarted() {
           isSpotlightActive = true

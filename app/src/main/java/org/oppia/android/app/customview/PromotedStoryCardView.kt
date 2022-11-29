@@ -40,11 +40,11 @@ class PromotedStoryCardView @JvmOverloads constructor(
         resourceHandler.getStringInLocale(R.string.promoted_story_spotlight_hint),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
-      checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+      checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
     }
   }
 
-  private fun getSpotlightFragment(): SpotlightManager? {
+  private fun getSpotlightManager(): SpotlightManager? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
     ) as? SpotlightManager
