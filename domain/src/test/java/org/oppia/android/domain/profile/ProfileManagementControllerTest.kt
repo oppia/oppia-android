@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.AppLanguage
-import org.oppia.android.app.model.AppLanguage.CHINESE_APP_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.FRENCH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.Profile
@@ -61,6 +59,7 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.OppiaLanguage
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -118,7 +117,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(true)
     assertThat(profile.id.internalId).isEqualTo(0)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
+    assertThat(profile.oppiaLanguage).isEqualTo(OppiaLanguage.ENGLISH)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
     assertThat(profile.numberOfLogins).isEqualTo(0)
     assertThat(profile.isContinueButtonAnimationSeen).isEqualTo(false)
@@ -185,7 +184,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.allowDownloadAccess).isEqualTo(false)
     assertThat(profile.id.internalId).isEqualTo(3)
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
-    assertThat(profile.appLanguage).isEqualTo(AppLanguage.ENGLISH_APP_LANGUAGE)
+    assertThat(profile.oppiaLanguage).isEqualTo(OppiaLanguage.ENGLISH)
     assertThat(profile.audioLanguage).isEqualTo(AudioLanguage.ENGLISH_AUDIO_LANGUAGE)
   }
 
@@ -536,17 +535,17 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testUpdateAppLanguage_addProfiles_updateWithChineseLanguage_checkUpdateIsSuccessful() {
+  fun testUpdateAppLanguage_addProfiles_updateWithArabicLanguage_checkUpdateIsSuccessful() {
     setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
-      profileManagementController.updateAppLanguage(PROFILE_ID_2, CHINESE_APP_LANGUAGE)
+      profileManagementController.updateAppLanguage(PROFILE_ID_2, OppiaLanguage.ARABIC)
 
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
-    assertThat(profile.appLanguage).isEqualTo(CHINESE_APP_LANGUAGE)
+    assertThat(profile.oppiaLanguage).isEqualTo(OppiaLanguage.ARABIC)
   }
 
   @Test
