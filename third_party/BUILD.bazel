@@ -56,6 +56,14 @@ android_library(
 )
 
 android_library(
+    name = "com_github_takusemba_spotlight",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@android-spotlight//spotlight",
+    ],
+)
+
+android_library(
     name = "robolectric_android-all",
     testonly = True,
     visibility = ["//visibility:public"],
@@ -79,14 +87,6 @@ android_library(
     visibility = ["//visibility:public"],
     exports = [
         "@kotlitex//kotlitex",
-    ],
-)
-
-android_library(
-    name = "asia_ivity_android_marqueeview",
-    visibility = ["//visibility:public"],
-    exports = [
-        "@marqueeview//library:Android-MarqueeView",
     ],
 )
 

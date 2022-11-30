@@ -64,14 +64,15 @@ class TopicLessonViewModel @Inject constructor(
       topicStoryList = ephemeralTopic.topic.storyList
       itemList.clear()
       itemList.add(TopicLessonsTitleViewModel())
-      for (ephemeralStorySummary in ephemeralTopic.storiesList) {
+      ephemeralTopic.storiesList.forEachIndexed { index, ephemeralStorySummary ->
         itemList.add(
           StorySummaryViewModel(
             ephemeralStorySummary,
             fragment as StorySummarySelector,
             fragment as ChapterSummarySelector,
             resourceHandler,
-            translationController
+            translationController,
+            index
           )
         )
       }

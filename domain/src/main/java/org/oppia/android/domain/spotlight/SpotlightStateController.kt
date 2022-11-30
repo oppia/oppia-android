@@ -6,7 +6,6 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FEATURE_NOT_SET
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
-import org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
@@ -86,7 +85,6 @@ class SpotlightStateController @Inject constructor(
         RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID
       ) {
         val viewState = when (feature) {
-          ONBOARDING_NEXT_BUTTON -> it.onboardingNextButton
           TOPIC_LESSON_TAB -> it.topicLessonTab
           TOPIC_REVISION_TAB -> it.topicRevisionTab
           FIRST_CHAPTER -> it.firstChapter
@@ -117,7 +115,6 @@ class SpotlightStateController @Inject constructor(
     ) { spotlightStateDatabase ->
       spotlightStateDatabase.toBuilder().run {
         when (feature) {
-          ONBOARDING_NEXT_BUTTON -> this.setOnboardingNextButton(viewState)
           TOPIC_LESSON_TAB -> this.setTopicLessonTab(viewState)
           TOPIC_REVISION_TAB -> this.setTopicRevisionTab(viewState)
           FIRST_CHAPTER -> this.setFirstChapter(viewState)

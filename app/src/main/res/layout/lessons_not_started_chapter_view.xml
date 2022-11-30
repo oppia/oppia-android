@@ -13,13 +13,14 @@
       type="org.oppia.android.app.topic.lessons.ChapterSummaryViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <org.oppia.android.app.customview.ChapterNotStartedContainerConstraintLayout
     android:id="@+id/not_started_chapter_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/chapter_white_bg_with_bright_green_border"
     android:onClick="@{() -> viewModel.onClick(viewModel.explorationId)}"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:storyIndex="@{viewModel.storyIndex}">
 
     <TextView
       android:id="@+id/chapter_index"
@@ -65,5 +66,5 @@
       android:layout_height="1dp"
       android:background="@drawable/grey_recycler_view_item_decoration_divider"
       app:layout_constraintBottom_toBottomOf="parent" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  </org.oppia.android.app.customview.ChapterNotStartedContainerConstraintLayout>
 </layout>
