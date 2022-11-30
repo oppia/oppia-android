@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.Observable
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
 import org.oppia.android.app.model.Interaction
@@ -16,6 +17,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
 import javax.inject.Inject
+import org.oppia.android.R
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -31,7 +34,8 @@ class SelectionInteractionViewModel private constructor(
   private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -52,11 +56,17 @@ class SelectionInteractionViewModel private constructor(
       ?: minAllowableSelectionCount
   }
   private val selectedItems: MutableList<Int> = mutableListOf()
+  val enabledItemsList by lazy {
+    List(choiceSubtitledHtmls.size) {
+      ObservableBoolean(true)
+    }
+  }
   val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this)
+    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this, enabledItemsList)
 
   private val isAnswerAvailable = ObservableField(false)
-
+  val selectedItemText =
+    ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
@@ -124,6 +134,7 @@ class SelectionInteractionViewModel private constructor(
       isCurrentlySelected -> {
         selectedItems -= itemIndex
         updateIsAnswerAvailable()
+        updateSelectionText(isCurrentlySelected)
         false
       }
       !areCheckboxesBound() -> {
@@ -139,11 +150,44 @@ class SelectionInteractionViewModel private constructor(
         //  number required.
         selectedItems += itemIndex
         updateIsAnswerAvailable()
+        updateSelectionText(isCurrentlySelected)
         true
       }
       else -> {
         // Do not change the current status if it isn't valid to do so.
         isCurrentlySelected
+      }
+    }
+  }
+
+  private fun updateSelectionText(isCurrentlySelected: Boolean) {
+    if (selectedItems.size < maxAllowableSelectionCount) {
+      selectedItemText.set(
+        resourceHandler.getStringInLocale(
+          R.string.you_may_select_more_choices
+        )
+      )
+    }
+    if (selectedItems.size == 0) {
+      selectedItemText.set(
+        resourceHandler.getStringInLocale(
+          R.string.please_select_all_correct_choices
+        )
+      )
+    }
+    if (selectedItems.size == maxAllowableSelectionCount) {
+      selectedItemText.set(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.no_more_than_choices_may_be_selected,
+          maxAllowableSelectionCount.toString()
+        )
+      )
+      enabledItemsList.forEach {
+        it.set(isCurrentlySelected)
+      }
+    }else {
+      enabledItemsList.forEach {
+        it.set(true)
       }
     }
   }
@@ -161,7 +205,8 @@ class SelectionInteractionViewModel private constructor(
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
-    private val translationController: TranslationController
+    private val translationController: TranslationController,
+    private val resourceHandler: AppLanguageResourceHandler
   ) : InteractionItemFactory {
     override fun create(
       entityId: String,
@@ -181,7 +226,8 @@ class SelectionInteractionViewModel private constructor(
         answerErrorReceiver,
         isSplitView,
         writtenTranslationContext,
-        translationController
+        translationController,
+        resourceHandler
       )
     }
   }
@@ -190,7 +236,8 @@ class SelectionInteractionViewModel private constructor(
     private fun computeChoiceItems(
       choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
-      selectionInteractionViewModel: SelectionInteractionViewModel
+      selectionInteractionViewModel: SelectionInteractionViewModel,
+      enabledItemsList: List<ObservableBoolean>
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
@@ -198,7 +245,8 @@ class SelectionInteractionViewModel private constructor(
           htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
           itemIndex = index,
-          selectionInteractionViewModel = selectionInteractionViewModel
+          selectionInteractionViewModel = selectionInteractionViewModel,
+          enabledItem = enabledItemsList[index]
         )
       }
       return observableList
