@@ -46,7 +46,7 @@
           android:layout_marginEnd="28dp"
           android:text="@string/revision_navigation_cards_header"
           android:textAlignment="@{viewModel.subtopicId == 1 ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START}"
-          android:textColor="@color/color_def_black"
+          android:textColor="@color/component_color_revision_card_activity_text_color"
           android:textSize="20sp"
           android:textStyle="bold"
           android:visibility="@{viewModel.subtopicListSize == 1 ? View.INVISIBLE : View.VISIBLE}"
