@@ -4,6 +4,8 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
+import javax.inject.Inject
+import org.oppia.android.R
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
@@ -14,11 +16,9 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
-import javax.inject.Inject
-import org.oppia.android.R
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -67,6 +67,7 @@ class SelectionInteractionViewModel private constructor(
   private val isAnswerAvailable = ObservableField(false)
   val selectedItemText =
     ObservableField(resourceHandler.getStringInLocale(R.string.please_select_all_correct_choices))
+
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
@@ -185,7 +186,7 @@ class SelectionInteractionViewModel private constructor(
       enabledItemsList.forEach {
         it.set(isCurrentlySelected)
       }
-    }else {
+    } else {
       enabledItemsList.forEach {
         it.set(true)
       }
