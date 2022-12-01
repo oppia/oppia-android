@@ -29,6 +29,7 @@
       android:layout_height="wrap_content"
       android:checked="@{viewModel.answerSelected}"
       android:clickable="false"
+      android:enabled="@{viewModel.enabledItem}"
       android:focusable="false"
       android:labelFor="@id/item_selection_contents_text_view"
       app:buttonTint="@color/component_color_shared_item_selection_interaction_color" />
