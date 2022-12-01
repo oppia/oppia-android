@@ -19,8 +19,12 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.CellularDataPreference
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.AudioFragmentBinding
@@ -30,6 +34,8 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.networking.NetworkConnectionUtil
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 const val TAG_LANGUAGE_DIALOG = "LANGUAGE_DIALOG"
@@ -47,7 +53,8 @@ class AudioFragmentPresenter @Inject constructor(
   private val networkConnectionUtil: NetworkConnectionUtil,
   private val viewModelProvider: ViewModelProvider<AudioViewModel>,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  @EnableSpotlightUi private val enableSpotlightUi: PlatformParameterValue<Boolean>
 ) {
   var userIsSeeking = false
   var userProgress = 0
@@ -59,6 +66,7 @@ class AudioFragmentPresenter @Inject constructor(
   private val viewModel by lazy {
     getAudioViewModel()
   }
+  private lateinit var binding: AudioFragmentBinding
 
   /** Sets up SeekBar listener, ViewModel, and gets VoiceoverMappings or restores saved state */
   fun handleCreateView(
@@ -78,7 +86,7 @@ class AudioFragmentPresenter @Inject constructor(
         }
       )
 
-    val binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+    binding = AudioFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
     binding.audioProgressSeekBar.setOnSeekBarChangeListener(
       object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -111,6 +119,25 @@ class AudioFragmentPresenter @Inject constructor(
     }
     subscribeToAudioLanguageLiveData()
     return binding.root
+  }
+
+  private fun startSpotlights() {
+    val audioLanguageIconSpotlightTarget = SpotlightTarget(
+      binding.audioLanguageIcon,
+      resourceHandler.getStringInLocale(R.string.voiceover_language_icon_spotlight_hint),
+      SpotlightShape.Circle,
+      Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
+    )
+
+    checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(
+      audioLanguageIconSpotlightTarget
+    )
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   private fun getProfileData(): LiveData<String> {
@@ -258,11 +285,12 @@ class AudioFragmentPresenter @Inject constructor(
     audioButtonListener.scrollToTop()
     if (feedbackId == null) {
       // This isn't reloading content since it's the first case of the content auto-playing.
-      loadMainContentAudio(allowAutoPlay = true, reloadingContent = false)
+      loadMainContentAudio(allowAutoPlay = !enableSpotlightUi.value, reloadingContent = false)
     } else {
-      loadFeedbackAudio(feedbackId!!, true)
+      loadFeedbackAudio(feedbackId!!, !enableSpotlightUi.value)
     }
     fragment.view?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_down_audio))
+    startSpotlights()
   }
 
   private fun hideAudioFragment() {

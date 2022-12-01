@@ -11,6 +11,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.Spotlight
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -70,6 +74,41 @@ class TopicFragmentPresenter @Inject constructor(
     return binding.root
   }
 
+  /** Requests the spotlights required in this activity to be enqueued. */
+  fun startSpotlight() {
+    viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
+      if (numberOfChaptersCompleted != null) {
+        val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LESSONS))?.view
+        lessonsTabView?.let { lessonsTabView ->
+          val lessonsTabSpotlightTarget = SpotlightTarget(
+            lessonsTabView,
+            resourceHandler.getStringInLocale(R.string.topic_lessons_tab_spotlight_hint),
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.TOPIC_LESSON_TAB
+          )
+          checkNotNull(getSpotlightManager()).requestSpotlight(lessonsTabSpotlightTarget)
+
+          if (numberOfChaptersCompleted > 2) {
+            val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
+            val revisionTabSpotlightTarget = SpotlightTarget(
+              revisionTabView!!,
+              resourceHandler.getStringInLocale(R.string.topic_revision_tab_spotlight_hint),
+              SpotlightShape.RoundedRectangle,
+              Spotlight.FeatureCase.TOPIC_REVISION_TAB
+            )
+            checkNotNull(getSpotlightManager()).requestSpotlight(revisionTabSpotlightTarget)
+          }
+        }
+      }
+    }
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
+  }
+
   private fun setCurrentTab(tab: TopicTab) {
     viewPager.setCurrentItem(computeTabPosition(tab), true)
     logTopicEvents(tab)
@@ -87,6 +126,7 @@ class TopicFragmentPresenter @Inject constructor(
       val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
+      tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescriptionResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
       if (enableExtraTopicTabsUi.value) {

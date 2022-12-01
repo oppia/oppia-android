@@ -384,6 +384,15 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(contentId, ::createPlayVoiceOverContext, EventBuilder::setPlayVoiceOverContext)
     }
 
+    /**
+     * Logs that the learner has demonstrated an invested engagement in the lesson (that is, they've
+     * played far enough in the lesson to indicate that they're not just quickly browsing & then
+     * leaving).
+     */
+    fun logInvestedEngagement() {
+      logStateEvent(EventBuilder::setReachInvestedEngagement)
+    }
+
     private fun logStateEvent(setter: EventBuilder.(ExplorationContext) -> EventBuilder) =
       logStateEvent(Unit, { _, context -> context }, setter)
 

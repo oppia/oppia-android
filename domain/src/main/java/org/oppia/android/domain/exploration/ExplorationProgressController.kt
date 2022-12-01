@@ -1072,6 +1072,9 @@ class ExplorationProgressController @Inject constructor(
     private var helpIndex = HelpIndex.getDefaultInstance()
     private var availableCardCount: Int = -1
 
+    private var hasReachedInvestedEngagement = false
+    private var completedStateCount = 0
+
     /**
      * The [LearnerAnalyticsLogger.ExplorationAnalyticsLogger] to be used for logging
      * exploration-specific events.
@@ -1113,6 +1116,13 @@ class ExplorationProgressController @Inject constructor(
 
         // Force the card count to update.
         availableCardCount = explorationProgress.stateDeck.getViewedStateCount()
+
+        if (!hasReachedInvestedEngagement &&
+          completedStateCount >= MINIMUM_COMPLETED_STATE_COUNT_FOR_INVESTED_ENGAGEMENT
+        ) {
+          it.logInvestedEngagement()
+          hasReachedInvestedEngagement = true
+        }
       }
     }
 
@@ -1132,6 +1142,7 @@ class ExplorationProgressController @Inject constructor(
     fun endState() {
       stateAnalyticsLogger?.logEndCard()
       explorationAnalyticsLogger.endCard()
+      completedStateCount++
     }
 
     /** Checks and logs for hint-based changes based on the provided [HelpIndex]. */
@@ -1305,6 +1316,8 @@ class ExplorationProgressController @Inject constructor(
   }
 
   private companion object {
+    private const val MINIMUM_COMPLETED_STATE_COUNT_FOR_INVESTED_ENGAGEMENT = 3
+
     /**
      * Returns a collectable [Flow] that notifies [collector] for this [StateFlow]s initial state,
      * and every change after.

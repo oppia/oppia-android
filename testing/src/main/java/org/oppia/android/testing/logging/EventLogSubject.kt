@@ -32,6 +32,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
@@ -143,7 +144,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenInfoTabContextThat].
    */
@@ -169,7 +170,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenLessonsTabContextThat].
    */
@@ -195,7 +196,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenPracticeTabContextThat].
    */
@@ -221,7 +222,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenRevisionTabContextThat].
    */
@@ -247,7 +248,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenQuestionPlayerContextThat].
    */
@@ -273,7 +274,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenStoryActivityContextThat].
    */
@@ -299,7 +300,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenConceptCardContextThat].
    */
@@ -325,7 +326,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasOpenRevisionCardContextThat].
    */
@@ -351,7 +352,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasStartCardContextThat].
    */
@@ -377,7 +378,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasEndCardContextThat].
    */
@@ -403,7 +404,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasHintOfferedContextThat].
    */
@@ -429,7 +430,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAccessHintContextThat].
    */
@@ -455,7 +456,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasSolutionOfferedContextThat].
    */
@@ -481,7 +482,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAccessSolutionContextThat].
    */
@@ -507,7 +508,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasSubmitAnswerContextThat].
    */
@@ -533,7 +534,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasPlayVoiceOverContextThat].
    */
@@ -559,7 +560,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAppInBackgroundContextThat].
    */
@@ -585,7 +586,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasAppInForegroundContextThat].
    */
@@ -611,7 +612,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasExitExplorationContextThat].
    */
@@ -637,7 +638,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasFinishExplorationContextThat].
    */
@@ -663,7 +664,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasResumeExplorationContextThat].
    */
@@ -689,7 +690,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasStartOverExplorationContextThat].
    */
@@ -715,7 +716,7 @@ class EventLogSubject private constructor(
   }
 
   /**
-   * Verifies the [EventLog]'s context and executes [block] in the same was as
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned by,
    * [hasDeleteProfileContextThat].
    */
@@ -755,6 +756,32 @@ class EventLogSubject private constructor(
   fun hasOpenProfileChooserContextThat(): BooleanSubject {
     hasOpenProfileChooserContext()
     return assertThat(actual.context.openProfileChooser)
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [REACH_INVESTED_ENGAGEMENT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasReachedInvestedEngagementContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(REACH_INVESTED_ENGAGEMENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasReachedInvestedEngagementContext] and returns a
+   * [ExplorationContextSubject] to test the corresponding context.
+   */
+  fun hasReachedInvestedEngagementContextThat(): ExplorationContextSubject {
+    hasReachedInvestedEngagementContext()
+    return ExplorationContextSubject.assertThat(actual.context.reachInvestedEngagement)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context and executes [block] in the same way as
+   * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned
+   * by, [hasReachedInvestedEngagementContextThat].
+   */
+  fun hasReachedInvestedEngagementContextThat(block: ExplorationContextSubject.() -> Unit) {
+    hasReachedInvestedEngagementContextThat().block()
   }
 
   /**

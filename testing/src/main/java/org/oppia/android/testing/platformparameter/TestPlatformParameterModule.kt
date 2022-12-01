@@ -20,6 +20,7 @@ import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLanguageSelectionUi
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
+import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.LearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
@@ -184,6 +185,14 @@ class TestPlatformParameterModule {
     )
   }
 
+  @Provides
+  @EnableSpotlightUi
+  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(
+      enableSpotlightUi
+    )
+  }
+
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableLanguageSelectionUi = ENABLE_LANGUAGE_SELECTION_UI_DEFAULT_VALUE
@@ -194,6 +203,7 @@ class TestPlatformParameterModule {
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
     private var enablePerformanceMetricsCollection =
       ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+    private var enableSpotlightUi = true
 
     /** Enables forcing [EnableLanguageSelectionUi] platform parameter flag from tests. */
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -242,6 +252,12 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableContinueButtonAnimation(value: Boolean) {
       enableContinueButtonAnimation = value
+    }
+
+    /** Enables forcing [EnableSpotlightUi] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableSpotlightUi(value: Boolean) {
+      enableSpotlightUi = value
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

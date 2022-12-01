@@ -11,14 +11,15 @@
       type="org.oppia.android.app.home.promotedlist.PromotedStoryViewModel" />
   </data>
 
-  <com.google.android.material.card.MaterialCardView
+  <org.oppia.android.app.customview.PromotedStoryCardView
     android:layout_width="@dimen/promoted_story_card_layout_width"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/promoted_story_card_layout_margin_start"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:promotedStoryIndex="@{viewModel.index}">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/promoted_story_card_container"
@@ -96,5 +97,5 @@
           android:textSize="14sp" />
       </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-  </com.google.android.material.card.MaterialCardView>
+  </org.oppia.android.app.customview.PromotedStoryCardView>
 </layout>
