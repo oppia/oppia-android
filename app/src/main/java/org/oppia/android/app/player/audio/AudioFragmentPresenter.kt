@@ -22,7 +22,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.State
 import org.oppia.android.app.player.audio.AudioViewModel.UiAudioPlayStatus
-import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
@@ -130,15 +129,15 @@ class AudioFragmentPresenter @Inject constructor(
       Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
     )
 
-    checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(
+    checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(
       audioLanguageIconSpotlightTarget
     )
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightFragment
+    ) as? SpotlightManager
   }
 
   private fun getProfileData(): LiveData<String> {

@@ -14,7 +14,6 @@ import org.oppia.android.app.model.ExplorationFragmentArguments
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.StateFragment
-import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
@@ -97,7 +96,7 @@ class ExplorationFragmentPresenter @Inject constructor(
           SpotlightShape.Circle,
           Spotlight.FeatureCase.LESSONS_BACK_BUTTON
         )
-        checkNotNull(getSpotlightFragment()).requestSpotlight(backButtonSpotlightTarget)
+        checkNotNull(getSpotlightManager()).requestSpotlight(backButtonSpotlightTarget)
       }
     }
 
@@ -105,10 +104,10 @@ class ExplorationFragmentPresenter @Inject constructor(
       .requestVoiceOverIconSpotlight(numberOfLogins)
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment? {
+  private fun getSpotlightManager(): SpotlightManager? {
     return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightFragment
+    ) as? SpotlightManager
   }
 
   fun handlePlayAudio() {

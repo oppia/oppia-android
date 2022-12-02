@@ -11,13 +11,8 @@ import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PolicyPage
-import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.spotlight.SpotlightFragment
-import org.oppia.android.app.spotlight.SpotlightManager
-import org.oppia.android.app.spotlight.SpotlightShape
-import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.OnboardingFragmentBinding
@@ -58,24 +53,6 @@ class OnboardingFragmentPresenter @Inject constructor(
     setUpViewPager()
     addDots()
     return binding.root
-  }
-
-  private fun getSpotlightFragment(): SpotlightFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightFragment
-  }
-
-  fun startSpotlight() {
-    val nextSpotlightTarget = SpotlightTarget(
-      binding.onboardingFragmentNextImageView,
-      resourceHandler.getStringInLocale(
-        R.string.onboarding_activity_onboarding_next_button_spotlight_hint
-      ),
-      SpotlightShape.Circle,
-      Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
-    )
-    checkNotNull(getSpotlightFragment()).requestSpotlightViewWithDelayedLayout(nextSpotlightTarget)
   }
 
   private fun setUpViewPager() {
