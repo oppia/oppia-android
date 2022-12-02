@@ -223,7 +223,7 @@
   <string name="admin_pin_activity_admin_pin_input_confirm_pin_text">Confirmar PIN de 5 dígitos</string>
   <string name="admin_pin_activity_admin_pin_length_error_text">Seu PIN deve ter 5 dígitos.</string>
   <string name="admin_pin_activity_wrong_confirm_admin_pin_error_text">Certifique-se de que os dois PINs coincidam.</string>
-  <string name="save">Salvar</string>
+  <string name="admin_pin_activity_submit_button_text">Salvar</string>
   <string name="admin_pin_activity_label_text">Autorize para adicionar perfis</string>
   <string name="add_profile_activity_label_text">Adicionar Perfil</string>
   <string name="add_profile_activity_add_profile_toolbar_title">Adicionar Perfil</string>
@@ -384,6 +384,7 @@
   <string name="hint_and_solution_activity_close_icon_description">Navegar para cima</string>
   <string name="hints_toolbar_title">Dicas</string>
   <string name="solution_summary_activity_show_solution_button_text">Exibir</string>
+  <string name="solution_summary_activity_show_solution">Exibir</string>
   <string name="reveal_solution_dialog_fragment_reveal_solution_dialog_title">Revelar Solução</string>
   <string name="hints_summary_activity_reveal_hint_button_text">Revelar Dica</string>
   <string name="solution_summary_activity_solution_correct_answer_label_text">A única solução é :</string>
@@ -466,7 +467,6 @@
   <string name="date_time_util_home_screen_good_evening_greeting_fragment">Boa noite,</string>
   <string name="policy_activity_label_title">Página de Política</string>
   <string name="privacy_policy_activity_title">Política de Privacidade</string>
-  <string name="privacy_policy_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;esta páginage&lt;/a&gt; para acessar a última versão desta política de privacidade.</string>
   <string name="terms_of_service_activity_title">Termos de Serviço</string>
   <string name="onboarding_activity_agree_to_terms">Ao usar %s, você concorda com nossos &lt;br&gt; &lt;oppia-noninteractive-policy link=\"tos\"&gt;Termos de Serviço&lt;/oppia-noninteractive-policy&gt; e &lt;oppia-noninteractive-policy link=\"privacy\"&gt;Política de Privacidade&lt;/oppia-noninteractive-policy&gt;.</string>
   <string name="policy_fragment_activity_terms_of_service_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/terms\"&gt;esta página&lt;/a&gt; para acessar a última versão destes termos.</string>

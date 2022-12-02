@@ -338,7 +338,7 @@ class HomeActivityTest {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint))
+      onView(withText(R.string.home_activity_promoted_story_spotlight_hint))
         .check(matches(isDisplayed()))
     }
   }
@@ -355,7 +355,11 @@ class HomeActivityTest {
     // Re-launch the activity.
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+      onView(
+        withText(
+          R.string.home_activity_promoted_story_spotlight_hint
+        )
+      ).check(doesNotExist())
     }
   }
 
@@ -363,7 +367,11 @@ class HomeActivityTest {
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
+      onView(
+        withText(
+          R.string.home_activity_promoted_story_spotlight_hint
+        )
+      ).check(doesNotExist())
     }
   }
 

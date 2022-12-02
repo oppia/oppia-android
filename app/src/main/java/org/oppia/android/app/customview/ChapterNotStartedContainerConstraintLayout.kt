@@ -56,7 +56,9 @@ class ChapterNotStartedContainerConstraintLayout @JvmOverloads constructor(
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
-        resourceHandler.getStringInLocale(R.string.first_chapter_spotlight_hint),
+        resourceHandler.getStringInLocale(
+          R.string.topic_activity_first_chapter_spotlight_hint
+        ),
         feature = Spotlight.FeatureCase.FIRST_CHAPTER
       )
       if (index == 0) {

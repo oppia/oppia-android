@@ -206,7 +206,7 @@
   <string name="admin_pin_activity_admin_pin_input_confirm_pin_text">Thibitisha Nambari ya Siri ya tarakimu 5</string>
   <string name="admin_pin_activity_admin_pin_length_error_text">Nambari yako ya Siri inapaswa kuwa na urefu wa tarakimu 5.</string>
   <string name="admin_pin_activity_wrong_confirm_admin_pin_error_text">Tafadhali hakikisha kwamba Nambari za Siri zote mbili zinalingana.</string>
-  <string name="save">Hifadhi</string>
+  <string name="admin_pin_activity_submit_button_text">Hifadhi</string>
   <string name="admin_pin_activity_label_text">Idhinisha kuongeza wasifu</string>
   <string name="add_profile_activity_label_text">Ongeza Wasifu</string>
   <string name="add_profile_activity_add_profile_toolbar_title">Ongeza Wasifu</string>

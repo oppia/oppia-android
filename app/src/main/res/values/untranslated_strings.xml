@@ -81,4 +81,24 @@
   <string name="learner_analytics_learner_id_clipboard_label_description" translatable="false">%s\'s learner ID</string>
   <!-- General test activity strings. -->
   <string name="test_activity_label" translatable="false">Test-only activity</string>
+  <!-- AdministratorControlsFragment -->
+  <string name="administrator_controls_fragment_test_activity_label" translatable="false">Administrator Controls Fragment Test Activity</string>
+  <!-- ProfileEditActivity -->
+  <string name="profile_edit_fragment_test_activity_label" translatable="false">Profile Edit Fragment Test Activity</string>
+  <!-- AdminPinActivity -->
+  <string name="admin_pin_activity_label_text">Authorise to add profiles</string>
+  <!-- AppVersionFragment -->
+  <string name="administrator_controls_app_version_activity_app_version_activity_label_title" translatable="false">App Version</string>
+  <!-- AddProfileActivity -->
+  <string name="add_profile_activity_label_text" translatable="false">Add Profile</string>
+  <!-- HelpActivity -->
+  <string name="help_activity_label_title" translatable="false">Help</string>
+  <!-- ProfileChooserFragment -->
+  <string name="profile_chooser_activity_label_text" translatable="false">Profile selection page</string>
+  <!-- PinPasswordActivity -->
+  <string name="pin_password_activity_pin_password_activity_label_title">PIN verification</string>
+  <!-- TopicActivity -->
+  <string name="topic_activity_topic_page_label_text">Topic page</string>
+  <!-- WalkthroughActivity -->
+  <string name="walkthrough_activity_label_text">App walkthrough</string>
 </resources>

@@ -154,7 +154,7 @@ class ExplorationActivityPresenter @Inject constructor(
           val audioPlayerSpotlightTarget = SpotlightTarget(
             it,
             resourceHandler.getStringInLocaleWithWrapping(
-              R.string.voiceover_icon_spotlight_hint,
+              R.string.exploration_activity_voiceover_icon_spotlight_hint,
               resourceHandler.getStringInLocale(R.string.app_name)
             ),
             SpotlightShape.Circle,

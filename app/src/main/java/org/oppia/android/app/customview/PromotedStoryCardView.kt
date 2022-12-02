@@ -37,7 +37,9 @@ class PromotedStoryCardView @JvmOverloads constructor(
       isSpotlit = true
       val spotlightTarget = SpotlightTarget(
         this,
-        resourceHandler.getStringInLocale(R.string.promoted_story_spotlight_hint),
+        resourceHandler.getStringInLocale(
+          R.string.home_activity_promoted_story_spotlight_hint
+        ),
         feature = Spotlight.FeatureCase.PROMOTED_STORIES
       )
       checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)

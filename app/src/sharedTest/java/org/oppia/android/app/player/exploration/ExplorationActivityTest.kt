@@ -448,7 +448,11 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.voiceover_language_icon_spotlight_hint))
+      onView(
+        withText(
+          R.string.exploration_activity_voiceover_language_icon_spotlight_hint
+        )
+      )
         .check(matches(isDisplayed()))
     }
   }
@@ -499,7 +503,11 @@ class ExplorationActivityTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_audio_player)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.voiceover_language_icon_spotlight_hint)).check(doesNotExist())
+      onView(
+        withText(
+          R.string.exploration_activity_voiceover_language_icon_spotlight_hint
+        )
+      ).check(doesNotExist())
     }
   }
 
@@ -523,7 +531,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.exploration_exit_button_spotlight_hint))
+      onView(withText(R.string.exploration_activity_exploration_exit_button_spotlight_hint))
         .check(matches(isDisplayed()))
     }
   }
@@ -568,7 +576,7 @@ class ExplorationActivityTest {
       )
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.exploration_exit_button_spotlight_hint))
+      onView(withText(R.string.exploration_activity_exploration_exit_button_spotlight_hint))
         .check(doesNotExist())
     }
   }

@@ -113,7 +113,7 @@
           android:clickable="@{viewModel.isButtonActive()}"
           android:enabled="@{viewModel.isButtonActive()}"
           android:minHeight="48dp"
-          android:text="@string/save"
+          android:text="@string/admin_pin_activity_submit_button_text"
           android:textColor="@{viewModel.isButtonActive() ? @color/color_def_white : @color/submit_button_inactive_text }"
           app:layout_constraintEnd_toEndOf="@id/admin_pin_input_confirm_pin"
           app:layout_constraintTop_toBottomOf="@+id/admin_pin_input_confirm_pin" />

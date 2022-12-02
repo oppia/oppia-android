@@ -48,7 +48,9 @@ class PoliciesFragmentPresenter @Inject constructor(
     if (policyPage == PolicyPage.PRIVACY_POLICY) {
       policyDescription =
         resourceHandler.getStringInLocale(R.string.privacy_policy_content)
-      policyWebLink = resourceHandler.getStringInLocale(R.string.privacy_policy_web_link)
+      policyWebLink = resourceHandler.getStringInLocale(
+        R.string.policy_fragment_activity_terms_of_service_web_link
+      )
     } else if (policyPage == PolicyPage.TERMS_OF_SERVICE) {
       policyDescription =
         resourceHandler.getStringInLocale(R.string.terms_of_service_content)

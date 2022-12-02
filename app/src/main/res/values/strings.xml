@@ -15,16 +15,14 @@
   <string name="admin_auth_activity_submit_button_text">Submit</string>
   <string name="admin_auth_activity_close_button_text">Close</string>
   <!-- AdminPinActivity -->
-  <string name="save">Save</string>
+  <string name="admin_pin_activity_submit_button_text">Save</string>
   <string name="admin_pin_activity_admin_pin_requirement_description">Before we add profiles, we need to protect your account by creating a PIN. This gives you the ability to authorize downloads and manage profiles on the device.</string>
   <string name="admin_pin_activity_admin_pin_warning_text">Do <b>not</b> use a PIN you have set for personal accounts like banking or social security.</string>
   <string name="admin_pin_activity_admin_pin_input_hint_text">New 5-Digit PIN</string>
   <string name="admin_pin_activity_admin_pin_input_confirm_pin_text">Confirm 5-Digit PIN</string>
   <string name="admin_pin_activity_admin_pin_length_error_text">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_activity_wrong_confirm_admin_pin_error_text">Please make sure that both PINs match.</string>
-  <string name="admin_pin_activity_label_text">Authorise to add profiles</string>
   <!-- AdministratorControlsFragment -->
-  <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="administrator_controls_general_view_administrator_controls_general_label_text">General</string>
   <string name="administrator_controls_general_view_administrator_edit_account">Edit account</string>
   <string name="administrator_controls_profile_view_administrator_controls_profile_management_label_text">Profile Management</string>
@@ -44,9 +42,7 @@
   <!-- AppVersionFragment -->
   <string name="administrator_controls_app_version_activity_app_version_name">App Version %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
-  <string name="administrator_controls_app_version_activity_app_version_activity_label_title">App Version</string>
   <!-- AddProfileActivity -->
-  <string name="add_profile_activity_label_text">Add Profile</string>
   <string name="add_profile_activity_add_profile_toolbar_title">Add Profile</string>
   <string name="add_profile_activity_add_profile_input_name_hint_text">Name*</string>
   <string name="add_profile_activity_add_profile_input_pin_hint_text">3-Digit PIN*</string>
@@ -108,6 +104,9 @@
   <string name="exploration_activity_title">Exploration Player</string>
   <string name="exploration_activity_audio_player_on">Audio, ON</string>
   <string name="exploration_activity_audio_player_off">Audio, OFF</string>
+  <string name="exploration_activity_exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
+  <string name="exploration_activity_voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try!</string>
+  <string name="exploration_activity_voiceover_language_icon_spotlight_hint">Tap to change voiceover language.</string>
   <!-- UnsavedExplorationDialogFragment -->
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_description">Your progress will not be saved.</string>
@@ -131,7 +130,6 @@
   <string name="faq_question_5">Who is an Administrator?</string>
   <string name="faq_question_6">Why is the Exploration player not loading?</string>
   <string name="faq_question_7">Why is my audio not playing?</string>
-  <string name="faq_question_8">How do I download a Topic?</string>
   <string name="faq_question_9">I can\'t find my question here. What now?</string>
   <string name="faq_answer_1"><![CDATA[<p>If it is your first time creating a profile and not have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Set up Multiple Profiles</strong>.</li><li>Create a PIN and <strong>Save</strong>.</li><li>Fill in all fields for the profile.<ol><li>(Optional) Upload a photo.</li><li>Enter a name.</li><li>(Optional) Assign a 3-digit PIN.</li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><p> If you have created a profile before and have a PIN:<ol><li>From the Profile Chooser, tap on <strong>Add Profile</strong>. </li><li>Enter your PIN and tap <strong>Submit</strong>. </li><li>Fill in all fields for the profile.<ol><li> (Optional) Upload a photo. </li><li> Enter a name. </li><li> (Optional) Assign a 3-digit PIN. </li></ol></li><li>Tap <strong>Create</strong>. This profile is added to your Profile Chooser!</li></ol></p><br><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
   <string name="faq_answer_2"><![CDATA[<p>Once a profile is deleted:</p><ol><li>The profile cannot be recovered. </li><li> Profile information such as name, photos, and progress will be permanently deleted. </li></ol><p>To delete a profile (excluding the <u>Administrator\'s</u>):</p><ol><li> From the Administrator\'s Home Page, tap on the menu button on the top left. </li><li>Tap on <strong>Administrator Controls</strong>. </li><li>Tap on <strong>Edit Profiles</strong>. </li><li>Tap on the Profile you would like to delete. </li><li>At the bottom of the screen, tap <strong>Profile Deletion</strong>. </li><li>Tap <strong>Delete</strong> to confirm deletion. </li></ol><p><br></p><p>Note: Only the <u>Administrator</u> is able to manage profiles.</p>]]></string>
@@ -139,11 +137,7 @@
   <string name="faq_answer_4"><![CDATA[<p>%1$s <i>\"O-pee-yah\"</i> (Finnish) - \"to learn\"</p><p><br></p><p>%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.</p><p><br></p><p>By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.</p><p><br></p><p>As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!</p>]]></string>
   <string name="faq_answer_5"><![CDATA[<p>An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you. </p><p><br></p><p>Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as downloading Topics, changing your PIN, and more. </p><p><br></p><p>To see who your Administrator is, go to the Profile Chooser. The first profile listed and has \"Administrator\" written under their name is the Administrator. </p>]]></string>
   <string name="faq_answer_6"><![CDATA[<p>If the Exploration Player is not loading</p><p><br></p><p>Check to see if the app is up to date:</p><p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. </li></ul><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above </li></ul><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
-  <string name="voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try!</string>
-  <string name="voiceover_language_icon_spotlight_hint">Tap to change voiceover language.</string>
   <string name="faq_answer_7"><![CDATA[<p>If your audio is not playing</p><p><br></p><p>Check to see if the app is up to date:</p><ul><li> Go to the Play Store and make sure the app is updated to its latest version </li></ul><p><br></p><p>Check your internet connection:</p><ul><li> If your internet connection is slow, try re-connecting to your Wi-Fi network or connecting to a different network. Slow internet may cause the audio to load irregularly, making it difficult to play. </li></ul><p><br></p><p>Ask the Administrator to check their device and internet connection:</p><ul><li> Get the Administrator to troubleshoot using the steps above</li></ul><p><br></p><p>Let us know if you still have issues with loading:</p><ul><li> Report a problem by contacting us at admin@oppia.org. </li></ul>]]></string>
-  <string name="faq_answer_8"><![CDATA[<p>To download an Exploration:</p><ol><li>From the Home Page, tap on a Topic or Exploration.</li><li>From that Topic Page, tap on the <strong>Info</strong> tab.</li><li>Tap on <strong>Download Topic</strong>. </li><li>Depending on your app settings, you may need Administrator approval or stable Wifi connection to complete your download. If needed, once these requirements are satisfied, the Topic has been downloaded onto the device and can be used offline by all profiles.</li></ol><p>]]></string>
   <string name="faq_answer_9"><![CDATA[<p>If you cannot find your question or would like to report a bug, contact us at admin@oppia.org.</p>]]></string>
   <!-- GeneralAvailabilityUpgradeNoticeDialogFragment -->
   <string name="general_availability_upgrade_notice_dialog_activity_title">General Availability Notice</string>
@@ -152,13 +146,7 @@
   <string name="general_availability_upgrade_notice_dialog_content_activity_close_button_text">OK</string>
   <!-- HomeActivity -->
   <string name="home_activity_label_title">Home</string>
-  <string name="info_tab_content_description">Details about the topic.</string>
-  <string name="revision_tab_content_description">Revise concepts learned from completed lessons here.</string>
-  <string name="practice_tab_content_description">Practice the concepts learned from completed lessons.</string>
-  <string name="lessons_tab_content_description">Tap here to start playing a lesson.</string>
-  <string name="topic_lessons_tab_spotlight_hint">Find all your lessons here.</string>
-  <string name="topic_revision_tab_spotlight_hint">Revise concepts learned from completed lessons here.</string>
-  <string name="first_chapter_spotlight_hint">Tap here to start playing a lesson.</string>
+  <string name="home_activity_promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
   <!-- Home screen greeting fragments. -->
   <string name="date_time_util_home_screen_good_morning_greeting_fragment">Good morning,</string>
   <string name="date_time_util_home_screen_good_afternoon_greeting_fragment">Good afternoon,</string>
@@ -168,7 +156,6 @@
   <string name="exit_profile_dialog_fragment_home_activity_back_dialog_cancel">Cancel</string>
   <string name="exit_profile_dialog_fragment_home_activity_back_dialog_exit">Exit</string>
   <!-- HelpActivity -->
-  <string name="help_activity_label_title">Help</string>
   <string name="help_activity_back_arrow_description">Navigate back to %s</string>
   <string name="help_activity_third_party_dependencies_list">third-party dependencies list</string>
   <string name="help_activity_copyright_licenses_list">copyright licenses list</string>
@@ -290,7 +277,6 @@
   <string name="progress_database_full_dialog_activity_leave_without_saving_progress_button">Leave without saving progress</string>
   <string name="progress_database_full_dialog_activity_back_to_lesson_button">Back to lesson</string>
   <!-- ProfileChooserFragment -->
-  <string name="profile_chooser_activity_label_text">Profile selection page</string>
   <string name="profile_chooser_activity_profile_chooser_admin">Administrator</string>
   <string name="profile_chooser_activity_profile_chooser_select">Select your profile</string>
   <string name="profile_chooser_activity_profile_chooser_add">Add Profile</string>
@@ -317,7 +303,6 @@
   <string name="pin_password_activity_admin_confirm_app_wipe_positive_button_text">Yes</string>
   <string name="pin_password_activity_admin_confirm_app_wipe_negative_button_text">No</string>
   <string name="pin_password_activity_pin_password_toolbar_title">Enter PIN</string>
-  <string name="pin_password_activity_pin_password_activity_label_title">PIN verification</string>
   <string name="pin_password_activity_password_shown_icon">Password shown icon</string>
   <string name="pin_password_activity_password_hidden_icon">Password hidden icon</string>
   <string name="pin_password_activity_pin_password_hello">Hi, %s!</string>
@@ -333,7 +318,6 @@
   <string name="profile_edit_activity_profile_edit_delete_dialog_negative">Cancel</string>
   <string name="profile_edit_activity_profile_edit_allow_download_heading">Allow Download Access</string>
   <string name="profile_edit_activity_profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
-  <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <!-- ProfilePictureActivity -->
   <string name="profile_picture_activity_title">Profile Picture</string>
   <!-- ProfileProgressActivity -->
@@ -364,8 +348,8 @@
   <string name="profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
   <string name="profile_reset_pin_activity_profile_reset_pin_activity_enter_user_new_pin">%1$s\'s New PIN.</string>
   <!-- Privacy Policy -->
-  <string name="privacy_policy_activity_title">Privacy Policy</string>
-  <string name="policy_activity_label_title">Policy Page</string>
+  <string name="privacy_policy_activity_title">Policy Page</string>
+  <string name="policy_activity_label_title">Privacy Policy</string>
   <!-- QuestionPlayerActivity -->
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="question_player_activity_toolbar_title">Practice Mode</string>
@@ -422,8 +406,14 @@
   <string name="topic_practice_header_view_activity_topic_practice_master_these_skills">Master These Skills</string>
   <string name="topic_practice_header_view_activity_topic_practice_skills_description">Select skills that you would like to practice.</string>
   <string name="topic_practice_footer_view_activity_topic_practice_start">Start</string>
-  <string name="topic_activity_topic_page_label_text">Topic page</string>
   <string name="topic_view_activity_topic_name">Topic: %s</string>
+  <string name="topic_activity_info_tab_content_description">Details about the topic.</string>
+  <string name="topic_activity_revision_tab_content_description">Revise concepts learned from completed lessons here.</string>
+  <string name="topic_activity_practice_tab_content_description">Practice the concepts learned from completed lessons.</string>
+  <string name="topic_activity_lessons_tab_content_description">Tap here to start playing a lesson.</string>
+  <string name="topic_activity_topic_lessons_tab_spotlight_hint">Find all your lessons here.</string>
+  <string name="topic_activity_topic_revision_tab_spotlight_hint">Revise concepts learned from completed lessons here.</string>
+  <string name="topic_activity_first_chapter_spotlight_hint">Tap here to start playing a lesson.</string>
   <!-- TopicInfoActivity -->
   <string name="topic_info_activity_topic_download_text">(%s)</string>
   <string name="topic_info_activity_see_more_text">See More</string>
@@ -452,7 +442,6 @@
   <string name="completed_story_list_activity_completed_story_list_recyclerview_tag">completed_story_list_recyclerview_tag</string>
   <string name="selection_interaction_item_activity_item_selection_text">Please select all correct choices.</string>
   <!-- WalkthroughActivity -->
-  <string name="walkthrough_activity_label_text">App walkthrough</string>
   <string name="walkthrough_welcome_activity_walkthrough_welcome_description">Learn new math skills with stories that show you how to use them in your daily life</string>
   <string name="walkthrough_activity_back_button_text">Back Button</string>
   <string name="walkthrough_welcome_fragment_next_text">Next</string>
@@ -510,7 +499,6 @@
   <string name="profile_last_used">Last used </string>
   <string name="welcome">"Welcome %s!"</string>
   <string name="add_profile_required">Required</string>
-  <string name="privacy_policy_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/privacy-policy">this page</a> for the latest version of this privacy policy.]]></string>
   <string name="revision">Revision</string>
   <string name="state_continue_button">Continue</string>
   <string name="state_continue_submit">Submit</string>
@@ -618,6 +606,4 @@
   <string name="largest_text_size_content_description">Largest text size</string>
   <string name="reading_text_size">Reading Text Size</string>
   <string name="recently_played_stories">Recently-Played Stories</string>
-  <string name="mark_spotlight_seen_button_text">Done</string>
-  <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
 </resources>

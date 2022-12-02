@@ -17,28 +17,28 @@ enum class TopicTab(
     positionWithFourTabs = 0,
     tabLabelResId = R.string.info,
     tabIconResId = R.drawable.ic_info_icon_24dp,
-    contentDescriptionResId = R.string.info_tab_content_description
+    contentDescriptionResId = R.string.topic_activity_info_tab_content_description
   ),
   LESSONS(
     positionWithTwoTabs = 0,
     positionWithFourTabs = 1,
     tabLabelResId = R.string.lessons,
     tabIconResId = R.drawable.ic_lessons_icon_24dp,
-    contentDescriptionResId = R.string.lessons_tab_content_description
+    contentDescriptionResId = R.string.topic_activity_lessons_tab_content_description
   ),
   PRACTICE(
     positionWithTwoTabs = -1,
     positionWithFourTabs = 2,
     tabLabelResId = R.string.practice,
     tabIconResId = R.drawable.ic_practice_icon_24dp,
-    contentDescriptionResId = R.string.practice_tab_content_description
+    contentDescriptionResId = R.string.topic_activity_practice_tab_content_description
   ),
   REVISION(
     positionWithTwoTabs = 1,
     positionWithFourTabs = 3,
     tabLabelResId = R.string.revision,
     tabIconResId = R.drawable.ic_revision_icon_24dp,
-    contentDescriptionResId = R.string.revision_tab_content_description
+    contentDescriptionResId = R.string.topic_activity_revision_tab_content_description
   );
 
   companion object {
