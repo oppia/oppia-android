@@ -216,11 +216,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   private fun subscribeToOngoingTopicListLiveData() {
     getOngoingTopicListCount().observe(
-      fragment,
-      {
-        getHeaderViewModel().setOngoingTopicProgress(it.topicCount)
-      }
-    )
+      fragment
+    ) {
+      getHeaderViewModel().setOngoingTopicProgress(it.topicCount)
+    }
   }
 
   private fun processGetOngoingTopicListResult(
@@ -417,7 +416,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.slide_drawer_open_status_bar,
             activity,
@@ -427,7 +425,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.oppia_primary_dark,
             activity,
@@ -454,7 +451,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.slide_drawer_open_status_bar,
             activity,
@@ -464,7 +460,6 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.oppia_primary_dark,
             activity,
