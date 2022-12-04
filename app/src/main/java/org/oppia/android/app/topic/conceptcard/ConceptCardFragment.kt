@@ -12,65 +12,26 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
-import org.oppia.android.util.extensions.putProto
 
 private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
 
 /* Fragment that displays a fullscreen dialog for concept cards */
-class ConceptCardFragment : InjectableDialogFragment() {
+class ConceptCardFragment(
+  private val onDestroyListener: DestroyObserver
+) : InjectableDialogFragment() {
 
   companion object {
     /** The fragment tag corresponding to the concept card dialog fragment. */
     const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
-
-    /**
-     * Creates a new fragment to show a concept card.
-     *
-     * @param skillId the skill ID for which a concept card should be loaded
-     * @param profileId the profile in which the concept card will be shown
-     * @return a new [ConceptCardFragment] to display the specified concept card
-     */
-    fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
-      return ConceptCardFragment().apply {
-        arguments = Bundle().apply {
-          putString(SKILL_ID_ARGUMENT_KEY, skillId)
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
-        }
-      }
-    }
   }
 
   @Inject
   lateinit var conceptCardFragmentPresenter: ConceptCardFragmentPresenter
 
-  @Inject
-  lateinit var conceptCardBackStackManager: ConceptCardBackStackManager
-
-  private lateinit var args: Bundle
-
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    args = checkNotNull(arguments) {
-      "Expected arguments to be passed to ConceptCardFragment"
-    }
-    val skillId =
-      checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
-        "Expected skillId to be passed to ConceptCardFragment"
-      }
-    if (conceptCardBackStackManager.getSize() ==
-      ConceptCardBackStackManager.DEFAULT_STACK_SIZE
-    ) {
-      conceptCardBackStackManager.initBackStack()
-      conceptCardBackStackManager.addToStack(skillId)
-    } else {
-      if (conceptCardBackStackManager.peek() == skillId) {
-        dismiss()
-      } else {
-        conceptCardBackStackManager.addToStack(skillId)
-      }
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,6 +45,9 @@ class ConceptCardFragment : InjectableDialogFragment() {
     savedInstanceState: Bundle?
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
+    val args = checkNotNull(arguments) {
+      "Expected arguments to be passed to ConceptCardFragment"
+    }
     val skillId =
       checkNotNull(args.getStringFromBundle(SKILL_ID_ARGUMENT_KEY)) {
         "Expected skillId to be passed to ConceptCardFragment"
@@ -95,5 +59,14 @@ class ConceptCardFragment : InjectableDialogFragment() {
   override fun onStart() {
     super.onStart()
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    onDestroyListener.onCardDestroyed()
+  }
+
+  interface DestroyObserver {
+    fun onCardDestroyed()
   }
 }

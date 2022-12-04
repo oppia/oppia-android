@@ -94,6 +94,7 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.topic.conceptcard.ConceptCardFactory
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -144,7 +145,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
+  private val conceptCardFactory: ConceptCardFactory
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -182,9 +184,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val isSplitView = ObservableField<Boolean>(false)
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
-    ConceptCardFragment
-      .newInstance(skillId, profileId)
-      .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+    conceptCardFactory
+      .createCard(skillId, profileId)
+      ?.showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
   /**
@@ -907,7 +909,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+    private val conceptCardFactory: ConceptCardFactory
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1393,7 +1396,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         backgroundCoroutineDispatcher,
         hasConversationView,
         resourceHandler,
-        translationController
+        translationController,
+        conceptCardFactory
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1413,7 +1417,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val resourceHandler: AppLanguageResourceHandler,
       private val translationController: TranslationController,
       private val multiAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
+      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
+      private val conceptCardFactory: ConceptCardFactory
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1433,7 +1438,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           resourceHandler,
           translationController,
           multiAdapterBuilderFactory,
-          singleAdapterFactory
+          singleAdapterFactory,
+          conceptCardFactory
         )
       }
     }

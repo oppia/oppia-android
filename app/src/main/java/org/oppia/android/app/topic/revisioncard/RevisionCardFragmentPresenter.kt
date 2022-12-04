@@ -16,6 +16,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
+import org.oppia.android.app.topic.conceptcard.ConceptCardFactory
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope
@@ -27,7 +28,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
   @TopicHtmlParserEntityType private val entityType: String,
   private val translationController: TranslationController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val revisionCardViewModelFactory: RevisionCardViewModel.Factory
+  private val revisionCardViewModelFactory: RevisionCardViewModel.Factory,
+  private val conceptCardFactory: ConceptCardFactory
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
 
@@ -96,8 +98,8 @@ class RevisionCardFragmentPresenter @Inject constructor(
   }
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
-    ConceptCardFragment
-      .newInstance(skillId, profileId)
-      .showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
+    conceptCardFactory
+      .createCard(skillId, profileId)
+      ?.showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }
