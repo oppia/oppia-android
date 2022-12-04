@@ -11,17 +11,11 @@ import org.robolectric.annotation.LooperMode
 class ConceptCardFactoryTest {
 
   @Before
-  fun setup() {
-
-  }
+  fun setup() {}
 
   @Test
-  fun testConceptCardFactory_createWhenAlreadyExist_shouldNotCreate() {
-
-  }
+  fun testConceptCardFactory_createWhenAlreadyExist_shouldNotCreate() {}
 
   @Test
-  fun testConceptCardFactory_createWhenNotExist_shouldCreate() {
-
-  }
+  fun testConceptCardFactory_createWhenNotExist_shouldCreate() {}
 }

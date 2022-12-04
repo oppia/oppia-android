@@ -1,9 +1,9 @@
 package org.oppia.android.app.topic.conceptcard
 
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.putProto
+import javax.inject.Inject
 
 class ConceptCardFactory @Inject constructor(
   private val conceptCardStackManager: ConceptCardBackStackManager

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
+import org.oppia.android.app.topic.conceptcard.ConceptCardFactory
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RevisionCardFragmentBinding
@@ -16,7 +16,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.app.topic.conceptcard.ConceptCardFactory
 
 /** Presenter for [RevisionCardFragment], sets up bindings from ViewModel. */
 @FragmentScope

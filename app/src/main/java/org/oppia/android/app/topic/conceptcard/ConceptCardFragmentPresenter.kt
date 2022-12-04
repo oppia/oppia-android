@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
@@ -16,6 +15,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ConceptCardHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
+import javax.inject.Inject
 
 /** Presenter for [ConceptCardFragment], sets up bindings from ViewModel */
 @FragmentScope

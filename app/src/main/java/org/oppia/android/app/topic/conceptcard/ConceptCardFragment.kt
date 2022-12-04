@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import javax.inject.Inject
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getStringFromBundle
+import javax.inject.Inject
 
 private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
