@@ -68,9 +68,9 @@
   <color name="color_palette_mark_completed_text_color">@color/color_def_white</color>
   <color name="color_palette_mark_completed_all_text_color">@color/color_def_white</color>
   <color name="color_palette_hints_and_solution_summary_card_border_color">@color/color_def_accessible_light_grey_2</color>
-  <color name="color_palette_hints_and_solution_summary_card_background_color">@color/color_def_white</color>
+  <color name="color_palette_hints_and_solution_summary_card_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_hints_and_solution_summary_divider_color">@color/color_def_dark_silver</color>
-  <color name="color_palette_hints_and_solution_summary_bottom_background_color">@color/color_def_oppia_grey_background</color>
+  <color name="color_palette_hints_and_solution_summary_bottom_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_hints_and_solution_summary_button_text_color">@color/color_def_white</color>
   <color name="color_palette_hint_text_input_interaction_color">@color/color_def_white</color>
   <color name="color_palette_input_error_color">@color/color_def_oppia_pink</color>
