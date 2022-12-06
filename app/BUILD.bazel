@@ -568,10 +568,11 @@ android_library(
     manifest = "src/main/DatabindingResourcesManifest.xml",
     resource_files = glob(DATABINDING_LAYOUTS),
     visibility = [
-        "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
-        "//app/src/main/java/org/oppia/android/app/testing/activity:__pkg__",
-        "//instrumentation:instrumentation_infrastructure_visibility",
-        "//instrumentation:instrumentation_testing_visibility",
+        #        "//app/src/main/java/org/oppia/android/app/shim:__pkg__",
+        #        "//app/src/main/java/org/oppia/android/app/testing/activity:__pkg__",
+        #        "//instrumentation:instrumentation_infrastructure_visibility",
+        #        "//instrumentation:instrumentation_testing_visibility",
+        "//visibility:public",  # TODO: remove
     ],
     deps = [
         ":annotations",
@@ -820,7 +821,6 @@ kt_android_library(
     deps = [
         ":app",
         "//testing",
-        "//third_party:org_mockito_mockito-core",
     ],
 )
 

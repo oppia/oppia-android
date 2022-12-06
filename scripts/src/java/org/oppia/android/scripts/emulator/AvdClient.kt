@@ -69,7 +69,6 @@ class AvdClient(
     val sdkLevel = sourceProperties.getValue("AndroidVersion.ApiLevel").toInt()
 
     // Simulate AvdManager by creating the necessary property .ini files needed for emulation.
-    // TODO: Maybe customize the product or model values to pass along build graph image info?
     val configProperties = mapOf(
       "PlayStore.enabled" to (imageType == "google_apis").toString(),
       "abi.type" to architecture,
@@ -119,6 +118,11 @@ class AvdClient(
   }
 
   fun createAvdEmulatorSnapshot(avdName: String, disableAcceleration: Boolean) {
+    val avdRoot = openFile(avdHomeRoot, avdName) {
+      "Expected to be passed an AVD name that's already been created, per $avdName directory does" +
+        " not exist: ${it.absolutePath}."
+    }
+
     println("Starting emulator and waiting for it to fully boot...")
     val emulatorSession = emulatorClient.startEmulator(
       EmulatorClient.EmulatorStartupSettings(
@@ -134,6 +138,10 @@ class AvdClient(
 
     println("Ending emulator session.")
     emulatorSession.kill()
+
+    check(File(File(avdRoot, "snapshots"), FAST_BOOT_SNAPSHOT_NAME).exists()) {
+      "Failed to create snapshot: $FAST_BOOT_SNAPSHOT_NAME."
+    }
   }
 
   fun packAvd(avdName: String, destArchive: File) {
@@ -142,10 +150,12 @@ class AvdClient(
         " not exist: ${it.absolutePath}."
     }
 
-    // First, remove some unnecessary files for better filesystem management (and faster gzip).
+    // First, remove some unnecessary files for better filesystem management (and faster gzip). This
+    // also includes removing lock files which could cause boot failures later on (sometimes these
+    // lock files don't remove quickly enough during shutdown).
     File(avdRoot, "snapshots/default_boot").deleteRecursively()
     File(avdRoot, "tmpAdbCmds").deleteRecursively()
-    avdRoot.listFiles()?.filter { it.extension in listOf("txt", "lock") }?.forEach(File::delete)
+    avdRoot.walk().filter { it.extension in listOf("txt", "lock") }.forEach(File::delete)
 
     println("Packing AVD into a single file for faster file operations...")
     TarArchiveOutputStream(

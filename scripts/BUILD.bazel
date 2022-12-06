@@ -281,6 +281,32 @@ java_binary(
     ],
 )
 
+java_binary(
+    name = "generate_instrumentation_manifest",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.instrumentation.GenerateInstrumentationManifestKt",
+    visibility = [
+        "//:oppia_e2e_testing_visibility",
+        "//:oppia_testing_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/instrumentation:generate_instrumentation_manifest_lib",
+    ],
+)
+
+java_binary(
+    name = "run_instrumentation_test",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.instrumentation.RunInstrumentationTestKt",
+    visibility = [
+        "//:oppia_e2e_testing_visibility",
+        "//:oppia_testing_visibility",
+    ],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/instrumentation:run_instrumentation_test_lib",
+    ],
+)
+
 AVAILABLE_SYSTEM_IMAGES_ASSET = generate_available_system_images_text_proto(
     name = "available_system_images",
 )

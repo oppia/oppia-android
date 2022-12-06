@@ -103,7 +103,7 @@ class EmulatorClient(
     adbClient.runShellCommand(
       partiallyBooted,
       "while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done",
-      waitForDevice = true
+      commandWrapper = AdbClient.ShellCommandWrapper.WaitForProcess
     )
 
     return checkNotNull(adbClient.findEmulatorWithPort(openPort)) {
@@ -139,6 +139,13 @@ class EmulatorClient(
 
     fun kill() {
       adbClient.runEmulatorCommand(device, "kill")
+
+      // Wait up to 5 seconds for the emulator to be fully killed.
+      runBlocking(TaskRunner.coroutineDispatcher) {
+        withTimeoutOrNull(timeMillis = 5_000L) {
+          while (adbClient.listEmulators().any { it.port == device.port }) delay(50)
+        } ?: error("Expected emulator to be shutdown within 5 seconds: ${device.serialName}.")
+      }
     }
 
     private fun runSnapshotCommand(action: String, vararg arguments: String) =

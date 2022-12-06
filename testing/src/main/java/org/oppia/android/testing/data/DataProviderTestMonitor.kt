@@ -3,15 +3,8 @@ package org.oppia.android.testing.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.atLeastOnce
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.verify
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor.Factory
-import org.oppia.android.testing.mockito.anyOrNull
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -19,6 +12,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
+// TODO: Update this class to use Mockito again once it can be properly desugared & included in an APK (in Bazel builds).
 /**
  * A test monitor for [DataProvider]s that provides operations to simplify waiting for the
  * provider's results, or to verify that notifications actually change the data provider when
@@ -40,8 +34,9 @@ class DataProviderTestMonitor<T> private constructor(
   private val testCoroutineDispatchers: TestCoroutineDispatchers,
   private val dataProvider: DataProvider<T>
 ) {
-  private val mockObserver by lazy { createMock<Observer<AsyncResult<T>>>() }
-  private val resultCaptor by lazy { createCaptor<AsyncResult<T>>() }
+//  private val mockObserver by lazy { createMock<Observer<AsyncResult<T>>>() }
+//  private val resultCaptor by lazy { createCaptor<AsyncResult<T>>() }
+  private val mockObserver by lazy { MockObserver<T>() }
   private val liveData: LiveData<AsyncResult<T>> by lazy { dataProvider.toLiveData() }
 
   /**
@@ -89,7 +84,7 @@ class DataProviderTestMonitor<T> private constructor(
   fun verifyProviderIsNotUpdated() {
     reset(mockObserver)
     testCoroutineDispatchers.runCurrent()
-    verify(mockObserver, never()).onChanged(anyOrNull())
+    verify(mockObserver, never())//.onChanged(anyOrNull())
   }
 
   private fun startObservingDataProvider() {
@@ -113,9 +108,12 @@ class DataProviderTestMonitor<T> private constructor(
     // and an explicit monitor, it either means the provider hasn't updated or it requires advancing
     // the clock (in which case you should use TestCoroutineDispatchers.advanceUntilIdle() and an
     // ensure* method from this class).
-    verify(mockObserver, atLeastOnce()).onChanged(resultCaptor.capture())
-    reset(mockObserver)
-    return resultCaptor.value
+    verify(mockObserver, atLeastOnce())//.onChanged(resultCaptor.capture())
+//    reset(mockObserver)
+    return mockObserver.capturedChanges.last().also {
+      reset(mockObserver)
+    }
+//    return resultCaptor.value
   }
 
   private fun retrieveSuccess(operation: () -> AsyncResult<T>): T {
@@ -209,10 +207,43 @@ class DataProviderTestMonitor<T> private constructor(
     }
   }
 
-  private companion object {
-    private inline fun <reified T> createMock(): T = mock(T::class.java)
+//  private companion object {
+//    private inline fun <reified T> createMock(): T = mock(T::class.java)
+//
+//    private inline fun <reified T> createCaptor(): ArgumentCaptor<T> =
+//      ArgumentCaptor.forClass(T::class.java)
+//  }
 
-    private inline fun <reified T> createCaptor(): ArgumentCaptor<T> =
-      ArgumentCaptor.forClass(T::class.java)
+  private class MockObserver<T>: Observer<AsyncResult<T>> {
+    val capturedChanges = mutableListOf<AsyncResult<T>>()
+
+    override fun onChanged(result: AsyncResult<T>?) {
+      capturedChanges += result!!
+    }
+  }
+
+  private companion object {
+    private fun <T> reset(observer: MockObserver<T>) {
+      observer.capturedChanges.clear()
+    }
+
+    private fun <T> verify(observer: MockObserver<T>, mode: VerificationMode) {
+      when (mode) {
+        VerificationMode.AtLeastOnce -> {
+          if (observer.capturedChanges.isEmpty()) {
+            throw AssertionError("Wanted but not invoked")
+          }
+        }
+        VerificationMode.Never -> check(observer.capturedChanges.isEmpty()) { "Expected no calls." }
+      }
+    }
+
+    private fun never() = VerificationMode.Never
+    private fun atLeastOnce() = VerificationMode.AtLeastOnce
+
+    private sealed class VerificationMode {
+      object Never: VerificationMode()
+      object AtLeastOnce: VerificationMode()
+    }
   }
 }

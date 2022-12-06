@@ -4,6 +4,7 @@ package org.oppia.android.scripts.common
 
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -68,6 +69,7 @@ class CommandExecutorImpl private constructor(
     vararg arguments: String
   ): Pair<Process, Deferred<CommandResult>> {
     val assembledCommand = listOf(command) + arguments.toList()
+    println("@@@@@ [DEBUG -- Try to run] cd \"${workingDir.absoluteFile.normalize().path}\" && ${environmentVariables.map { (k,v)->"$k=$v" }.joinToString(separator = " ")} ${assembledCommand.joinToString(separator = " ")}")
     val process =
       ProcessBuilder(assembledCommand)
         .directory(workingDir)
@@ -111,34 +113,56 @@ class CommandExecutorImpl private constructor(
     stderrRedirection: OutputRedirectionStrategy
   ): Flow<ProcessResult> {
     // TODO: See if this can be simplified to not need an actor.
+    // TODO: Move stdout/stderr line handling to upstream commit/PR (once the latter exists).
     return flow {
       val dispatcherScope = CoroutineScope(coroutineDispatcher)
       val resultChannel = Channel<ProcessResult>(capacity = Channel.UNLIMITED)
       val queue = dispatcherScope.actor<ProcessMonitorMessage>(capacity = Channel.UNLIMITED) {
+        var exitCode: Int? = null
+        var stdoutLines: List<String>? = null
+        var stderrLines: List<String>? = null
         for (message in channel) {
           when (message) {
             ProcessMonitorMessage.FinishCommandMonitoringWithUnfinishedFailure -> {
               resultChannel.send(ProcessResult.Timeout)
               break // End execution of the channel and close it.
             }
-            is ProcessMonitorMessage.FinishCommandMonitoringWithResult -> {
-              val commandResult = CommandResult(
-                exitCode = message.exitCode,
-                output = if (stdoutRedirection == OutputRedirectionStrategy.TRACK_AS_OUTPUT) {
-                  process.inputStream.reader().readLines()
-                } else listOf(),
-                errorOutput = if (stderrRedirection == OutputRedirectionStrategy.TRACK_AS_ERROR) {
-                  process.errorStream.reader().readLines()
-                } else listOf(),
-                command = assembledCommand
-              )
-              resultChannel.send(ProcessResult.Success(commandResult))
-              break // End execution of the channel and close it.
-            }
+            is ProcessMonitorMessage.FinishCommandMonitoringWithResult ->
+              exitCode = message.exitCode
+            is ProcessMonitorMessage.FinishCommandOutputMonitoring -> stdoutLines = message.lines
+            is ProcessMonitorMessage.FinishCommandErrorMonitoring -> stderrLines = message.lines
+          }
+
+          // Check whether the command has finished fully (that is, the process has ended and its
+          // output has been fully collected).
+          if (exitCode != null && stdoutLines != null && stderrLines != null) {
+            val commandResult = CommandResult(
+              exitCode = exitCode,
+              output = stdoutLines,
+              errorOutput = stderrLines,
+              command = assembledCommand
+            )
+            resultChannel.send(ProcessResult.Success(commandResult))
+            break // End execution of the channel and close it.
           }
         }
 
         resultChannel.close()
+      }
+
+      // Kick off separate coroutines to consume standard & error outputs since some processes block
+      // finishing until their output is fully consumed.
+      withContext(Dispatchers.IO) {
+        val stdoutLines = if (stdoutRedirection == OutputRedirectionStrategy.TRACK_AS_OUTPUT) {
+          process.inputStream.reader().readLines()
+        } else listOf<String>()
+        queue.send(ProcessMonitorMessage.FinishCommandOutputMonitoring(stdoutLines))
+      }
+      withContext(Dispatchers.IO) {
+        val stderrLines = if (stderrRedirection == OutputRedirectionStrategy.TRACK_AS_ERROR) {
+          process.errorStream.reader().readLines()
+        } else listOf<String>()
+        queue.send(ProcessMonitorMessage.FinishCommandErrorMonitoring(stderrLines))
       }
 
       // Block until the process completes (using the large I/O dispatcher pool).
@@ -159,6 +183,10 @@ class CommandExecutorImpl private constructor(
   }
 
   private sealed class ProcessMonitorMessage {
+    data class FinishCommandOutputMonitoring(val lines: List<String>): ProcessMonitorMessage()
+
+    data class FinishCommandErrorMonitoring(val lines: List<String>): ProcessMonitorMessage()
+
     object FinishCommandMonitoringWithUnfinishedFailure : ProcessMonitorMessage()
 
     data class FinishCommandMonitoringWithResult(val exitCode: Int): ProcessMonitorMessage()

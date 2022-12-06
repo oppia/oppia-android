@@ -558,7 +558,8 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+//    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows(IllegalStateException::class) { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -569,7 +570,8 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+//    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows(IllegalStateException::class) { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -580,7 +582,8 @@ class DataProviderTestMonitorTest {
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+//    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows(IllegalStateException::class) { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -594,7 +597,8 @@ class DataProviderTestMonitorTest {
 
     asyncDataSubscriptionManager.notifyChangeAsync("test")
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+//    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows(IllegalStateException::class) { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -610,7 +614,8 @@ class DataProviderTestMonitorTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test")
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+//    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows(IllegalStateException::class) { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test
@@ -625,7 +630,8 @@ class DataProviderTestMonitorTest {
     asyncDataSubscriptionManager.notifyChangeAsync("test")
 
     // Verify that the method wsa actually called despite not being expected to have been.
-    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+//    assertThrows(NeverWantedButInvoked::class) { monitor.verifyProviderIsNotUpdated() }
+    assertThrows(IllegalStateException::class) { monitor.verifyProviderIsNotUpdated() }
   }
 
   @Test

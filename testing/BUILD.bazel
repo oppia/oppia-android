@@ -59,8 +59,6 @@ kt_android_library(
         "//third_party:nl_dionsegijn_konfetti",
         "//third_party:org_jetbrains_kotlin_kotlin-reflect",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-test",
-        "//third_party:org_mockito_mockito-core",
-        "//third_party:org_robolectric_robolectric",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",

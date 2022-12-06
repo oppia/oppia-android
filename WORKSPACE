@@ -2,8 +2,8 @@
 This file lists and imports all external dependencies needed to build Oppia Android.
 """
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file", "http_jar")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "get_maven_dependencies")
 
 # Android SDK configuration. For more details, see:
@@ -153,6 +153,13 @@ git_repository(
     shallow_since = "1647554845 -0700",
 )
 
+git_repository(
+    name = "dex-method-counts",
+    commit = "96c9b23da4a5862a3738a64a77538d435d8610cf",
+    remote = "https://github.com/oppia/dex-method-counts",
+    shallow_since = "1670290835 -0800",
+)
+
 bind(
     name = "databinding_annotation_processor",
     actual = "//tools/android:compiler_annotation_processor",
@@ -188,11 +195,29 @@ http_jar(
     url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
 )
 
+# AndroidX test services & orchestrator APKs.
+http_file(
+    name = "androidx_test_services_test-services_apk",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["androidx_test_services_test-services"]["sha"],
+    urls = [
+        "https://dl.google.com/android/maven2/androidx/test/services/test-services/{0}/test-services-{0}.apk".format(HTTP_DEPENDENCY_VERSIONS["androidx_test_services_test-services"]["version"]),
+    ],
+)
+
+http_file(
+    name = "androidx_test_orchestrator_apk",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["androidx_test_orchestrator"]["sha"],
+    urls = [
+        "https://dl.google.com/android/maven2/androidx/test/orchestrator/{0}/orchestrator-{0}.apk".format(HTTP_DEPENDENCY_VERSIONS["androidx_test_orchestrator"]["version"]),
+    ],
+)
+
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.
 maven_install(
     artifacts = DAGGER_ARTIFACTS + get_maven_dependencies(),
     fail_if_repin_required = True,
     fetch_sources = True,
+    jetify = True,
     maven_install_json = "//third_party:maven_install.json",
     repositories = DAGGER_REPOSITORIES + [
         "https://maven.fabric.io/public",

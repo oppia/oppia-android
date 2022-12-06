@@ -1,38 +1,29 @@
 # TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
-Package for common test utilities corresponding to data processing & data providers.
+Package for checkpointing testing utilities.
 """
 
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "async_result_subject",
+    name = "exploration_checkpoint_test_helper",
     testonly = True,
     srcs = [
-        "AsyncResultSubject.kt",
-    ],
-    visibility = ["//:oppia_testing_visibility"],
-    deps = [
-        "//third_party:com_google_protobuf_protobuf-javalite",
-        "//third_party:com_google_truth_extensions_truth-liteproto-extension",
-        "//third_party:com_google_truth_truth",
-        "//utility/src/main/java/org/oppia/android/util/data:async_result",
-    ],
-)
-
-kt_android_library(
-    name = "data_provider_test_monitor",
-    testonly = True,
-    srcs = [
-        "DataProviderTestMonitor.kt",
+        "ExplorationCheckpointTestHelper.kt",
     ],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":dagger",
+        "//domain",
+        "//model/src/main/proto:exploration_checkpoint_java_proto_lite",
+        "//model/src/main/proto:profile_java_proto_lite",
         "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
-        "//third_party:androidx_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
+        "//third_party:androidx_test_core",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_mockito_mockito-core",
         "//utility/src/main/java/org/oppia/android/util/data:data_provider",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
     ],

@@ -40,26 +40,107 @@ class AdbClient(
     }.drop(1).filter { it.trim().isNotEmpty() }.map { parseAndroidDeviceLine(it) }
   }
 
+  fun findDeviceWithSerial(serialName: String): AndroidDevice? =
+    listDevices().find { it.serialName == serialName }
+
   fun runShellCommand(
     androidDevice: AndroidDevice,
     shellCommand: String,
     vararg commandArgs: String,
-    waitForDevice: Boolean = false,
+    commandWrapper: ShellCommandWrapper? = null,
     allowToRunInAnyState: Boolean = false
   ): List<String> {
-    if (!allowToRunInAnyState && !waitForDevice) {
+    if (!allowToRunInAnyState && commandWrapper !is ShellCommandWrapper.WaitForProcess) {
       require(androidDevice.connectionState == ConnectionState.CONNECTED) {
         "Can only run shells command on a fully connected device, not: $androidDevice."
       }
     }
-    return if (waitForDevice) {
-      runAdbCommandOn(androidDevice, "wait-for-device", "shell", shellCommand, *commandArgs)
-    } else runAdbCommandOn(androidDevice, "shell", shellCommand, *commandArgs)
+    return when (commandWrapper) {
+      is ShellCommandWrapper.AppProcess -> {
+        runAdbCommandOn(
+          androidDevice,
+          "shell",
+          "app_process",
+          "-cp",
+          commandWrapper.classpath,
+          "/unused",
+          commandWrapper.mainClass,
+          shellCommand,
+          *commandArgs
+        )
+      }
+      ShellCommandWrapper.WaitForProcess ->
+        runAdbCommandOn(androidDevice, "wait-for-device", "shell", shellCommand, *commandArgs)
+      null -> runAdbCommandOn(androidDevice, "shell", shellCommand, *commandArgs)
+    }
+  }
+
+  fun getProperty(androidDevice: AndroidDevice, name: String): String =
+    runShellCommand(androidDevice, "getprop", name).single()
+
+  fun setProperty(androidDevice: AndroidDevice, name: String, value: String) {
+    runShellCommand(androidDevice, "setprop", name, value)
+  }
+
+  fun fetchInstalledPackages(androidDevice: AndroidDevice): List<String> {
+    return runPackageManagerCommand(androidDevice, "list", "packages").filter {
+      it.startsWith("package:")
+    }.map { it.removePrefix("package:") }
+  }
+
+  fun runPackageManagerCommand(
+    androidDevice: AndroidDevice, pmCommand: String, vararg commandArgs: String
+  ): List<String> = runShellCommand(androidDevice, "pm", pmCommand, *commandArgs)
+
+  fun runActivityManagerCommand(
+    androidDevice: AndroidDevice,
+    amCommand: String,
+    vararg commandArgs: String,
+    commandWrapper: ShellCommandWrapper? = null
+  ): List<String> =
+    runShellCommand(androidDevice, "am", amCommand, *commandArgs, commandWrapper = commandWrapper)
+
+  fun runInstrumentation(
+    androidDevice: AndroidDevice,
+    testOptions: Map<String, String>,
+    testPackageName: String,
+    testRunnerQualifiedClassName: String,
+    waitForResult: Boolean = true,
+    commandWrapper: ShellCommandWrapper? = null
+  ): List<String> {
+    val args = listOfNotNull(if (waitForResult) "-w" else null) +
+      testOptions.flatMap { listOf("-e", it.key, it.value) }
+    return runActivityManagerCommand(
+      androidDevice,
+      "instrument",
+      *args.toTypedArray(),
+      "$testPackageName/$testRunnerQualifiedClassName",
+      commandWrapper = commandWrapper
+    )
   }
 
   fun runEmulatorCommand(
     emulatorDevice: AndroidDevice.Emulator, command: String, vararg arguments: String
   ): List<String> = runAdbCommandOn(emulatorDevice, "emu", command, *arguments)
+
+  fun installApk(device: AndroidDevice, apkFile: File, replaceApk: Boolean = false) {
+    val args = listOfNotNull("install", if (replaceApk) "-r" else null, apkFile.absolutePath)
+    runAdbCommandOn(device, *args.toTypedArray())
+  }
+
+  fun forceInstallApk(device: AndroidDevice, appPackage: String, apkFile: File) {
+    if (isApkInstalled(device, appPackage)) {
+      uninstallApk(device, appPackage)
+    }
+    installApk(device, apkFile, replaceApk = true)
+  }
+
+  fun uninstallApk(device: AndroidDevice, appPackage: String) {
+    runAdbCommandOn(device, "uninstall", appPackage)
+  }
+
+  fun isApkInstalled(device: AndroidDevice, appPackage: String): Boolean =
+    appPackage in fetchInstalledPackages(device)
 
   // TODO: Implement script for piecewise screen recording & pulling.
   fun recordScreen(androidDevice: AndroidDevice, timeLimit: Long, timeLimitUnit: TimeUnit) {
@@ -133,6 +214,12 @@ class AdbClient(
         " ${result.commandLine}\nOutput:\n${result.outputLines}"
     }
     return result.output
+  }
+
+  sealed class ShellCommandWrapper {
+    object WaitForProcess: ShellCommandWrapper()
+
+    data class AppProcess(val classpath: String, val mainClass: String): ShellCommandWrapper()
   }
 
   sealed class AndroidDevice {

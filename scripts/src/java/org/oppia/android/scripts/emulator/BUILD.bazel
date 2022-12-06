@@ -20,6 +20,7 @@ kt_jvm_library(
         "AndroidVirtualDevice.kt",
         "AvdClient.kt",
     ],
+    visibility = ["//scripts:oppia_script_library_visibility"],
     deps = [
         ":emulator_client",
         "//scripts/src/java/org/oppia/android/scripts/common:file_utils",

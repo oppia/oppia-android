@@ -55,6 +55,13 @@ class RunEmulator(
       " Android SDK."
   ).required()
 
+  private val reusePolicy by option(
+    ArgType.Choice<ReusePolicy>(),
+    fullName = "reuse-policy",
+    description = "Specifies whether to try to always start a new emulator, join an existing one" +
+      " if a matching one is already running."
+  ).default(ReusePolicy.CREATE_NEW)
+
   private val disabledRendering by option(
     ArgType.Boolean,
     fullName = "disable-rendering",
@@ -73,9 +80,7 @@ class RunEmulator(
     description = "If present, disables fast-booting from a restored snapshot."
   ).default(false)
 
-  private val systemImageDir by lazy {
-    systemImagePaths.split(',').map { File(it) }.computeCommonBase()
-  }
+  private val systemImageDir by lazy { systemImagePaths.split(',').map(::File).computeCommonBase() }
 
   private val emulatorBinary by lazy {
     openFile(emulatorBinaryPath) { "No emulator at path: ${it.absolutePath}." }
@@ -101,6 +106,29 @@ class RunEmulator(
   private val avdName by lazy { avdBundle.nameWithoutExtension }
 
   fun runEmulator() {
+    val matchingEmulator = adbClient.listDevices().find { device ->
+      adbClient.getProperty(device, AVD_NAME_PROPERTY_KEY) == avdName
+    } as? AdbClient.AndroidDevice.Emulator
+    when (reusePolicy) {
+      ReusePolicy.CREATE_NEW -> {
+        check(matchingEmulator == null) {
+          "An existing emulator is already running with AVD '$avdName' on port:" +
+            " ${matchingEmulator?.port}. Cannot run a second instance."
+        }
+        startNewEmulator()
+      }
+      ReusePolicy.JOIN_EXISTING -> {
+        if (matchingEmulator == null) {
+          println("No matching emulator with AVD '$avdName'; starting a new one.")
+          startNewEmulator()
+        } else {
+          println("Emulator with AVD '$avdName' already running on port: ${matchingEmulator.port}.")
+        }
+      }
+    }
+  }
+
+  private fun startNewEmulator() {
     avdClient.unpackAvd(avdName, avdBundle)
 
     println("Starting emulator and waiting for it to start...")
@@ -109,9 +137,19 @@ class RunEmulator(
         avdName, disabledRendering, disableAcceleration, fastboot = !disableFastboot
       )
 
+    adbClient.setProperty(emulatorSession.device, AVD_NAME_PROPERTY_KEY, avdName)
     println("Emulator should now be started on port ${emulatorSession.device.port}.")
 
     // Note that avdClient isn't cleaned up since the emulator will still be running, so the SDK
     // files can't be deleted.
+  }
+
+  private companion object {
+    private const val AVD_NAME_PROPERTY_KEY = "debug.avd_name"
+
+    private enum class ReusePolicy {
+      CREATE_NEW,
+      JOIN_EXISTING
+    }
   }
 }

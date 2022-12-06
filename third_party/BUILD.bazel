@@ -82,6 +82,31 @@ android_library(
     ],
 )
 
+android_library(
+    name = "mihaip_dex-method-counts",
+    visibility = ["//visibility:public"],
+    exports = [
+        "@dex-method-counts//:dex-method-counts",
+    ],
+)
+
+# TODO: Create symlink instead?
+genrule(
+    name = "androidx_test_services_test-services_apk",
+    srcs = ["@androidx_test_services_test-services_apk//file"],
+    outs = ["androidx_test_services_test-services.apk"],
+    cmd = "cp $(SRCS) $(OUTS)",
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "androidx_test_orchestrator_apk",
+    srcs = ["@androidx_test_orchestrator_apk//file"],
+    outs = ["androidx_test_orchestrator.apk"],
+    cmd = "cp $(SRCS) $(OUTS)",
+    visibility = ["//visibility:public"],
+)
+
 # Define a separate target for the Glide annotation processor compiler. Unfortunately, this library
 # can't encapsulate all of Glide (i.e. by exporting the main Glide dependency) since that includes
 # Android assets which java_library targets do not export.

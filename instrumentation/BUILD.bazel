@@ -36,6 +36,11 @@ bool_flag(
 )
 
 bool_flag(
+    name = "reuse_existing_emulator_session",
+    build_setting_default = 0,
+)
+
+bool_flag(
     name = "disable_emulator_acceleration",
     build_setting_default = 0,
 )
@@ -43,6 +48,13 @@ bool_flag(
 bool_flag(
     name = "disable_emulator_fastboot",
     build_setting_default = 0,
+)
+
+config_setting(
+    name = "reuse_existing_emulator_session_config",
+    flag_values = {
+        ":reuse_existing_emulator_session": "true",
+    },
 )
 
 config_setting(
@@ -81,7 +93,10 @@ android_binary(
         "versionName": "0.1-test",
     },
     multidex = "native",
-    visibility = ["//:oppia_e2e_testing_visibility"],
+    visibility = [
+        "//:oppia_e2e_testing_visibility",
+        "//:oppia_testing_visibility",
+    ],
     deps = [
         "//app",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
@@ -113,11 +128,13 @@ AVAILABLE_HARDWARE_PROFILES = [
         hardware_profile = hw_profile_name,
         hardware_profiles_proto = device_hardware_profile_binary_proto,
         target_system_image_files = "@%s//:package_files" % image_path_to_target_name(path),
+        visibility = ["//:oppia_testing_visibility"],
     )
     for path in SYSTEM_IMAGES_LIST.keys()
     for hw_profile_name in AVAILABLE_HARDWARE_PROFILES
 ]
 
+# CLI-runnable emulators.
 [
     create_runnable_emulator(
         name = "emulator_%s_%s" % (

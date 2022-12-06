@@ -119,6 +119,14 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
     },
+    "androidx_test_orchestrator": {
+        "sha": "b7a2e7d0184b03e12c7357f3914d539da40b52a11e90815edff1022c655f459b",
+        "version": "1.4.2",
+    },
+    "androidx_test_services_test-services": {
+        "sha": "c6bc74268b29bdabad8da962e00e2f6fd613c24b42c69e81b258397b4819f156",
+        "version": "1.4.2",
+    },
     "dagger": {
         "sha": "9e69ab2f9a47e0f74e71fe49098bea908c528aa02fa0c5995334447b310d0cdd",
         "version": "2.28.1",

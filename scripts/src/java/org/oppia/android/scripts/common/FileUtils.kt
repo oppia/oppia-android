@@ -4,6 +4,7 @@ import com.google.protobuf.MessageLite
 import java.io.File
 import java.nio.file.Files
 import java.util.Properties
+import java.util.Random
 
 // TODO: Move to common? Maybe can be consolidated with RepositoryFile?
 //  An idea might be to introduce a general-purpose file loading system since that could be used for

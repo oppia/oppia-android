@@ -1,0 +1,28 @@
+"""
+Libraries corresponding to building and running instrumentation tests.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "generate_instrumentation_manifest_lib",
+    testonly = True,
+    srcs = ["GenerateInstrumentationManifest.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:file_utils",
+        "//third_party:mihaip_dex-method-counts",
+    ],
+)
+
+kt_jvm_library(
+    name = "run_instrumentation_test_lib",
+    testonly = True,
+    srcs = ["RunInstrumentationTest.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:file_utils",
+        "//scripts/src/java/org/oppia/android/scripts/emulator:avd_client",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-cli-jvm",
+    ],
+)

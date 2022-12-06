@@ -42,8 +42,6 @@ kt_android_library(
         ":parameterized_runner_delegate_impl",
         "//third_party:androidx_test_runner",
         "//third_party:junit_junit",
-        "//third_party:org_robolectric_robolectric",
-        "//third_party:robolectric_android-all",
     ],
 )
 
@@ -98,6 +96,7 @@ kt_android_library(
         ":parameterized_runner_delegate_impl",
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
     ],
 )
 
