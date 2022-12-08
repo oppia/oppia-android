@@ -197,7 +197,7 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">24sp</item>
     <item name="fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading1ViewStart" parent="Heading1">
@@ -220,7 +220,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">20sp</item>
     <item name="fontFamily">sans-serif-medium</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading2ViewStart" parent="Heading2">
@@ -240,7 +240,7 @@
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif-medium</item>
     <item name="android:gravity">center_vertical</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading3ViewCenterVertical" parent="Heading3">
@@ -255,7 +255,7 @@
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:textSize">18sp</item>
     <item name="fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading4ViewCenter" parent="Heading4">
@@ -274,7 +274,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
     <item name="fontFamily">sans-serif-medium</item>
-    <item name="android:textColor">@color/component_color_shared_text_view_heading_text_color</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
   </style>
 
   <style name="Heading5ViewCenterVertical" parent="Heading5">
