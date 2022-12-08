@@ -86,7 +86,7 @@
       android:layout_height="match_parent"
       android:layout_marginTop="@dimen/profile_chooser_profile_view_view_margin_top"
       android:layout_gravity="bottom"
-      android:background="@color/component_color_profile_chooser_activity_divider_color"
+      android:background="@color/component_color_shared_divider_color"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="@+id/profile_chooser_item"
       app:layout_constraintEnd_toEndOf="parent"

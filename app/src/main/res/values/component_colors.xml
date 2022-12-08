@@ -57,6 +57,7 @@
   <color name="component_color_shared_checkbox_checked_color">@color/color_palette_checkbox_checked_color</color>
   <color name="component_color_shared_checkbox_unchecked_color">@color/color_palette_checkbox_unchecked_color</color>
   <color name="component_color_shared_checkbox_disabled_color">@color/color_palette_checkbox_unchecked_color</color>
+  <color name="component_color_shared_divider_color">@color/color_palette_divider_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
@@ -359,5 +360,4 @@
   <color name="component_color_profile_chooser_activity_secondary_options_color">@color/color_palette_profile_chooser_silver_text_color</color>
   <color name="component_color_profile_chooser_activity_white_text_color">@color/color_palette_profile_chooser_white_text_color</color>
   <color name="component_color_profile_chooser_activity_avatar_border_color">@color/color_palette_profile_chooser_avatar_border_color</color>
-  <color name="component_color_profile_chooser_activity_divider_color">@color/color_palette_profile_chooser_divider_color</color>
 </resources>

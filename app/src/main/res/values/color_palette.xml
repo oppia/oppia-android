@@ -145,5 +145,4 @@
   <color name="color_palette_profile_chooser_silver_text_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_profile_chooser_white_text_color">@color/color_def_white</color>
   <color name="color_palette_profile_chooser_avatar_border_color">@color/color_def_dark_silver</color>
-  <color name="color_palette_profile_chooser_divider_color">@color/color_def_dark_silver</color>
 </resources>
