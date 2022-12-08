@@ -176,7 +176,6 @@
   <color name="component_color_license_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_license_text_viewer_activity_text_color">@color/color_palette_description_text_color</color>
   <!-- Onboarding Activity -->
-  <color name="component_color_onboarding_activity_background_color">@color/color_palette_light_background_color</color>
   <color name="component_color_onboarding_activity_sub_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_onboarding_activity_dots_color">@color/color_palette_dots_color</color>
   <color name="component_color_onboarding_activity_arrow_color">@color/color_palette_arrow_color</color>
