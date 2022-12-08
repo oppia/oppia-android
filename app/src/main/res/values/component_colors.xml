@@ -41,6 +41,8 @@
   <color name="component_color_shared_correct_text_stroke_color">@color/color_palette_correct_text_stroke_color</color>
   <color name="component_color_shared_correct_text_solid_color">@color/color_palette_correct_text_solid_color</color>
   <color name="component_color_shared_correct_text_color">@color/color_palette_correct_text_color</color>
+  <color name="component_color_shared_primary_button_background_color">@color/color_palette_primary_button_background_color</color>
+  <color name="component_color_shared_primary_button_text_color">@color/color_palette_primary_button_text_color</color>
   <color name="component_color_shared_button_inactive_solid_color">@color/color_palette_button_inactive_solid_color</color>
   <color name="component_color_shared_button_inactive_stroke_color">@color/color_palette_button_inactive_stroke_color</color>
   <color name="component_color_shared_button_inactive_text_color">@color/color_palette_button_inactive_text_color</color>
@@ -63,6 +65,8 @@
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
   <!-- Styles.xml -->
   <color name="component_color_shared_text_view_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_primary_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_secondary_1_text_color">@color/color_palette_secondary_1_text_color</color>
   <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
@@ -183,11 +187,8 @@
   <!-- Onboarding Activity -->
   <color name="component_color_onboarding_activity_background_color">@color/color_palette_light_background_color</color>
   <color name="component_color_onboarding_activity_sub_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_onboarding_activity_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_onboarding_activity_divider_color">@color/color_palette_onboarding_divider_color</color>
   <color name="component_color_onboarding_activity_dots_color">@color/color_palette_dots_color</color>
   <color name="component_color_onboarding_activity_arrow_color">@color/color_palette_arrow_color</color>
-  <color name="component_color_onboarding_activity_agreement_text_color">@color/color_palette_agreement_text_color</color>
   <!-- Developer Options Activity -->
   <color name="component_color_developer_options_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_developer_options_activity_options_background_color">@color/color_palette_container_background_color</color>

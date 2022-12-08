@@ -23,7 +23,6 @@
   <color name="oppia_progress_chapter_in_progress">#E7AC9B</color>
   <color name="oppia_progress_chapter_not_finished">#999999</color>
   <color name="oppia_admin_auth_secondary_text">#555555</color>
-  <color name="oppia_onboarding_divider">#707070</color>
   <color name="oppia_disabled_button_background">#33999999</color>
   <color name="oppia_text_shadow">#1F000000</color>
   <color name="oppia_grey_border">#DDDDDD</color>

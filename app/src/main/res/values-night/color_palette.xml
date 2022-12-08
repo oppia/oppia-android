@@ -28,10 +28,8 @@
   <color name="color_palette_button_border_color">@color/color_def_bright_turquoise</color>
   <color name="color_palette_divider_color">@color/color_def_dark_silver</color>
   <color name="color_palette_light_background_color">@color/color_def_oppia_light_black</color>
-  <color name="color_palette_onboarding_divider_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_dots_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_arrow_color">@color/color_def_white</color>
-  <color name="color_palette_agreement_text_color">@color/color_def_white</color>
   <color name="color_palette_exploration_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_revision_card_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_content_background_solid_color">@color/color_def_oppia_grayish_black</color>
@@ -59,6 +57,8 @@
   <color name="color_palette_submit_button_inactive_solid_color">@color/color_def_black_grey</color>
   <color name="color_palette_submit_button_inactive_stroke_color">@color/color_def_bright_turquoise</color>
   <color name="color_palette_submit_text_inactive_color">@color/color_def_light_grey</color>
+  <color name="color_palette_primary_button_background_color">@color/color_def_oppia_green</color>
+  <color name="color_palette_primary_button_text_color">@color/color_def_white</color>
   <color name="color_palette_button_inactive_solid_color">@color/color_def_grey_38</color>
   <color name="color_palette_button_inactive_stroke_color">@color/color_def_bright_turquoise</color>
   <color name="color_palette_button_inactive_text_color">@color/color_def_light_grey</color>
@@ -136,6 +136,8 @@
   <color name="color_palette_profile_view_designation_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_primary_toolbar_color">@color/color_def_forest_green</color>
   <color name="color_palette_secondary_text_color">@color/color_def_oppia_silver</color>
+  <color name="color_palette_secondary_1_text_color">@color/color_def_oppia_silver</color>
+  <color name="color_palette_secondary_2_text_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_save_button_border_color">@color/color_def_bright_turquoise</color>
   <color name="color_palette_stroke_color">@color/color_def_black_12</color>
   <color name="color_palette_profile_chooser_charcoal_black_background_color">@color/color_def_charcoal_black</color>
