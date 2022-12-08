@@ -52,7 +52,7 @@
         android:layout_width="0dp"
         android:layout_marginTop="12dp"
         android:text="@{viewModel.description}"
-        android:textColor="@color/color_palette_secondary_1_text_color"
+        android:textColor="@color/component_color_shared_secondary_1_text_color"
         app:layout_constraintEnd_toEndOf="@+id/slide_title_text_view"
         app:layout_constraintStart_toStartOf="@+id/slide_title_text_view"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
