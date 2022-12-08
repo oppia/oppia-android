@@ -16,14 +16,12 @@
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_description_parent_margin_top : @dimen/space_0dp}"
-    android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_end_profile_not_added}"
-    android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_description_margin_start_profile_not_added}"
-    android:orientation="vertical">
+    android:layout_margin="@dimen/profile_chooser_profile_view_margin"
+    android:padding="@dimen/profile_chooser_profile_view_parent_padding"
+    android:gravity="center_horizontal">
 
     <LinearLayout
       android:id="@+id/add_profile_item"
@@ -34,6 +32,8 @@
       android:orientation="@{hasProfileEverBeenAddedValue ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL}"
       android:paddingEnd="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_end_profile_not_added}"
       android:paddingStart="@{hasProfileEverBeenAddedValue ? @dimen/space_0dp : @dimen/profile_chooser_add_view_margin_start_profile_not_added}"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       tools:ignore="RtlSymmetry">
 
       <com.google.android.material.imageview.ShapeableImageView
@@ -57,27 +57,19 @@
 
         <TextView
           android:id="@+id/add_profile_text"
-          style="@style/TextViewStart"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:fontFamily="sans-serif-medium"
+          style="@style/AddMultiProfileHeading"
           android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:textSize="20sp" />
 
         <TextView
           android:id="@+id/add_profile_description_text"
-          style="@style/TextViewCenter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          style="@style/AddMultiProfileBody"
           android:layout_gravity="center"
           android:layout_marginTop="4dp"
-          android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
-          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:textSize="16sp"
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>
     </LinearLayout>
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -468,6 +468,28 @@
     <item name="android:textAlignment">viewStart</item>
   </style>
 
+  <style name="AddMultiProfileHeading" parent="TextView.Common1">
+    <item name="android:textAlignment">viewStart</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <style name="AddMultiProfileBody" parent="TextView.Common1">
+    <item name="android:textAlignment">viewStart</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textSize">12sp</item>
+  </style>
+
+  <style name="ShapeAbleImageView" parent="ShapeAppearanceOverlay.RoundedShape">
+    <item name="strokeWidth">1dp</item>
+    <item name="strokeColor">@color/avatar_border</item>
+    <item name="android:layout_width">72dp</item>
+    <item name="android:layout_height">72dp</item>
+    <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.RoundedShape</item>
+  </style>
+
   <style name="TextViewCenter" parent="TextView.Common1">
     <item name="android:gravity">center</item>
   </style>

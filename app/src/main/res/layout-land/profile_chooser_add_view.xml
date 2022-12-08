@@ -11,7 +11,7 @@
       type="androidx.databinding.ObservableField&lt;Boolean&gt;" />
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -25,6 +25,9 @@
       android:layout_marginBottom="24dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       app:layoutMarginBottom="@{hasProfileEverBeenAddedValue ? @dimen/profile_view_already_added_margin : @dimen/profile_chooser_add_view_margin_bottom_profile_not_added}"
       app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_margin_top_profile_already_added : @dimen/profile_chooser_add_view_margin_top_profile_not_added}">
 
@@ -40,26 +43,17 @@
 
       <TextView
         android:id="@+id/add_profile_text"
-        style="@style/TextViewCenter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/AddMultiProfileHeading"
         android:layout_gravity="center"
-        android:fontFamily="sans-serif-medium"
-        android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-        android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
-        android:textSize="14sp" />
+        android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}" />
 
       <TextView
         android:id="@+id/add_profile_description_text"
-        style="@style/TextViewCenter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/AddMultiProfileBody"
         android:layout_gravity="center"
-        android:fontFamily="sans-serif"
+        android:textAlignment="center"
         android:text="@string/set_up_multiple_profiles_description"
-        android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
-        android:textSize="12sp"
         android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
     </LinearLayout>
-  </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
