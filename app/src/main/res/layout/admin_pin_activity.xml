@@ -40,6 +40,7 @@
           android:layout_marginTop="32dp"
           android:layout_marginEnd="@dimen/admin_pin_activity_admin_pin_main_text_view_margin_end"
           android:text="@string/admin_pin_requirement_description"
+          android:textColor="@color/component_color_shared_secondary_1_text_color"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
@@ -51,6 +52,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="16dp"
           android:text="@string/admin_pin_pin_description"
+          android:textColor="@color/component_color_shared_secondary_1_text_color"
           app:layout_constraintEnd_toEndOf="@id/admin_pin_main_text"
           app:layout_constraintStart_toStartOf="@+id/admin_pin_main_text"
           app:layout_constraintTop_toBottomOf="@+id/admin_pin_main_text" />

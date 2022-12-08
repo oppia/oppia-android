@@ -33,10 +33,10 @@
           android:paddingStart="4dp"
           android:paddingTop="20dp"
           android:paddingEnd="20dp"
-          app:srcCompat="@drawable/ic_language_icon_grey_24dp"
           android:visibility="gone"
           app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/ic_language_icon_grey_24dp" />
 
         <TextView
           style="@style/Subtitle1ViewCenter"
