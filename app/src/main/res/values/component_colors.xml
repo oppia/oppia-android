@@ -6,6 +6,7 @@
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_transparent_background_color">@color/color_palette_transparent_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
