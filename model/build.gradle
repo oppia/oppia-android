@@ -5,11 +5,15 @@ protobuf {
   protoc {
     // To build protoc in M1 mac. For context, see: #3912.
     if (osdetector.os == "osx") {
-      artifact = "com.google.protobuf:protoc:3.14.0:osx-x86_64"
+      Properties properties = new Properties()
+      DataInputStream input = project.rootProject.file("local.properties").newDataInputStream()
+      properties.load(input)
+      input.close()
+      def protobufPlatform = properties.getProperty("protobuf_platform", "")
+      artifact = "com.google.protobuf:protoc:3.8.0:${protobufPlatform}"
     } else {
-      artifact = "com.google.protobuf:protoc:3.14.0"
+      artifact = "com.google.protobuf:protoc:3.8.0"
     }
-
   }
   generateProtoTasks {
     all().each { task ->

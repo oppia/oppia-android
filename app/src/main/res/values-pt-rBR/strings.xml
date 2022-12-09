@@ -488,5 +488,5 @@
   <string name="profile_edit_fragment_test_activity_label">Atividade de Teste de Fragmento de Edição de Perfil</string>
   <string name="administrator_controls_fragment_test_activity_label">Controle Administrativo da Atividade de Teste de Fragmento</string>
   <string name="select_a_topic_to_start">Selecione um Tópico para começar</string>
-  <string name="profile_edit_activity_title">"Editar perfil "</string>
+  <string name="profile_edit_activity_title">"Editar perfil"</string>
 </resources>

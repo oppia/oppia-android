@@ -11,6 +11,7 @@ domain/build
 model/build
 testing/build
 utility/build
+model/build.gradle
 .DS_Store
 /build
 /captures
