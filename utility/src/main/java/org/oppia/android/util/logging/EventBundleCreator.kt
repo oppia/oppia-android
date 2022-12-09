@@ -3,7 +3,11 @@ package org.oppia.android.util.logging
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
+import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACCESS_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
@@ -33,7 +37,18 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
+import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
+import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
+import org.oppia.android.app.model.EventLog.PlayVoiceOverContext as PlayVoiceOverEventContext
+import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
+import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
+import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
+import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
+import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.OppiaMetricLog
+import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
+import org.oppia.android.app.model.OppiaMetricLog.CpuUsageMetric as CpuUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.CPU_USAGE_METRIC
@@ -42,6 +57,10 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsagePerformanceLoggableMetric
+import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
+import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
+import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.utility.getVersionCode
 import org.oppia.android.app.utility.getVersionName
@@ -66,25 +85,6 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
-import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
-import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
-import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
-import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
-import org.oppia.android.app.model.EventLog.PlayVoiceOverContext as PlayVoiceOverEventContext
-import org.oppia.android.app.model.EventLog.QuestionContext as QuestionEventContext
-import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
-import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
-import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
-import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
-import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
-import org.oppia.android.app.model.OppiaMetricLog.CpuUsageMetric as CpuUsagePerformanceLoggableMetric
-import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsagePerformanceLoggableMetric
-import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
-import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
-import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -120,7 +120,8 @@ class EventBundleCreator @Inject constructor(
     bundle.putInt("app_version_code", appVersionCode)
     return eventLog.context.convertToActivityContext().also { eventContext ->
       // Only allow user IDs to be logged when the learner study feature is enabled.
-      eventContext.storeValue(PropertyStore(bundle, allowUserIds = enableLearnerStudyAnalytics.value))
+      eventContext.storeValue(PropertyStore(bundle,
+        allowUserIds = enableLearnerStudyAnalytics.value))
     }.activityName
   }
 
