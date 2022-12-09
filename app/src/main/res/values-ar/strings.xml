@@ -523,4 +523,5 @@
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
   <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="revision_navigation_cards_header">أكمل دراستك</string>
+  <string name="profile_edit_activity_title">"تحرير ملف التعريف "</string>
 </resources>
