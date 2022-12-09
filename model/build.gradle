@@ -9,6 +9,7 @@ protobuf {
     } else {
       artifact = "com.google.protobuf:protoc:3.14.0"
     }
+
   }
   generateProtoTasks {
     all().each { task ->
