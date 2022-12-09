@@ -9,10 +9,11 @@ option java_multiple_files = true;
 // the app that highlight certain UI elements and show how/what they should be used for.
 message Spotlight {
   // Determines the UI element being spotlit.
-  oneof feature {
-    // Corresponds to the onboarding screen's next button.
-    SpotlightViewState onboarding_next_button = 1;
 
+  // Corresponds to the onboarding screen's next button which was removed.
+  reserved 1;
+
+  oneof feature {
     // Corresponds to the topic fragment's lessons tab.
     SpotlightViewState topic_lesson_tab = 2;
 
@@ -51,8 +52,8 @@ enum SpotlightViewState {
 
 // Top level proto that will be used to store SpotlightsViewStates per user profile.
 message SpotlightStateDatabase {
-  // Corresponds to the onboarding screen's next button.
-  SpotlightViewState onboarding_next_button = 1;
+  // Corresponds to the onboarding screen's next button which was removed.
+  reserved 1;
 
   // Corresponds to the topic fragment's lessons tab.
   SpotlightViewState topic_lesson_tab = 2;

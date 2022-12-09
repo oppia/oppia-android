@@ -313,6 +313,7 @@
   <string name="home_activity_back_dialog_cancel">إلغاء</string>
   <string name="home_activity_back_dialog_exit">خروج</string>
   <string name="home_activity_title">الصفحة الرئيسية</string>
+  <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
   <string name="profile_last_used">آخر استخدام</string>
@@ -521,7 +522,6 @@
   <string name="faq_answer_9">&lt;p&gt; إذا لم تتمكن من العثور على سؤالك أو كنت ترغب في الإبلاغ عن خطأ ، فاتصل بنا على admin@oppia.org. &lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">نشاط اختبار جزء تحرير ملف التعريف</string>
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
-  <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="revision_navigation_cards_header">أكمل دراستك</string>
   <string name="profile_edit_activity_title">"تحرير ملف التعريف"</string>
 </resources>

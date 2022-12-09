@@ -109,6 +109,7 @@
             app:layout_constraintVertical_bias="0.0"
             app:rotationAnimationAngle="@{180f}"
             app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+            android:background="@color/component_color_shared_transparent_background_color"
             app:tint="@color/component_color_hints_and_solutions_drawable_tint_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

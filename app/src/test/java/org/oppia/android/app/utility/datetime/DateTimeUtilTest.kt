@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.Multibinds
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,6 +52,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
@@ -164,6 +166,12 @@ class DateTimeUtilTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
+  @Module
+  interface AnalyticsStartupListenerTestModule {
+    @Multibinds
+    fun provideAnalyticsListenerSet(): Set<AnalyticsStartupListener>
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -190,7 +198,7 @@ class DateTimeUtilTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, TestingBuildFlavorModule::class,
       EventLoggingConfigurationModule::class, ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class
+      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -16,7 +16,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
-import org.oppia.android.app.model.Spotlight.FeatureCase.ONBOARDING_NEXT_BUTTON
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
@@ -143,23 +142,6 @@ class SpotlightStateControllerTest {
     markSpotlightSeen(FIRST_CHAPTER)
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, FIRST_CHAPTER)
-    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
-  }
-
-  @Test
-  fun testRetrieveSpotlightViewState_onboardingNext_notMarked_returnsSpotlightStateNotSeen() {
-    val retrieveSpotlightStateProvider =
-      spotlightStateController.retrieveSpotlightViewState(profileId0, ONBOARDING_NEXT_BUTTON)
-    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
-    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
-  }
-
-  @Test
-  fun testRetrieveSpotlightViewState_onboardingNext_marked_returnsSpotlightStateSeen() {
-    markSpotlightSeen(ONBOARDING_NEXT_BUTTON)
-    val retrieveSpotlightStateProvider =
-      spotlightStateController.retrieveSpotlightViewState(profileId0, ONBOARDING_NEXT_BUTTON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
     assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }

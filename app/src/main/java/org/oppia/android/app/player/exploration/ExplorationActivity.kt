@@ -41,7 +41,8 @@ class ExplorationActivity :
   DefaultFontSizeStateListener,
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
-  BottomSheetOptionsMenuItemClickListener {
+  BottomSheetOptionsMenuItemClickListener,
+  RequestVoiceOverIconSpotlightListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
 
@@ -184,4 +185,8 @@ class ExplorationActivity :
   }
 
   override fun dismissConceptCard() = explorationActivityPresenter.dismissConceptCard()
+
+  override fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
+    explorationActivityPresenter.requestVoiceOverIconSpotlight(numberOfLogins)
+  }
 }
