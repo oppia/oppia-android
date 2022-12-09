@@ -36,7 +36,7 @@
     app:questionViewMarginStart="@{@dimen/general_button_item_question_view_margin_start}"
     app:questionViewMarginTop="@{@dimen/general_button_item_margin_top}">
 
-  <ImageButton
+    <ImageButton
       android:id="@+id/previous_state_navigation_button"
       style="@style/PreviousButton"
       android:elevation="2dp"
@@ -46,12 +46,15 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <org.oppia.android.app.customview.ContinueButtonView
       android:id="@+id/continue_navigation_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
+      android:gravity="center_vertical"
       android:onClick="@{(v) -> buttonViewModel.continueNavigationButtonListener.onContinueButtonClicked()}"
       android:text="@string/state_continue_button"
+      app:shouldAnimateContinueButton="@{buttonViewModel.shouldAnimateContinueButton}"
+      app:continueButtonAnimationTimestampMs="@{buttonViewModel.continueButtonAnimationTimestampMs}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

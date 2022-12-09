@@ -55,6 +55,9 @@ import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonActivityParams
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -96,6 +99,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -153,6 +157,7 @@ class TopicLessonsFragmentTest {
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject lateinit var spotlightStateController: SpotlightStateController
   @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
@@ -160,7 +165,6 @@ class TopicLessonsFragmentTest {
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
   private val internalProfileId = 0
-
   private lateinit var profileId: ProfileId
 
   @Before
@@ -171,6 +175,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    markAllSpotlightsSeen()
   }
 
   @After
@@ -931,6 +936,15 @@ class TopicLessonsFragmentTest {
         matches(isClickable())
       )
     }
+  }
+
+  private fun markAllSpotlightsSeen() {
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {

@@ -63,6 +63,7 @@ import org.oppia.android.app.settings.profile.ProfileRenameFragment
 import org.oppia.android.app.settings.profile.ProfileResetPinFragment
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.story.StoryFragment
 import org.oppia.android.app.testing.DragDropTestFragment
 import org.oppia.android.app.testing.ExplorationTestActivityPresenter
@@ -160,6 +161,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)
+  fun inject(spotlightFragment: SpotlightFragment)
   fun inject(stateFragment: StateFragment)
   fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
   fun inject(storyFragment: StoryFragment)

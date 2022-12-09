@@ -67,7 +67,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.utility.LifecycleSafeTimerFactory
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.ContentItemBinding
 import org.oppia.android.databinding.ContinueInteractionItemBinding
 import org.oppia.android.databinding.ContinueNavigationButtonItemBinding
@@ -226,12 +226,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
       if (playerFeatureSet.interactionSupport) {
         val interactionItemList =
           if (isSplitView) extraInteractionPendingItemList else conversationPendingItemList
+        val timeToStartNoticeAnimationMs = if (interaction.id == "Continue") {
+          ephemeralState.continueButtonAnimationTimestampMs.takeIf {
+            ephemeralState.showContinueButtonAnimation
+          }
+        } else null
         addInteractionForPendingState(
           interactionItemList,
           interaction,
           hasPreviousState,
           gcsEntityId,
-          ephemeralState.writtenTranslationContext
+          ephemeralState.writtenTranslationContext,
+          timeToStartNoticeAnimationMs
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
@@ -295,7 +301,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasPreviousState,
       canContinueToNextState,
       hasGeneralContinueButton,
-      isTerminalState
+      isTerminalState,
+      shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
+      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
@@ -305,7 +313,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     interaction: Interaction,
     hasPreviousButton: Boolean,
     gcsEntityId: String,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
+    timeToStartNoticeAnimationMs: Long?
   ) {
     val interactionViewModelFactory = interactionViewModelFactoryMap.getValue(interaction.id)
     pendingItemList += interactionViewModelFactory.create(
@@ -316,7 +325,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       fragment as InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton,
       isSplitView.get()!!,
-      writtenTranslationContext
+      writtenTranslationContext,
+      timeToStartNoticeAnimationMs
     )
   }
 
@@ -592,7 +602,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasPreviousState: Boolean,
     canContinueToNextState: Boolean,
     hasGeneralContinueButton: Boolean,
-    stateIsTerminal: Boolean
+    stateIsTerminal: Boolean,
+    shouldAnimateContinueButton: Boolean,
+    continueButtonAnimationTimestampMs: Long
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
@@ -600,7 +612,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         addContinueNavigation(
           conversationPendingItemList,
           extraInteractionPendingItemList,
-          hasPreviousButton
+          hasPreviousButton,
+          shouldAnimateContinueButton,
+          continueButtonAnimationTimestampMs
         )
       }
       canContinueToNextState && playerFeatureSet.forwardNavigation -> {
@@ -725,7 +739,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun addContinueNavigation(
     conversationPendingItemList: MutableList<StateItemViewModel>,
     extraInteractionPendingItemList: MutableList<StateItemViewModel>,
-    hasPreviousButton: Boolean
+    hasPreviousButton: Boolean,
+    shouldAnimateContinueButton: Boolean,
+    continueButtonAnimationTimestampMs: Long
   ) {
     val targetList =
       if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
@@ -735,7 +751,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasConversationView,
       previousNavigationButtonListener,
       fragment as ContinueNavigationButtonListener,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      shouldAnimateContinueButton,
+      continueButtonAnimationTimestampMs
     )
     if (isSplitView.get()!!) {
       // "previous button" should appear in the conversation recycler view only

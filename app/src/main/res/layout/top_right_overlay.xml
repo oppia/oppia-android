@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="listener"
+      type="org.oppia.android.app.spotlight.SpotlightNavigationListener" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/spotlight_overlay_constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/transparent_background"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+      android:id="@+id/spotlight_overlay_arrow"
+      android:layout_width="@dimen/spotlight_arrow_width"
+      android:layout_height="@dimen/spotlight_arrow_height"
+      android:rotationY="180"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_rounded_arrow_up_right" />
+
+    <com.google.android.material.card.MaterialCardView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="16dp"
+      app:layout_constraintEnd_toEndOf="@+id/spotlight_overlay_arrow"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/spotlight_overlay_arrow">
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/spotlight_hint_background">
+
+        <TextView
+          android:id="@+id/spotlight_hint_text"
+          style="@style/TextViewStart"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="4dp"
+          android:background="@drawable/spotlight_hint_text_background"
+          android:paddingStart="16dp"
+          android:paddingTop="8dp"
+          android:paddingEnd="4dp"
+          android:paddingBottom="8dp"
+          android:textSize="20sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toStartOf="@id/close_spotlight_button"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+          android:id="@+id/close_spotlight_button"
+          style="@style/StateButtonActive"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:layout_marginTop="0dp"
+          android:background="@drawable/spotlight_done_button_background"
+          android:onClick="@{(v) -> listener.clickOnDone()}"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          app:srcCompat="@drawable/ic_close_black_24" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

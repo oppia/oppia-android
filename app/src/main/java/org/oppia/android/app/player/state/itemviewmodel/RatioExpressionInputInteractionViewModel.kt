@@ -140,7 +140,8 @@ class RatioExpressionInputInteractionViewModel private constructor(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel {
       return RatioExpressionInputInteractionViewModel(
         interaction,
