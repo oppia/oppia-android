@@ -1,0 +1,40 @@
+apply plugin: 'java-library'
+apply plugin: 'com.google.protobuf'
+
+protobuf {
+  protoc {
+    // To build protoc in M1 mac. For context, see: #3912.
+    if (osdetector.os == "osx") {
+      Properties properties = new Properties()
+      DataInputStream input = project.rootProject.file("local.properties").newDataInputStream()
+      properties.load(input)
+      input.close()
+      def protobufPlatform = properties.getProperty("protobuf_platform", "")
+      artifact = "com.google.protobuf:protoc:3.8.0:${protobufPlatform}"
+    } else {
+      artifact = "com.google.protobuf:protoc:3.8.0"
+    }
+  }
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        java {
+          // This setup is per https://github.com/google/protobuf-gradle-plugin/issues/315.
+          option 'lite'
+        }
+      }
+    }
+  }
+}
+
+dependencies {
+  implementation 'com.google.protobuf:protobuf-javalite:3.17.3'
+}
+
+sourceSets {
+  main {
+    proto {
+      srcDir 'src/main/proto'
+    }
+  }
+}
