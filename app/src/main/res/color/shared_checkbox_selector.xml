@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:alpha="0.38" android:color="@color/component_color_shared_checkbox_disabled_color" android:state_checked="false" android:state_enabled="false" />
+  <item android:color="@color/component_color_shared_checkbox_unchecked_color" android:state_checked="false" android:state_enabled="true" />
+  <item android:color="@color/component_color_shared_checkbox_checked_color" android:state_checked="true" />
+</selector>
