@@ -416,6 +416,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
+         fragment.activity?.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.slide_drawer_open_status_bar,
             activity,
@@ -425,6 +426,14 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
+          /* When we switch profile we should check if the fragment is still attached
+          *  because the order of lifecycle callbacks are not certain, meaning.
+          *  OnDetach() can be called before onDrawerClosed() which results in crash
+          */
+          if(!fragment.isDetached)
+          {
+            fragment.activity?.invalidateOptionsMenu()
+          }
           StatusBarColor.statusBarColorUpdate(
             R.color.oppia_primary_dark,
             activity,
@@ -451,6 +460,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
+          fragment.activity?.invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.slide_drawer_open_status_bar,
             activity,
@@ -460,6 +470,10 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
+          if(!fragment.isDetached)
+          {
+            fragment.activity?.invalidateOptionsMenu()
+          }
           StatusBarColor.statusBarColorUpdate(
             R.color.oppia_primary_dark,
             activity,
