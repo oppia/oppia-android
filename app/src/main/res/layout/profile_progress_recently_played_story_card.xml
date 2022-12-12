@@ -21,7 +21,7 @@
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.onStoryItemClicked()}"
-    app:cardBackgroundColor="@color/color_def_white"
+    app:cardBackgroundColor="@color/component_color_shared_white_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -47,7 +47,7 @@
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_recently_played_activity_recently_played_story_card_color"
+        android:background="@color/component_color_shared_rounded_rect_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
           android:fontFamily="sans-serif"
           android:lines="2"
           android:text="@{viewModel.storyTitle}"
-          android:textColor="@color/component_color_recently_played_activity_recently_played_story_card_text_color"
+          android:textColor="@color/component_color_shared_content_item_text_view_color"
           android:textSize="14sp"
           android:textStyle="bold"
           app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +74,6 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
-          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"
@@ -86,7 +85,7 @@
           android:maxLines="1"
           android:text="@{viewModel.topicTitle}"
           android:textAllCaps="true"
-          android:textColor="@color/component_color_recently_played_activity_recently_played_story_card_text_color"
+          android:textColor="@color/component_color_shared_story_card_topic_name_text_color"
           android:textSize="14sp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
