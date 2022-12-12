@@ -43,7 +43,7 @@
         app:srcCompat="@{@drawable/ic_add_profile}"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
         app:layoutMarginTop="@{hasProfileEverBeenAddedValue ? @dimen/profile_chooser_add_view_circular_image_margin_top_profile_already_added : @dimen/space_0dp}"
-        app:strokeColor="@color/avatar_border"
+        app:strokeColor="@color/component_color_profile_chooser_activity_avatar_border_color"
         app:strokeWidth="1dp" />
 
       <LinearLayout
@@ -62,7 +62,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif-medium"
           android:text="@{hasProfileEverBeenAddedValue ? @string/profile_chooser_add : @string/set_up_multiple_profiles}"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:textSize="20sp" />
 
         <TextView
@@ -74,7 +74,7 @@
           android:layout_marginTop="4dp"
           android:fontFamily="sans-serif"
           android:text="@string/set_up_multiple_profiles_description"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:textSize="16sp"
           android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}" />
       </LinearLayout>

@@ -13,7 +13,7 @@
     android:id="@+id/admin_auth_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_admin_auth_layout_background_color">
+    android:background="@color/component_color_shared_screen_secondary_background_color">
 
     <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/admin_auth_app_bar_layout"
@@ -28,14 +28,14 @@
         android:id="@+id/admin_auth_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_admin_auth_activity_toolbar_color"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         app:navigationContentDescription="@string/admin_auth_close"
         app:navigationIcon="@drawable/ic_close_white_24dp"
         app:title="@string/admin_auth_toolbar"
         app:titleTextAppearance="@style/ToolbarTextAppearance"
-        app:titleTextColor="@color/color_def_white" />
+        app:titleTextColor="@color/component_color_shared_activity_toolbar_text_color" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -79,7 +79,7 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="12dp"
           android:text="@string/admin_auth_sub"
-          android:textColor="@color/component_color_admin_auth_secondary_text_color"
+          android:textColor="@color/component_color_shared_secondary_2_text_color"
           app:layout_constraintEnd_toEndOf="@id/admin_auth_heading_textview"
           app:layout_constraintStart_toStartOf="@id/admin_auth_heading_textview"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_heading_textview" />
@@ -117,7 +117,7 @@
           android:enabled="@{viewModel.isSubmitButtonActive}"
           android:minHeight="48dp"
           android:text="@string/admin_auth_submit"
-          android:textColor="@{viewModel.isSubmitButtonActive ? @color/color_def_white : @color/submit_button_inactive_text }"
+          android:textColor="@{viewModel.isSubmitButtonActive() ? @color/component_color_shared_button_active_text_color : @color/component_color_shared_button_inactive_text_color }"
           app:layout_constraintEnd_toEndOf="@id/admin_auth_input_pin"
           app:layout_constraintHorizontal_bias="1.0"
           app:layout_constraintTop_toBottomOf="@id/admin_auth_input_pin" />
