@@ -523,5 +523,4 @@
   <string name="profile_edit_fragment_test_activity_label">نشاط اختبار جزء تحرير ملف التعريف</string>
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
   <string name="revision_navigation_cards_header">أكمل دراستك</string>
-  <string name="profile_edit_activity_title">"تحرير ملف التعريف"</string>
 </resources>
