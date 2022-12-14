@@ -68,7 +68,7 @@
         android:id="@+id/options_separator"
         android:layout_width="1dp"
         android:layout_height="0dp"
-        android:background="@color/oppia_onboarding_divider"
+        android:background="@color/component_color_shared_divider_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/multipane_guideline"
         app:layout_constraintTop_toTopOf="parent" />

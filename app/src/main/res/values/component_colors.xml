@@ -2,10 +2,14 @@
 <resources>
   <color name="component_color_shared_edit_text_cursor_color">@color/color_palette_cursor_color</color>
   <color name="component_color_shared_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+  <color name="component_color_shared_activity_toolbar_text_color">@color/color_palette_toolbar_text_color</color>
+  <color name="component_color_shared_screen_primary_background_color">@color/color_palette_primary_background_color</color>
+  <color name="component_color_shared_screen_secondary_background_color">@color/color_palette_secondary_background_color</color>
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_transparent_background_color">@color/color_palette_transparent_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_input_error_color">@color/color_palette_input_error_color</color>
@@ -40,7 +44,14 @@
   <color name="component_color_shared_correct_text_stroke_color">@color/color_palette_correct_text_stroke_color</color>
   <color name="component_color_shared_correct_text_solid_color">@color/color_palette_correct_text_solid_color</color>
   <color name="component_color_shared_correct_text_color">@color/color_palette_correct_text_color</color>
-  <color name="component_color_shared_submit_button_inactive_solid_color">@color/color_palette_submit_button_inactive_solid_color</color>
+  <color name="component_color_shared_primary_button_background_color">@color/color_palette_primary_button_background_color</color>
+  <color name="component_color_shared_primary_button_text_color">@color/color_palette_primary_button_text_color</color>
+  <color name="component_color_shared_button_inactive_solid_color">@color/color_palette_button_inactive_solid_color</color>
+  <color name="component_color_shared_button_inactive_stroke_color">@color/color_palette_button_inactive_stroke_color</color>
+  <color name="component_color_shared_button_inactive_text_color">@color/color_palette_button_inactive_text_color</color>
+  <color name="component_color_shared_button_active_solid_color">@color/color_palette_button_active_solid_color</color>
+  <color name="component_color_shared_button_active_stroke_color">@color/color_palette_button_active_stroke_color</color>
+  <color name="component_color_shared_button_active_text_color">@color/color_palette_button_active_text_color</color>
   <color name="component_color_shared_submit_button_inactive_stroke_color">@color/color_palette_submit_button_inactive_stroke_color</color>
   <color name="component_color_shared_submit_text_inactive_color">@color/color_palette_submit_text_inactive_color</color>
   <color name="component_color_shared_submit_text_active_color">@color/color_palette_submit_text_active_color</color>
@@ -48,30 +59,32 @@
   <color name="component_color_shared_question_player_progress_bar_gradient_start_color">@color/color_palette_progress_bar_gradient_start_color</color>
   <color name="component_color_shared_question_player_progress_bar_gradient_center_color">@color/color_palette_progress_bar_gradient_center_color</color>
   <color name="component_color_shared_question_player_progress_bar_gradient_end_color">@color/color_palette_progress_bar_gradient_end_color</color>
+  <color name="component_color_shared_checkbox_checked_color">@color/color_palette_checkbox_checked_color</color>
+  <color name="component_color_shared_checkbox_unchecked_color">@color/color_palette_checkbox_unchecked_color</color>
+  <color name="component_color_shared_checkbox_disabled_color">@color/color_palette_checkbox_unchecked_color</color>
+  <color name="component_color_shared_divider_color">@color/color_palette_divider_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
   <!-- Styles.xml -->
   <color name="component_color_shared_text_view_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_shared_primary_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_shared_secondary_1_text_color">@color/color_palette_secondary_1_text_color</color>
+  <color name="component_color_shared_secondary_2_text_color">@color/color_palette_secondary_2_text_color</color>
   <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_input_interaction_edit_text_background_color">@color/color_palette_text_input_background_color</color>
   <color name="component_color_shared_text_input_layout_error_color">@color/color_palette_error_color</color>
+  <color name="component_color_shared_text_input_layout_helper_text_color">@color/color_palette_helper_text_color</color>
   <color name="component_color_general_item_background_solid_color">@color/color_palette_container_background_color</color>
   <color name="component_color_general_item_background_stroke_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_general_item_secondary_background_stroke_color">@color/color_palette_stroke_color</color>
-  <!-- Admin Auth Activity -->
-  <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
-  <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
-  <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
   <!-- Add Profile Activity -->
-  <color name="component_color_add_profile_activity_label_text_color">@color/color_palette_primary_text_color</color>
+  <color name="component_color_add_profile_activity_info_icon_color">@color/color_palette_info_icon_color</color>
   <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
-  <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Administrator Controls -->
   <color name="component_color_admin_controls_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_admin_controls_options_background_color">@color/color_palette_container_background_color</color>
@@ -81,18 +94,10 @@
   <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_admin_controls_sub_heading_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_admin_controls_view_divider_color">@color/color_palette_dark_background_color</color>
-  <!-- Admin Pin Activity -->
-  <color name="component_color_admin_pin_activity_layout_background_color">@color/color_palette_background_color</color>
   <!-- Pin Password Activity -->
-  <color name="component_color_pin_password_activity_layout_background_color">@color/color_palette_background_color</color>
-  <color name="component_color_pin_password_activity_toolbar_color">@color/color_palette_toolbar_color</color>
-  <color name="component_color_pin_password_activity_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_pin_password_activity_sub_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
-  <color name="component_color_pin_password_activity_show_hide_text_color">@color/color_palette_show_text_color</color>
+  <color name="component_color_pin_password_activity_show_hide_color">@color/color_palette_show_hide_color</color>
   <color name="component_color_pin_password_activity_error_text_color">@color/color_palette_error_text_color</color>
-  <color name="component_color_pin_password_activity_show_eye_icon_color">@color/color_palette_show_eye_icon_color</color>
-  <color name="component_color_pin_password_activity_hide_eye_icon_color">@color/color_palette_hide_eye_icon_color</color>
   <!-- Help Activity -->
   <color name="component_color_help_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_help_activity_container_color">@color/color_palette_container_background_color</color>
@@ -171,10 +176,7 @@
   <color name="component_color_license_text_viewer_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_license_text_viewer_activity_text_color">@color/color_palette_description_text_color</color>
   <!-- Onboarding Activity -->
-  <color name="component_color_onboarding_activity_background_color">@color/color_palette_light_background_color</color>
   <color name="component_color_onboarding_activity_sub_text_color">@color/color_palette_primary_text_color</color>
-  <color name="component_color_onboarding_activity_text_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_onboarding_activity_divider_color">@color/color_palette_onboarding_divider_color</color>
   <color name="component_color_onboarding_activity_dots_color">@color/color_palette_dots_color</color>
   <color name="component_color_onboarding_activity_arrow_color">@color/color_palette_arrow_color</color>
   <!-- Developer Options Activity -->
@@ -342,4 +344,9 @@
   <color name="component_color_app_version_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_app_version_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_app_version_activity_description_text_color">@color/color_palette_secondary_text_color</color>
+  <!-- Profile Chooser Activity -->
+  <color name="component_color_profile_chooser_activity_background_color">@color/color_palette_profile_chooser_charcoal_black_background_color</color>
+  <color name="component_color_profile_chooser_activity_secondary_options_color">@color/color_palette_profile_chooser_silver_text_color</color>
+  <color name="component_color_profile_chooser_activity_white_text_color">@color/color_palette_profile_chooser_white_text_color</color>
+  <color name="component_color_profile_chooser_activity_avatar_border_color">@color/color_palette_profile_chooser_avatar_border_color</color>
 </resources>
