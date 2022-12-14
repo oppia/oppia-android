@@ -80,28 +80,25 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 
 ## Finding something to do
-**Starter projects for new contributors**
+**Good first issues for new contributors**
 
 Welcome! Please make sure to follow the onboarding instructions above if you haven’t already.
 
 Also, read the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). 
 
-After that, we’d strongly recommend tackling some part of one of the following starter issues.
+After that, we’d strongly recommend tackling some part of one of the following good first issues.
 
 **Testing**
-
  - [Add missing tests](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+tests)
 
 **UI**
-
  - [Merge different versions of a xml into a single xml file](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+single+xml+file)
  - [Supporting dark mode](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+in%3Atitle+add+dark+mode+is%3Aopen) (see also [these instructions](https://github.com/oppia/oppia-android/wiki/Dark-Mode)).
 
-**Bazel**
-
 **Accessibility**
-
  - [Accessibility support](https://github.com/oppia/oppia-android/issues?q=is%3Aissue+is%3Aopen+a11y+no%3Aassignee)
+
+You may also tackle other [good first issues](https://github.com/oppia/oppia-android/labels/good%20first%20issue). When claiming an issue, please explain how you would tackle the issue (if there aren't pre-existing instructions) and tag the corresponding team lead (typically **@BenHenning**) if you wish to be assigned to it.
 
 
 ## Important: Ongoing Bazel migration
@@ -151,9 +148,5 @@ For now, you generally won't need to do this, until the Android app supports on-
 
 
 ## Communication channels
-
-### Mailing lists
-
-We have a developer chat room [here](https://gitter.im/oppia/oppia-android). Feel free to drop in and say hi!
 
 If you run into any problems, you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
