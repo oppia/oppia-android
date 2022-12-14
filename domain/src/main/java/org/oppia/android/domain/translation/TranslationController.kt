@@ -374,6 +374,10 @@ class TranslationController @Inject constructor(
     }
   }
 
+  /**
+   * Returns a data provider for a [AppLanguageSelection] corresponding to the user's selected
+   * App language.
+   */
   fun retrieveAppLanguageSelection(profileId: ProfileId): DataProvider<AppLanguageSelection> {
     return retrieveCacheStore(profileId)
       .transformAsync(
