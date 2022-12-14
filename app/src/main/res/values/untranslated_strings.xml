@@ -86,7 +86,7 @@
   <!-- ProfileEditActivity -->
   <string name="profile_edit_fragment_test_activity_label" translatable="false">Profile Edit Fragment Test Activity</string>
   <!-- AdminPinActivity -->
-  <string name="admin_pin_activity_label_text">Authorise to add profiles</string>
+  <string name="admin_pin_activity_label_text" translatable="false">Authorise to add profiles</string>
   <!-- AppVersionFragment -->
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title" translatable="false">App Version</string>
   <!-- AddProfileActivity -->
@@ -96,9 +96,9 @@
   <!-- ProfileChooserFragment -->
   <string name="profile_chooser_activity_label_text" translatable="false">Profile selection page</string>
   <!-- PinPasswordActivity -->
-  <string name="pin_password_activity_pin_password_activity_label_title">PIN verification</string>
+  <string name="pin_password_activity_pin_password_activity_label_title" translatable="false">PIN verification</string>
   <!-- TopicActivity -->
-  <string name="topic_activity_topic_page_label_text">Topic page</string>
+  <string name="topic_activity_topic_page_label_text" translatable="false">Topic page</string>
   <!-- WalkthroughActivity -->
-  <string name="walkthrough_activity_label_text">App walkthrough</string>
+  <string name="walkthrough_activity_label_text" translatable="false">App walkthrough</string>
 </resources>
