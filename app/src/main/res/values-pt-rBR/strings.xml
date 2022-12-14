@@ -469,7 +469,8 @@
   <string name="privacy_policy_activity_title">Política de Privacidade</string>
   <string name="terms_of_service_activity_title">Termos de Serviço</string>
   <string name="onboarding_activity_agree_to_terms">Ao usar %s, você concorda com nossos &lt;br&gt; &lt;oppia-noninteractive-policy link=\"tos\"&gt;Termos de Serviço&lt;/oppia-noninteractive-policy&gt; e &lt;oppia-noninteractive-policy link=\"privacy\"&gt;Política de Privacidade&lt;/oppia-noninteractive-policy&gt;.</string>
-  <string name="policy_fragment_activity_terms_of_service_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/terms\"&gt;esta página&lt;/a&gt; para acessar a última versão destes termos.</string>
+  <string name="policy_fragment_terms_of_service_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/terms\"&gt;esta página&lt;/a&gt; para acessar a última versão destes termos.</string>
+  <string name="policy_fragment_privacy_policy_web_link">Por favor visite &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;esta páginage&lt;/a&gt; para acessar a última versão desta política de privacidade.</string>
   <string name="faq_question_1">Como posso criar um novo perfil?</string>
   <string name="faq_question_2">Como posso deletar um perfil?</string>
   <string name="faq_question_3">Como posso alterar meu e-mail/número de telefone?</string>

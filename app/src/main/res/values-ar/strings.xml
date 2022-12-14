@@ -504,7 +504,8 @@
   <string name="privacy_policy_activity_title">سياسة الخصوصية</string>
   <string name="terms_of_service_activity_title">شروط الخدمة</string>
   <string name="onboarding_activity_agree_to_terms">باستخدام %s ، فإنك توافق على&lt;br&gt;&lt;oppia-noninteractive-policy link=\"tos\"&gt; شروط الخدمة&lt;/oppia-noninteractive-policy&gt; و&lt;oppia-noninteractive-policy link=\"privacy\"&gt; سياسة الخصوصية&lt;/oppia-noninteractive-policy&gt; .</string>
-  <string name="policy_fragment_activity_terms_of_service_web_link">يرجى زيارة &lt;a href=\"https://www.oppia.org/terms\"&gt;هذه الصفحة&lt;/a&gt; للحصول على أحدث نسخة من هذه الشروط.</string>
+  <string name="policy_fragment_terms_of_service_web_link">يرجى زيارة &lt;a href=\"https://www.oppia.org/terms\"&gt;هذه الصفحة&lt;/a&gt; للحصول على أحدث نسخة من هذه الشروط.</string>
+  <string name="policy_fragment_privacy_policy_web_link">يرجى زيارة &lt;a href=\"https://www.oppia.org/privacy-policy\"&gt;هذه الصفحة&lt;/a&gt; للحصول على أحدث إصدار من سياسة الخصوصية هذه.</string>
   <string name="faq_question_1">كيف يمكنني إنشاء ملف تعريف(حساب) جديد؟</string>
   <string name="faq_question_2">كيف يمكنني حذف ملف التعريف(حساب)؟</string>
   <string name="faq_question_3">كيف يمكنني تغيير بريدي الإلكتروني / رقم هاتفي؟</string>

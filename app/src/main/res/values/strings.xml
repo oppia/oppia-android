@@ -347,9 +347,12 @@
   <string name="profile_reset_pin_activity_profile_reset_pin_error_user_pin_length">Your PIN should be 3 digits long.</string>
   <string name="profile_reset_pin_activity_profile_reset_pin_error_admin_pin_length">Your PIN should be 5 digits long.</string>
   <string name="profile_reset_pin_activity_profile_reset_pin_activity_enter_user_new_pin">%1$s\'s New PIN.</string>
-  <!-- Privacy Policy -->
+  <!-- PolicyActivity -->
   <string name="privacy_policy_activity_title">Policy Page</string>
   <string name="policy_activity_label_title">Privacy Policy</string>
+  <string name="terms_of_service_activity_title">Terms of Service</string>
+  <string name="policy_fragment_privacy_policy_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/privacy-policy">this page</a> for the latest version of this privacy policy.]]></string>
+  <string name="policy_fragment_terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- QuestionPlayerActivity -->
   <string name="question_player_activity_title">Practice Mode</string>
   <string name="question_player_activity_toolbar_title">Practice Mode</string>
@@ -433,9 +436,6 @@
   <!-- ThirdPartyDependencyListActivity -->
   <string name="third_party_dependency_list_activity_title">Third-party Dependencies</string>
   <string name="third_party_dependency_version_formatter">version %s</string>
-  <!-- Terms of Service -->
-  <string name="terms_of_service_activity_title">Terms of Service</string>
-  <string name="policy_fragment_activity_terms_of_service_web_link"><![CDATA[Please visit <a href="https://www.oppia.org/terms">this page</a> for the latest version of these terms.]]></string>
   <!-- ViewTags -->
   <string name="topic_revision_activity_topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_list_activity_ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
