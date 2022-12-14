@@ -105,7 +105,7 @@
   <string name="exploration_activity_audio_player_on">Audio, ON</string>
   <string name="exploration_activity_audio_player_off">Audio, OFF</string>
   <string name="exploration_activity_exploration_exit_button_spotlight_hint">Exit anytime using this button. We will save your progress.</string>
-  <string name="exploration_activity_voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try!</string>
+  <string name="exploration_activity_voiceover_icon_spotlight_hint">Would you like %s to read for you? Tap on this button to try it!</string>
   <string name="exploration_activity_voiceover_language_icon_spotlight_hint">Tap to change voiceover language.</string>
   <!-- UnsavedExplorationDialogFragment -->
   <string name="unsaved_exploration_dialog_fragment_unsaved_exploration_dialog_title">Leave to Topic Page?</string>
