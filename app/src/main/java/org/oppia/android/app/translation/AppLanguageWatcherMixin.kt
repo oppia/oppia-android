@@ -1,6 +1,5 @@
 package org.oppia.android.app.translation
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import org.oppia.android.app.model.ProfileId
@@ -72,24 +71,10 @@ class AppLanguageWatcherMixin @Inject constructor(
       activity,
       object : Observer<AsyncResult<OppiaLocale.DisplayLocale>> {
         override fun onChanged(localeResult: AsyncResult<OppiaLocale.DisplayLocale>) {
-          Log.e(
-            "LANG CONFIG CHANGE",
-            "AppLanguageWatcherMixin.onChanged" + " " + "LANG DATA CHANGED"
-          )
           when (localeResult) {
             is AsyncResult.Success -> {
               // Only recreate the activity if the locale actually changed (to avoid an infinite
               // recreation loop).
-              Log.e(
-                "LANG CONFIG CHANGE",
-                "AppLanguageWatcherMixin" + " " +
-                  localeResult.value.localeContext
-              )
-              Log.e(
-                "LANG CONFIG CHANGE",
-                "AppLanguageWatcherMixin" + " " +
-                  appLanguageLocaleHandler.updateLocale(localeResult.value)
-              )
               if (appLanguageLocaleHandler.updateLocale(localeResult.value)) {
                 // Recreate the activity to apply the latest locale state. Note that in some cases
                 // this may result in 2 recreations for the user: one to notify that there's a new

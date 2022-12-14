@@ -1,6 +1,7 @@
 package org.oppia.android.app.translation
 
 import android.content.res.Configuration
+import android.util.Log
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -65,6 +66,14 @@ class AppLanguageLocaleHandler @Inject constructor(
    */
   fun updateLocale(newLocale: OppiaLocale.DisplayLocale): Boolean {
     verifyDisplayLocaleIsInitialized()
+    Log.e(
+      "AppLanguageLocaleHandle",
+      "updateLocale" + "newlocale" + newLocale.localeContext.languageDefinition.language.name
+    )
+    Log.e(
+      "AppLanguageLocaleHandle",
+      "updateLocale" + "oldLocale" + displayLocale.localeContext.languageDefinition.language.name
+    )
     return displayLocale.let { oldLocale ->
       displayLocale = newLocale
       return@let oldLocale != newLocale

@@ -1,21 +1,28 @@
 package org.oppia.android.app.options
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.AppLanguageFragmentBinding
 import org.oppia.android.databinding.AppLanguageItemBinding
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
 class AppLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  private val translationController: TranslationController,
+  private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var appLanguage: OppiaLanguage
   fun handleOnCreateView(
@@ -53,8 +60,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   private fun updateAppLanguage(appLanguage: OppiaLanguage) {
     // The first branch of (when) will be used in the case of multipane
-    Log.e("updateAppLanguage", "AppLanguageFragmentPresenter $appLanguage")
-    Log.e("parentActivity", fragment.activity?.javaClass?.simpleName.toString())
     when (val parentActivity = fragment.activity) {
       is OptionsActivity -> parentActivity.optionActivityPresenter.updateAppLanguage(appLanguage)
       is AppLanguageActivity -> parentActivity.appLanguageActivityPresenter.setLanguageSelected(
@@ -65,7 +70,32 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   fun onLanguageSelected(selectedLanguage: OppiaLanguage) {
     appLanguageSelectionViewModel.selectedLanguage.value = selectedLanguage
-    Log.e("selected language", selectedLanguage.name)
     updateAppLanguage(selectedLanguage)
+    updateAppLanguageSelection(selectedLanguage)
+  }
+
+  private fun updateAppLanguageSelection(oppiaLanguage: OppiaLanguage) {
+    val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+      selectedLanguage = oppiaLanguage
+      selectedLanguageValue = oppiaLanguage.number
+    }.build()
+
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    translationController.updateAppLanguage(
+      profileId,
+      appLanguageSelection
+    ).toLiveData().observe(
+      fragment,
+      {
+        when (it) {
+          is AsyncResult.Success -> {
+            appLanguage = oppiaLanguage
+          }
+          is AsyncResult.Failure ->
+            oppiaLogger.e("APP_LANGUAGE_TAG", it.error.toString())
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
+      }
+    )
   }
 }

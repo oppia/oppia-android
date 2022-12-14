@@ -3,7 +3,6 @@ package org.oppia.android.app.options
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -110,7 +109,7 @@ class OptionsActivity :
           AppLanguageActivityResultBundle.getDefaultInstance()
         ).oppiaLanguage
         optionActivityPresenter.updateAppLanguage(appLanguage)
-        Log.e("new updated lang", "OptionsActivity $appLanguage")
+        OptionControlsViewModel.isResuming = true
       }
       REQUEST_CODE_AUDIO_LANGUAGE -> {
         val audioLanguage = data.getProtoExtra(

@@ -1,6 +1,5 @@
 package org.oppia.android.app.options
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.drawer.NAVIGATION_PROFILE_ID_ARGUMENT_KEY
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
@@ -203,16 +203,23 @@ class OptionsFragmentPresenter @Inject constructor(
   }
 
   fun updateAppLanguage(language: OppiaLanguage) {
-    profileManagementController.updateAppLanguage(profileId, language).toLiveData().observe(
+    val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
+      selectedLanguage = language
+      selectedLanguageValue = language.number
+    }.build()
+
+    translationController.updateAppLanguage(
+      profileId,
+      appLanguageSelection
+    ).toLiveData().observe(
       fragment,
       {
         when (it) {
           is AsyncResult.Success -> {
-            Log.e("USER PREV SELECTED LANG", "OptionsFragmentPresenter.updateAppLanguage $language")
             appLanguage = language
           }
           is AsyncResult.Failure ->
-            oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: French", it.error)
+            oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR", it.error)
           is AsyncResult.Pending -> {} // Wait for a result.
         }
       }
