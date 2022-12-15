@@ -71,7 +71,7 @@
   <dimen name="submitted_answer_exploration_split_view_margin_top_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_start_no_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
-  <dimen name="profile_chooser_profile_view_divider_margin_top">40dp</dimen>
+  <dimen name="profile_chooser_profile_view_divider_margin_top">92dp</dimen>
 
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
@@ -507,4 +507,9 @@
   <dimen name="topic_fragment_tab_layout_margin_start">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_margin_end">192dp</dimen>
   <dimen name="topic_fragment_tab_layout_tab_indicator_height">4dp</dimen>
+
+  <dimen name="profile_chooser_profile_view_is_image_width">108dp</dimen>
+
+  <dimen name="profile_chooser_profile_view_profile_name_text_size">20sp</dimen>
+  <dimen name="profile_chooser_profile_view_profile_last_visited_size">16sp</dimen>
 </resources>
