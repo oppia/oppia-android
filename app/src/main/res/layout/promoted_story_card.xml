@@ -44,7 +44,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_rounded_rect_white_background"
+        android:background="@color/component_color_shared_rounded_rect_background_color"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +63,7 @@
           android:fontFamily="sans-serif-medium"
           android:maxLines="1"
           android:text="@{viewModel.nextChapterTitle}"
-          android:textColor="@color/component_color_shared_content_item_text_view_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="18sp" />
 
         <TextView
@@ -77,7 +77,7 @@
           android:fontFamily="sans-serif"
           android:maxLines="1"
           android:text="@{viewModel.storyTitle}"
-          android:textColor="@color/component_color_shared_content_item_text_view_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="@dimen/promoted_story_card_text_size" />
 
         <TextView

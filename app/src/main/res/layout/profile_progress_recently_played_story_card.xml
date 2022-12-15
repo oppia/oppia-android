@@ -21,7 +21,7 @@
     android:clickable="true"
     android:focusable="true"
     android:onClick="@{(v) -> viewModel.onStoryItemClicked()}"
-    app:cardBackgroundColor="@color/component_color_shared_white_background_color"
+    app:cardBackgroundColor="@color/component_color_shared_rounded_rect_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -65,7 +65,7 @@
           android:fontFamily="sans-serif"
           android:lines="2"
           android:text="@{viewModel.storyTitle}"
-          android:textColor="@color/component_color_shared_content_item_text_view_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="14sp"
           android:textStyle="bold"
           app:layout_constraintEnd_toEndOf="parent"
@@ -74,6 +74,7 @@
 
         <TextView
           android:id="@+id/topic_name_text_view"
+          style="@style/TextViewStart"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="8dp"

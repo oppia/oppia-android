@@ -34,7 +34,7 @@
         android:layout_marginEnd="@dimen/home_welcome_text_view_margin_end"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.greeting}"
-        android:textColor="@color/component_color_shared_content_item_text_view_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="24sp" />
 
       <TextView
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.computeProfileNameText()}"
-        android:textColor="@color/component_color_shared_content_item_text_view_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="24sp" />
     </com.google.android.flexbox.FlexboxLayout>
 

@@ -69,7 +69,7 @@
           android:maxLines="2"
           android:minLines="2"
           android:text="@{viewModel.completedStoryName}"
-          android:textColor="@color/component_color_shared_content_item_text_view_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="14sp"
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="parent"

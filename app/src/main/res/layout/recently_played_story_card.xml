@@ -65,7 +65,7 @@
           android:ellipsize="end"
           android:lines="2"
           android:text="@{viewModel.storyTitle}"
-          android:textColor="@color/component_color_shared_content_item_text_view_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textStyle="bold"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"

@@ -8,7 +8,7 @@
   <color name="component_color_shared_topic_card_item_background_color">@color/color_palette_topic_card_item_background_color</color>
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
-  <color name="component_color_shared_topic_card_primary_text_view_color">@color/color_palette_topic_card_text_color</color>
+  <color name="component_color_shared_topic_card_text_view_color">@color/color_palette_topic_card_text_color</color>
   <color name="component_color_shared_story_card_topic_name_text_color">@color/color_palette_card_topic_name_text_color</color>
   <color name="component_color_shared_state_fragment_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_shared_previous_responses_header_item_container_background_color">@color/color_palette_highlighted_text_color</color>
@@ -248,7 +248,6 @@
   <color name="component_color_profile_picture_edit_dialog_text_color">@color/color_palette_dark_text_color</color>
   <!-- Home Activity -->
   <color name="component_color_home_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
-  <color name="component_color_home_activity_select_a_topic_to_start_text_color">@color/color_palette_select_a_topic_to_start_text_color</color>
   <color name="component_color_home_activity_layout_greeting_text_line_color">@color/color_palette_layout_below_greeting_text_color</color>
   <!-- Topic Activity -->
   <color name="component_color_topic_fragment_primary_toolbar_color">@color/color_palette_toolbar_color</color>
@@ -332,4 +331,6 @@
   <color name="component_color_profile_chooser_activity_secondary_options_color">@color/color_palette_profile_chooser_silver_text_color</color>
   <color name="component_color_profile_chooser_activity_white_text_color">@color/color_palette_profile_chooser_white_text_color</color>
   <color name="component_color_profile_chooser_activity_avatar_border_color">@color/color_palette_profile_chooser_avatar_border_color</color>
+  <!-- Section Title Activity -->
+  <color name="component_color_section_title_divider_color">@color/color_palette_section_title_divider_color</color>
 </resources>

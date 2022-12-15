@@ -20,7 +20,7 @@
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_marginTop="@dimen/section_title_divider_view_layout_margin_top"
-      android:background="@color/divider"
+      android:background="@color/component_color_section_title_divider_color"
       android:visibility="@{viewModel.isDividerVisible? View.VISIBLE : View.GONE}" />
 
     <TextView
@@ -33,7 +33,7 @@
       android:layout_marginEnd="@dimen/section_title_text_view_layout_margin_end"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.sectionTitleText}"
-      android:textColor="@color/component_color_shared_content_item_text_view_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp" />
   </LinearLayout>
 </layout>
