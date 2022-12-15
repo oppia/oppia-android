@@ -52,9 +52,7 @@
         android:orientation="vertical">
         <TextView
           android:id="@+id/profile_name_text"
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-          android:textSize = "@dimen/profile_chooser_profile_view_profile_name_text_size"
+          style="@style/Caption"
           android:ellipsize="end"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:maxLines="2"
@@ -64,7 +62,7 @@
 
         <TextView
           android:id="@+id/profile_last_visited"
-          android:textSize = "@dimen/profile_chooser_profile_view_profile_last_visited_size"
+          style="@style/SubtitleLight1Center"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/color_def_white"
@@ -73,7 +71,7 @@
 
         <TextView
           android:id="@+id/profile_is_admin_text"
-          android:textSize = "@dimen/profile_chooser_profile_view_profile_last_visited_size"
+          style="@style/SubtitleLight1Center"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/profile_chooser_admin"
