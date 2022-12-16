@@ -183,7 +183,7 @@ class SelectionInteractionViewModel private constructor(
           maxAllowableSelectionCount.toString()
         )
       )
-      for(items in selectedItems){
+      for (items in selectedItems) {
         enabledItemsList[items].set(true)
       }
     } else {
