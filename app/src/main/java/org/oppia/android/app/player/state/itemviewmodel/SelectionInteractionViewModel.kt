@@ -183,8 +183,8 @@ class SelectionInteractionViewModel private constructor(
           maxAllowableSelectionCount.toString()
         )
       )
-      enabledItemsList.forEach {
-        it.set(isCurrentlySelected)
+      for(items in selectedItems){
+        enabledItemsList[items].set(true)
       }
     } else {
       enabledItemsList.forEach {
