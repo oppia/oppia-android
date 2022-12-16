@@ -106,7 +106,7 @@ class TranslationController @Inject constructor(
   }
 
   /**
-   * Returns data for all available language definitions from mock proto.
+   * Returns List data for [SupportedLanguages] available language definitions from proto asset file.
    */
   fun getAllAppLanguageDefinitions(): List<OppiaLanguage> {
     val supportedLanguages = languageConfigRetriever.loadSupportedLanguages()

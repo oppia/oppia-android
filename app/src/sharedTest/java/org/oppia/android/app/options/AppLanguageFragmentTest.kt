@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,6 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -96,14 +98,17 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val ENGLISH = 0
-private const val FRENCH = 1
-
 /** Tests for [AppLanguageFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
 class AppLanguageFragmentTest {
+
+  private companion object {
+    private const val ENGLISH_BUTTON_INDEX = 1
+    private const val PORTUGUESE_BUTTON_INDEX = 4
+  }
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -133,59 +138,71 @@ class AppLanguageFragmentTest {
 
   @Test
   fun testAppLanguage_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
   fun testAppLanguage_configChange_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       rotateToLandscape()
-      checkSelectedLanguage(ENGLISH)
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAppLanguage_tabletConfig_selectedLanguageIsEnglish() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       testCoroutineDispatchers.runCurrent()
-      checkSelectedLanguage(ENGLISH)
+      verifyEnglishIsSelected()
     }
   }
 
   @Test
   fun testAppLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
-      checkSelectedLanguage(FRENCH)
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      verifyEnglishIsSelected()
+      selectPortuguese()
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
   fun testAppLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
+      verifyEnglishIsSelected()
+      selectPortuguese()
       rotateToLandscape()
-      checkSelectedLanguage(FRENCH)
+      verifyPortugueseIsSelected()
     }
   }
 
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAppLanguage_tabletConfig_changeLanguageToFrench_selectedLanguageIsFrench() {
-    launch<AppLanguageActivity>(createAppLanguageActivityIntent("English")).use {
+    launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       testCoroutineDispatchers.runCurrent()
-      checkSelectedLanguage(ENGLISH)
-      selectLanguage(FRENCH)
-      checkSelectedLanguage(FRENCH)
+      verifyEnglishIsSelected()
+      selectPortuguese()
+      verifyPortugueseIsSelected()
     }
   }
 
-  private fun checkSelectedLanguage(index: Int) {
+  private fun selectPortuguese() {
+    selectLanguage(PORTUGUESE_BUTTON_INDEX)
+  }
+
+  private fun verifyEnglishIsSelected() {
+    checkSelectedLanguage(index = ENGLISH_BUTTON_INDEX, expectedLanguageName = "English")
+  }
+
+  private fun verifyPortugueseIsSelected() {
+    checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
+  }
+
+  private fun checkSelectedLanguage(index: Int, expectedLanguageName: String) {
     onView(
       atPositionOnView(
         R.id.language_recycler_view,
@@ -193,7 +210,13 @@ class AppLanguageFragmentTest {
         R.id.language_radio_button
       )
     ).check(matches(isChecked()))
-    testCoroutineDispatchers.runCurrent()
+    onView(
+      atPositionOnView(
+        R.id.language_recycler_view,
+        index,
+        R.id.language_text_view
+      )
+    ).check(matches(ViewMatchers.withText(expectedLanguageName)))
   }
 
   private fun rotateToLandscape() {
@@ -214,10 +237,10 @@ class AppLanguageFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAppLanguageActivityIntent(summaryValue: String): Intent {
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
     return AppLanguageActivity.createAppLanguageActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      APP_LANGUAGE
+      context,
+      oppiaLanguage
     )
   }
 
