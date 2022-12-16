@@ -331,6 +331,4 @@
   <color name="component_color_profile_chooser_activity_secondary_options_color">@color/color_palette_profile_chooser_silver_text_color</color>
   <color name="component_color_profile_chooser_activity_white_text_color">@color/color_palette_profile_chooser_white_text_color</color>
   <color name="component_color_profile_chooser_activity_avatar_border_color">@color/color_palette_profile_chooser_avatar_border_color</color>
-  <!-- Section Title Activity -->
-  <color name="component_color_section_title_divider_color">@color/color_palette_section_title_divider_color</color>
 </resources>
