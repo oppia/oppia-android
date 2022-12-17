@@ -85,6 +85,10 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
+import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
+import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_cancel_button
+import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_okay_button
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
@@ -220,7 +224,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_general_view_administrator_edit_account
+        stringIdToMatch = administrator_controls_activity_general_view_administrator_edit_account
       )
     }
   }
@@ -261,7 +265,7 @@ class AdministratorControlsActivityTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_profile_view_administrator_edit_profiles
+        stringIdToMatch = administrator_controls_activity_profile_view_administrator_edit_profiles
       )
     }
   }
@@ -278,11 +282,11 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message
+        textInDialogId = R.string.administrator_controls_activity_log_out_dialog_fragment_message
       )
       onView(
         withText(
-          R.string.administrator_controls_view_log_out_dialog_fragment_okay_button
+          administrator_controls_activity_log_out_dialog_fragment_okay_button
         )
       ).perform(click())
       intended(hasComponent(ProfileChooserActivity::class.java.name))
@@ -316,7 +320,7 @@ class AdministratorControlsActivityTest {
       onView(
         withText(
           context.getString(
-            R.string.administrator_controls_general_view_administrator_edit_account
+            administrator_controls_activity_general_view_administrator_edit_account
           )
         )
       )
@@ -335,13 +339,13 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message
+        textInDialogId = R.string.administrator_controls_activity_log_out_dialog_fragment_message
       )
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_okay_button
+        textInDialogId = administrator_controls_activity_log_out_dialog_fragment_okay_button
       )
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button
+        textInDialogId = administrator_controls_activity_log_out_dialog_fragment_cancel_button
       )
     }
   }
@@ -359,13 +363,13 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message
+        textInDialogId = R.string.administrator_controls_activity_log_out_dialog_fragment_message
       )
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_okay_button
+        textInDialogId = administrator_controls_activity_log_out_dialog_fragment_okay_button
       )
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button
+        textInDialogId = administrator_controls_activity_log_out_dialog_fragment_cancel_button
       )
     }
   }
@@ -382,13 +386,13 @@ class AdministratorControlsActivityTest {
       onView(withId(R.id.log_out_text_view)).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message
+        textInDialogId = R.string.administrator_controls_activity_log_out_dialog_fragment_message
       )
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_okay_button
+        textInDialogId = administrator_controls_activity_log_out_dialog_fragment_okay_button
       )
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button
+        textInDialogId = administrator_controls_activity_log_out_dialog_fragment_cancel_button
       )
     }
   }
@@ -404,11 +408,11 @@ class AdministratorControlsActivityTest {
       scrollToPosition(position = 3)
       onView(withId(R.id.log_out_text_view)).perform(click())
       verifyTextInDialog(
-        textInDialogId = R.string.administrator_controls_view_log_out_dialog_fragment_message
+        textInDialogId = R.string.administrator_controls_activity_log_out_dialog_fragment_message
       )
       onView(
         withText(
-          R.string.administrator_controls_view_log_out_dialog_fragment_cancel_button
+          administrator_controls_activity_log_out_dialog_fragment_cancel_button
         )
       ).perform(click())
       onView(withId(R.id.log_out_text_view)).check(matches(isDisplayed()))
@@ -454,7 +458,7 @@ class AdministratorControlsActivityTest {
         .check(
           matches(
             withText(
-              R.string.administrator_controls_profile_view_administrator_edit_profiles
+              administrator_controls_activity_profile_view_administrator_edit_profiles
             )
           )
         )
@@ -474,7 +478,7 @@ class AdministratorControlsActivityTest {
         .check(
           matches(
             withText(
-              R.string.administrator_controls_profile_view_administrator_edit_profiles
+              administrator_controls_activity_profile_view_administrator_edit_profiles
             )
           )
         )

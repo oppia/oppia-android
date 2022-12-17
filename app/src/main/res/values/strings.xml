@@ -22,24 +22,24 @@
   <string name="admin_pin_activity_admin_pin_input_confirm_pin_text">Confirm 5-Digit PIN</string>
   <string name="admin_pin_activity_admin_pin_length_error_text">Your PIN should be 5 digits long.</string>
   <string name="admin_pin_activity_wrong_confirm_admin_pin_error_text">Please make sure that both PINs match.</string>
-  <!-- AdministratorControlsFragment -->
-  <string name="administrator_controls_general_view_administrator_controls_general_label_text">General</string>
-  <string name="administrator_controls_general_view_administrator_edit_account">Edit account</string>
-  <string name="administrator_controls_profile_view_administrator_controls_profile_management_label_text">Profile Management</string>
-  <string name="administrator_controls_profile_view_administrator_edit_profiles">Edit profiles</string>
-  <string name="administrator_controls_download_permissions_view_label_text">Download Permissions</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_title">Download and update only on Wi-fi</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_title">Automatically update topics</string>
-  <string name="administrator_controls_download_permissions_view_administrator_controls_auto_update_message">Downloaded topics that have new content available will automatically update.</string>
-  <string name="administrator_controls_app_information_view_administrator_controls_app_information_label_text">App Information</string>
-  <string name="administrator_controls_app_information_view_app_version">App Version</string>
-  <string name="administrator_controls_account_actions_view_administrator_controls_account_actions_label_text">Account Actions</string>
-  <string name="administrator_controls_account_actions_view_log_out_text">Log Out</string>
-  <string name="administrator_controls_view_log_out_dialog_fragment_cancel_button">Cancel</string>
-  <string name="administrator_controls_view_log_out_dialog_fragment_okay_button">Ok</string>
-  <string name="administrator_controls_view_log_out_dialog_fragment_message">Are you sure you want to log out of your profile?</string>
-  <!-- AppVersionFragment -->
+  <!-- AdministratorControlsActivity -->
+  <string name="administrator_controls_general_view_activity_administrator_controls_general_label_text">General</string>
+  <string name="administrator_controls_activity_general_view_administrator_edit_account">Edit account</string>
+  <string name="administrator_controls_profile_view_activity_administrator_controls_profile_management_label_text">Profile Management</string>
+  <string name="administrator_controls_activity_profile_view_administrator_edit_profiles">Edit profiles</string>
+  <string name="administrator_controls_activity_download_permissions_view_label_text">Download Permissions</string>
+  <string name="administrator_controls_activity_download_permissions_view_update_on_wifi_title">Download and update only on Wi-fi</string>
+  <string name="administrator_controls_activity_download_permissions_view_update_on_wifi_message">Topics will be downloaded and updated only on Wi-fi. Any downloads or updates of cellular data will be queued.</string>
+  <string name="administrator_controls_activity_download_permissions_view_auto_update_title">Automatically update topics</string>
+  <string name="administrator_controls_activity_download_permissions_viewauto_update_message">Downloaded topics that have new content available will automatically update.</string>
+  <string name="administrator_controls_activity_app_information_view_label_text">App Information</string>
+  <string name="administrator_controls_activity_app_information_view_app_version">App Version</string>
+  <string name="administrator_controls_activity_account_actions_view_label_text">Account Actions</string>
+  <string name="administrator_controls_activity_account_actions_view_log_out_text">Log Out</string>
+  <string name="administrator_controls_activity_log_out_dialog_fragment_cancel_button">Cancel</string>
+  <string name="administrator_controls_activity_log_out_dialog_fragment_okay_button">Ok</string>
+  <string name="administrator_controls_activity_log_out_dialog_fragment_message">Are you sure you want to log out of your profile?</string>
+  <!-- AppVersionActivity -->
   <string name="administrator_controls_app_version_activity_app_version_name">App Version %s</string>
   <string name="administrator_controls_app_version_activity_app_last_update_date">The last update was installed on %s. Use the above version number to send feedback about bugs.</string>
   <!-- AddProfileActivity -->
@@ -202,40 +202,40 @@
   <!-- LicenseListActivity -->
   <string name="license_list_activity_title">Copyright Licenses</string>
   <!-- MathExpressionActivity -->
-  <string name="numeric_expression_default_hint_text">Type an expression here, using only numbers.</string>
-  <string name="algebraic_expression_default_hint_text">Type an expression here.</string>
-  <string name="math_equation_default_hint_text">Type an equation here.</string>
-  <string name="math_expression_error_spaces_in_numerical_input">Please remove the spaces between numbers in your answer.</string>
-  <string name="math_expression_error_unbalanced_parentheses">Please close or remove parentheses.</string>
-  <string name="math_expression_error_single_redundant_parentheses">Please remove the parentheses around the whole answer: \'%s\'.</string>
-  <string name="math_expression_error_multiple_redundant_parentheses">Please remove extra parentheses around the \'(%1$s)\', for example: \'%1$s\'.</string>
-  <string name="math_expression_error_redundant_parentheses_individual_term">Please remove the extra parentheses around \'(%1$s)\', for example: \'%1$s\'.</string>
-  <string name="math_expression_error_unnecessary_symbols">There is an invalid \'%s\' in the answer. Please remove it.</string>
-  <string name="math_expression_error_number_after_var_term">Please rearrange the order of %1$s &amp; %2$s. For example: %2$s%1$s.</string>
-  <string name="math_expression_error_consecutive_binary_operators">%1$s and %2$s should be separated by a number or a variable.</string>
-  <string name="math_expression_error_consecutive_unary_operators">Please remove the extra symbols in your answer.</string>
-  <string name="math_expression_error_missing_lhs_for_addition_operator">Is there a number or a variable missing before or after the addition symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
-  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Is there a number or a variable missing before or after the multiplication symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
-  <string name="math_expression_error_missing_lhs_for_division_operator">Is there a number or a variable missing before or after the division symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
-  <string name="math_expression_error_missing_lhs_for_exponentiation_operator">Is there a number or a variable missing before or after the exponentiation symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
-  <string name="math_expression_error_missing_rhs_for_addition_operator">There seems to be a number or a variable missing after the addition symbol \'%s\'.</string>
-  <string name="math_expression_error_missing_rhs_for_subtraction_operator">There seems to be a number or a variable missing after the subtraction symbol \'%s\'.</string>
-  <string name="math_expression_error_missing_rhs_for_multiplication_operator">There seems to be a number or a variable missing after the multiplication symbol \'%s\'.</string>
-  <string name="math_expression_error_missing_rhs_for_division_operator">There seems to be a number or a variable missing after the division symbol \'%s\'.</string>
-  <string name="math_expression_error_missing_rhs_for_exponentiation_operator">There seems to be a number or a variable missing after the exponentiation symbol \'%s\'.</string>
-  <string name="math_expression_error_exponent_has_variable">Sorry, variables in exponents are not supported by the app. Please revise your answer.</string>
-  <string name="math_expression_error_exponent_too_large">Sorry, powers higher than 5 are not supported by the app. Please revise your answer.</string>
-  <string name="math_expression_error_nested_exponent">Sorry, repeated powers/exponents are not supported by the app. Please limit your answer to one power.</string>
-  <string name="math_expression_error_hanging_square_root">Missing input for square root.</string>
-  <string name="math_expression_error_term_divided_by_zero">Dividing by zero is invalid. Please revise your answer.</string>
-  <string name="math_expression_error_variable_in_numeric_expression">It looks like you have entered some variables. Please make sure that your answer contains numbers only and remove any variables from your answer.</string>
-  <string name="math_expression_error_invalid_variable">Please use the variables specified in the question and not %s.</string>
-  <string name="math_expression_error_missing_equals">Your equation is missing an \'=\' sign.</string>
-  <string name="math_expression_error_more_than_one_equals">Your equation contains too many \'=\' signs. It should have only one.</string>
-  <string name="math_expression_error_hanging_equals">One of the sides of \'=\' in your equation is empty.</string>
-  <string name="math_expression_error_unsupported_function">Function \'%s\' is not supported. Please revise your answer.</string>
-  <string name="math_expression_error_incomplete_function_name">Did you mean sqrt? If not, please separate the variables with multiplication symbols.</string>
-  <string name="math_expression_error_generic">Sorry, we couldn\'t understand your answer. Please check it to make sure there aren\'t any errors.</string>
+  <string name="numeric_expression_activity_default_hint_text">Type an expression here, using only numbers.</string>
+  <string name="algebraic_expression_activity_default_hint_text">Type an expression here.</string>
+  <string name="math_expression_activity_math_equation_default_hint_text">Type an equation here.</string>
+  <string name="math_expression_activity_error_spaces_in_numerical_input">Please remove the spaces between numbers in your answer.</string>
+  <string name="math_expression_activity_error_unbalanced_parentheses">Please close or remove parentheses.</string>
+  <string name="math_expression_activity_error_single_redundant_parentheses">Please remove the parentheses around the whole answer: \'%s\'.</string>
+  <string name="math_expression_activity_error_multiple_redundant_parentheses">Please remove extra parentheses around the \'(%1$s)\', for example: \'%1$s\'.</string>
+  <string name="math_expression_activity_error_redundant_parentheses_individual_term">Please remove the extra parentheses around \'(%1$s)\', for example: \'%1$s\'.</string>
+  <string name="math_expression_activity_error_unnecessary_symbols">There is an invalid \'%s\' in the answer. Please remove it.</string>
+  <string name="math_expression_activity_error_number_after_var_term">Please rearrange the order of %1$s &amp; %2$s. For example: %2$s%1$s.</string>
+  <string name="math_expression_activity_error_consecutive_binary_operators">%1$s and %2$s should be separated by a number or a variable.</string>
+  <string name="math_expression_activity_error_consecutive_unary_operators">Please remove the extra symbols in your answer.</string>
+  <string name="math_expression_activity_error_missing_lhs_for_addition_operator">Is there a number or a variable missing before or after the addition symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_activity_error_missing_lhs_for_multiplication_operator">Is there a number or a variable missing before or after the multiplication symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_activity_error_missing_lhs_for_division_operator">Is there a number or a variable missing before or after the division symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_activity_error_missing_lhs_for_exponentiation_operator">Is there a number or a variable missing before or after the exponentiation symbol \'%1$s\'? If not, please remove the extra \'%1$s\'.</string>
+  <string name="math_expression_activity_error_missing_rhs_for_addition_operator">There seems to be a number or a variable missing after the addition symbol \'%s\'.</string>
+  <string name="math_expression_activity_error_missing_rhs_for_subtraction_operator">There seems to be a number or a variable missing after the subtraction symbol \'%s\'.</string>
+  <string name="math_expression_activity_error_missing_rhs_for_multiplication_operator">There seems to be a number or a variable missing after the multiplication symbol \'%s\'.</string>
+  <string name="math_expression_activity_error_missing_rhs_for_division_operator">There seems to be a number or a variable missing after the division symbol \'%s\'.</string>
+  <string name="math_expression_activity_error_missing_rhs_for_exponentiation_operator">There seems to be a number or a variable missing after the exponentiation symbol \'%s\'.</string>
+  <string name="math_expression_activity_error_exponent_has_variable">Sorry, variables in exponents are not supported by the app. Please revise your answer.</string>
+  <string name="math_expression_activity_error_exponent_too_large">Sorry, powers higher than 5 are not supported by the app. Please revise your answer.</string>
+  <string name="math_expression_activity_error_nested_exponent">Sorry, repeated powers/exponents are not supported by the app. Please limit your answer to one power.</string>
+  <string name="math_expression_activity_error_hanging_square_root">Missing input for square root.</string>
+  <string name="math_expression_activity_error_term_divided_by_zero">Dividing by zero is invalid. Please revise your answer.</string>
+  <string name="math_expression_activity_error_variable_in_numeric_expression">It looks like you have entered some variables. Please make sure that your answer contains numbers only and remove any variables from your answer.</string>
+  <string name="math_expression_activity_error_invalid_variable">Please use the variables specified in the question and not %s.</string>
+  <string name="math_expression_activity_error_missing_equals">Your equation is missing an \'=\' sign.</string>
+  <string name="math_expression_activity_error_more_than_one_equals">Your equation contains too many \'=\' signs. It should have only one.</string>
+  <string name="math_expression_activity_error_hanging_equals">One of the sides of \'=\' in your equation is empty.</string>
+  <string name="math_expression_activity_error_unsupported_function">Function \'%s\' is not supported. Please revise your answer.</string>
+  <string name="math_expression_activity_error_incomplete_function_name">Did you mean sqrt? If not, please separate the variables with multiplication symbols.</string>
+  <string name="math_expression_activity_error_generic_text">Sorry, we couldn\'t understand your answer. Please check it to make sure there aren\'t any errors.</string>
   <!-- MyDownloadsActivity -->
   <string name="my_downloads_activity_title">My Downloads</string>
   <string name="my_downloads_activity_tab_downloads">Downloads</string>

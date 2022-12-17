@@ -100,6 +100,10 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
+import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
+import org.oppia.android.R.string.administrator_controls_activity_download_permissions_view_label_text
+import org.oppia.android.R.string.administrator_controls_activity_account_actions_view_log_out_text
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -177,7 +181,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_general_view_administrator_edit_account
+        stringIdToMatch = administrator_controls_activity_general_view_administrator_edit_account
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 1,
@@ -186,7 +190,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_profile_view_administrator_edit_profiles
+        stringIdToMatch = administrator_controls_activity_profile_view_administrator_edit_profiles
       )
     }
   }
@@ -202,7 +206,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_view_label_text
+        stringIdToMatch = administrator_controls_activity_download_permissions_view_label_text
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 2,
@@ -253,7 +257,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringIdToMatch = R.string.administrator_controls_app_information_view_app_version
+        stringIdToMatch = R.string.administrator_controls_activity_app_information_view_app_version
       )
       verifyItemDisplayedOnAdministratorControlListItem(
         itemPosition = 4,
@@ -262,7 +266,7 @@ class AdministratorControlsFragmentTest {
       verifyTextOnAdministratorListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
-        stringIdToMatch = R.string.administrator_controls_account_actions_view_log_out_text
+        stringIdToMatch = administrator_controls_activity_account_actions_view_log_out_text
       )
     }
   }

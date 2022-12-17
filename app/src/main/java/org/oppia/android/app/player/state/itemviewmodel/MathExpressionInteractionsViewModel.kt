@@ -293,7 +293,7 @@ class MathExpressionInteractionsViewModel private constructor(
       /** Defines the view model behaviors corresponding to numeric expressions. */
       NUMERIC_EXPRESSION(
         ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION,
-        defaultHintTextStringId = R.string.numeric_expression_default_hint_text,
+        defaultHintTextStringId = R.string.numeric_expression_activity_default_hint_text,
         hasPlaceholder = true,
         hasCustomVariables = false
       ) {
@@ -332,7 +332,7 @@ class MathExpressionInteractionsViewModel private constructor(
       /** Defines the view model behaviors corresponding to algebraic expressions. */
       ALGEBRAIC_EXPRESSION(
         ViewType.ALGEBRAIC_EXPRESSION_INPUT_INTERACTION,
-        defaultHintTextStringId = R.string.algebraic_expression_default_hint_text,
+        defaultHintTextStringId = R.string.algebraic_expression_activity_default_hint_text,
         hasPlaceholder = false,
         hasCustomVariables = true
       ) {
@@ -370,7 +370,7 @@ class MathExpressionInteractionsViewModel private constructor(
       /** Defines the view model behaviors corresponding to math equations. */
       MATH_EQUATION(
         ViewType.MATH_EQUATION_INPUT_INTERACTION,
-        defaultHintTextStringId = R.string.math_equation_default_hint_text,
+        defaultHintTextStringId = R.string.math_expression_activity_math_equation_default_hint_text,
         hasPlaceholder = false,
         hasCustomVariables = true
       ) {
@@ -418,106 +418,107 @@ class MathExpressionInteractionsViewModel private constructor(
           is MathParsingResult.Failure -> when (val error = parseResult.error) {
             is DisabledVariablesInUseError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_invalid_variable,
+                R.string.math_expression_activity_error_invalid_variable,
                 error.variables.joinToString(separator = ", ")
               )
             }
             EquationIsMissingEqualsError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_missing_equals
+                R.string.math_expression_activity_error_missing_equals
               )
             }
             EquationHasTooManyEqualsError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_more_than_one_equals
+                R.string.math_expression_activity_error_more_than_one_equals
               )
             }
             EquationMissingLhsOrRhsError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_hanging_equals
+                R.string.math_expression_activity_error_hanging_equals
               )
             }
             ExponentIsVariableExpressionError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_exponent_has_variable
+                R.string.math_expression_activity_error_exponent_has_variable
               )
             }
             ExponentTooLargeError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_exponent_too_large
+                R.string.math_expression_activity_error_exponent_too_large
               )
             }
             FunctionNameIncompleteError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_incomplete_function_name
+                R.string.math_expression_activity_error_incomplete_function_name
               )
             }
             GenericError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_generic
+                R.string.math_expression_activity_error_generic_text
               )
             }
             HangingSquareRootError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_hanging_square_root
+                R.string.math_expression_activity_error_hanging_square_root
               )
             }
             is InvalidFunctionInUseError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_unsupported_function, error.functionName
+                R.string.math_expression_activity_error_unsupported_function, error.functionName
               )
             }
             is MultipleRedundantParenthesesError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_multiple_redundant_parentheses, error.rawExpression
+                R.string.math_expression_activity_error_multiple_redundant_parentheses,
+                error.rawExpression
               )
             }
             NestedExponentsError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_nested_exponent
+                R.string.math_expression_activity_error_nested_exponent
               )
             }
             is NoVariableOrNumberAfterBinaryOperatorError -> when (error.operator) {
               UnaryOperator.ADD -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_rhs_for_addition_operator,
+                  R.string.math_expression_activity_error_missing_rhs_for_addition_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.SUBTRACT -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_rhs_for_subtraction_operator,
+                  R.string.math_expression_activity_error_missing_rhs_for_subtraction_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.MULTIPLY -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_rhs_for_multiplication_operator,
+                  R.string.math_expression_activity_error_missing_rhs_for_multiplication_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.DIVIDE -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_rhs_for_division_operator,
+                  R.string.math_expression_activity_error_missing_rhs_for_division_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.EXPONENTIATE -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_rhs_for_exponentiation_operator,
+                  R.string.math_expression_activity_error_missing_rhs_for_exponentiation_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED -> {
                 appLanguageResourceHandler.getStringInLocale(
-                  R.string.math_expression_error_generic
+                  R.string.math_expression_activity_error_generic_text
                 )
               }
             }
             is NoVariableOrNumberBeforeBinaryOperatorError -> when (error.operator) {
               UnaryOperator.ADD -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_lhs_for_addition_operator,
+                  R.string.math_expression_activity_error_missing_lhs_for_addition_operator,
                   error.operatorSymbol
                 )
               }
@@ -525,81 +526,83 @@ class MathExpressionInteractionsViewModel private constructor(
               UnaryOperator.SUBTRACT -> error("This case should never happen.")
               UnaryOperator.MULTIPLY -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_lhs_for_multiplication_operator,
+                  R.string.math_expression_activity_error_missing_lhs_for_multiplication_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.DIVIDE -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_lhs_for_division_operator,
+                  R.string.math_expression_activity_error_missing_lhs_for_division_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.EXPONENTIATE -> {
                 appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                  R.string.math_expression_error_missing_lhs_for_exponentiation_operator,
+                  R.string.math_expression_activity_error_missing_lhs_for_exponentiation_operator,
                   error.operatorSymbol
                 )
               }
               UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED -> {
                 appLanguageResourceHandler.getStringInLocale(
-                  R.string.math_expression_error_generic
+                  R.string.math_expression_activity_error_generic_text
                 )
               }
             }
             is NumberAfterVariableError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_number_after_var_term,
+                R.string.math_expression_activity_error_number_after_var_term,
                 error.variable,
                 error.number.toPlainText()
               )
             }
             is RedundantParenthesesForIndividualTermsError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_redundant_parentheses_individual_term,
+                R.string.math_expression_activity_error_redundant_parentheses_individual_term,
                 error.rawExpression
               )
             }
             is SingleRedundantParenthesesError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_single_redundant_parentheses, error.rawExpression
+                R.string.math_expression_activity_error_single_redundant_parentheses,
+                error.rawExpression
               )
             }
             SpacesBetweenNumbersError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_spaces_in_numerical_input
+                R.string.math_expression_activity_error_spaces_in_numerical_input
               )
             }
             is SubsequentBinaryOperatorsError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_consecutive_binary_operators,
+                R.string.math_expression_activity_error_consecutive_binary_operators,
                 error.operator1,
                 error.operator2
               )
             }
             is SubsequentUnaryOperatorsError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_consecutive_unary_operators
+                R.string.math_expression_activity_error_consecutive_unary_operators
               )
             }
             TermDividedByZeroError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_term_divided_by_zero
+                R.string.math_expression_activity_error_term_divided_by_zero
               )
             }
             UnbalancedParenthesesError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_unbalanced_parentheses
+                R.string.math_expression_activity_error_unbalanced_parentheses
               )
             }
             is UnnecessarySymbolsError -> {
               appLanguageResourceHandler.getStringInLocaleWithWrapping(
-                R.string.math_expression_error_unnecessary_symbols, error.invalidSymbol
+                R.string.math_expression_activity_error_unnecessary_symbols,
+                error.invalidSymbol
               )
             }
             VariableInNumericExpressionError -> {
               appLanguageResourceHandler.getStringInLocale(
-                R.string.math_expression_error_variable_in_numeric_expression
+                R.string.math_expression_activity_error_variable_in_numeric_expression
               )
             }
           }

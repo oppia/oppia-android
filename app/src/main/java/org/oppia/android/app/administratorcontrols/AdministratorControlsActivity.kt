@@ -147,7 +147,7 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
         resourceHandler.getStringInLocale(
-          R.string.administrator_controls_profile_view_administrator_edit_profiles
+          R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
         )
       )
     administratorControlsActivityPresenter.loadProfileList()
@@ -158,7 +158,7 @@ class AdministratorControlsActivity :
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
         resourceHandler.getStringInLocale(
-          R.string.administrator_controls_app_information_view_app_version
+          R.string.administrator_controls_activity_app_information_view_app_version
         )
       )
     administratorControlsActivityPresenter.loadAppVersion()
