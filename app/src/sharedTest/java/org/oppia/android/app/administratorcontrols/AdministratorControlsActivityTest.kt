@@ -85,10 +85,6 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
-import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
-import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
-import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_cancel_button
-import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_okay_button
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
@@ -130,6 +126,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
+import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
+import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_cancel_button
+import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_okay_button
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
