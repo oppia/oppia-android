@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.topic.conceptcard.ConceptCardFactory
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RevisionCardFragmentBinding
@@ -28,7 +28,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val revisionCardViewModelFactory: RevisionCardViewModel.Factory,
-  private val conceptCardFactory: ConceptCardFactory
+  private val conceptCardFactory: ConceptCardFragment.Factory
 ) : HtmlParser.CustomOppiaTagActionListener {
   private lateinit var profileId: ProfileId
 
@@ -98,7 +98,7 @@ class RevisionCardFragmentPresenter @Inject constructor(
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     conceptCardFactory
-      .createCard(skillId, profileId)
+      .create(skillId, profileId)
       ?.showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 }

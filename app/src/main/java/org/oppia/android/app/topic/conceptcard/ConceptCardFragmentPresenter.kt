@@ -27,7 +27,8 @@ class ConceptCardFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String,
   private val viewModelProvider: ViewModelProvider<ConceptCardViewModel>,
   private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
+  private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  private val factory: ConceptCardFragment.Factory
 ) {
   /**
    * Sets up data binding and toolbar.
@@ -86,6 +87,13 @@ class ConceptCardFragmentPresenter @Inject constructor(
     )
 
     return binding.root
+  }
+
+  /**
+   * handles operation when when onDestroy is called.
+   */
+  fun handleOnDestroy() {
+    factory.handleStackWhenCardDestroy()
   }
 
   private fun getConceptCardViewModel(): ConceptCardViewModel {

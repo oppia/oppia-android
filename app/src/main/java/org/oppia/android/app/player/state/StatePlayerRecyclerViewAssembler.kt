@@ -64,7 +64,7 @@ import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButton
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.topic.conceptcard.ConceptCardFactory
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment.Companion.CONCEPT_CARD_DIALOG_FRAGMENT_TAG
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
@@ -145,7 +145,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val conceptCardFactory: ConceptCardFactory
+  private val conceptCardFactory: ConceptCardFragment.Factory
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -184,7 +184,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
     conceptCardFactory
-      .createCard(skillId, profileId)
+      .create(skillId, profileId)
       ?.showNow(fragment.childFragmentManager, CONCEPT_CARD_DIALOG_FRAGMENT_TAG)
   }
 
@@ -909,7 +909,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
     private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-    private val conceptCardFactory: ConceptCardFactory
+    private val conceptCardFactory: ConceptCardFragment.Factory
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1417,7 +1417,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val translationController: TranslationController,
       private val multiAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
       private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
-      private val conceptCardFactory: ConceptCardFactory
+      private val conceptCardFactory: ConceptCardFragment.Factory
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
