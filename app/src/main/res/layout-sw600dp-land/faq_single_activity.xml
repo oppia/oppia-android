@@ -41,7 +41,7 @@
         android:layout_width="560dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/component_color_faq_single_activity_container_background_color"
+        android:background="@color/component_color_shared_content_container_background_color"
         android:clipToPadding="false"
         android:fillViewport="true"
         android:overScrollMode="never"

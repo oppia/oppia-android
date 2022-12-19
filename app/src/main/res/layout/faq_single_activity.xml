@@ -48,7 +48,7 @@
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/component_color_faq_single_activity_container_background_color"
+          android:background="@color/component_color_shared_content_container_background_color"
           android:orientation="vertical"
           android:paddingStart="@dimen/faq_single_padding_start"
           android:paddingTop="@dimen/faq_single_padding_top"
