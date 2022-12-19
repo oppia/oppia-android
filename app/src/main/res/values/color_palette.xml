@@ -139,6 +139,7 @@
   <color name="color_palette_secondary_1_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_secondary_2_text_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_secondary_3_text_color">@color/color_def_black_54</color>
+  <color name="color_palette_link_text_color">@color/oppia_primary</color>
   <color name="color_palette_save_button_border_color">@color/color_def_black_grey</color>
   <color name="color_palette_stroke_color">@color/color_def_black_12</color>
   <color name="color_palette_profile_chooser_charcoal_black_background_color">@color/color_def_charcoal_black</color>

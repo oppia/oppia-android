@@ -22,6 +22,7 @@
       android:background="@color/component_color_shared_content_container_background_color"
       android:padding="32dp"
       android:text="@{viewModel.licenseText}"
-      android:textColor="@color/color_palette_secondary_1_text_color" />
+      android:textColor="@color/component_color_shared_secondary_1_text_color"
+      android:textColorLink="@color/component_color_shared_link_text_color" />
   </ScrollView>
 </layout>
