@@ -5,6 +5,7 @@
   <color name="component_color_shared_activity_toolbar_text_color">@color/color_palette_toolbar_text_color</color>
   <color name="component_color_shared_screen_primary_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_shared_screen_secondary_background_color">@color/color_palette_secondary_background_color</color>
+  <color name="component_color_shared_screen_tertiary_background_color">@color/color_palette_tertiary_background_color</color>
   <color name="component_color_shared_topic_card_item_background_color">@color/color_palette_topic_card_item_background_color</color>
   <color name="component_color_shared_content_item_text_view_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_shared_feedback_item_text_view_color">@color/color_palette_highlighted_text_color</color>
@@ -67,6 +68,7 @@
   <color name="component_color_shared_checkbox_unchecked_color">@color/color_palette_checkbox_unchecked_color</color>
   <color name="component_color_shared_checkbox_disabled_color">@color/color_palette_checkbox_unchecked_color</color>
   <color name="component_color_shared_divider_color">@color/color_palette_divider_color</color>
+  <color name="component_color_shared_multipane_icon_color">@color/color_palette_multipane_icon_color</color>
   <!-- Themes.xml -->
   <color name="component_color_shared_activity_status_bar_color">@color/color_palette_status_bar_color</color>
   <color name="component_color_shared_activity_action_bar_color">@color/color_palette_action_bar_color</color>
@@ -103,7 +105,6 @@
   <color name="component_color_pin_password_activity_show_hide_color">@color/color_palette_show_hide_color</color>
   <color name="component_color_pin_password_activity_error_text_color">@color/color_palette_error_text_color</color>
   <!-- Help Activity -->
-  <color name="component_color_help_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_help_activity_container_color">@color/color_palette_container_background_color</color>
   <!-- FAQ List Activity -->
   <color name="component_color_faq_list_activity_background_color">@color/color_palette_dark_background_color</color>
