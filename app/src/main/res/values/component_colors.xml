@@ -263,9 +263,7 @@
   <color name="component_color_topic_practice_header_view_description_text_color">@color/color_palette_topic_practice_header_description_color</color>
   <color name="component_color_topic_practice_subtopic_checkbox_text_color">@color/color_palette_primary_container_background_color</color>
   <!-- Profile Edit Activity -->
-  <color name="component_color_profile_edit_activity_background_color">@color/color_palette_primary_background_color</color>
-  <color name="component_color_profile_edit_activity_profile_view_background_color">@color/color_palette_item_background_solid_color</color>
-  <color name="component_color_profile_edit_activity_profile_edit_name_text_view_color">@color/color_palette_highlighted_text_color</color>
+  <color name="component_color_profile_edit_activity_delete_button_text_color">@color/color_palette_error_color</color>
   <color name="component_color_profile_edit_activity_profile_rename_button_background_color">@color/color_palette_item_background_solid_color</color>
   <color name="component_color_profile_edit_activity_profile_rename_button_text_color">@color/color_palette_highlighted_text_color</color>
   <color name="component_color_profile_edit_activity_profile_reset_pin_button_background_color">@color/color_palette_item_background_solid_color</color>
