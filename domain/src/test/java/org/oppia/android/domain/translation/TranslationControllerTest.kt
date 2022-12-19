@@ -802,7 +802,6 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.US)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
 
-    ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, BRAZILIAN_PORTUGUESE)
     val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
 
     // Changing the app language should change the provided language since this provider depends on
@@ -810,7 +809,7 @@ class TranslationControllerTest {
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
+    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
   }
 
   @Test
