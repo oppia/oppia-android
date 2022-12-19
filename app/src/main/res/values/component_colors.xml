@@ -114,11 +114,7 @@
   <!-- FAQ List Activity -->
   <color name="component_color_faq_list_activity_container_background_color">@color/color_palette_item_background_solid_color</color>
   <!-- FAQ Single Activity -->
-  <color name="component_color_faq_single_activity_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_faq_single_activity_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_faq_single_activity_container_background_color">@color/color_palette_item_background_solid_color</color>
-  <color name="component_color_faq_single_activity_toolbar_color">@color/color_palette_toolbar_color</color>
-  <color name="component_color_faq_single_activity_divider_color">@color/color_palette_divider_color</color>
   <!-- Profile and Device ID Activity -->
   <color name="component_color_profile_and_device_id_activity_primary_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_profile_and_device_id_activity_enabled_icon_button_color">@color/color_palette_primary_text_color</color>
