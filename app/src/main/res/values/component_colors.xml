@@ -101,13 +101,6 @@
   <color name="component_color_add_profile_activity_info_icon_color">@color/color_palette_info_icon_color</color>
   <color name="component_color_add_profile_activity_switch_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
-  <!-- Administrator Controls -->
-  <color name="component_color_admin_controls_background_color">@color/color_palette_dark_background_color</color>
-  <color name="component_color_admin_controls_options_highlighted_background_color">@color/color_palette_highlighted_background_color</color>
-  <color name="component_color_admin_controls_sub_heading_color">@color/color_palette_primary_color</color>
-  <color name="component_color_admin_controls_switch_description_color">@color/color_palette_description_text_color</color>
-  <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_admin_controls_view_divider_color">@color/color_palette_dark_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
   <color name="component_color_pin_password_activity_show_hide_color">@color/color_palette_show_hide_color</color>
@@ -291,10 +284,7 @@
   <color name="component_color_profile_reset_pin_activity_enter_pin_background_color">@color/color_palette_item_background_solid_color</color>
   <color name="component_color_profile_reset_pin_activity_header_text_color">@color/color_palette_highlighted_text_color</color>
   <!-- App Version Activity -->
-  <color name="component_color_app_version_activity_toolbar_color">@color/color_palette_primary_toolbar_color</color>
-  <color name="component_color_selector_app_version_solid_color">@color/color_palette_item_background_solid_color</color>
-  <color name="component_color_app_version_activity_background_color">@color/color_palette_primary_background_color</color>
-  <color name="component_color_app_version_activity_text_color">@color/color_palette_dark_text_color</color>
+  <color name="component_color_app_version_activity_info_icon_color">@color/color_palette_secondary_info_icon_color</color>
   <color name="component_color_app_version_activity_description_text_color">@color/color_palette_secondary_text_color</color>
   <!-- Profile Chooser Activity -->
   <color name="component_color_profile_chooser_activity_background_color">@color/color_palette_profile_chooser_charcoal_black_background_color</color>
