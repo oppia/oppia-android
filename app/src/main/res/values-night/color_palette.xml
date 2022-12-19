@@ -83,6 +83,7 @@
   <color name="color_palette_checkbox_selected_state_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_checkbox_checked_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_checkbox_unchecked_color">@color/color_def_oppia_silver</color>
+  <color name="color_palette_switch_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_mark_completed_text_color">@color/color_def_white</color>
   <color name="color_palette_mark_completed_all_text_color">@color/color_def_white</color>
   <color name="color_palette_hints_and_solution_summary_card_border_color">@color/color_def_accessible_light_grey_2</color>

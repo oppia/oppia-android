@@ -68,6 +68,7 @@
   <color name="component_color_shared_checkbox_checked_color">@color/color_palette_checkbox_checked_color</color>
   <color name="component_color_shared_checkbox_unchecked_color">@color/color_palette_checkbox_unchecked_color</color>
   <color name="component_color_shared_checkbox_disabled_color">@color/color_palette_checkbox_unchecked_color</color>
+  <color name="component_color_shared_switch_color">@color/color_palette_switch_color</color>
   <color name="component_color_shared_divider_color">@color/color_palette_divider_color</color>
   <color name="component_color_shared_multipane_icon_color">@color/color_palette_multipane_icon_color</color>
   <color name="component_color_shared_item_background_solid_color">@color/color_palette_item_background_solid_color</color>
@@ -85,6 +86,7 @@
   <color name="component_color_shared_secondary_2_text_color">@color/color_palette_secondary_2_text_color</color>
   <color name="component_color_shared_secondary_3_text_color">@color/color_palette_secondary_3_text_color</color>
   <color name="component_color_shared_link_text_color">@color/color_palette_link_text_color</color>
+  <color name="component_color_shared_active_text_color">@color/color_palette_primary_color</color>
   <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
@@ -105,7 +107,6 @@
   <color name="component_color_admin_controls_sub_heading_color">@color/color_palette_primary_color</color>
   <color name="component_color_admin_controls_switch_description_color">@color/color_palette_description_text_color</color>
   <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
-  <color name="component_color_admin_controls_sub_heading_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_admin_controls_view_divider_color">@color/color_palette_dark_background_color</color>
   <!-- Pin Password Activity -->
   <color name="component_color_pin_password_activity_forgot_pin_color">@color/color_palette_forgot_pin_color</color>
