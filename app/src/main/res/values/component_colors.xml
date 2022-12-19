@@ -273,7 +273,6 @@
   <color name="component_color_profile_edit_activity_profile_edit_allow_download_container_color">@color/color_palette_item_background_solid_color</color>
   <color name="component_color_profile_edit_activity_profile_edit_allow_download_heading_text_color">@color/color_palette_highlighted_text_color</color>
   <!-- Profile List Activity -->
-  <color name="component_color_profile_list_activity_background_color">@color/color_palette_primary_background_color</color>
   <color name="component_color_profile_list_activity_profile_name_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_profile_list_activity_profile_view_designation_text_color">@color/color_palette_profile_view_designation_color</color>
   <!-- Profile Rename Activity -->
