@@ -29,6 +29,7 @@
   <color name="color_palette_hint_text_color">@color/color_def_spanish_grey</color>
   <color name="color_palette_secondary_background_color">@color/color_def_yellow_ivory</color>
   <color name="color_palette_tertiary_background_color">@color/color_def_whitish_grey</color>
+  <color name="color_palette_recycler_view_background_color">@color/color_def_white</color>
   <color name="color_palette_primary_container_background_color">@color/color_def_white</color>
   <color name="color_palette_multipane_icon_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_icon_background_color">@color/color_def_black</color>
