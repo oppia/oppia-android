@@ -46,7 +46,7 @@
       android:layout_height="wrap_content"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.textSizeName}"
-      android:textColor="@color/component_color_shared_secondary_2_text_color"
+      android:textColor="@color/component_color_shared_secondary_3_text_color"
       android:textSize="14sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
