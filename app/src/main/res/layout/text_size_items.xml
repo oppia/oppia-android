@@ -13,9 +13,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/general_item_background_border"
     android:gravity="center_vertical"
+    android:importantForAccessibility="yes"
     android:minHeight="48dp"
     android:onClick="@{() -> viewModel.textSizeRadioButtonListener.onTextSizeSelected(viewModel.readingTextSize)}"
-    android:importantForAccessibility="yes"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
