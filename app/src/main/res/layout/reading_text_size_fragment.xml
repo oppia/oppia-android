@@ -13,7 +13,6 @@
     android:id="@+id/text_size_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_reading_text_size_activity_background_color"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="@dimen/reading_text_size_fragment_padding_bottom"
