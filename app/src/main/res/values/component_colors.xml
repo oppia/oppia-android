@@ -231,9 +231,7 @@
   <color name="component_color_mark_topics_completed_text_mark_completed_color">@color/color_palette_mark_completed_text_color</color>
   <color name="component_color_mark_topics_completed_text_all_color">@color/color_palette_mark_completed_all_text_color</color>
   <!-- Audio Language Activity -->
-  <color name="component_color_audio_language_activity_background_color">@color/color_palette_dark_background_color</color>
   <color name="component_color_language_items_background_color">@color/color_palette_item_background_solid_color</color>
-  <color name="component_color_language_items_heading_text_color">@color/color_palette_dark_text_color</color>
   <!-- App Language Activity -->
   <color name="component_color_app_language_activity_background_color">@color/color_palette_dark_background_color</color>
   <!-- Alerts Dialog Theme -->
