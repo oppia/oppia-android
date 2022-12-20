@@ -809,7 +809,7 @@ class TranslationControllerTest {
     val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
     val context = locale.localeContext
     assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
-    assertThat(context.languageDefinition.language).isEqualTo(HINDI)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
   }
 
   @Test
@@ -1305,6 +1305,7 @@ class TranslationControllerTest {
   private fun createAppLanguageSelection(language: OppiaLanguage): AppLanguageSelection {
     return AppLanguageSelection.newBuilder().apply {
       selectedLanguage = language
+      selectedLanguageValue = language.number
     }.build()
   }
 
@@ -1359,6 +1360,7 @@ class TranslationControllerTest {
   ): AudioTranslationLanguageSelection {
     return AudioTranslationLanguageSelection.newBuilder().apply {
       selectedLanguage = language
+      selectedLanguageValue = language.number
     }.build()
   }
 

@@ -82,6 +82,7 @@ class TranslationController @Inject constructor(
 
   private val cacheStoreMap =
     mutableMapOf<ProfileId, PersistentCacheStore<AppLanguageSelection>>()
+  private val appLanguageSettings = mutableMapOf<ProfileId, AppLanguageSelection>()
 
   /**
    * Returns a data provider for an app string [OppiaLocale.DisplayLocale] corresponding to the
@@ -161,6 +162,7 @@ class TranslationController @Inject constructor(
     return dataProviders.createInMemoryDataProviderAsync(
       UPDATE_APP_LANGUAGE_DATA_PROVIDER_ID
     ) {
+      updateAppLanguageSelection(profileId, selection)
       try {
         return@createInMemoryDataProviderAsync AsyncResult.Success(deferred.await())
       } catch (e: Exception) {
@@ -354,8 +356,7 @@ class TranslationController @Inject constructor(
         languageSelection.selectedLanguage
       WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
-        // computeAppLanguage(profileId, systemLanguage)
-        systemLanguage
+        computeAppLanguage(profileId, systemLanguage, loadAppLanguageSelection(profileId))
     }
   }
 
@@ -369,8 +370,7 @@ class TranslationController @Inject constructor(
         languageSelection.selectedLanguage
       AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
-        // computeAppLanguage(profileId, systemLanguage)
-        systemLanguage
+        computeAppLanguage(profileId, systemLanguage, loadAppLanguageSelection(profileId))
     }
   }
 
@@ -385,6 +385,22 @@ class TranslationController @Inject constructor(
       ) {
         AsyncResult.Success(it)
       }
+  }
+
+  private fun loadAppLanguageSelection(profileId: ProfileId): AppLanguageSelection {
+    return dataLock.withLock {
+      appLanguageSettings[profileId] ?: AppLanguageSelection.getDefaultInstance()
+    }
+  }
+
+  private suspend fun updateAppLanguageSelection(
+    profileId: ProfileId,
+    selection: AppLanguageSelection
+  ) {
+    dataLock.withLock {
+      appLanguageSettings[profileId] = selection
+    }
+    asyncDataSubscriptionManager.notifyChange(APP_LANGUAGE_LOCALE_DATA_PROVIDER_ID)
   }
 
   private fun retrieveCacheStore(
