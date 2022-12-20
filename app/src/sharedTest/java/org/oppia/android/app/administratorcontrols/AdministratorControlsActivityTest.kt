@@ -40,6 +40,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -49,9 +51,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
 import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
-import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
 import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_cancel_button
 import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_okay_button
+import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -128,8 +130,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
