@@ -23,7 +23,6 @@
       android:layout_width="160dp"
       android:layout_height="160dp"
       android:layout_marginStart="@dimen/profile_edit_image_layout_margin_start"
-      android:background="@color/color_def_white_light"
       android:clickable="true"
       android:contentDescription="@string/current_profile_picture_content_description"
       android:focusable="true"
@@ -58,7 +57,7 @@
       android:layout_marginEnd="@dimen/profile_name_text_view_layout_margin_end"
       android:fontFamily="sans-serif-medium"
       android:text="@{viewModel.profile.name}"
-      android:textColor="@color/component_color_profile_progress_activity_profile_name_text_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="28sp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/profile_edit_image"
@@ -71,17 +70,18 @@
       android:layout_marginTop="20dp"
       android:layout_marginEnd="24dp"
       android:layout_weight="1"
-      android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.ongoingTopicCount > 0}"
       android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnOngoingTopicCount()}"
-      app:cardBackgroundColor="@color/component_color_profile_progress_activity_stories_progress_background_color"
+      app:cardBackgroundColor="@color/component_color_shared_rounded_rect_background_color"
       app:cardElevation="4dp"
       app:contentPadding="8dp"
       app:layout_constraintEnd_toStartOf="@+id/completed_stories_container"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toStartOf="@+id/profile_name_text_view"
-      app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view">
+      app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view"
+      app:strokeColor="@color/component_color_profile_progress_activity_story_count_card_stroke_color"
+      app:strokeWidth="0.5dp">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -98,7 +98,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{Integer.toString(viewModel.ongoingTopicCount)}"
-          android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="24sp" />
 
         <TextView
@@ -108,7 +108,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{viewModel.ongoingTopicCount != 1 ? @string/profile_progress_header_activity_topics_in_progress : @string/profile_progress_header_activity_topic_in_progress}"
-          android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -119,17 +119,18 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"
       android:layout_weight="1"
-      android:background="@drawable/grey_card_rounded_border"
       android:clickable="@{viewModel.completedStoryCount > 0}"
       android:importantForAccessibility="yes"
       android:onClick="@{() -> viewModel.clickOnCompletedStoryCount()}"
-      app:cardBackgroundColor="@color/component_color_profile_progress_activity_stories_progress_background_color"
+      app:cardBackgroundColor="@color/component_color_shared_rounded_rect_background_color"
       app:cardElevation="4dp"
       app:contentPadding="8dp"
       app:layout_constraintEnd_toEndOf="@+id/profile_name_text_view"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toEndOf="@+id/ongoing_topics_container"
-      app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view">
+      app:layout_constraintTop_toBottomOf="@+id/profile_name_text_view"
+      app:strokeColor="@color/component_color_profile_progress_activity_story_count_card_stroke_color"
+      app:strokeWidth="0.5dp">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -146,7 +147,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{Integer.toString(viewModel.completedStoryCount)}"
-          android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="24sp" />
 
         <TextView
@@ -156,7 +157,7 @@
           android:layout_height="wrap_content"
           android:fontFamily="sans-serif"
           android:text="@{viewModel.completedStoryCount != 1 ? @string/profile_progress_header_activity_stories_completed : @string/profile_progress_header_activity_story_completed}"
-          android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="12sp" />
       </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -171,7 +172,7 @@
       android:fontFamily="sans-serif-medium"
       android:minHeight="48dp"
       android:text="@string/profile_progress_header_activity_recently_played_stories"
-      android:textColor="@color/component_color_profile_progress_activity_stories_progress_text_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp"
       android:visibility="@{viewModel.headerTextVisibility}"
       app:layout_constraintEnd_toStartOf="@+id/view_all_text_view"

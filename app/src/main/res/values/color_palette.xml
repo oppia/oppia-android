@@ -10,7 +10,9 @@
   <color name="color_palette_dark_background_color">@color/color_def_mid_grey_30</color>
   <color name="color_palette_transparent_background_color">@color/color_def_transparent</color>
   <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
+  <color name="color_palette_card_topic_name_text_color">@color/color_def_black_80</color>
   <color name="color_palette_text_input_background_color">@color/color_def_white</color>
+  <color name="color_palette_shared_white_background_color">@color/color_def_white</color>
   <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
   <color name="color_palette_error_color">@color/color_def_oppia_red</color>
   <color name="color_palette_helper_text_color">@color/color_def_accessible_light_grey_2</color>
@@ -106,11 +108,7 @@
   <color name="color_palette_confetti_blue_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_revision_card_layout_background_color">@color/color_def_oppia_white</color>
-  <color name="color_palette_home_activity_background_color">@color/color_def_white</color>
-  <color name="color_palette_recently_played_stories_text_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_select_a_topic_to_start_text_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_greeting_text_color">@color/color_def_accessible_grey</color>
-  <color name="color_palette_layout_below_greeting_text_color">@color/color_def_oppia_light_brown</color>
+  <color name="color_palette_layout_below_greeting_text_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_white</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_white</color>
@@ -126,13 +124,8 @@
   <color name="color_palette_secondary_container_background_color">@color/color_def_teal_blue</color>
   <color name="color_palette_concept_status_bar_color">@color/color_def_dark_red</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_white_2</color>
-  <color name="color_palette_profile_progress_activity_background_color">@color/color_def_transparent</color>
-  <color name="color_palette_profile_progress_activity_profile_name_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_view_all_text_color">@color/color_def_oppia_green</color>
-  <color name="color_palette_recently_played_activity_background_color">@color/color_def_white</color>
-  <color name="color_palette_ongoing_progress_activity_background_color">@color/color_def_white</color>
   <color name="color_palette_completed_progress_activity_background_color">@color/color_def_white</color>
-  <color name="color_palette_completed_progress_activity_completed_story_card_text_color">@color/color_def_oppia_stroke_black</color>
   <color name="color_palette_topic_fragments_background_color">@color/color_def_oppia_white_2</color>
   <color name="color_palette_topic_practice_header_description_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_topic_practice_subtopic_text_color">@color/color_def_accessible_grey</color>
@@ -147,4 +140,8 @@
   <color name="color_palette_profile_chooser_silver_text_color">@color/color_def_oppia_silver</color>
   <color name="color_palette_profile_chooser_white_text_color">@color/color_def_white</color>
   <color name="color_palette_profile_chooser_avatar_border_color">@color/color_def_dark_silver</color>
+  <color name="color_palette_topic_card_item_background_color">@color/color_def_blue_sapphire</color>
+  <color name="color_palette_topic_card_text_color">@color/color_def_white</color>
+  <color name="color_palette_profile_progress_activity_story_count_card_stroke_color">@color/color_def_grey</color>
+  <color name="color_palette_section_title_divider_color">@color/color_def_light_grey</color>
 </resources>

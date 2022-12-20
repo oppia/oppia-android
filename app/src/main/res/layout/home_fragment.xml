@@ -14,7 +14,7 @@
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_home_activity_background_color"
+    android:background="@color/component_color_shared_screen_primary_background_color"
     android:gravity="center">
 
     <androidx.recyclerview.widget.RecyclerView
