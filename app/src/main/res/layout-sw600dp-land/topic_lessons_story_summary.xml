@@ -27,12 +27,14 @@
       android:layout_marginTop="12dp"
       android:layout_marginBottom="12dp"
       android:importantForAccessibility="no"
-      app:cardBackgroundColor="@color/component_color_lesson_card_activity_background_color"
+      app:cardBackgroundColor="@color/component_color_lessons_tab_activity_background_color"
       app:cardCornerRadius="4dp"
       app:cardElevation="4dp"
-      app:rippleColor="@color/component_color_lesson_card_activity_ripple_color">
+      app:rippleColor="@color/component_color_lessons_tab_activity_lesson_card_ripple_color"
+      app:strokeWidth="1dp"
+      app:strokeColor="@color/component_color_lessons_tab_activity_lesson_card_border_stroke_color">
 
-      <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -144,7 +146,7 @@
                 app:isRotationAnimationClockwise="@{isListExpanded}"
                 app:rotationAnimationAngle="@{180f}"
                 app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
-                app:tint="@color/component_color_lesson_card_activity_drop_down_arrow_color"/>
+                app:tint="@color/component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color"/>
             </FrameLayout>
           </LinearLayout>
         </LinearLayout>
@@ -154,7 +156,7 @@
           android:id="@+id/chapter_list_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/component_color_lesson_card_activity_chapter_list_background_color"
+          android:background="@color/component_color_lessons_tab_activity_chapter_list_background_color"
           android:orientation="vertical"
           android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 

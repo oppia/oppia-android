@@ -19,7 +19,7 @@
   </style>
 
   <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorPrimaryDark">@color/component_color_revision_card_activity_toolbar_color</item>
+    <item name="colorPrimaryDark">@color/component_color_revision_card_activity_status_bar_color</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">

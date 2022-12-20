@@ -23,7 +23,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/color_def_oppia_green"
+      android:background="@color/component_color_lessons_tab_activity_lessons_in_progress_chapter_index_background_color"
       android:minHeight="48dp"
       android:orientation="horizontal">
 
@@ -39,7 +39,7 @@
         android:minHeight="20dp"
         android:text="@{viewModel.computePlayChapterIndexText()}"
         android:textAlignment="center"
-        android:textColor="@color/color_def_white"
+        android:textColor="@color/component_color_shared_secondary_3_text_color"
         android:textSize="16sp" />
 
       <ImageView
@@ -56,7 +56,7 @@
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_def_light_green"
+        android:background="@color/component_color_lessons_tab_activity_lessons_in_progress_chapter_name_background_color"
         android:fontFamily="sans-serif"
         android:gravity="center|start"
         android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
@@ -64,7 +64,7 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:text="@{viewModel.chapterTitle}"
-        android:textColor="@color/color_def_accessible_light_grey_2"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="14sp" />
     </LinearLayout>
 

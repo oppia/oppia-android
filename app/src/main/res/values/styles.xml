@@ -435,11 +435,11 @@
     <item name="android:minWidth">144dp</item>
     <item name="android:background">@drawable/state_button_primary_background</item>
     <item name="drawableEndCompat">@drawable/ic_arrow_right_alt_24dp</item>
-    <item name="drawableTint">@color/color_def_white</item>
+    <item name="drawableTint">@color/component_color_shared_white_background_color</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_3_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
 
