@@ -11,14 +11,15 @@
       type="org.oppia.android.app.home.promotedlist.PromotedStoryViewModel" />
   </data>
 
-  <com.google.android.material.card.MaterialCardView
+  <org.oppia.android.app.customview.PromotedStoryCardView
     android:layout_width="@dimen/promoted_story_card_layout_width"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/promoted_story_card_layout_margin_start"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:promotedStoryIndex="@{viewModel.index}">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/promoted_story_card_container"
@@ -43,7 +44,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bottom_rounded_rect_white_background"
+        android:background="@color/component_color_shared_rounded_rect_background_color"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +63,7 @@
           android:fontFamily="sans-serif-medium"
           android:maxLines="1"
           android:text="@{viewModel.nextChapterTitle}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="18sp" />
 
         <TextView
@@ -76,7 +77,7 @@
           android:fontFamily="sans-serif"
           android:maxLines="1"
           android:text="@{viewModel.storyTitle}"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="@dimen/promoted_story_card_text_size" />
 
         <TextView
@@ -92,9 +93,9 @@
           android:paddingBottom="8dp"
           android:text="@{viewModel.topicTitle}"
           android:textAllCaps="true"
-          android:textColor="@color/oppia_primary_text"
+          android:textColor="@color/component_color_shared_story_card_topic_name_text_color"
           android:textSize="14sp" />
       </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-  </com.google.android.material.card.MaterialCardView>
+  </org.oppia.android.app.customview.PromotedStoryCardView>
 </layout>

@@ -1,10 +1,12 @@
 package org.oppia.android.app.player.exploration
 
 import android.content.Context
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -17,10 +19,16 @@ import org.oppia.android.app.model.EphemeralExploration
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.stopplaying.ProgressDatabaseFullDialogFragment
 import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
+import org.oppia.android.app.spotlight.SpotlightFragment
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightShape
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.viewmodel.ViewModelProvider
 import org.oppia.android.databinding.ExplorationActivityBinding
@@ -46,7 +54,8 @@ class ExplorationActivityPresenter @Inject constructor(
   private val viewModelProvider: ViewModelProvider<ExplorationViewModel>,
   private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   private val translationController: TranslationController,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private lateinit var explorationToolbar: Toolbar
   private lateinit var explorationToolbarTitle: TextView
@@ -61,6 +70,7 @@ class ExplorationActivityPresenter @Inject constructor(
 
   private lateinit var oldestCheckpointExplorationId: String
   private lateinit var oldestCheckpointExplorationTitle: String
+  private lateinit var binding: ExplorationActivityBinding
 
   private val exploreViewModel by lazy {
     getExplorationViewModel()
@@ -75,7 +85,7 @@ class ExplorationActivityPresenter @Inject constructor(
     parentScreen: ExplorationActivityParams.ParentScreen,
     isCheckpointingEnabled: Boolean
   ) {
-    val binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
+    binding = DataBindingUtil.setContentView<ExplorationActivityBinding>(
       activity,
       R.layout.exploration_activity
     )
@@ -124,6 +134,42 @@ class ExplorationActivityPresenter @Inject constructor(
         TAG_EXPLORATION_MANAGER_FRAGMENT
       ).commitNow()
     }
+
+    if (getSpotlightManager() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.exploration_spotlight_fragment_placeholder,
+        SpotlightFragment.newInstance(profileId.internalId),
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
+  }
+
+  fun requestVoiceOverIconSpotlight(numberOfLogins: Int) {
+    if (numberOfLogins >= 3) {
+      // Spotlight the voice-over icon after 3 or more logins, and only if it's visible. Note that
+      // the doOnPreDraw here ensures that the visibility check for the button is up-to-date before
+      // a decision is made on whether to show the button.
+      binding.actionAudioPlayer.doOnPreDraw {
+        if (it.visibility == View.VISIBLE) {
+          val audioPlayerSpotlightTarget = SpotlightTarget(
+            it,
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.voiceover_icon_spotlight_hint,
+              resourceHandler.getStringInLocale(R.string.app_name)
+            ),
+            SpotlightShape.Circle,
+            Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
+          )
+          checkNotNull(getSpotlightManager()).requestSpotlight(audioPlayerSpotlightTarget)
+        }
+      }
+    }
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {

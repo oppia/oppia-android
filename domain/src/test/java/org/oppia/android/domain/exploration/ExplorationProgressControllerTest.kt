@@ -21,6 +21,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.Exploration
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.Fraction
@@ -200,13 +201,72 @@ class ExplorationProgressControllerTest {
 
   @Test
   fun testGetCurrentState_playExploration_loaded_returnsInitialStatePending() {
-    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
 
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
 
     assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralState.hasPreviousState).isFalse()
     assertThat(ephemeralState.state.name).isEqualTo("Continue")
+  }
+
+  @Test
+  fun testEphemeralState_startExploration_shouldIndicateButtonAnimation() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isTrue()
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs)
+      .isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+  }
+
+  @Test
+  fun testEphemeralState_moveToNextState_shouldIndicateNoButtonAnimation() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isFalse()
+  }
+
+  @Test
+  fun testEphemeralState_profile1ClicksContinue_switchToProfile2_shouldIndicateButtonAnimation() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    val profileId2 = ProfileId.newBuilder().setInternalId(1).build()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    endExploration()
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, profileId2)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isTrue()
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs)
+      .isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
+  }
+
+  @Test
+  fun testEphemeralState_startExp_clicksContinue_reEnterExp_shouldIndicateNoButtonAnimation() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    playThroughPrototypeState1AndMoveToNextState()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    endExploration()
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isFalse()
+  }
+
+  @Test
+  fun testEphemeralState_startExp_seesAnimation_reEnterExploration_shouldIndicateButtonAnimation() {
+    oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
+    endExploration()
+    val currentTime = oppiaClock.getCurrentTimeMs()
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.showContinueButtonAnimation).isTrue()
+    assertThat(ephemeralState.continueButtonAnimationTimestampMs)
+      .isEqualTo(currentTime + TimeUnit.SECONDS.toMillis(45))
   }
 
   @Test
@@ -1973,6 +2033,226 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  fun testPlayNewExp_firstCard_notFinished_doesNotLogReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(hasEngagementEvent).isFalse()
+  }
+
+  @Test
+  fun testPlayNewExp_finishFirstCard_moveToSecond_doesNotLogReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(hasEngagementEvent).isFalse()
+  }
+
+  @Test
+  fun testPlayNewExp_finishThreeCards_doNotProceed_doesNotLogReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    submitPrototypeState3Answer()
+
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(hasEngagementEvent).isFalse()
+  }
+
+  @Test
+  fun testPlayNewExp_finishThreeCards_moveToFour_logsReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(hasEngagementEvent).isTrue()
+    assertThat(eventLog).hasReachedInvestedEngagementContextThat {
+      hasStateNameThat().isEqualTo("ItemSelectionMinOne")
+    }
+  }
+
+  @Test
+  fun testPlayNewExp_finishFourCards_moveToFive_logsReachInvestedEngagementEventOnlyOnce() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+
+    // The engagement event should only be logged once during a play session, even if the user
+    // continues past that point.
+    val engagementEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(engagementEventCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testPlayNewExp_firstTwo_startOver_playFirst_doesNotLogReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // Restart the exploration.
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+
+    // No engagement event should be logged, even though 3 total states were completed from the
+    // first and second sessions (cumulatively).
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(hasEngagementEvent).isFalse()
+  }
+
+  @Test
+  fun testPlayNewExp_firstTwo_startOver_playThreeAndMove_logsReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // Restart the exploration.
+    restartExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+
+    // An engagement event should be logged since the new session uniquely finished 3 states.
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(hasEngagementEvent).isTrue()
+    assertThat(eventLog).hasReachedInvestedEngagementContextThat {
+      hasStateNameThat().isEqualTo("ItemSelectionMinOne")
+    }
+  }
+
+  @Test
+  fun testResumeExp_stateOneTwoDone_finishThreeAndMoveForward_noLogReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // End, then resume the exploration and complete the third state.
+    endExploration()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    playThroughPrototypeState3AndMoveToNextState()
+
+    // Despite the first three states now being completed, this isn't an engagement event since the
+    // user hasn't finished three states within *one* session.
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(hasEngagementEvent).isFalse()
+  }
+
+  @Test
+  fun testResumeExp_stateOneTwoDone_finishThreeMoreAndMove_logsReachInvestedEngagementEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // End, then resume the exploration and complete the third state.
+    endExploration()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+
+    // An engagement event should be logged now since the user completed 3 new states in the current
+    // session.
+    val hasEngagementEvent = fakeAnalyticsEventLogger.hasEventLogged {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(hasEngagementEvent).isTrue()
+    assertThat(eventLog).hasReachedInvestedEngagementContextThat {
+      hasStateNameThat().isEqualTo("NumberInput")
+    }
+  }
+
+  @Test
+  fun testResumeExp_finishThree_thenAnotherThreeAfterResume_logsInvestedEngagementEventTwice() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+
+    // End, then resume the exploration and complete the third state.
+    endExploration()
+    val checkPoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkPoint)
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    playThroughPrototypeState6AndMoveToNextState()
+
+    // Playing enough states for the engagement event before and after resuming should result in it
+    // being logged twice (once for each session).
+    val engagementEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(engagementEventCount).isEqualTo(2)
+  }
+
+  @Test
+  fun testPlayNewExp_getToEngagementEvent_playOtherExpAndDoSame_logsEngagementEventAgain() {
+    logIntoAnalyticsReadyAdminProfile()
+
+    // Play through the full prototype exploration twice.
+    playThroughPrototypeExplorationInNewSession()
+    playThroughPrototypeExplorationInNewSession()
+
+    // Playing through two complete exploration sessions should result in the engagement event being
+    // logged twice (once for each session).
+    val engagementEventCount = fakeAnalyticsEventLogger.countEvents {
+      it.context.activityContextCase == REACH_INVESTED_ENGAGEMENT
+    }
+    assertThat(engagementEventCount).isEqualTo(2)
+  }
+
+  @Test
   fun testSubmitAnswer_correctAnswer_logsEndCardAndSubmitAnswerEvents() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
@@ -2323,6 +2603,12 @@ class ExplorationProgressControllerTest {
       explorationProgressController.submitAnswer(userAnswer)
     )
     return waitForGetCurrentStateSuccessfulLoad()
+  }
+
+  private fun playThroughPrototypeExplorationInNewSession() {
+    startPlayingNewExploration(TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2)
+    playThroughPrototypeExploration()
+    endExploration()
   }
 
   private fun playThroughPrototypeExploration(): EphemeralState {

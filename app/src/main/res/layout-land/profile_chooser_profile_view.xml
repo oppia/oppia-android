@@ -41,7 +41,7 @@
         android:layout_height="@dimen/profile_chooser_profile_view_is_image_width"
         android:layout_marginBottom="8dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.RoundedShape"
-        app:strokeColor="@color/avatar_border"
+        app:strokeColor="@color/component_color_profile_chooser_activity_avatar_border_color"
         app:strokeWidth="1dp"
         profile:src="@{viewModel.profile.avatar}" />
 
@@ -60,14 +60,14 @@
           android:maxLines="2"
           android:singleLine="false"
           android:text="@{viewModel.profile.name}"
-          android:textColor="@color/color_def_white" />
+          android:textColor="@color/component_color_profile_chooser_activity_white_text_color" />
 
         <TextView
           android:id="@+id/profile_last_visited"
           android:textSize = "@dimen/profile_chooser_profile_view_profile_last_visited_size"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:visibility="@{viewModel.profile.lastLoggedInTimestampMs > 0 ? View.VISIBLE : View.GONE}"
           profile:lastVisited="@{viewModel.profile.lastLoggedInTimestampMs}" />
 
@@ -77,7 +77,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/profile_chooser_admin"
-          android:textColor="@color/color_def_white"
+          android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
           android:visibility="@{viewModel.profile.isAdmin ? View.VISIBLE : View.GONE}" />
       </LinearLayout>
     </LinearLayout>
@@ -88,7 +88,7 @@
       android:layout_height="match_parent"
       android:layout_marginTop="@dimen/profile_chooser_profile_view_view_margin_top"
       android:layout_gravity="bottom"
-      android:background="@color/oppia_profile_chooser_divider"
+      android:background="@color/component_color_shared_divider_color"
       android:visibility="@{hasProfileEverBeenAddedValue ? View.GONE : View.VISIBLE}"
       app:layout_constraintBottom_toBottomOf="@+id/profile_chooser_item"
       app:layout_constraintEnd_toEndOf="parent"

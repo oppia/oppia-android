@@ -230,7 +230,8 @@ class MathExpressionInteractionsViewModel private constructor(
       answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
       hasPreviousButton: Boolean,
       isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      timeToStartNoticeAnimationMs: Long?
     ): StateItemViewModel {
       return MathExpressionInteractionsViewModel(
         interaction,

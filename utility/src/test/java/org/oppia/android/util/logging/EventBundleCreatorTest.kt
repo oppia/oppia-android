@@ -41,6 +41,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REV
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_REVISION_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STORY_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PLAY_VOICE_OVER_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
@@ -1465,6 +1466,56 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  fun testFillEventBundle_reachInvestedEngagementEvent_studyOff_fillsAllFieldsAndReturnsName() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createReachInvestedEngagementContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("reach_invested_engagement")
+    assertThat(bundle).hasSize(12)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(REACH_INVESTED_ENGAGEMENT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+  }
+
+  @Test
+  fun testFillEventBundle_reachInvestedEngagementEvent_studyOn_fillsNonSensitiveDataAndRetsName() {
+    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createReachInvestedEngagementContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("reach_invested_engagement")
+    assertThat(bundle).hasSize(14)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(REACH_INVESTED_ENGAGEMENT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+    assertThat(bundle).string("story_id").isEqualTo(TEST_STORY_ID)
+    assertThat(bundle).string("exploration_id").isEqualTo(TEST_EXPLORATION_ID)
+    assertThat(bundle).string("session_id").isEqualTo(TEST_LEARNER_SESSION_ID)
+    assertThat(bundle).string("exploration_version").isEqualTo(TEST_EXPLORATION_VERSION_STR)
+    assertThat(bundle).string("state_name").isEqualTo(TEST_STATE_NAME)
+    assertThat(bundle).string("ld_learner_id").isEqualTo(TEST_LEARNER_ID)
+    assertThat(bundle).string("ld_install_id").isEqualTo(TEST_INSTALLATION_ID)
+  }
+
+  @Test
   fun testFillEventBundle_failedEventInstallId_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val bundle = Bundle()
@@ -1773,6 +1824,10 @@ class EventBundleCreatorTest {
 
   private fun createOpenProfileChooserContext() =
     createEventContext(value = true, EventContextBuilder::setOpenProfileChooser)
+
+  private fun createReachInvestedEngagementContext(
+    explorationContext: ExplorationContext = createExplorationContext()
+  ) = createEventContext(explorationContext, EventContextBuilder::setReachInvestedEngagement)
 
   private fun createInstallationIdForFailedAnalyticsLogContext(
     installationId: String = TEST_INSTALLATION_ID

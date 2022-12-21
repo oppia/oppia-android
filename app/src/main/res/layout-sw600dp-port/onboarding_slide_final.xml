@@ -28,11 +28,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:importantForAccessibility="no"
-        app:srcCompat="@drawable/ic_portrait_onboarding_3"
         app:layout_constraintDimensionRatio="5:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_portrait_onboarding_3" />
 
       <TextView
         android:id="@+id/slide_title_text_view"
@@ -44,6 +44,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:text="@string/onboarding_slide_3_title"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +60,7 @@
         android:maxLines="2"
         android:minLines="2"
         android:text="@string/onboarding_slide_3_description"
+        android:textColor="@color/color_palette_secondary_1_text_color"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +78,7 @@
         android:minHeight="48dp"
         android:onClick="@{(v) -> viewModel.clickOnGetStarted()}"
         android:text="@string/get_started"
-        android:textColor="@color/color_def_white"
+        android:textColor="@color/component_color_shared_primary_button_text_color"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,10 +92,11 @@
         android:layout_marginStart="192dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="192dp"
+        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColorLink="@color/component_color_shared_primary_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/get_started_button" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
   </ScrollView>
 </layout>
