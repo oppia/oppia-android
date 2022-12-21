@@ -9,117 +9,112 @@
       type="org.oppia.android.app.settings.profile.ProfileResetPinViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <FrameLayout
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:background="@color/component_color_profile_reset_pin_activity_background_color"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent">
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:paddingBottom="@dimen/profile_reset_pin_activity_scroll_view_padding_bottom"
+      android:scrollbars="none">
 
-      <ScrollView
+      <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingBottom="@dimen/profile_reset_pin_activity_scroll_view_padding_bottom"
-        android:scrollbars="none">
+        android:background="@color/component_color_shared_content_container_background_color"
+        android:paddingBottom="@dimen/profile_reset_pin_activity_constraint_layout_padding_bottom">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+          android:id="@+id/profile_reset_pin_main"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="36dp"
+          android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
+          android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
+          android:text="@string/profile_reset_pin_main"
+          android:textColor="@color/component_color_shared_primary_text_color"
+          android:textSize="16sp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/profile_reset_input_pin"
+          style="@style/TextInputLayout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/component_color_profile_reset_pin_activity_enter_pin_background_color"
-          android:paddingBottom="@dimen/profile_reset_pin_activity_constraint_layout_padding_bottom">
+          android:layout_marginStart="@dimen/profile_reset_pin_activity_profile_reset_input_pin_margin_start"
+          android:layout_marginTop="@dimen/profile_reset_pin_activity_profile_reset_input_pin_margin_top"
+          android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_input_pin_margin_end"
+          android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
+          app:errorMessage="@{viewModel.pinErrorMsg}"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_reset_pin_main">
 
-          <TextView
-            android:id="@+id/profile_reset_pin_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:paddingStart="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_start"
-            android:paddingEnd="@dimen/profile_reset_pin_activity_profile_reset_pin_main_padding_end"
-            android:text="@string/profile_reset_pin_main"
-            android:textColor="@color/component_color_profile_reset_pin_activity_header_text_color"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-          <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/profile_reset_input_pin"
-            style="@style/TextInputLayout"
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/profile_reset_input_pin_edit_text"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_reset_pin_activity_profile_reset_input_pin_margin_start"
-            android:layout_marginTop="@dimen/profile_reset_pin_activity_profile_reset_input_pin_margin_top"
-            android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_input_pin_margin_end"
-            android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_pin_label : @string/profile_reset_pin_user_pin_label}"
-            app:errorMessage="@{viewModel.pinErrorMsg}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_reset_pin_main">
+            android:imeOptions="actionNext"
+            android:inputType="numberPassword"
+            android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-              android:id="@+id/profile_reset_input_pin_edit_text"
-              style="@style/TextInputEditText"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:imeOptions="actionNext"
-              android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
-          </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/profile_reset_input_confirm_pin"
+          style="@style/TextInputLayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_start"
+          android:layout_marginTop="@dimen/profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_top"
+          android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end"
+          android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_confirm_label : @string/profile_reset_pin_user_confirm_label}"
+          app:errorMessage="@{viewModel.confirmErrorMsg}"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_reset_input_pin">
 
-          <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/profile_reset_input_confirm_pin"
-            style="@style/TextInputLayout"
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/profile_reset_input_confirm_pin_edit_text"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_start"
-            android:layout_marginTop="@dimen/profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_top"
-            android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_input_confirm_pin_margin_end"
-            android:hint="@{viewModel.isAdmin ? @string/profile_reset_pin_admin_confirm_label : @string/profile_reset_pin_user_confirm_label}"
-            app:errorMessage="@{viewModel.confirmErrorMsg}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_reset_input_pin">
+            android:imeOptions="actionDone"
+            android:inputType="numberPassword"
+            android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-              android:id="@+id/profile_reset_input_confirm_pin_edit_text"
-              style="@style/TextInputEditText"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:imeOptions="actionDone"
-              android:inputType="numberPassword"
-              android:maxLength="@{viewModel.isAdmin ? 5 : 3}" />
-          </com.google.android.material.textfield.TextInputLayout>
+        <Button
+          android:id="@+id/profile_reset_save_button"
+          style="@style/StateButtonActive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_save_button_margin_end"
+          android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+          android:clickable="@{viewModel.isButtonActive()}"
+          android:enabled="@{viewModel.isButtonActive()}"
+          android:text="@string/profile_rename_save"
+          android:textAllCaps="true"
+          android:textColor="@{viewModel.isButtonActive() ? @color/component_color_shared_button_active_text_color : @color/component_color_shared_button_inactive_text_color }"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/profile_reset_input_confirm_pin" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-          <Button
-            android:id="@+id/profile_reset_save_button"
-            style="@style/StateButtonActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/profile_reset_pin_activity_profile_reset_save_button_margin_end"
-            android:background="@{viewModel.isButtonActive() ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
-            android:clickable="@{viewModel.isButtonActive()}"
-            android:enabled="@{viewModel.isButtonActive()}"
-            android:text="@string/profile_rename_save"
-            android:textAllCaps="true"
-            android:textColor="@{viewModel.isButtonActive() ? @color/color_def_white : @color/submit_button_inactive_text }"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_reset_input_confirm_pin" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-      </ScrollView>
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/toolbar_drop_shadow" />
-    </FrameLayout>
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="6dp"
+      android:background="@drawable/toolbar_drop_shadow" />
+  </FrameLayout>
 </layout>
