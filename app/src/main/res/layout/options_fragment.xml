@@ -12,7 +12,7 @@
     android:id="@+id/options_recyclerview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_option_activity_background_color"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:scrollbars="none"

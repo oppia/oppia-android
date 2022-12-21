@@ -17,7 +17,7 @@
         android:id="@+id/license_text_viewer_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/component_color_shared_activity_toolbar_color"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Widget.AppCompat.ActionBar"
@@ -30,10 +30,11 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginEnd="20dp"
-          android:minHeight="48dp" />
+          android:minHeight="48dp"
+          android:textColor="@color/component_color_shared_activity_toolbar_text_color" />
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
-    
+
     <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent">
