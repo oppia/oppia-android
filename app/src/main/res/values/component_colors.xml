@@ -274,7 +274,7 @@
   <color name="component_color_profile_list_activity_profile_name_text_color">@color/color_palette_dark_text_color</color>
   <color name="component_color_profile_list_activity_profile_view_designation_text_color">@color/color_palette_profile_view_designation_color</color>
   <!-- App Version Activity -->
-  <color name="component_color_app_version_activity_info_icon_color">@color/color_palette_secondary_info_icon_color</color>
+  <color name="component_color_app_version_activity_info_icon_color">@color/color_palette_info_icon_color</color>
   <color name="component_color_app_version_activity_description_text_color">@color/color_palette_secondary_text_color</color>
   <!-- Profile Chooser Activity -->
   <color name="component_color_profile_chooser_activity_background_color">@color/color_palette_profile_chooser_charcoal_black_background_color</color>

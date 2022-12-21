@@ -55,7 +55,6 @@
   <color name="color_palette_error_text_color">@color/color_def_error_text</color>
   <color name="color_palette_show_hide_color">@color/color_def_oppia_green</color>
   <color name="color_palette_info_icon_color">@color/color_def_chooser_grey</color>
-  <color name="color_palette_secondary_info_icon_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
   <color name="color_palette_back_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_replay_button_color">@color/color_def_oppia_brown_dark</color>
@@ -141,7 +140,7 @@
   <color name="color_palette_secondary_1_text_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_secondary_2_text_color">@color/color_def_accessible_light_grey</color>
   <color name="color_palette_secondary_3_text_color">@color/color_def_black_54</color>
-  <color name="color_palette_link_text_color">@color/oppia_primary</color>
+  <color name="color_palette_link_text_color">@color/color_def_oppia_green</color>
   <color name="color_palette_save_button_border_color">@color/color_def_black_grey</color>
   <color name="color_palette_stroke_color">@color/color_def_black_12</color>
   <color name="color_palette_profile_chooser_charcoal_black_background_color">@color/color_def_charcoal_black</color>

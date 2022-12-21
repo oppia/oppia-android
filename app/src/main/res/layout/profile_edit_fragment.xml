@@ -152,7 +152,7 @@
           android:paddingEnd="24dp"
           android:paddingBottom="12dp"
           android:text="@string/profile_edit_allow_download_sub"
-          android:textColor="@color/component_color_shared_secondary_2_text_color"
+          android:textColor="@color/component_color_shared_secondary_3_text_color"
           android:textSize="14sp"
           app:layout_constraintEnd_toStartOf="@+id/profile_edit_allow_download_switch"
           app:layout_constraintStart_toStartOf="parent"
