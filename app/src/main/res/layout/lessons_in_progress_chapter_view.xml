@@ -39,7 +39,7 @@
         android:minHeight="20dp"
         android:text="@{viewModel.computePlayChapterIndexText()}"
         android:textAlignment="center"
-        android:textColor="@color/component_color_shared_secondary_3_text_color"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:textSize="16sp" />
 
       <ImageView

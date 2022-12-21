@@ -103,7 +103,7 @@
               android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
               android:paddingBottom="16dp"
               android:text="@{viewModel.computeTitleText(viewModel.previousSubtopicLiveData)}"
-              android:textColor="@color/component_color_shared_secondary_3_text_color"
+              android:textColor="@color/component_color_shared_secondary_4_text_color"
               android:textSize="14sp"
               android:textStyle="bold"
               app:layout_constraintTop_toBottomOf="@id/prev_subtopic_image_view" />
@@ -159,7 +159,7 @@
               android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
               android:paddingBottom="16dp"
               android:text="@{viewModel.computeTitleText(viewModel.nextSubtopicLiveData)}"
-              android:textColor="@color/component_color_shared_secondary_3_text_color"
+              android:textColor="@color/component_color_shared_secondary_4_text_color"
               android:textSize="14sp"
               android:textStyle="bold"
               app:layout_constraintTop_toBottomOf="@id/next_subtopic_image_view" />

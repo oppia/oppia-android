@@ -36,7 +36,7 @@
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
       android:text="@{viewModel.computePlayChapterIndexText()}"
-      android:textColor="@color/component_color_shared_secondary_3_text_color"
+      android:textColor="@color/component_color_shared_secondary_4_text_color"
       android:textSize="20sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
