@@ -15,20 +15,20 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/component_color_profile_edit_activity_background_color"
       android:clipToPadding="false">
 
       <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/component_color_profile_edit_activity_profile_view_background_color"
-        app:layout_constraintBottom_toTopOf="@+id/view2"
+        android:background="@drawable/general_item_background_border"
+        app:layout_constraintBottom_toTopOf="@+id/profile_rename_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +54,7 @@
         android:layout_marginStart="24dp"
         android:importantForAccessibility="no"
         android:text="@{viewModel.profile.name}"
-        android:textColor="@color/component_color_profile_edit_activity_profile_edit_name_text_view_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         app:layout_constraintBottom_toTopOf="@+id/profile_edit_created"
         app:layout_constraintStart_toEndOf="@id/profile_edit_image"
         app:layout_constraintTop_toTopOf="@id/profile_edit_image"
@@ -65,28 +65,20 @@
         style="@style/Subtitle2ViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/component_color_shared_secondary_1_text_color"
         app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
         app:layout_constraintStart_toStartOf="@+id/profile_edit_name"
         app:layout_constraintTop_toBottomOf="@+id/profile_edit_name"
         app:layout_constraintVertical_chainStyle="packed"
         profile:created="@{viewModel.profile.dateCreatedTimestampMs}" />
 
-      <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="36dp"
-        android:background="@color/color_def_grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
-
       <Button
         android:id="@+id/profile_rename_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_profile_edit_activity_profile_rename_button_background_color"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
         android:minHeight="48dp"
@@ -94,27 +86,18 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_activity_profile_edit_rename"
         android:textAllCaps="false"
-        android:textColor="@color/component_color_profile_edit_activity_profile_rename_button_text_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view2" />
-
-      <View
-        android:id="@+id/view3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_def_grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_rename_button" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_edit_image" />
 
       <Button
         android:id="@+id/profile_reset_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_profile_edit_activity_profile_reset_pin_button_background_color"
+        android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
         android:minHeight="48dp"
@@ -122,32 +105,23 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_activity_profile_edit_reset"
         android:textAllCaps="false"
-        android:textColor="@color/component_color_profile_edit_activity_profile_reset_pin_button_text_color"
+        android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
-
-      <View
-        android:id="@+id/view4"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_def_grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_reset_button" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_rename_button" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_edit_allow_download_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_profile_edit_activity_profile_edit_allow_download_container_color"
+        android:background="@drawable/general_item_background_border"
         android:focusable="true"
         android:importantForAccessibility="yes"
         android:visibility="@{viewModel.showEditDownloadAccess ? View.VISIBLE : View.GONE}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view4">
+        app:layout_constraintTop_toBottomOf="@id/profile_reset_button">
 
         <TextView
           android:id="@+id/profile_edit_allow_download_heading"
@@ -159,7 +133,7 @@
           android:paddingTop="12dp"
           android:paddingEnd="24dp"
           android:text="@string/profile_edit_activity_profile_edit_allow_download_heading"
-          android:textColor="@color/component_color_profile_edit_activity_profile_edit_allow_download_heading_text_color"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="16sp"
           app:layout_constraintEnd_toStartOf="@+id/profile_edit_allow_download_switch"
           app:layout_constraintHorizontal_bias="0.0"
@@ -176,7 +150,7 @@
           android:paddingEnd="24dp"
           android:paddingBottom="12dp"
           android:text="@string/profile_edit_activity_profile_edit_allow_download_sub"
-          android:textColor="@color/color_def_accessible_light_grey"
+          android:textColor="@color/component_color_shared_secondary_3_text_color"
           android:textSize="14sp"
           app:layout_constraintEnd_toStartOf="@+id/profile_edit_allow_download_switch"
           app:layout_constraintStart_toStartOf="parent"
@@ -193,37 +167,18 @@
           android:paddingStart="12dp"
           android:paddingTop="0dp"
           android:paddingEnd="12dp"
+          android:theme="@style/OppiaSwitchCompatTheme"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toTopOf="@+id/profile_edit_allow_download_heading" />
       </androidx.constraintlayout.widget.ConstraintLayout>
-
-      <View
-        android:id="@+id/view6"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_def_grey"
-        android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_edit_allow_download_container" />
-
-      <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="60dp"
-        android:background="@color/color_def_grey"
-        android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
-        app:layout_constraintBottom_toTopOf="@+id/profile_delete_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view6" />
 
       <Button
         android:id="@+id/profile_delete_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_def_white"
+        android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
+        android:background="@drawable/general_item_background_border"
         android:fontFamily="sans-serif"
         android:gravity="start|center_vertical"
         android:minHeight="48dp"
@@ -231,19 +186,8 @@
         android:paddingEnd="16dp"
         android:text="@string/profile_edit_activity_profile_edit_delete"
         android:textAllCaps="false"
-        android:textColor="@color/color_def_oppia_red"
+        android:textColor="@color/component_color_profile_edit_activity_delete_button_text_color"
         android:textSize="16sp"
-        android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
-        app:layout_constraintBottom_toTopOf="@+id/view5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-      <View
-        android:id="@+id/view5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/profile_edit_delete_margin_bottom"
-        android:background="@color/color_def_grey"
         android:visibility="@{viewModel.profile.isAdmin ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

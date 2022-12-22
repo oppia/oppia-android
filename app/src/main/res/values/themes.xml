@@ -38,7 +38,7 @@
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="colorControlActivated">@color/color_palette_primary_color</item>
+    <item name="colorControlActivated">@color/component_color_shared_switch_color</item>
   </style>
 
   <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
