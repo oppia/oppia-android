@@ -129,6 +129,7 @@
   <!-- Story Activity -->
   <color name="component_color_story_activity_container_background_color">@color/color_palette_primary_container_background_color</color>
   <color name="component_color_story_activity_story_chapter_card_start_stroke_color">@color/color_palette_story_chapter_start_stroke_color</color>
+  <color name="component_color_story_chapter_start_progress_color">@color/color_palette_story_chapter_start_stroke_color</color>
   <color name="component_color_story_activity_story_chapter_card_not_start_stroke_color">@color/color_palette_story_chapter_not_start_stroke_color</color>
   <!-- Resume Lesson Activity -->
   <color name="component_color_resume_lesson_activity_toolbar_color">@color/color_palette_secondary_toolbar_color</color>
@@ -162,15 +163,16 @@
   <color name="component_color_lessons_tab_activity_lessons_locked_chapter_container_background_color">@color/color_palette_lessons_locked_chapter_container_background_color</color>
   <color name="component_color_lessons_tab_activity_lessons_locked_chapter_name_text_color">@color/color_palette_lesson_locked_chapter_name_text_color</color>
   <color name="component_color_lessons_tab_activity_lessons_locked_chapter_name_background_color">@color/color_palette_lesson_locked_chapter_name_background_color</color>
+  <color name="component_color_lessons_tab_activity_lessons_locked_vertical_divider_color">@color/color_palette_lessons_locked_vertical_divider_color</color>
   <color name="component_color_lessons_tab_activity_lesson_not_started_stroke_color">@color/color_palette_lesson_not_started_stroke_color</color>
   <color name="component_color_lessons_tab_activity_lesson_not_started_chapter_name_background_color">@color/color_palette_lesson_not_started_chapter_name_background_color</color>
   <color name="component_color_lessons_tab_activity_lesson_not_started_chapter_index_background_color">@color/color_palette_lesson_not_started_chapter_index_background_color</color>
   <color name="component_color_lessons_tab_activity_lessons_completed_chapter_index_background_color">@color/color_palette_lesson_in_progress_chapter_index_background_color</color>
   <color name="component_color_lessons_tab_activity_lessons_completed_chapter_name_background_color">@color/color_palette_lesson_in_progress_chapter_name_background_color</color>
   <color name="component_color_lessons_tab_activity_chapter_completed_progress_color">@color/color_palette_chapter_completed_progress_color</color>
-  <color name="component_color_lessons_tab_activity_chapter_in_progress_color">@color/color_palette_chapter_in_progress_color</color>
-  <color name="component_color_lessons_tab_activity_chapter_not_finished_color">@color/color_palette_chapter_not_finished_color</color>
-  <color name="component_color_lessons_tab_activity_chapter_not_started_color">@color/color_palette_chapter_not_started_color</color>
+  <color name="component_color_lessons_tab_activity_chapter_in_progress_progress_color">@color/color_palette_chapter_in_progress_color</color>
+  <color name="component_color_lessons_tab_activity_chapter_not_finished_progress_color">@color/color_palette_chapter_not_finished_color</color>
+  <color name="component_color_lessons_tab_activity_chapter_not_started_progress_color">@color/color_palette_chapter_not_started_color</color>
   <!-- Onboarding Activity -->
   <color name="component_color_onboarding_activity_sub_text_color">@color/color_palette_primary_text_color</color>
   <color name="component_color_onboarding_activity_dots_color">@color/color_palette_dots_color</color>
@@ -234,9 +236,6 @@
   <!-- Home Activity -->
   <color name="component_color_home_activity_view_all_text_color">@color/color_palette_view_all_text_color</color>
   <color name="component_color_home_activity_layout_greeting_text_line_color">@color/color_palette_layout_below_greeting_text_color</color>
-  <!-- Topic Activity -->
-  <color name="component_color_topic_fragment_primary_toolbar_color">@color/color_palette_toolbar_color</color>
-  <color name="component_color_topic_fragment_primary_tab_color">@color/color_palette_secondary_toolbar_color</color>
   <!--  CONFETTI COLORS -->
   <color name="component_color_confetti_red_color">@color/color_palette_confetti_red_color</color>
   <color name="component_color_confetti_yellow_color">@color/color_palette_confetti_yellow_color</color>

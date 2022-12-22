@@ -52,6 +52,11 @@
         android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
         app:srcCompat="@drawable/ic_baseline_lock_24" />
 
+      <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/component_color_lessons_tab_activity_lessons_locked_vertical_divider_color"/>
+
       <TextView
         android:id="@+id/chapter_name"
         style="@style/TextViewStart"

@@ -33,7 +33,8 @@
         <TextView
           android:id="@+id/revision_card_explanation_text"
           style="@style/Body"
-          android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top" />
+          android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top"
+          android:textColorLink="@color/component_color_shared_link_text_color"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/revision_card_fragment_navigation_card_container"

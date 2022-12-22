@@ -84,19 +84,19 @@ class SegmentedCircularProgressView : View {
     chapterInProgressArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     setupArcPaint(
       chapterInProgressArcPaint,
-      R.color.component_color_lessons_tab_activity_chapter_in_progress_color
+      R.color.component_color_lessons_tab_activity_chapter_in_progress_progress_color
     )
 
     chapterNotStartedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     if (chaptersFinished != 0) {
       setupArcPaint(
         chapterNotStartedArcPaint,
-        R.color.component_color_lessons_tab_activity_chapter_not_finished_color
+        R.color.component_color_lessons_tab_activity_chapter_not_finished_progress_color
       )
     } else {
       setupArcPaint(
         chapterNotStartedArcPaint,
-        R.color.component_color_lessons_tab_activity_chapter_not_started_color
+        R.color.component_color_lessons_tab_activity_chapter_not_started_progress_color
       )
     }
   }
