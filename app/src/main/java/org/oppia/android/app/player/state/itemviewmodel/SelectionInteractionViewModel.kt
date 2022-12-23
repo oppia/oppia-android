@@ -135,11 +135,12 @@ class SelectionInteractionViewModel private constructor(
       isCurrentlySelected -> {
         selectedItems -= itemIndex
         updateIsAnswerAvailable()
-        updateSelectionText(isCurrentlySelected)
+        updateSelectionText()
+        updateItemSelectability()
         false
       }
       !areCheckboxesBound() -> {
-        // Disable all items to simulate a radio button group.
+        // De-select all other items to simulate a radio button group.
         choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
         selectedItems.clear()
         selectedItems += itemIndex
@@ -147,11 +148,10 @@ class SelectionInteractionViewModel private constructor(
         true
       }
       selectedItems.size < maxAllowableSelectionCount -> {
-        // TODO(#3624): Add warning to user when they exceed the number of allowable selections or are under the minimum
-        //  number required.
         selectedItems += itemIndex
         updateIsAnswerAvailable()
-        updateSelectionText(isCurrentlySelected)
+        updateSelectionText()
+        updateItemSelectability()
         true
       }
       else -> {
@@ -161,7 +161,7 @@ class SelectionInteractionViewModel private constructor(
     }
   }
 
-  private fun updateSelectionText(isCurrentlySelected: Boolean) {
+  private fun updateSelectionText() {
     if (selectedItems.size < maxAllowableSelectionCount) {
       selectedItemText.set(
         resourceHandler.getStringInLocale(
@@ -183,14 +183,14 @@ class SelectionInteractionViewModel private constructor(
           maxAllowableSelectionCount.toString()
         )
       )
-      for (items in selectedItems) {
-        enabledItemsList[items].set(true)
-      }
-    } else {
-      enabledItemsList.forEach {
-        it.set(true)
-      }
     }
+  }
+
+  private fun updateItemSelectability() {
+    if (selectedItems.size == maxAllowableSelectionCount) {
+      // All non-selected items should be disabled when the limit is reached.
+      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }.forEach { it.set(false) }
+    } else enabledItemsList.forEach { it.set(true) } // Otherwise, all items are available.
   }
 
   private fun areCheckboxesBound(): Boolean {
