@@ -11,7 +11,7 @@
   <color name="color_def_oppia_light_brown">#E76F51</color>
   <color name="color_def_oppia_stroke_blue">#4D395FD0</color>
   <color name="color_def_oppia_solid_blue">#4DA5D3EC</color>
-  <color name="color_def_oppia_stroke_black">#CC333333</color>
+  <color name="color_def_black_80">#CC333333</color>
   <color name="color_def_oppia_red">#B92D00</color>
   <color name="color_def_white">#FFFFFF</color>
   <color name="color_def_white_80">#CCFFFFFF</color>
@@ -43,6 +43,7 @@
   <color name="color_def_green_shade_80">#CC44A85A</color>
   <color name="color_def_light_green">#D9F3E7</color>
   <color name="color_def_highlight_blue">#A5D3EC</color>
+  <color name="color_def_highlight_blue_darker">#1B5879</color>
   <color name="color_def_bright_grey">#E4F2F1</color>
   <color name="color_def_forest_green">#035D63</color>
   <color name="color_def_bright_turquoise">#663BD1C4</color>
@@ -94,4 +95,5 @@
   <color name="color_def_dark_red">#A6503A</color>
   <color name="color_def_dark_purple">#441530</color>
   <color name="color_def_oppia_white_2">#F2F2F2</color>
+  <color name="color_def_blue_sapphire">#205D86</color>
 </resources>
