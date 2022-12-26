@@ -44,8 +44,7 @@
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:importantForAccessibility="no"
-        playState:image="@{viewModel.chapterSummary.chapterPlayState}"
-        app:tint="@color/component_color_story_chapter_start_progress_icon_color"/>
+        playState:image="@{viewModel.chapterSummary.chapterPlayState}"/>
 
       <ImageView
         android:id="@+id/completed_chapter_image_view"
@@ -55,8 +54,7 @@
         android:importantForAccessibility="no"
         android:padding="8dp"
         android:visibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? View.GONE : View.VISIBLE}"
-        app:srcCompat="@drawable/ic_lessons_icon_24dp"
-        app:tint="@color/component_color_story_chapter_start_progress_icon_color"/>
+        app:srcCompat="@drawable/ic_lessons_icon_24dp"/>
     </FrameLayout>
 
     <FrameLayout

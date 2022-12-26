@@ -37,7 +37,7 @@ class VerticalDashedLineView @JvmOverloads constructor(
       isAntiAlias = true
       color = ContextCompat.getColor(
         context,
-        R.color.component_color_story_chapter_start_progress_color
+        R.color.component_color_story_chapter_default_progress_solid_color
       )
       style = Paint.Style.STROKE
       strokeCap = Paint.Cap.ROUND
