@@ -50,10 +50,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
-import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
-import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_cancel_button
-import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_okay_button
 import org.oppia.android.R.string.administrator_controls_activity_profile_view_administrator_edit_profiles
+import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_okay_button
+import org.oppia.android.R.string.administrator_controls_activity_log_out_dialog_fragment_cancel_button
+import org.oppia.android.R.string.administrator_controls_activity_general_view_administrator_edit_account
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
