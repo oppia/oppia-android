@@ -23,7 +23,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/component_color_lessons_tab_activity_lessons_in_progress_chapter_index_background_color"
+      android:background="@drawable/chapter_white_bg_with_bright_green_border"
       android:minHeight="48dp"
       android:orientation="horizontal">
 
@@ -56,7 +56,7 @@
         style="@style/TextViewStart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/component_color_lessons_tab_activity_lessons_in_progress_chapter_name_background_color"
+        android:background="@drawable/chapter_white_bg_with_bright_green_border"
         android:fontFamily="sans-serif"
         android:gravity="center|start"
         android:importantForAccessibility="@{viewModel.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.IMPORTANT_FOR_ACCESSIBILITY_YES : View.IMPORTANT_FOR_ACCESSIBILITY_NO}"
