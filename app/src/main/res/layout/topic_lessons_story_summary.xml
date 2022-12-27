@@ -29,7 +29,7 @@
     app:cardElevation="4dp"
     app:rippleColor="@color/component_color_lessons_tab_activity_lesson_card_ripple_color"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/component_color_lessons_tab_activity_lesson_card_border_stroke_color">
+    app:strokeColor="@color/component_color_shared_card_border_stroke_color">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -153,7 +153,7 @@
         android:id="@+id/chapter_list_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_lessons_tab_activity_chapter_list_background_color"
+        android:background="@color/component_color_lessons_tab_activity_background_color"
         android:orientation="vertical"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 

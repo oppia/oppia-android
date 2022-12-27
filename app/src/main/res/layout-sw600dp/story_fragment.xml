@@ -59,7 +59,7 @@
         android:layout_width="528dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@color/component_color_shared_screen_primary_background_color"
+        android:background="@color/component_color_shared_content_container_background_color"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingStart="64dp"

@@ -79,6 +79,7 @@
   <color name="component_color_shared_multipane_icon_color">@color/color_palette_multipane_icon_color</color>
   <color name="component_color_shared_item_background_solid_color">@color/color_palette_item_background_solid_color</color>
   <color name="component_color_shared_item_background_stroke_color">@color/color_palette_item_background_stroke_color</color>
+  <color name="component_color_shared_card_border_stroke_color">@color/color_palette_shared_card_border_stroke_color</color>
   <color name="component_color_shared_item_highlighted_background_solid_color">@color/color_palette_highlighted_background_color</color>
   <color name="component_color_shared_item_highlighted_background_stroke_color">@color/color_palette_item_background_stroke_color</color>
   <!-- Themes.xml -->
@@ -160,8 +161,6 @@
   <color name="component_color_lessons_tab_activity_lesson_card_ripple_color">@color/color_palette_transparent_background_color</color>
   <color name="component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color">@color/color_palette_lesson_card_drop_down_arrow_color</color>
   <color name="component_color_lessons_tab_activity_lesson_card_dashed_divider_color">@color/color_palette_lesson_card_dashed_divider_color</color>
-  <color name="component_color_lessons_tab_activity_chapter_list_background_color">@color/color_palette_lesson_card_chapter_list_background_color</color>
-  <color name="component_color_lessons_tab_activity_lesson_card_border_stroke_color">@color/color_palette_lesson_card_border_stroke_color</color>
   <color name="component_color_lessons_tab_activity_lessons_in_progress_chapter_index_background_color">@color/color_palette_lesson_in_progress_chapter_index_background_color</color>
   <color name="component_color_lessons_tab_activity_lessons_in_progress_chapter_name_background_color">@color/color_palette_lesson_in_progress_chapter_name_background_color</color>
   <color name="component_color_lessons_tab_activity_lessons_locked_chapter_container_background_color">@color/color_palette_lessons_locked_chapter_container_background_color</color>

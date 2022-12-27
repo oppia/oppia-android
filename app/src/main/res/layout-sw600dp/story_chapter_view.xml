@@ -23,7 +23,6 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/component_color_story_activity_container_background_color"
     android:orientation="horizontal"
     android:paddingTop="@{viewModel.index == 0 ? @dimen/story_chapter_view_margin_top_first_item : @dimen/space_0dp}">
 
@@ -73,7 +72,9 @@
         android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
         android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
         app:cardCornerRadius="4dp"
-        app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
+        app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}"
+        app:strokeColor="@color/component_color_shared_card_border_stroke_color"
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
