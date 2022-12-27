@@ -23,7 +23,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/chapter_white_bg_with_bright_green_border"
+      android:background="@drawable/chapter_dark_green_bg_with_bright_green_border"
       android:minHeight="48dp"
       android:orientation="horizontal">
 
