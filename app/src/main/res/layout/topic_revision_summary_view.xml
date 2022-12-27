@@ -22,7 +22,7 @@
     android:layout_marginBottom="@dimen/topic_revision_summary_view_container_margin_bottom"
     android:clipToPadding="true"
     android:onClick="@{(v) -> viewModel.onRevisionItemPressed.onTopicRevisionSummaryClicked(viewModel.subtopic)}"
-    app:cardBackgroundColor="@color/component_color_shared_screen_primary_background_color"
+    app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp">

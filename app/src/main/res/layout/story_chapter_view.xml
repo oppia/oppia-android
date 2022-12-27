@@ -67,19 +67,19 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:scaleType="center"
-          app:srcCompat="@drawable/ic_baseline_lock_24"
           android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? View.VISIBLE : View.INVISIBLE}"
           app:layout_constraintBottom_toBottomOf="@id/chapter_thumbnail"
           app:layout_constraintEnd_toEndOf="@id/chapter_thumbnail"
           app:layout_constraintStart_toStartOf="@id/chapter_thumbnail"
-          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail" />
+          app:layout_constraintTop_toTopOf="@id/chapter_thumbnail"
+          app:srcCompat="@drawable/ic_baseline_lock_24" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@color/component_color_story_activity_container_background_color"
           android:minHeight="140dp"
           android:padding="8dp"
-          android:background="@color/component_color_story_activity_container_background_color"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -125,13 +125,13 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:contentDescription="@{@string/chapter_completed}"
-            app:srcCompat="@drawable/ic_check_24dp"
-            app:tint="@color/component_color_shared_check_icon_color"
             android:visibility="@{viewModel.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/ic_check_24dp"
+            app:tint="@color/component_color_shared_check_icon_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
       </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

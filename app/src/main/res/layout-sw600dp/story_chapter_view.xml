@@ -6,7 +6,9 @@
   <data>
 
     <import type="android.view.View" />
+
     <import type="org.oppia.android.app.model.ChapterPlayState" />
+
     <import type="org.oppia.android.app.model.ChapterSummary" />
 
     <variable
@@ -21,8 +23,8 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@color/component_color_story_activity_container_background_color"
+    android:orientation="horizontal"
     android:paddingTop="@{viewModel.index == 0 ? @dimen/story_chapter_view_margin_top_first_item : @dimen/space_0dp}">
 
     <FrameLayout
@@ -44,7 +46,7 @@
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:importantForAccessibility="no"
-        playState:image="@{viewModel.chapterSummary.chapterPlayState}"/>
+        playState:image="@{viewModel.chapterSummary.chapterPlayState}" />
 
       <ImageView
         android:id="@+id/completed_chapter_image_view"
@@ -54,7 +56,7 @@
         android:importantForAccessibility="no"
         android:padding="8dp"
         android:visibility="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED ? View.GONE : View.VISIBLE}"
-        app:srcCompat="@drawable/ic_lessons_icon_24dp"/>
+        app:srcCompat="@drawable/ic_lessons_icon_24dp" />
     </FrameLayout>
 
     <FrameLayout
@@ -116,9 +118,9 @@
           <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/component_color_story_activity_container_background_color"
             android:minHeight="140dp"
             android:padding="8dp"
-            android:background="@color/component_color_story_activity_container_background_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -169,7 +171,7 @@
               app:layout_constraintTop_toBottomOf="@+id/chapter_summary"
               app:layout_constraintVertical_bias="1.0"
               app:srcCompat="@drawable/ic_check_24dp"
-              app:tint="@color/component_color_shared_check_icon_color"/>
+              app:tint="@color/component_color_shared_check_icon_color" />
           </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
       </com.google.android.material.card.MaterialCardView>

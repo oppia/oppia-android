@@ -64,7 +64,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:ellipsize="end"
-        android:textColor="@color/component_color_shared_primary_text_color"
+        android:textColor="@color/component_color_shared_secondary_1_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/resume_lesson_chapter_title_text_view" />
