@@ -236,8 +236,8 @@ class AddProfileActivityPresenter @Inject constructor(
     }
   }
 
-  private fun openGalleryIntent() {
-    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+  private fun openGalleryIntent() {val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
+    galleryIntent.type="image/*"
     activity.startActivityForResult(galleryIntent, GALLERY_INTENT_RESULT_CODE)
   }
 
