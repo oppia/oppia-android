@@ -9,6 +9,7 @@
     android:id="@+id/cellular_data_dialog_checkbox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:buttonTint="@color/shared_checkbox_selector"
     android:fontFamily="sans-serif"
     android:paddingStart="16dp"
     android:paddingTop="@dimen/cellular_data_dialog_padding"
