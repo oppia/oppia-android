@@ -12,16 +12,12 @@
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/story_summary_recycler_view"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="match_parent"
     android:background="@color/component_color_shared_screen_quaternary_background_color"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:paddingBottom="@dimen/topic_lessons_fragment_layout_padding_bottom"
     android:scrollbars="none"
     app:data="@{viewModel.topicLessonLiveData}"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </layout>

@@ -71,6 +71,7 @@
         android:layout_marginBottom="32dp"
         android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
         android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
+        app:cardBackgroundColor="@color/component_color_story_activity_container_background_color"
         app:cardCornerRadius="4dp"
         app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}"
         app:strokeColor="@color/component_color_shared_card_border_stroke_color"
@@ -119,7 +120,6 @@
           <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/component_color_story_activity_container_background_color"
             android:minHeight="140dp"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"

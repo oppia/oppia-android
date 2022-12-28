@@ -29,7 +29,7 @@
       android:layout_marginTop="16dp"
       android:layout_marginEnd="72dp"
       android:layout_marginBottom="8dp"
-      android:background="@color/component_color_story_activity_container_background_color"
+      app:cardBackgroundColor="@color/component_color_story_activity_container_background_color"
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
@@ -45,7 +45,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/component_color_story_activity_container_background_color"
           android:minHeight="116dp"
           android:padding="8dp"
           app:layout_constraintBottom_toBottomOf="parent"

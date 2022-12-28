@@ -59,6 +59,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@{viewModel.conceptCardLiveData.conceptCard.skillDescription}"
             android:textColor="@color/component_color_shared_primary_text_color"
+            android:textColorLink="@color/component_color_shared_link_text_color"
             android:textSize="20sp" />
 
           <TextView
@@ -66,7 +67,8 @@
             style="@style/Body"
             android:layout_marginStart="@dimen/concept_card_explanation_text_margin_start"
             android:layout_marginTop="@dimen/concept_card_explanation_text_margin_top"
-            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end" />
+            android:layout_marginEnd="@dimen/concept_card_explanation_text_margin_end"
+            android:textColorLink="@color/component_color_shared_link_text_color" />
         </LinearLayout>
         <!-- TODO(#352): Show worked examples in Concept Card. -->
       </ScrollView>
