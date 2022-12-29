@@ -32,9 +32,9 @@
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
-    <item name="colorAccent">@color/color_palette_primary_color</item>
-    <item name="colorBackgroundFloating">@color/component_color_alert_dialog_background_color</item>
-    <item name="android:textColorPrimary">@color/component_color_alert_dialog_text_color</item>
+    <item name="colorAccent">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_shared_item_background_solid_color</item>
+    <item name="android:textColorPrimary">@color/component_color_shared_primary_dark_text_color</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -42,11 +42,11 @@
   </style>
 
   <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
-    <item name="colorPrimary">@color/color_palette_primary_color</item>
-    <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
-    <item name="colorAccent">@color/color_palette_primary_color</item>
-    <item name="colorBackgroundFloating">@color/component_color_alert_dialog_background_color</item>
-    <item name="android:textColorPrimary">@color/component_color_alert_dialog_text_color</item>
+    <item name="colorPrimary">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
+    <item name="colorAccent">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_shared_item_background_solid_color</item>
+    <item name="android:textColorPrimary">@color/component_color_shared_primary_dark_text_color</item>
   </style>
 
   <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
