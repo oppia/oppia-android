@@ -6,6 +6,7 @@
     android:id="@+id/options_menu_bottom_sheet_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_content_container_background_color"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -13,11 +14,12 @@
       android:id="@+id/action_options"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:minHeight="48dp"
       android:drawablePadding="8dp"
+      android:drawableTint="@color/component_color_shared_multipane_icon_color"
       android:gravity="center_vertical"
+      android:minHeight="48dp"
       android:text="@string/menu_options"
-      android:textColor="@color/color_def_black"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_options_icon_grey_24dp" />
 
@@ -25,11 +27,12 @@
       android:id="@+id/action_help"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:minHeight="48dp"
       android:drawablePadding="8dp"
+      android:drawableTint="@color/component_color_shared_multipane_icon_color"
       android:gravity="center_vertical"
+      android:minHeight="48dp"
       android:text="@string/menu_help"
-      android:textColor="@color/color_def_black"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_baseline_help_outline_24" />
 
@@ -37,11 +40,12 @@
       android:id="@+id/action_close"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:minHeight="48dp"
       android:drawablePadding="8dp"
+      android:drawableTint="@color/component_color_shared_multipane_icon_color"
       android:gravity="center_vertical"
+      android:minHeight="48dp"
       android:text="@string/bottom_sheet_options_menu_close"
-      android:textColor="@color/color_def_black"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
       android:textSize="20sp"
       app:drawableStartCompat="@drawable/ic_baseline_close_24" />
   </androidx.appcompat.widget.LinearLayoutCompat>

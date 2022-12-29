@@ -130,7 +130,8 @@
   <color name="color_palette_underline_view_color">@color/color_def_bright_green</color>
   <color name="color_palette_menu_text_color">@color/color_def_white</color>
   <color name="color_palette_secondary_container_background_color">@color/color_def_oppia_metallic_blue</color>
-  <color name="color_palette_concept_status_bar_color">@color/color_def_dark_purple</color>
+  <color name="color_palette_fragment_status_bar_color">@color/color_def_dark_purple</color>
+  <color name="color_palette_hint_dialog_status_bar_color">@color/color_def_catalina_blue</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_completed_progress_activity_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_topic_fragments_background_color">@color/color_def_oppia_light_black</color>
