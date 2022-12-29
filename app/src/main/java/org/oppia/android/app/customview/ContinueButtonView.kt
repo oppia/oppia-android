@@ -119,6 +119,9 @@ class ContinueButtonView @JvmOverloads constructor(
     val animation = AnimationUtils.loadAnimation(context, R.anim.scale_button_size)
     if (enableContinueButtonAnimation.value) {
       startAnimation(animation)
+       lifecycleSafeTimerFactory.createTimer(8000).observe(fragment) {
+          startAnimating()
+      }
     }
   }
 }
