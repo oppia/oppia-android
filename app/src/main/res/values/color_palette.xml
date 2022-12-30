@@ -125,7 +125,7 @@
   <color name="color_palette_secondary_dark_background_color">@color/color_def_oppia_light_green</color>
   <color name="color_palette_concept_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_revision_card_toolbar_color">@color/color_def_oppia_brown_dark</color>
-  <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_red</color>
+  <color name="color_palette_menu_selected_text_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_developer_option_menu_selected_color">@color/color_def_persian_blue</color>
   <color name="color_palette_underline_view_color">@color/color_def_oppia_light_brown</color>
   <color name="color_palette_menu_text_color">@color/color_def_black</color>
