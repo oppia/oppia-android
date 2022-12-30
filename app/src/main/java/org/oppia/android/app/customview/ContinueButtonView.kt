@@ -16,6 +16,8 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 
+private const val INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS = 8000L
+
 /** A custom [AppCompatButton] used to show continue button animations. */
 class ContinueButtonView @JvmOverloads constructor(
   context: Context,
@@ -119,7 +121,9 @@ class ContinueButtonView @JvmOverloads constructor(
     val animation = AnimationUtils.loadAnimation(context, R.anim.scale_button_size)
     if (enableContinueButtonAnimation.value) {
       startAnimation(animation)
-       lifecycleSafeTimerFactory.createTimer(8000).observe(fragment) {
+       lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS).observe(
+         fragment
+       ) {
           startAnimating()
       }
     }

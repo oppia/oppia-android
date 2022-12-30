@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rotate xmlns:android="http://schemas.android.com/apk/res/android"
-  android:duration="120"
+  android:duration="100"
   android:fromDegrees="-5"
   android:interpolator="@android:anim/decelerate_interpolator"
   android:pivotX="50%"
