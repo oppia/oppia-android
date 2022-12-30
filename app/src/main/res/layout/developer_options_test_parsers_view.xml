@@ -17,26 +17,26 @@
       android:id="@+id/debug_parsers_text_view"
       style="@style/Heading5ViewStart"
       android:layout_width="match_parent"
-      android:background="@color/component_color_developer_options_activity_sub_heading_background_color"
+      android:background="@color/component_color_shared_screen_secondary_background_color"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_test_parsers_label"
-      android:textColor="@color/component_color_developer_options_activity_sub_heading_color" />
+      android:textColor="@color/component_color_shared_active_text_color" />
 
     <TextView
       android:id="@+id/math_expressions_text_view"
       style="@style/Subtitle1ViewStart"
       android:layout_width="match_parent"
-      android:background="@color/component_color_developer_options_activity_options_background_color"
+      android:background="@color/component_color_shared_item_background_solid_color"
       android:onClick="@{(v) -> viewModel.onMathExpressionsClicked()}"
       android:paddingStart="16dp"
       android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="20dp"
       android:text="@string/developer_options_math_expressions"
-      android:textColor="@color/component_color_developer_options_activity_menu_options_text_color" />
+      android:textColor="@color/component_color_shared_primary_dark_text_color" />
 
   </LinearLayout>
 </layout>
