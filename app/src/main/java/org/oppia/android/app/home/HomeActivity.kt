@@ -40,6 +40,9 @@ class HomeActivity :
   private var internalProfileId: Int = -1
 
   companion object {
+
+    var shouldRecreateActivity: Boolean = false
+
     fun createHomeActivity(context: Context, profileId: Int?): Intent {
       return Intent(context, HomeActivity::class.java).apply {
         putExtra(NAVIGATION_PROFILE_ID_ARGUMENT_KEY, profileId)
@@ -105,5 +108,13 @@ class HomeActivity :
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
         .build()
     )
+  }
+
+  override fun onResume() {
+    super.onResume()
+    if (shouldRecreateActivity) {
+      recreate()
+      shouldRecreateActivity = false
+    }
   }
 }

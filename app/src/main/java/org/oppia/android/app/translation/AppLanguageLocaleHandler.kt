@@ -23,6 +23,7 @@ class AppLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController
 ) {
   private lateinit var displayLocale: OppiaLocale.DisplayLocale
+  lateinit var isDisplayLocaleUpdated: String
 
   /**
    * Returns whether this handler's tracked locale has been initialized, that is, whether
@@ -31,6 +32,13 @@ class AppLanguageLocaleHandler @Inject constructor(
    * Once this method returns true, it's guaranteed to stay true for the lifetime of this class.
    */
   fun isInitialized(): Boolean = ::displayLocale.isInitialized
+
+  /**
+   * Returns whether [isDisplayLocaleUpdated] has been initialized, that is, whether
+   *
+   * Once this method returns true, it's guaranteed to stay true for the lifetime of this class.
+   */
+  fun isDisplayLocaleUpdatedInitialized(): Boolean = ::isDisplayLocaleUpdated.isInitialized
 
   /**
    * Initializes this handler with the specified initial [OppiaLocale.DisplayLocale].
@@ -74,8 +82,13 @@ class AppLanguageLocaleHandler @Inject constructor(
       "AppLanguageLocaleHandle",
       "updateLocale" + "oldLocale" + displayLocale.localeContext.languageDefinition.language.name
     )
+    if (isDisplayLocaleUpdatedInitialized()) {
+      Log.e("isDisplayLocaleUpdated", isDisplayLocaleUpdated)
+    }
+
     return displayLocale.let { oldLocale ->
       displayLocale = newLocale
+      isDisplayLocaleUpdated = (oldLocale != newLocale).toString()
       return@let oldLocale != newLocale
     }
   }
