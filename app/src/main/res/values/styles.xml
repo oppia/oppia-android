@@ -69,7 +69,7 @@
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:textAllCaps">true</item>
-    <item name="android:textColor">@color/color_def_white</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
 
