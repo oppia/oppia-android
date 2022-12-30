@@ -1,7 +1,6 @@
 package org.oppia.android.app.translation
 
 import android.content.res.Configuration
-import android.util.Log
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -23,7 +22,6 @@ class AppLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController
 ) {
   private lateinit var displayLocale: OppiaLocale.DisplayLocale
-  lateinit var isDisplayLocaleUpdated: String
 
   /**
    * Returns whether this handler's tracked locale has been initialized, that is, whether
@@ -32,13 +30,6 @@ class AppLanguageLocaleHandler @Inject constructor(
    * Once this method returns true, it's guaranteed to stay true for the lifetime of this class.
    */
   fun isInitialized(): Boolean = ::displayLocale.isInitialized
-
-  /**
-   * Returns whether [isDisplayLocaleUpdated] has been initialized, that is, whether
-   *
-   * Once this method returns true, it's guaranteed to stay true for the lifetime of this class.
-   */
-  fun isDisplayLocaleUpdatedInitialized(): Boolean = ::isDisplayLocaleUpdated.isInitialized
 
   /**
    * Initializes this handler with the specified initial [OppiaLocale.DisplayLocale].
@@ -74,21 +65,8 @@ class AppLanguageLocaleHandler @Inject constructor(
    */
   fun updateLocale(newLocale: OppiaLocale.DisplayLocale): Boolean {
     verifyDisplayLocaleIsInitialized()
-    Log.e(
-      "AppLanguageLocaleHandle",
-      "updateLocale" + "newlocale" + newLocale.localeContext.languageDefinition.language.name
-    )
-    Log.e(
-      "AppLanguageLocaleHandle",
-      "updateLocale" + "oldLocale" + displayLocale.localeContext.languageDefinition.language.name
-    )
-    if (isDisplayLocaleUpdatedInitialized()) {
-      Log.e("isDisplayLocaleUpdated", isDisplayLocaleUpdated)
-    }
-
     return displayLocale.let { oldLocale ->
       displayLocale = newLocale
-      isDisplayLocaleUpdated = (oldLocale != newLocale).toString()
       return@let oldLocale != newLocale
     }
   }
