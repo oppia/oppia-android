@@ -24,10 +24,12 @@
     android:layout_marginEnd="20dp"
     android:layout_marginBottom="12dp"
     android:importantForAccessibility="no"
-    app:cardBackgroundColor="@color/color_def_white"
+    app:cardBackgroundColor="@color/component_color_lessons_tab_activity_background_color"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
-    app:rippleColor="@color/color_def_transparent">
+    app:rippleColor="@color/component_color_lessons_tab_activity_lesson_card_ripple_color"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/component_color_shared_card_border_stroke_color">
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -69,7 +71,7 @@
               android:layout_gravity="center"
               android:fontFamily="sans-serif-medium"
               android:text="@{viewModel.storyProgressPercentageText}"
-              android:textColor="@color/oppia_primary_text"
+              android:textColor="@color/component_color_shared_text_view_text_color"
               android:textSize="14sp"
               android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
           </FrameLayout>
@@ -81,7 +83,7 @@
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
             android:text="@{viewModel.storyPercentage != 100? @string/status_in_progress : @string/status_completed}"
-            android:textColor="@color/oppia_primary_text"
+            android:textColor="@color/component_color_shared_text_view_text_color"
             android:textSize="10sp"
             android:visibility="@{viewModel.storyPercentage != 0 ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
@@ -110,7 +112,7 @@
               android:paddingTop="24dp"
               android:paddingBottom="4dp"
               android:text="@{viewModel.storyTitle}"
-              android:textColor="@color/oppia_primary_text"
+              android:textColor="@color/component_color_shared_text_view_text_color"
               android:textSize="18sp" />
 
             <TextView
@@ -120,7 +122,7 @@
               android:layout_height="wrap_content"
               android:fontFamily="sans-serif"
               android:text="@{viewModel.computeChapterCountText()}"
-              android:textColor="@color/oppia_primary_text"
+              android:textColor="@color/component_color_shared_text_view_text_color"
               android:textSize="16sp" />
           </LinearLayout>
 
@@ -140,7 +142,8 @@
               android:contentDescription="@{isListExpanded ? @string/hide_chapter_list : @string/show_chapter_list}"
               app:isRotationAnimationClockwise="@{isListExpanded}"
               app:rotationAnimationAngle="@{180f}"
-              app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
+              app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"
+              app:tint="@color/component_color_lessons_tab_activity_lesson_card_drop_down_arrow_color"/>
           </FrameLayout>
         </LinearLayout>
       </LinearLayout>
@@ -150,7 +153,7 @@
         android:id="@+id/chapter_list_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_def_white_light"
+        android:background="@color/component_color_lessons_tab_activity_background_color"
         android:orientation="vertical"
         android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
 
