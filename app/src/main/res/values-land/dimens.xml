@@ -544,4 +544,6 @@
   <dimen name="profile_list_fragment_recycler_view_padding_bottom">108dp</dimen>
 
   <dimen name="profile_chooser_profile_view_is_image_width">72dp</dimen>
+  <dimen name="profile_chooser_profile_view_profile_name_text_size">14sp</dimen>
+  <dimen name="profile_chooser_profile_view_profile_last_visited_size">12sp</dimen>
 </resources>

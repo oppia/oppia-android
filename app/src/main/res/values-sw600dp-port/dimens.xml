@@ -509,9 +509,7 @@
 
   <!-- Profile Chooser Fragment -->
   <dimen name="profile_chooser_profile_view_view_margin_top">92dp</dimen>
-
   <dimen name="profile_chooser_profile_view_is_image_width">108dp</dimen>
-
   <dimen name="profile_chooser_profile_view_profile_name_text_size">20sp</dimen>
   <dimen name="profile_chooser_profile_view_profile_last_visited_size">16sp</dimen>
 </resources>

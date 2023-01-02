@@ -56,7 +56,9 @@
 
         <TextView
           android:id="@+id/profile_name_text"
-          style="@style/Caption"
+          android:textSize="@dimen/profile_chooser_profile_view_profile_name_text_size"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:ellipsize="end"
           android:gravity="@{hasProfileEverBeenAddedValue ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER_VERTICAL}"
           android:maxLines="2"
@@ -68,7 +70,7 @@
         <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
         <TextView
           android:id="@+id/profile_last_visited"
-          style="@style/SubtitleLight1"
+          android:textSize = "@dimen/profile_chooser_profile_view_profile_last_visited_size"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/component_color_profile_chooser_activity_white_text_color"
@@ -80,7 +82,7 @@
         <!-- Note: The style set here is without the Gravity property, as the gravity set for this TextView is conditional and its not doable through styles. -->
         <TextView
           android:id="@+id/profile_is_admin_text"
-          style="@style/SubtitleLight1"
+          android:textSize = "@dimen/profile_chooser_profile_view_profile_last_visited_size"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/profile_chooser_profile_view_is_admin_margin_top"

@@ -2,4 +2,8 @@
 <resources>
   <dimen name="enter_text_view_padding_start">120dp</dimen>
   <dimen name="enter_text_view_padding_end">120dp</dimen>
+
+  <dimen name="profile_chooser_profile_view_is_image_width">72dp</dimen>
+  <dimen name="profile_chooser_profile_view_profile_name_text_size">14sp</dimen>
+  <dimen name="profile_chooser_profile_view_profile_last_visited_size">12sp</dimen>
 </resources>
