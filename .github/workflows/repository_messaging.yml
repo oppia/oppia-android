@@ -10,7 +10,7 @@ jobs:
   holiday_message:
     runs-on: ubuntu-latest
     # NOTE TO DEVELOPERS: Update the body text and set this to 'true' to enable automatic messaging on all new PRs.
-    if: false
+    if: true
     steps:
       - name: Add holiday comment
         uses: peter-evans/create-or-update-comment@v1
@@ -21,4 +21,4 @@ jobs:
             have taken time off for the next few weeks, so it may take a
             little while before we can look at this PR. We appreciate your
             patience while some of our team members recharge. We'll be fully
-            returning on 23 May 2022.
+            returning on 10 January 2022.
