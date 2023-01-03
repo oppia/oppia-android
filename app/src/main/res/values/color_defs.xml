@@ -9,6 +9,7 @@
   <color name="color_def_oppia_reddish_brown">#882814</color>
   <color name="color_def_oppia_brown">#C55F45</color>
   <color name="color_def_oppia_light_brown">#E76F51</color>
+  <color name="color_def_pastel_pink">#E7AC9B</color>
   <color name="color_def_oppia_stroke_blue">#4D395FD0</color>
   <color name="color_def_oppia_solid_blue">#4DA5D3EC</color>
   <color name="color_def_black_80">#CC333333</color>
@@ -23,6 +24,7 @@
   <color name="color_def_black_26">#42000000</color>
   <color name="color_def_black_54">#8A000000</color>
   <color name="color_def_black_87">#DE000000</color>
+  <color name="color_def_black_24">#3D000000</color>
   <color name="color_def_white_light">#F9F9F9</color>
   <color name="color_def_accessible_grey">#333333</color>
   <color name="color_def_accessible_light_grey">#555555</color>
@@ -94,6 +96,9 @@
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
   <color name="color_def_dark_purple">#441530</color>
-  <color name="color_def_oppia_white_2">#F2F2F2</color>
   <color name="color_def_blue_sapphire">#205D86</color>
+  <color name="color_def_dark_silver_40">#80707070</color>
+  <color name="color_def_columbia_blue">#C6DCDA</color>
+  <color name="color_def_catalina_blue">#00236E</color>
+  <color name="color_def_japanese_indigo">#264653</color>
 </resources>
