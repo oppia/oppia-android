@@ -119,8 +119,9 @@
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_accessible_grey</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_oppia_turquoise</color>
-  <color name="color_palette_accent_background_color">@color/color_def_oppia_dark_grey</color>
-  <color name="color_palette_seekbar_progress_background_color">@color/color_def_maastricht_blue</color>
+  <color name="color_palette_icon_white_color">@color/color_def_white</color>
+  <color name="color_palette_audio_fragment_background_color">@color/color_def_oppia_metallic_blue</color>
+  <color name="color_palette_seekbar_progress_background_color">@color/color_def_japanese_indigo</color>
   <color name="color_palette_toolbar_secondary_color">@color/color_def_forest_green</color>
   <color name="color_palette_secondary_dark_background_color">@color/color_def_oppia_light_black</color>
   <color name="color_palette_concept_card_toolbar_color">@color/color_def_dark_pink</color>

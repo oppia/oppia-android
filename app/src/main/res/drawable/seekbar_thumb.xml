@@ -17,7 +17,7 @@
     android:left="8dp"
     android:top="4dp">
     <shape android:shape="oval">
-      <solid android:color="@color/component_color_audio_fragment_thumb_background_color" />
+      <solid android:color="@color/component_color_shared_white_background_color" />
       <corners android:radius="10dp" />
     </shape>
   </item>

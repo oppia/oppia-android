@@ -119,7 +119,8 @@
   <color name="color_palette_thumbnail_gradient_end_color">@color/color_def_white</color>
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_white</color>
-  <color name="color_palette_accent_background_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_icon_white_color">@color/color_def_white</color>
+  <color name="color_palette_audio_fragment_background_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_seekbar_progress_background_color">@color/color_def_ocean_blue</color>
   <color name="color_palette_toolbar_secondary_color">@color/color_def_oppia_green</color>
   <color name="color_palette_secondary_dark_background_color">@color/color_def_oppia_light_green</color>
