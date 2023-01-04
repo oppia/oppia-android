@@ -297,6 +297,7 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(firstSpotlightTarget)
+        testCoroutineDispatchers.runCurrent()
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(secondSpotlightTarget)
       }
       testCoroutineDispatchers.runCurrent()
@@ -327,6 +328,7 @@ class SpotlightFragmentTest {
         )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(firstSpotlightTarget)
+        testCoroutineDispatchers.runCurrent()
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(secondSpotlightTarget)
       }
       testCoroutineDispatchers.runCurrent()

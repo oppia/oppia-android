@@ -135,7 +135,7 @@ class ExplorationActivityPresenter @Inject constructor(
       ).commitNow()
     }
 
-    if (getSpotlightFragment() == null) {
+    if (getSpotlightManager() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_spotlight_fragment_placeholder,
         SpotlightFragment.newInstance(profileId.internalId),
@@ -160,16 +160,16 @@ class ExplorationActivityPresenter @Inject constructor(
             SpotlightShape.Circle,
             Spotlight.FeatureCase.VOICEOVER_PLAY_ICON
           )
-          checkNotNull(getSpotlightFragment()).requestSpotlight(audioPlayerSpotlightTarget)
+          checkNotNull(getSpotlightManager()).requestSpotlight(audioPlayerSpotlightTarget)
         }
       }
     }
   }
 
-  private fun getSpotlightFragment(): SpotlightFragment? {
+  private fun getSpotlightManager(): SpotlightManager? {
     return activity.supportFragmentManager.findFragmentByTag(
       SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightFragment
+    ) as? SpotlightManager
   }
 
   fun loadExplorationFragment(readingTextSize: ReadingTextSize) {

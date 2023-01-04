@@ -18,7 +18,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_onboarding_activity_background_color">
+    android:background="@color/component_color_shared_screen_secondary_background_color">
 
     <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/onboarding_slide_view_pager"
@@ -43,6 +43,7 @@
       android:onClick="@{(v) -> presenter.clickOnSkip()}"
       android:text="@string/skip"
       android:textAllCaps="true"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -71,9 +72,10 @@
       android:minHeight="48dp"
       android:onClick="@{(v) -> presenter.clickOnNext()}"
       android:padding="12dp"
-      app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
       android:visibility="@{viewModel.slideNumber != 3 ? View.VISIBLE: View.GONE, default=visible}"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent" />
+      app:layout_constraintEnd_toEndOf="parent"
+      app:srcCompat="@drawable/ic_arrow_forward_black_24dp"
+      app:tint="@color/component_color_onboarding_activity_arrow_color" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
