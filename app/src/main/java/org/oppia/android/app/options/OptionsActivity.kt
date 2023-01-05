@@ -105,11 +105,11 @@ class OptionsActivity :
         optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
       }
       REQUEST_CODE_APP_LANGUAGE -> {
-        val appLanguage = data.getProtoExtra(
+        val oppiaLanguage = data.getProtoExtra(
           MESSAGE_APP_LANGUAGE_ARGUMENT_KEY,
           AppLanguageActivityResultBundle.getDefaultInstance()
         ).oppiaLanguage
-        optionActivityPresenter.updateAppLanguage(appLanguage)
+        optionActivityPresenter.updateAppLanguage(oppiaLanguage)
         OptionControlsViewModel.isResuming = true
         HomeActivity.shouldRecreateActivity = true
         recreate()
@@ -123,11 +123,11 @@ class OptionsActivity :
     }
   }
 
-  override fun routeAppLanguageList(appLanguage: OppiaLanguage) {
+  override fun routeAppLanguageList(oppiaLanguage: OppiaLanguage) {
     startActivityForResult(
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
-        appLanguage
+        oppiaLanguage
       ),
       REQUEST_CODE_APP_LANGUAGE
     )

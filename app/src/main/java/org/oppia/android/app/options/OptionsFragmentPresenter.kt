@@ -202,10 +202,10 @@ class OptionsFragmentPresenter @Inject constructor(
     recyclerViewAdapter.notifyItemChanged(0)
   }
 
-  fun updateAppLanguage(language: OppiaLanguage) {
+  fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
-      selectedLanguage = language
-      selectedLanguageValue = language.number
+      selectedLanguage = oppiaLanguage
+      selectedLanguageValue = oppiaLanguage.number
     }.build()
 
     translationController.updateAppLanguage(
@@ -216,7 +216,7 @@ class OptionsFragmentPresenter @Inject constructor(
       {
         when (it) {
           is AsyncResult.Success -> {
-            appLanguage = language
+            appLanguage = oppiaLanguage
           }
           is AsyncResult.Failure ->
             oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR", it.error)

@@ -86,8 +86,8 @@ class OptionsActivityPresenter @Inject constructor(
     getOptionFragment()?.updateReadingTextSize(textSize)
   }
 
-  fun updateAppLanguage(appLanguage: OppiaLanguage) {
-    getOptionFragment()?.updateAppLanguage(appLanguage)
+  fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
+    getOptionFragment()?.updateAppLanguage(oppiaLanguage)
   }
 
   fun updateAudioLanguage(audioLanguage: AudioLanguage) {

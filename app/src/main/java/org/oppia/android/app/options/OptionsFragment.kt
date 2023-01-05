@@ -75,9 +75,9 @@ class OptionsFragment : InjectableFragment() {
     }
   }
 
-  fun updateAppLanguage(appLanguage: OppiaLanguage) {
+  fun updateAppLanguage(oppiaLanguage: OppiaLanguage) {
     optionsFragmentPresenter.runAfterUIInitialization {
-      optionsFragmentPresenter.updateAppLanguage(appLanguage)
+      optionsFragmentPresenter.updateAppLanguage(oppiaLanguage)
     }
   }
 
