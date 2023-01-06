@@ -461,7 +461,7 @@
 
   <!-- NavigationDrawer -->
   <dimen name="navigation_drawer_width">304dp</dimen>
-
+  
   <!-- General Bottom Padding -->
   <dimen name="general_screen_padding_bottom">128dp</dimen>
 
@@ -574,7 +574,7 @@
   <dimen name="ongoing_topic_list_fragment_padding_top">20dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_end">20dp</dimen>
   <dimen name="ongoing_topic_list_fragment_padding_bottom">144dp</dimen>
-
+  
   <!-- Ongoing Topic Item -->
   <dimen name="ongoing_topic_item_container_margin_start">8dp</dimen>
   <dimen name="ongoing_topic_item_container_margin_top">12dp</dimen>
@@ -644,7 +644,7 @@
 
   <!-- TopicSummaryView -->
   <dimen name="topic_summary_lesson_count_text_view_padding_bottom">8dp</dimen>
-
+  
   <!-- TopicPracticeFragment -->
   <dimen name="topic_practice_fragment_padding_bottom">172dp</dimen>
   <dimen name="topic_practice_fragment_padding_start">0dp</dimen>
@@ -659,11 +659,11 @@
 
   <!-- AppLanguageFragment -->
   <dimen name="app_language_recycler_view_padding_bottom">132dp</dimen>
-
+   
   <!-- StoryFragment -->
   <dimen name="story_fragment_padding_bottom">160dp</dimen>
 
-  <!-- RevisionCardFragment -->
+<!-- RevisionCardFragment -->
   <dimen name="revision_card_fragment_layout_tablet_min_width">0dp</dimen>
   <dimen name="revision_card_fragment_padding_bottom">160dp</dimen>
   <dimen name="revision_card_fragment_layout_margin_start">28dp</dimen>
@@ -745,7 +745,7 @@
   <dimen name="topic_lessons_summary_linear_layout_margin_start">12dp</dimen>
   <dimen name="topic_lessons_summary_linear_layout_margin_end">12dp</dimen>
   <dimen name="topic_lessons_summary_story_name_chapter_count_container_margin_start">12dp</dimen>
-
+  
   <!-- OptionsStoryTextSize -->
   <dimen name="option_story_text_size_padding_start">16dp</dimen>
   <dimen name="option_story_text_size_padding_end">16dp</dimen>
