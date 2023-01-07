@@ -58,7 +58,7 @@
   <color name="color_palette_show_hide_color">@color/color_def_oppia_green</color>
   <color name="color_palette_info_icon_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_disabled_button_background_color">@color/color_def_black_grey</color>
-  <color name="color_palette_back_arrow_button_color">@color/color_def_oppia_dark_blue</color>
+  <color name="color_palette_back_forward_arrow_button_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_replay_button_color">@color/color_def_oppia_brown_dark</color>
   <color name="color_palette_progress_bar_stroke_color">@color/color_def_oppia_green</color>
   <color name="color_palette_progress_bar_solid_color">@color/color_def_oppia_green</color>

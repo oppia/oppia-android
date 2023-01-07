@@ -387,8 +387,8 @@
     <item name="android:paddingStart">12dp</item>
     <item name="android:paddingTop">8dp</item>
     <item name="android:singleLine">true</item>
-    <item name="android:textColor">@color/component_color_shared_input_interaction_edit_text_text_color</item>
-    <item name="android:textColorHint">@color/edit_text_hint</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:textColorHint">@color/component_color_shared_edit_text_hint_color</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textStyle">italic</item>
     <item name="fontFamily">sans-serif</item>
@@ -398,7 +398,7 @@
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textColor">@color/edit_text_error</item>
+    <item name="android:textColor">@color/component_color_shared_input_error_color</item>
     <item name="android:textSize">12sp</item>
     <item name="fontFamily">sans-serif</item>
   </style>
