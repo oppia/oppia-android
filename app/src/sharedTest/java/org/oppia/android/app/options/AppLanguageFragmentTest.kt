@@ -161,7 +161,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguage_changeLanguageToFrench_selectedLanguageIsFrench() {
+  fun testAppLanguage_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       verifyEnglishIsSelected()
       selectPortuguese()
@@ -170,7 +170,7 @@ class AppLanguageFragmentTest {
   }
 
   @Test
-  fun testAppLanguage_changeLanguageToFrench_configChange_selectedLanguageIsFrench() {
+  fun testAppLanguage_changeLanguageToPortuguese_configChange_selectedLanguageIsPortuguese() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       verifyEnglishIsSelected()
       selectPortuguese()
@@ -181,7 +181,7 @@ class AppLanguageFragmentTest {
 
   @Test
   @Config(qualifiers = "sw600dp")
-  fun testAppLanguage_tabletConfig_changeLanguageToFrench_selectedLanguageIsFrench() {
+  fun testAppLanguage_tabletConfig_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)).use {
       testCoroutineDispatchers.runCurrent()
       verifyEnglishIsSelected()
