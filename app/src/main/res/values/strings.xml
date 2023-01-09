@@ -585,5 +585,4 @@
   <string name="revision_navigation_cards_header">Continue Studying</string>
   <string name="profile_edit_activity_title">Profile Edit</string>
   <string name="state_fragment_hint_bar_forced_announcement_text">Go to the bottom of the screen for a hint.</string>
-  <string name="mark_spotlight_seen_button_text">Done</string>
 </resources>
