@@ -41,6 +41,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
+import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -79,6 +83,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.PrimeTopicAssetsControllerModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -132,6 +137,9 @@ class TopicRevisionFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var spotlightStateController: SpotlightStateController
+
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
@@ -144,6 +152,7 @@ class TopicRevisionFragmentTest {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+    markAllSpotlightsSeen()
   }
 
   @After
@@ -267,6 +276,16 @@ class TopicRevisionFragmentTest {
         )
       ).check(matches(hasScaleType(ImageView.ScaleType.FIT_CENTER)))
     }
+  }
+
+  private fun markAllSpotlightsSeen() {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
+    testCoroutineDispatchers.runCurrent()
+    spotlightStateController.markSpotlightViewed(profileId, FIRST_CHAPTER)
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun createTopicActivityIntent(internalProfileId: Int, topicId: String): Intent {

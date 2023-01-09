@@ -37,6 +37,10 @@
       android:label="@string/administrator_controls_fragment_test_activity_label"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+      android:name=".app.testing.SpotlightFragmentTestActivity"
+      android:label="@string/test_activity_label"
+      android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.administratorcontrols.appversion.AppVersionActivity"
       android:label="@string/app_version_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
