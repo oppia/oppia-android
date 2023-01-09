@@ -47,8 +47,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AppLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityParams
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityParams
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -493,16 +495,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
+        oppiaLanguage = OppiaLanguage.ENGLISH
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
-            APP_LANGUAGE
-          ),
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
-            "English"
-          ),
+          hasProtoExtra("AppLanguageActivity.params", expectedParams),
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )
@@ -525,16 +524,13 @@ class OptionsFragmentTest {
           targetViewId = R.id.app_language_text_view
         )
       ).perform(click())
+
+      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
+        oppiaLanguage = OppiaLanguage.ENGLISH
+      }.build()
       intended(
         allOf(
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceTitleExtraKey(),
-            APP_LANGUAGE
-          ),
-          hasExtra(
-            AppLanguageActivity.getAppLanguagePreferenceSummaryValueExtraKey(),
-            "English"
-          ),
+          hasProtoExtra("AppLanguageActivity.params", expectedParams),
           hasComponent(AppLanguageActivity::class.java.name)
         )
       )
