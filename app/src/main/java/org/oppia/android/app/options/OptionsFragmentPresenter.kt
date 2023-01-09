@@ -224,6 +224,24 @@ class OptionsFragmentPresenter @Inject constructor(
         }
       }
     )
+
+    // Update OppiaLanguage config on ProfileManagementController to prevent combining data sources in
+    // OptionControlsViewModel which is breaking some tests.
+    profileManagementController.updateAppLanguage(
+      profileId,
+      oppiaLanguage
+    ).toLiveData().observe(
+      fragment,
+      Observer {
+        when (it) {
+          is AsyncResult.Success -> appLanguage = oppiaLanguage
+          is AsyncResult.Failure ->
+            oppiaLogger.e(APP_LANGUAGE_TAG, "$APP_LANGUAGE_ERROR: English", it.error)
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
+      }
+    )
+
     recyclerViewAdapter.notifyItemChanged(1)
   }
 
