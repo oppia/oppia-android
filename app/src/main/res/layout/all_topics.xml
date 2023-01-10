@@ -23,7 +23,7 @@
       android:layout_marginBottom="@dimen/all_topics_text_margin_bottom"
       android:fontFamily="sans-serif-medium"
       android:text="@string/select_a_topic_to_start"
-      android:textColor="@color/component_color_home_activity_select_a_topic_to_start_text_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="18sp" />
   </FrameLayout>
 </layout>
