@@ -3,6 +3,7 @@
 * Meno25
 * MohamedMedhat
 * Mouradeq
+* Sarah zoubida
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
@@ -42,6 +43,9 @@
   <string name="stop_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="stop_exploration_dialog_cancel_button">إلغاء</string>
   <string name="stop_exploration_dialog_leave_button">مغادرة</string>
+  <string name="exploration_exit_button_spotlight_hint">اخرج في أي وقت باستخدام هذا الزر. سنحفظ تقدمك.</string>
+  <string name="voiceover_icon_spotlight_hint">هل ترغب في أن يقرأ %s لك؟ اضغط على هذا الزر لتجربته!</string>
+  <string name="voiceover_language_icon_spotlight_hint">انقر لتغيير لغة التعليق الصوتي.</string>
   <string name="progress_database_full_dialog_title">تم الوصول إلى الحد الأقصى من سعة التخزين</string>
   <string name="progress_database_full_dialog_description">سوف يتم حذف تقدمك في درس %s</string>
   <string name="progress_database_full_dialog_continue_button">استمرار</string>
@@ -51,6 +55,13 @@
   <string name="topic_name_text_view">النسب والاستدلال النسبي</string>
   <string name="topic_practice_skills_description">قم باختيار المهارات التي تريد أن تتدرب عليها.</string>
   <string name="topic_practice_start">ابدأ</string>
+  <string name="info_tab_content_description">تفاصيل حول الموضوع.</string>
+  <string name="revision_tab_content_description">راجع المفاهيم المدروسة من الدروس المكتملة هنا.</string>
+  <string name="practice_tab_content_description">تدرب على المفاهيم المكتسبة من الدروس المكتملة.</string>
+  <string name="lessons_tab_content_description">انقر هنا لبدء تشغيل درس.</string>
+  <string name="topic_lessons_tab_spotlight_hint">ابحث عن كل دروسك هنا.</string>
+  <string name="topic_revision_tab_spotlight_hint">راجع المفاهيم المكتسبة من الدروس المكتملة هنا.</string>
+  <string name="first_chapter_spotlight_hint">انقر هنا لبدء تشغيل درس.</string>
   <string name="state_continue_button">استمرار</string>
   <string name="state_continue_submit">تقديم</string>
   <string name="previous_state_description">التوجه إلى البطاقة السابقة</string>
@@ -313,6 +324,7 @@
   <string name="home_activity_back_dialog_cancel">إلغاء</string>
   <string name="home_activity_back_dialog_exit">خروج</string>
   <string name="home_activity_title">الصفحة الرئيسية</string>
+  <string name="promoted_story_spotlight_hint">من الآن يمكنك مشاهدة الدروس المقترحة لك هنا.</string>
   <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
@@ -523,4 +535,5 @@
   <string name="profile_edit_fragment_test_activity_label">نشاط اختبار جزء تحرير ملف التعريف</string>
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
   <string name="revision_navigation_cards_header">أكمل دراستك</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">انتقل إلى الجزء السفلي من الشاشة للحصول على تلميح.</string>
 </resources>
