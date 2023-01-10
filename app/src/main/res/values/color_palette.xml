@@ -46,8 +46,8 @@
   <color name="color_palette_content_background_solid_color">@color/color_def_oppia_solid_blue</color>
   <color name="color_palette_content_background_stroke_color">@color/color_def_oppia_stroke_blue</color>
   <color name="color_palette_rounded_rect_background_color">@color/color_def_white</color>
+  <color name="color_palette_rounded_rect_stroke_color">@color/color_def_oppia_grey_border</color>
   <color name="color_palette_multiple_choice_color">@color/color_def_oppia_dark_blue</color>
-  <color name="color_palette_multiple_choice_text_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_item_selection_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_item_selection_text_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_multiple_choice_selected_color">@color/color_def_oppia_dark_blue</color>
@@ -110,6 +110,8 @@
   <color name="color_palette_drag_drop_single_item_gradient_center_color">@color/color_def_drag_drop_single_item_gradient_center</color>
   <color name="color_palette_drag_drop_single_item_gradient_start_color">@color/color_def_white</color>
   <color name="color_palette_drag_drop_single_item_stroke_color">@color/color_def_stroke_silver</color>
+  <color name="color_palette_merge_icon_enabled_color">@color/color_def_black</color>
+  <color name="color_palette_merge_icon_disabled_color">@color/color_def_chooser_grey</color>
   <color name="color_palette_confetti_red_color">@color/color_def_confetti_ruby_red</color>
   <color name="color_palette_confetti_yellow_color">@color/color_def_confetti_light_gold</color>
   <color name="color_palette_confetti_blue_color">@color/color_def_oppia_dark_blue</color>
@@ -120,6 +122,7 @@
   <color name="color_palette_thumbnail_gradient_start_color">@color/color_def_white_0</color>
   <color name="color_palette_icon_background_secondary_color">@color/color_def_white</color>
   <color name="color_palette_icon_white_color">@color/color_def_white</color>
+  <color name="color_palette_icon_color">@color/color_def_black</color>
   <color name="color_palette_audio_fragment_background_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_seekbar_progress_background_color">@color/color_def_stroke_silver</color>
   <color name="color_palette_seekbar_thumb_shadow_color">@color/color_def_black_54</color>
