@@ -3,6 +3,7 @@
 * Meno25
 * MohamedMedhat
 * Mouradeq
+* Sarah zoubida
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
@@ -41,6 +42,9 @@
   <string name="unsaved_exploration_dialog_fragment_stop_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="unsaved_exploration_dialog_fragment_stop_exploration_dialog_cancel_button_text">إلغاء</string>
   <string name="unsaved_exploration_dialog_fragment_stop_exploration_dialog_leave_button_text">مغادرة</string>
+  <string name="exploration_activity_exploration_exit_button_spotlight_hint">اخرج في أي وقت باستخدام هذا الزر. سنحفظ تقدمك.</string>
+  <string name="exploration_activity_voiceover_icon_spotlight_hint">هل ترغب في أن يقرأ %s لك؟ اضغط على هذا الزر لتجربته!</string>
+  <string name="exploration_activity_voiceover_language_icon_spotlight_hint">انقر لتغيير لغة التعليق الصوتي.</string>
   <string name="progress_database_full_dialog_activity_progress_database_full_dialog_title">تم الوصول إلى الحد الأقصى من سعة التخزين</string>
   <string name="progress_database_full_dialog_activity_progress_database_full_dialog_description">سوف يتم حذف تقدمك في درس %s</string>
   <string name="progress_database_full_dialog_activity_continue_button">استمرار</string>
@@ -50,6 +54,13 @@
   <string name="topic_name_text_view">النسب والاستدلال النسبي</string>
   <string name="topic_practice_header_view_activity_topic_practice_skills_description">قم باختيار المهارات التي تريد أن تتدرب عليها.</string>
   <string name="topic_practice_footer_view_activity_topic_practice_start">ابدأ</string>
+  <string name="topic_activity_info_tab_content_description">تفاصيل حول الموضوع.</string>
+  <string name="topic_activity_revision_tab_content_description">راجع المفاهيم المدروسة من الدروس المكتملة هنا.</string>
+  <string name="topic_activity_practice_tab_content_description">تدرب على المفاهيم المكتسبة من الدروس المكتملة.</string>
+  <string name="topic_activity_lessons_tab_content_description">انقر هنا لبدء تشغيل درس.</string>
+  <string name="topic_activity_topic_lessons_tab_spotlight_hint">ابحث عن كل دروسك هنا.</string>
+  <string name="topic_activity_topic_revision_tab_spotlight_hint">راجع المفاهيم المكتسبة من الدروس المكتملة هنا.</string>
+  <string name="topic_activity_first_chapter_spotlight_hint">انقر هنا لبدء تشغيل درس.</string>
   <string name="state_continue_button">استمرار</string>
   <string name="state_continue_submit">تقديم</string>
   <string name="previous_state_description">التوجه إلى البطاقة السابقة</string>
@@ -314,6 +325,8 @@
   <string name="exit_profile_dialog_fragment_home_activity_back_dialog_cancel">إلغاء</string>
   <string name="exit_profile_dialog_fragment_home_activity_back_dialog_exit">خروج</string>
   <string name="home_activity_label_title">الصفحة الرئيسية</string>
+  <string name="home_activity_promoted_story_spotlight_hint">من الآن يمكنك مشاهدة الدروس المقترحة لك هنا.</string>
+  <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="profile_list_activity_title">الملفات الشخصية</string>
   <string name="profile_edit_created">تم الإنشاء في %s</string>
   <string name="profile_last_used">آخر استخدام</string>
@@ -367,13 +380,13 @@
   <string name="administrator_controls_app_version_activity_app_version_activity_label_title">إصدار التطبيق</string>
   <string name="app_language_activity_title">لغة التطبيق</string>
   <string name="audio_language_activity_title">لغة الصوت الافتراضية</string>
-  <string name="reading_text_size">حجم النص المقروء</string>
   <string name="reading_text_size_activity_title">حجم النص المقروء</string>
   <string name="reading_text_size_activity_toolbar_title_text">حجم النص المقروء</string>
   <string name="story_text_will_look_like_this">سيظهر نص القصة بهذا الشكل.</string>
   <string name="constant_string_for_text_size">أ</string>
   <string name="audio_language">الصوت الافتراضي</string>
   <string name="app_language_activity_label_text">لغة التطبيق</string>
+  <string name="reading_text_size">حجم النص المقروء</string>
   <string name="reading_text_size_small">صغير</string>
   <string name="reading_text_size_medium">متوسط</string>
   <string name="reading_text_size_large">كبير</string>
@@ -419,9 +432,8 @@
   <string name="return_to_topic">العودة إلى الموضوع</string>
   <string name="return_to_lesson_button_activity_return_to_lesson_text">العودة إلى الدرس</string>
   <string name="explanation">الشرح:</string>
-  <string name="drag_and_drop_interaction_group_merge_hint">إذا تساوى عنصران، قم بدمجهم.</string>
-  <string name="link_to_item_below">الربط بالعنصر %s</string>
   <string name="drag_and_drop_interaction_item_activity_group_merge_hint_text">إذا تساوى عنصران، قم بدمجهم.</string>
+  <string name="link_to_item_below">الربط بالعنصر %s</string>
   <string name="unlink_items">إلغاء ربط العناصر عند %s</string>
   <string name="move_item_down_content_description">تحريك العنصر إلى الأسفل إلى %s</string>
   <string name="move_item_up_content_description">تحريك العنصر إلى الأعلى عند %s</string>
@@ -524,6 +536,6 @@
   <string name="faq_answer_9">&lt;p&gt; إذا لم تتمكن من العثور على سؤالك أو كنت ترغب في الإبلاغ عن خطأ ، فاتصل بنا على admin@oppia.org. &lt;/p&gt;</string>
   <string name="profile_edit_fragment_test_activity_label">نشاط اختبار جزء تحرير ملف التعريف</string>
   <string name="administrator_controls_fragment_test_activity_label">يتحكم المسؤول في نشاط اختبار التجزئة</string>
-  <string name="select_a_topic_to_start">حدد موضوعًا للبدء</string>
   <string name="revision_card_fragment_revision_navigation_cards_header">أكمل دراستك</string>
+  <string name="state_fragment_hint_bar_forced_announcement_text">انتقل إلى الجزء السفلي من الشاشة للحصول على تلميح.</string>
 </resources>
