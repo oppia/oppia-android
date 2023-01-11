@@ -65,10 +65,12 @@
       <TextView
         android:id="@+id/profile_edit_created"
         style="@style/Subtitle2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/component_color_shared_secondary_1_text_color"
         app:layout_constraintBottom_toBottomOf="@+id/profile_edit_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/profile_edit_name"
         app:layout_constraintTop_toBottomOf="@+id/profile_edit_name"
         app:layout_constraintVertical_chainStyle="packed"

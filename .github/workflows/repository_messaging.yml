@@ -10,7 +10,7 @@ jobs:
   holiday_message:
     runs-on: ubuntu-latest
     # NOTE TO DEVELOPERS: Update the body text and set this to 'true' to enable automatic messaging on all new PRs.
-    if: true
+    if: false
     steps:
       - name: Add holiday comment
         uses: peter-evans/create-or-update-comment@v1
