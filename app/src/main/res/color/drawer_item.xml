@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:color="@color/component_color_drawer_fragment_selected_text_color" android:state_checked="true" />
-  <item android:color="@color/component_color_drawer_fragment_text_color" />
+  <item android:color="@color/component_color_shared_primary_dark_text_color" />
 </selector>
