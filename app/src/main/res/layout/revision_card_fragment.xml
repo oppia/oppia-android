@@ -13,7 +13,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_revision_card_activity_background_color"
+    android:background="@color/component_color_shared_screen_secondary_background_color"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -30,7 +30,8 @@
         android:layout_marginTop="@dimen/revision_card_fragment_layout_text_margin_top"
         android:layout_marginEnd="@dimen/revision_card_fragment_layout_margin_end"
         android:minWidth="48dp"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:textColorLink="@color/component_color_shared_link_text_color" />
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/revision_card_fragment_navigation_card_container"
@@ -46,7 +47,7 @@
           android:layout_marginEnd="28dp"
           android:text="@string/revision_navigation_cards_header"
           android:textAlignment="@{viewModel.subtopicId == 1 ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START}"
-          android:textColor="@color/color_def_black"
+          android:textColor="@color/component_color_shared_primary_text_color"
           android:textSize="20sp"
           android:textStyle="bold"
           android:visibility="@{viewModel.subtopicListSize == 1 ? View.INVISIBLE : View.VISIBLE}"
@@ -65,7 +66,7 @@
           android:clipToPadding="true"
           android:onClick="@{() -> viewModel.onPreviousCardClicked()}"
           android:visibility="@{viewModel.subtopicId == 1 ? View.GONE : View.VISIBLE}"
-          app:cardBackgroundColor="@color/color_def_white"
+          app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
           app:cardCornerRadius="4dp"
           app:cardElevation="4dp"
           app:cardMaxElevation="4dp"
@@ -94,7 +95,7 @@
               style="@style/TextViewStart"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/color_def_oppia_brown_dark"
+              android:background="@color/component_color_shared_revision_card_text_background_color"
               android:ellipsize="end"
               android:fontFamily="sans-serif"
               android:lines="3"
@@ -103,7 +104,7 @@
               android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
               android:paddingBottom="16dp"
               android:text="@{viewModel.computeTitleText(viewModel.previousSubtopicLiveData)}"
-              android:textColor="@color/color_def_white"
+              android:textColor="@color/component_color_shared_secondary_4_text_color"
               android:textSize="14sp"
               android:textStyle="bold"
               app:layout_constraintTop_toBottomOf="@id/prev_subtopic_image_view" />
@@ -121,7 +122,7 @@
           android:clipToPadding="true"
           android:onClick="@{() -> viewModel.onNextCardClicked()}"
           android:visibility="@{viewModel.subtopicId &lt; viewModel.subtopicListSize ? View.VISIBLE : View.GONE}"
-          app:cardBackgroundColor="@color/color_def_white"
+          app:cardBackgroundColor="@color/component_color_shared_revision_card_background_color"
           app:cardCornerRadius="4dp"
           app:cardElevation="4dp"
           app:cardMaxElevation="4dp"
@@ -150,7 +151,7 @@
               style="@style/TextViewStart"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/color_def_oppia_brown_dark"
+              android:background="@color/component_color_shared_revision_card_text_background_color"
               android:ellipsize="end"
               android:fontFamily="sans-serif"
               android:lines="3"
@@ -159,7 +160,7 @@
               android:paddingEnd="@dimen/topic_revision_summary_view_subtopic_title_text_view_padding_end"
               android:paddingBottom="16dp"
               android:text="@{viewModel.computeTitleText(viewModel.nextSubtopicLiveData)}"
-              android:textColor="@color/color_def_white"
+              android:textColor="@color/component_color_shared_secondary_4_text_color"
               android:textSize="14sp"
               android:textStyle="bold"
               app:layout_constraintTop_toBottomOf="@id/next_subtopic_image_view" />

@@ -11,11 +11,11 @@
     android:id="@+id/radio_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/general_item_background_border_light"
+    android:background="@drawable/general_item_background_border"
     android:gravity="center_vertical"
+    android:importantForAccessibility="yes"
     android:minHeight="48dp"
     android:onClick="@{() -> viewModel.audioLanguageRadioButtonListener.onLanguageSelected(viewModel.language)}"
-    android:importantForAccessibility="yes"
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatRadioButton
@@ -39,7 +39,7 @@
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
       android:text="@{viewModel.languageDisplayName}"
-      android:textColor="@color/component_color_language_items_heading_text_color"
+      android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="16sp" />
   </LinearLayout>
 </layout>
