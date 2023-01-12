@@ -64,7 +64,7 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
 
 ## Keeping in touch
 
-  * [Discussion forum](http://groups.google.com/group/oppia)
+  * [Discussion forum](https://github.com/oppia/oppia-android/discussions)
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
 
 ## Social Media
