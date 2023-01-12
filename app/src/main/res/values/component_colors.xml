@@ -39,9 +39,8 @@
   <color name="component_color_shared_drag_drop_single_item_gradient_end_color">@color/color_palette_drag_drop_single_item_gradient_end_color</color>
   <color name="component_color_shared_merge_icon_enabled_color">@color/color_palette_merge_icon_enabled_color</color>
   <color name="component_color_shared_merge_icon_disabled_color">@color/color_palette_merge_icon_disabled_color</color>
-  <color name="component_color_shared_multiple_choice_interaction_color">@color/color_palette_multiple_choice_color</color>
+  <color name="component_color_shared_multiple_choice_interaction_text_color">@color/color_palette_multiple_choice_color</color>
   <color name="component_color_shared_multiple_choice_interaction_selected_color">@color/color_palette_multiple_choice_selected_color</color>
-  <color name="component_color_shared_multiple_choice_interaction_selected_text_color">@color/color_palette_multiple_choice_selected_text_color</color>
   <color name="component_color_shared_item_selection_interaction_color">@color/color_palette_item_selection_color</color>
   <color name="component_color_shared_item_selection_interaction_text_color">@color/color_palette_item_selection_text_color</color>
   <color name="component_color_shared_back_forward_arrow_button_color">@color/color_palette_back_forward_arrow_button_color</color>
