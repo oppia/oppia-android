@@ -1,5 +1,5 @@
 # [Oppia Android](https://www.oppia.org)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-ff006f.svg)](https://gitter.im/oppia/oppia-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Mailing List](https://img.shields.io/badge/Mailing%20List-Oppia%20Android-dev.svg)](mailto:oppia-android-dev@googlegroups.com) [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues-search/oppia/oppia-android?label=Available%20starter%20issues&query=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22%20no%3Aassignee)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee)
+[![Mailing List](https://img.shields.io/badge/Mailing%20List-Oppia%20Android-dev.svg)](mailto:oppia-android-dev@googlegroups.com) [![Twitter Follow](https://img.shields.io/twitter/follow/oppiaorg.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/oppiaorg) [![GitHub issues by-label](https://img.shields.io/github/issues-search/oppia/oppia-android?label=Available%20starter%20issues&query=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22%20no%3Aassignee)](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee)
 
 [![Unit Tests (Robolectric -- Gradle)](https://github.com/oppia/oppia-android/actions/workflows/main.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/main.yml) [![Unit Tests (Robolectric - Bazel)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/unit_tests.yml) [![Build Tests](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/build_tests.yml) [![Static Checks](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml/badge.svg)](https://github.com/oppia/oppia-android/actions/workflows/static_checks.yml)
 
@@ -66,8 +66,6 @@ The Oppia Android code is released under the [Apache v2 license](https://github.
 
   * [Discussion forum](http://groups.google.com/group/oppia)
   * [Announcements mailing list](http://groups.google.com/group/oppia-announce)
-
-We also have public chat rooms on Gitter: [https://gitter.im/oppia/oppia-android](https://gitter.im/oppia/oppia-android). Drop by and say hello!
 
 ## Social Media
 [<img height="30" src="https://img.shields.io/badge/twitter-1DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white" />][twitter]
