@@ -3647,8 +3647,10 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
 
       onView(
-        withId(R.id.selection_interaction_textview))
-        .check(matches(withText("You may select more choices.")))
+        withId(
+          R.id.selection_interaction_textview
+        )
+      ).check(matches(withText("You may select more choices.")))
     }
   }
 
