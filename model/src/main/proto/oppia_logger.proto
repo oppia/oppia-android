@@ -94,6 +94,9 @@ message EventLog {
       // The event being logged is related to playing a voiceover.
       PlayVoiceOverContext play_voice_over_context = 23;
 
+      // The event being logged is related to pausing a voiceover.
+      PlayVoiceOverContext pause_voice_over_context = 35;
+
       // The event being logged is related to backgrounding of the application.
       LearnerDetailsContext app_in_background_context = 24;
 
@@ -207,8 +210,15 @@ message EventLog {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
 
+    // Not sure if this was ever actually a value, but reserving it to ensure no incompatibilities
+    // occur.
+    reserved 2;
+
     // The content id of the voiceover recording being played.
     string content_id = 3;
+
+    // The language code being played.
+    string language_code = 4;
   }
 
   // Represents event context which contains learner-specific details that are logged with every

@@ -377,11 +377,27 @@ class LearnerAnalyticsLogger @Inject constructor(
 
     /**
      * Logs that the learner started playing a voice over audio track corresponding to [contentId]
-     * (or null if something failed when retrieving the content ID--note that this may affect
-     * whether the event is logged).
+     * with language code [languageCode] (or null if something failed when retrieving the content ID
+     * or language code--note that this may affect whether the event is logged).
      */
-    fun logPlayVoiceOver(contentId: String?) {
-      logStateEvent(contentId, ::createPlayVoiceOverContext, EventBuilder::setPlayVoiceOverContext)
+    fun logPlayVoiceOver(contentId: String?, languageCode: String?) {
+      logStateEvent(
+        contentId, languageCode, ::createPlayVoiceOverContext, EventBuilder::setPlayVoiceOverContext
+      )
+    }
+
+    /**
+     * Logs that the learner stopped playing a voice over audio track corresponding to [contentId]
+     * with language code [languageCode] (see [logPlayVoiceOver] for caveats for both [contentId]
+     * and [languageCode]).
+     */
+    fun logPauseVoiceOver(contentId: String?, languageCode: String?) {
+      logStateEvent(
+        contentId,
+        languageCode,
+        ::createPlayVoiceOverContext,
+        EventBuilder::setPauseVoiceOverContext
+      )
     }
 
     /**
@@ -538,9 +554,11 @@ class LearnerAnalyticsLogger @Inject constructor(
 
     private fun createPlayVoiceOverContext(
       contentId: String?,
+      languageCode: String?,
       explorationDetails: ExplorationContext
     ) = PlayVoiceOverContext.newBuilder().apply {
       contentId?.let { this.contentId = it }
+      languageCode?.let { this.languageCode = languageCode }
       this.explorationDetails = explorationDetails
     }.build()
 

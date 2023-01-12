@@ -51,7 +51,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Em
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
-import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.PlayVoiceOverContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.PlayPauseVoiceOverContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.QuestionContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.RevisionCardContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
@@ -70,6 +70,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.CardContext as CardEventContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEventContext
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PAUSE_VOICE_OVER_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
@@ -164,7 +165,8 @@ class EventBundleCreator @Inject constructor(
       SOLUTION_OFFERED_CONTEXT -> ExplorationContext(activityName, solutionOfferedContext)
       ACCESS_SOLUTION_CONTEXT -> ExplorationContext(activityName, accessSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
-      PLAY_VOICE_OVER_CONTEXT -> PlayVoiceOverContext(activityName, playVoiceOverContext)
+      PLAY_VOICE_OVER_CONTEXT -> PlayPauseVoiceOverContext(activityName, playVoiceOverContext)
+      PAUSE_VOICE_OVER_CONTEXT -> PlayPauseVoiceOverContext(activityName, pauseVoiceOverContext)
       APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
       APP_IN_FOREGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInForegroundContext)
       EXIT_EXPLORATION_CONTEXT -> ExplorationContext(activityName, exitExplorationContext)
@@ -364,13 +366,14 @@ class EventBundleCreator @Inject constructor(
     }
 
     /** The [EventActivityContext] corresponding to [PlayVoiceOverEventContext]s. */
-    class PlayVoiceOverContext(
+    class PlayPauseVoiceOverContext(
       activityName: String,
       value: PlayVoiceOverEventContext
     ) : EventActivityContext<PlayVoiceOverEventContext>(activityName, value) {
       override fun PlayVoiceOverEventContext.storeValue(store: PropertyStore) {
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
         store.putNonSensitiveValue("content_id", contentId)
+        store.putNonSensitiveValue("language_code", languageCode)
       }
     }
 

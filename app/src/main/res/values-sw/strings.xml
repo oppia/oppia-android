@@ -158,7 +158,7 @@
   <string name="ratio_error_invalid_size">Idadi ya masharti si sawa na masharti yanayohitajika.</string>
   <string name="ratio_error_includes_zero">Uwiano hauwezi kuwa na 0 kama kipengele.</string>
   <string name="unknown_size">Ukubwa usiojulikana</string>
-  <string name="size_bytes"> Baiti %s</string>
+  <string name="size_bytes">Baiti %s</string>
   <string name="size_kb">%s KB</string>
   <string name="size_mb">%s MB</string>
   <string name="size_gb">%s GB</string>
@@ -166,20 +166,20 @@
   <string name="topic_prefix">Mada: %s</string>
   <string name="chapter_count_with_story_name">%1$s katika %2$s</string>
   <plurals name="chapter_count">
-    <item quantity="one">Sura 1\n    </item>
-    <item quantity="other">\n      Sura %s \n    </item>
+    <item quantity="one">Sura 1</item>
+    <item quantity="other">Sura %s</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">Hadithi 1\n    </item>
-    <item quantity="other">      Hadithi %s\n    </item>
+    <item quantity="one">Hadithi 1</item>
+    <item quantity="other">Hadithi %s</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%s kati ya Sura %s Imekamilika</item>
     <item quantity="other">%s ya Sura %s Imekamilika</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">Somo 1\n    </item>
-    <item quantity="other">      Masomo %s \n    </item>
+    <item quantity="one">Somo 1</item>
+    <item quantity="other">Masomo %s</item>
   </plurals>
   <string name="profile_chooser_activity_label">Ukurasa wa kuchagua wasifu</string>
   <string name="profile_chooser_admin">Msimamizi</string>
